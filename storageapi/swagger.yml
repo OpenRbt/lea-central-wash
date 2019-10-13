@@ -1,0 +1,90 @@
+swagger: "2.0"
+
+info:
+  title: Storage
+  version: 0.0.1
+
+basePath: /
+schemes:
+  - http
+
+definitions:
+
+  StationID:
+    type: string
+    minLength: 1
+
+  KeyPair:
+    type: object
+    required:
+        - key
+        - value
+    properties:
+        key:    
+          type: string
+          minLength: 1
+        value:
+          type: string
+
+consumes:
+  - application/json
+produces:
+  - application/json          
+
+paths:
+  /save:
+    post:
+      operationId: "save"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - stationID
+              - keyPair
+            properties:
+              stationID:
+                $ref: '#/definitions/StationID'
+              keyPair:
+                $ref: '#/definitions/KeyPair'
+      responses:
+        204:
+          description: OK
+        500:
+          description: internal error
+  /load:
+    get:
+      operationId: "load"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - stationID
+              - key
+            properties:
+              stationID:
+                $ref: '#/definitions/StationID'
+              key:
+                type: string
+                minLength: 1
+      responses:
+        200:
+          description: OK
+          schema:
+            type: string
+        404:
+          description: not found
+        500:
+          description: internal error
+  /ping:
+    get:
+      operationId: "ping"
+      responses:
+        200:
+          description: OK
+

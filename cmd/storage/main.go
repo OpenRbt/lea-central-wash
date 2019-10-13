@@ -1,0 +1,195 @@
+// Playlist service.
+package main
+
+import (
+	"context"
+	"database/sql"
+	"flag"
+	"fmt"
+	"os"
+	"path"
+	"runtime"
+	"strings"
+	"time"
+
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/dal"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/def"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/extapi"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/flags"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/goose"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/migration"
+	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
+	"github.com/powerman/must"
+	_ "github.com/powerman/narada4d/protocol/goose-postgres"
+	"github.com/powerman/narada4d/schemaver"
+	"github.com/powerman/pqx"
+	"github.com/powerman/structlog"
+)
+
+const (
+	connectTimeout  = 3 * time.Second // must be less than swarm's deploy.update_config.monitor
+	dbTimeout       = 3 * time.Second
+	dbIdleTimeout   = 10 * time.Second
+	dbMaxOpenConns  = 30 // about ⅓ of server's max_connections
+	dbParallelConns = 5  // a bit more than average
+)
+
+//nolint:gochecknoglobals
+var (
+	// set by ./build
+	gitVersion  string
+	gitBranch   string
+	gitRevision string
+	buildDate   string
+
+	cmd = strings.TrimSuffix(path.Base(os.Args[0]), ".test")
+	ver = strings.Join(strings.Fields(strings.Join([]string{gitVersion, gitBranch, gitRevision, buildDate}, " ")), " ")
+	log = structlog.New()
+	cfg struct {
+		version  bool
+		logLevel string
+		db       pqx.Config
+		goose    string
+		gooseDir string
+		extapi   extapi.Config
+		dal      dal.Config
+	}
+)
+
+// init provides common initialization for both app and tests.
+func init() { //nolint:gochecknoinits
+	err := def.Init()
+	if err != nil {
+		panic(err)
+	}
+	flag.BoolVar(&cfg.version, "version", false, "print version")
+	flag.StringVar(&cfg.logLevel, "log.level", "debug", "log `level` (debug|info|warn|err)")
+	flag.StringVar(&cfg.db.Host, "db.host", def.DBHost, "PostgreSQL `host`")
+	flag.IntVar(&cfg.db.Port, "db.port", def.DBPort, "PostgreSQL `port`")
+	flag.StringVar(&cfg.db.User, "db.user", def.DBUser, "PostgreSQL `user`")
+	flag.StringVar(&cfg.db.Pass, "db.pass", def.DBPass, "PostgreSQL `pass`")
+	flag.StringVar(&cfg.db.DBName, "db.name", def.DBName, "PostgreSQL `dbname`")
+	flag.StringVar(&cfg.db.SearchPath, "db.schema", def.DBSchema, "PostgreSQL `search_path`")
+	flag.StringVar(&cfg.goose, "goose", "", "run goose `COMMAND` and exit")
+	flag.StringVar(&cfg.gooseDir, "goose.dir", def.GooseDir, "goose migrations `dir`")
+	flag.StringVar(&cfg.extapi.Host, "extapi.host", def.ExtAPIHost, "serve external API on `host`")
+	flag.IntVar(&cfg.extapi.Port, "extapi.port", def.ExtAPIPort, "serve external API on `port` (>0)")
+	flag.StringVar(&cfg.extapi.BasePath, "extapi.basepath", def.ExtAPIBasePath, "serve external API on `path`")
+
+	log.SetDefaultKeyvals(
+		structlog.KeyUnit, "main",
+	)
+}
+
+func main() { //nolint:gocyclo
+	flag.Usage = func() {
+		fmt.Printf("Usage of %s:\n", cmd)
+		flag.PrintDefaults()
+		fmt.Print(goose.Usage)
+	}
+	flag.Parse()
+
+	switch {
+	case cfg.db.Host == "":
+		flags.FatalFlagValue("required", "db.host", cfg.db.Host)
+	case cfg.db.Port <= 0:
+		flags.FatalFlagValue("must be > 0", "db.port", cfg.db.Port)
+	case cfg.db.User == "":
+		flags.FatalFlagValue("required", "db.user", cfg.db.User)
+	case cfg.db.Pass == "":
+		flags.FatalFlagValue("required", "db.pass", cfg.db.Pass)
+	case cfg.db.DBName == "":
+		flags.FatalFlagValue("required", "db.name", cfg.db.DBName)
+	case !(cfg.goose == "" || goose.ValidCommand(cfg.goose)):
+		flags.FatalFlagValue("", "goose", cfg.goose)
+	case cfg.gooseDir == "":
+		flags.FatalFlagValue("required", "goose.dir", cfg.gooseDir)
+	case cfg.extapi.Port <= 0: // Dynamic port is not supported.
+		flags.FatalFlagValue("must be > 0", "extapi.port", cfg.extapi.Port)
+	case cfg.extapi.BasePath == "":
+		flags.FatalFlagValue("required", "extapi.basepath", cfg.extapi.BasePath)
+	case cfg.version: // Must be checked after all other flags for ease testing.
+		fmt.Println(cmd, ver, runtime.Version())
+		os.Exit(0)
+	}
+
+	// Wrong log.level is not fatal, it will be reported and set to "debug".
+	structlog.DefaultLogger.SetLogLevel(structlog.ParseLevel(cfg.logLevel))
+	log.Info("started", "version", ver)
+
+	ctx, cancel := context.WithTimeout(context.Background(), connectTimeout)
+
+	db, err := connectDB(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	errc := make(chan error)
+	go run(db, errc)
+	if err := <-errc; err != nil {
+		log.Fatal(err)
+	}
+
+	cancel()
+	log.Info("finished", "version", ver)
+}
+
+func connectDB(ctx context.Context) (*sqlx.DB, error) {
+	cfg.db.ConnectTimeout = connectTimeout
+	cfg.db.SSLMode = pqx.SSLDisable
+	cfg.db.DefaultTransactionIsolation = sql.LevelSerializable
+	cfg.db.StatementTimeout = dbTimeout
+	cfg.db.LockTimeout = dbTimeout
+	cfg.db.IdleInTransactionSessionTimeout = dbIdleTimeout
+
+	db, err := sql.Open("pqx", cfg.db.FormatDSN())
+	if err != nil {
+		return nil, err
+	}
+	db.SetMaxOpenConns(dbMaxOpenConns)
+	db.SetMaxIdleConns(dbParallelConns)
+
+	err = db.PingContext(ctx)
+	for err != nil {
+		nextErr := db.PingContext(ctx)
+		if nextErr == context.DeadlineExceeded {
+			return nil, errors.Wrap(err, "connect to postgres")
+		}
+		err = nextErr
+	}
+
+	return sqlx.NewDb(db, "postgres"), nil
+}
+
+func run(db *sqlx.DB, errc chan<- error) {
+	goose.Init("postgres")
+	if cfg.goose != "" {
+		errc <- goose.Run(db.DB, cfg.gooseDir, cfg.goose)
+		return
+	}
+	err := goose.UpTo(db.DB, cfg.gooseDir, migration.CurrentVersion)
+	if err != nil {
+		errc <- err
+		return
+	}
+
+	must.NoErr(os.Setenv(schemaver.EnvLocation, "goose-"+cfg.db.FormatURL()))
+	schemaVer, err := schemaver.New()
+	if err != nil {
+		errc <- err
+		return
+	}
+
+	repo := dal.New(db, schemaVer, cfg.dal)
+	appl := app.New(repo)
+
+	extsrv, err := extapi.NewServer(appl, cfg.extapi)
+	if err != nil {
+		errc <- err
+		return
+	}
+	log.Info("serve Swagger REST protocol", def.LogHost, cfg.extapi.Host, def.LogPort, cfg.extapi.Port)
+	errc <- extsrv.Serve()
+}
