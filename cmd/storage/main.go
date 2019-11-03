@@ -1,4 +1,3 @@
-// Playlist service.
 package main
 
 import (
@@ -54,7 +53,6 @@ var (
 		goose    string
 		gooseDir string
 		extapi   extapi.Config
-		dal      dal.Config
 	}
 )
 
@@ -182,7 +180,7 @@ func run(db *sqlx.DB, errc chan<- error) {
 		return
 	}
 
-	repo := dal.New(db, schemaVer, cfg.dal)
+	repo := dal.New(db, schemaVer)
 	appl := app.New(repo)
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi)

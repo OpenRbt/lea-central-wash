@@ -32,24 +32,16 @@ func rollback(tx *sqlxx.Tx) {
 	}
 }
 
-// Config contains configuration for internal Repo service.
-type Config struct {
-	MaxPlaylists int
-	MaxEditors   int
-}
-
 type repo struct {
 	db        *sqlxx.DB
 	schemaVer *schemaver.SchemaVer
-	cfg       Config
 }
 
 // New creates and returns new Repo.
-func New(db *sqlx.DB, schemaVer *schemaver.SchemaVer, cfg Config) app.Repo {
+func New(db *sqlx.DB, schemaVer *schemaver.SchemaVer) app.Repo {
 	return &repo{
 		db:        sqlxx.NewDB(db),
 		schemaVer: schemaVer,
-		cfg:       cfg,
 	}
 }
 

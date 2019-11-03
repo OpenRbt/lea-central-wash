@@ -14,9 +14,8 @@ require (
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/lib/pq v1.2.0
-	github.com/mtgroupit/mtmb-extauthapi/v7 v7.1.0
-	github.com/mtgroupit/mtmb-extplaylistapi v1.1.1
-	github.com/mtgroupit/mtmb-playlist v0.0.0-20191009154226-80d68d55ef20
+	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
+	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/oklog/ulid v1.3.1
 	github.com/pkg/errors v0.8.1
 	github.com/powerman/gotest v0.3.0
