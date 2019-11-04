@@ -121,7 +121,7 @@ func main() { //nolint:gocyclo
 
 	db, err := connectDB(ctx)
 	if err != nil {
-		log.Fatal(err)
+		log.Info("Warning: DB is not connected")
 	}
 
 	errc := make(chan error)
@@ -163,22 +163,22 @@ func connectDB(ctx context.Context) (*sqlx.DB, error) {
 
 func run(db *sqlx.DB, errc chan<- error) {
 	goose.Init("postgres")
-	if cfg.goose != "" {
-		errc <- goose.Run(db.DB, cfg.gooseDir, cfg.goose)
-		return
-	}
-	err := goose.UpTo(db.DB, cfg.gooseDir, migration.CurrentVersion)
-	if err != nil {
-		errc <- err
-		return
+
+	if db != nil {
+		if cfg.goose != "" {
+			errc <- goose.Run(db.DB, cfg.gooseDir, cfg.goose)
+			return
+		}
+		err := goose.UpTo(db.DB, cfg.gooseDir, migration.CurrentVersion)
+		if err != nil {
+			errc <- err
+			return
+		}
+
+		must.NoErr(os.Setenv(schemaver.EnvLocation, "goose-"+cfg.db.FormatURL()))
 	}
 
-	must.NoErr(os.Setenv(schemaver.EnvLocation, "goose-"+cfg.db.FormatURL()))
-	schemaVer, err := schemaver.New()
-	if err != nil {
-		errc <- err
-		return
-	}
+	schemaVer, _ := schemaver.New()
 
 	repo := dal.New(db, schemaVer)
 	appl := app.New(repo)
