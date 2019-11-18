@@ -1,0 +1,14 @@
+[Unit]
+Description=Lea Central Wash Server
+
+[Service]
+ExecStart=/home/pi/DiaProjects/lea-central-wash/storage
+WorkingDirectory=/home/pi/DiaProjects/lea-central-wash/
+StandardOutput=inherit
+StandardInput=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
+
