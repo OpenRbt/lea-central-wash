@@ -36,9 +36,9 @@ var (
 	TestSecond     = time.Duration(float64(time.Second) * TestTimeFactor)
 	DBHost         = strGetenv("STORAGE_DB_HOST", "localhost")
 	DBPort         = intGetenv("STORAGE_DB_PORT", 5432)
-	DBUser         = strGetenv("STORAGE_DB_USER", "pi")
-	DBPass         = strGetenv("STORAGE_DB_PASS", "KirillTemp14")
-	DBName         = strGetenv("STORAGE_DB_NAME", "storage")
+	DBUser         = strGetenv("STORAGE_DB_USER", "kaznachey")
+	DBPass         = strGetenv("STORAGE_DB_PASS", "RfpyfxtqAF")
+	DBName         = strGetenv("STORAGE_DB_NAME", "kaznachey")
 	DBSchema       = strGetenv("STORAGE_DB_SCHEMA", "public")
 	GooseDir       = "cmd/storage/internal/migration"
 	ExtAPIHost     = strGetenv("STORAGE_EXT_HOST", oapiHost)
