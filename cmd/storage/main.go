@@ -115,7 +115,7 @@ func main() { //nolint:gocyclo
 			log.PrintErr(err)
 		} else {
 			cfg.db.User = u.Username
-			cfg.db.Host = "/var/run/postgresql/.s.PGSQL.5432"
+			cfg.db.Host = "/var/run/postgresql"
 			cfg.db.Pass = ""
 			cfg.db.Port = 0
 		}
