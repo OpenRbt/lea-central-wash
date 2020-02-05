@@ -30,10 +30,23 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "0.0.1"
+    "version": "0.1.0"
   },
   "basePath": "/",
   "paths": {
+    "/info": {
+      "get": {
+        "operationId": "info",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
     "/load": {
       "get": {
         "operationId": "load",
@@ -158,10 +171,23 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "0.0.1"
+    "version": "0.1.0"
   },
   "basePath": "/",
   "paths": {
+    "/info": {
+      "get": {
+        "operationId": "info",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
     "/load": {
       "get": {
         "operationId": "load",

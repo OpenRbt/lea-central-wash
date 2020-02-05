@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/user"
 	"path"
 	"runtime"
 	"strings"
@@ -17,6 +18,7 @@ import (
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/extapi"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/flags"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/goose"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/memdb"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/migration"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
@@ -90,14 +92,8 @@ func main() { //nolint:gocyclo
 	flag.Parse()
 
 	switch {
-	case cfg.db.Host == "":
-		flags.FatalFlagValue("required", "db.host", cfg.db.Host)
 	case cfg.db.Port <= 0:
 		flags.FatalFlagValue("must be > 0", "db.port", cfg.db.Port)
-	case cfg.db.User == "":
-		flags.FatalFlagValue("required", "db.user", cfg.db.User)
-	case cfg.db.Pass == "":
-		flags.FatalFlagValue("required", "db.pass", cfg.db.Pass)
 	case cfg.db.DBName == "":
 		flags.FatalFlagValue("required", "db.name", cfg.db.DBName)
 	case !(cfg.goose == "" || goose.ValidCommand(cfg.goose)):
@@ -113,6 +109,18 @@ func main() { //nolint:gocyclo
 		os.Exit(0)
 	}
 
+	if cfg.db.User == "" {
+		u, err := user.Current()
+		if err != nil {
+			log.PrintErr(err)
+		} else {
+			cfg.db.User = u.Username
+			cfg.db.Host = "/var/run/postgresql/.s.PGSQL.5432"
+			cfg.db.Pass = ""
+			cfg.db.Port = 0
+		}
+	}
+
 	// Wrong log.level is not fatal, it will be reported and set to "debug".
 	structlog.DefaultLogger.SetLogLevel(structlog.ParseLevel(cfg.logLevel))
 	log.Info("started", "version", ver)
@@ -121,7 +129,7 @@ func main() { //nolint:gocyclo
 
 	db, err := connectDB(ctx)
 	if err != nil {
-		log.Info("Warning: DB is not connected")
+		log.Warn("Warning: DB is not connected", "err", err)
 	}
 
 	errc := make(chan error)
@@ -163,7 +171,7 @@ func connectDB(ctx context.Context) (*sqlx.DB, error) {
 
 func run(db *sqlx.DB, errc chan<- error) {
 	goose.Init("postgres")
-
+	var repo app.Repo
 	if db != nil {
 		if cfg.goose != "" {
 			errc <- goose.Run(db.DB, cfg.gooseDir, cfg.goose)
@@ -176,11 +184,14 @@ func run(db *sqlx.DB, errc chan<- error) {
 		}
 
 		must.NoErr(os.Setenv(schemaver.EnvLocation, "goose-"+cfg.db.FormatURL()))
+
+		schemaVer, _ := schemaver.New()
+		repo = dal.New(db, schemaVer)
+	} else {
+		log.Info("USING MEM DB")
+		repo = memdb.New()
 	}
 
-	schemaVer, _ := schemaver.New()
-
-	repo := dal.New(db, schemaVer)
 	appl := app.New(repo)
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi)

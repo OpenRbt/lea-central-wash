@@ -37,6 +37,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
+		InfoHandler: InfoHandlerFunc(func(params InfoParams) InfoResponder {
+			// return middleware.NotImplemented("operation Info has not yet been implemented")
+			return InfoNotImplemented()
+		}),
 		LoadHandler: LoadHandlerFunc(func(params LoadParams) LoadResponder {
 			// return middleware.NotImplemented("operation Load has not yet been implemented")
 			return LoadNotImplemented()
@@ -80,6 +84,8 @@ type StorageAPI struct {
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
 
+	// InfoHandler sets the operation handler for the info operation
+	InfoHandler InfoHandler
 	// LoadHandler sets the operation handler for the load operation
 	LoadHandler LoadHandler
 	// PingHandler sets the operation handler for the ping operation
@@ -147,6 +153,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.JSONProducer == nil {
 		unregistered = append(unregistered, "JSONProducer")
+	}
+
+	if o.InfoHandler == nil {
+		unregistered = append(unregistered, "InfoHandler")
 	}
 
 	if o.LoadHandler == nil {
@@ -258,6 +268,11 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers == nil {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/info"] = NewInfo(o.context, o.InfoHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)

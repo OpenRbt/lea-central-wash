@@ -103,3 +103,8 @@ func (r *repo) Save(stationID string, key string, value []byte) (err error) {
 	})
 	return //nolint:nakedret
 }
+
+// Info returns database information
+func (r *repo) Info() string {
+	return "postgres"
+}
