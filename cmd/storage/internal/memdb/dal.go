@@ -13,9 +13,8 @@ type keypair struct {
 }
 
 type DB struct {
-	keypair   []keypair
-	mutex     sync.Mutex
-	receiptID int64
+	keypair []keypair
+	mutex   sync.Mutex
 }
 
 // New DB
