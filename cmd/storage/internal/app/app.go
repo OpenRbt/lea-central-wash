@@ -14,11 +14,13 @@ type (
 	App interface {
 		Save(stationID string, key string, value []byte) error
 		Load(stationID string, key string) ([]byte, error)
+		Info() string
 	}
 	// Repo is a DAL interface.
 	Repo interface {
 		Save(stationID string, key string, value []byte) error
 		Load(stationID string, key string) ([]byte, error)
+		Info() string
 	}
 )
 

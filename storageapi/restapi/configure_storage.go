@@ -32,6 +32,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
+	api.InfoHandler = op.InfoHandlerFunc(func(params op.InfoParams) op.InfoResponder {
+		return op.InfoNotImplemented()
+	})
 	api.LoadHandler = op.LoadHandlerFunc(func(params op.LoadParams) op.LoadResponder {
 		return op.LoadNotImplemented()
 	})

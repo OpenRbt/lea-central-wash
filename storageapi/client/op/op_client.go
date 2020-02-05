@@ -25,6 +25,34 @@ type Client struct {
 }
 
 /*
+Info info API
+*/
+func (a *Client) Info(params *InfoParams) (*InfoOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewInfoParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "info",
+		Method:             "GET",
+		PathPattern:        "/info",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &InfoReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*InfoOK), nil
+
+}
+
+/*
 Load load API
 */
 func (a *Client) Load(params *LoadParams) (*LoadOK, error) {

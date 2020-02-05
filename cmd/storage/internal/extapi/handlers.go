@@ -37,3 +37,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 	log.Info("ping", "ip", params.HTTPRequest.RemoteAddr)
 	return op.NewPingOK()
 }
+
+func (svc *service) info(params op.InfoParams) op.InfoResponder {
+	return op.NewInfoOK().WithPayload(svc.app.Info())
+}

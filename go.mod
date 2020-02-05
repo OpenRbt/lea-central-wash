@@ -3,6 +3,7 @@ module github.com/DiaElectronics/lea-central-wash
 go 1.13
 
 require (
+	github.com/DiaElectronics/online_kasse v0.0.0-20200205114943-c19937c4a3fb
 	github.com/go-openapi/errors v0.19.2
 	github.com/go-openapi/loads v0.19.3
 	github.com/go-openapi/runtime v0.19.6
@@ -18,6 +19,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/oklog/ulid v1.3.1
 	github.com/pkg/errors v0.8.1
+	github.com/powerman/check v1.1.0
 	github.com/powerman/gotest v0.3.0
 	github.com/powerman/must v0.1.0
 	github.com/powerman/narada4d v1.2.1

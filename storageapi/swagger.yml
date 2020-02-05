@@ -2,7 +2,7 @@ swagger: "2.0"
 
 info:
   title: Storage
-  version: 0.0.1
+  version: 0.1.0
 
 basePath: /
 schemes:
@@ -87,4 +87,11 @@ paths:
       responses:
         200:
           description: OK
-
+  /info:
+    get:
+      operationId: "info"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: string
