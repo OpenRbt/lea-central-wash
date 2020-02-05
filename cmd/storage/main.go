@@ -94,8 +94,6 @@ func main() { //nolint:gocyclo
 	switch {
 	case cfg.db.Port <= 0:
 		flags.FatalFlagValue("must be > 0", "db.port", cfg.db.Port)
-	case cfg.db.DBName == "":
-		flags.FatalFlagValue("required", "db.name", cfg.db.DBName)
 	case !(cfg.goose == "" || goose.ValidCommand(cfg.goose)):
 		flags.FatalFlagValue("", "goose", cfg.goose)
 	case cfg.gooseDir == "":

@@ -38,7 +38,7 @@ var (
 	DBPort         = intGetenv("STORAGE_DB_PORT", 5432)
 	DBUser         = strGetenv("STORAGE_DB_USER", "")
 	DBPass         = strGetenv("STORAGE_DB_PASS", "")
-	DBName         = strGetenv("STORAGE_DB_NAME", "kaznachey")
+	DBName         = strGetenv("STORAGE_DB_NAME", "")
 	DBSchema       = strGetenv("STORAGE_DB_SCHEMA", "public")
 	GooseDir       = "cmd/storage/internal/migration"
 	ExtAPIHost     = strGetenv("STORAGE_EXT_HOST", oapiHost)
