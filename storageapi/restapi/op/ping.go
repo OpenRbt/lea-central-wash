@@ -8,7 +8,12 @@ package op
 import (
 	"net/http"
 
+	errors "github.com/go-openapi/errors"
 	middleware "github.com/go-openapi/runtime/middleware"
+	strfmt "github.com/go-openapi/strfmt"
+	swag "github.com/go-openapi/swag"
+
+	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // PingHandlerFunc turns a function with the right signature into a ping handler
@@ -55,4 +60,88 @@ func (o *Ping) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
+}
+
+// PingBody ping body
+// swagger:model PingBody
+type PingBody struct {
+
+	// hash
+	// Required: true
+	Hash model.Hash `json:"hash"`
+}
+
+// Validate validates this ping body
+func (o *PingBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateHash(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *PingBody) validateHash(formats strfmt.Registry) error {
+
+	if err := o.Hash.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("args" + "." + "hash")
+		}
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *PingBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *PingBody) UnmarshalBinary(b []byte) error {
+	var res PingBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+// PingOKBody ping o k body
+// swagger:model PingOKBody
+type PingOKBody struct {
+
+	// service amount
+	ServiceAmount int64 `json:"serviceAmount,omitempty"`
+}
+
+// Validate validates this ping o k body
+func (o *PingOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *PingOKBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *PingOKBody) UnmarshalBinary(b []byte) error {
+	var res PingOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
 }

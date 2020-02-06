@@ -128,31 +128,43 @@ swagger:model LoadBody
 */
 type LoadBody struct {
 
+	// hash
+	// Required: true
+	Hash model.Hash `json:"hash"`
+
 	// key
 	// Required: true
 	// Min Length: 1
 	Key *string `json:"key"`
-
-	// station ID
-	// Required: true
-	StationID model.StationID `json:"stationID"`
 }
 
 // Validate validates this load body
 func (o *LoadBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateKey(formats); err != nil {
+	if err := o.validateHash(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := o.validateStationID(formats); err != nil {
+	if err := o.validateKey(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (o *LoadBody) validateHash(formats strfmt.Registry) error {
+
+	if err := o.Hash.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("args" + "." + "hash")
+		}
+		return err
+	}
+
 	return nil
 }
 
@@ -163,18 +175,6 @@ func (o *LoadBody) validateKey(formats strfmt.Registry) error {
 	}
 
 	if err := validate.MinLength("args"+"."+"key", "body", string(*o.Key), 1); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *LoadBody) validateStationID(formats strfmt.Registry) error {
-
-	if err := o.StationID.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "stationID")
-		}
 		return err
 	}
 

@@ -93,30 +93,42 @@ swagger:model SaveBody
 */
 type SaveBody struct {
 
+	// hash
+	// Required: true
+	Hash model.Hash `json:"hash"`
+
 	// key pair
 	// Required: true
 	KeyPair *model.KeyPair `json:"keyPair"`
-
-	// station ID
-	// Required: true
-	StationID model.StationID `json:"stationID"`
 }
 
 // Validate validates this save body
 func (o *SaveBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateKeyPair(formats); err != nil {
+	if err := o.validateHash(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := o.validateStationID(formats); err != nil {
+	if err := o.validateKeyPair(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (o *SaveBody) validateHash(formats strfmt.Registry) error {
+
+	if err := o.Hash.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("args" + "." + "hash")
+		}
+		return err
+	}
+
 	return nil
 }
 
@@ -133,18 +145,6 @@ func (o *SaveBody) validateKeyPair(formats strfmt.Registry) error {
 			}
 			return err
 		}
-	}
-
-	return nil
-}
-
-func (o *SaveBody) validateStationID(formats strfmt.Registry) error {
-
-	if err := o.StationID.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "stationID")
-		}
-		return err
 	}
 
 	return nil

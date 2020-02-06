@@ -7,10 +7,15 @@ package op
 
 import (
 	"fmt"
+	"io"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/swag"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // PingReader is a Reader for the Ping structure.
@@ -44,13 +49,107 @@ func NewPingOK() *PingOK {
 OK
 */
 type PingOK struct {
+	Payload *PingOKBody
 }
 
 func (o *PingOK) Error() string {
-	return fmt.Sprintf("[GET /ping][%d] pingOK ", 200)
+	return fmt.Sprintf("[GET /ping][%d] pingOK  %+v", 200, o.Payload)
 }
 
 func (o *PingOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(PingOKBody)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+/*PingBody ping body
+swagger:model PingBody
+*/
+type PingBody struct {
+
+	// hash
+	// Required: true
+	Hash model.Hash `json:"hash"`
+}
+
+// Validate validates this ping body
+func (o *PingBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateHash(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *PingBody) validateHash(formats strfmt.Registry) error {
+
+	if err := o.Hash.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("args" + "." + "hash")
+		}
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *PingBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *PingBody) UnmarshalBinary(b []byte) error {
+	var res PingBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*PingOKBody ping o k body
+swagger:model PingOKBody
+*/
+type PingOKBody struct {
+
+	// service amount
+	ServiceAmount int64 `json:"serviceAmount,omitempty"`
+}
+
+// Validate validates this ping o k body
+func (o *PingOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *PingOKBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *PingOKBody) UnmarshalBinary(b []byte) error {
+	var res PingOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }
