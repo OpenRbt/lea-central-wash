@@ -20,6 +20,11 @@ const PingOKCode int = 200
 swagger:response pingOK
 */
 type PingOK struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *PingOKBody `json:"body,omitempty"`
 }
 
 // NewPingOK creates PingOK with default headers values
@@ -28,12 +33,27 @@ func NewPingOK() *PingOK {
 	return &PingOK{}
 }
 
+// WithPayload adds the payload to the ping o k response
+func (o *PingOK) WithPayload(payload *PingOKBody) *PingOK {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the ping o k response
+func (o *PingOK) SetPayload(payload *PingOKBody) {
+	o.Payload = payload
+}
+
 // WriteResponse to the client
 func (o *PingOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
 	rw.WriteHeader(200)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }
 
 func (o *PingOK) PingResponder() {}

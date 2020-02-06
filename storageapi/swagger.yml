@@ -2,7 +2,7 @@ swagger: "2.0"
 
 info:
   title: Storage
-  version: 0.1.0
+  version: 1.0.0
 
 basePath: /
 schemes:
@@ -10,7 +10,7 @@ schemes:
 
 definitions:
 
-  StationID:
+  Hash:
     type: string
     minLength: 1
 
@@ -42,11 +42,11 @@ paths:
           schema:
             type: object
             required:
-              - stationID
+              - hash
               - keyPair
             properties:
-              stationID:
-                $ref: '#/definitions/StationID'
+              hash:
+                $ref: '#/definitions/Hash'
               keyPair:
                 $ref: '#/definitions/KeyPair'
       responses:
@@ -64,11 +64,11 @@ paths:
           schema:
             type: object
             required:
-              - stationID
+              - hash
               - key
             properties:
-              stationID:
-                $ref: '#/definitions/StationID'
+              hash:
+                $ref: '#/definitions/Hash'
               key:
                 type: string
                 minLength: 1
@@ -84,9 +84,25 @@ paths:
   /ping:
     get:
       operationId: "ping"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - hash
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
       responses:
         200:
           description: OK
+          schema:
+            type: object
+            properties:
+              serviceAmount:
+                type: integer
   /info:
     get:
       operationId: "info"

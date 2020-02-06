@@ -20,7 +20,7 @@ import (
 // NewPingParams creates a new PingParams object
 // with the default values initialized.
 func NewPingParams() *PingParams {
-
+	var ()
 	return &PingParams{
 
 		timeout: cr.DefaultTimeout,
@@ -30,7 +30,7 @@ func NewPingParams() *PingParams {
 // NewPingParamsWithTimeout creates a new PingParams object
 // with the default values initialized, and the ability to set a timeout on a request
 func NewPingParamsWithTimeout(timeout time.Duration) *PingParams {
-
+	var ()
 	return &PingParams{
 
 		timeout: timeout,
@@ -40,7 +40,7 @@ func NewPingParamsWithTimeout(timeout time.Duration) *PingParams {
 // NewPingParamsWithContext creates a new PingParams object
 // with the default values initialized, and the ability to set a context for a request
 func NewPingParamsWithContext(ctx context.Context) *PingParams {
-
+	var ()
 	return &PingParams{
 
 		Context: ctx,
@@ -50,7 +50,7 @@ func NewPingParamsWithContext(ctx context.Context) *PingParams {
 // NewPingParamsWithHTTPClient creates a new PingParams object
 // with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewPingParamsWithHTTPClient(client *http.Client) *PingParams {
-
+	var ()
 	return &PingParams{
 		HTTPClient: client,
 	}
@@ -60,6 +60,10 @@ func NewPingParamsWithHTTPClient(client *http.Client) *PingParams {
 for the ping operation typically these are written to a http.Request
 */
 type PingParams struct {
+
+	/*Args*/
+	Args PingBody
+
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
@@ -98,6 +102,17 @@ func (o *PingParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithArgs adds the args to the ping params
+func (o *PingParams) WithArgs(args PingBody) *PingParams {
+	o.SetArgs(args)
+	return o
+}
+
+// SetArgs adds the args to the ping params
+func (o *PingParams) SetArgs(args PingBody) {
+	o.Args = args
+}
+
 // WriteToRequest writes these params to a swagger request
 func (o *PingParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -105,6 +120,10 @@ func (o *PingParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry
 		return err
 	}
 	var res []error
+
+	if err := r.SetBodyParam(o.Args); err != nil {
+		return err
+	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)

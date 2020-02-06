@@ -30,7 +30,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "0.1.0"
+    "version": "1.0.0"
   },
   "basePath": "/",
   "paths": {
@@ -58,16 +58,16 @@ func init() {
             "schema": {
               "type": "object",
               "required": [
-                "stationID",
+                "hash",
                 "key"
               ],
               "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
                 "key": {
                   "type": "string",
                   "minLength": 1
-                },
-                "stationID": {
-                  "$ref": "#/definitions/StationID"
                 }
               }
             }
@@ -92,9 +92,35 @@ func init() {
     "/ping": {
       "get": {
         "operationId": "ping",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "serviceAmount": {
+                  "type": "integer"
+                }
+              }
+            }
           }
         }
       }
@@ -110,15 +136,15 @@ func init() {
             "schema": {
               "type": "object",
               "required": [
-                "stationID",
+                "hash",
                 "keyPair"
               ],
               "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
                 "keyPair": {
                   "$ref": "#/definitions/KeyPair"
-                },
-                "stationID": {
-                  "$ref": "#/definitions/StationID"
                 }
               }
             }
@@ -136,6 +162,10 @@ func init() {
     }
   },
   "definitions": {
+    "Hash": {
+      "type": "string",
+      "minLength": 1
+    },
     "KeyPair": {
       "type": "object",
       "required": [
@@ -151,10 +181,6 @@ func init() {
           "type": "string"
         }
       }
-    },
-    "StationID": {
-      "type": "string",
-      "minLength": 1
     }
   }
 }`))
@@ -171,7 +197,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "0.1.0"
+    "version": "1.0.0"
   },
   "basePath": "/",
   "paths": {
@@ -199,16 +225,16 @@ func init() {
             "schema": {
               "type": "object",
               "required": [
-                "stationID",
+                "hash",
                 "key"
               ],
               "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
                 "key": {
                   "type": "string",
                   "minLength": 1
-                },
-                "stationID": {
-                  "$ref": "#/definitions/StationID"
                 }
               }
             }
@@ -233,9 +259,35 @@ func init() {
     "/ping": {
       "get": {
         "operationId": "ping",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "serviceAmount": {
+                  "type": "integer"
+                }
+              }
+            }
           }
         }
       }
@@ -251,15 +303,15 @@ func init() {
             "schema": {
               "type": "object",
               "required": [
-                "stationID",
+                "hash",
                 "keyPair"
               ],
               "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
                 "keyPair": {
                   "$ref": "#/definitions/KeyPair"
-                },
-                "stationID": {
-                  "$ref": "#/definitions/StationID"
                 }
               }
             }
@@ -277,6 +329,10 @@ func init() {
     }
   },
   "definitions": {
+    "Hash": {
+      "type": "string",
+      "minLength": 1
+    },
     "KeyPair": {
       "type": "object",
       "required": [
@@ -292,10 +348,6 @@ func init() {
           "type": "string"
         }
       }
-    },
-    "StationID": {
-      "type": "string",
-      "minLength": 1
     }
   }
 }`))
