@@ -12,6 +12,7 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
 
@@ -53,7 +54,7 @@ type PingOK struct {
 }
 
 func (o *PingOK) Error() string {
-	return fmt.Sprintf("[GET /ping][%d] pingOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[POST /ping][%d] pingOK  %+v", 200, o.Payload)
 }
 
 func (o *PingOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -128,11 +129,30 @@ swagger:model PingOKBody
 type PingOKBody struct {
 
 	// service amount
-	ServiceAmount int64 `json:"serviceAmount,omitempty"`
+	// Required: true
+	ServiceAmount *int64 `json:"serviceAmount"`
 }
 
 // Validate validates this ping o k body
 func (o *PingOKBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateServiceAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *PingOKBody) validateServiceAmount(formats strfmt.Registry) error {
+
+	if err := validate.Required("pingOK"+"."+"serviceAmount", "body", o.ServiceAmount); err != nil {
+		return err
+	}
+
 	return nil
 }
 

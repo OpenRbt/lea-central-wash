@@ -12,6 +12,7 @@ import (
 	middleware "github.com/go-openapi/runtime/middleware"
 	strfmt "github.com/go-openapi/strfmt"
 	swag "github.com/go-openapi/swag"
+	validate "github.com/go-openapi/validate"
 
 	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
@@ -34,7 +35,7 @@ func NewPing(ctx *middleware.Context, handler PingHandler) *Ping {
 	return &Ping{Context: ctx, Handler: handler}
 }
 
-/*Ping swagger:route GET /ping ping
+/*Ping swagger:route POST /ping ping
 
 Ping ping API
 
@@ -120,11 +121,30 @@ func (o *PingBody) UnmarshalBinary(b []byte) error {
 type PingOKBody struct {
 
 	// service amount
-	ServiceAmount int64 `json:"serviceAmount,omitempty"`
+	// Required: true
+	ServiceAmount *int64 `json:"serviceAmount"`
 }
 
 // Validate validates this ping o k body
 func (o *PingOKBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateServiceAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *PingOKBody) validateServiceAmount(formats strfmt.Registry) error {
+
+	if err := validate.Required("pingOK"+"."+"serviceAmount", "body", o.ServiceAmount); err != nil {
+		return err
+	}
+
 	return nil
 }
 

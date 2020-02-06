@@ -63,7 +63,7 @@ func (a *Client) Load(params *LoadParams) (*LoadOK, error) {
 
 	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "load",
-		Method:             "GET",
+		Method:             "POST",
 		PathPattern:        "/load",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
@@ -91,7 +91,7 @@ func (a *Client) Ping(params *PingParams) (*PingOK, error) {
 
 	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "ping",
-		Method:             "GET",
+		Method:             "POST",
 		PathPattern:        "/ping",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},

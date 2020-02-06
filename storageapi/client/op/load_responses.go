@@ -68,7 +68,7 @@ type LoadOK struct {
 }
 
 func (o *LoadOK) Error() string {
-	return fmt.Sprintf("[GET /load][%d] loadOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[POST /load][%d] loadOK  %+v", 200, o.Payload)
 }
 
 func (o *LoadOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -94,7 +94,7 @@ type LoadNotFound struct {
 }
 
 func (o *LoadNotFound) Error() string {
-	return fmt.Sprintf("[GET /load][%d] loadNotFound ", 404)
+	return fmt.Sprintf("[POST /load][%d] loadNotFound ", 404)
 }
 
 func (o *LoadNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -115,7 +115,7 @@ type LoadInternalServerError struct {
 }
 
 func (o *LoadInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /load][%d] loadInternalServerError ", 500)
+	return fmt.Sprintf("[POST /load][%d] loadInternalServerError ", 500)
 }
 
 func (o *LoadInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

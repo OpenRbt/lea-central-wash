@@ -39,12 +39,18 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 	// for test
 	if params.Args.Hash == "give me money" {
 		return op.NewPingOK().WithPayload(&op.PingOKBody{
-			ServiceAmount: 10,
+			ServiceAmount: newInt64(10),
 		})
 	}
-	return op.NewPingOK()
+	return op.NewPingOK().WithPayload(&op.PingOKBody{
+		ServiceAmount: newInt64(0),
+	})
 }
 
 func (svc *service) info(params op.InfoParams) op.InfoResponder {
 	return op.NewInfoOK().WithPayload(svc.app.Info())
+}
+
+func newInt64(v int64) *int64 {
+	return &v
 }

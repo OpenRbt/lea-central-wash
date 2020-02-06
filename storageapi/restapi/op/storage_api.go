@@ -274,15 +274,15 @@ func (o *StorageAPI) initHandlerCache() {
 	}
 	o.handlers["GET"]["/info"] = NewInfo(o.context, o.InfoHandler)
 
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/load"] = NewLoad(o.context, o.LoadHandler)
+	o.handlers["POST"]["/load"] = NewLoad(o.context, o.LoadHandler)
 
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/ping"] = NewPing(o.context, o.PingHandler)
+	o.handlers["POST"]["/ping"] = NewPing(o.context, o.PingHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

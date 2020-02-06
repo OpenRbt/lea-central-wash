@@ -48,7 +48,7 @@ func init() {
       }
     },
     "/load": {
-      "get": {
+      "post": {
         "operationId": "load",
         "parameters": [
           {
@@ -90,7 +90,7 @@ func init() {
       }
     },
     "/ping": {
-      "get": {
+      "post": {
         "operationId": "ping",
         "parameters": [
           {
@@ -115,6 +115,9 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
+              "required": [
+                "serviceAmount"
+              ],
               "properties": {
                 "serviceAmount": {
                   "type": "integer"
@@ -215,7 +218,7 @@ func init() {
       }
     },
     "/load": {
-      "get": {
+      "post": {
         "operationId": "load",
         "parameters": [
           {
@@ -257,7 +260,7 @@ func init() {
       }
     },
     "/ping": {
-      "get": {
+      "post": {
         "operationId": "ping",
         "parameters": [
           {
@@ -282,6 +285,9 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
+              "required": [
+                "serviceAmount"
+              ],
               "properties": {
                 "serviceAmount": {
                   "type": "integer"

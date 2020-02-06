@@ -55,7 +55,7 @@ paths:
         500:
           description: internal error
   /load:
-    get:
+    post:
       operationId: "load"
       parameters:
         - name: args
@@ -82,7 +82,7 @@ paths:
         500:
           description: internal error
   /ping:
-    get:
+    post:
       operationId: "ping"
       parameters:
         - name: args
@@ -100,6 +100,8 @@ paths:
           description: OK
           schema:
             type: object
+            required:
+              - serviceAmount
             properties:
               serviceAmount:
                 type: integer

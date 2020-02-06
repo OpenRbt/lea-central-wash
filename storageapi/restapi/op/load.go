@@ -35,7 +35,7 @@ func NewLoad(ctx *middleware.Context, handler LoadHandler) *Load {
 	return &Load{Context: ctx, Handler: handler}
 }
 
-/*Load swagger:route GET /load load
+/*Load swagger:route POST /load load
 
 Load load API
 
