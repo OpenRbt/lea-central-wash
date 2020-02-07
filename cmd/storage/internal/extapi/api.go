@@ -45,6 +45,12 @@ func NewServer(appl app.App, cfg Config) (*restapi.Server, error) {
 	api.SaveHandler = op.SaveHandlerFunc(svc.save)
 	api.InfoHandler = op.InfoHandlerFunc(svc.info)
 
+	api.LoadRelayHandler = op.LoadRelayHandlerFunc(svc.loadRelay)
+	api.SaveRelayHandler = op.SaveRelayHandlerFunc(svc.saveRelay)
+
+	api.LoadMoneyHandler = op.LoadMoneyHandlerFunc(svc.loadMoney)
+	api.SaveMoneyHandler = op.SaveMoneyHandlerFunc(svc.saveMoney)
+
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port

@@ -30,7 +30,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "basePath": "/",
   "paths": {
@@ -78,6 +78,80 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "string"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/load-money": {
+      "post": {
+        "operationId": "loadMoney",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/MoneyReport"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/load-relay": {
+      "post": {
+        "operationId": "loadRelay",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RelayReport"
             }
           },
           "404": {
@@ -162,6 +236,52 @@ func init() {
           }
         }
       }
+    },
+    "/save-money": {
+      "post": {
+        "operationId": "saveMoney",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MoneyReport"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/save-relay": {
+      "post": {
+        "operationId": "saveRelay",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RelayReport"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -182,6 +302,65 @@ func init() {
         },
         "value": {
           "type": "string"
+        }
+      }
+    },
+    "MoneyReport": {
+      "type": "object",
+      "required": [
+        "hash"
+      ],
+      "properties": {
+        "banknotes": {
+          "type": "integer"
+        },
+        "carsTotal": {
+          "type": "integer"
+        },
+        "coins": {
+          "type": "integer"
+        },
+        "electronical": {
+          "type": "integer"
+        },
+        "hash": {
+          "$ref": "#/definitions/Hash"
+        },
+        "service": {
+          "type": "integer"
+        }
+      }
+    },
+    "RelayReport": {
+      "type": "object",
+      "required": [
+        "hash"
+      ],
+      "properties": {
+        "hash": {
+          "$ref": "#/definitions/Hash"
+        },
+        "relayStats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RelayStat"
+          }
+        }
+      }
+    },
+    "RelayStat": {
+      "type": "object",
+      "properties": {
+        "relayID": {
+          "type": "integer",
+          "maximum": 6,
+          "minimum": 1
+        },
+        "switchedCount": {
+          "type": "integer"
+        },
+        "totalTimeOn": {
+          "type": "integer"
         }
       }
     }
@@ -200,7 +379,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "basePath": "/",
   "paths": {
@@ -248,6 +427,80 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "string"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/load-money": {
+      "post": {
+        "operationId": "loadMoney",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/MoneyReport"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/load-relay": {
+      "post": {
+        "operationId": "loadRelay",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RelayReport"
             }
           },
           "404": {
@@ -332,6 +585,52 @@ func init() {
           }
         }
       }
+    },
+    "/save-money": {
+      "post": {
+        "operationId": "saveMoney",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MoneyReport"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/save-relay": {
+      "post": {
+        "operationId": "saveRelay",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RelayReport"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -352,6 +651,65 @@ func init() {
         },
         "value": {
           "type": "string"
+        }
+      }
+    },
+    "MoneyReport": {
+      "type": "object",
+      "required": [
+        "hash"
+      ],
+      "properties": {
+        "banknotes": {
+          "type": "integer"
+        },
+        "carsTotal": {
+          "type": "integer"
+        },
+        "coins": {
+          "type": "integer"
+        },
+        "electronical": {
+          "type": "integer"
+        },
+        "hash": {
+          "$ref": "#/definitions/Hash"
+        },
+        "service": {
+          "type": "integer"
+        }
+      }
+    },
+    "RelayReport": {
+      "type": "object",
+      "required": [
+        "hash"
+      ],
+      "properties": {
+        "hash": {
+          "$ref": "#/definitions/Hash"
+        },
+        "relayStats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RelayStat"
+          }
+        }
+      }
+    },
+    "RelayStat": {
+      "type": "object",
+      "properties": {
+        "relayID": {
+          "type": "integer",
+          "maximum": 6,
+          "minimum": 1
+        },
+        "switchedCount": {
+          "type": "integer"
+        },
+        "totalTimeOn": {
+          "type": "integer"
         }
       }
     }

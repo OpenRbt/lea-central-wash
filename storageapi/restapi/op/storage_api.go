@@ -45,6 +45,14 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation Load has not yet been implemented")
 			return LoadNotImplemented()
 		}),
+		LoadMoneyHandler: LoadMoneyHandlerFunc(func(params LoadMoneyParams) LoadMoneyResponder {
+			// return middleware.NotImplemented("operation LoadMoney has not yet been implemented")
+			return LoadMoneyNotImplemented()
+		}),
+		LoadRelayHandler: LoadRelayHandlerFunc(func(params LoadRelayParams) LoadRelayResponder {
+			// return middleware.NotImplemented("operation LoadRelay has not yet been implemented")
+			return LoadRelayNotImplemented()
+		}),
 		PingHandler: PingHandlerFunc(func(params PingParams) PingResponder {
 			// return middleware.NotImplemented("operation Ping has not yet been implemented")
 			return PingNotImplemented()
@@ -52,6 +60,14 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		SaveHandler: SaveHandlerFunc(func(params SaveParams) SaveResponder {
 			// return middleware.NotImplemented("operation Save has not yet been implemented")
 			return SaveNotImplemented()
+		}),
+		SaveMoneyHandler: SaveMoneyHandlerFunc(func(params SaveMoneyParams) SaveMoneyResponder {
+			// return middleware.NotImplemented("operation SaveMoney has not yet been implemented")
+			return SaveMoneyNotImplemented()
+		}),
+		SaveRelayHandler: SaveRelayHandlerFunc(func(params SaveRelayParams) SaveRelayResponder {
+			// return middleware.NotImplemented("operation SaveRelay has not yet been implemented")
+			return SaveRelayNotImplemented()
 		}),
 	}
 }
@@ -88,10 +104,18 @@ type StorageAPI struct {
 	InfoHandler InfoHandler
 	// LoadHandler sets the operation handler for the load operation
 	LoadHandler LoadHandler
+	// LoadMoneyHandler sets the operation handler for the load money operation
+	LoadMoneyHandler LoadMoneyHandler
+	// LoadRelayHandler sets the operation handler for the load relay operation
+	LoadRelayHandler LoadRelayHandler
 	// PingHandler sets the operation handler for the ping operation
 	PingHandler PingHandler
 	// SaveHandler sets the operation handler for the save operation
 	SaveHandler SaveHandler
+	// SaveMoneyHandler sets the operation handler for the save money operation
+	SaveMoneyHandler SaveMoneyHandler
+	// SaveRelayHandler sets the operation handler for the save relay operation
+	SaveRelayHandler SaveRelayHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -163,12 +187,28 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "LoadHandler")
 	}
 
+	if o.LoadMoneyHandler == nil {
+		unregistered = append(unregistered, "LoadMoneyHandler")
+	}
+
+	if o.LoadRelayHandler == nil {
+		unregistered = append(unregistered, "LoadRelayHandler")
+	}
+
 	if o.PingHandler == nil {
 		unregistered = append(unregistered, "PingHandler")
 	}
 
 	if o.SaveHandler == nil {
 		unregistered = append(unregistered, "SaveHandler")
+	}
+
+	if o.SaveMoneyHandler == nil {
+		unregistered = append(unregistered, "SaveMoneyHandler")
+	}
+
+	if o.SaveRelayHandler == nil {
+		unregistered = append(unregistered, "SaveRelayHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -282,12 +322,32 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/load-money"] = NewLoadMoney(o.context, o.LoadMoneyHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/load-relay"] = NewLoadRelay(o.context, o.LoadRelayHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/ping"] = NewPing(o.context, o.PingHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/save"] = NewSave(o.context, o.SaveHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/save-money"] = NewSaveMoney(o.context, o.SaveMoneyHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/save-relay"] = NewSaveRelay(o.context, o.SaveRelayHandler)
 
 }
 

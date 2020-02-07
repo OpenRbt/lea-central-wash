@@ -81,6 +81,62 @@ func (a *Client) Load(params *LoadParams) (*LoadOK, error) {
 }
 
 /*
+LoadMoney load money API
+*/
+func (a *Client) LoadMoney(params *LoadMoneyParams) (*LoadMoneyOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewLoadMoneyParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "loadMoney",
+		Method:             "POST",
+		PathPattern:        "/load-money",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &LoadMoneyReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*LoadMoneyOK), nil
+
+}
+
+/*
+LoadRelay load relay API
+*/
+func (a *Client) LoadRelay(params *LoadRelayParams) (*LoadRelayOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewLoadRelayParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "loadRelay",
+		Method:             "POST",
+		PathPattern:        "/load-relay",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &LoadRelayReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*LoadRelayOK), nil
+
+}
+
+/*
 Ping ping API
 */
 func (a *Client) Ping(params *PingParams) (*PingOK, error) {
@@ -133,6 +189,62 @@ func (a *Client) Save(params *SaveParams) (*SaveNoContent, error) {
 		return nil, err
 	}
 	return result.(*SaveNoContent), nil
+
+}
+
+/*
+SaveMoney save money API
+*/
+func (a *Client) SaveMoney(params *SaveMoneyParams) (*SaveMoneyNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSaveMoneyParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "saveMoney",
+		Method:             "POST",
+		PathPattern:        "/save-money",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SaveMoneyReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*SaveMoneyNoContent), nil
+
+}
+
+/*
+SaveRelay save relay API
+*/
+func (a *Client) SaveRelay(params *SaveRelayParams) (*SaveRelayNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSaveRelayParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "saveRelay",
+		Method:             "POST",
+		PathPattern:        "/save-relay",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SaveRelayReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*SaveRelayNoContent), nil
 
 }
 
