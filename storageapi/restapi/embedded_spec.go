@@ -30,7 +30,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "basePath": "/",
   "paths": {
@@ -379,7 +379,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "basePath": "/",
   "paths": {
