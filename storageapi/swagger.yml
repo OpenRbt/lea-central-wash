@@ -10,6 +10,48 @@ schemes:
 
 definitions:
 
+  MoneyReport:
+    type: object
+    required:
+        - hash
+    properties:
+        carsTotal:
+          type: integer
+        coins:
+          type: integer
+        banknotes:
+          type: integer
+        electronical:
+          type: integer
+        service:
+          type: integer
+        hash:
+          $ref: '#/definitions/Hash'
+
+  RelayReport:
+    type: object
+    required:
+      - hash
+    properties:
+        hash:
+          $ref: '#/definitions/Hash'
+        relayStats:
+          type: array
+          items:
+            $ref: '#/definitions/RelayStat'
+
+  RelayStat:
+    type: object
+    properties:
+      relayID:
+          type: integer
+          minimum: 1
+          maximum: 6
+      switchedCount:
+          type: integer
+      totalTimeOn:
+          type: integer
+
   Hash:
     type: string
     minLength: 1
@@ -32,6 +74,82 @@ produces:
   - application/json          
 
 paths:
+  /save-relay:
+    post:
+      operationId: "saveRelay"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/RelayReport'
+      responses:
+        204:
+          description: OK
+        500:
+          description: internal error
+  /load-relay:
+    post:
+      operationId: "loadRelay"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - hash
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/RelayReport'
+        404:
+          description: not found
+        500:
+          description: internal error
+
+  /save-money:
+    post:
+      operationId: "saveMoney"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/MoneyReport'
+      responses:
+        204:
+          description: OK
+        500:
+          description: internal error
+  /load-money:
+    post:
+      operationId: "loadMoney"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - hash
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/MoneyReport'
+        404:
+          description: not found
+        500:
+          description: internal error
+
   /save:
     post:
       operationId: "save"

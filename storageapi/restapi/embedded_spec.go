@@ -89,9 +89,9 @@ func init() {
         }
       }
     },
-    "/ping": {
+    "/load-money": {
       "post": {
-        "operationId": "ping",
+        "operationId": "loadMoney",
         "parameters": [
           {
             "name": "args",
@@ -114,112 +114,21 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "required": [
-                "serviceAmount"
-              ],
-              "properties": {
-                "serviceAmount": {
-                  "type": "integer"
-                }
-              }
+              "$ref": "#/definitions/MoneyReport"
             }
-          }
-        }
-      }
-    },
-    "/save": {
-      "post": {
-        "operationId": "save",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": [
-                "hash",
-                "keyPair"
-              ],
-              "properties": {
-                "hash": {
-                  "$ref": "#/definitions/Hash"
-                },
-                "keyPair": {
-                  "$ref": "#/definitions/KeyPair"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"
           }
         }
       }
-    }
-  },
-  "definitions": {
-    "Hash": {
-      "type": "string",
-      "minLength": 1
     },
-    "KeyPair": {
-      "type": "object",
-      "required": [
-        "key",
-        "value"
-      ],
-      "properties": {
-        "key": {
-          "type": "string",
-          "minLength": 1
-        },
-        "value": {
-          "type": "string"
-        }
-      }
-    }
-  }
-}`))
-	FlatSwaggerJSON = json.RawMessage([]byte(`{
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
-  "schemes": [
-    "http"
-  ],
-  "swagger": "2.0",
-  "info": {
-    "title": "Storage",
-    "version": "1.0.0"
-  },
-  "basePath": "/",
-  "paths": {
-    "/info": {
-      "get": {
-        "operationId": "info",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "string"
-            }
-          }
-        }
-      }
-    },
-    "/load": {
+    "/load-relay": {
       "post": {
-        "operationId": "load",
+        "operationId": "loadRelay",
         "parameters": [
           {
             "name": "args",
@@ -228,16 +137,11 @@ func init() {
             "schema": {
               "type": "object",
               "required": [
-                "hash",
-                "key"
+                "hash"
               ],
               "properties": {
                 "hash": {
                   "$ref": "#/definitions/Hash"
-                },
-                "key": {
-                  "type": "string",
-                  "minLength": 1
                 }
               }
             }
@@ -247,7 +151,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "string"
+              "$ref": "#/definitions/RelayReport"
             }
           },
           "404": {
@@ -332,6 +236,52 @@ func init() {
           }
         }
       }
+    },
+    "/save-money": {
+      "post": {
+        "operationId": "saveMoney",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MoneyReport"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/save-relay": {
+      "post": {
+        "operationId": "saveRelay",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RelayReport"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -352,6 +302,414 @@ func init() {
         },
         "value": {
           "type": "string"
+        }
+      }
+    },
+    "MoneyReport": {
+      "type": "object",
+      "required": [
+        "hash"
+      ],
+      "properties": {
+        "banknotes": {
+          "type": "integer"
+        },
+        "carsTotal": {
+          "type": "integer"
+        },
+        "coins": {
+          "type": "integer"
+        },
+        "electronical": {
+          "type": "integer"
+        },
+        "hash": {
+          "$ref": "#/definitions/Hash"
+        },
+        "service": {
+          "type": "integer"
+        }
+      }
+    },
+    "RelayReport": {
+      "type": "object",
+      "required": [
+        "hash"
+      ],
+      "properties": {
+        "hash": {
+          "$ref": "#/definitions/Hash"
+        },
+        "relayStats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RelayStat"
+          }
+        }
+      }
+    },
+    "RelayStat": {
+      "type": "object",
+      "properties": {
+        "relayID": {
+          "type": "integer",
+          "maximum": 6,
+          "minimum": 1
+        },
+        "switchedCount": {
+          "type": "integer"
+        },
+        "totalTimeOn": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}`))
+	FlatSwaggerJSON = json.RawMessage([]byte(`{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "title": "Storage",
+    "version": "1.0.0"
+  },
+  "basePath": "/",
+  "paths": {
+    "/info": {
+      "get": {
+        "operationId": "info",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/load": {
+      "post": {
+        "operationId": "load",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash",
+                "key"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "key": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/load-money": {
+      "post": {
+        "operationId": "loadMoney",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/MoneyReport"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/load-relay": {
+      "post": {
+        "operationId": "loadRelay",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RelayReport"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/ping": {
+      "post": {
+        "operationId": "ping",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "serviceAmount"
+              ],
+              "properties": {
+                "serviceAmount": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/save": {
+      "post": {
+        "operationId": "save",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash",
+                "keyPair"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "keyPair": {
+                  "$ref": "#/definitions/KeyPair"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/save-money": {
+      "post": {
+        "operationId": "saveMoney",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MoneyReport"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/save-relay": {
+      "post": {
+        "operationId": "saveRelay",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RelayReport"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "KeyPair": {
+      "type": "object",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "MoneyReport": {
+      "type": "object",
+      "required": [
+        "hash"
+      ],
+      "properties": {
+        "banknotes": {
+          "type": "integer"
+        },
+        "carsTotal": {
+          "type": "integer"
+        },
+        "coins": {
+          "type": "integer"
+        },
+        "electronical": {
+          "type": "integer"
+        },
+        "hash": {
+          "$ref": "#/definitions/Hash"
+        },
+        "service": {
+          "type": "integer"
+        }
+      }
+    },
+    "RelayReport": {
+      "type": "object",
+      "required": [
+        "hash"
+      ],
+      "properties": {
+        "hash": {
+          "$ref": "#/definitions/Hash"
+        },
+        "relayStats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RelayStat"
+          }
+        }
+      }
+    },
+    "RelayStat": {
+      "type": "object",
+      "properties": {
+        "relayID": {
+          "type": "integer",
+          "maximum": 6,
+          "minimum": 1
+        },
+        "switchedCount": {
+          "type": "integer"
+        },
+        "totalTimeOn": {
+          "type": "integer"
         }
       }
     }

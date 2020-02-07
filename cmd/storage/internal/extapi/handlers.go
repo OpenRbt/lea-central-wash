@@ -2,6 +2,7 @@ package extapi
 
 import (
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,79 @@ func (svc *service) save(params op.SaveParams) op.SaveResponder {
 		log.PrintErr(err, "hash", params.Args.Hash, "key", *params.Args.KeyPair.Key, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewSaveInternalServerError()
 	}
+}
+
+func (svc *service) loadRelay(params op.LoadRelayParams) op.LoadRelayResponder {
+	log.Info("load relay", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	err := app.ErrNotFound
+	if params.Args.Hash == "give me report" {
+		err = nil
+	}
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewLoadRelayOK().WithPayload(apiRelayReport(params.Args.Hash))
+	case app.ErrNotFound:
+		log.Info("load relay: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewLoadRelayNotFound()
+	default:
+		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewLoadRelayInternalServerError()
+	}
+}
+
+func apiRelayReport(hash model.Hash) *model.RelayReport {
+	var relayStats []*model.RelayStat
+	for i := 1; i <= 6; i++ {
+		r := model.RelayStat{
+			RelayID:       int64(i),
+			SwitchedCount: int64(5 * i),
+			TotalTimeOn:   int64(10 * i),
+		}
+		relayStats = append(relayStats, &r)
+	}
+	return &model.RelayReport{
+		Hash:       hash,
+		RelayStats: relayStats,
+	}
+}
+
+func (svc *service) saveRelay(params op.SaveRelayParams) op.SaveRelayResponder {
+	log.Info("save relay", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	return op.NewSaveRelayNoContent()
+}
+
+func (svc *service) loadMoney(params op.LoadMoneyParams) op.LoadMoneyResponder {
+	log.Info("load money", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	err := app.ErrNotFound
+	if params.Args.Hash == "give me report" {
+		err = nil
+	}
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewLoadMoneyOK().WithPayload(apiMoneyReport(params.Args.Hash))
+	case app.ErrNotFound:
+		log.Info("load money: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewLoadMoneyNotFound()
+	default:
+		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewLoadMoneyInternalServerError()
+	}
+}
+
+func apiMoneyReport(hash model.Hash) *model.MoneyReport {
+	return &model.MoneyReport{
+		Hash:         hash,
+		Banknotes:    25,
+		CarsTotal:    100,
+		Coins:        150,
+		Electronical: 0,
+		Service:      5,
+	}
+}
+
+func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
+	log.Info("save money", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	return op.NewSaveMoneyNoContent()
 }
 
 func (svc *service) ping(params op.PingParams) op.PingResponder {

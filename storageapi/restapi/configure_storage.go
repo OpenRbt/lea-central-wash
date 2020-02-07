@@ -38,11 +38,23 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.LoadHandler = op.LoadHandlerFunc(func(params op.LoadParams) op.LoadResponder {
 		return op.LoadNotImplemented()
 	})
+	api.LoadMoneyHandler = op.LoadMoneyHandlerFunc(func(params op.LoadMoneyParams) op.LoadMoneyResponder {
+		return op.LoadMoneyNotImplemented()
+	})
+	api.LoadRelayHandler = op.LoadRelayHandlerFunc(func(params op.LoadRelayParams) op.LoadRelayResponder {
+		return op.LoadRelayNotImplemented()
+	})
 	api.PingHandler = op.PingHandlerFunc(func(params op.PingParams) op.PingResponder {
 		return op.PingNotImplemented()
 	})
 	api.SaveHandler = op.SaveHandlerFunc(func(params op.SaveParams) op.SaveResponder {
 		return op.SaveNotImplemented()
+	})
+	api.SaveMoneyHandler = op.SaveMoneyHandlerFunc(func(params op.SaveMoneyParams) op.SaveMoneyResponder {
+		return op.SaveMoneyNotImplemented()
+	})
+	api.SaveRelayHandler = op.SaveRelayHandlerFunc(func(params op.SaveRelayParams) op.SaveRelayResponder {
+		return op.SaveRelayNotImplemented()
 	})
 
 	api.ServerShutdown = func() {}
