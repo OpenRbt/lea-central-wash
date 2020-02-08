@@ -30,7 +30,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.1.0"
+    "version": "1.2.0"
   },
   "basePath": "/",
   "paths": {
@@ -164,6 +164,14 @@ func init() {
       }
     },
     "/ping": {
+      "get": {
+        "operationId": "getPing",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
       "post": {
         "operationId": "ping",
         "parameters": [
@@ -379,7 +387,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.1.0"
+    "version": "1.2.0"
   },
   "basePath": "/",
   "paths": {
@@ -513,6 +521,14 @@ func init() {
       }
     },
     "/ping": {
+      "get": {
+        "operationId": "getPing",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
       "post": {
         "operationId": "ping",
         "parameters": [

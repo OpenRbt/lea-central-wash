@@ -80,7 +80,7 @@ func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 }
 
 func (svc *service) ping(params op.PingParams) op.PingResponder {
-	log.Info("ping", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	log.Info("post ping", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 
 	// for test
 	if params.Args.Hash == "give me money" {
@@ -91,6 +91,11 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
 		ServiceAmount: newInt64(0),
 	})
+}
+
+func (svc *service) getPing(params op.GetPingParams) op.GetPingResponder {
+	log.Info("get ping", "ip", params.HTTPRequest.RemoteAddr)
+	return op.NewGetPingOK()
 }
 
 func (svc *service) info(params op.InfoParams) op.InfoResponder {

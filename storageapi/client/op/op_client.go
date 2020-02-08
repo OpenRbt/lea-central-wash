@@ -25,6 +25,34 @@ type Client struct {
 }
 
 /*
+GetPing get ping API
+*/
+func (a *Client) GetPing(params *GetPingParams) (*GetPingOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetPingParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getPing",
+		Method:             "GET",
+		PathPattern:        "/ping",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetPingReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*GetPingOK), nil
+
+}
+
+/*
 Info info API
 */
 func (a *Client) Info(params *InfoParams) (*InfoOK, error) {
