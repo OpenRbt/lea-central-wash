@@ -37,6 +37,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
+		GetPingHandler: GetPingHandlerFunc(func(params GetPingParams) GetPingResponder {
+			// return middleware.NotImplemented("operation GetPing has not yet been implemented")
+			return GetPingNotImplemented()
+		}),
 		InfoHandler: InfoHandlerFunc(func(params InfoParams) InfoResponder {
 			// return middleware.NotImplemented("operation Info has not yet been implemented")
 			return InfoNotImplemented()
@@ -100,6 +104,8 @@ type StorageAPI struct {
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
 
+	// GetPingHandler sets the operation handler for the get ping operation
+	GetPingHandler GetPingHandler
 	// InfoHandler sets the operation handler for the info operation
 	InfoHandler InfoHandler
 	// LoadHandler sets the operation handler for the load operation
@@ -177,6 +183,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.JSONProducer == nil {
 		unregistered = append(unregistered, "JSONProducer")
+	}
+
+	if o.GetPingHandler == nil {
+		unregistered = append(unregistered, "GetPingHandler")
 	}
 
 	if o.InfoHandler == nil {
@@ -308,6 +318,11 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers == nil {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/ping"] = NewGetPing(o.context, o.GetPingHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)

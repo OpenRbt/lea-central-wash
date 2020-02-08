@@ -42,6 +42,7 @@ func NewServer(appl app.App, cfg Config) (*restapi.Server, error) {
 
 	api.LoadHandler = op.LoadHandlerFunc(svc.load)
 	api.PingHandler = op.PingHandlerFunc(svc.ping)
+	api.GetPingHandler = op.GetPingHandlerFunc(svc.getPing)
 	api.SaveHandler = op.SaveHandlerFunc(svc.save)
 	api.InfoHandler = op.InfoHandlerFunc(svc.info)
 

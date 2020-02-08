@@ -32,6 +32,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
+	api.GetPingHandler = op.GetPingHandlerFunc(func(params op.GetPingParams) op.GetPingResponder {
+		return op.GetPingNotImplemented()
+	})
 	api.InfoHandler = op.InfoHandlerFunc(func(params op.InfoParams) op.InfoResponder {
 		return op.InfoNotImplemented()
 	})

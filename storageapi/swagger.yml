@@ -2,7 +2,7 @@ swagger: "2.0"
 
 info:
   title: Storage
-  version: 1.1.0
+  version: 1.2.0
 
 basePath: /
 schemes:
@@ -223,6 +223,11 @@ paths:
             properties:
               serviceAmount:
                 type: integer
+    get:
+      operationId: "getPing"
+      responses:
+        200:
+          description: OK
   /info:
     get:
       operationId: "info"
