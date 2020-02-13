@@ -96,3 +96,61 @@ func (a *app) PairIdAndHash(id string, hash string) error {
 		return ErrNotFound
 	}
 }
+
+// SaveMoneyReport gets app.MoneyReport struct
+// Checks pairment of hash in report and ID in the map
+// Returns ErrNotFound in case of hash or ID failure
+func (a *app) SaveMoneyReport(report MoneyReport) error {
+	stationID, err := a.GetIdByHash(report.Hash)
+	if err != nil {
+		fmt.Printf("Hash %s is not paired with the ID\n", hash)
+		return ErrNotFound
+	}
+	// TODO: convert to DAL money model here and save
+	return nil
+}
+
+// SaveRelayReport gets app.RelayReport struct
+// Checks pairment of hash in report and ID in the map
+// Returns ErrNotFound in case of hash or ID failure
+func (a *app) SaveRelayReport(report RelayReport) error {
+	stationID, err := a.GetIdByHash(report.Hash)
+	if err != nil {
+		fmt.Printf("Hash %s is not paired with the ID\n", hash)
+		return ErrNotFound
+	}
+	// TODO: convert to DAL report model here and save
+	return nil
+}
+
+// LoadMoneyReport gets hash string
+// Checks pairment of hash in report and ID in the map
+// Returns ErrNotFound in case of hash or ID failure
+func (a *app) LoadMoneyReport(hash string) (MoneyReport, error) {
+	stationID, err := a.GetIdByHash(hash)
+	if err != nil {
+		fmt.Printf("Hash %s is not paired with the ID\n", hash)
+
+		// TODO: change nil to empty report here
+		return nil, ErrNotFound
+	}
+
+	// TODO: call DAL method to load money
+	return nil, nil
+}
+
+// LoadRelayReport gets hash string
+// Checks pairment of hash in report and ID in the map
+// Returns ErrNotFound in case of hash or ID failure
+func (a *app) LoadRelayReport(hash string) (RelayReport, error) {
+	stationID, err := a.GetIdByHash(hash)
+	if err != nil {
+		fmt.Printf("Hash %s is not paired with the ID\n", hash)
+
+		// TODO: change nil to empty report here
+		return nil, ErrNotFound
+	}
+
+	// TODO: call DAL method to load relays
+	return nil, nil
+}

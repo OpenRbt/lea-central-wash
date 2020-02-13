@@ -1,32 +1,33 @@
 package extapi
 
 import (
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
-func apiRelayReport(hash model.Hash) *model.RelayReport {
+func apiRelayReport(data app.RelayReport) *model.RelayReport {
 	var relayStats []*model.RelayStat
 	for i := 1; i <= 6; i++ {
 		r := model.RelayStat{
-			RelayID:       int64(i),
-			SwitchedCount: int64(5 * i),
-			TotalTimeOn:   int64(10 * i),
+			RelayID:       data.RelayStats[i].RelayID,
+			SwitchedCount: data.RelayStats[i].SwitchedCount,
+			TotalTimeOn:   data.RelayStats[i].TotalTimeOn,
 		}
 		relayStats = append(relayStats, &r)
 	}
 	return &model.RelayReport{
-		Hash:       hash,
+		Hash:       data.Hash,
 		RelayStats: relayStats,
 	}
 }
 
-func apiMoneyReport(hash model.Hash) *model.MoneyReport {
+func apiMoneyReport(data app.MoneyReport) *model.MoneyReport {
 	return &model.MoneyReport{
-		Hash:         hash,
-		Banknotes:    25,
-		CarsTotal:    100,
-		Coins:        150,
-		Electronical: 0,
-		Service:      5,
+		Hash:         data.Hash,
+		Banknotes:    data.Banknotes,
+		CarsTotal:    data.CarsTotal,
+		Coins:        data.Coins,
+		Electronical: data.Electronical,
+		Service:      data.Service,
 	}
 }

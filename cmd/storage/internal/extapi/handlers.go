@@ -39,9 +39,12 @@ func (svc *service) loadRelay(params op.LoadRelayParams) op.LoadRelayResponder {
 	if params.Args.Hash == "give me report" {
 		err = nil
 	}
+
+	toLoad, err := svc.app.LoadRelayReport(string(params.Args.Hash))
+
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewLoadRelayOK().WithPayload(apiRelayReport(params.Args.Hash))
+		return op.NewLoadRelayOK().WithPayload(apiRelayReport(toLoad))
 	case app.ErrNotFound:
 		log.Info("load relay: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewLoadRelayNotFound()
@@ -53,6 +56,22 @@ func (svc *service) loadRelay(params op.LoadRelayParams) op.LoadRelayResponder {
 
 func (svc *service) saveRelay(params op.SaveRelayParams) op.SaveRelayResponder {
 	log.Info("save relay", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+
+	var toSave app.RelayReport
+	toSave.Hash = string(params.Args.Hash)
+
+	var relayStats []app.RelayStat
+	for i := 1; i <= 6; i++ {
+		r := app.RelayStat{
+			RelayID:       params.Args.RelayStats[i].RelayID,
+			SwitchedCount: params.Args.RelayStats[i].SwitchedCount,
+			TotalTimeOn:   params.Args.RelayStats[i].TotalTimeOn,
+		}
+		relayStats = append(relayStats, &r)
+	}
+
+	_ = svc.app.SaveRelayReport(toSave)
+
 	return op.NewSaveRelayNoContent()
 }
 
@@ -62,9 +81,12 @@ func (svc *service) loadMoney(params op.LoadMoneyParams) op.LoadMoneyResponder {
 	if params.Args.Hash == "give me report" {
 		err = nil
 	}
+
+	toLoad, err := svc.app.LoadMoneyReport(string(params.Args.Hash))
+
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewLoadMoneyOK().WithPayload(apiMoneyReport(params.Args.Hash))
+		return op.NewLoadMoneyOK().WithPayload(apiMoneyReport(toLoad))
 	case app.ErrNotFound:
 		log.Info("load money: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewLoadMoneyNotFound()
@@ -76,6 +98,18 @@ func (svc *service) loadMoney(params op.LoadMoneyParams) op.LoadMoneyResponder {
 
 func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 	log.Info("save money", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+
+	var toSave = app.MoneyReport{
+		Hash:         string(params.Args.Hash),
+		Banknotes:    params.Args.Banknotes,
+		CarsTotal:    params.Args.CarsTotal,
+		Coins:        params.Args.Coins,
+		Electronical: params.Args.Electronical,
+		Service:      params.Args.Service,
+	}
+
+	_ = svc.app.SaveMoneyReport(toSave)
+
 	return op.NewSaveMoneyNoContent()
 }
 
@@ -89,7 +123,8 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		})
 	}
 
-	serviceMoney := svc.app.GetServiceMoney(string(params.Args.Hash))
+	// serviceMoney always will be correct: 0 or other value
+	serviceMoney, _ := svc.app.GetServiceMoneyByHash(string(params.Args.Hash))
 
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
 		ServiceAmount: newInt64(serviceMoney),

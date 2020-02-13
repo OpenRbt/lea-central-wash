@@ -23,8 +23,14 @@ type (
 		
 		SetServiceMoneyById(id string, money int) error
 		
+		SaveMoneyReport(report MoneyReport) error
+		SaveRelayReport(report RelayReport) error
+		LoadMoneyReport(hash string) (MoneyReport, error)
+		LoadRelayReport(hash string) (RelayReport, error)
+		
 		PairIdAndHash(id string, hash string) error
 	}
+	
 	// Repo is a DAL interface.
 	Repo interface {
 		Save(stationID string, key string, value []byte) error
