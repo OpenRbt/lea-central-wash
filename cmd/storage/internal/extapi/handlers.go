@@ -88,8 +88,11 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 			ServiceAmount: newInt64(10),
 		})
 	}
+
+	serviceMoney := svc.app.GetServiceMoney(string(params.Args.Hash))
+
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
-		ServiceAmount: newInt64(0),
+		ServiceAmount: newInt64(serviceMoney),
 	})
 }
 
