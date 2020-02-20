@@ -20,6 +20,7 @@ import (
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/goose"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/memdb"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/migration"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/svckasse"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 	"github.com/powerman/must"
@@ -55,6 +56,7 @@ var (
 		goose    string
 		gooseDir string
 		extapi   extapi.Config
+		kasse    svckasse.Config
 	}
 )
 
@@ -77,6 +79,7 @@ func init() { //nolint:gochecknoinits
 	flag.StringVar(&cfg.extapi.Host, "extapi.host", def.ExtAPIHost, "serve external API on `host`")
 	flag.IntVar(&cfg.extapi.Port, "extapi.port", def.ExtAPIPort, "serve external API on `port` (>0)")
 	flag.StringVar(&cfg.extapi.BasePath, "extapi.basepath", def.ExtAPIBasePath, "serve external API on `path`")
+	flag.StringVar(&cfg.kasse.Endpoint, "kasse.endpoint", def.KasseEndpoint, "endpoint online kasse")
 
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",
@@ -190,7 +193,8 @@ func run(db *sqlx.DB, errc chan<- error) {
 		repo = memdb.New()
 	}
 
-	appl := app.New(repo)
+	kasse := svckasse.New(cfg.kasse)
+	appl := app.New(repo, kasse)
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi)
 	if err != nil {

@@ -30,10 +30,44 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.2.0"
+    "version": "1.3.0"
   },
   "basePath": "/",
   "paths": {
+    "/del-station": {
+      "post": {
+        "operationId": "delStation",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/info": {
       "get": {
         "operationId": "info",
@@ -290,6 +324,112 @@ func init() {
           }
         }
       }
+    },
+    "/set-station": {
+      "post": {
+        "operationId": "setStation",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Access denied. It will happen when you try to change the ID at the station online."
+          },
+          "404": {
+            "description": "not found"
+          },
+          "422": {
+            "description": "validation error"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station-report": {
+      "post": {
+        "operationId": "stationReport",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "startDate",
+                "endDate"
+              ],
+              "properties": {
+                "endDate": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "startDate": {
+                  "type": "string",
+                  "format": "date"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/MoneyReport"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "operationId": "status",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StatusReport"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -369,6 +509,53 @@ func init() {
         },
         "totalTimeOn": {
           "type": "integer"
+        }
+      }
+    },
+    "StationStatus": {
+      "type": "object",
+      "properties": {
+        "hash": {
+          "$ref": "#/definitions/Hash"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "info": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/Status"
+        }
+      }
+    },
+    "Status": {
+      "type": "string",
+      "enum": [
+        "offline",
+        "online"
+      ]
+    },
+    "StatusReport": {
+      "type": "object",
+      "properties": {
+        "kasseInfo": {
+          "type": "string"
+        },
+        "kasseStatus": {
+          "$ref": "#/definitions/Status"
+        },
+        "lcwInfo": {
+          "type": "string"
+        },
+        "stations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StationStatus"
+          }
         }
       }
     }
@@ -387,10 +574,44 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.2.0"
+    "version": "1.3.0"
   },
   "basePath": "/",
   "paths": {
+    "/del-station": {
+      "post": {
+        "operationId": "delStation",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/info": {
       "get": {
         "operationId": "info",
@@ -647,6 +868,112 @@ func init() {
           }
         }
       }
+    },
+    "/set-station": {
+      "post": {
+        "operationId": "setStation",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Access denied. It will happen when you try to change the ID at the station online."
+          },
+          "404": {
+            "description": "not found"
+          },
+          "422": {
+            "description": "validation error"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station-report": {
+      "post": {
+        "operationId": "stationReport",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "startDate",
+                "endDate"
+              ],
+              "properties": {
+                "endDate": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "startDate": {
+                  "type": "string",
+                  "format": "date"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/MoneyReport"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "operationId": "status",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StatusReport"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -726,6 +1053,53 @@ func init() {
         },
         "totalTimeOn": {
           "type": "integer"
+        }
+      }
+    },
+    "StationStatus": {
+      "type": "object",
+      "properties": {
+        "hash": {
+          "$ref": "#/definitions/Hash"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "info": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/Status"
+        }
+      }
+    },
+    "Status": {
+      "type": "string",
+      "enum": [
+        "offline",
+        "online"
+      ]
+    },
+    "StatusReport": {
+      "type": "object",
+      "properties": {
+        "kasseInfo": {
+          "type": "string"
+        },
+        "kasseStatus": {
+          "$ref": "#/definitions/Status"
+        },
+        "lcwInfo": {
+          "type": "string"
+        },
+        "stations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StationStatus"
+          }
         }
       }
     }

@@ -25,6 +25,34 @@ type Client struct {
 }
 
 /*
+DelStation del station API
+*/
+func (a *Client) DelStation(params *DelStationParams) (*DelStationNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewDelStationParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "delStation",
+		Method:             "POST",
+		PathPattern:        "/del-station",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &DelStationReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*DelStationNoContent), nil
+
+}
+
+/*
 GetPing get ping API
 */
 func (a *Client) GetPing(params *GetPingParams) (*GetPingOK, error) {
@@ -273,6 +301,90 @@ func (a *Client) SaveRelay(params *SaveRelayParams) (*SaveRelayNoContent, error)
 		return nil, err
 	}
 	return result.(*SaveRelayNoContent), nil
+
+}
+
+/*
+SetStation set station API
+*/
+func (a *Client) SetStation(params *SetStationParams) (*SetStationNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetStationParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "setStation",
+		Method:             "POST",
+		PathPattern:        "/set-station",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetStationReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*SetStationNoContent), nil
+
+}
+
+/*
+StationReport station report API
+*/
+func (a *Client) StationReport(params *StationReportParams) (*StationReportOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStationReportParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "stationReport",
+		Method:             "POST",
+		PathPattern:        "/station-report",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StationReportReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*StationReportOK), nil
+
+}
+
+/*
+Status status API
+*/
+func (a *Client) Status(params *StatusParams) (*StatusOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStatusParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "status",
+		Method:             "GET",
+		PathPattern:        "/status",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StatusReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*StatusOK), nil
 
 }
 

@@ -102,6 +102,54 @@ func (svc *service) info(params op.InfoParams) op.InfoResponder {
 	return op.NewInfoOK().WithPayload(svc.app.Info())
 }
 
+func (svc *service) status(params op.StatusParams) op.StatusResponder {
+	report := svc.app.StatusReport()
+	return op.NewStatusOK().WithPayload(apiStatusReport(report))
+}
+
+func (svc *service) setStation(params op.SetStationParams) op.SetStationResponder {
+	if params.Args.ID == 0 && params.Args.Name == "" {
+		return op.NewSetStationUnprocessableEntity()
+	}
+	err := svc.app.SetStation(app.SetStation{
+		ID:   int(params.Args.ID),
+		Hash: params.Args.Hash,
+		Name: params.Args.Name,
+	})
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSetStationNoContent()
+	case app.ErrNotFound:
+		log.Info("set station: not found", "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewSetStationNotFound()
+	case app.ErrAccessDenied:
+		log.Info("set station: access denied", "hash", params.Args.Hash, "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewSetStationUnauthorized()
+	default:
+		log.PrintErr(err, "hash", params.Args.Hash, "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewSetStationInternalServerError()
+	}
+}
+
+func (svc *service) delStation(params op.DelStationParams) op.DelStationResponder {
+	err := svc.app.DelStation(int(*params.Args.ID))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewDelStationNoContent()
+	case app.ErrNotFound:
+		log.Info("del station: not found", "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewDelStationNotFound()
+	default:
+		log.PrintErr(err, "hash", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewDelStationInternalServerError()
+	}
+}
+
+func (svc *service) stationReport(params op.StationReportParams) op.StationReportResponder {
+	return op.StationReportNotImplemented()
+}
+
 func newInt64(v int64) *int64 {
 	return &v
 }
