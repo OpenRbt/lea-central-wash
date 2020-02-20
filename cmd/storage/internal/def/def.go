@@ -44,6 +44,7 @@ var (
 	ExtAPIHost     = strGetenv("STORAGE_EXT_HOST", oapiHost)
 	ExtAPIPort     = intGetenv("STORAGE_EXT_PORT", 8020)
 	ExtAPIBasePath = strGetenv("STORAGE_EXT_BASEPATH", oapiBasePath)
+	KasseEndpoint  = strGetenv("STORAGE_KASSE_ENDPOINT", "https://localhost:8443")
 )
 
 var initErr error
