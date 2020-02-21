@@ -187,4 +187,15 @@ func (a *app) LoadRelayReport(hash string) (RelayReport, error) {
 
 	// TODO: call DAL method to load relays
 	return nil, nil
+
+func (a *app) StatusReport() StatusReport {
+	panic("not implment")
+}
+
+func (a *app) SetStation(station SetStation) error {
+	panic("not implment")
+}
+
+func (a *app) DelStation(id int) error {
+	panic("not implment")
 }

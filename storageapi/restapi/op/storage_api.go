@@ -37,6 +37,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
+		DelStationHandler: DelStationHandlerFunc(func(params DelStationParams) DelStationResponder {
+			// return middleware.NotImplemented("operation DelStation has not yet been implemented")
+			return DelStationNotImplemented()
+		}),
 		GetPingHandler: GetPingHandlerFunc(func(params GetPingParams) GetPingResponder {
 			// return middleware.NotImplemented("operation GetPing has not yet been implemented")
 			return GetPingNotImplemented()
@@ -73,6 +77,18 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation SaveRelay has not yet been implemented")
 			return SaveRelayNotImplemented()
 		}),
+		SetStationHandler: SetStationHandlerFunc(func(params SetStationParams) SetStationResponder {
+			// return middleware.NotImplemented("operation SetStation has not yet been implemented")
+			return SetStationNotImplemented()
+		}),
+		StationReportHandler: StationReportHandlerFunc(func(params StationReportParams) StationReportResponder {
+			// return middleware.NotImplemented("operation StationReport has not yet been implemented")
+			return StationReportNotImplemented()
+		}),
+		StatusHandler: StatusHandlerFunc(func(params StatusParams) StatusResponder {
+			// return middleware.NotImplemented("operation Status has not yet been implemented")
+			return StatusNotImplemented()
+		}),
 	}
 }
 
@@ -104,6 +120,8 @@ type StorageAPI struct {
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
 
+	// DelStationHandler sets the operation handler for the del station operation
+	DelStationHandler DelStationHandler
 	// GetPingHandler sets the operation handler for the get ping operation
 	GetPingHandler GetPingHandler
 	// InfoHandler sets the operation handler for the info operation
@@ -122,6 +140,12 @@ type StorageAPI struct {
 	SaveMoneyHandler SaveMoneyHandler
 	// SaveRelayHandler sets the operation handler for the save relay operation
 	SaveRelayHandler SaveRelayHandler
+	// SetStationHandler sets the operation handler for the set station operation
+	SetStationHandler SetStationHandler
+	// StationReportHandler sets the operation handler for the station report operation
+	StationReportHandler StationReportHandler
+	// StatusHandler sets the operation handler for the status operation
+	StatusHandler StatusHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -185,6 +209,10 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.DelStationHandler == nil {
+		unregistered = append(unregistered, "DelStationHandler")
+	}
+
 	if o.GetPingHandler == nil {
 		unregistered = append(unregistered, "GetPingHandler")
 	}
@@ -219,6 +247,18 @@ func (o *StorageAPI) Validate() error {
 
 	if o.SaveRelayHandler == nil {
 		unregistered = append(unregistered, "SaveRelayHandler")
+	}
+
+	if o.SetStationHandler == nil {
+		unregistered = append(unregistered, "SetStationHandler")
+	}
+
+	if o.StationReportHandler == nil {
+		unregistered = append(unregistered, "StationReportHandler")
+	}
+
+	if o.StatusHandler == nil {
+		unregistered = append(unregistered, "StatusHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -319,6 +359,11 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
 
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/del-station"] = NewDelStation(o.context, o.DelStationHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -363,6 +408,21 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/save-relay"] = NewSaveRelay(o.context, o.SaveRelayHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-station"] = NewSetStation(o.context, o.SetStationHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/station-report"] = NewStationReport(o.context, o.StationReportHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/status"] = NewStatus(o.context, o.StatusHandler)
 
 }
 

@@ -32,6 +32,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
+	api.DelStationHandler = op.DelStationHandlerFunc(func(params op.DelStationParams) op.DelStationResponder {
+		return op.DelStationNotImplemented()
+	})
 	api.GetPingHandler = op.GetPingHandlerFunc(func(params op.GetPingParams) op.GetPingResponder {
 		return op.GetPingNotImplemented()
 	})
@@ -58,6 +61,15 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	})
 	api.SaveRelayHandler = op.SaveRelayHandlerFunc(func(params op.SaveRelayParams) op.SaveRelayResponder {
 		return op.SaveRelayNotImplemented()
+	})
+	api.SetStationHandler = op.SetStationHandlerFunc(func(params op.SetStationParams) op.SetStationResponder {
+		return op.SetStationNotImplemented()
+	})
+	api.StationReportHandler = op.StationReportHandlerFunc(func(params op.StationReportParams) op.StationReportResponder {
+		return op.StationReportNotImplemented()
+	})
+	api.StatusHandler = op.StatusHandlerFunc(func(params op.StatusParams) op.StatusResponder {
+		return op.StatusNotImplemented()
 	})
 
 	api.ServerShutdown = func() {}
