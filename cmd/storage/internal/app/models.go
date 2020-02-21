@@ -1,9 +1,12 @@
 package app
 
-type WashData struct {
-	Hash         string
+import "time"
+
+type StationData struct {
+	ID           int
 	Name         string
 	ServiceMoney int
+	LastPing     time.Time
 }
 
 type MoneyReport struct {

@@ -123,8 +123,10 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		})
 	}
 
-	// serviceMoney always will be correct: 0 or other value
-	serviceMoney, _ := svc.app.GetServiceMoneyByHash(string(params.Args.Hash))
+	serviceMoney, err := svc.app.GetServiceAmount(string(params.Args.Hash))
+	if err != nil {
+		serviceMoney = 0
+	}
 
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
 		ServiceAmount: newInt64(serviceMoney),

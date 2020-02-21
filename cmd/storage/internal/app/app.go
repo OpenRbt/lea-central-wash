@@ -2,52 +2,59 @@ package app
 
 import (
 	"errors"
+	"sync"
 )
 
 // Errors.
 var (
 	ErrNotFound = errors.New("not found")
+	ErrDuplicateHash = error.New("hash duplicated")
 )
 
 type (
 	// App is an application interface.
 	App interface {
+		// Key-value methods
 		Save(hash string, key string, value []byte) error
 		Load(hash string, key string) ([]byte, error)
 		
+		// DBMS info method
 		Info() string
 		
-		GetServiceMoneyByHash(hash string) (int, error)
-		GetServiceMoneyById(id string) (int, error)
-		GetIdByHash(hash string) (string, error)
+		SetServiceAmount(hash string, money int) error
+		GetServiceAmount(hash string) int 
 		
-		SetServiceMoneyById(id string, money int) error
+		GetId(hash string) (int, error)
+		
+		Set(hash string, station StationData) error
+		Get(hash string) (error, StationData)
 		
 		SaveMoneyReport(report MoneyReport) error
 		SaveRelayReport(report RelayReport) error
 		LoadMoneyReport(hash string) (MoneyReport, error)
 		LoadRelayReport(hash string) (RelayReport, error)
 		
-		PairIdAndHash(id string, hash string) error
+		PairIdAndHash(id int, hash string) error
 	}
 	
 	// Repo is a DAL interface.
 	Repo interface {
-		Save(stationID string, key string, value []byte) error
-		Load(stationID string, key string) ([]byte, error)
+		Save(stationID int, key string, value []byte) error
+		Load(stationID int, key string) ([]byte, error)
 		Info() string
 	}
 )
 
 type app struct {
-	repo    Repo
-	washMap map[string]WashData
+	repo     Repo
+	stations map[string]StationData
+	mutex 	 sync.Mutex
 }
 
 // New creates and returns new App.
 func New(repo Repo) App {
 	return &app{
 		repo: repo,
-		washMap: make(map[string]WashData)
+		stations: make(map[string]StationData)
 	}
 }
