@@ -2,34 +2,35 @@ package extapi
 
 import (
 	"fmt"
+
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
-func apiRelayReport(data app.RelayReport) *model.RelayReport {
+func apiRelayReport(data *app.RelayReport) *model.RelayReport {
 	var relayStats []*model.RelayStat
 	for i := 1; i <= 6; i++ {
 		r := model.RelayStat{
-			RelayID:       data.RelayStats[i].RelayID,
-			SwitchedCount: data.RelayStats[i].SwitchedCount,
+			RelayID:       int64(data.RelayStats[i].RelayID),
+			SwitchedCount: int64(data.RelayStats[i].SwitchedCount),
 			TotalTimeOn:   data.RelayStats[i].TotalTimeOn,
 		}
 		relayStats = append(relayStats, &r)
 	}
 	return &model.RelayReport{
-		Hash:       data.Hash,
+		Hash:       model.Hash(data.Hash),
 		RelayStats: relayStats,
 	}
 }
 
-func apiMoneyReport(data app.MoneyReport) *model.MoneyReport {
+func apiMoneyReport(data *app.MoneyReport) *model.MoneyReport {
 	return &model.MoneyReport{
-		Hash:         data.Hash,
-		Banknotes:    data.Banknotes,
-		CarsTotal:    data.CarsTotal,
-		Coins:        data.Coins,
-		Electronical: data.Electronical,
-		Service:      data.Service,
+		Hash:         model.Hash(data.Hash),
+		Banknotes:    int64(data.Banknotes),
+		CarsTotal:    int64(data.CarsTotal),
+		Coins:        int64(data.Coins),
+		Electronical: int64(data.Electronical),
+		Service:      int64(data.Service),
 	}
 }
 
@@ -41,7 +42,7 @@ func apiStatusReport(v app.StatusReport) *model.StatusReport {
 	return &model.StatusReport{
 		KasseInfo:   v.KasseInfo,
 		KasseStatus: apiStatus(v.KasseStatus),
-		LcwInfo:     v.LcwInfo,
+		LcwInfo:     v.LCWInfo,
 		Stations:    stationStatus,
 	}
 }

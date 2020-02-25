@@ -3,11 +3,13 @@ package app
 import (
 	"errors"
 	"sync"
+	"time"
 )
+
+const durationStationOffline = time.Second * 10
 
 // Errors.
 var (
-	ErrNotFound = errors.New("not found")
 	ErrNotFound     = errors.New("not found")
 	ErrAccessDenied = errors.New("access denied")
 )
@@ -18,36 +20,35 @@ type (
 		// Key-value methods
 		Save(hash string, key string, value []byte) error
 		Load(hash string, key string) ([]byte, error)
-		
+
 		// DBMS info method
 		Info() string
-		
-		SetServiceAmount(hash string, money int) error
-		GetServiceAmount(hash string) int 
-		
+
+		AddServiceAmount(hash string, money int) error
+
 		GetId(hash string) (int, error)
-		
 		Set(hash string, station StationData) error
-		Get(hash string) (error, StationData)
-		
+		Get(hash string) (StationData, error)
+		Ping(hash string) int
+
 		SaveMoneyReport(report MoneyReport) error
 		SaveRelayReport(report RelayReport) error
-		LoadMoneyReport(hash string) (MoneyReport, error)
-		LoadRelayReport(hash string) (RelayReport, error)
-		
-		PairIdAndHash(id int, hash string) error
+		LoadMoneyReport(hash string) (*MoneyReport, error)
+		LoadRelayReport(hash string) (*RelayReport, error)
 
 		StatusReport() StatusReport
 		SetStation(station SetStation) error
 		DelStation(id int) error
-
 	}
-	
+
 	// Repo is a DAL interface.
 	Repo interface {
 		Save(stationID int, key string, value []byte) error
 		Load(stationID int, key string) ([]byte, error)
 		Info() string
+		SetStation(station SetStation) error
+		Stations() (stations []SetStation, err error)
+		DelStation(id int) error
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -56,19 +57,22 @@ type (
 )
 
 type app struct {
-	repo     Repo
-	stations map[string]StationData
-	mutex 	 sync.Mutex
-	kasseSvc KasseSvc
+	repo           Repo
+	stations       map[string]StationData
+	stationsMutex  sync.Mutex
+	kasseSvc       KasseSvc
+	stationsNoHash []StationData
 }
 
 // New creates and returns new App.
 func New(repo Repo, kasseSvc KasseSvc) App {
-	return &app{
-		repo: repo,
+	appl := &app{
+		repo:     repo,
 		stations: make(map[string]StationData),
 		kasseSvc: kasseSvc,
 	}
+	appl.loadStations()
+	return appl
 }
 
 // Status describes station or kasse status.
@@ -83,7 +87,7 @@ const (
 type StatusReport struct {
 	KasseInfo   string
 	KasseStatus Status
-	LcwInfo     string
+	LCWInfo     string
 	Stations    []StationStatus
 }
 

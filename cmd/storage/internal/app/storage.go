@@ -1,8 +1,6 @@
 package app
 
 import (
-	"fmt"
-	"sync"
 	"time"
 
 	"github.com/powerman/structlog"
@@ -15,7 +13,7 @@ var log = structlog.New() //nolint:gochecknoglobals
 func (a *app) Save(hash string, key string, value []byte) error {
 	stationID, err := a.GetId(hash)
 	if err != nil {
-		log.Info("Hash is not paired with the ID", hash, stationID)
+		log.Info("Hash is not paired with the ID", "hash", hash, "id", stationID)
 		return ErrNotFound
 	}
 
@@ -27,8 +25,8 @@ func (a *app) Save(hash string, key string, value []byte) error {
 func (a *app) Load(hash string, key string) ([]byte, error) {
 	stationID, err := a.GetId(hash)
 	if err != nil {
-		log.Info("Hash is not paired with the ID", hash, stationID)
-		return ErrNotFound
+		log.Info("Hash is not paired with the ID", "hash", hash, "id", stationID)
+		return nil, ErrNotFound
 	}
 
 	return a.repo.Load(stationID, key)
@@ -38,10 +36,39 @@ func (a *app) Info() string {
 	return a.repo.Info()
 }
 
+func (a *app) loadStations() error {
+	res, err := a.repo.Stations()
+	if err != nil {
+		log.Info("loadStations", "err", err)
+		return err
+	}
+	stations := map[string]StationData{}
+	noHash := []StationData{}
+	for i, _ := range res {
+		if res[i].Hash != "" {
+			stations[res[i].Hash] = StationData{
+				ID:   res[i].ID,
+				Name: res[i].Name,
+			}
+		} else {
+			noHash = append(noHash, StationData{
+				ID:   res[i].ID,
+				Name: res[i].Name,
+			})
+		}
+	}
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+	a.stationsNoHash = noHash
+	a.stations = stations
+	// TODO Add last ping time and service money
+	return nil
+}
+
 // Set accepts existing hash and writes specified StationData
 func (a *app) Set(hash string, station StationData) error {
-	a.mutex.Lock()
-	defer a.mutex.Unlock()
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
 
 	if value, exist := a.stations[hash]; exist {
 		value = station
@@ -52,83 +79,64 @@ func (a *app) Set(hash string, station StationData) error {
 	return nil
 }
 
+// Ping sets the time of the last ping and returns service money.
+func (a *app) Ping(hash string) int {
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+	var station StationData
+	if v, ok := a.stations[hash]; ok {
+		station = v
+	} else {
+		station = StationData{}
+	}
+	station.LastPing = time.Now()
+	serviceMoney := station.ServiceMoney
+	station.ServiceMoney = 0
+	a.stations[hash] = station
+	return serviceMoney
+}
+
 // Get accepts exising hash and returns StationData
-func (a *app) Get(hash string) (error, StationData) {
-	a.mutex.Lock()
-	defer a.mutex.Unlock()
+func (a *app) Get(hash string) (StationData, error) {
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
 
 	// TODO: if error - return empty StationData, not nil
-
-	if value, exist := a.stations[hash]; exist {
-		return nil, value
-	} else {
-		return ErrNotFound, empty
+	value, exist := a.stations[hash]
+	if !exist {
+		return StationData{}, ErrNotFound
 	}
-	return nil, empty
+	return value, nil
 }
 
 // SetServiceAmount changes service money in map to the specified value
 // Returns ErrNotFound, if id is not valid, else nil
-func (a *app) SetServiceAmount(hash string, money int) error {
-	err, data := a.Get(hash)
-	if err != nil {
+func (a *app) AddServiceAmount(hash string, money int) error {
+	data, err := a.Get(hash)
+	if err != nil && data.ID < 1 {
 		log.Info("Can't set service money - station is unknown")
 		return ErrNotFound
 	}
 
-	data.ServiceMoney = money
+	data.ServiceMoney = data.ServiceMoney + money
 	err = a.Set(hash, data)
 	if err != nil {
 		log.Info("Can't set service money - station is unknown")
 		return ErrNotFound
 	}
-
 	return nil
-}
-
-func (a *app) GetServiceAmount(hash string) (int, err) {
-	err, data := a.Get(hash)
-	if err != nil {
-		log.Info("Can't get service money - station is unknown")
-		return -1, ErrNotFound
-	}
-	result := data.ServiceMoney
-
-	data.ServiceMoney = 0
-	data.LastPing = time.Now()
-
-	err = a.Set(hash, data)
-	if err != nil {
-		log.Info("Can't set service money - station is unknown")
-		return -1, ErrNotFound
-	}
-	return result, nil
 }
 
 // GetId finds ID by hash
 // Returns ErrNotFound, if hash is not valid, else nil
-func (a *app) GetId(hash string) (string, error) {
-	a.mutex.Lock()
-	for key, value := range a.stations {
-		if key == hash {
-			return value.ID, nil
-		}
+func (a *app) GetId(hash string) (int, error) {
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+	station, ok := a.stations[hash]
+	if !ok {
+		return -1, ErrNotFound
 	}
-	a.mutex.Unlock()
-	return -1, ErrNotFound
-}
-
-// PairIdAndHash adds a hash to the specified ID in map
-// Returns ErrNotFound, if ID is not valid, else nil
-func (a *app) PairIdAndHash(id int, hash string) error {
-	a.mutex.Lock()
-	if value, exist := a.stations[hash]; exist {
-		value.ID = id
-		return nil
-	} else {
-		return ErrNotFound
-	}
-	a.mutex.Unlock()
+	return station.ID, nil
 }
 
 // SaveMoneyReport gets app.MoneyReport struct
@@ -137,7 +145,7 @@ func (a *app) PairIdAndHash(id int, hash string) error {
 func (a *app) SaveMoneyReport(report MoneyReport) error {
 	stationID, err := a.GetId(report.Hash)
 	if err != nil {
-		log.Info("Hash is not paired with the ID", report.hash, stationID)
+		log.Info("Hash is not paired with the ID", "hash", report.Hash, "id", stationID)
 		return ErrNotFound
 	}
 	// TODO: convert to DAL money model here and save
@@ -150,7 +158,7 @@ func (a *app) SaveMoneyReport(report MoneyReport) error {
 func (a *app) SaveRelayReport(report RelayReport) error {
 	stationID, err := a.GetId(report.Hash)
 	if err != nil {
-		log.Info("Hash is not paired with the ID", report.hash, stationID)
+		log.Info("Hash is not paired with the ID", "hash", report.Hash, "id", stationID)
 		return ErrNotFound
 	}
 	// TODO: convert to DAL report model here and save
@@ -160,7 +168,7 @@ func (a *app) SaveRelayReport(report RelayReport) error {
 // LoadMoneyReport gets hash string
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
-func (a *app) LoadMoneyReport(hash string) (MoneyReport, error) {
+func (a *app) LoadMoneyReport(hash string) (*MoneyReport, error) {
 	stationID, err := a.GetId(hash)
 	if err != nil {
 		log.Info("Hash is not paired with the ID", hash, stationID)
@@ -176,7 +184,7 @@ func (a *app) LoadMoneyReport(hash string) (MoneyReport, error) {
 // LoadRelayReport gets hash string
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
-func (a *app) LoadRelayReport(hash string) (RelayReport, error) {
+func (a *app) LoadRelayReport(hash string) (*RelayReport, error) {
 	stationID, err := a.GetId(hash)
 	if err != nil {
 		log.Info("Hash is not paired with the ID", hash, stationID)
@@ -187,15 +195,60 @@ func (a *app) LoadRelayReport(hash string) (RelayReport, error) {
 
 	// TODO: call DAL method to load relays
 	return nil, nil
+}
 
 func (a *app) StatusReport() StatusReport {
-	panic("not implment")
+	report := StatusReport{
+		LCWInfo: a.repo.Info(),
+	}
+	k, err := a.kasseSvc.Info()
+	if err == nil {
+		report.KasseStatus = StatusOnline
+		report.KasseInfo = k
+	} else {
+		report.KasseStatus = StatusOffline
+	}
+
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+	for key, v := range a.stations {
+		var status Status
+		if v.LastPing.Add(durationStationOffline).After(time.Now()) {
+			status = StatusOnline
+		} else {
+			status = StatusOffline
+		}
+		report.Stations = append(report.Stations, StationStatus{
+			Hash:   key,
+			ID:     v.ID,
+			Name:   v.Name,
+			Status: status,
+		})
+	}
+	for i, _ := range a.stationsNoHash {
+		report.Stations = append(report.Stations, StationStatus{
+			ID:     a.stationsNoHash[i].ID,
+			Name:   a.stationsNoHash[i].Name,
+			Status: StatusOffline,
+		})
+	}
+	return report
 }
 
 func (a *app) SetStation(station SetStation) error {
-	panic("not implment")
+	err := a.repo.SetStation(station)
+	if err != nil {
+		return err
+	}
+	a.loadStations()
+	return nil
 }
 
 func (a *app) DelStation(id int) error {
-	panic("not implment")
+	err := a.repo.DelStation(id)
+	if err != nil {
+		return err
+	}
+	a.loadStations()
+	return nil
 }

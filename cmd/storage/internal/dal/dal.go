@@ -73,7 +73,7 @@ func (r *repo) schemaLock(f func() error) func() error {
 	}
 }
 
-func (r *repo) Load(stationID string, key string) (value []byte, err error) {
+func (r *repo) Load(stationID int, key string) (value []byte, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res resGetValue
 		err := tx.NamedGetContext(ctx, &res, sqlGetValue, argGetValue{
@@ -92,7 +92,7 @@ func (r *repo) Load(stationID string, key string) (value []byte, err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) Save(stationID string, key string, value []byte) (err error) {
+func (r *repo) Save(stationID int, key string, value []byte) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlSetValue, argSetValue{
 			StationID: stationID,
@@ -100,6 +100,54 @@ func (r *repo) Save(stationID string, key string, value []byte) (err error) {
 			Value:     value,
 		})
 		return err
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) SetStation(station app.SetStation) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlStationNullHash, argStationNullHash{
+			Hash: station.Hash,
+		})
+		if err != nil {
+			return err
+		}
+		if station.ID == 0 {
+			_, err := tx.NamedExec(sqlAddStation, argAddStation{
+				Hash: station.Hash,
+				Name: station.Name,
+			})
+			return err
+		}
+		_, err = tx.NamedExec(sqlUpdStation, argUpdStation{
+			ID:   station.ID,
+			Hash: station.Hash,
+			Name: station.Name,
+		})
+		return err
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) DelStation(id int) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlDelStation, argDelStation{
+			ID: id,
+		})
+		return err
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) Stations() (stations []app.SetStation, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res []resStation
+		err := tx.NamedSelectContext(ctx, &res, sqlGetStation, argGetStation{})
+		if err != nil {
+			return err
+		}
+		stations = appSetStation(res)
+		return nil
 	})
 	return //nolint:nakedret
 }

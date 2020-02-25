@@ -25,6 +25,34 @@ type Client struct {
 }
 
 /*
+AddServiceAmount add service amount API
+*/
+func (a *Client) AddServiceAmount(params *AddServiceAmountParams) (*AddServiceAmountNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewAddServiceAmountParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "addServiceAmount",
+		Method:             "POST",
+		PathPattern:        "/add-service-amount",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &AddServiceAmountReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*AddServiceAmountNoContent), nil
+
+}
+
+/*
 DelStation del station API
 */
 func (a *Client) DelStation(params *DelStationParams) (*DelStationNoContent, error) {

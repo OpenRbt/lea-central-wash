@@ -37,6 +37,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
+		AddServiceAmountHandler: AddServiceAmountHandlerFunc(func(params AddServiceAmountParams) AddServiceAmountResponder {
+			// return middleware.NotImplemented("operation AddServiceAmount has not yet been implemented")
+			return AddServiceAmountNotImplemented()
+		}),
 		DelStationHandler: DelStationHandlerFunc(func(params DelStationParams) DelStationResponder {
 			// return middleware.NotImplemented("operation DelStation has not yet been implemented")
 			return DelStationNotImplemented()
@@ -120,6 +124,8 @@ type StorageAPI struct {
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
 
+	// AddServiceAmountHandler sets the operation handler for the add service amount operation
+	AddServiceAmountHandler AddServiceAmountHandler
 	// DelStationHandler sets the operation handler for the del station operation
 	DelStationHandler DelStationHandler
 	// GetPingHandler sets the operation handler for the get ping operation
@@ -207,6 +213,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.JSONProducer == nil {
 		unregistered = append(unregistered, "JSONProducer")
+	}
+
+	if o.AddServiceAmountHandler == nil {
+		unregistered = append(unregistered, "AddServiceAmountHandler")
 	}
 
 	if o.DelStationHandler == nil {
@@ -358,6 +368,11 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers == nil {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/add-service-amount"] = NewAddServiceAmount(o.context, o.AddServiceAmountHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

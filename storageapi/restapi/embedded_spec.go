@@ -30,10 +30,44 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.3.0"
+    "version": "1.4.0"
   },
   "basePath": "/",
   "paths": {
+    "/add-service-amount": {
+      "post": {
+        "operationId": "addServiceAmount",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "type": "integer"
+                },
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/del-station": {
       "post": {
         "operationId": "delStation",
@@ -542,13 +576,13 @@ func init() {
     "StatusReport": {
       "type": "object",
       "properties": {
-        "kasseInfo": {
+        "kasse_info": {
           "type": "string"
         },
-        "kasseStatus": {
+        "kasse_status": {
           "$ref": "#/definitions/Status"
         },
-        "lcwInfo": {
+        "lcw_info": {
           "type": "string"
         },
         "stations": {
@@ -574,10 +608,44 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.3.0"
+    "version": "1.4.0"
   },
   "basePath": "/",
   "paths": {
+    "/add-service-amount": {
+      "post": {
+        "operationId": "addServiceAmount",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "type": "integer"
+                },
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/del-station": {
       "post": {
         "operationId": "delStation",
@@ -1086,13 +1154,13 @@ func init() {
     "StatusReport": {
       "type": "object",
       "properties": {
-        "kasseInfo": {
+        "kasse_info": {
           "type": "string"
         },
-        "kasseStatus": {
+        "kasse_status": {
           "$ref": "#/definitions/Status"
         },
-        "lcwInfo": {
+        "lcw_info": {
           "type": "string"
         },
         "stations": {

@@ -7,7 +7,7 @@ import (
 )
 
 type keypair struct {
-	StationID string
+	StationID int
 	Key       string
 	Value     []byte
 }
@@ -22,7 +22,7 @@ func New() *DB {
 	return &DB{keypair: []keypair{}}
 }
 
-func (t *DB) Load(stationID string, key string) ([]byte, error) {
+func (t *DB) Load(stationID int, key string) ([]byte, error) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
@@ -33,7 +33,7 @@ func (t *DB) Load(stationID string, key string) ([]byte, error) {
 	return t.keypair[i].Value, nil
 }
 
-func (t *DB) Save(stationID string, key string, value []byte) (err error) {
+func (t *DB) Save(stationID int, key string, value []byte) (err error) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
@@ -50,7 +50,7 @@ func (t *DB) Save(stationID string, key string, value []byte) (err error) {
 	return nil
 }
 
-func (t *DB) findKey(stationID string, key string) int {
+func (t *DB) findKey(stationID int, key string) int {
 	for i, _ := range t.keypair {
 		if t.keypair[i].StationID == stationID && t.keypair[i].Key == key {
 			return i
@@ -62,4 +62,16 @@ func (t *DB) findKey(stationID string, key string) int {
 // Info returns database information
 func (t *DB) Info() string {
 	return "memdb"
+}
+
+func (t *DB) SetStation(station app.SetStation) error {
+	return nil
+}
+
+func (t *DB) Stations() (stations []app.SetStation, err error) {
+	return nil, nil
+}
+
+func (t *DB) DelStation(id int) error {
+	return nil
 }
