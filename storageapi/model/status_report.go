@@ -19,13 +19,13 @@ import (
 type StatusReport struct {
 
 	// kasse info
-	KasseInfo string `json:"kasseInfo,omitempty"`
+	KasseInfo string `json:"kasse_info,omitempty"`
 
 	// kasse status
-	KasseStatus Status `json:"kasseStatus,omitempty"`
+	KasseStatus Status `json:"kasse_status,omitempty"`
 
 	// lcw info
-	LcwInfo string `json:"lcwInfo,omitempty"`
+	LcwInfo string `json:"lcw_info,omitempty"`
 
 	// stations
 	Stations []*StationStatus `json:"stations"`
@@ -57,7 +57,7 @@ func (m *StatusReport) validateKasseStatus(formats strfmt.Registry) error {
 
 	if err := m.KasseStatus.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("kasseStatus")
+			return ve.ValidateName("kasse_status")
 		}
 		return err
 	}

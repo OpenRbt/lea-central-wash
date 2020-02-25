@@ -1,4 +1,4 @@
 package migration
 
 // CurrentVersion define required database schema version.
-const CurrentVersion = 2
+const CurrentVersion = 3

@@ -56,6 +56,7 @@ func NewServer(appl app.App, cfg Config) (*restapi.Server, error) {
 	api.SetStationHandler = op.SetStationHandlerFunc(svc.setStation)
 	api.DelStationHandler = op.DelStationHandlerFunc(svc.delStation)
 	api.StationReportHandler = op.StationReportHandlerFunc(svc.stationReport)
+	api.AddServiceAmountHandler = op.AddServiceAmountHandlerFunc(svc.addServiceAmount)
 
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host

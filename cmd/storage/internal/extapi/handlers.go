@@ -63,11 +63,11 @@ func (svc *service) saveRelay(params op.SaveRelayParams) op.SaveRelayResponder {
 	var relayStats []app.RelayStat
 	for i := 1; i <= 6; i++ {
 		r := app.RelayStat{
-			RelayID:       params.Args.RelayStats[i].RelayID,
-			SwitchedCount: params.Args.RelayStats[i].SwitchedCount,
+			RelayID:       int(params.Args.RelayStats[i].RelayID),
+			SwitchedCount: int(params.Args.RelayStats[i].SwitchedCount),
 			TotalTimeOn:   params.Args.RelayStats[i].TotalTimeOn,
 		}
-		relayStats = append(relayStats, &r)
+		relayStats = append(relayStats, r)
 	}
 
 	_ = svc.app.SaveRelayReport(toSave)
@@ -101,11 +101,11 @@ func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 
 	var toSave = app.MoneyReport{
 		Hash:         string(params.Args.Hash),
-		Banknotes:    params.Args.Banknotes,
-		CarsTotal:    params.Args.CarsTotal,
-		Coins:        params.Args.Coins,
-		Electronical: params.Args.Electronical,
-		Service:      params.Args.Service,
+		Banknotes:    int(params.Args.Banknotes),
+		CarsTotal:    int(params.Args.CarsTotal),
+		Coins:        int(params.Args.Coins),
+		Electronical: int(params.Args.Electronical),
+		Service:      int(params.Args.Service),
 	}
 
 	_ = svc.app.SaveMoneyReport(toSave)
@@ -116,20 +116,10 @@ func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 func (svc *service) ping(params op.PingParams) op.PingResponder {
 	log.Info("post ping", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 
-	// for test
-	if params.Args.Hash == "give me money" {
-		return op.NewPingOK().WithPayload(&op.PingOKBody{
-			ServiceAmount: newInt64(10),
-		})
-	}
-
-	serviceMoney, err := svc.app.GetServiceAmount(string(params.Args.Hash))
-	if err != nil {
-		serviceMoney = 0
-	}
+	serviceMoney := svc.app.Ping(string(params.Args.Hash))
 
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
-		ServiceAmount: newInt64(serviceMoney),
+		ServiceAmount: newInt64(int64(serviceMoney)),
 	})
 }
 
@@ -145,6 +135,20 @@ func (svc *service) info(params op.InfoParams) op.InfoResponder {
 func (svc *service) status(params op.StatusParams) op.StatusResponder {
 	report := svc.app.StatusReport()
 	return op.NewStatusOK().WithPayload(apiStatusReport(report))
+}
+
+func (svc *service) addServiceAmount(params op.AddServiceAmountParams) op.AddServiceAmountResponder {
+	err := svc.app.AddServiceAmount(params.Args.Hash, int(params.Args.Amount))
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewAddServiceAmountNoContent()
+	case app.ErrNotFound:
+		log.Info("add service ammount: not found", "hash", params.Args.Hash, "amount", params.Args.Amount, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewAddServiceAmountNotFound()
+	default:
+		log.PrintErr(err, "hash", params.Args.Hash, "amount", params.Args.Amount, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewAddServiceAmountInternalServerError()
+	}
 }
 
 func (svc *service) setStation(params op.SetStationParams) op.SetStationResponder {
