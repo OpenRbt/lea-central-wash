@@ -30,7 +30,7 @@ WHERE hash = :hash
 	`
 	sqlDelStation = `
 UPDATE station
-SET deleted = true
+SET deleted = true, hash = null
 WHERE id = :id
 	`
 )
