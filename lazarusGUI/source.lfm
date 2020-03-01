@@ -1,0 +1,104 @@
+object MainForm: TMainForm
+  Left = 508
+  Height = 370
+  Top = 143
+  Width = 732
+  BorderStyle = bsToolWindow
+  Caption = 'Car Wash Control Panel'
+  ClientHeight = 370
+  ClientWidth = 732
+  OnCreate = FormCreate
+  LCLVersion = '2.0.6.0'
+  Scaled = False
+  object btnUpdate: TButton
+    Left = 8
+    Height = 83
+    Top = 280
+    Width = 240
+    Caption = 'Update Station List'
+    Font.Name = 'Arial'
+    Font.Style = [fsBold]
+    OnClick = btnUpdateClick
+    ParentFont = False
+    TabOrder = 0
+  end
+  object StationsData: TStringGrid
+    Left = 8
+    Height = 272
+    Top = 0
+    Width = 720
+    ColCount = 6
+    ColumnClickSorts = True
+    DefaultColWidth = 119
+    DefaultRowHeight = 35
+    FixedCols = 3
+    Font.Style = [fsBold]
+    ParentFont = False
+    ScrollBars = ssNone
+    TabOrder = 1
+    TitleFont.Name = 'd'
+    TitleFont.Style = [fsBold]
+    ColWidths = (
+      119
+      119
+      119
+      119
+      119
+      121
+    )
+    Cells = (
+      9
+      0
+      1
+      'Station 1'
+      0
+      2
+      'Station 2'
+      0
+      3
+      'Station 3'
+      0
+      4
+      'Station 4'
+      1
+      0
+      'Hash'
+      2
+      0
+      'Status'
+      3
+      0
+      'ID'
+      4
+      0
+      'Name'
+      5
+      0
+      'Service Money'
+    )
+  end
+  object btnAdd: TButton
+    Left = 496
+    Height = 83
+    Top = 280
+    Width = 232
+    Caption = 'Send ID and Name'
+    Font.Name = 'Arial'
+    Font.Style = [fsBold]
+    OnClick = btnAddClick
+    ParentFont = False
+    TabOrder = 2
+  end
+  object btnSendService: TButton
+    Left = 265
+    Height = 80
+    Top = 281
+    Width = 217
+    Caption = 'Send Service Money'
+    Font.Name = 'Arial'
+    Font.Style = [fsBold]
+    OnClick = btnSendServiceClick
+    ParentFont = False
+    TabOrder = 3
+  end
+end
