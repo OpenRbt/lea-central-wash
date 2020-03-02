@@ -1,0 +1,127 @@
+object ManageForm: TManageForm
+  Left = 828
+  Height = 414
+  Top = 285
+  Width = 402
+  BorderStyle = bsDialog
+  Caption = 'Manage Station'
+  ClientHeight = 414
+  ClientWidth = 402
+  OnShow = FormShow
+  LCLVersion = '2.0.6.0'
+  object Panel1: TPanel
+    Left = 212
+    Height = 324
+    Top = 12
+    Width = 180
+    TabOrder = 8
+  end
+  object GroupBox1: TGroupBox
+    Left = 8
+    Height = 333
+    Top = 3
+    Width = 192
+    TabOrder = 2
+  end
+  object editHash: TLabeledEdit
+    Left = 24
+    Height = 38
+    Top = 48
+    Width = 158
+    EditLabel.Height = 30
+    EditLabel.Width = 158
+    EditLabel.Caption = 'Hash:'
+    EditLabel.ParentColor = False
+    EditLabel.ParentFont = False
+    EditLabel.Font.Height = 30
+    EditLabel.Font.Style = [fsBold]
+    Font.Height = 30
+    ParentFont = False
+    ReadOnly = True
+    TabOrder = 0
+  end
+  object btnOK: TButton
+    Left = 128
+    Height = 60
+    Top = 344
+    Width = 154
+    Caption = 'OK'
+    Font.Height = 40
+    Font.Style = [fsBold]
+    ModalResult = 1
+    ParentFont = False
+    TabOrder = 1
+  end
+  object btnSendData: TButton
+    Left = 24
+    Height = 65
+    Top = 256
+    Width = 158
+    Caption = 'Send Data'
+    Font.Height = 30
+    Font.Style = [fsBold]
+    OnClick = btnSendDataClick
+    ParentFont = False
+    TabOrder = 3
+  end
+  object editName: TLabeledEdit
+    Left = 24
+    Height = 38
+    Top = 128
+    Width = 158
+    EditLabel.Height = 30
+    EditLabel.Width = 158
+    EditLabel.Caption = 'Name:'
+    EditLabel.ParentColor = False
+    EditLabel.ParentFont = False
+    EditLabel.Font.Height = 30
+    EditLabel.Font.Style = [fsBold]
+    Font.Height = 30
+    ParentFont = False
+    TabOrder = 4
+  end
+  object editID: TLabeledEdit
+    Left = 24
+    Height = 38
+    Top = 208
+    Width = 158
+    EditLabel.Height = 30
+    EditLabel.Width = 158
+    EditLabel.Caption = 'ID:'
+    EditLabel.ParentColor = False
+    EditLabel.ParentFont = False
+    EditLabel.Font.Height = 30
+    EditLabel.Font.Style = [fsBold]
+    Font.Height = 30
+    ParentFont = False
+    TabOrder = 5
+  end
+  object editMoney: TLabeledEdit
+    Left = 224
+    Height = 38
+    Top = 48
+    Width = 158
+    EditLabel.Height = 30
+    EditLabel.Width = 158
+    EditLabel.Caption = 'Service Money:'
+    EditLabel.ParentColor = False
+    EditLabel.ParentFont = False
+    EditLabel.Font.Height = 30
+    EditLabel.Font.Style = [fsBold]
+    Font.Height = 30
+    ParentFont = False
+    TabOrder = 6
+  end
+  object btnSendMoney: TButton
+    Left = 224
+    Height = 65
+    Top = 101
+    Width = 158
+    Caption = 'Send Money'
+    Font.Height = 30
+    Font.Style = [fsBold]
+    OnClick = btnSendMoneyClick
+    ParentFont = False
+    TabOrder = 7
+  end
+end

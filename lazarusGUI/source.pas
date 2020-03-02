@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Grids, ExtCtrls, ActnList, ComCtrls, fphttpclient, Fpjson, jsonparser, superobject;
+  Grids, ExtCtrls, ActnList, ComCtrls, fphttpclient, Fpjson, jsonparser, superobject, Types, manager;
 
 type
 
@@ -14,16 +14,23 @@ type
 
   TMainForm = class(TForm)
     btnUpdate: TButton;
-    btnAdd: TButton;
-    btnSendService: TButton;
+    btnManage: TButton;
     StationsData: TStringGrid;
-    procedure btnAddClick(Sender: TObject);
-    procedure btnSendServiceClick(Sender: TObject);
+    UpdateTimer: TTimer;
+    procedure btnManageClick(Sender: TObject);
     procedure btnUpdateClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure StationsDataDblClick(Sender: TObject);
+    procedure UpdateStations(Sender: TObject);
+    procedure StationsDataDrawCell(Sender: TObject; aCol, aRow: Integer;
+      aRect: TRect; aState: TGridDrawState);
+    procedure UpdateCall(Sender: TObject);
+
+
   private
 
   public
+    property GetStationsData : TStringGrid read StationsData;
 
   end;
 
@@ -31,27 +38,53 @@ var
   MainForm: TMainForm;
   RequestAnswer: String;
 
+  // This array stores color ID-s of fixed column
+  // 0 - None, 1 - Green, 2 - Red
+  CellColor: array [1..12] of Integer;
+
 implementation
 
 {$R *.lfm}
 
 { TMainForm }
 
-procedure TMainForm.btnUpdateClick(Sender: TObject);
+procedure TMainForm.UpdateStations(Sender: TObject);
 var
     Data: ISuperObject;
     Station: ISuperObject;
-    Stations:TSuperArray;
+    Stations: TSuperArray;
+    i: Integer;
 
 begin
     With TFPHttpClient.Create(Nil) do
     try
       RequestAnswer := Get('http://localhost:8020/status');
       Data := SO(RequestAnswer);
+
+      btnManage.Enabled := False;
+
+      // Check the null data in array stations
       if Data.S['stations'] <> '' then begin
+         btnManage.Enabled := True;
+
          Stations := Data.A['stations'];
+
+         for i := 0 to 12 do
+             CellColor[i] := 0;
+
+         // TODO: Find the size of stations array
+         // TODO: Create the loop for adding new stations
+         // START OF LOOP
          Station := Stations.O[0];
          StationsData.Cells[1,1] := Station.s['hash'];
+
+         if Station.s['status'] = 'offline' then begin
+            CellColor[1] := 2;
+         end;
+         if Station.s['status'] = 'online' then begin
+            CellColor[1] := 1;
+         end;
+
          StationsData.Cells[2,1] := Station.s['status'];
 
          if Station.AsObject.Exists('name') then begin
@@ -61,7 +94,7 @@ begin
          if Station.AsObject.Exists('id') then begin
             StationsData.Cells[3,1] := Station.s['id'];
          end;
-
+         // END OF LOOP
       end;
 
     finally
@@ -69,52 +102,97 @@ begin
     end;
 end;
 
+procedure TMainForm.btnUpdateClick(Sender: TObject);
+begin
+    UpdateStations(Sender);
+
+    if UpdateTimer.Enabled = False then
+       UpdateTimer.Enabled := True;
+end;
+
 procedure TMainForm.FormCreate(Sender: TObject);
+var
+    s: TTextStyle;
+    i: Integer;
 begin
-  StationsData.Options:=StationsData.Options+[goEditing];
+  s := StationsData.DefaultTextStyle;
+  s.Alignment := taCenter;
+  StationsData.DefaultTextStyle := s;
+
+  for i := 0 to 12 do
+      CellColor[i] := 0;
+
+  btnManage.Enabled := False;
 end;
 
-procedure TMainForm.btnAddClick(Sender: TObject);
+procedure TMainForm.StationsDataDblClick(Sender: TObject);
 var
-  postJson: TJSONObject;
-  //responseData: String;
+    selectedRow: Integer;
+    selectedHash: String;
+    selectedID: String;
+    selectedName: String;
 begin
-  if (StrToInt(StationsData.Cells[3,1]) <> 0) and (StationsData.Cells[4,1] <> '') then begin
-     postJson := TJSONObject.Create;
-     postJson.Add('id', StrToInt(StationsData.Cells[3,1]));
-     postJson.Add('name',TJSONString.Create(StationsData.Cells[4,1]));
-     postJson.Add('hash',TJSONString.Create(StationsData.Cells[1,1]));
-     With TFPHttpClient.Create(Nil) do
-     try
-        AddHeader('Content-Type', 'application/json');
-        RequestBody := TStringStream.Create(postJson.AsJSON);
-        Post('http://localhost:8020/set-station');
-     finally
-        Free;
-     end;
-  end;
+    selectedRow := StationsData.Row;
+    selectedHash := StationsData.Cells[1, selectedRow];
+    selectedID := StationsData.Cells[3, selectedRow];
+    selectedName := StationsData.Cells[4, selectedRow];
+
+    if selectedHash <> '' then begin
+       ManageForm.SetHash(selectedHash);
+       ManageForm.SetID(selectedID);
+       ManageForm.SetName(selectedName);
+
+       ManageForm.ShowModal;
+    end;
 end;
 
-procedure TMainForm.btnSendServiceClick(Sender: TObject);
+procedure TMainForm.StationsDataDrawCell(Sender: TObject; aCol, aRow: Integer;
+  aRect: TRect; aState: TGridDrawState);
 var
-  postJson: TJSONObject;
-  //responseData: String;
+    currentColor: Integer;
 begin
-  if (StrToInt(StationsData.Cells[5,1]) <> 0) and (StationsData.Cells[1,1] <> '') then begin
-     postJson := TJSONObject.Create;
-     postJson.Add('hash',TJSONString.Create(StationsData.Cells[1,1]));
-     postJson.Add('amount', StrToInt(StationsData.Cells[5,1]));
-     StationsData.Cells[5,1] := '0';
-     With TFPHttpClient.Create(Nil) do
-     try
-        AddHeader('Content-Type', 'application/json');
-        RequestBody := TStringStream.Create(postJson.AsJSON);
-        Post('http://localhost:8020/add-service-amount');
-     finally
-        Free;
-     end;
-  end;
+   // We draw colored cells in status column only
+   if (aCol = 2) and (aRow <> 0) then begin
+       currentColor := CellColor[aRow];
+       if currentColor = 1 then begin
+          StationsData.Canvas.Brush.Color := clGreen;
+          StationsData.Canvas.FillRect(aRect);
+          StationsData.Canvas.TextRect(aRect,
+          aRect.Left + (aRect.Right - aRect.Left) div 2, aRect.Top + 2, 'online');
+       end;
+       if currentColor = 2 then begin
+          StationsData.Canvas.Brush.Color := clRed;
+          StationsData.Canvas.FillRect(aRect);
+          StationsData.Canvas.TextRect(aRect,
+          aRect.Left + (aRect.Right - aRect.Left) div 2, aRect.Top + 2, 'offline');
+       end;
+   end;
+end;
 
+procedure TMainForm.UpdateCall(Sender: TObject);
+begin
+     UpdateStations(Sender);
+end;
+
+procedure TMainForm.btnManageClick(Sender: TObject);
+var
+    selectedRow: Integer;
+    selectedHash: String;
+    selectedID: String;
+    selectedName: String;
+begin
+    selectedRow := StationsData.Row;
+    selectedHash := StationsData.Cells[1, selectedRow];
+    selectedID := StationsData.Cells[3, selectedRow];
+    selectedName := StationsData.Cells[4, selectedRow];
+
+    if selectedHash <> '' then begin
+       ManageForm.SetHash(selectedHash);
+       ManageForm.SetID(selectedID);
+       ManageForm.SetName(selectedName);
+
+       ManageForm.ShowModal;
+    end;
 end;
 
 end.

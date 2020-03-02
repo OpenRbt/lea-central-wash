@@ -1,20 +1,21 @@
 object MainForm: TMainForm
-  Left = 508
-  Height = 370
-  Top = 143
-  Width = 732
+  Left = 691
+  Height = 568
+  Top = 252
+  Width = 740
   BorderStyle = bsToolWindow
   Caption = 'Car Wash Control Panel'
-  ClientHeight = 370
-  ClientWidth = 732
+  ClientHeight = 568
+  ClientWidth = 740
   OnCreate = FormCreate
+  Position = poScreenCenter
   LCLVersion = '2.0.6.0'
   Scaled = False
   object btnUpdate: TButton
     Left = 8
     Height = 83
-    Top = 280
-    Width = 240
+    Top = 8
+    Width = 232
     Caption = 'Update Station List'
     Font.Name = 'Arial'
     Font.Style = [fsBold]
@@ -24,30 +25,33 @@ object MainForm: TMainForm
   end
   object StationsData: TStringGrid
     Left = 8
-    Height = 272
-    Top = 0
-    Width = 720
-    ColCount = 6
-    ColumnClickSorts = True
-    DefaultColWidth = 119
+    Height = 459
+    Top = 96
+    Width = 724
+    AutoEdit = False
+    BorderSpacing.CellAlignHorizontal = ccaCenter
+    DefaultColWidth = 144
     DefaultRowHeight = 35
-    FixedCols = 3
+    DoubleBuffered = True
+    ExtendedSelect = False
+    Font.Height = 20
     Font.Style = [fsBold]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goSmoothScroll, goSelectionActive, goRowHighlight]
+    ParentDoubleBuffered = False
     ParentFont = False
+    ParentShowHint = False
+    RowCount = 13
     ScrollBars = ssNone
     TabOrder = 1
     TitleFont.Name = 'd'
     TitleFont.Style = [fsBold]
-    ColWidths = (
-      119
-      119
-      119
-      119
-      119
-      121
-    )
+    OnDblClick = StationsDataDblClick
+    OnDrawCell = StationsDataDrawCell
     Cells = (
-      9
+      17
+      0
+      0
+      'Station Number'
       0
       1
       'Station 1'
@@ -60,6 +64,30 @@ object MainForm: TMainForm
       0
       4
       'Station 4'
+      0
+      5
+      'Station 5'
+      0
+      6
+      'Station 6'
+      0
+      7
+      'Station 7'
+      0
+      8
+      'Station 8'
+      0
+      9
+      'Station 9'
+      0
+      10
+      'Station 10'
+      0
+      11
+      'Station 11'
+      0
+      12
+      'Station 12'
       1
       0
       'Hash'
@@ -72,33 +100,25 @@ object MainForm: TMainForm
       4
       0
       'Name'
-      5
-      0
-      'Service Money'
     )
   end
-  object btnAdd: TButton
-    Left = 496
+  object btnManage: TButton
+    Left = 500
     Height = 83
-    Top = 280
+    Top = 8
     Width = 232
-    Caption = 'Send ID and Name'
+    Caption = 'Manage Station'
     Font.Name = 'Arial'
     Font.Style = [fsBold]
-    OnClick = btnAddClick
+    OnClick = btnManageClick
     ParentFont = False
     TabOrder = 2
   end
-  object btnSendService: TButton
-    Left = 265
-    Height = 80
-    Top = 281
-    Width = 217
-    Caption = 'Send Service Money'
-    Font.Name = 'Arial'
-    Font.Style = [fsBold]
-    OnClick = btnSendServiceClick
-    ParentFont = False
-    TabOrder = 3
+  object UpdateTimer: TTimer
+    Enabled = False
+    Interval = 10000
+    OnTimer = UpdateCall
+    left = 280
+    top = 16
   end
 end
