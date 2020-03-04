@@ -15,6 +15,7 @@ type
   TMainForm = class(TForm)
     btnUpdate: TButton;
     btnManage: TButton;
+    Logo: TImage;
     StationsData: TStringGrid;
     UpdateTimer: TTimer;
     procedure btnManageClick(Sender: TObject);
@@ -58,6 +59,11 @@ var
 begin
     With TFPHttpClient.Create(Nil) do
     try
+      MainForm.Cursor := crHourGlass;
+      StationsData.Cursor := crHourGlass;
+      btnUpdate.Cursor := crHourGlass;
+      btnManage.Cursor := crHourGlass;
+
       RequestAnswer := Get('http://localhost:8020/status');
       Data := SO(RequestAnswer);
 
@@ -99,7 +105,16 @@ begin
 
     finally
       Free;
+      MainForm.Cursor := crDefault;
+      StationsData.Cursor := crDefault;
+      btnUpdate.Cursor := crDefault;
+      btnManage.Cursor := crDefault;
     end;
+
+    MainForm.Cursor := crDefault;
+    StationsData.Cursor := crDefault;
+    btnUpdate.Cursor := crDefault;
+    btnManage.Cursor := crDefault;
 end;
 
 procedure TMainForm.btnUpdateClick(Sender: TObject);

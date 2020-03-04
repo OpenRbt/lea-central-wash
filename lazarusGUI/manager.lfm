@@ -1,26 +1,25 @@
 object ManageForm: TManageForm
-  Left = 828
-  Height = 414
-  Top = 285
-  Width = 402
-  BorderStyle = bsDialog
+  Left = 404
+  Height = 434
+  Top = 246
+  Width = 1313
   Caption = 'Manage Station'
-  ClientHeight = 414
-  ClientWidth = 402
+  ClientHeight = 434
+  ClientWidth = 1313
   OnShow = FormShow
   LCLVersion = '2.0.6.0'
   object Panel1: TPanel
     Left = 212
-    Height = 324
+    Height = 308
     Top = 12
-    Width = 180
+    Width = 237
     TabOrder = 8
   end
   object GroupBox1: TGroupBox
-    Left = 8
-    Height = 333
+    Left = 14
+    Height = 317
     Top = 3
-    Width = 192
+    Width = 186
     TabOrder = 2
   end
   object editHash: TLabeledEdit
@@ -35,16 +34,18 @@ object ManageForm: TManageForm
     EditLabel.ParentFont = False
     EditLabel.Font.Height = 30
     EditLabel.Font.Style = [fsBold]
+    Enabled = False
+    Font.Color = clMenuText
     Font.Height = 30
     ParentFont = False
     ReadOnly = True
     TabOrder = 0
   end
   object btnOK: TButton
-    Left = 128
-    Height = 60
-    Top = 344
-    Width = 154
+    Left = 14
+    Height = 96
+    Top = 329
+    Width = 248
     Caption = 'OK'
     Font.Height = 40
     Font.Style = [fsBold]
@@ -55,7 +56,7 @@ object ManageForm: TManageForm
   object btnSendData: TButton
     Left = 24
     Height = 65
-    Top = 256
+    Top = 243
     Width = 158
     Caption = 'Send Data'
     Font.Height = 30
@@ -67,7 +68,7 @@ object ManageForm: TManageForm
   object editName: TLabeledEdit
     Left = 24
     Height = 38
-    Top = 128
+    Top = 192
     Width = 158
     EditLabel.Height = 30
     EditLabel.Width = 158
@@ -83,7 +84,7 @@ object ManageForm: TManageForm
   object editID: TLabeledEdit
     Left = 24
     Height = 38
-    Top = 208
+    Top = 120
     Width = 158
     EditLabel.Height = 30
     EditLabel.Width = 158
@@ -92,36 +93,126 @@ object ManageForm: TManageForm
     EditLabel.ParentFont = False
     EditLabel.Font.Height = 30
     EditLabel.Font.Style = [fsBold]
+    Enabled = False
     Font.Height = 30
     ParentFont = False
     TabOrder = 5
   end
   object editMoney: TLabeledEdit
     Left = 224
-    Height = 38
+    Height = 58
     Top = 48
-    Width = 158
+    Width = 216
     EditLabel.Height = 30
-    EditLabel.Width = 158
+    EditLabel.Width = 216
     EditLabel.Caption = 'Service Money:'
     EditLabel.ParentColor = False
     EditLabel.ParentFont = False
     EditLabel.Font.Height = 30
     EditLabel.Font.Style = [fsBold]
-    Font.Height = 30
+    Font.Height = 50
     ParentFont = False
     TabOrder = 6
+    Text = '0'
   end
   object btnSendMoney: TButton
     Left = 224
-    Height = 65
-    Top = 101
-    Width = 158
+    Height = 90
+    Top = 120
+    Width = 216
     Caption = 'Send Money'
-    Font.Height = 30
+    Font.Height = 40
     Font.Style = [fsBold]
     OnClick = btnSendMoneyClick
     ParentFont = False
     TabOrder = 7
+  end
+  object GroupBox2: TGroupBox
+    Left = 457
+    Height = 316
+    Top = 4
+    Width = 845
+    ClientHeight = 296
+    ClientWidth = 841
+    TabOrder = 9
+    object Label1: TLabel
+      Left = 288
+      Height = 40
+      Top = -8
+      Width = 267
+      Caption = 'Price management:'
+      Font.Height = 40
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object PricesData: TStringGrid
+      Left = 11
+      Height = 152
+      Top = 35
+      Width = 823
+      AutoEdit = False
+      ColCount = 7
+      DefaultColWidth = 117
+      DefaultRowHeight = 74
+      Font.Height = 35
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
+      ParentFont = False
+      RowCount = 2
+      TabOrder = 0
+      TitleFont.Height = 37
+      OnEditingDone = PricesDataEditingDone
+      Cells = (
+        8
+        0
+        0
+        'Program'
+        0
+        1
+        'Price'
+        1
+        0
+        '1'
+        2
+        0
+        '2'
+        3
+        0
+        '3'
+        4
+        0
+        '4'
+        5
+        0
+        '5'
+        6
+        0
+        '6'
+      )
+    end
+    object btnLoadPrices: TButton
+      Left = 11
+      Height = 93
+      Top = 195
+      Width = 237
+      Caption = 'Load Prices'
+      Font.Height = 40
+      Font.Style = [fsBold]
+      OnClick = btnLoadPricesClick
+      ParentFont = False
+      TabOrder = 1
+    end
+    object btnSendPrices: TButton
+      Left = 596
+      Height = 93
+      Top = 195
+      Width = 238
+      Caption = 'Send Prices'
+      Font.Height = 40
+      Font.Style = [fsBold]
+      OnClick = btnSendPricesClick
+      ParentFont = False
+      TabOrder = 2
+    end
   end
 end

@@ -47,6 +47,7 @@
         <Filename Value="manager.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ManageForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit2>
     </Units>
