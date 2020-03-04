@@ -654,8 +654,8 @@ type
 {$ELSE}
     function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
 {$ENDIF}
-    function _AddRef: Integer; virtual; stdcall;
-    function _Release: Integer; virtual; stdcall;
+    function _AddRef: Integer; virtual; cdecl;
+    function _Release: Integer; virtual; cdecl;
 
     function GetO(const path: SOString): ISuperObject;
     procedure PutO(const path: SOString; const Value: ISuperObject);
@@ -5223,12 +5223,12 @@ begin
   end;
 end;
 
-function TSuperObject._AddRef: Integer; stdcall;
+function TSuperObject._AddRef: Integer; cdecl;
 begin
   Result := InterlockedIncrement(FRefCount);
 end;
 
-function TSuperObject._Release: Integer; stdcall;
+function TSuperObject._Release: Integer; cdecl;
 begin
   Result := InterlockedDecrement(FRefCount);
   if Result = 0 then

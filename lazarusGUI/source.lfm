@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 367
+  Left = -6
   Height = 1080
-  Top = 121
+  Top = 1
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
