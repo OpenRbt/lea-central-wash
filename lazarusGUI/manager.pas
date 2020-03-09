@@ -201,7 +201,6 @@ end;
 
 procedure TManageForm.FormShow(Sender: TObject);
 var
-    Data: ISuperObject;
     postJson: TJSONObject;
     i: Integer;
     Key: String;
@@ -233,7 +232,6 @@ end;
 
 procedure TManageForm.PricesDataEditingDone(Sender: TObject);
 var
-   enteredText: String;
    valueInsideText: Integer;
 begin
    valueInsideText := -1;
