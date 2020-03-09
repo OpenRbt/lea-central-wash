@@ -73,7 +73,6 @@ end;
 procedure TManageForm.btnSendMoneyClick(Sender: TObject);
 var
   postJson: TJSONObject;
-  hashToSend: String;
   moneyToSend: Integer;
 
 begin
@@ -104,7 +103,6 @@ end;
 
 procedure TManageForm.btnLoadPricesClick(Sender: TObject);
 var
-    Data: ISuperObject;
     postJson: TJSONObject;
     i: Integer;
     Key: String;
@@ -138,7 +136,6 @@ var
     i: Integer;
     valueFromGrid: Integer;
     Key: String;
-    Value: String;
 
 begin
     // Iterate over all prices in grid
@@ -174,7 +171,6 @@ var
   postJson: TJSONObject;
   idToSend: Integer;
   nameToSend: String;
-  hashToSend: String;
 
 begin
   idToSend := -1;

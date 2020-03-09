@@ -42,7 +42,7 @@ object ManageForm: TManageForm
     TabOrder = 0
   end
   object btnOK: TButton
-    Left = 524
+    Left = 24
     Height = 96
     Top = 329
     Width = 248
@@ -103,7 +103,7 @@ object ManageForm: TManageForm
   object editMoney: TLabeledEdit
     Left = 224
     Height = 48
-    Top = 87
+    Top = 48
     Width = 216
     EditLabel.Height = 30
     EditLabel.Width = 216
@@ -120,7 +120,7 @@ object ManageForm: TManageForm
   object btnSendMoney: TButton
     Left = 224
     Height = 90
-    Top = 150
+    Top = 120
     Width = 215
     Caption = 'Send Money'
     Font.Height = 35
@@ -140,7 +140,7 @@ object ManageForm: TManageForm
     object Label1: TLabel
       Left = 288
       Height = 35
-      Top = -8
+      Top = -13
       Width = 227
       Caption = 'Price management:'
       Font.Height = 35
@@ -157,12 +157,12 @@ object ManageForm: TManageForm
       ColCount = 7
       DefaultColWidth = 117
       DefaultRowHeight = 74
-      Font.Height = 25
+      Font.Height = 35
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
       ParentFont = False
       RowCount = 2
       TabOrder = 0
-      TitleFont.Height = 15
+      TitleFont.Height = 25
       OnEditingDone = PricesDataEditingDone
       Cells = (
         8
