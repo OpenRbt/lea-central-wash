@@ -138,12 +138,12 @@ object ManageForm: TManageForm
     ClientWidth = 841
     TabOrder = 9
     object Label1: TLabel
-      Left = 288
-      Height = 35
-      Top = -13
-      Width = 227
+      Left = 314
+      Height = 30
+      Top = -6
+      Width = 189
       Caption = 'Price management:'
-      Font.Height = 35
+      Font.Height = 30
       Font.Style = [fsBold]
       ParentColor = False
       ParentFont = False

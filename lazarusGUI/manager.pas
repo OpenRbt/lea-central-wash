@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Grids, Buttons, fphttpclient, Fpjson, jsonparser, superobject;
+  Grids, Buttons, fphttpclient, Fpjson, jsonparser;
 
 type
 
