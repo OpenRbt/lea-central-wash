@@ -64,6 +64,7 @@ object ManageForm: TManageForm
     OnClick = btnSendDataClick
     ParentFont = False
     TabOrder = 3
+    Visible = False
   end
   object editName: TLabeledEdit
     Left = 24
@@ -150,13 +151,13 @@ object ManageForm: TManageForm
     end
     object PricesData: TStringGrid
       Left = 11
-      Height = 152
+      Height = 205
       Top = 35
       Width = 823
       AutoEdit = False
       ColCount = 7
       DefaultColWidth = 117
-      DefaultRowHeight = 74
+      DefaultRowHeight = 100
       Font.Height = 35
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
       ParentFont = False
@@ -191,30 +192,6 @@ object ManageForm: TManageForm
         0
         '6'
       )
-    end
-    object btnLoadPrices: TButton
-      Left = 11
-      Height = 93
-      Top = 195
-      Width = 237
-      Caption = 'Load Prices'
-      Font.Height = 40
-      Font.Style = [fsBold]
-      OnClick = btnLoadPricesClick
-      ParentFont = False
-      TabOrder = 1
-    end
-    object btnSendPrices: TButton
-      Left = 596
-      Height = 93
-      Top = 195
-      Width = 238
-      Caption = 'Send Prices'
-      Font.Height = 40
-      Font.Style = [fsBold]
-      OnClick = btnSendPricesClick
-      ParentFont = False
-      TabOrder = 2
     end
   end
 end

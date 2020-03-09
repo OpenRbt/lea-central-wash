@@ -16,8 +16,6 @@ type
     btnOK: TButton;
     btnSendData: TButton;
     btnSendMoney: TButton;
-    btnLoadPrices: TButton;
-    btnSendPrices: TButton;
     GroupBox1: TGroupBox;
     editHash: TLabeledEdit;
     editMoney: TLabeledEdit;
@@ -228,6 +226,12 @@ end;
 procedure TManageForm.PricesDataEditingDone(Sender: TObject);
 var
    valueInsideText: Integer;
+   postJson: TJSONObject;
+   keyPairJson: TJSONObject;
+   i: Integer;
+   valueFromGrid: Integer;
+   Key: String;
+
 begin
    valueInsideText := -1;
    if TryStrToInt(PricesData.Cells[PricesData.Col, PricesData.Row], Longint(valueInsideText)) then begin
@@ -240,6 +244,34 @@ begin
    begin
        PricesData.Cells[PricesData.Col, PricesData.Row] := IntToStr(10);
    end;
+
+   i := PricesData.Col;
+
+   Key := 'price' + IntToStr(i);
+
+   valueFromGrid := -1;
+
+   // Numeric value in grid cell check
+   if TryStrToInt(PricesData.Cells[i, 1], Longint(valueFromGrid)) then begin
+      postJson := TJSONObject.Create;
+      keyPairJson := TJSONObject.Create;
+
+      postJson.Add('hash', TJSONString.Create(StationHash));
+      keyPairJson.Add('key', TJSONString.Create(Key));
+      keyPairJson.Add('value', TJSONString.Create(PricesData.Cells[i, 1]));
+      postJson.Add('KeyPair', keyPairJson);
+
+      With TFPHttpClient.Create(Nil) do
+      try
+         AddHeader('Content-Type', 'application/json');
+         RequestBody := TStringStream.Create(postJson.AsJSON);
+         Post('http://localhost:8020/save');
+      finally
+         Free;
+      end;
+   end;
+
+
 end;
 
 end.
