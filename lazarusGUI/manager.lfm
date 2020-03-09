@@ -81,6 +81,7 @@ object ManageForm: TManageForm
     Font.Height = 25
     ParentFont = False
     TabOrder = 4
+    Visible = False
   end
   object editID: TLabeledEdit
     Left = 24
