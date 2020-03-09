@@ -73,6 +73,7 @@ end;
 procedure TManageForm.btnSendMoneyClick(Sender: TObject);
 var
   postJson: TJSONObject;
+  hashToSend: String;
   moneyToSend: Integer;
 
 begin
