@@ -100,7 +100,6 @@ var
 begin
     for i := 1 to 6 do begin
         Key := 'price' + IntToStr(i);
-
         postJson := TJSONObject.Create;
         postJson.Add('hash', TJSONString.Create(StationHash));
         postJson.Add('key', TJSONString.Create(Key));
