@@ -42,7 +42,7 @@ object ManageForm: TManageForm
     TabOrder = 0
   end
   object btnOK: TButton
-    Left = 24
+    Left = 14
     Height = 96
     Top = 329
     Width = 248

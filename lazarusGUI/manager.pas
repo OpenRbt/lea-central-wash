@@ -73,12 +73,10 @@ end;
 procedure TManageForm.btnSendMoneyClick(Sender: TObject);
 var
   postJson: TJSONObject;
-  hashToSend: String;
   moneyToSend: Integer;
 
 begin
   if TryStrToInt(editMoney.Text, Longint(moneyToSend)) = True then begin
-     hashToSend := editHash.Text;
 
      if (moneyToSend > 0) and (moneyToSend <= 999) then begin
         postJson := TJSONObject.Create;
