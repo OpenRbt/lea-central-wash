@@ -200,7 +200,32 @@ begin
 end;
 
 procedure TManageForm.FormShow(Sender: TObject);
+var
+    Data: ISuperObject;
+    postJson: TJSONObject;
+    i: Integer;
+    Key: String;
+    Value: String;
+
 begin
+    for i := 1 to 6 do begin
+        Key := 'price' + IntToStr(i);
+
+        postJson := TJSONObject.Create;
+        postJson.Add('hash', TJSONString.Create(StationHash));
+        postJson.Add('key', TJSONString.Create(Key));
+
+        With TFPHttpClient.Create(Nil) do
+        try
+           AddHeader('Content-Type', 'application/json');
+           RequestBody := TStringStream.Create(postJson.AsJSON);
+           RequestAnswer := Post('http://localhost:8020/load');
+           Value := RequestAnswer.Substring(1,RequestAnswer.Length-3);
+           PricesData.Cells[i, 1] := Value;
+        finally
+            Free;
+        end;
+    end;
      editHash.Text := TCaption(StationHash);
      editID.Text := TCaption(StationID);
      editName.Text := TCaption(StationName);

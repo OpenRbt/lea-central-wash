@@ -24,7 +24,7 @@ object ManageForm: TManageForm
   end
   object editHash: TLabeledEdit
     Left = 24
-    Height = 38
+    Height = 33
     Top = 48
     Width = 158
     EditLabel.Height = 30
@@ -36,7 +36,7 @@ object ManageForm: TManageForm
     EditLabel.Font.Style = [fsBold]
     Enabled = False
     Font.Color = clMenuText
-    Font.Height = 30
+    Font.Height = 25
     ParentFont = False
     ReadOnly = True
     TabOrder = 0
@@ -67,7 +67,7 @@ object ManageForm: TManageForm
   end
   object editName: TLabeledEdit
     Left = 24
-    Height = 38
+    Height = 33
     Top = 192
     Width = 158
     EditLabel.Height = 30
@@ -77,13 +77,13 @@ object ManageForm: TManageForm
     EditLabel.ParentFont = False
     EditLabel.Font.Height = 30
     EditLabel.Font.Style = [fsBold]
-    Font.Height = 30
+    Font.Height = 25
     ParentFont = False
     TabOrder = 4
   end
   object editID: TLabeledEdit
     Left = 24
-    Height = 38
+    Height = 33
     Top = 120
     Width = 158
     EditLabel.Height = 30
@@ -94,13 +94,13 @@ object ManageForm: TManageForm
     EditLabel.Font.Height = 30
     EditLabel.Font.Style = [fsBold]
     Enabled = False
-    Font.Height = 30
+    Font.Height = 25
     ParentFont = False
     TabOrder = 5
   end
   object editMoney: TLabeledEdit
     Left = 224
-    Height = 58
+    Height = 48
     Top = 48
     Width = 216
     EditLabel.Height = 30
@@ -110,7 +110,7 @@ object ManageForm: TManageForm
     EditLabel.ParentFont = False
     EditLabel.Font.Height = 30
     EditLabel.Font.Style = [fsBold]
-    Font.Height = 50
+    Font.Height = 40
     ParentFont = False
     TabOrder = 6
     Text = '0'
@@ -121,7 +121,7 @@ object ManageForm: TManageForm
     Top = 120
     Width = 216
     Caption = 'Send Money'
-    Font.Height = 40
+    Font.Height = 35
     Font.Style = [fsBold]
     OnClick = btnSendMoneyClick
     ParentFont = False
@@ -160,7 +160,7 @@ object ManageForm: TManageForm
       ParentFont = False
       RowCount = 2
       TabOrder = 0
-      TitleFont.Height = 37
+      TitleFont.Height = 30
       OnEditingDone = PricesDataEditingDone
       Cells = (
         8
