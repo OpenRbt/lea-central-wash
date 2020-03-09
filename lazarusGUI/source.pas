@@ -66,7 +66,7 @@ begin
       btnManage.Cursor := crHourGlass;
 
       RequestAnswer := Get('http://localhost:8020/status');
-      Data := SO(RequestAnswer);
+      Data := SO(UTF8Decode(RequestAnswer));
 
       btnManage.Enabled := False;
 
