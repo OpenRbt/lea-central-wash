@@ -45,12 +45,12 @@ object ManageForm: TManageForm
     Text = '0'
   end
   object btnSendMoney: TButton
-    Left = 11
+    Left = 14
     Height = 90
-    Top = 150
-    Width = 219
-    Caption = 'Send Money'
-    Font.Height = 35
+    Top = 134
+    Width = 216
+    Caption = '+ Money'
+    Font.Height = 45
     Font.Style = [fsBold]
     OnClick = btnSendMoneyClick
     ParentFont = False
