@@ -9,7 +9,7 @@
         <Filename Value="WashServerGUI.lpr"/>
         <IsPartOfProject Value="True"/>
         <CursorPos X="38" Y="10"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="111"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -19,10 +19,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Source"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <CursorPos X="52" Y="140"/>
+        <TopLine Value="106"/>
+        <CursorPos X="28" Y="141"/>
         <ComponentState Value="1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="111"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -32,11 +34,10 @@
         <ComponentName Value="ManageForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="88"/>
-        <CursorPos X="5" Y="91"/>
-        <UsageCount Value="86"/>
+        <TopLine Value="19"/>
+        <CursorPos X="38" Y="102"/>
+        <UsageCount Value="96"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit2>
@@ -45,7 +46,7 @@
         <EditorIndex Value="3"/>
         <TopLine Value="906"/>
         <CursorPos Y="922"/>
-        <UsageCount Value="50"/>
+        <UsageCount Value="55"/>
         <Loaded Value="True"/>
       </Unit3>
     </Units>
