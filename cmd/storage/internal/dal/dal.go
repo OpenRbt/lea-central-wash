@@ -49,7 +49,7 @@ func (r *repo) tx(ctx Ctx, opts *sql.TxOptions, f func(*sqlxx.Tx) error) (err er
 	pc, _, _, _ := runtime.Caller(2)
 	names := strings.Split(runtime.FuncForPC(pc).Name(), ".")
 	methodName := names[len(names)-1]
-	return pqx.Serialize(r.schemaLock(func() error {
+	return pqx.Serialize(func() error {
 		tx, err := r.db.BeginTxx(ctx, opts)
 		if err == nil {
 			defer rollback(tx)
@@ -59,7 +59,7 @@ func (r *repo) tx(ctx Ctx, opts *sql.TxOptions, f func(*sqlxx.Tx) error) (err er
 			return tx.Commit()
 		}
 		return err
-	}))
+	})
 }
 
 func (r *repo) schemaLock(f func() error) func() error {
