@@ -5,13 +5,14 @@ object MainForm: TMainForm
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
-  ClientHeight = 1080
-  ClientWidth = 1920
+  ClientHeight = 0
+  ClientWidth = 0
   Constraints.MaxHeight = 1080
   Constraints.MaxWidth = 1920
   Constraints.MinHeight = 1080
   Constraints.MinWidth = 1920
   OnCreate = FormCreate
+  OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '2.0.6.0'
   Scaled = False

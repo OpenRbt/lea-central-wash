@@ -21,6 +21,7 @@ type
     procedure btnManageClick(Sender: TObject);
     procedure btnUpdateClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure StationsDataDblClick(Sender: TObject);
     procedure UpdateStations(Sender: TObject);
     procedure StationsDataDrawCell(Sender: TObject; aCol, aRow: Integer;
@@ -138,6 +139,14 @@ begin
       CellColor[i] := 0;
 
   btnManage.Enabled := False;
+end;
+
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+    UpdateStations(Sender);
+
+    if UpdateTimer.Enabled = False then
+       UpdateTimer.Enabled := True;
 end;
 
 procedure TMainForm.StationsDataDblClick(Sender: TObject);
