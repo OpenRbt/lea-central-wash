@@ -1,8 +1,9 @@
 #!/bin/bash
 
 cd ..
-CURRENT_DIR=$(pwd)
-sed -i "s/{DIR}/$CURRENT_DIR/g" ./install/lea-central-wash.service
+CURRENT_DIR=echo $(pwd) | sed 's/\//\\\//g'
 cd install
+
+sed -i "s/{DIR}/$CURRENT_DIR/g" lea-central-wash.service
 
 systemctl enable lea-central-wash
