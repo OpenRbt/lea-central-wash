@@ -60,6 +60,7 @@ var
 begin
     With TFPHttpClient.Create(Nil) do
     try
+    try
       MainForm.Cursor := crHourGlass;
       StationsData.Cursor := crHourGlass;
       btnUpdate.Cursor := crHourGlass;
@@ -79,31 +80,31 @@ begin
          for i := 0 to 12 do
              CellColor[i] := 0;
 
-         // TODO: Find the size of stations array
-         // TODO: Create the loop for adding new stations
-         // START OF LOOP
-         Station := Stations.O[0];
-         StationsData.Cells[1,1] := Station.s['hash'];
+         for i := 1 to Stations.Length do begin
+             Station := Stations.O[0];
+             StationsData.Cells[1,i] := Station.s['hash'];
 
-         if Station.s['status'] = 'offline' then begin
-            CellColor[1] := 2;
-         end;
-         if Station.s['status'] = 'online' then begin
-            CellColor[1] := 1;
-         end;
+             if Station.s['status'] = 'offline' then begin
+                CellColor[1] := 2;
+             end;
+             if Station.s['status'] = 'online' then begin
+                CellColor[1] := 1;
+             end;
 
-         StationsData.Cells[2,1] := Station.s['status'];
+             StationsData.Cells[2,i] := Station.s['status'];
 
-         if Station.AsObject.Exists('name') then begin
-            StationsData.Cells[4,1] := Station.s['name'];
-         end;
+             if Station.AsObject.Exists('name') then begin
+                StationsData.Cells[4,i] := Station.s['name'];
+             end;
 
-         if Station.AsObject.Exists('id') then begin
-            StationsData.Cells[3,1] := Station.s['id'];
+             if Station.AsObject.Exists('id') then begin
+                StationsData.Cells[3,i] := Station.s['id'];
+             end;
          end;
-         // END OF LOOP
       end;
-
+     except
+    On E: Exception Do
+            End;
     finally
       Free;
       MainForm.Cursor := crDefault;
