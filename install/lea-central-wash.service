@@ -1,0 +1,14 @@
+[Unit]
+Description=Lea Central Wash Server
+
+[Service]
+ExecStart={DIR}/storage
+WorkingDirectory={DIR}
+StandardOutput=inherit
+StandardInput=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
+
