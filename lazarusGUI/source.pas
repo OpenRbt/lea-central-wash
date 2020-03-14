@@ -81,7 +81,7 @@ begin
              CellColor[i] := 0;
 
          for i := 1 to Stations.Length do begin
-             Station := Stations.O[0];
+             Station := Stations.O[i-1];
              StationsData.Cells[1,i] := Station.s['hash'];
 
              if Station.s['status'] = 'offline' then begin
