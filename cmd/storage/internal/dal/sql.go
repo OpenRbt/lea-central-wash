@@ -39,7 +39,7 @@ type (
 	argSetValue struct {
 		StationID int
 		Key       string
-		Value     []byte
+		Value     string
 	}
 	argGetValue struct {
 		StationID int
@@ -63,7 +63,7 @@ type (
 	argGetStation struct {
 	}
 	resGetValue struct {
-		Value []byte
+		Value string
 	}
 	resStation struct {
 		Hash *string

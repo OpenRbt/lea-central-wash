@@ -18,8 +18,8 @@ type (
 	// App is an application interface.
 	App interface {
 		// Key-value methods
-		Save(hash string, key string, value []byte) error
-		Load(hash string, key string) ([]byte, error)
+		Save(hash string, key string, value string) error
+		Load(hash string, key string) (string, error)
 
 		// DBMS info method
 		Info() string
@@ -43,8 +43,8 @@ type (
 
 	// Repo is a DAL interface.
 	Repo interface {
-		Save(stationID int, key string, value []byte) error
-		Load(stationID int, key string) ([]byte, error)
+		Save(stationID int, key string, value string) error
+		Load(stationID int, key string) (string, error)
 		Info() string
 		SetStation(station SetStation) error
 		Stations() (stations []SetStation, err error)

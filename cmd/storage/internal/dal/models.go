@@ -6,7 +6,7 @@ import (
 
 func appSetStation(v []resStation) []app.SetStation {
 	var res []app.SetStation
-	for i, _ := range v {
+	for i := range v {
 		hash := ""
 		if v[i].Hash != nil {
 			hash = *v[i].Hash

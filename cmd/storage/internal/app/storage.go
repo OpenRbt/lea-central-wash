@@ -10,7 +10,7 @@ var log = structlog.New() //nolint:gochecknoglobals
 
 // Save accepts key-value pair and writes it to DAL
 // Checks the pairment of hash and ID of specified wash machine
-func (a *app) Save(hash string, key string, value []byte) error {
+func (a *app) Save(hash string, key string, value string) error {
 	stationID, err := a.GetId(hash)
 	if err != nil {
 		log.Info("Hash is not paired with the ID", "hash", hash, "id", stationID)
@@ -22,11 +22,11 @@ func (a *app) Save(hash string, key string, value []byte) error {
 
 // Load accepts key and returns value from DAL
 // Checks the pairment of hash and ID of specified wash machine
-func (a *app) Load(hash string, key string) ([]byte, error) {
+func (a *app) Load(hash string, key string) (string, error) {
 	stationID, err := a.GetId(hash)
 	if err != nil {
 		log.Info("Hash is not paired with the ID", "hash", hash, "id", stationID)
-		return nil, ErrNotFound
+		return "", ErrNotFound
 	}
 
 	return a.repo.Load(stationID, key)

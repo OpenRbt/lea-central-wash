@@ -9,7 +9,7 @@ import (
 type keypair struct {
 	StationID int
 	Key       string
-	Value     []byte
+	Value     string
 }
 
 type DB struct {
@@ -22,18 +22,18 @@ func New() *DB {
 	return &DB{keypair: []keypair{}}
 }
 
-func (t *DB) Load(stationID int, key string) ([]byte, error) {
+func (t *DB) Load(stationID int, key string) (string, error) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
 	i := t.findKey(stationID, key)
 	if i < 0 {
-		return nil, app.ErrNotFound
+		return "", app.ErrNotFound
 	}
 	return t.keypair[i].Value, nil
 }
 
-func (t *DB) Save(stationID int, key string, value []byte) (err error) {
+func (t *DB) Save(stationID int, key string, value string) (err error) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 

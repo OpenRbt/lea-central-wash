@@ -23,7 +23,7 @@ func (svc *service) load(params op.LoadParams) op.LoadResponder {
 
 func (svc *service) save(params op.SaveParams) op.SaveResponder {
 	log.Info("save", "hash", params.Args.Hash, "key", *params.Args.KeyPair.Key, "ip", params.HTTPRequest.RemoteAddr)
-	err := svc.app.Save(string(params.Args.Hash), *params.Args.KeyPair.Key, []byte(*params.Args.KeyPair.Value))
+	err := svc.app.Save(string(params.Args.Hash), *params.Args.KeyPair.Key, *params.Args.KeyPair.Value)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewSaveNoContent()

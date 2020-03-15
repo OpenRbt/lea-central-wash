@@ -73,7 +73,7 @@ func (r *repo) schemaLock(f func() error) func() error {
 	}
 }
 
-func (r *repo) Load(stationID int, key string) (value []byte, err error) {
+func (r *repo) Load(stationID int, key string) (value string, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res resGetValue
 		err := tx.NamedGetContext(ctx, &res, sqlGetValue, argGetValue{
@@ -92,7 +92,7 @@ func (r *repo) Load(stationID int, key string) (value []byte, err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) Save(stationID int, key string, value []byte) (err error) {
+func (r *repo) Save(stationID int, key string, value string) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlSetValue, argSetValue{
 			StationID: stationID,
