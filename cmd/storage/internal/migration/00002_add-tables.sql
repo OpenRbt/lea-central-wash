@@ -4,7 +4,7 @@ CREATE TABLE keypair (
     id          SERIAL      PRIMARY KEY,
     station_id  TEXT        NOT NULL,
     key         TEXT        NOT NULL,
-    value       BYTEA       NOT NULL,
+    value       TEXT       NOT NULL,
     UNIQUE (station_id, key)
 );
 -- +goose Down
