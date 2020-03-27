@@ -82,14 +82,14 @@ GROUP BY station_id
 	SELECT relay_id, sum(switched_count) switched_count, sum(total_time_on) total_time_on FROM (
 		(SELECT relay_id, switched_count, total_time_on 
 		FROM relay_stat WHERE relay_report_id = 
-			(select id from relay_report where station_id = 1 and ctime <= :end_date
+			(select id from relay_report where station_id = :station_id and ctime <= :end_date
 			 ORDER BY id DESC
 			 LIMIT 1)
 		)
 		UNION ALL
 		(SELECT relay_id, -switched_count, -total_time_on 
 		FROM relay_stat WHERE relay_report_id = 
-			(select id from relay_report where station_id = 1 and ctime <= :start_date
+			(select id from relay_report where station_id = :station_id and ctime <= :start_date
 			 ORDER BY id DESC
 			 LIMIT 1)
 		)
