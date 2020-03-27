@@ -71,7 +71,7 @@ SELECT station_id, sum(banknotes) banknotes, sum(cars_total) cars_total, sum(coi
 		union all
 		(
 		SELECT station_id, -banknotes, -cars_total, -coins, -electronical, -service 
-		FROM money_report WHERE station_id = :station_id and ctime< :start_date
+		FROM money_report WHERE station_id = :station_id and ctime <= :start_date
 		ORDER BY id DESC
 		LIMIT 1
 		) 
@@ -89,7 +89,7 @@ GROUP BY station_id
 		UNION ALL
 		(SELECT relay_id, -switched_count, -total_time_on 
 		FROM relay_stat WHERE relay_report_id = 
-			(select id from relay_report where station_id = 1 and ctime< :start_date
+			(select id from relay_report where station_id = 1 and ctime <= :start_date
 			 ORDER BY id DESC
 			 LIMIT 1)
 		)

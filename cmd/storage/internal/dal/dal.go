@@ -233,6 +233,7 @@ func (r *repo) SaveRelayReport(report app.RelayReport) (err error) {
 
 func (r *repo) MoneyReport(stationID int, startDate, endDate time.Time) (report app.MoneyReport, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		log.Debug("mr", "start", startDate, "end", endDate)
 		err := tx.NamedGetContext(ctx, &report, sqlMoneyReport, argMoneyReport{
 			StationID: stationID,
 			StartDate: startDate,
