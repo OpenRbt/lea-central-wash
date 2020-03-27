@@ -419,15 +419,15 @@ func init() {
               ],
               "properties": {
                 "endDate": {
-                  "type": "string",
-                  "format": "date"
+                  "description": "Unix time",
+                  "type": "integer"
                 },
                 "id": {
                   "type": "integer"
                 },
                 "startDate": {
-                  "type": "string",
-                  "format": "date"
+                  "description": "Unix time",
+                  "type": "integer"
                 }
               }
             }
@@ -1011,15 +1011,15 @@ func init() {
               ],
               "properties": {
                 "endDate": {
-                  "type": "string",
-                  "format": "date"
+                  "description": "Unix time",
+                  "type": "integer"
                 },
                 "id": {
                   "type": "integer"
                 },
                 "startDate": {
-                  "type": "string",
-                  "format": "date"
+                  "description": "Unix time",
+                  "type": "integer"
                 }
               }
             }

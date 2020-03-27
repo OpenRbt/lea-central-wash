@@ -133,11 +133,11 @@ paths:
               id:
                 type: integer
               startDate:
-                type: string
-                format: date
+                description: Unix time
+                type: integer
               endDate:
-                type: string
-                format: date
+                description: Unix time
+                type: integer
       responses:
         200:
           description: OK

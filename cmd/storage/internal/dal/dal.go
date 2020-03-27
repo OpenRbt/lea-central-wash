@@ -236,7 +236,7 @@ func (r *repo) MoneyReport(stationID int, startDate, endDate time.Time) (report 
 		err := tx.NamedGetContext(ctx, &report, sqlMoneyReport, argMoneyReport{
 			StationID: stationID,
 			StartDate: startDate,
-			EndDate:   endDate.Add(24 * time.Hour),
+			EndDate:   endDate,
 		})
 		switch {
 		case err == sql.ErrNoRows:
@@ -254,7 +254,7 @@ func (r *repo) RelayStatReport(stationID int, startDate, endDate time.Time) (rep
 		err := tx.NamedSelectContext(ctx, &report.RelayStats, sqlRelayStatReport, argRelayStatReport{
 			StationID: stationID,
 			StartDate: startDate,
-			EndDate:   endDate.Add(24 * time.Hour),
+			EndDate:   endDate,
 		})
 		return err
 	})

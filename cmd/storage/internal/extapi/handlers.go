@@ -112,9 +112,15 @@ func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 		Service:      int(params.Args.Service),
 	}
 
-	_ = svc.app.SaveMoneyReport(toSave)
+	err := svc.app.SaveMoneyReport(toSave)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSaveMoneyNoContent()
+	default:
+		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewSaveMoneyInternalServerError()
+	}
 
-	return op.NewSaveMoneyNoContent()
 }
 
 func (svc *service) ping(params op.PingParams) op.PingResponder {
@@ -197,7 +203,7 @@ func (svc *service) delStation(params op.DelStationParams) op.DelStationResponde
 func (svc *service) stationReport(params op.StationReportParams) op.StationReportResponder {
 	log.Info("station report", "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
 
-	money, relay, err := svc.app.StationReport(int(*params.Args.ID), time.Time(*params.Args.StartDate), time.Time(*params.Args.EndDate))
+	money, relay, err := svc.app.StationReport(int(*params.Args.ID), time.Unix(*params.Args.StartDate, 0), time.Unix(*params.Args.EndDate, 0))
 
 	switch errors.Cause(err) {
 	case nil:
