@@ -11,6 +11,7 @@ type StationData struct {
 
 type MoneyReport struct {
 	Hash         string
+	StationID    int
 	Banknotes    int
 	CarsTotal    int
 	Coins        int
@@ -26,5 +27,6 @@ type RelayStat struct {
 
 type RelayReport struct {
 	Hash       string
+	StationID  int
 	RelayStats []RelayStat
 }

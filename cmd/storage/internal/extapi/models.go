@@ -9,7 +9,7 @@ import (
 
 func apiRelayReport(data *app.RelayReport) *model.RelayReport {
 	var relayStats []*model.RelayStat
-	for i := 1; i <= 6; i++ {
+	for i, _ := range data.RelayStats {
 		r := model.RelayStat{
 			RelayID:       int64(data.RelayStats[i].RelayID),
 			SwitchedCount: int64(data.RelayStats[i].SwitchedCount),

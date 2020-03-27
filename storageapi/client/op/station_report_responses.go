@@ -64,7 +64,7 @@ func NewStationReportOK() *StationReportOK {
 OK
 */
 type StationReportOK struct {
-	Payload *model.MoneyReport
+	Payload *model.StationReport
 }
 
 func (o *StationReportOK) Error() string {
@@ -73,7 +73,7 @@ func (o *StationReportOK) Error() string {
 
 func (o *StationReportOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(model.MoneyReport)
+	o.Payload = new(model.StationReport)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -130,19 +130,17 @@ swagger:model StationReportBody
 */
 type StationReportBody struct {
 
-	// end date
+	// Unix time
 	// Required: true
-	// Format: date
-	EndDate *strfmt.Date `json:"endDate"`
+	EndDate *int64 `json:"endDate"`
 
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
 
-	// start date
+	// Unix time
 	// Required: true
-	// Format: date
-	StartDate *strfmt.Date `json:"startDate"`
+	StartDate *int64 `json:"startDate"`
 }
 
 // Validate validates this station report body
@@ -173,10 +171,6 @@ func (o *StationReportBody) validateEndDate(formats strfmt.Registry) error {
 		return err
 	}
 
-	if err := validate.FormatOf("args"+"."+"endDate", "body", "date", o.EndDate.String(), formats); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -192,10 +186,6 @@ func (o *StationReportBody) validateID(formats strfmt.Registry) error {
 func (o *StationReportBody) validateStartDate(formats strfmt.Registry) error {
 
 	if err := validate.Required("args"+"."+"startDate", "body", o.StartDate); err != nil {
-		return err
-	}
-
-	if err := validate.FormatOf("args"+"."+"startDate", "body", "date", o.StartDate.String(), formats); err != nil {
 		return err
 	}
 

@@ -2,6 +2,7 @@ package memdb
 
 import (
 	"sync"
+	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 )
@@ -74,4 +75,28 @@ func (t *DB) Stations() (stations []app.SetStation, err error) {
 
 func (t *DB) DelStation(id int) error {
 	return nil
+}
+
+func (t *DB) LastMoneyReport(stationID int) (report app.MoneyReport, err error) {
+	return
+}
+
+func (t *DB) SaveMoneyReport(report app.MoneyReport) error {
+	return nil
+}
+
+func (t *DB) LastRelayReport(stationID int) (report app.RelayReport, err error) {
+	return
+}
+
+func (t *DB) SaveRelayReport(report app.RelayReport) error {
+	return nil
+}
+
+func (t *DB) MoneyReport(stationID int, startDate, endDate time.Time) (report app.MoneyReport, err error) {
+	return
+}
+
+func (t *DB) RelayStatReport(stationID int, startDate, endDate time.Time) (report app.RelayReport, err error) {
+	return
 }
