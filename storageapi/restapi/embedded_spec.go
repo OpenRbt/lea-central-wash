@@ -30,7 +30,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.4.0"
+    "version": "1.5.0"
   },
   "basePath": "/",
   "paths": {
@@ -437,7 +437,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/MoneyReport"
+              "$ref": "#/definitions/StationReport"
             }
           },
           "404": {
@@ -543,6 +543,20 @@ func init() {
         },
         "totalTimeOn": {
           "type": "integer"
+        }
+      }
+    },
+    "StationReport": {
+      "type": "object",
+      "properties": {
+        "moneyReport": {
+          "$ref": "#/definitions/MoneyReport"
+        },
+        "relayStats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RelayStat"
+          }
         }
       }
     },
@@ -608,7 +622,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.4.0"
+    "version": "1.5.0"
   },
   "basePath": "/",
   "paths": {
@@ -1015,7 +1029,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/MoneyReport"
+              "$ref": "#/definitions/StationReport"
             }
           },
           "404": {
@@ -1121,6 +1135,20 @@ func init() {
         },
         "totalTimeOn": {
           "type": "integer"
+        }
+      }
+    },
+    "StationReport": {
+      "type": "object",
+      "properties": {
+        "moneyReport": {
+          "$ref": "#/definitions/MoneyReport"
+        },
+        "relayStats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RelayStat"
+          }
         }
       }
     },

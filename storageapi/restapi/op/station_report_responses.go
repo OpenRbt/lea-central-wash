@@ -26,7 +26,7 @@ type StationReportOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *model.MoneyReport `json:"body,omitempty"`
+	Payload *model.StationReport `json:"body,omitempty"`
 }
 
 // NewStationReportOK creates StationReportOK with default headers values
@@ -36,13 +36,13 @@ func NewStationReportOK() *StationReportOK {
 }
 
 // WithPayload adds the payload to the station report o k response
-func (o *StationReportOK) WithPayload(payload *model.MoneyReport) *StationReportOK {
+func (o *StationReportOK) WithPayload(payload *model.StationReport) *StationReportOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the station report o k response
-func (o *StationReportOK) SetPayload(payload *model.MoneyReport) {
+func (o *StationReportOK) SetPayload(payload *model.StationReport) {
 	o.Payload = payload
 }
 

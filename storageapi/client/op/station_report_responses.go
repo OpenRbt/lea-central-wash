@@ -64,7 +64,7 @@ func NewStationReportOK() *StationReportOK {
 OK
 */
 type StationReportOK struct {
-	Payload *model.MoneyReport
+	Payload *model.StationReport
 }
 
 func (o *StationReportOK) Error() string {
@@ -73,7 +73,7 @@ func (o *StationReportOK) Error() string {
 
 func (o *StationReportOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(model.MoneyReport)
+	o.Payload = new(model.StationReport)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

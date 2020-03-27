@@ -39,6 +39,7 @@ type (
 		StatusReport() StatusReport
 		SetStation(station SetStation) error
 		DelStation(id int) error
+		StationReport(id int, startDate, endDate time.Time) (MoneyReport, RelayReport, error)
 	}
 
 	// Repo is a DAL interface.
@@ -49,6 +50,12 @@ type (
 		SetStation(station SetStation) error
 		Stations() (stations []SetStation, err error)
 		DelStation(id int) error
+		LastMoneyReport(stationID int) (MoneyReport, error)
+		SaveMoneyReport(MoneyReport) error
+		LastRelayReport(stationID int) (RelayReport, error)
+		SaveRelayReport(RelayReport) error
+		MoneyReport(stationID int, startDate, endDate time.Time) (MoneyReport, error)
+		RelayStatReport(stationID int, startDate, endDate time.Time) (RelayReport, error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {

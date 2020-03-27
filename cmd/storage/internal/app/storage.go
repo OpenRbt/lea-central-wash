@@ -148,8 +148,9 @@ func (a *app) SaveMoneyReport(report MoneyReport) error {
 		log.Info("Hash is not paired with the ID", "hash", report.Hash, "id", stationID)
 		return ErrNotFound
 	}
-	// TODO: convert to DAL money model here and save
-	return nil
+
+	report.StationID = stationID
+	return a.repo.SaveMoneyReport(report)
 }
 
 // SaveRelayReport gets app.RelayReport struct
@@ -161,8 +162,8 @@ func (a *app) SaveRelayReport(report RelayReport) error {
 		log.Info("Hash is not paired with the ID", "hash", report.Hash, "id", stationID)
 		return ErrNotFound
 	}
-	// TODO: convert to DAL report model here and save
-	return nil
+	report.StationID = stationID
+	return a.repo.SaveRelayReport(report)
 }
 
 // LoadMoneyReport gets hash string
@@ -177,8 +178,8 @@ func (a *app) LoadMoneyReport(hash string) (*MoneyReport, error) {
 		return nil, ErrNotFound
 	}
 
-	// TODO: call DAL method to load money
-	return nil, nil
+	report, err := a.repo.LastMoneyReport(stationID)
+	return &report, err
 }
 
 // LoadRelayReport gets hash string
@@ -192,9 +193,8 @@ func (a *app) LoadRelayReport(hash string) (*RelayReport, error) {
 		// TODO: change nil to empty report here
 		return nil, ErrNotFound
 	}
-
-	// TODO: call DAL method to load relays
-	return nil, nil
+	report, err := a.repo.LastRelayReport(stationID)
+	return &report, err
 }
 
 func (a *app) StatusReport() StatusReport {
@@ -251,4 +251,14 @@ func (a *app) DelStation(id int) error {
 	}
 	a.loadStations()
 	return nil
+}
+
+func (a *app) StationReport(id int, startDate, endDate time.Time) (MoneyReport, RelayReport, error) {
+	report, err := a.repo.MoneyReport(id, startDate, endDate)
+	if err != nil {
+		return MoneyReport{}, RelayReport{}, err
+	}
+	stat, err := a.repo.RelayStatReport(id, startDate, endDate)
+
+	return report, stat, err
 }

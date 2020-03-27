@@ -1,7 +1,10 @@
 package extapi
 
 import (
+	"time"
+
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
 	"github.com/pkg/errors"
 )
@@ -35,10 +38,6 @@ func (svc *service) save(params op.SaveParams) op.SaveResponder {
 
 func (svc *service) loadRelay(params op.LoadRelayParams) op.LoadRelayResponder {
 	log.Info("load relay", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-	err := app.ErrNotFound
-	if params.Args.Hash == "give me report" {
-		err = nil
-	}
 
 	toLoad, err := svc.app.LoadRelayReport(string(params.Args.Hash))
 
@@ -60,19 +59,24 @@ func (svc *service) saveRelay(params op.SaveRelayParams) op.SaveRelayResponder {
 	var toSave app.RelayReport
 	toSave.Hash = string(params.Args.Hash)
 
-	var relayStats []app.RelayStat
-	for i := 1; i <= 6; i++ {
+	for i, _ := range params.Args.RelayStats {
 		r := app.RelayStat{
 			RelayID:       int(params.Args.RelayStats[i].RelayID),
 			SwitchedCount: int(params.Args.RelayStats[i].SwitchedCount),
 			TotalTimeOn:   params.Args.RelayStats[i].TotalTimeOn,
 		}
-		relayStats = append(relayStats, r)
+		toSave.RelayStats = append(toSave.RelayStats, r)
 	}
 
-	_ = svc.app.SaveRelayReport(toSave)
+	err := svc.app.SaveRelayReport(toSave)
 
-	return op.NewSaveRelayNoContent()
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSaveRelayNoContent()
+	default:
+		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewSaveRelayInternalServerError()
+	}
 }
 
 func (svc *service) loadMoney(params op.LoadMoneyParams) op.LoadMoneyResponder {
@@ -191,7 +195,24 @@ func (svc *service) delStation(params op.DelStationParams) op.DelStationResponde
 }
 
 func (svc *service) stationReport(params op.StationReportParams) op.StationReportResponder {
-	return op.StationReportNotImplemented()
+	log.Info("station report", "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+
+	money, relay, err := svc.app.StationReport(int(*params.Args.ID), time.Time(*params.Args.StartDate), time.Time(*params.Args.EndDate))
+
+	switch errors.Cause(err) {
+	case nil:
+		res := &model.StationReport{}
+		res.MoneyReport = apiMoneyReport(&money)
+		apiRelay := apiRelayReport(&relay)
+		res.RelayStats = apiRelay.RelayStats
+		return op.NewStationReportOK().WithPayload(res)
+	case app.ErrNotFound:
+		log.Info("station report: not found", "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationReportNotFound()
+	default:
+		log.PrintErr(err, "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationReportInternalServerError()
+	}
 }
 
 func newInt64(v int64) *int64 {
