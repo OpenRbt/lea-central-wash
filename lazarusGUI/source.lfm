@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 644
+  Left = 281
   Height = 1080
-  Top = 361
+  Top = 155
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -40,7 +40,7 @@ object MainForm: TMainForm
     RowCount = 13
     ScrollBars = ssNone
     TabOrder = 0
-    TitleFont.Height = 40
+    TitleFont.Height = 35
     TitleFont.Name = 'd'
     TitleFont.Quality = fqCleartypeNatural
     TitleFont.Style = [fsBold]
@@ -1297,7 +1297,7 @@ object MainForm: TMainForm
     RowCount = 13
     ScrollBars = ssNone
     TabOrder = 2
-    TitleFont.Height = 30
+    TitleFont.Height = 27
     TitleFont.Name = 'd'
     TitleFont.Quality = fqCleartypeNatural
     TitleFont.Style = [fsBold]
@@ -1441,10 +1441,15 @@ object MainForm: TMainForm
   end
   object cbHash1: TCheckComboBox
     Left = 284
-    Height = 86
+    Height = 66
     Top = 233
     Width = 276
-    ItemHeight = 80
+    AutoSize = False
+    Constraints.MaxHeight = 66
+    Constraints.MaxWidth = 276
+    Constraints.MinHeight = 66
+    Constraints.MinWidth = 276
+    ItemHeight = 60
     TabOrder = 9
   end
   object cbHash2: TCheckComboBox
