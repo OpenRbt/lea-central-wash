@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 281
+  Left = 451
   Height = 1080
-  Top = 155
+  Top = 607
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -1442,7 +1442,7 @@ object MainForm: TMainForm
   object cbHash1: TCheckComboBox
     Left = 284
     Height = 66
-    Top = 233
+    Top = 232
     Width = 276
     AutoSize = False
     Constraints.MaxHeight = 66
@@ -1457,6 +1457,11 @@ object MainForm: TMainForm
     Height = 66
     Top = 297
     Width = 276
+    AutoSize = False
+    Constraints.MaxHeight = 66
+    Constraints.MaxWidth = 276
+    Constraints.MinHeight = 66
+    Constraints.MinWidth = 276
     ItemHeight = 60
     TabOrder = 10
   end
@@ -1465,6 +1470,11 @@ object MainForm: TMainForm
     Height = 66
     Top = 361
     Width = 276
+    AutoSize = False
+    Constraints.MaxHeight = 66
+    Constraints.MaxWidth = 276
+    Constraints.MinHeight = 66
+    Constraints.MinWidth = 276
     ItemHeight = 60
     TabOrder = 11
   end
@@ -1473,6 +1483,11 @@ object MainForm: TMainForm
     Height = 66
     Top = 425
     Width = 276
+    AutoSize = False
+    Constraints.MaxHeight = 66
+    Constraints.MaxWidth = 276
+    Constraints.MinHeight = 66
+    Constraints.MinWidth = 276
     ItemHeight = 60
     TabOrder = 12
   end
@@ -1481,6 +1496,11 @@ object MainForm: TMainForm
     Height = 66
     Top = 489
     Width = 276
+    AutoSize = False
+    Constraints.MaxHeight = 66
+    Constraints.MaxWidth = 276
+    Constraints.MinHeight = 66
+    Constraints.MinWidth = 276
     ItemHeight = 60
     TabOrder = 13
   end
@@ -1489,6 +1509,11 @@ object MainForm: TMainForm
     Height = 66
     Top = 553
     Width = 276
+    AutoSize = False
+    Constraints.MaxHeight = 66
+    Constraints.MaxWidth = 276
+    Constraints.MinHeight = 66
+    Constraints.MinWidth = 276
     ItemHeight = 60
     TabOrder = 14
   end
@@ -1497,6 +1522,11 @@ object MainForm: TMainForm
     Height = 66
     Top = 617
     Width = 276
+    AutoSize = False
+    Constraints.MaxHeight = 66
+    Constraints.MaxWidth = 276
+    Constraints.MinHeight = 66
+    Constraints.MinWidth = 276
     ItemHeight = 60
     TabOrder = 15
   end
@@ -1505,6 +1535,11 @@ object MainForm: TMainForm
     Height = 66
     Top = 681
     Width = 276
+    AutoSize = False
+    Constraints.MaxHeight = 66
+    Constraints.MaxWidth = 276
+    Constraints.MinHeight = 66
+    Constraints.MinWidth = 276
     ItemHeight = 60
     TabOrder = 16
   end
@@ -1513,6 +1548,11 @@ object MainForm: TMainForm
     Height = 66
     Top = 745
     Width = 276
+    AutoSize = False
+    Constraints.MaxHeight = 66
+    Constraints.MaxWidth = 276
+    Constraints.MinHeight = 66
+    Constraints.MinWidth = 276
     ItemHeight = 60
     TabOrder = 17
   end
@@ -1521,6 +1561,11 @@ object MainForm: TMainForm
     Height = 66
     Top = 809
     Width = 276
+    AutoSize = False
+    Constraints.MaxHeight = 66
+    Constraints.MaxWidth = 276
+    Constraints.MinHeight = 66
+    Constraints.MinWidth = 276
     ItemHeight = 60
     TabOrder = 18
   end
@@ -1529,6 +1574,11 @@ object MainForm: TMainForm
     Height = 66
     Top = 873
     Width = 276
+    AutoSize = False
+    Constraints.MaxHeight = 66
+    Constraints.MaxWidth = 276
+    Constraints.MinHeight = 66
+    Constraints.MinWidth = 276
     ItemHeight = 60
     TabOrder = 19
   end
@@ -1537,6 +1587,11 @@ object MainForm: TMainForm
     Height = 66
     Top = 937
     Width = 276
+    AutoSize = False
+    Constraints.MaxHeight = 66
+    Constraints.MaxWidth = 276
+    Constraints.MinHeight = 66
+    Constraints.MinWidth = 276
     ItemHeight = 60
     TabOrder = 20
   end
