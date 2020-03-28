@@ -165,7 +165,7 @@ var
     s: TTextStyle;
     i: Integer;
 begin
-  Sleep(2000);
+  Sleep(1000);
   s := StationsData.DefaultTextStyle;
   s.Alignment := taCenter;
   StationsData.DefaultTextStyle := s;
