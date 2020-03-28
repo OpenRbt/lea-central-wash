@@ -5,24 +5,53 @@ unit Source;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Grids, ExtCtrls, ActnList, ComCtrls, fphttpclient, Fpjson, jsonparser, superobject, Types, manager;
+  Classes, SysUtils, DateUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Grids, ExtCtrls, ActnList, ComCtrls, EditBtn, ComboEx, DateTimePicker,
+  fphttpclient, Fpjson, jsonparser, superobject, Types, manager;
 
 type
 
   { TMainForm }
 
   TMainForm = class(TForm)
-    btnUpdate: TButton;
     btnManage: TButton;
+    btnDay: TButton;
+    btnWeek: TButton;
+    btnMonth: TButton;
+    btnYear: TButton;
+    cbHash1: TCheckComboBox;
+    cbHash10: TCheckComboBox;
+    cbHash11: TCheckComboBox;
+    cbHash12: TCheckComboBox;
+    cbHash2: TCheckComboBox;
+    cbHash3: TCheckComboBox;
+    cbHash4: TCheckComboBox;
+    cbHash5: TCheckComboBox;
+    cbHash6: TCheckComboBox;
+    cbHash7: TCheckComboBox;
+    cbHash8: TCheckComboBox;
+    cbHash9: TCheckComboBox;
+    dtFrom: TDateTimePicker;
+    dtTo: TDateTimePicker;
+    Label1: TLabel;
+    Label2: TLabel;
     Logo: TImage;
+    Memo1: TMemo;
     StationsData: TStringGrid;
+    MoneyData: TStringGrid;
     UpdateTimer: TTimer;
+    procedure btnDayClick(Sender: TObject);
     procedure btnManageClick(Sender: TObject);
+    procedure btnMonthClick(Sender: TObject);
     procedure btnUpdateClick(Sender: TObject);
+    procedure btnWeekClick(Sender: TObject);
+    procedure btnYearClick(Sender: TObject);
+    procedure dtFromEditingDone(Sender: TObject);
+    procedure dtToEditingDone(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure StationsDataDblClick(Sender: TObject);
+    procedure StationsDataSelection(Sender: TObject; aCol, aRow: Integer);
     procedure UpdateStations(Sender: TObject);
     procedure StationsDataDrawCell(Sender: TObject; aCol, aRow: Integer;
       aRect: TRect; aState: TGridDrawState);
@@ -55,7 +84,7 @@ var
     Data: ISuperObject;
     Station: ISuperObject;
     Stations: TSuperArray;
-    i: Integer;
+    i, pos: Integer;
 
 begin
     With TFPHttpClient.Create(Nil) do
@@ -63,10 +92,10 @@ begin
     try
       MainForm.Cursor := crHourGlass;
       StationsData.Cursor := crHourGlass;
-      btnUpdate.Cursor := crHourGlass;
       btnManage.Cursor := crHourGlass;
 
       RequestAnswer := Get('http://localhost:8020/status');
+      Memo1.Text := RequestAnswer;
       Data := SO(UTF8Decode(RequestAnswer));
 
       btnManage.Enabled := False;
@@ -80,25 +109,28 @@ begin
          for i := 0 to 12 do
              CellColor[i] := 0;
 
+         // Iterate over all incoming stations from server
          for i := 1 to Stations.Length do begin
              Station := Stations.O[i-1];
-             StationsData.Cells[1,i] := Station.s['hash'];
 
-             if Station.s['status'] = 'offline' then begin
-                CellColor[1] := 2;
-             end;
-             if Station.s['status'] = 'online' then begin
-                CellColor[1] := 1;
-             end;
-
-             StationsData.Cells[2,i] := Station.s['status'];
-
-             if Station.AsObject.Exists('name') then begin
-                StationsData.Cells[4,i] := Station.s['name'];
-             end;
-
+             // We can show data from pre-created stations only
              if Station.AsObject.Exists('id') then begin
-                StationsData.Cells[3,i] := Station.s['id'];
+                pos := StrToInt(Station.s['id']);
+
+                StationsData.Cells[1,pos] := Station.s['hash'];
+
+                if Station.s['status'] = 'offline' then begin
+                   CellColor[pos] := 2;
+                end;
+                if Station.s['status'] = 'online' then begin
+                   CellColor[pos] := 1;
+                end;
+
+                StationsData.Cells[2,pos] := Station.s['status'];
+
+                if Station.AsObject.Exists('name') then begin
+                   StationsData.Cells[4,i] := Station.s['name'];
+                end;
              end;
          end;
       end;
@@ -109,13 +141,11 @@ begin
       Free;
       MainForm.Cursor := crDefault;
       StationsData.Cursor := crDefault;
-      btnUpdate.Cursor := crDefault;
       btnManage.Cursor := crDefault;
     end;
 
     MainForm.Cursor := crDefault;
     StationsData.Cursor := crDefault;
-    btnUpdate.Cursor := crDefault;
     btnManage.Cursor := crDefault;
 end;
 
@@ -132,13 +162,19 @@ var
     s: TTextStyle;
     i: Integer;
 begin
-  Sleep(10000);
+  //Sleep(10000);
   s := StationsData.DefaultTextStyle;
   s.Alignment := taCenter;
   StationsData.DefaultTextStyle := s;
 
+  s := MoneyData.DefaultTextStyle;
+  s.Alignment := taCenter;
+  MoneyData.DefaultTextStyle := s;
+
   for i := 0 to 12 do
       CellColor[i] := 0;
+
+  cbHash1.Color := clHighLight;
 
   btnManage.Enabled := False;
 end;
@@ -170,6 +206,38 @@ begin
 
        ManageForm.ShowModal;
     end;
+end;
+
+procedure TMainForm.StationsDataSelection(Sender: TObject; aCol, aRow: Integer);
+begin
+  // This is real shit, need to replace that
+  cbHash1.Color:=clDefault;
+  cbHash2.Color:=clDefault;
+  cbHash3.Color:=clDefault;
+  cbHash4.Color:=clDefault;
+  cbHash5.Color:=clDefault;
+  cbHash6.Color:=clDefault;
+  cbHash7.Color:=clDefault;
+  cbHash8.Color:=clDefault;
+  cbHash9.Color:=clDefault;
+  cbHash10.Color:=clDefault;
+  cbHash11.Color:=clDefault;
+  cbHash12.Color:=clDefault;
+
+  case StationsData.Row of
+  1: cbHash1.Color:=clHighLight;
+  2: cbHash2.Color:=clHighLight;
+  3: cbHash3.Color:=clHighLight;
+  4: cbHash4.Color:=clHighLight;
+  5: cbHash5.Color:=clHighLight;
+  6: cbHash6.Color:=clHighLight;
+  7: cbHash7.Color:=clHighLight;
+  8: cbHash8.Color:=clHighLight;
+  9: cbHash9.Color:=clHighLight;
+  10:cbHash10.Color:=clHighLight;
+  11:cbHash11.Color:=clHighLight;
+  12:cbHash12.Color:=clHighLight;
+  end;
 end;
 
 procedure TMainForm.StationsDataDrawCell(Sender: TObject; aCol, aRow: Integer;
@@ -219,6 +287,66 @@ begin
 
        ManageForm.ShowModal;
     end;
+end;
+
+procedure TMainForm.btnMonthClick(Sender: TObject);
+var
+   currentYear, currentMonth, currentDay: Word;
+begin
+     DecodeDate(Now(), currentYear, currentMonth, currentDay);
+     dtFrom.DateTime := EncodeDateTime(currentYear, currentMonth, 1, 0, 0, 0, 0);
+     dtTo.DateTime := Now();
+end;
+
+procedure TMainForm.btnDayClick(Sender: TObject);
+var
+   currentYear, currentMonth, currentDay: Word;
+begin
+     DecodeDate(Now(), currentYear, currentMonth, currentDay);
+     dtFrom.DateTime := EncodeDateTime(currentYear, currentMonth, currentDay, 0, 0, 0, 0);
+     dtTo.DateTime := Now();
+end;
+
+procedure TMainForm.btnWeekClick(Sender: TObject);
+var
+   currentYear, currentMonth, currentDay, currentNameOfTheDay: Word;
+   tmpTime: TDateTime;
+begin
+     tmpTime := Now();
+
+     currentNameOfTheDay := DayOfTheWeek(tmpTime);
+
+     while currentNameOfTheDay <> 1 do begin
+           tmpTime := IncDay(tmpTime, -1);
+           currentNameOfTheDay := DayOfTheWeek(tmpTime);
+     end;
+
+     DecodeDate(tmpTime, currentYear, currentMonth, currentDay);
+     dtFrom.DateTime := EncodeDateTime(currentYear, currentMonth, currentDay, 0, 0, 0, 0);
+     dtTo.DateTime := Now();
+end;
+
+procedure TMainForm.btnYearClick(Sender: TObject);
+var
+   currentYear, currentMonth, currentDay: Word;
+begin
+     DecodeDate(Now(), currentYear, currentMonth, currentDay);
+     dtFrom.DateTime := EncodeDateTime(currentYear, 1, 1, 0, 0, 0, 0);
+     dtTo.DateTime := Now();
+end;
+
+procedure TMainForm.dtFromEditingDone(Sender: TObject);
+begin
+   if CompareDateTime(dtFrom.DateTime, dtTo.DateTime) > 0 then begin
+      dtFrom.DateTime := dtTo.DateTime;
+   end;
+end;
+
+procedure TMainForm.dtToEditingDone(Sender: TObject);
+begin
+    if CompareDateTime(dtFrom.DateTime, dtTo.DateTime) > 0 then begin
+      dtTo.DateTime := dtFrom.DateTime;
+   end;
 end;
 
 end.

@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = -6
+  Left = 531
   Height = 1080
-  Top = 1
+  Top = 393
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -17,30 +17,19 @@ object MainForm: TMainForm
   LCLVersion = '2.0.6.0'
   Scaled = False
   WindowState = wsMaximized
-  object btnUpdate: TButton
-    Left = 8
-    Height = 152
-    Top = 8
-    Width = 384
-    Caption = 'Update Station List'
-    Font.Height = 40
-    Font.Name = 'Arial'
-    Font.Style = [fsBold]
-    OnClick = btnUpdateClick
-    ParentFont = False
-    TabOrder = 0
-  end
   object StationsData: TStringGrid
     Left = 8
     Height = 836
     Top = 168
-    Width = 1904
+    Width = 1106
     AutoEdit = False
     BorderSpacing.CellAlignHorizontal = ccaCenter
-    DefaultColWidth = 380
+    ColCount = 4
+    DefaultColWidth = 275
     DefaultRowHeight = 64
     DoubleBuffered = True
     ExtendedSelect = False
+    FixedCols = 0
     Font.Height = 40
     Font.Quality = fqCleartypeNatural
     HeaderHotZones = []
@@ -50,7 +39,7 @@ object MainForm: TMainForm
     ParentShowHint = False
     RowCount = 13
     ScrollBars = ssNone
-    TabOrder = 1
+    TabOrder = 0
     TitleFont.Height = 40
     TitleFont.Name = 'd'
     TitleFont.Quality = fqCleartypeNatural
@@ -58,11 +47,12 @@ object MainForm: TMainForm
     TitleStyle = tsStandard
     OnDblClick = StationsDataDblClick
     OnDrawCell = StationsDataDrawCell
+    OnSelection = StationsDataSelection
     Cells = (
-      17
+      16
       0
       0
-      'Station Number'
+      'Station ID'
       0
       1
       'Station 1'
@@ -107,29 +97,26 @@ object MainForm: TMainForm
       'Status'
       3
       0
-      'ID'
-      4
-      0
       'Name'
     )
   end
   object btnManage: TButton
-    Left = 1527
+    Left = 8
     Height = 155
-    Top = 8
-    Width = 385
+    Top = 4
+    Width = 277
     Caption = 'Manage Station'
     Font.Height = 40
     Font.Name = 'Arial'
     Font.Style = [fsBold]
     OnClick = btnManageClick
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 1
   end
   object Logo: TImage
-    Left = 698
+    Left = 565
     Height = 108
-    Top = 23
+    Top = 24
     Width = 540
     AutoSize = True
     Picture.Data = {
@@ -1287,11 +1274,282 @@ object MainForm: TMainForm
     }
     Proportional = True
   end
+  object MoneyData: TStringGrid
+    Left = 1111
+    Height = 836
+    Top = 168
+    Width = 799
+    AutoEdit = False
+    BorderSpacing.CellAlignHorizontal = ccaCenter
+    DefaultColWidth = 159
+    DefaultRowHeight = 64
+    DoubleBuffered = True
+    Enabled = False
+    ExtendedSelect = False
+    FixedCols = 5
+    Font.Height = 40
+    Font.Quality = fqCleartypeNatural
+    HeaderHotZones = []
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll, goSelectionActive]
+    ParentDoubleBuffered = False
+    ParentFont = False
+    ParentShowHint = False
+    RowCount = 13
+    ScrollBars = ssNone
+    TabOrder = 2
+    TitleFont.Height = 37
+    TitleFont.Name = 'd'
+    TitleFont.Quality = fqCleartypeNatural
+    TitleFont.Style = [fsBold]
+    TitleStyle = tsStandard
+    OnDblClick = StationsDataDblClick
+    OnDrawCell = StationsDataDrawCell
+    Cells = (
+      5
+      0
+      0
+      'Total'
+      1
+      0
+      'Card'
+      2
+      0
+      'Coin'
+      3
+      0
+      'Banknote'
+      4
+      0
+      'Service'
+    )
+  end
+  object dtFrom: TDateTimePicker
+    Left = 1270
+    Height = 38
+    Top = 40
+    Width = 221
+    CenturyFrom = 1941
+    MaxDate = 2958465
+    MinDate = 36526
+    Font.Height = 30
+    ParentFont = False
+    TabOrder = 3
+    TrailingSeparator = False
+    TextForNullDate = 'NULL'
+    LeadingZeros = True
+    Kind = dtkDateTime
+    TimeFormat = tf24
+    TimeDisplay = tdHMS
+    DateMode = dmComboBox
+    Date = 43918
+    Time = 0
+    UseDefaultSeparators = True
+    HideDateTimeParts = []
+    MonthNames = 'Long'
+    OnEditingDone = dtFromEditingDone
+  end
+  object dtTo: TDateTimePicker
+    Left = 1270
+    Height = 38
+    Top = 120
+    Width = 221
+    CenturyFrom = 1941
+    MaxDate = 2958465
+    MinDate = 36613
+    Font.Height = 30
+    ParentFont = False
+    TabOrder = 4
+    TrailingSeparator = False
+    TextForNullDate = 'NULL'
+    LeadingZeros = True
+    Kind = dtkDateTime
+    TimeFormat = tf24
+    TimeDisplay = tdHMS
+    DateMode = dmComboBox
+    Date = 43918
+    Time = 0
+    UseDefaultSeparators = True
+    HideDateTimeParts = []
+    MonthNames = 'Long'
+    OnEditingDone = dtToEditingDone
+  end
+  object btnDay: TButton
+    Left = 1588
+    Height = 70
+    Top = 88
+    Width = 156
+    Caption = 'Day'
+    Font.Height = 40
+    OnClick = btnDayClick
+    ParentFont = False
+    TabOrder = 5
+  end
+  object btnWeek: TButton
+    Left = 1588
+    Height = 70
+    Top = 8
+    Width = 156
+    Caption = 'Week'
+    Font.Height = 40
+    OnClick = btnWeekClick
+    ParentFont = False
+    TabOrder = 6
+  end
+  object btnMonth: TButton
+    Left = 1752
+    Height = 70
+    Top = 88
+    Width = 158
+    Caption = 'Month'
+    Font.Height = 40
+    OnClick = btnMonthClick
+    ParentFont = False
+    TabOrder = 7
+  end
+  object btnYear: TButton
+    Left = 1752
+    Height = 70
+    Top = 8
+    Width = 158
+    Caption = 'Year'
+    Font.Height = 40
+    OnClick = btnYearClick
+    ParentFont = False
+    TabOrder = 8
+  end
+  object Label1: TLabel
+    Left = 1272
+    Height = 30
+    Top = 8
+    Width = 57
+    Caption = 'From:'
+    Font.Height = 30
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Label2: TLabel
+    Left = 1272
+    Height = 30
+    Top = 88
+    Width = 29
+    Caption = 'To:'
+    Font.Height = 30
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object cbHash1: TCheckComboBox
+    Left = 284
+    Height = 66
+    Top = 233
+    Width = 276
+    ItemHeight = 60
+    TabOrder = 9
+  end
+  object cbHash2: TCheckComboBox
+    Left = 284
+    Height = 66
+    Top = 297
+    Width = 276
+    ItemHeight = 60
+    TabOrder = 10
+  end
+  object cbHash3: TCheckComboBox
+    Left = 284
+    Height = 66
+    Top = 361
+    Width = 276
+    ItemHeight = 60
+    TabOrder = 11
+  end
+  object cbHash4: TCheckComboBox
+    Left = 284
+    Height = 66
+    Top = 425
+    Width = 276
+    ItemHeight = 60
+    TabOrder = 12
+  end
+  object cbHash5: TCheckComboBox
+    Left = 284
+    Height = 66
+    Top = 489
+    Width = 276
+    ItemHeight = 60
+    TabOrder = 13
+  end
+  object cbHash6: TCheckComboBox
+    Left = 284
+    Height = 66
+    Top = 553
+    Width = 276
+    ItemHeight = 60
+    TabOrder = 14
+  end
+  object cbHash7: TCheckComboBox
+    Left = 284
+    Height = 66
+    Top = 617
+    Width = 276
+    ItemHeight = 60
+    TabOrder = 15
+  end
+  object cbHash8: TCheckComboBox
+    Left = 284
+    Height = 66
+    Top = 681
+    Width = 276
+    ItemHeight = 60
+    TabOrder = 16
+  end
+  object cbHash9: TCheckComboBox
+    Left = 284
+    Height = 66
+    Top = 745
+    Width = 276
+    ItemHeight = 60
+    TabOrder = 17
+  end
+  object cbHash10: TCheckComboBox
+    Left = 284
+    Height = 66
+    Top = 809
+    Width = 276
+    ItemHeight = 60
+    TabOrder = 18
+  end
+  object cbHash11: TCheckComboBox
+    Left = 284
+    Height = 66
+    Top = 873
+    Width = 276
+    ItemHeight = 60
+    TabOrder = 19
+  end
+  object cbHash12: TCheckComboBox
+    Left = 284
+    Height = 66
+    Top = 937
+    Width = 276
+    ItemHeight = 60
+    TabOrder = 20
+  end
+  object Memo1: TMemo
+    Left = 296
+    Height = 144
+    Top = 8
+    Width = 248
+    Lines.Strings = (
+      'Memo1'
+    )
+    TabOrder = 21
+  end
   object UpdateTimer: TTimer
     Enabled = False
     Interval = 10000
     OnTimer = UpdateCall
-    left = 577
-    top = 66
+    left = 306
+    top = 116
   end
 end
