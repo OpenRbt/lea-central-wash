@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 276
+  Left = 31
   Height = 1080
-  Top = 551
+  Top = 179
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -1594,16 +1594,6 @@ object MainForm: TMainForm
     Constraints.MinWidth = 276
     ItemHeight = 60
     TabOrder = 20
-  end
-  object Memo1: TMemo
-    Left = 296
-    Height = 144
-    Top = 8
-    Width = 248
-    Lines.Strings = (
-      'Memo1'
-    )
-    TabOrder = 21
   end
   object UpdateTimer: TTimer
     Enabled = False

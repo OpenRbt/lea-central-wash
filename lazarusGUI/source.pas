@@ -36,7 +36,6 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Logo: TImage;
-    Memo1: TMemo;
     StationsData: TStringGrid;
     MoneyData: TStringGrid;
     UpdateTimer: TTimer;
@@ -97,7 +96,6 @@ begin
       btnManage.Cursor := crHourGlass;
 
       RequestAnswer := Get('http://localhost:8020/status');
-      Memo1.Text := RequestAnswer;
       Data := SO(UTF8Decode(RequestAnswer));
 
       btnManage.Enabled := False;
@@ -145,10 +143,9 @@ begin
                 end;
              end;
          end;
-      end;
-
-      for i := 0 to AvailableHashes.Count do begin
+      for i := 1 to AvailableHashes.Count do begin
           cbHash1.AddItem(AvailableHashes.ValueFromIndex[i], TCheckBoxState.cbChecked, True);
+      end;
       end;
 
      except
