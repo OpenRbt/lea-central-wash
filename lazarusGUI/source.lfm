@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 531
+  Left = 644
   Height = 1080
-  Top = 393
+  Top = 361
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -106,7 +106,7 @@ object MainForm: TMainForm
     Top = 4
     Width = 277
     Caption = 'Manage Station'
-    Font.Height = 40
+    Font.Height = 30
     Font.Name = 'Arial'
     Font.Style = [fsBold]
     OnClick = btnManageClick
@@ -1275,9 +1275,9 @@ object MainForm: TMainForm
     Proportional = True
   end
   object MoneyData: TStringGrid
-    Left = 1111
+    Left = 1112
     Height = 836
-    Top = 168
+    Top = 167
     Width = 799
     AutoEdit = False
     BorderSpacing.CellAlignHorizontal = ccaCenter
@@ -1297,7 +1297,7 @@ object MainForm: TMainForm
     RowCount = 13
     ScrollBars = ssNone
     TabOrder = 2
-    TitleFont.Height = 37
+    TitleFont.Height = 30
     TitleFont.Name = 'd'
     TitleFont.Quality = fqCleartypeNatural
     TitleFont.Style = [fsBold]
@@ -1324,7 +1324,7 @@ object MainForm: TMainForm
     )
   end
   object dtFrom: TDateTimePicker
-    Left = 1270
+    Left = 1208
     Height = 38
     Top = 40
     Width = 221
@@ -1349,7 +1349,7 @@ object MainForm: TMainForm
     OnEditingDone = dtFromEditingDone
   end
   object dtTo: TDateTimePicker
-    Left = 1270
+    Left = 1208
     Height = 38
     Top = 120
     Width = 221
@@ -1418,9 +1418,9 @@ object MainForm: TMainForm
     TabOrder = 8
   end
   object Label1: TLabel
-    Left = 1272
+    Left = 1208
     Height = 30
-    Top = 8
+    Top = 4
     Width = 57
     Caption = 'From:'
     Font.Height = 30
@@ -1429,7 +1429,7 @@ object MainForm: TMainForm
     ParentFont = False
   end
   object Label2: TLabel
-    Left = 1272
+    Left = 1208
     Height = 30
     Top = 88
     Width = 29
@@ -1441,10 +1441,10 @@ object MainForm: TMainForm
   end
   object cbHash1: TCheckComboBox
     Left = 284
-    Height = 66
+    Height = 86
     Top = 233
     Width = 276
-    ItemHeight = 60
+    ItemHeight = 80
     TabOrder = 9
   end
   object cbHash2: TCheckComboBox

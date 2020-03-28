@@ -92,6 +92,7 @@ begin
     try
       MainForm.Cursor := crHourGlass;
       StationsData.Cursor := crHourGlass;
+      MoneyData.Cursor := crHourGlass;
       btnManage.Cursor := crHourGlass;
 
       RequestAnswer := Get('http://localhost:8020/status');
@@ -141,11 +142,13 @@ begin
       Free;
       MainForm.Cursor := crDefault;
       StationsData.Cursor := crDefault;
+      MoneyData.Cursor := crDefault;
       btnManage.Cursor := crDefault;
     end;
 
     MainForm.Cursor := crDefault;
     StationsData.Cursor := crDefault;
+    MoneyData.Cursor := crDefault;
     btnManage.Cursor := crDefault;
 end;
 
