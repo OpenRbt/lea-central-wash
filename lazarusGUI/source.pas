@@ -72,6 +72,7 @@ var
   // This array stores color ID-s of fixed column
   // 0 - None, 1 - Green, 2 - Red
   CellColor: array [1..12] of Integer;
+  AvailableHashes: TStringList;
 
 implementation
 
@@ -114,11 +115,14 @@ begin
          for i := 1 to Stations.Length do begin
              Station := Stations.O[i-1];
 
-             // We can show data from pre-created stations only
+             // ID will exist, if the slot is empty OR station is paired and OK
              if Station.AsObject.Exists('id') then begin
                 pos := StrToInt(Station.s['id']);
 
-                StationsData.Cells[1,pos] := Station.s['hash'];
+                // If Hash exists - add this to list
+                if Station.AsObject.Exists('hash') then begin
+                   AvailableHashes.Add(Station.s['hash']);
+                end;
 
                 if Station.s['status'] = 'offline' then begin
                    CellColor[pos] := 2;
@@ -130,11 +134,23 @@ begin
                 StationsData.Cells[2,pos] := Station.s['status'];
 
                 if Station.AsObject.Exists('name') then begin
-                   StationsData.Cells[4,i] := Station.s['name'];
+                   StationsData.Cells[3,pos] := Station.s['name'];
+                end;
+             end
+             else
+             begin
+                // If Hash exists - add this to list
+                if Station.AsObject.Exists('hash') then begin
+                   AvailableHashes.Add(Station.s['hash']);
                 end;
              end;
          end;
       end;
+
+      for i := 0 to AvailableHashes.Count do begin
+          cbHash1.AddItem(AvailableHashes.ValueFromIndex[i], TCheckBoxState.cbChecked, True);
+      end;
+
      except
     On E: Exception Do
             End;
@@ -178,6 +194,8 @@ begin
       CellColor[i] := 0;
 
   cbHash1.Color := clHighLight;
+
+  AvailableHashes.Create;
 
   btnManage.Enabled := False;
 end;
