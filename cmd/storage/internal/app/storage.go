@@ -2,7 +2,7 @@ package app
 
 import (
 	"time"
-
+	"strconv"
 	"github.com/powerman/structlog"
 )
 
@@ -44,6 +44,34 @@ func (a *app) loadStations() error {
 	}
 	stations := map[string]StationData{}
 	noHash := []StationData{}
+	
+	// Calculate how many stations
+	createCount := 12 - len(res) 
+	currentID := 1
+
+	log.Info("CreateCount", "count", createCount)
+
+	for createCount > 0 {
+		err = a.repo.SetStation(SetStation{
+			ID:   0,
+			Hash: "",
+			Name: "Station" + strconv.Itoa(currentID),
+		})
+		if err != nil {
+			log.Info("Error", "error", err)
+			return err
+		}
+		createCount--
+		currentID++
+		log.Info("Station created. CreateCount after iteration", "count", createCount)
+	}
+
+	res, err = a.repo.Stations()
+	if err != nil {
+		log.Info("loadStations", "err", err)
+		return err
+	}
+
 	for i, _ := range res {
 		if res[i].Hash != "" {
 			stations[res[i].Hash] = StationData{
@@ -57,11 +85,12 @@ func (a *app) loadStations() error {
 			})
 		}
 	}
+
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 	a.stationsNoHash = noHash
 	a.stations = stations
-	// TODO Add last ping time and service money
+
 	return nil
 }
 
