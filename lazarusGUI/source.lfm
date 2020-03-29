@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 192
+  Left = 132
   Height = 1080
-  Top = 122
+  Top = 666
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -55,40 +55,40 @@ object MainForm: TMainForm
       'Station ID'
       0
       1
-      'Station 1'
+      '1'
       0
       2
-      'Station 2'
+      '2'
       0
       3
-      'Station 3'
+      '3'
       0
       4
-      'Station 4'
+      '4'
       0
       5
-      'Station 5'
+      '5'
       0
       6
-      'Station 6'
+      '6'
       0
       7
-      'Station 7'
+      '7'
       0
       8
-      'Station 8'
+      '8'
       0
       9
-      'Station 9'
+      '9'
       0
       10
-      'Station 10'
+      '10'
       0
       11
-      'Station 11'
+      '11'
       0
       12
-      'Station 12'
+      '12'
       1
       0
       'Hash'

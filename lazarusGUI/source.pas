@@ -463,7 +463,6 @@ begin
         begin
           Stations := Data.A['stations'];
 
-          // Reset color in all status cells
           for i := 0 to 12 do
             CellColor[i] := 0;
 
