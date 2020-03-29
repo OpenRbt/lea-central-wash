@@ -108,6 +108,7 @@ var
   postJson: TJSONObject;
   unixFrom: Longint;
   unixTo:   Longint;
+  totalMoney: integer;
 
 const
   UnixStartDate: TDateTime = 25569.0;
@@ -124,17 +125,68 @@ begin
 
   With TFPHttpClient.Create(Nil) do
   try
+    try
      AddHeader('Content-Type', 'application/json');
      RequestBody := TStringStream.Create(postJson.AsJSON);
      RequestAnswer := Post('http://localhost:8020/station-report');
      Data := SO(UTF8Decode(RequestAnswer));
 
-     Report := Data.O['moneyReport'];
-     if Report.AsObject.Exists('coins') then
+     if Data.S['moneyReport'] <> '' then
      begin
-          MoneyData.Cells[3, ID] := IntToStr(Report.I['coins']);
-     end;
+          Report := Data.O['moneyReport'];
 
+          totalMoney := 0;
+          if Report.AsObject.Exists('coins') then
+          begin
+               totalMoney := totalMoney + Report.I['coins'];
+               MoneyData.Cells[2, ID] := IntToStr(Report.I['coins']);
+          end
+          else
+          begin
+               MoneyData.Cells[2, ID] := '0';
+          end;
+
+          if Report.AsObject.Exists('service') then
+          begin
+               MoneyData.Cells[4, ID] := IntToStr(Report.I['service']);
+          end
+          else
+          begin
+               MoneyData.Cells[4, ID] := '0';
+          end;
+
+          if Report.AsObject.Exists('banknotes') then
+          begin
+               totalMoney := totalMoney + Report.I['banknotes'];
+               MoneyData.Cells[3, ID] := IntToStr(Report.I['banknotes']);
+          end
+          else
+          begin
+               MoneyData.Cells[3, ID] := '0';
+          end;
+
+          if Report.AsObject.Exists('electronical') then
+          begin
+               totalMoney := totalMoney + Report.I['electronical'];
+               MoneyData.Cells[1, ID] := IntToStr(Report.I['electronical']);
+          end
+          else
+          begin
+               MoneyData.Cells[1, ID] := '0';
+          end;
+          MoneyData.Cells[0, ID] := IntToStr(totalMoney);
+     end
+     else
+     begin
+         MoneyData.Cells[0, ID] := '0';
+         MoneyData.Cells[1, ID] := '0';
+         MoneyData.Cells[2, ID] := '0';
+         MoneyData.Cells[3, ID] := '0';
+         MoneyData.Cells[4, ID] := '0';
+     end;
+    except
+        On E: Exception do
+      end;
   finally
      Free;
   end;
@@ -413,7 +465,7 @@ begin
             begin
               pos := StrToInt(Station.s['id']);
 
-              LoadMoney(5, Sender);
+              LoadMoney(pos, Sender);
 
               // GENERAL DATA
               // Paint the cell, depending on status message
