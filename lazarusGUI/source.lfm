@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 425
+  Left = 355
   Height = 1080
-  Top = 425
+  Top = 132
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -1455,8 +1455,7 @@ object MainForm: TMainForm
     Top = 233
     Width = 276
     ArrowKeysTraverseList = False
-    AutoComplete = True
-    AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+    AutoDropDown = True
     AutoSize = False
     Constraints.MaxHeight = 65
     Constraints.MaxWidth = 276
@@ -1474,6 +1473,7 @@ object MainForm: TMainForm
     Height = 48
     Top = 296
     Width = 276
+    ArrowKeysTraverseList = False
     AutoSize = False
     Constraints.MaxHeight = 65
     Constraints.MaxWidth = 276
@@ -1491,6 +1491,7 @@ object MainForm: TMainForm
     Height = 48
     Top = 360
     Width = 276
+    ArrowKeysTraverseList = False
     AutoSize = False
     Constraints.MaxHeight = 65
     Constraints.MaxWidth = 276
@@ -1507,6 +1508,7 @@ object MainForm: TMainForm
     Height = 48
     Top = 424
     Width = 276
+    ArrowKeysTraverseList = False
     AutoSize = False
     Constraints.MaxHeight = 65
     Constraints.MaxWidth = 276

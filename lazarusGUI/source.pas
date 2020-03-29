@@ -318,8 +318,6 @@ begin
             // Get current station
             Station := Stations.O[i - 1];
 
-            Memo1.Text := Memo1.Text + ' || Begin of FOR. ';
-
             // If the station has ID
             if Station.AsObject.Exists('id') then
             begin
