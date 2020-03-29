@@ -215,7 +215,7 @@ var
   Data: ISuperObject;
   Station: ISuperObject;
   Stations: TSuperArray;
-  i, pos, findPos: integer;
+  i, pos, findRes: integer;
 
 begin
   with TFPHttpClient.Create(nil) do
