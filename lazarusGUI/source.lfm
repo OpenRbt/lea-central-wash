@@ -1,5 +1,5 @@
 object MainForm: TMainForm
-  Left = 225
+  Left = 345
   Height = 1080
   Top = 191
   Width = 1920
@@ -1651,13 +1651,13 @@ object MainForm: TMainForm
     TabOrder = 20
   end
   object cbMoneyRealTime: TCheckBox
-    Left = 322
-    Height = 34
+    Left = 293
+    Height = 29
     Top = 24
-    Width = 204
+    Width = 175
     Caption = 'Money in Real Time'
     Checked = True
-    Font.Height = 30
+    Font.Height = 25
     ParentFont = False
     State = cbChecked
     TabOrder = 21

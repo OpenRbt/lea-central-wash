@@ -93,7 +93,6 @@ var
   CellColor: array [1..12] of integer;
 
   AvailableHashes: TStringList;
-  AssignedHashes: TStringList;
 
 implementation
 
@@ -579,7 +578,6 @@ begin
   cbHash1.Color := clHighLight;
 
   AvailableHashes := TStringList.Create;
-  AssignedHashes := TStringList.Create;
 
   btnManage.Enabled := False;
 end;
@@ -601,8 +599,8 @@ var
 begin
   selectedRow := StationsData.Row;
   selectedHash := StationsData.Cells[1, selectedRow];
-  selectedID := StationsData.Cells[3, selectedRow];
-  selectedName := StationsData.Cells[4, selectedRow];
+  selectedID := IntToStr(StationsData.Row);
+  selectedName := StationsData.Cells[3, selectedRow];
 
   if selectedHash <> '' then
   begin
@@ -686,8 +684,8 @@ var
 begin
   selectedRow := StationsData.Row;
   selectedHash := StationsData.Cells[1, selectedRow];
-  selectedID := StationsData.Cells[3, selectedRow];
-  selectedName := StationsData.Cells[4, selectedRow];
+  selectedID := IntToStr(StationsData.Row);
+  selectedName := StationsData.Cells[3, selectedRow];
 
   if selectedHash <> '' then
   begin
@@ -754,61 +752,73 @@ end;
 
 procedure TMainForm.cbHash10EditingDone(Sender: TObject);
 begin
+     StationsData.Cells[1, 10] := cbHash10.Text;
      PairIdAndHash(cbHash10.Text, StationsData.Cells[3, 10], 10, Sender);
 end;
 
 procedure TMainForm.cbHash11EditingDone(Sender: TObject);
 begin
+     StationsData.Cells[1, 11] := cbHash11.Text;
      PairIdAndHash(cbHash11.Text, StationsData.Cells[3, 11], 11, Sender);
 end;
 
 procedure TMainForm.cbHash12EditingDone(Sender: TObject);
 begin
+     StationsData.Cells[1, 12] := cbHash12.Text;
      PairIdAndHash(cbHash12.Text, StationsData.Cells[3, 12], 12, Sender);
 end;
 
 procedure TMainForm.cbHash1EditingDone(Sender: TObject);
 begin
+     StationsData.Cells[1, 1] := cbHash1.Text;
      PairIdAndHash(cbHash1.Text, StationsData.Cells[3, 1], 1, Sender);
 end;
 
 procedure TMainForm.cbHash2EditingDone(Sender: TObject);
 begin
+     StationsData.Cells[1, 2] := cbHash2.Text;
      PairIdAndHash(cbHash2.Text, StationsData.Cells[3, 2], 2, Sender);
 end;
 
 procedure TMainForm.cbHash3EditingDone(Sender: TObject);
 begin
+     StationsData.Cells[1, 3] := cbHash3.Text;
      PairIdAndHash(cbHash3.Text, StationsData.Cells[3, 3], 3, Sender);
 end;
 
 procedure TMainForm.cbHash4EditingDone(Sender: TObject);
 begin
+     StationsData.Cells[1, 4] := cbHash4.Text;
      PairIdAndHash(cbHash4.Text, StationsData.Cells[3, 4], 4, Sender);
 end;
 
 procedure TMainForm.cbHash5EditingDone(Sender: TObject);
 begin
+     StationsData.Cells[1, 5] := cbHash5.Text;
      PairIdAndHash(cbHash5.Text, StationsData.Cells[3, 5], 5, Sender);
 end;
 
 procedure TMainForm.cbHash6EditingDone(Sender: TObject);
 begin
+     StationsData.Cells[1, 6] := cbHash6.Text;
      PairIdAndHash(cbHash6.Text, StationsData.Cells[3, 6], 6, Sender);
 end;
 
 procedure TMainForm.cbHash7EditingDone(Sender: TObject);
 begin
+     StationsData.Cells[1, 7] := cbHash7.Text;
      PairIdAndHash(cbHash7.Text, StationsData.Cells[3, 7], 7, Sender);
 end;
 
 procedure TMainForm.cbHash8EditingDone(Sender: TObject);
 begin
+     StationsData.Cells[1, 8] := cbHash8.Text;
      PairIdAndHash(cbHash8.Text, StationsData.Cells[3, 8], 8, Sender);
 end;
 
 procedure TMainForm.cbHash9EditingDone(Sender: TObject);
 begin
+     StationsData.Cells[1, 9] := cbHash9.Text;
      PairIdAndHash(cbHash9.Text, StationsData.Cells[3, 9], 9, Sender);
 end;
 

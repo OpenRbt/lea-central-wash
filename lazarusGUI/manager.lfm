@@ -1,7 +1,7 @@
 object ManageForm: TManageForm
-  Left = 404
+  Left = 567
   Height = 392
-  Top = 246
+  Top = 250
   Width = 1105
   Caption = 'Manage Station'
   ClientHeight = 392
@@ -119,5 +119,15 @@ object ManageForm: TManageForm
         '6'
       )
     end
+  end
+  object Memo1: TMemo
+    Left = 288
+    Height = 97
+    Top = 284
+    Width = 382
+    Lines.Strings = (
+      'Memo1'
+    )
+    TabOrder = 5
   end
 end
