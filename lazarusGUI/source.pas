@@ -325,6 +325,7 @@ begin
             // If the station has ID
             if Station.AsObject.Exists('id') then
             begin
+              Memo1.Text := Memo1.Text + ' || Has ID. ';
               pos := StrToInt(Station.s['id']);
 
               // GENERAL DATA
@@ -349,6 +350,7 @@ begin
               // END OF GENERAL DATA
 
               // Make controls in the specified line active
+              Memo1.Text := Memo1.Text + ' || Item enable. ';
               EnableItemOnPos(pos, Sender);
               btnManage.Enabled := True;
 
@@ -391,6 +393,7 @@ begin
 
       except
         On E: Exception do
+         Memo1.Text := Memo1.Text + ' || Exception!. ';
       end;
     finally
       Free;
