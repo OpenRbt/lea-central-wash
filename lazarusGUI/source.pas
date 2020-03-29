@@ -404,6 +404,8 @@ begin
             begin
               pos := StrToInt(Station.s['id']);
 
+              LoadMoney(5, Sender);
+
               // GENERAL DATA
               // Paint the cell, depending on status message
               if Station.s['status'] = 'offline' then
@@ -511,9 +513,6 @@ begin
   AssignedHashes := TStringList.Create;
 
   btnManage.Enabled := False;
-
-  //DEBUG
-  LoadMoney(5, Sender);
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
