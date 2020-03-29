@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = -6
+  Left = 518
   Height = 1080
-  Top = 1
+  Top = 430
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -1466,7 +1466,6 @@ object MainForm: TMainForm
     ItemHeight = 60
     ParentFont = False
     ParentShowHint = False
-    Style = csDropDownList
     TabOrder = 10
   end
   object cbHash2: TComboBox
@@ -1483,7 +1482,6 @@ object MainForm: TMainForm
     ItemHeight = 57
     ParentFont = False
     ParentShowHint = False
-    Style = csDropDownList
     TabOrder = 11
   end
   object cbHash3: TComboBox
@@ -1499,7 +1497,6 @@ object MainForm: TMainForm
     Font.Height = 58
     ItemHeight = 57
     ParentFont = False
-    Style = csDropDownList
     TabOrder = 12
   end
   object cbHash4: TComboBox
@@ -1515,7 +1512,6 @@ object MainForm: TMainForm
     Font.Height = 58
     ItemHeight = 57
     ParentFont = False
-    Style = csDropDownList
     TabOrder = 13
   end
   object cbHash5: TComboBox
@@ -1531,7 +1527,6 @@ object MainForm: TMainForm
     Font.Height = 58
     ItemHeight = 57
     ParentFont = False
-    Style = csDropDownList
     TabOrder = 14
   end
   object cbHash6: TComboBox
@@ -1547,7 +1542,6 @@ object MainForm: TMainForm
     Font.Height = 58
     ItemHeight = 57
     ParentFont = False
-    Style = csDropDownList
     TabOrder = 15
   end
   object cbHash7: TComboBox
@@ -1563,7 +1557,6 @@ object MainForm: TMainForm
     Font.Height = 58
     ItemHeight = 57
     ParentFont = False
-    Style = csDropDownList
     TabOrder = 16
   end
   object cbHash8: TComboBox
@@ -1579,7 +1572,6 @@ object MainForm: TMainForm
     Font.Height = 58
     ItemHeight = 57
     ParentFont = False
-    Style = csDropDownList
     TabOrder = 17
   end
   object cbHash9: TComboBox
@@ -1595,7 +1587,6 @@ object MainForm: TMainForm
     Font.Height = 58
     ItemHeight = 57
     ParentFont = False
-    Style = csDropDownList
     TabOrder = 18
   end
   object cbHash10: TComboBox
@@ -1611,7 +1602,6 @@ object MainForm: TMainForm
     Font.Height = 58
     ItemHeight = 57
     ParentFont = False
-    Style = csDropDownList
     TabOrder = 19
   end
   object cbHash11: TComboBox
@@ -1627,7 +1617,6 @@ object MainForm: TMainForm
     Font.Height = 58
     ItemHeight = 57
     ParentFont = False
-    Style = csDropDownList
     TabOrder = 20
   end
   object cbHash12: TComboBox
@@ -1643,7 +1632,6 @@ object MainForm: TMainForm
     Font.Height = 58
     ItemHeight = 57
     ParentFont = False
-    Style = csDropDownList
     TabOrder = 21
   end
   object UpdateTimer: TTimer

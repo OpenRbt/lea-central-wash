@@ -59,6 +59,7 @@ type
 
     procedure DisableAllItems(Sender: TObject);
     procedure EnableItemOnPos(Pos: integer; Sender: TObject);
+    procedure SetHashOnPos(Pos: integer; Hash: String; Sender: TObject);
     procedure RefreshHashData(Sender: TObject);
 
 
@@ -117,6 +118,26 @@ begin
      10: cbHash10.Enabled := True;
      11: cbHash11.Enabled := True;
      12: cbHash12.Enabled := True;
+     end;
+end;
+
+procedure TMainForm.SetHashOnPos(Pos: Integer; Hash: String; Sender: TObject);
+begin
+     StationsData.Cells[1, pos] := Hash;
+
+     case Pos of
+     1: cbHash1.SelText := Hash;
+     2: cbHash2.SelText := Hash;
+     3: cbHash3.SelText := Hash;
+     4: cbHash4.SelText := Hash;
+     5: cbHash5.SelText := Hash;
+     6: cbHash6.SelText := Hash;
+     7: cbHash7.SelText := Hash;
+     8: cbHash8.SelText := Hash;
+     9: cbHash9.SelText := Hash;
+     10: cbHash10.SelText := Hash;
+     11: cbHash11.SelText := Hash;
+     12: cbHash12.SelText := Hash;
      end;
 end;
 
