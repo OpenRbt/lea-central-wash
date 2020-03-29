@@ -73,7 +73,7 @@ type
     procedure EnableItemOnPos(Pos: integer; Sender: TObject);
     procedure SetHashOnPos(Pos: integer; Hash: String; Sender: TObject);
     procedure RefreshHashData(Sender: TObject);
-    procedure PairIdAndHash(Hash: String; ID: integer; Sender: TObject);
+    procedure PairIdAndHash(Hash, Name: String; ID: integer; Sender: TObject);
 
 
   private
@@ -100,7 +100,7 @@ implementation
 
 { TMainForm }
 
-procedure TMainForm.PairIdAndHash(Hash: String; ID: integer; Sender: TObject);
+procedure TMainForm.PairIdAndHash(Hash, Name: String; ID: integer; Sender: TObject);
 var
   postJson: TJSONObject;
 
@@ -108,6 +108,7 @@ begin
   postJson := TJSONObject.Create;
   postJson.Add('id', ID);
   postJson.Add('hash', TJSONString.Create(Hash));
+  postJson.Add('name', TJSONString.Create(Name));
   With TFPHttpClient.Create(Nil) do
   try
      AddHeader('Content-Type', 'application/json');
@@ -630,62 +631,62 @@ end;
 
 procedure TMainForm.cbHash10EditingDone(Sender: TObject);
 begin
-     PairIdAndHash(cbHash10.Text, 10, Sender);
+     PairIdAndHash(cbHash10.Text, StationsData.Cells[3, 10], 10, Sender);
 end;
 
 procedure TMainForm.cbHash11EditingDone(Sender: TObject);
 begin
-     PairIdAndHash(cbHash11.Text, 11, Sender);
+     PairIdAndHash(cbHash11.Text, StationsData.Cells[3, 11], 11, Sender);
 end;
 
 procedure TMainForm.cbHash12EditingDone(Sender: TObject);
 begin
-     PairIdAndHash(cbHash12.Text, 12, Sender);
+     PairIdAndHash(cbHash12.Text, StationsData.Cells[3, 12], 12, Sender);
 end;
 
 procedure TMainForm.cbHash1EditingDone(Sender: TObject);
 begin
-     PairIdAndHash(cbHash1.Text, 1, Sender);
+     PairIdAndHash(cbHash1.Text, StationsData.Cells[3, 1], 1, Sender);
 end;
 
 procedure TMainForm.cbHash2EditingDone(Sender: TObject);
 begin
-     PairIdAndHash(cbHash2.Text, 2, Sender);
+     PairIdAndHash(cbHash2.Text, StationsData.Cells[3, 2], 2, Sender);
 end;
 
 procedure TMainForm.cbHash3EditingDone(Sender: TObject);
 begin
-     PairIdAndHash(cbHash3.Text, 3, Sender);
+     PairIdAndHash(cbHash3.Text, StationsData.Cells[3, 3], 3, Sender);
 end;
 
 procedure TMainForm.cbHash4EditingDone(Sender: TObject);
 begin
-     PairIdAndHash(cbHash4.Text, 4, Sender);
+     PairIdAndHash(cbHash4.Text, StationsData.Cells[3, 4], 4, Sender);
 end;
 
 procedure TMainForm.cbHash5EditingDone(Sender: TObject);
 begin
-     PairIdAndHash(cbHash5.Text, 5, Sender);
+     PairIdAndHash(cbHash5.Text, StationsData.Cells[3, 5], 5, Sender);
 end;
 
 procedure TMainForm.cbHash6EditingDone(Sender: TObject);
 begin
-     PairIdAndHash(cbHash6.Text, 6, Sender);
+     PairIdAndHash(cbHash6.Text, StationsData.Cells[3, 6], 6, Sender);
 end;
 
 procedure TMainForm.cbHash7EditingDone(Sender: TObject);
 begin
-     PairIdAndHash(cbHash7.Text, 7, Sender);
+     PairIdAndHash(cbHash7.Text, StationsData.Cells[3, 7], 7, Sender);
 end;
 
 procedure TMainForm.cbHash8EditingDone(Sender: TObject);
 begin
-     PairIdAndHash(cbHash8.Text, 8, Sender);
+     PairIdAndHash(cbHash8.Text, StationsData.Cells[3, 8], 8, Sender);
 end;
 
 procedure TMainForm.cbHash9EditingDone(Sender: TObject);
 begin
-     PairIdAndHash(cbHash9.Text, 9, Sender);
+     PairIdAndHash(cbHash9.Text, StationsData.Cells[3, 9], 9, Sender);
 end;
 
 procedure TMainForm.dtFromEditingDone(Sender: TObject);
