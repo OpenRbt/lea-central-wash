@@ -325,8 +325,6 @@ begin
             // If the station has ID
             if Station.AsObject.Exists('id') then
             begin
-              Memo1.Text := Memo1.Text + ' || ID exist. ';
-
               pos := StrToInt(Station.s['id']);
 
               // GENERAL DATA
