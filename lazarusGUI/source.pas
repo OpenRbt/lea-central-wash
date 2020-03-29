@@ -46,6 +46,7 @@ type
     procedure btnUpdateClick(Sender: TObject);
     procedure btnWeekClick(Sender: TObject);
     procedure btnYearClick(Sender: TObject);
+    procedure cbHash1EditingDone(Sender: TObject);
     procedure dtFromEditingDone(Sender: TObject);
     procedure dtToEditingDone(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -321,7 +322,6 @@ begin
             // If the station has ID
             if Station.AsObject.Exists('id') then
             begin
-              Memo1.Text := Memo1.Text + ' || Has ID. ';
               pos := StrToInt(Station.s['id']);
 
               // GENERAL DATA
@@ -346,7 +346,6 @@ begin
               // END OF GENERAL DATA
 
               // Make controls in the specified line active
-              Memo1.Text := Memo1.Text + ' || Item enable. ';
               EnableItemOnPos(pos, Sender);
               btnManage.Enabled := True;
 
@@ -354,17 +353,13 @@ begin
               // We need to add it's ID to list and choose the Hash by default
               if Station.AsObject.Exists('hash') then
               begin
-                   Memo1.Text := Memo1.Text + ' || Hash exist. ';
-
                    findRes := AvailableHashes.IndexOf(Station.s['hash']);
 
                    // Check that this hash is new in the list
                    if findRes < 0 then begin
-                      Memo1.Text := Memo1.Text + ' || Hash is new. ';
                       AvailableHashes.Add(Station.s['hash']);
                       RefreshHashData(Sender);
                       SetHashOnPos(pos, Station.s['hash'], Sender);
-                      Memo1.Text := Memo1.Text + ' || After hash write. ';
                    end;
               end;
             end
@@ -390,7 +385,6 @@ begin
 
       except
         On E: Exception do
-         Memo1.Text := Memo1.Text + ' || Exception!. ';
       end;
     finally
       Free;
@@ -601,6 +595,11 @@ begin
   DecodeDate(Now(), currentYear, currentMonth, currentDay);
   dtFrom.DateTime := EncodeDateTime(currentYear, 1, 1, 0, 0, 0, 0);
   dtTo.DateTime := Now();
+end;
+
+procedure TMainForm.cbHash1EditingDone(Sender: TObject);
+begin
+     Memo1.Text := cbHash1.Text + ' || ' + cbHash1.SelText + ' || ' + cbHash1.Items.ValueFromIndex[cbHash1.Items.IndexOf(Hash)];
 end;
 
 procedure TMainForm.dtFromEditingDone(Sender: TObject);

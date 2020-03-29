@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 355
+  Left = 624
   Height = 1080
-  Top = 132
+  Top = 265
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -1464,6 +1464,7 @@ object MainForm: TMainForm
     Font.Height = 40
     Font.Name = 'Arial'
     ItemHeight = 40
+    OnEditingDone = cbHash1EditingDone
     ParentFont = False
     ParentShowHint = False
     TabOrder = 10
