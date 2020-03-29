@@ -241,16 +241,13 @@ begin
             CellColor[i] := 0;
 
           // Iterate over all incoming stations from server
-          Memo1.Text := Memo1.Text + '||Stations length: ' + IntToStr(Stations.Length);
           for i := 1 to Stations.Length do
           begin
-            Memo1.Text := Memo1.Text + '||New iteration: ' + IntToStr(i);
             Station := Stations.O[i - 1];
 
             if Station.AsObject.Exists('id') then
             begin
               pos := StrToInt(Station.s['id']);
-              Memo1.Text := Memo1.Text + '||ID exists. Pos: ' + IntToStr(pos);
 
               EnableItemOnPos(pos, Sender);
               btnManage.Enabled := True;
@@ -258,10 +255,9 @@ begin
               // ID and Hash both exist => station is already paired
               if Station.AsObject.Exists('hash') then
               begin
-                Memo1.Text := Memo1.Text + '||Hash exists.';
                 if AvailableHashes.Count <> 0 then begin
                    findRes := AvailableHashes.IndexOf(Station.s['hash']);
-                   Memo1.Text := Memo1.Text + '||Find result: ' + IntToStr(findRes);
+                   Memo1.Text := Memo1.Text + '||Hash: ' + Station.s['hash'] + '; Find result: ' + IntToStr(findRes);
                    if findRes < 0 then begin
                       AvailableHashes.Add(Station.s['hash']);
                       Memo1.Text := Memo1.Text + '||New item added.';
@@ -270,7 +266,7 @@ begin
                 else
                 begin
                    AvailableHashes.Add(Station.s['hash']);
-                   Memo1.Text := Memo1.Text + '||New item added.';
+                   Memo1.Text := Memo1.Text + '||New item added: ' + Station.s['hash']';
                 end;
               end;
 
