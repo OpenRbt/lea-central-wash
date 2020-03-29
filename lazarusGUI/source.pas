@@ -108,7 +108,7 @@ begin
   postJson := TJSONObject.Create;
   postJson.Add('id', ID);
   postJson.Add('hash', TJSONString.Create(Hash));
-  postJson.Add('name', TJSONString.Create(Name));
+  postJson.Add('name', TJSONString.Create(StationName));
   With TFPHttpClient.Create(Nil) do
   try
      AddHeader('Content-Type', 'application/json');
