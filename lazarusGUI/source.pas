@@ -230,36 +230,37 @@ begin
         DisableAllItems(Sender);
 
         RequestAnswer := Get('http://localhost:8020/status');
-        Memo1.Text := RequestAnswer;
-
         Data := SO(UTF8Decode(RequestAnswer));
 
         // Check the null data in array stations
         if Data.S['stations'] <> '' then
         begin
-          btnManage.Enabled := True;
-
           Stations := Data.A['stations'];
 
           for i := 0 to 12 do
             CellColor[i] := 0;
 
           // Iterate over all incoming stations from server
-          for i := 0 to Stations.Length-1 do
+          for i := 1 to Stations.Length do
           begin
+            Memo1.Text := Memo1.Text + '||New iteration: ' + IntToStr(i) + '\n';
             Station := Stations.O[i - 1];
 
             if Station.AsObject.Exists('id') then
             begin
               pos := StrToInt(Station.s['id']);
+              Memo1.Text := Memo1.Text + '||ID exists. Pos: ' + IntToStr(pos);
 
               EnableItemOnPos(pos, Sender);
+              btnManage.Enabled := True;
 
               // ID and Hash both exist => station is already paired
               if Station.AsObject.Exists('hash') then
               begin
+                Memo1.Text := Memo1.Text + '||Hash exists.';
                 if not AvailableHashes.Find(Station.s['hash'], findPos) then begin
                    AvailableHashes.Add(Station.s['hash']);
+                   Memo1.Text := Memo1.Text + '||New item added.';
                 end;
                 //AssignedHashes.Add(Station.s['hash']);
               end;
