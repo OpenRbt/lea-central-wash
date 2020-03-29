@@ -283,7 +283,7 @@ begin
               // If Hash exists - add this to list
               if Station.AsObject.Exists('hash') then
               begin
-                AvailableHashes.Add(Station.s['hash']);
+                //AvailableHashes.Add(Station.s['hash']);
               end;
             end;
           end;

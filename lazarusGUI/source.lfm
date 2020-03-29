@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 517
+  Left = 794
   Height = 1080
-  Top = 164
+  Top = 329
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -1461,8 +1461,8 @@ object MainForm: TMainForm
     Constraints.MaxWidth = 276
     Constraints.MinHeight = 65
     Constraints.MinWidth = 276
-    Font.Height = 58
-    Font.Name = 'System'
+    Font.Height = 55
+    Font.Name = 'Terminal'
     ItemHeight = 60
     ParentFont = False
     ParentShowHint = False
