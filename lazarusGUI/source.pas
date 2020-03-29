@@ -241,9 +241,10 @@ begin
             CellColor[i] := 0;
 
           // Iterate over all incoming stations from server
+          Memo1.Text := Memo1.Text + '||Stations length: ' + IntToStr(Stations.Length);
           for i := 1 to Stations.Length do
           begin
-            Memo1.Text := Memo1.Text + '||New iteration: ' + IntToStr(i) + '\n';
+            Memo1.Text := Memo1.Text + '||New iteration: ' + IntToStr(i);
             Station := Stations.O[i - 1];
 
             if Station.AsObject.Exists('id') then
@@ -258,10 +259,11 @@ begin
               if Station.AsObject.Exists('hash') then
               begin
                 Memo1.Text := Memo1.Text + '||Hash exists.';
-                if not AvailableHashes.Find(Station.s['hash'], findPos) then begin
-                   AvailableHashes.Add(Station.s['hash']);
-                   Memo1.Text := Memo1.Text + '||New item added.';
-                end;
+                Memo1.Text := Memo1.Text + '||Find result: ' + BoolToStr( AvailableHashes.Find(Station.s['hash'], findPos),'True', 'False');
+                //if not AvailableHashes.Find(Station.s['hash'], findPos) then begin
+                //   AvailableHashes.Add(Station.s['hash']);
+                //   Memo1.Text := Memo1.Text + '||New item added.';
+                // end;
                 //AssignedHashes.Add(Station.s['hash']);
               end;
 
