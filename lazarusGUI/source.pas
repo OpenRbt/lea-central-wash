@@ -126,18 +126,18 @@ begin
      StationsData.Cells[1, pos] := Hash;
 
      case Pos of
-     1: cbHash1.SelText := Hash;
-     2: cbHash2.SelText := Hash;
-     3: cbHash3.SelText := Hash;
-     4: cbHash4.SelText := Hash;
-     5: cbHash5.SelText := Hash;
-     6: cbHash6.SelText := Hash;
-     7: cbHash7.SelText := Hash;
-     8: cbHash8.SelText := Hash;
-     9: cbHash9.SelText := Hash;
-     10: cbHash10.SelText := Hash;
-     11: cbHash11.SelText := Hash;
-     12: cbHash12.SelText := Hash;
+     1: cbHash1.ItemIndex := cbHash1.Items.IndexOf(Hash);
+     2: cbHash2.ItemIndex := cbHash2.Items.IndexOf(Hash);
+     3: cbHash3.ItemIndex := cbHash3.Items.IndexOf(Hash);
+     4: cbHash4.ItemIndex := cbHash4.Items.IndexOf(Hash);
+     5: cbHash5.ItemIndex := cbHash5.Items.IndexOf(Hash);
+     6: cbHash6.ItemIndex := cbHash6.Items.IndexOf(Hash);
+     7: cbHash7.ItemIndex := cbHash7.Items.IndexOf(Hash);
+     8: cbHash8.ItemIndex := cbHash8.Items.IndexOf(Hash);
+     9: cbHash9.ItemIndex := cbHash9.Items.IndexOf(Hash);
+     10: cbHash10.ItemIndex := cbHash10.Items.IndexOf(Hash);
+     11: cbHash11.ItemIndex := cbHash11.Items.IndexOf(Hash);
+     12: cbHash12.ItemIndex := cbHash12.Items.IndexOf(Hash);
      end;
 end;
 
@@ -296,74 +296,91 @@ begin
         MoneyData.Cursor := crHourGlass;
         btnManage.Cursor := crHourGlass;
 
+        // Disable controls in case of failure
         btnManage.Enabled := False;
         DisableAllItems(Sender);
 
         RequestAnswer := Get('http://localhost:8020/status');
         Data := SO(UTF8Decode(RequestAnswer));
 
-        // Check the null data in array stations
+        // Check the null data in stations array
         if Data.S['stations'] <> '' then
         begin
           Stations := Data.A['stations'];
 
+          // Reset color in all status cells
           for i := 0 to 12 do
             CellColor[i] := 0;
 
           // Iterate over all incoming stations from server
           for i := 1 to Stations.Length do
           begin
+            // Get current station
             Station := Stations.O[i - 1];
 
+            // GENERAL DATA
+            // Paint the cell, depending on status message
+            if Station.s['status'] = 'offline' then
+            begin
+                 CellColor[pos] := 2;
+            end;
+            if Station.s['status'] = 'online' then
+            begin
+                 CellColor[pos] := 1;
+            end;
+
+            // Write the status message to the grid line
+            StationsData.Cells[2, pos] := Station.s['status'];
+
+            // Write the name to the grid, if it exists
+            if Station.AsObject.Exists('name') then
+            begin
+                 StationsData.Cells[3, pos] := Station.s['name'];
+            end;
+            // END OF GENERAL DATA
+
+            // ADDITIONAL DATA
+            // If the station has ID
             if Station.AsObject.Exists('id') then
             begin
               pos := StrToInt(Station.s['id']);
 
+              // Make controls in the specified line active
               EnableItemOnPos(pos, Sender);
               btnManage.Enabled := True;
 
               // ID and Hash both exist => station is already paired
+              // We need to add it's ID to list and choose the Hash by default
               if Station.AsObject.Exists('hash') then
               begin
-                if AvailableHashes.Count <> 0 then begin
                    findRes := AvailableHashes.IndexOf(Station.s['hash']);
+
+                   // Check that this hash is new in the list
                    if findRes < 0 then begin
                       AvailableHashes.Add(Station.s['hash']);
+                      RefreshHashData(Sender);
+                      SetHashOnPos(pos, Station.s['hash'], Sender);
                    end;
-                end
-                else
-                begin
-                   AvailableHashes.Add(Station.s['hash']);
-                end;
-              end;
-
-              if Station.s['status'] = 'offline' then
-              begin
-                CellColor[pos] := 2;
-              end;
-              if Station.s['status'] = 'online' then
-              begin
-                CellColor[pos] := 1;
-              end;
-
-              StationsData.Cells[2, pos] := Station.s['status'];
-
-              if Station.AsObject.Exists('name') then
-              begin
-                StationsData.Cells[3, pos] := Station.s['name'];
               end;
             end
             else
             begin
-              // If Hash exists - add this to list
+              // If only Hash exists - add this data to the list
               if Station.AsObject.Exists('hash') then
               begin
-                AvailableHashes.Add(Station.s['hash']);
+                   findRes := AvailableHashes.IndexOf(Station.s['hash']);
+
+                   // Check that this hash is new in the list
+                   if findRes < 0 then begin
+                      AvailableHashes.Add(Station.s['hash']);
+                      RefreshHashData(Sender);
+                   end;
               end;
             end;
+            // END OF ADDITIONAL DATA
           end;
-          RefreshHashData(Sender);
         end;
+        // END OF ARRAY PARSE
 
       except
         On E: Exception do
