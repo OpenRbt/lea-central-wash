@@ -18,7 +18,6 @@ type
     editMoney: TLabeledEdit;
     GroupBox2: TGroupBox;
     Label1: TLabel;
-    Memo1: TMemo;
     Panel1: TPanel;
     PricesData: TStringGrid;
     procedure btnSendMoneyClick(Sender: TObject);
@@ -116,7 +115,6 @@ begin
             Free;
         end;
     end;
-    Memo1.Text := StationHash + ' || ' + StationID + ' || ' + StationName;
 end;
 
 procedure TManageForm.PricesDataEditingDone(Sender: TObject);

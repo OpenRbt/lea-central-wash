@@ -31,6 +31,7 @@ type
     cbHash7: TComboBox;
     cbHash8: TComboBox;
     cbHash9: TComboBox;
+    cbIsBlocked: TCheckBox;
     cbMoneyRealTime: TCheckBox;
     dtFrom: TDateTimePicker;
     dtTo: TDateTimePicker;
@@ -58,6 +59,7 @@ type
     procedure cbHash7EditingDone(Sender: TObject);
     procedure cbHash8EditingDone(Sender: TObject);
     procedure cbHash9EditingDone(Sender: TObject);
+    procedure cbIsBlockedChange(Sender: TObject);
     procedure dtFromEditingDone(Sender: TObject);
     procedure dtToEditingDone(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -496,7 +498,8 @@ begin
               // END OF GENERAL DATA
 
               // Make controls in the specified line active
-              EnableItemOnPos(pos, Sender);
+              if not cbIsBlocked.Checked then
+                 EnableItemOnPos(pos, Sender);
               btnManage.Enabled := True;
 
               // ID and Hash both exist => station is already paired
@@ -820,6 +823,11 @@ procedure TMainForm.cbHash9EditingDone(Sender: TObject);
 begin
      StationsData.Cells[1, 9] := cbHash9.Text;
      PairIdAndHash(cbHash9.Text, StationsData.Cells[3, 9], 9, Sender);
+end;
+
+procedure TMainForm.cbIsBlockedChange(Sender: TObject);
+begin
+     DisableAllItems(Sender);
 end;
 
 procedure TMainForm.dtFromEditingDone(Sender: TObject);

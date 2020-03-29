@@ -120,14 +120,4 @@ object ManageForm: TManageForm
       )
     end
   end
-  object Memo1: TMemo
-    Left = 288
-    Height = 97
-    Top = 284
-    Width = 382
-    Lines.Strings = (
-      'Memo1'
-    )
-    TabOrder = 5
-  end
 end

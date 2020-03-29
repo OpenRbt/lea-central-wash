@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 345
+  Left = 192
   Height = 1080
-  Top = 191
+  Top = 122
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -1661,6 +1661,19 @@ object MainForm: TMainForm
     ParentFont = False
     State = cbChecked
     TabOrder = 21
+  end
+  object cbIsBlocked: TCheckBox
+    Left = 293
+    Height = 29
+    Top = 80
+    Width = 172
+    Caption = 'Block Hash Change'
+    Checked = True
+    Font.Height = 25
+    OnChange = cbIsBlockedChange
+    ParentFont = False
+    State = cbChecked
+    TabOrder = 22
   end
   object UpdateTimer: TTimer
     Enabled = False
