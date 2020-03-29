@@ -213,9 +213,13 @@ begin
   postJson.Add('name', TJSONString.Create(StationName));
   With TFPHttpClient.Create(Nil) do
   try
+   try
      AddHeader('Content-Type', 'application/json');
      RequestBody := TStringStream.Create(postJson.AsJSON);
      Post('http://localhost:8020/set-station');
+   except
+        On E: Exception do
+      end;
   finally
      Free;
   end;
@@ -827,7 +831,14 @@ end;
 
 procedure TMainForm.cbIsBlockedChange(Sender: TObject);
 begin
-     DisableAllItems(Sender);
+     if cbIsBlocked.Checked then
+     begin
+          DisableAllItems(Sender);
+     end
+     else
+     begin
+          EnableAllItems(Sender);
+     end;
 end;
 
 procedure TMainForm.dtFromEditingDone(Sender: TObject);
