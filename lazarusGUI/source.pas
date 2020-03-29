@@ -390,6 +390,7 @@ begin
           end;
         end;
         // END OF ARRAY PARSE
+        RefreshHashData(Sender);
 
       except
         On E: Exception do
