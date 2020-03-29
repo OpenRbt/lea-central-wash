@@ -297,6 +297,7 @@ begin
 
       except
         On E: Exception do
+        Memo1.Text:=Memo1.Text +'||Exception!';
       end;
     finally
       Free;
