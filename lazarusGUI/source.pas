@@ -303,8 +303,6 @@ begin
         RequestAnswer := Get('http://localhost:8020/status');
         Data := SO(UTF8Decode(RequestAnswer));
 
-        Memo1.Text := Memo1.Text + ' || Before array parse. ';
-
         // Check the null data in stations array
         if Data.S['stations'] <> '' then
         begin
