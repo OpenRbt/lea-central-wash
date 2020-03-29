@@ -231,6 +231,7 @@ begin
 
         RequestAnswer := Get('http://localhost:8020/status');
         Memo1.Text := RequestAnswer;
+
         Data := SO(UTF8Decode(RequestAnswer));
 
         // Check the null data in array stations
@@ -244,7 +245,7 @@ begin
             CellColor[i] := 0;
 
           // Iterate over all incoming stations from server
-          for i := 1 to Stations.Length do
+          for i := 0 to Stations.Length-1 do
           begin
             Station := Stations.O[i - 1];
 
