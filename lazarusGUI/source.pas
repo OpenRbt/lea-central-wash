@@ -599,7 +599,7 @@ end;
 
 procedure TMainForm.cbHash1EditingDone(Sender: TObject);
 begin
-     Memo1.Text := cbHash1.Text + ' || ' + cbHash1.SelText;
+     Memo1.Text := Memo1.Text + ' || ' + cbHash1.Text;
 end;
 
 procedure TMainForm.dtFromEditingDone(Sender: TObject);
