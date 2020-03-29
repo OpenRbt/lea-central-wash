@@ -103,6 +103,8 @@ implementation
 
 procedure TMainForm.LoadMoney(ID: integer; Sender: TObject);
 var
+  Data: ISuperObject;
+  Report: ISuperObject;
   postJson: TJSONObject;
   unixFrom: Longint;
   unixTo:   Longint;
@@ -125,7 +127,14 @@ begin
      AddHeader('Content-Type', 'application/json');
      RequestBody := TStringStream.Create(postJson.AsJSON);
      RequestAnswer := Post('http://localhost:8020/station-report');
-     Memo1.Text := RequestAnswer;
+     Data := SO(UTF8Decode(RequestAnswer));
+
+     Report := Data.O['moneyReport'];
+     if Report.AsObject.Exists('coins') then
+     begin
+          MoneyData.Cells[3, ID] := IntToStr(Report.I['coins']);
+     end;
+
   finally
      Free;
   end;
