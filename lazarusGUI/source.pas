@@ -322,34 +322,33 @@ begin
 
             Memo1.Text := Memo1.Text + ' || Begin of FOR. ';
 
-            // GENERAL DATA
-            // Paint the cell, depending on status message
-            if Station.s['status'] = 'offline' then
-            begin
-                 CellColor[pos] := 2;
-            end;
-            if Station.s['status'] = 'online' then
-            begin
-                 CellColor[pos] := 1;
-            end;
-
-            // Write the status message to the grid line
-            StationsData.Cells[2, pos] := Station.s['status'];
-
-            // Write the name to the grid, if it exists
-            if Station.AsObject.Exists('name') then
-            begin
-                 StationsData.Cells[3, pos] := Station.s['name'];
-            end;
-            // END OF GENERAL DATA
-
-            // ADDITIONAL DATA
             // If the station has ID
             if Station.AsObject.Exists('id') then
             begin
               Memo1.Text := Memo1.Text + ' || ID exist. ';
 
               pos := StrToInt(Station.s['id']);
+
+              // GENERAL DATA
+              // Paint the cell, depending on status message
+              if Station.s['status'] = 'offline' then
+              begin
+                   CellColor[pos] := 2;
+              end;
+              if Station.s['status'] = 'online' then
+              begin
+                 CellColor[pos] := 1;
+              end;
+
+              // Write the status message to the grid line
+              StationsData.Cells[2, pos] := Station.s['status'];
+
+              // Write the name to the grid, if it exists
+              if Station.AsObject.Exists('name') then
+              begin
+                 StationsData.Cells[3, pos] := Station.s['name'];
+              end;
+              // END OF GENERAL DATA
 
               // Make controls in the specified line active
               EnableItemOnPos(pos, Sender);
