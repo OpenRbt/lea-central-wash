@@ -216,7 +216,6 @@ var
   Station: ISuperObject;
   Stations: TSuperArray;
   i, pos, findPos: integer;
-  findRes: boolean;
 
 begin
   with TFPHttpClient.Create(nil) do
@@ -261,8 +260,12 @@ begin
               begin
                 Memo1.Text := Memo1.Text + '||Hash exists.';
                 if AvailableHashes.Count <> 0 then begin
-                   findRes := AvailableHashes.Find(Station.s['hash'], findPos);
-                   Memo1.Text := Memo1.Text + '||Find result: ' + BoolToStr(findRes, 'True', 'False');
+                   findRes := AvailableHashes.IndexOf(Station.s['hash']);
+                   Memo1.Text := Memo1.Text + '||Find result: ' + IntToStr(findRes);
+                   if findRes < 0 then begin
+                      AvailableHashes.Add(Station.s['hash']);
+                      Memo1.Text := Memo1.Text + '||New item added.';
+                   end;
                 end
                 else
                 begin
