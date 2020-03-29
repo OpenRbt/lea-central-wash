@@ -73,7 +73,7 @@ type
     procedure EnableItemOnPos(Pos: integer; Sender: TObject);
     procedure SetHashOnPos(Pos: integer; Hash: String; Sender: TObject);
     procedure RefreshHashData(Sender: TObject);
-    procedure PairIdAndHash(Hash, Name: String; ID: integer; Sender: TObject);
+    procedure PairIdAndHash(Hash, StationName: String; ID: integer; Sender: TObject);
 
 
   private
@@ -100,7 +100,7 @@ implementation
 
 { TMainForm }
 
-procedure TMainForm.PairIdAndHash(Hash, Name: String; ID: integer; Sender: TObject);
+procedure TMainForm.PairIdAndHash(Hash, StationName: String; ID: integer; Sender: TObject);
 var
   postJson: TJSONObject;
 
