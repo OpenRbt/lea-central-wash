@@ -122,90 +122,139 @@ end;
 
 procedure TMainForm.RefreshHashData(Sender: TObject);
 var
-  i: Integer;
+  i, findRes: Integer;
+  currentHash: String;
 begin
      if cbHash1.Enabled then
      begin
           for i := 0 to AvailableHashes.Count - 1 do
           begin
-               cbHash1.Items.Add(AvailableHashes.ValueFromIndex[i]);
+               currentHash := AvailableHashes.ValueFromIndex[i];
+               findRes := cbHash1.Items.IndexOf(currentHash);
+               if findRes < 0 then begin
+                  cbHash1.Items.Add(currentHash);
+               end;
           end;
      end;
      if cbHash2.Enabled then
      begin
           for i := 0 to AvailableHashes.Count - 1 do
           begin
-               cbHash2.Items.Add(AvailableHashes.ValueFromIndex[i]);
+               currentHash := AvailableHashes.ValueFromIndex[i];
+               findRes := cbHash2.Items.IndexOf(currentHash);
+               if findRes < 0 then begin
+                  cbHash2.Items.Add(currentHash);
+               end;
           end;
      end;
      if cbHash3.Enabled then
      begin
           for i := 0 to AvailableHashes.Count - 1 do
           begin
-               cbHash3.Items.Add(AvailableHashes.ValueFromIndex[i]);
+               currentHash := AvailableHashes.ValueFromIndex[i];
+               findRes := cbHash3.Items.IndexOf(currentHash);
+               if findRes < 0 then begin
+                  cbHash3.Items.Add(currentHash);
+               end;
           end;
      end;
      if cbHash4.Enabled then
      begin
           for i := 0 to AvailableHashes.Count - 1 do
           begin
-               cbHash4.Items.Add(AvailableHashes.ValueFromIndex[i]);
+               currentHash := AvailableHashes.ValueFromIndex[i];
+               findRes := cbHash4.Items.IndexOf(currentHash);
+               if findRes < 0 then begin
+                  cbHash4.Items.Add(currentHash);
+               end;
           end;
      end;
      if cbHash5.Enabled then
      begin
           for i := 0 to AvailableHashes.Count - 1 do
           begin
-               cbHash5.Items.Add(AvailableHashes.ValueFromIndex[i]);
+               currentHash := AvailableHashes.ValueFromIndex[i];
+               findRes := cbHash5.Items.IndexOf(currentHash);
+               if findRes < 0 then begin
+                  cbHash5.Items.Add(currentHash);
+               end;
           end;
      end;
      if cbHash6.Enabled then
      begin
           for i := 0 to AvailableHashes.Count - 1 do
           begin
-               cbHash6.Items.Add(AvailableHashes.ValueFromIndex[i]);
+               currentHash := AvailableHashes.ValueFromIndex[i];
+               findRes := cbHash6.Items.IndexOf(currentHash);
+               if findRes < 0 then begin
+                  cbHash6.Items.Add(currentHash);
+               end;
           end;
      end;
      if cbHash7.Enabled then
      begin
           for i := 0 to AvailableHashes.Count - 1 do
           begin
-               cbHash7.Items.Add(AvailableHashes.ValueFromIndex[i]);
+               currentHash := AvailableHashes.ValueFromIndex[i];
+               findRes := cbHash7.Items.IndexOf(currentHash);
+               if findRes < 0 then begin
+                  cbHash7.Items.Add(currentHash);
+               end;
           end;
      end;
      if cbHash8.Enabled then
      begin
           for i := 0 to AvailableHashes.Count - 1 do
           begin
-               cbHash8.Items.Add(AvailableHashes.ValueFromIndex[i]);
+               currentHash := AvailableHashes.ValueFromIndex[i];
+               findRes := cbHash8.Items.IndexOf(currentHash);
+               if findRes < 0 then begin
+                  cbHash8.Items.Add(currentHash);
+               end;
           end;
      end;
      if cbHash9.Enabled then
      begin
           for i := 0 to AvailableHashes.Count - 1 do
           begin
-               cbHash9.Items.Add(AvailableHashes.ValueFromIndex[i]);
+               currentHash := AvailableHashes.ValueFromIndex[i];
+               findRes := cbHash9.Items.IndexOf(currentHash);
+               if findRes < 0 then begin
+                  cbHash9.Items.Add(currentHash);
+               end;
           end;
      end;
      if cbHash10.Enabled then
      begin
           for i := 0 to AvailableHashes.Count - 1 do
           begin
-               cbHash10.Items.Add(AvailableHashes.ValueFromIndex[i]);
+               currentHash := AvailableHashes.ValueFromIndex[i];
+               findRes := cbHash10.Items.IndexOf(currentHash);
+               if findRes < 0 then begin
+                  cbHash10.Items.Add(currentHash);
+               end;
           end;
      end;
      if cbHash11.Enabled then
      begin
           for i := 0 to AvailableHashes.Count - 1 do
           begin
-               cbHash11.Items.Add(AvailableHashes.ValueFromIndex[i]);
+               currentHash := AvailableHashes.ValueFromIndex[i];
+               findRes := cbHash11.Items.IndexOf(currentHash);
+               if findRes < 0 then begin
+                  cbHash11.Items.Add(currentHash);
+               end;
           end;
      end;
      if cbHash12.Enabled then
      begin
           for i := 0 to AvailableHashes.Count - 1 do
           begin
-               cbHash12.Items.Add(AvailableHashes.ValueFromIndex[i]);
+               currentHash := AvailableHashes.ValueFromIndex[i];
+               findRes := cbHash12.Items.IndexOf(currentHash);
+               if findRes < 0 then begin
+                  cbHash12.Items.Add(currentHash);
+               end;
           end;
      end;
 end;
@@ -257,16 +306,13 @@ begin
               begin
                 if AvailableHashes.Count <> 0 then begin
                    findRes := AvailableHashes.IndexOf(Station.s['hash']);
-                   Memo1.Text := Memo1.Text + '||Hash: ' + Station.s['hash'] + '; Find result: ' + IntToStr(findRes);
                    if findRes < 0 then begin
                       AvailableHashes.Add(Station.s['hash']);
-                      Memo1.Text := Memo1.Text + '||New item added.';
                    end;
                 end
                 else
                 begin
                    AvailableHashes.Add(Station.s['hash']);
-                   Memo1.Text := Memo1.Text + '||New item added: ' + Station.s['hash'];
                 end;
               end;
 
@@ -291,7 +337,7 @@ begin
               // If Hash exists - add this to list
               if Station.AsObject.Exists('hash') then
               begin
-                //AvailableHashes.Add(Station.s['hash']);
+                AvailableHashes.Add(Station.s['hash']);
               end;
             end;
           end;
@@ -300,7 +346,6 @@ begin
 
       except
         On E: Exception do
-        Memo1.Text:=Memo1.Text +'||Exception!';
       end;
     finally
       Free;
