@@ -230,6 +230,7 @@ begin
         DisableAllItems(Sender);
 
         RequestAnswer := Get('http://localhost:8020/status');
+        Memo1.Text := RequestAnswer;
         Data := SO(UTF8Decode(RequestAnswer));
 
         // Check the null data in array stations
