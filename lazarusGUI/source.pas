@@ -511,6 +511,9 @@ begin
   AssignedHashes := TStringList.Create;
 
   btnManage.Enabled := False;
+
+  //DEBUG
+  LoadMoney(5, Sender);
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
