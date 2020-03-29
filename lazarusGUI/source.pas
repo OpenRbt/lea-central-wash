@@ -599,7 +599,7 @@ end;
 
 procedure TMainForm.cbHash1EditingDone(Sender: TObject);
 begin
-     Memo1.Text := cbHash1.Text + ' || ' + cbHash1.SelText + ' || ' + cbHash1.Items.ValueFromIndex[cbHash1.Items.IndexOf(Hash)];
+     Memo1.Text := cbHash1.Text + ' || ' + cbHash1.SelText;
 end;
 
 procedure TMainForm.dtFromEditingDone(Sender: TObject);
