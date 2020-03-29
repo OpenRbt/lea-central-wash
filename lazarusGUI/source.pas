@@ -31,12 +31,12 @@ type
     cbHash7: TComboBox;
     cbHash8: TComboBox;
     cbHash9: TComboBox;
+    cbMoneyRealTime: TCheckBox;
     dtFrom: TDateTimePicker;
     dtTo: TDateTimePicker;
     Label1: TLabel;
     Label2: TLabel;
     Logo: TImage;
-    Memo1: TMemo;
     StationsData: TStringGrid;
     MoneyData: TStringGrid;
     UpdateTimer: TTimer;
@@ -118,7 +118,15 @@ begin
   postJson.Add('id', ID);
 
   unixFrom := Round((dtFrom.DateTime - UnixStartDate) * 86400);
-  unixTo := Round((dtTo.DateTime - UnixStartDate) * 86400);
+
+  if cbMoneyRealTime.Checked then
+  begin
+     unixTo := Round((Now() - UnixStartDate) * 86400);
+  end
+  else
+  begin
+     unixTo := Round((dtTo.DateTime - UnixStartDate) * 86400);
+  end;
 
   postJson.Add('startDate', unixFrom);
   postJson.Add('endDate', unixTo);
@@ -695,6 +703,7 @@ procedure TMainForm.btnMonthClick(Sender: TObject);
 var
   currentYear, currentMonth, currentDay: word;
 begin
+  cbMoneyRealTime.Checked := False;
   DecodeDate(Now(), currentYear, currentMonth, currentDay);
   dtFrom.DateTime := EncodeDateTime(currentYear, currentMonth, 1, 0, 0, 0, 0);
   dtTo.DateTime := Now();
@@ -704,6 +713,7 @@ procedure TMainForm.btnDayClick(Sender: TObject);
 var
   currentYear, currentMonth, currentDay: word;
 begin
+  cbMoneyRealTime.Checked := False;
   DecodeDate(Now(), currentYear, currentMonth, currentDay);
   dtFrom.DateTime := EncodeDateTime(currentYear, currentMonth,
     currentDay, 0, 0, 0, 0);
@@ -715,6 +725,7 @@ var
   currentYear, currentMonth, currentDay, currentNameOfTheDay: word;
   tmpTime: TDateTime;
 begin
+  cbMoneyRealTime.Checked := False;
   tmpTime := Now();
 
   currentNameOfTheDay := DayOfTheWeek(tmpTime);
@@ -735,6 +746,7 @@ procedure TMainForm.btnYearClick(Sender: TObject);
 var
   currentYear, currentMonth, currentDay: word;
 begin
+  cbMoneyRealTime.Checked := False;
   DecodeDate(Now(), currentYear, currentMonth, currentDay);
   dtFrom.DateTime := EncodeDateTime(currentYear, 1, 1, 0, 0, 0, 0);
   dtTo.DateTime := Now();
@@ -802,6 +814,7 @@ end;
 
 procedure TMainForm.dtFromEditingDone(Sender: TObject);
 begin
+  cbMoneyRealTime.Checked := False;
   if CompareDateTime(dtFrom.DateTime, dtTo.DateTime) > 0 then
   begin
     dtFrom.DateTime := dtTo.DateTime;
@@ -810,6 +823,7 @@ end;
 
 procedure TMainForm.dtToEditingDone(Sender: TObject);
 begin
+  cbMoneyRealTime.Checked := False;
   if CompareDateTime(dtFrom.DateTime, dtTo.DateTime) > 0 then
   begin
     dtTo.DateTime := dtFrom.DateTime;

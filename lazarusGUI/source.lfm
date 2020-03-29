@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 767
+  Left = 225
   Height = 1080
-  Top = 445
+  Top = 191
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -1439,16 +1439,6 @@ object MainForm: TMainForm
     ParentColor = False
     ParentFont = False
   end
-  object Memo1: TMemo
-    Left = 344
-    Height = 124
-    Top = 16
-    Width = 207
-    Lines.Strings = (
-      'Memo1'
-    )
-    TabOrder = 9
-  end
   object cbHash1: TComboBox
     Left = 284
     Height = 48
@@ -1467,7 +1457,7 @@ object MainForm: TMainForm
     OnEditingDone = cbHash1EditingDone
     ParentFont = False
     ParentShowHint = False
-    TabOrder = 10
+    TabOrder = 9
   end
   object cbHash2: TComboBox
     Left = 284
@@ -1486,7 +1476,7 @@ object MainForm: TMainForm
     OnEditingDone = cbHash2EditingDone
     ParentFont = False
     ParentShowHint = False
-    TabOrder = 11
+    TabOrder = 10
   end
   object cbHash3: TComboBox
     Left = 284
@@ -1504,7 +1494,7 @@ object MainForm: TMainForm
     ItemHeight = 40
     OnEditingDone = cbHash3EditingDone
     ParentFont = False
-    TabOrder = 12
+    TabOrder = 11
   end
   object cbHash4: TComboBox
     Left = 284
@@ -1522,7 +1512,7 @@ object MainForm: TMainForm
     ItemHeight = 40
     OnEditingDone = cbHash4EditingDone
     ParentFont = False
-    TabOrder = 13
+    TabOrder = 12
   end
   object cbHash5: TComboBox
     Left = 284
@@ -1539,7 +1529,7 @@ object MainForm: TMainForm
     ItemHeight = 40
     OnEditingDone = cbHash5EditingDone
     ParentFont = False
-    TabOrder = 14
+    TabOrder = 13
   end
   object cbHash6: TComboBox
     Left = 284
@@ -1556,7 +1546,7 @@ object MainForm: TMainForm
     ItemHeight = 40
     OnEditingDone = cbHash6EditingDone
     ParentFont = False
-    TabOrder = 15
+    TabOrder = 14
   end
   object cbHash7: TComboBox
     Left = 284
@@ -1573,7 +1563,7 @@ object MainForm: TMainForm
     ItemHeight = 40
     OnEditingDone = cbHash7EditingDone
     ParentFont = False
-    TabOrder = 16
+    TabOrder = 15
   end
   object cbHash8: TComboBox
     Left = 284
@@ -1590,7 +1580,7 @@ object MainForm: TMainForm
     ItemHeight = 40
     OnEditingDone = cbHash8EditingDone
     ParentFont = False
-    TabOrder = 17
+    TabOrder = 16
   end
   object cbHash9: TComboBox
     Left = 284
@@ -1607,7 +1597,7 @@ object MainForm: TMainForm
     ItemHeight = 40
     OnEditingDone = cbHash9EditingDone
     ParentFont = False
-    TabOrder = 18
+    TabOrder = 17
   end
   object cbHash10: TComboBox
     Left = 284
@@ -1624,7 +1614,7 @@ object MainForm: TMainForm
     ItemHeight = 40
     OnEditingDone = cbHash10EditingDone
     ParentFont = False
-    TabOrder = 19
+    TabOrder = 18
   end
   object cbHash11: TComboBox
     Left = 284
@@ -1641,7 +1631,7 @@ object MainForm: TMainForm
     ItemHeight = 40
     OnEditingDone = cbHash11EditingDone
     ParentFont = False
-    TabOrder = 20
+    TabOrder = 19
   end
   object cbHash12: TComboBox
     Left = 284
@@ -1658,6 +1648,18 @@ object MainForm: TMainForm
     ItemHeight = 40
     OnEditingDone = cbHash12EditingDone
     ParentFont = False
+    TabOrder = 20
+  end
+  object cbMoneyRealTime: TCheckBox
+    Left = 322
+    Height = 34
+    Top = 24
+    Width = 204
+    Caption = 'Money in Real Time'
+    Checked = True
+    Font.Height = 30
+    ParentFont = False
+    State = cbChecked
     TabOrder = 21
   end
   object UpdateTimer: TTimer
