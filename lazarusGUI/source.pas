@@ -46,7 +46,18 @@ type
     procedure btnUpdateClick(Sender: TObject);
     procedure btnWeekClick(Sender: TObject);
     procedure btnYearClick(Sender: TObject);
+    procedure cbHash10EditingDone(Sender: TObject);
+    procedure cbHash11EditingDone(Sender: TObject);
+    procedure cbHash12EditingDone(Sender: TObject);
     procedure cbHash1EditingDone(Sender: TObject);
+    procedure cbHash2EditingDone(Sender: TObject);
+    procedure cbHash3EditingDone(Sender: TObject);
+    procedure cbHash4EditingDone(Sender: TObject);
+    procedure cbHash5EditingDone(Sender: TObject);
+    procedure cbHash6EditingDone(Sender: TObject);
+    procedure cbHash7EditingDone(Sender: TObject);
+    procedure cbHash8EditingDone(Sender: TObject);
+    procedure cbHash9EditingDone(Sender: TObject);
     procedure dtFromEditingDone(Sender: TObject);
     procedure dtToEditingDone(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -62,6 +73,7 @@ type
     procedure EnableItemOnPos(Pos: integer; Sender: TObject);
     procedure SetHashOnPos(Pos: integer; Hash: String; Sender: TObject);
     procedure RefreshHashData(Sender: TObject);
+    procedure PairIdAndHash(Hash: String; ID: integer; Sender: TObject);
 
 
   private
@@ -87,6 +99,25 @@ implementation
 {$R *.lfm}
 
 { TMainForm }
+
+procedure TMainForm.PairIdAndHash(Hash: String; ID: integer; Sender: TObject);
+var
+  postJson: TJSONObject;
+
+begin
+  postJson := TJSONObject.Create;
+  postJson.Add('id', ID);
+  postJson.Add('hash', TJSONString.Create(Hash));
+  With TFPHttpClient.Create(Nil) do
+  try
+     AddHeader('Content-Type', 'application/json');
+     RequestBody := TStringStream.Create(postJson.AsJSON);
+     Post('http://localhost:8020/set-station');
+  finally
+     Free;
+  end;
+
+end;
 
 procedure TMainForm.DisableAllItems(Sender: TObject);
 begin
@@ -597,9 +628,64 @@ begin
   dtTo.DateTime := Now();
 end;
 
+procedure TMainForm.cbHash10EditingDone(Sender: TObject);
+begin
+     PairIdAndHash(cbHash10.Text, 10, Sender);
+end;
+
+procedure TMainForm.cbHash11EditingDone(Sender: TObject);
+begin
+     PairIdAndHash(cbHash11.Text, 11, Sender);
+end;
+
+procedure TMainForm.cbHash12EditingDone(Sender: TObject);
+begin
+     PairIdAndHash(cbHash12.Text, 12, Sender);
+end;
+
 procedure TMainForm.cbHash1EditingDone(Sender: TObject);
 begin
-     Memo1.Text := Memo1.Text + ' || ' + cbHash1.Text;
+     PairIdAndHash(cbHash1.Text, 1, Sender);
+end;
+
+procedure TMainForm.cbHash2EditingDone(Sender: TObject);
+begin
+     PairIdAndHash(cbHash2.Text, 2, Sender);
+end;
+
+procedure TMainForm.cbHash3EditingDone(Sender: TObject);
+begin
+     PairIdAndHash(cbHash3.Text, 3, Sender);
+end;
+
+procedure TMainForm.cbHash4EditingDone(Sender: TObject);
+begin
+     PairIdAndHash(cbHash4.Text, 4, Sender);
+end;
+
+procedure TMainForm.cbHash5EditingDone(Sender: TObject);
+begin
+     PairIdAndHash(cbHash5.Text, 5, Sender);
+end;
+
+procedure TMainForm.cbHash6EditingDone(Sender: TObject);
+begin
+     PairIdAndHash(cbHash6.Text, 6, Sender);
+end;
+
+procedure TMainForm.cbHash7EditingDone(Sender: TObject);
+begin
+     PairIdAndHash(cbHash7.Text, 7, Sender);
+end;
+
+procedure TMainForm.cbHash8EditingDone(Sender: TObject);
+begin
+     PairIdAndHash(cbHash8.Text, 8, Sender);
+end;
+
+procedure TMainForm.cbHash9EditingDone(Sender: TObject);
+begin
+     PairIdAndHash(cbHash9.Text, 9, Sender);
 end;
 
 procedure TMainForm.dtFromEditingDone(Sender: TObject);
