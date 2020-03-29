@@ -303,6 +303,8 @@ begin
         RequestAnswer := Get('http://localhost:8020/status');
         Data := SO(UTF8Decode(RequestAnswer));
 
+        Memo1.Text := Memo1.Text + ' || Before array parse. ';
+
         // Check the null data in stations array
         if Data.S['stations'] <> '' then
         begin
@@ -317,6 +319,8 @@ begin
           begin
             // Get current station
             Station := Stations.O[i - 1];
+
+            Memo1.Text := Memo1.Text + ' || Begin of FOR. ';
 
             // GENERAL DATA
             // Paint the cell, depending on status message
@@ -343,6 +347,8 @@ begin
             // If the station has ID
             if Station.AsObject.Exists('id') then
             begin
+              Memo1.Text := Memo1.Text + ' || ID exist. ';
+
               pos := StrToInt(Station.s['id']);
 
               // Make controls in the specified line active
@@ -353,13 +359,17 @@ begin
               // We need to add it's ID to list and choose the Hash by default
               if Station.AsObject.Exists('hash') then
               begin
+                   Memo1.Text := Memo1.Text + ' || Hash exist. ';
+
                    findRes := AvailableHashes.IndexOf(Station.s['hash']);
 
                    // Check that this hash is new in the list
                    if findRes < 0 then begin
+                      Memo1.Text := Memo1.Text + ' || Hash is new. ';
                       AvailableHashes.Add(Station.s['hash']);
                       RefreshHashData(Sender);
                       SetHashOnPos(pos, Station.s['hash'], Sender);
+                      Memo1.Text := Memo1.Text + ' || After hash write. ';
                    end;
               end;
             end
