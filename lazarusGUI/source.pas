@@ -266,7 +266,7 @@ begin
                 else
                 begin
                    AvailableHashes.Add(Station.s['hash']);
-                   Memo1.Text := Memo1.Text + '||New item added: ' + Station.s['hash']';
+                   Memo1.Text := Memo1.Text + '||New item added: ' + Station.s['hash'];
                 end;
               end;
 
