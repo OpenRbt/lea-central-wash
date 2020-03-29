@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 31
+  Left = 660
   Height = 1080
-  Top = 179
+  Top = 286
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -1439,161 +1439,211 @@ object MainForm: TMainForm
     ParentColor = False
     ParentFont = False
   end
-  object cbHash1: TCheckComboBox
-    Left = 284
-    Height = 66
-    Top = 230
-    Width = 276
-    AutoSize = False
-    Constraints.MaxHeight = 66
-    Constraints.MaxWidth = 276
-    Constraints.MinHeight = 66
-    Constraints.MinWidth = 276
-    ItemHeight = 60
+  object Memo1: TMemo
+    Left = 344
+    Height = 124
+    Top = 16
+    Width = 207
+    Lines.Strings = (
+      'Memo1'
+    )
     TabOrder = 9
   end
-  object cbHash2: TCheckComboBox
+  object cbHash1: TComboBox
     Left = 284
-    Height = 66
-    Top = 295
+    Height = 65
+    Top = 232
     Width = 276
+    AutoComplete = True
+    AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
     AutoSize = False
-    Constraints.MaxHeight = 66
+    Constraints.MaxHeight = 65
     Constraints.MaxWidth = 276
-    Constraints.MinHeight = 66
+    Constraints.MinHeight = 65
     Constraints.MinWidth = 276
-    ItemHeight = 60
+    Font.Height = 58
+    ItemHeight = 57
+    ParentFont = False
+    ParentShowHint = False
+    Style = csDropDownList
     TabOrder = 10
   end
-  object cbHash3: TCheckComboBox
+  object cbHash2: TComboBox
     Left = 284
-    Height = 66
-    Top = 359
+    Height = 65
+    Top = 296
     Width = 276
     AutoSize = False
-    Constraints.MaxHeight = 66
+    Constraints.MaxHeight = 65
     Constraints.MaxWidth = 276
-    Constraints.MinHeight = 66
+    Constraints.MinHeight = 65
     Constraints.MinWidth = 276
-    ItemHeight = 60
+    Font.Height = 58
+    ItemHeight = 57
+    ParentFont = False
+    ParentShowHint = False
+    Style = csDropDownList
     TabOrder = 11
   end
-  object cbHash4: TCheckComboBox
+  object cbHash3: TComboBox
     Left = 284
-    Height = 66
-    Top = 423
+    Height = 65
+    Top = 360
     Width = 276
     AutoSize = False
-    Constraints.MaxHeight = 66
+    Constraints.MaxHeight = 65
     Constraints.MaxWidth = 276
-    Constraints.MinHeight = 66
+    Constraints.MinHeight = 65
     Constraints.MinWidth = 276
-    ItemHeight = 60
+    Font.Height = 58
+    ItemHeight = 57
+    ParentFont = False
+    Style = csDropDownList
     TabOrder = 12
   end
-  object cbHash5: TCheckComboBox
+  object cbHash4: TComboBox
     Left = 284
-    Height = 66
-    Top = 487
+    Height = 65
+    Top = 424
     Width = 276
     AutoSize = False
-    Constraints.MaxHeight = 66
+    Constraints.MaxHeight = 65
     Constraints.MaxWidth = 276
-    Constraints.MinHeight = 66
+    Constraints.MinHeight = 65
     Constraints.MinWidth = 276
-    ItemHeight = 60
+    Font.Height = 58
+    ItemHeight = 57
+    ParentFont = False
+    Style = csDropDownList
     TabOrder = 13
   end
-  object cbHash6: TCheckComboBox
+  object cbHash5: TComboBox
     Left = 284
-    Height = 66
-    Top = 551
+    Height = 65
+    Top = 488
     Width = 276
     AutoSize = False
-    Constraints.MaxHeight = 66
+    Constraints.MaxHeight = 65
     Constraints.MaxWidth = 276
-    Constraints.MinHeight = 66
+    Constraints.MinHeight = 65
     Constraints.MinWidth = 276
-    ItemHeight = 60
+    Font.Height = 58
+    ItemHeight = 57
+    ParentFont = False
+    Style = csDropDownList
     TabOrder = 14
   end
-  object cbHash7: TCheckComboBox
+  object cbHash6: TComboBox
     Left = 284
-    Height = 66
-    Top = 615
+    Height = 65
+    Top = 552
     Width = 276
     AutoSize = False
-    Constraints.MaxHeight = 66
+    Constraints.MaxHeight = 65
     Constraints.MaxWidth = 276
-    Constraints.MinHeight = 66
+    Constraints.MinHeight = 65
     Constraints.MinWidth = 276
-    ItemHeight = 60
+    Font.Height = 58
+    ItemHeight = 57
+    ParentFont = False
+    Style = csDropDownList
     TabOrder = 15
   end
-  object cbHash8: TCheckComboBox
+  object cbHash7: TComboBox
     Left = 284
-    Height = 66
-    Top = 679
+    Height = 65
+    Top = 616
     Width = 276
     AutoSize = False
-    Constraints.MaxHeight = 66
+    Constraints.MaxHeight = 65
     Constraints.MaxWidth = 276
-    Constraints.MinHeight = 66
+    Constraints.MinHeight = 65
     Constraints.MinWidth = 276
-    ItemHeight = 60
+    Font.Height = 58
+    ItemHeight = 57
+    ParentFont = False
+    Style = csDropDownList
     TabOrder = 16
   end
-  object cbHash9: TCheckComboBox
+  object cbHash8: TComboBox
     Left = 284
-    Height = 66
-    Top = 743
+    Height = 65
+    Top = 680
     Width = 276
     AutoSize = False
-    Constraints.MaxHeight = 66
+    Constraints.MaxHeight = 65
     Constraints.MaxWidth = 276
-    Constraints.MinHeight = 66
+    Constraints.MinHeight = 65
     Constraints.MinWidth = 276
-    ItemHeight = 60
+    Font.Height = 58
+    ItemHeight = 57
+    ParentFont = False
+    Style = csDropDownList
     TabOrder = 17
   end
-  object cbHash10: TCheckComboBox
+  object cbHash9: TComboBox
     Left = 284
-    Height = 66
-    Top = 807
+    Height = 65
+    Top = 744
     Width = 276
     AutoSize = False
-    Constraints.MaxHeight = 66
+    Constraints.MaxHeight = 65
     Constraints.MaxWidth = 276
-    Constraints.MinHeight = 66
+    Constraints.MinHeight = 65
     Constraints.MinWidth = 276
-    ItemHeight = 60
+    Font.Height = 58
+    ItemHeight = 57
+    ParentFont = False
+    Style = csDropDownList
     TabOrder = 18
   end
-  object cbHash11: TCheckComboBox
+  object cbHash10: TComboBox
     Left = 284
-    Height = 66
-    Top = 871
+    Height = 65
+    Top = 808
     Width = 276
     AutoSize = False
-    Constraints.MaxHeight = 66
+    Constraints.MaxHeight = 65
     Constraints.MaxWidth = 276
-    Constraints.MinHeight = 66
+    Constraints.MinHeight = 65
     Constraints.MinWidth = 276
-    ItemHeight = 60
+    Font.Height = 58
+    ItemHeight = 57
+    ParentFont = False
+    Style = csDropDownList
     TabOrder = 19
   end
-  object cbHash12: TCheckComboBox
+  object cbHash11: TComboBox
     Left = 284
-    Height = 66
-    Top = 935
+    Height = 65
+    Top = 872
     Width = 276
     AutoSize = False
-    Constraints.MaxHeight = 66
+    Constraints.MaxHeight = 65
     Constraints.MaxWidth = 276
-    Constraints.MinHeight = 66
+    Constraints.MinHeight = 65
     Constraints.MinWidth = 276
-    ItemHeight = 60
+    Font.Height = 58
+    ItemHeight = 57
+    ParentFont = False
+    Style = csDropDownList
     TabOrder = 20
+  end
+  object cbHash12: TComboBox
+    Left = 284
+    Height = 65
+    Top = 936
+    Width = 276
+    AutoSize = False
+    Constraints.MaxHeight = 65
+    Constraints.MaxWidth = 276
+    Constraints.MinHeight = 65
+    Constraints.MinWidth = 276
+    Font.Height = 58
+    ItemHeight = 57
+    ParentFont = False
+    Style = csDropDownList
+    TabOrder = 21
   end
   object UpdateTimer: TTimer
     Enabled = False
