@@ -215,7 +215,7 @@ var
   Data: ISuperObject;
   Station: ISuperObject;
   Stations: TSuperArray;
-  i, pos: integer;
+  i, pos, findPos: integer;
 
 begin
   with TFPHttpClient.Create(nil) do
@@ -256,8 +256,10 @@ begin
               // ID and Hash both exist => station is already paired
               if Station.AsObject.Exists('hash') then
               begin
-                AvailableHashes.Add(Station.s['hash']);
-                AssignedHashes.Add(Station.s['hash']);
+                if not AvailableHashes.Find(Station.s['hash'], findPos) then begin
+                   AvailableHashes.Add(Station.s['hash']);
+                end;
+                //AssignedHashes.Add(Station.s['hash']);
               end;
 
               if Station.s['status'] = 'offline' then

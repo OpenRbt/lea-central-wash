@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 660
+  Left = 517
   Height = 1080
-  Top = 286
+  Top = 164
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -1451,7 +1451,7 @@ object MainForm: TMainForm
   end
   object cbHash1: TComboBox
     Left = 284
-    Height = 65
+    Height = 68
     Top = 232
     Width = 276
     AutoComplete = True
@@ -1462,7 +1462,8 @@ object MainForm: TMainForm
     Constraints.MinHeight = 65
     Constraints.MinWidth = 276
     Font.Height = 58
-    ItemHeight = 57
+    Font.Name = 'System'
+    ItemHeight = 60
     ParentFont = False
     ParentShowHint = False
     Style = csDropDownList
