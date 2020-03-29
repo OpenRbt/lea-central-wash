@@ -70,11 +70,12 @@ type
     procedure UpdateCall(Sender: TObject);
 
     procedure DisableAllItems(Sender: TObject);
+    procedure EnableAllItems(Sender: TObject);
     procedure EnableItemOnPos(Pos: integer; Sender: TObject);
     procedure SetHashOnPos(Pos: integer; Hash: String; Sender: TObject);
     procedure RefreshHashData(Sender: TObject);
     procedure PairIdAndHash(Hash, StationName: String; ID: integer; Sender: TObject);
-
+    procedure LoadMoney(ID: integer; Sender: TObject);
 
   private
 
@@ -99,6 +100,37 @@ implementation
 {$R *.lfm}
 
 { TMainForm }
+
+procedure TMainForm.LoadMoney(ID: integer; Sender: TObject);
+var
+  postJson: TJSONObject;
+  unixFrom: Longint;
+  unixTo:   Longint;
+
+const
+  UnixStartDate: TDateTime = 25569.0;
+
+begin
+  postJson := TJSONObject.Create;
+  postJson.Add('id', ID);
+
+  unixFrom := Round((dtFrom.DateTime - UnixStartDate) * 86400);
+  unixTo := Round((dtTo.DateTime - UnixStartDate) * 86400);
+
+  postJson.Add('startDate', unixFrom);
+  postJson.Add('endDate', unixTo);
+
+  With TFPHttpClient.Create(Nil) do
+  try
+     AddHeader('Content-Type', 'application/json');
+     RequestBody := TStringStream.Create(postJson.AsJSON);
+     RequestAnswer := Post('http://localhost:8020/station-report');
+     Memo1.Text := RequestAnswer;
+  finally
+     Free;
+  end;
+
+end;
 
 procedure TMainForm.PairIdAndHash(Hash, StationName: String; ID: integer; Sender: TObject);
 var
@@ -134,6 +166,22 @@ begin
      cbHash10.Enabled := False;
      cbHash11.Enabled := False;
      cbHash12.Enabled := False;
+end;
+
+procedure TMainForm.EnableAllItems(Sender: TObject);
+begin
+     cbHash1.Enabled := True;
+     cbHash2.Enabled := True;
+     cbHash3.Enabled := True;
+     cbHash4.Enabled := True;
+     cbHash5.Enabled := True;
+     cbHash6.Enabled := True;
+     cbHash7.Enabled := True;
+     cbHash8.Enabled := True;
+     cbHash9.Enabled := True;
+     cbHash10.Enabled := True;
+     cbHash11.Enabled := True;
+     cbHash12.Enabled := True;
 end;
 
 procedure TMainForm.EnableItemOnPos(Pos: Integer; Sender: TObject);
