@@ -155,9 +155,9 @@ begin
                MoneyData.Cells[2, ID] := '0';
           end;
 
-          if Report.AsObject.Exists('service') then
+          if Report.AsObject.Exists('carsTotal') then
           begin
-               MoneyData.Cells[4, ID] := IntToStr(Report.I['service']);
+               MoneyData.Cells[4, ID] := IntToStr(Report.I['carsTotal']);
           end
           else
           begin
