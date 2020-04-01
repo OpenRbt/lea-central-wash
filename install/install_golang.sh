@@ -1,3 +1,3 @@
-#!/bin bash
+#!/bin/bash
 
 sudo apt install golang
