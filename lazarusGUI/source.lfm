@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = -170
+  Left = 318
   Height = 1080
-  Top = 726
+  Top = 450
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -21,11 +21,11 @@ object MainForm: TMainForm
     Left = 8
     Height = 836
     Top = 168
-    Width = 1106
+    Width = 925
     AutoEdit = False
     BorderSpacing.CellAlignHorizontal = ccaCenter
     ColCount = 4
-    DefaultColWidth = 275
+    DefaultColWidth = 230
     DefaultRowHeight = 64
     DoubleBuffered = True
     ExtendedSelect = False
@@ -104,7 +104,7 @@ object MainForm: TMainForm
     Left = 8
     Height = 155
     Top = 4
-    Width = 277
+    Width = 233
     Caption = 'Manage Station'
     Font.Height = 30
     Font.Name = 'Arial'
@@ -114,7 +114,7 @@ object MainForm: TMainForm
     TabOrder = 1
   end
   object Logo: TImage
-    Left = 565
+    Left = 552
     Height = 108
     Top = 24
     Width = 540
@@ -1275,18 +1275,19 @@ object MainForm: TMainForm
     Proportional = True
   end
   object MoneyData: TStringGrid
-    Left = 1110
+    Left = 933
     Height = 836
     Top = 168
-    Width = 799
+    Width = 977
     AutoEdit = False
     BorderSpacing.CellAlignHorizontal = ccaCenter
-    DefaultColWidth = 159
+    ColCount = 6
+    DefaultColWidth = 162
     DefaultRowHeight = 64
     DoubleBuffered = True
     Enabled = False
     ExtendedSelect = False
-    FixedCols = 5
+    FixedCols = 6
     Font.Height = 40
     Font.Quality = fqCleartypeNatural
     HeaderHotZones = []
@@ -1305,7 +1306,7 @@ object MainForm: TMainForm
     OnDblClick = StationsDataDblClick
     OnDrawCell = StationsDataDrawCell
     Cells = (
-      5
+      6
       0
       0
       'Total'
@@ -1321,10 +1322,13 @@ object MainForm: TMainForm
       4
       0
       'Clients'
+      5
+      0
+      'Service'
     )
   end
   object dtFrom: TDateTimePicker
-    Left = 1208
+    Left = 1200
     Height = 38
     Top = 40
     Width = 221
@@ -1349,9 +1353,9 @@ object MainForm: TMainForm
     OnEditingDone = dtFromEditingDone
   end
   object dtTo: TDateTimePicker
-    Left = 1208
+    Left = 1200
     Height = 38
-    Top = 120
+    Top = 112
     Width = 221
     CenturyFrom = 1941
     MaxDate = 2958465
@@ -1374,7 +1378,7 @@ object MainForm: TMainForm
     OnEditingDone = dtToEditingDone
   end
   object btnDay: TButton
-    Left = 1588
+    Left = 1581
     Height = 70
     Top = 88
     Width = 156
@@ -1385,7 +1389,7 @@ object MainForm: TMainForm
     TabOrder = 5
   end
   object btnWeek: TButton
-    Left = 1588
+    Left = 1581
     Height = 70
     Top = 8
     Width = 156
@@ -1418,7 +1422,7 @@ object MainForm: TMainForm
     TabOrder = 8
   end
   object Label1: TLabel
-    Left = 1208
+    Left = 1200
     Height = 30
     Top = 4
     Width = 57
@@ -1429,9 +1433,9 @@ object MainForm: TMainForm
     ParentFont = False
   end
   object Label2: TLabel
-    Left = 1208
+    Left = 1200
     Height = 30
-    Top = 88
+    Top = 79
     Width = 29
     Caption = 'To:'
     Font.Height = 30
@@ -1440,212 +1444,212 @@ object MainForm: TMainForm
     ParentFont = False
   end
   object cbHash1: TComboBox
-    Left = 284
-    Height = 36
+    Left = 240
+    Height = 33
     Top = 233
-    Width = 276
+    Width = 230
     ArrowKeysTraverseList = False
     AutoDropDown = True
     AutoSize = False
     Constraints.MaxHeight = 65
-    Constraints.MaxWidth = 276
+    Constraints.MaxWidth = 230
     Constraints.MinHeight = 65
-    Constraints.MinWidth = 276
-    Font.Height = 30
+    Constraints.MinWidth = 230
+    Font.Height = 25
     Font.Name = 'Arial'
-    ItemHeight = 28
+    ItemHeight = 25
     OnEditingDone = cbHash1EditingDone
     ParentFont = False
     ParentShowHint = False
     TabOrder = 9
   end
   object cbHash2: TComboBox
-    Left = 284
-    Height = 36
+    Left = 240
+    Height = 33
     Top = 296
-    Width = 276
+    Width = 230
     ArrowKeysTraverseList = False
     AutoSize = False
     Constraints.MaxHeight = 65
-    Constraints.MaxWidth = 276
+    Constraints.MaxWidth = 230
     Constraints.MinHeight = 65
-    Constraints.MinWidth = 276
-    Font.Height = 30
+    Constraints.MinWidth = 230
+    Font.Height = 25
     Font.Name = 'Arial'
-    ItemHeight = 28
+    ItemHeight = 25
     OnEditingDone = cbHash2EditingDone
     ParentFont = False
     ParentShowHint = False
     TabOrder = 10
   end
   object cbHash3: TComboBox
-    Left = 284
-    Height = 36
+    Left = 240
+    Height = 33
     Top = 360
-    Width = 276
+    Width = 230
     ArrowKeysTraverseList = False
     AutoSize = False
     Constraints.MaxHeight = 65
-    Constraints.MaxWidth = 276
+    Constraints.MaxWidth = 230
     Constraints.MinHeight = 65
-    Constraints.MinWidth = 276
-    Font.Height = 30
+    Constraints.MinWidth = 230
+    Font.Height = 25
     Font.Name = 'Arial'
-    ItemHeight = 28
+    ItemHeight = 25
     OnEditingDone = cbHash3EditingDone
     ParentFont = False
     TabOrder = 11
   end
   object cbHash4: TComboBox
-    Left = 284
-    Height = 36
+    Left = 240
+    Height = 33
     Top = 424
-    Width = 276
+    Width = 230
     ArrowKeysTraverseList = False
     AutoSize = False
     Constraints.MaxHeight = 65
-    Constraints.MaxWidth = 276
+    Constraints.MaxWidth = 230
     Constraints.MinHeight = 65
-    Constraints.MinWidth = 276
-    Font.Height = 30
+    Constraints.MinWidth = 230
+    Font.Height = 25
     Font.Name = 'Arial'
-    ItemHeight = 28
+    ItemHeight = 25
     OnEditingDone = cbHash4EditingDone
     ParentFont = False
     TabOrder = 12
   end
   object cbHash5: TComboBox
-    Left = 284
-    Height = 36
+    Left = 240
+    Height = 33
     Top = 488
-    Width = 276
+    Width = 230
     AutoSize = False
     Constraints.MaxHeight = 65
-    Constraints.MaxWidth = 276
+    Constraints.MaxWidth = 230
     Constraints.MinHeight = 65
-    Constraints.MinWidth = 276
-    Font.Height = 30
+    Constraints.MinWidth = 230
+    Font.Height = 25
     Font.Name = 'Arial'
-    ItemHeight = 28
+    ItemHeight = 25
     OnEditingDone = cbHash5EditingDone
     ParentFont = False
     TabOrder = 13
   end
   object cbHash6: TComboBox
-    Left = 284
-    Height = 36
+    Left = 240
+    Height = 33
     Top = 552
-    Width = 276
+    Width = 230
     AutoSize = False
     Constraints.MaxHeight = 65
-    Constraints.MaxWidth = 276
+    Constraints.MaxWidth = 230
     Constraints.MinHeight = 65
-    Constraints.MinWidth = 276
-    Font.Height = 30
+    Constraints.MinWidth = 230
+    Font.Height = 25
     Font.Name = 'Arial'
-    ItemHeight = 28
+    ItemHeight = 25
     OnEditingDone = cbHash6EditingDone
     ParentFont = False
     TabOrder = 14
   end
   object cbHash7: TComboBox
-    Left = 284
-    Height = 36
+    Left = 240
+    Height = 33
     Top = 616
-    Width = 276
+    Width = 230
     AutoSize = False
     Constraints.MaxHeight = 65
-    Constraints.MaxWidth = 276
+    Constraints.MaxWidth = 230
     Constraints.MinHeight = 65
-    Constraints.MinWidth = 276
-    Font.Height = 30
+    Constraints.MinWidth = 230
+    Font.Height = 25
     Font.Name = 'Arial'
-    ItemHeight = 28
+    ItemHeight = 25
     OnEditingDone = cbHash7EditingDone
     ParentFont = False
     TabOrder = 15
   end
   object cbHash8: TComboBox
-    Left = 284
-    Height = 36
+    Left = 240
+    Height = 33
     Top = 680
-    Width = 276
+    Width = 230
     AutoSize = False
     Constraints.MaxHeight = 65
-    Constraints.MaxWidth = 276
+    Constraints.MaxWidth = 230
     Constraints.MinHeight = 65
-    Constraints.MinWidth = 276
-    Font.Height = 30
+    Constraints.MinWidth = 230
+    Font.Height = 25
     Font.Name = 'Arial'
-    ItemHeight = 28
+    ItemHeight = 25
     OnEditingDone = cbHash8EditingDone
     ParentFont = False
     TabOrder = 16
   end
   object cbHash9: TComboBox
-    Left = 284
-    Height = 36
+    Left = 240
+    Height = 33
     Top = 744
-    Width = 276
+    Width = 230
     AutoSize = False
     Constraints.MaxHeight = 65
-    Constraints.MaxWidth = 276
+    Constraints.MaxWidth = 230
     Constraints.MinHeight = 65
-    Constraints.MinWidth = 276
-    Font.Height = 30
+    Constraints.MinWidth = 230
+    Font.Height = 25
     Font.Name = 'Arial'
-    ItemHeight = 28
+    ItemHeight = 25
     OnEditingDone = cbHash9EditingDone
     ParentFont = False
     TabOrder = 17
   end
   object cbHash10: TComboBox
-    Left = 284
-    Height = 36
+    Left = 240
+    Height = 33
     Top = 808
-    Width = 276
+    Width = 230
     AutoSize = False
     Constraints.MaxHeight = 65
-    Constraints.MaxWidth = 276
+    Constraints.MaxWidth = 230
     Constraints.MinHeight = 65
-    Constraints.MinWidth = 276
-    Font.Height = 30
+    Constraints.MinWidth = 230
+    Font.Height = 25
     Font.Name = 'Arial'
-    ItemHeight = 28
+    ItemHeight = 25
     OnEditingDone = cbHash10EditingDone
     ParentFont = False
     TabOrder = 18
   end
   object cbHash11: TComboBox
-    Left = 284
-    Height = 36
+    Left = 240
+    Height = 33
     Top = 872
-    Width = 276
+    Width = 230
     AutoSize = False
     Constraints.MaxHeight = 65
-    Constraints.MaxWidth = 276
+    Constraints.MaxWidth = 230
     Constraints.MinHeight = 65
-    Constraints.MinWidth = 276
-    Font.Height = 30
+    Constraints.MinWidth = 230
+    Font.Height = 25
     Font.Name = 'Arial'
-    ItemHeight = 28
+    ItemHeight = 25
     OnEditingDone = cbHash11EditingDone
     ParentFont = False
     TabOrder = 19
   end
   object cbHash12: TComboBox
-    Left = 284
-    Height = 36
+    Left = 240
+    Height = 33
     Top = 936
-    Width = 276
+    Width = 230
     AutoSize = False
     Constraints.MaxHeight = 65
-    Constraints.MaxWidth = 276
+    Constraints.MaxWidth = 230
     Constraints.MinHeight = 65
-    Constraints.MinWidth = 276
-    Font.Height = 30
+    Constraints.MinWidth = 230
+    Font.Height = 25
     Font.Name = 'Arial'
-    ItemHeight = 28
+    ItemHeight = 25
     OnEditingDone = cbHash12EditingDone
     ParentFont = False
     TabOrder = 20

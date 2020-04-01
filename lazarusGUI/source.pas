@@ -164,6 +164,15 @@ begin
                MoneyData.Cells[4, ID] := '0';
           end;
 
+          if Report.AsObject.Exists('service') then
+          begin
+               MoneyData.Cells[5, ID] := IntToStr(Report.I['service']);
+          end
+          else
+          begin
+               MoneyData.Cells[5, ID] := '0';
+          end;
+
           if Report.AsObject.Exists('banknotes') then
           begin
                totalMoney := totalMoney + Report.I['banknotes'];
