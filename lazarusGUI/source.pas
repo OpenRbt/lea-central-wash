@@ -201,6 +201,7 @@ begin
          MoneyData.Cells[2, ID] := '0';
          MoneyData.Cells[3, ID] := '0';
          MoneyData.Cells[4, ID] := '0';
+         MoneyData.Cells[5, ID] := '0';
      end;
     except
         On E: Exception do
