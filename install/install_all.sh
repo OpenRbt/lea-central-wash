@@ -7,3 +7,4 @@
 sudo ./remove_sleep.sh
 
 ./install_onlinekasse.sh
+./install_gui.sh
