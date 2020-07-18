@@ -293,7 +293,11 @@ func (a *app) StatusCollection() StatusCollection {
 			collectionTime = report.Ctime
 		}
 
-		fmt.Println(time.Now())
+		t := time.Now()
+		loc, err := time.LoadLocation("Local")
+		t = t.In(loc)
+
+		fmt.Println(t)
 		fmt.Println(collectionTime)
 
 		moneyReport, err := a.repo.MoneyReport(v.ID, collectionTime, time.Now())
