@@ -296,6 +296,10 @@ func (a *app) StatusCollection() StatusCollection {
 			collectionTime = report.Ctime
 			fmt.Println("Last date set")
 		}
+		fmt.Println("Now: ")
+		fmt.Println(time.Now())
+		fmt.Println("Collection time: ")
+		fmt.Println(collectionTime)
 
 		moneyReport, err := a.repo.MoneyReport(v.ID, time.Now(), collectionTime)
 		if err != nil {
