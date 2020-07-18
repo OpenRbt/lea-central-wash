@@ -297,7 +297,7 @@ func (a *app) StatusCollection() StatusCollection {
 			fmt.Println("Last date set")
 		}
 		fmt.Println("Now: ")
-		fmt.Println(time.Now())
+		fmt.Println(time.Local)
 		fmt.Println("Collection time: ")
 		fmt.Println(collectionTime)
 
