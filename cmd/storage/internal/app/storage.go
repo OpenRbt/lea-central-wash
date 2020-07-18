@@ -293,7 +293,7 @@ func (a *app) StatusCollection() StatusCollection {
 			collectionTime = report.Ctime
 		}
 
-		moneyReport, err := a.repo.MoneyReport(v.ID, collectionTime, time.Now())
+		moneyReport, err := a.repo.MoneyReport(v.ID, time.Now(), collectionTime)
 		if err != nil {
 			collectionMoney = 0
 		} else {
