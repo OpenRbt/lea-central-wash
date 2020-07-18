@@ -294,7 +294,7 @@ func (a *app) StatusCollection() StatusCollection {
 		}
 
 		t := time.Now()
-		loc, err := time.LoadLocation("Asia/Shanghai")
+		loc, err := time.LoadLocation("Local")
 		t = t.In(loc)
 
 		fmt.Println(t)
