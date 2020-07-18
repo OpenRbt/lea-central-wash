@@ -79,7 +79,7 @@ begin
            try
               AddHeader('Content-Type', 'application/json');
               RequestBody := TStringStream.Create(postJson.AsJSON);
-              Post('http://localhost:8020/add-service-amount');
+              Post('http://192.168.1.30:8020/add-service-amount');
            except
            end;
 
@@ -108,7 +108,7 @@ begin
         try
            AddHeader('Content-Type', 'application/json');
            RequestBody := TStringStream.Create(postJson.AsJSON);
-           RequestAnswer := Post('http://localhost:8020/load');
+           RequestAnswer := Post('http://192.168.1.30:8020/load');
            Value := RequestAnswer.Substring(1,RequestAnswer.Length-3);
            PricesData.Cells[i, 1] := Value;
         finally
@@ -159,7 +159,7 @@ begin
       try
          AddHeader('Content-Type', 'application/json');
          RequestBody := TStringStream.Create(postJson.AsJSON);
-         Post('http://localhost:8020/save');
+         Post('http://192.168.1.30:8020/save');
       finally
          Free;
       end;

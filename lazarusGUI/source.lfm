@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 318
+  Left = -6
   Height = 1080
-  Top = 450
+  Top = 1
   Width = 1920
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Car Wash Control Panel'
@@ -114,9 +114,9 @@ object MainForm: TMainForm
     TabOrder = 1
   end
   object Logo: TImage
-    Left = 552
+    Left = 648
     Height = 108
-    Top = 24
+    Top = 16
     Width = 540
     AutoSize = True
     Picture.Data = {
@@ -1328,7 +1328,7 @@ object MainForm: TMainForm
     )
   end
   object dtFrom: TDateTimePicker
-    Left = 1200
+    Left = 1208
     Height = 38
     Top = 40
     Width = 221
@@ -1353,7 +1353,7 @@ object MainForm: TMainForm
     OnEditingDone = dtFromEditingDone
   end
   object dtTo: TDateTimePicker
-    Left = 1200
+    Left = 1208
     Height = 38
     Top = 112
     Width = 221
@@ -1422,7 +1422,7 @@ object MainForm: TMainForm
     TabOrder = 8
   end
   object Label1: TLabel
-    Left = 1200
+    Left = 1208
     Height = 30
     Top = 4
     Width = 57
@@ -1433,7 +1433,7 @@ object MainForm: TMainForm
     ParentFont = False
   end
   object Label2: TLabel
-    Left = 1200
+    Left = 1208
     Height = 30
     Top = 79
     Width = 29
@@ -1655,11 +1655,11 @@ object MainForm: TMainForm
     TabOrder = 20
   end
   object cbMoneyRealTime: TCheckBox
-    Left = 293
+    Left = 520
     Height = 29
-    Top = 24
-    Width = 175
-    Caption = 'Money in Real Time'
+    Top = 16
+    Width = 96
+    Caption = 'Real Time'
     Checked = True
     Font.Height = 25
     ParentFont = False
@@ -1667,11 +1667,11 @@ object MainForm: TMainForm
     TabOrder = 21
   end
   object cbIsBlocked: TCheckBox
-    Left = 293
+    Left = 520
     Height = 29
-    Top = 80
-    Width = 172
-    Caption = 'Block Hash Change'
+    Top = 64
+    Width = 107
+    Caption = 'Block Hash'
     Checked = True
     Font.Height = 25
     OnChange = cbIsBlockedChange
@@ -1679,11 +1679,24 @@ object MainForm: TMainForm
     State = cbChecked
     TabOrder = 22
   end
+  object btnMoneyCollection: TButton
+    Left = 264
+    Height = 155
+    Top = 4
+    Width = 233
+    Caption = 'Money Collection'
+    Font.Height = 30
+    Font.Name = 'Arial'
+    Font.Style = [fsBold]
+    OnClick = btnMoneyCollectionClick
+    ParentFont = False
+    TabOrder = 23
+  end
   object UpdateTimer: TTimer
     Enabled = False
     Interval = 10000
     OnTimer = UpdateCall
-    left = 306
-    top = 116
+    left = 560
+    top = 112
   end
 end
