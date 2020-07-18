@@ -1,16 +1,14 @@
 object MoneyCollectionForm: TMoneyCollectionForm
-  Left = 692
+  Left = 358
   Height = 929
-  Top = 50
-  Width = 1002
+  Top = 122
+  Width = 1283
   BorderIcons = [biSystemMenu]
   Caption = 'Money Collection'
   ClientHeight = 929
-  ClientWidth = 1002
+  ClientWidth = 1283
   Constraints.MaxHeight = 929
-  Constraints.MaxWidth = 1002
   Constraints.MinHeight = 929
-  Constraints.MinWidth = 1002
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '2.0.6.0'
@@ -20,11 +18,11 @@ object MoneyCollectionForm: TMoneyCollectionForm
     Left = 0
     Height = 836
     Top = 96
-    Width = 1000
+    Width = 1280
     AutoEdit = False
     BorderSpacing.CellAlignHorizontal = ccaCenter
     ColCount = 3
-    DefaultColWidth = 332
+    DefaultColWidth = 426
     DefaultRowHeight = 64
     DoubleBuffered = True
     ExtendedSelect = False
@@ -97,7 +95,7 @@ object MoneyCollectionForm: TMoneyCollectionForm
     Left = 8
     Height = 81
     Top = 8
-    Width = 216
+    Width = 416
     Caption = 'Collect money'
     Font.Height = -27
     Font.Style = [fsBold]
