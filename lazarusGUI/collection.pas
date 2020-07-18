@@ -113,7 +113,7 @@ begin
             end
             else
             begin
-               CollectionData.Cells[2, id] := '------';
+               CollectionData.Cells[2, id] := '-----';
             end;
           end;
         end;
