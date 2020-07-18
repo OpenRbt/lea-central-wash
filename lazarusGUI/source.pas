@@ -504,10 +504,8 @@ begin
                  CellColor[pos] := 1;
               end;
 
-              // Write the status message to the grid line
               StationsData.Cells[2, pos] := Station.s['status'];
 
-              // Write the name to the grid, if it exists
               if Station.AsObject.Exists('name') then
               begin
                  StationsData.Cells[3, pos] := Station.s['name'];
