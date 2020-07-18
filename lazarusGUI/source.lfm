@@ -1655,7 +1655,7 @@ object MainForm: TMainForm
     TabOrder = 20
   end
   object cbMoneyRealTime: TCheckBox
-    Left = 504
+    Left = 488
     Height = 29
     Top = 16
     Width = 96
@@ -1667,7 +1667,7 @@ object MainForm: TMainForm
     TabOrder = 21
   end
   object cbIsBlocked: TCheckBox
-    Left = 504
+    Left = 488
     Height = 29
     Top = 72
     Width = 107

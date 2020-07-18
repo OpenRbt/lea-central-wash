@@ -483,7 +483,6 @@ begin
           // Iterate over all incoming stations from server
           for i := 1 to Stations.Length do
           begin
-            // Get current station
             Station := Stations.O[i - 1];
 
             // If the station has ID
