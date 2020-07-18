@@ -297,13 +297,8 @@ func (a *app) StatusCollection() StatusCollection {
 			fmt.Println("Last date set")
 		}
 
-		t := time.Now()
-		_, offset := t.Local().Zone()
-		fmt.Println(offset)
-
-		fmt.Println(offset)
-		fmt.Println(t.In(time.UTC))
-		fmt.Println(t.In(time.Local))
+		fmt.Println("Now: ")
+		fmt.Println(time.Now().Local())
 
 		fmt.Println("Collection time: ")
 		fmt.Println(collectionTime)
