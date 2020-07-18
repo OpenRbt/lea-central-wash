@@ -139,7 +139,7 @@ begin
     try
      AddHeader('Content-Type', 'application/json');
      RequestBody := TStringStream.Create(postJson.AsJSON);
-     RequestAnswer := Post('http://192.168.1.30:8020/station-report');
+     RequestAnswer := Post('http://localhost:8020/station-report');
      Data := SO(UTF8Decode(RequestAnswer));
 
      if Data.S['moneyReport'] <> '' then
@@ -228,7 +228,7 @@ begin
    try
      AddHeader('Content-Type', 'application/json');
      RequestBody := TStringStream.Create(postJson.AsJSON);
-     Post('http://192.168.1.30:8020/set-station');
+     Post('http://localhost:8020/set-station');
    except
         On E: Exception do
       end;
@@ -469,7 +469,7 @@ begin
         btnMoneyCollection.Enabled := False;
         DisableAllItems(Sender);
 
-        RequestAnswer := Get('http://192.168.1.30:8020/status');
+        RequestAnswer := Get('http://localhost:8020/status');
         Data := SO(UTF8Decode(RequestAnswer));
 
         // Check the null data in stations array

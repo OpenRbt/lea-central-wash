@@ -51,7 +51,7 @@ begin
       try
         AddHeader('Content-Type', 'application/json');
         RequestBody := TStringStream.Create(postJson.AsJSON);
-        Post('http://192.168.1.30:8020/save-collection');
+        Post('http://localhost:8020/save-collection');
 
         CollectionData.Cells[2, CollectionData.Row] := DateTimeToStr(Now());
         CollectionData.Cells[1, CollectionData.Row] := '0';
@@ -81,7 +81,7 @@ begin
   with TFPHttpClient.Create(nil) do
   try
     try
-      RequestAnswer := Get('http://192.168.1.30:8020/status-collection');
+      RequestAnswer := Get('http://localhost:8020/status-collection');
       Data := SO(UTF8Decode(RequestAnswer));
 
       if Data.S['stations'] <> '' then
