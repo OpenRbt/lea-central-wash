@@ -100,3 +100,11 @@ func (t *DB) MoneyReport(stationID int, startDate, endDate time.Time) (report ap
 func (t *DB) RelayStatReport(stationID int, startDate, endDate time.Time) (report app.RelayReport, err error) {
 	return
 }
+
+func (t *DB) LastCollectionReport(stationID int) (report app.CollectionReport, err error) {
+	return
+}
+
+func (t *DB) SaveCollectionReport(report app.CollectionReport) error {
+	return nil
+}

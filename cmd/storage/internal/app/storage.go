@@ -1,8 +1,9 @@
 package app
 
 import (
-	"time"
 	"strconv"
+	"time"
+
 	"github.com/powerman/structlog"
 )
 
@@ -44,9 +45,9 @@ func (a *app) loadStations() error {
 	}
 	stations := map[string]StationData{}
 	noHash := []StationData{}
-	
+
 	// Calculate how many stations
-	createCount := 12 - len(res) 
+	createCount := 12 - len(res)
 	currentID := 1
 
 	log.Info("CreateCount", "count", createCount)
@@ -182,6 +183,11 @@ func (a *app) SaveMoneyReport(report MoneyReport) error {
 	return a.repo.SaveMoneyReport(report)
 }
 
+// SaveCollectionReport gets app.CollectionReport struct
+func (a *app) SaveCollectionReport(report CollectionReport) error {
+	return a.repo.SaveCollectionReport(report)
+}
+
 // SaveRelayReport gets app.RelayReport struct
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
@@ -262,6 +268,43 @@ func (a *app) StatusReport() StatusReport {
 		})
 	}
 	return report
+}
+
+func (a *app) StatusCollection() StatusCollection {
+	status := StatusCollection{}
+
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+
+	for _, v := range a.stations {
+		var collectionTime time.Time
+		var collectionMoney int
+
+		report, err := a.repo.LastCollectionReport(v.ID)
+		// if the post is new, and no collections found at this moment
+		if err != nil {
+			///////////////////////////////////////////////////////////////////////////////
+			// TODO: make VERY OLD DATE
+			collectionTime = time.Now()
+			///////////////////////////////////////////////////////////////////////////////
+		} else {
+			collectionTime = report.Ctime
+		}
+
+		moneyReport, err := a.repo.MoneyReport(v.ID, collectionTime, time.Now())
+		if err != nil {
+			collectionMoney = 0
+		} else {
+			collectionMoney = moneyReport.Banknotes + moneyReport.Coins + moneyReport.Electronical
+		}
+
+		status.Stations = append(status.Stations, CollectionReport{
+			ID:    v.ID,
+			Money: collectionMoney,
+			Ctime: collectionTime,
+		})
+	}
+	return status
 }
 
 func (a *app) SetStation(station SetStation) error {

@@ -120,7 +120,24 @@ func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewSaveMoneyInternalServerError()
 	}
+}
 
+func (svc *service) saveCollection(params op.SaveCollectionParams) op.SaveCollectionResponder {
+	log.Info("save collection", "ip", params.HTTPRequest.RemoteAddr)
+
+	var toSave = app.CollectionReport{
+		ID:    string(params.Args.ID),
+		Money: int(params.Args.Banknotes),
+	}
+
+	err := svc.app.SaveCollectionReport(toSave)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSaveCollectionNoContent()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewSaveCollectionInternalServerError()
+	}
 }
 
 func (svc *service) ping(params op.PingParams) op.PingResponder {
@@ -145,6 +162,11 @@ func (svc *service) info(params op.InfoParams) op.InfoResponder {
 func (svc *service) status(params op.StatusParams) op.StatusResponder {
 	report := svc.app.StatusReport()
 	return op.NewStatusOK().WithPayload(apiStatusReport(report))
+}
+
+func (svc *service) statusCollection(params op.StatusCollectionParams) op.StatusCollectionResponder {
+	collection := svc.app.StatusCollection()
+	return op.NewStatusCollectionOK().WithPayload(apiStatusCollectionReport(collection))
 }
 
 func (svc *service) addServiceAmount(params op.AddServiceAmountParams) op.AddServiceAmountResponder {

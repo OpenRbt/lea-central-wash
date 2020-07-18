@@ -260,3 +260,27 @@ func (r *repo) RelayStatReport(stationID int, startDate, endDate time.Time) (rep
 	})
 	return //nolint:nakedret
 }
+
+func (r *repo) LastCollectionReport(stationID int) (report app.CollectionReport, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &report, sqlLastCollectionReport, argLastCollectionReport{
+			StationID: stationID,
+		})
+		switch {
+		case err == sql.ErrNoRows:
+			return app.ErrNotFound
+		case err != nil:
+			return err
+		}
+		return nil
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) SaveCollectionReport(report app.CollectionReport) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlAddCollectionReport, report)
+		return err
+	})
+	return //nolint:nakedret
+}
