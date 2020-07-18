@@ -334,6 +334,9 @@ func (a *app) StationReport(id int, startDate, endDate time.Time) (MoneyReport, 
 	if err != nil {
 		return MoneyReport{}, RelayReport{}, err
 	}
+	fmt.Println(startDate)
+	fmt.Println(endDate)
+
 	stat, err := a.repo.RelayStatReport(id, startDate, endDate)
 
 	return report, stat, err
