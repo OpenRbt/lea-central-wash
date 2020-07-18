@@ -293,6 +293,9 @@ func (a *app) StatusCollection() StatusCollection {
 			collectionTime = report.Ctime
 		}
 
+		fmt.Println(time.Now())
+		fmt.Println(collectionTime)
+
 		moneyReport, err := a.repo.MoneyReport(v.ID, collectionTime, time.Now())
 		if err != nil {
 			collectionMoney = 0
@@ -334,8 +337,6 @@ func (a *app) StationReport(id int, startDate, endDate time.Time) (MoneyReport, 
 	if err != nil {
 		return MoneyReport{}, RelayReport{}, err
 	}
-	fmt.Println(startDate)
-	fmt.Println(endDate)
 
 	stat, err := a.repo.RelayStatReport(id, startDate, endDate)
 
