@@ -73,6 +73,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation Save has not yet been implemented")
 			return SaveNotImplemented()
 		}),
+		SaveCollectionHandler: SaveCollectionHandlerFunc(func(params SaveCollectionParams) SaveCollectionResponder {
+			// return middleware.NotImplemented("operation SaveCollection has not yet been implemented")
+			return SaveCollectionNotImplemented()
+		}),
 		SaveMoneyHandler: SaveMoneyHandlerFunc(func(params SaveMoneyParams) SaveMoneyResponder {
 			// return middleware.NotImplemented("operation SaveMoney has not yet been implemented")
 			return SaveMoneyNotImplemented()
@@ -92,6 +96,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		StatusHandler: StatusHandlerFunc(func(params StatusParams) StatusResponder {
 			// return middleware.NotImplemented("operation Status has not yet been implemented")
 			return StatusNotImplemented()
+		}),
+		StatusCollectionHandler: StatusCollectionHandlerFunc(func(params StatusCollectionParams) StatusCollectionResponder {
+			// return middleware.NotImplemented("operation StatusCollection has not yet been implemented")
+			return StatusCollectionNotImplemented()
 		}),
 	}
 }
@@ -142,6 +150,8 @@ type StorageAPI struct {
 	PingHandler PingHandler
 	// SaveHandler sets the operation handler for the save operation
 	SaveHandler SaveHandler
+	// SaveCollectionHandler sets the operation handler for the save collection operation
+	SaveCollectionHandler SaveCollectionHandler
 	// SaveMoneyHandler sets the operation handler for the save money operation
 	SaveMoneyHandler SaveMoneyHandler
 	// SaveRelayHandler sets the operation handler for the save relay operation
@@ -152,6 +162,8 @@ type StorageAPI struct {
 	StationReportHandler StationReportHandler
 	// StatusHandler sets the operation handler for the status operation
 	StatusHandler StatusHandler
+	// StatusCollectionHandler sets the operation handler for the status collection operation
+	StatusCollectionHandler StatusCollectionHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -251,6 +263,10 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "SaveHandler")
 	}
 
+	if o.SaveCollectionHandler == nil {
+		unregistered = append(unregistered, "SaveCollectionHandler")
+	}
+
 	if o.SaveMoneyHandler == nil {
 		unregistered = append(unregistered, "SaveMoneyHandler")
 	}
@@ -269,6 +285,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.StatusHandler == nil {
 		unregistered = append(unregistered, "StatusHandler")
+	}
+
+	if o.StatusCollectionHandler == nil {
+		unregistered = append(unregistered, "StatusCollectionHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -417,6 +437,11 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/save-collection"] = NewSaveCollection(o.context, o.SaveCollectionHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/save-money"] = NewSaveMoney(o.context, o.SaveMoneyHandler)
 
 	if o.handlers["POST"] == nil {
@@ -438,6 +463,11 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/status"] = NewStatus(o.context, o.StatusHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/status-collection"] = NewStatusCollection(o.context, o.StatusCollectionHandler)
 
 }
 

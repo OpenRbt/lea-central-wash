@@ -277,6 +277,34 @@ func (a *Client) Save(params *SaveParams) (*SaveNoContent, error) {
 }
 
 /*
+SaveCollection save collection API
+*/
+func (a *Client) SaveCollection(params *SaveCollectionParams) (*SaveCollectionNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSaveCollectionParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "saveCollection",
+		Method:             "POST",
+		PathPattern:        "/save-collection",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SaveCollectionReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*SaveCollectionNoContent), nil
+
+}
+
+/*
 SaveMoney save money API
 */
 func (a *Client) SaveMoney(params *SaveMoneyParams) (*SaveMoneyNoContent, error) {
@@ -413,6 +441,34 @@ func (a *Client) Status(params *StatusParams) (*StatusOK, error) {
 		return nil, err
 	}
 	return result.(*StatusOK), nil
+
+}
+
+/*
+StatusCollection status collection API
+*/
+func (a *Client) StatusCollection(params *StatusCollectionParams) (*StatusCollectionOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStatusCollectionParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "statusCollection",
+		Method:             "GET",
+		PathPattern:        "/status-collection",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StatusCollectionReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*StatusCollectionOK), nil
 
 }
 
