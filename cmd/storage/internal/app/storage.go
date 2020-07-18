@@ -296,8 +296,15 @@ func (a *app) StatusCollection() StatusCollection {
 			collectionTime = report.Ctime
 			fmt.Println("Last date set")
 		}
-		fmt.Println("Now: ")
-		fmt.Println(time.Local)
+
+		t := time.Now()
+		_, offset := t.Local().Zone()
+		fmt.Println(offset)
+
+		fmt.Println(offset)
+		fmt.Println(t.In(time.UTC))
+		fmt.Println(t.In(time.Local))
+
 		fmt.Println("Collection time: ")
 		fmt.Println(collectionTime)
 
