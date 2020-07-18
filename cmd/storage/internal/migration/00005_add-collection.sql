@@ -5,7 +5,7 @@ CREATE TABLE money_collection (
     id           SERIAL    PRIMARY KEY,
     station_id   INT         NOT NULL REFERENCES station(id),
     money        INT,
-    ctime        timestamp default now()
+    ctime        timestamp without time zone default (now() at time zone 'utc')
 );
 
 -- +goose Down
