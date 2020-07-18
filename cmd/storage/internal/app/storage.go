@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -185,6 +186,7 @@ func (a *app) SaveMoneyReport(report MoneyReport) error {
 
 // SaveCollectionReport gets app.CollectionReport struct
 func (a *app) SaveCollectionReport(report CollectionReport) error {
+	fmt.Println("APP: SaveCollectionReport")
 	return a.repo.SaveCollectionReport(report)
 }
 
@@ -281,12 +283,12 @@ func (a *app) StatusCollection() StatusCollection {
 		var collectionMoney int
 
 		report, err := a.repo.LastCollectionReport(v.ID)
+
 		// if the post is new, and no collections found at this moment
 		if err != nil {
-			///////////////////////////////////////////////////////////////////////////////
-			// TODO: make VERY OLD DATE
-			collectionTime = time.Now()
-			///////////////////////////////////////////////////////////////////////////////
+			// set very old date
+			collectionTime = time.Date(
+				2000, 1, 1, 0, 0, 0, 0, time.UTC)
 		} else {
 			collectionTime = report.Ctime
 		}
@@ -295,13 +297,13 @@ func (a *app) StatusCollection() StatusCollection {
 		if err != nil {
 			collectionMoney = 0
 		} else {
-			collectionMoney = moneyReport.Banknotes + moneyReport.Coins + moneyReport.Electronical
+			collectionMoney = moneyReport.Banknotes + moneyReport.Coins
 		}
 
 		status.Stations = append(status.Stations, CollectionReport{
-			ID:    v.ID,
-			Money: collectionMoney,
-			Ctime: collectionTime,
+			StationID: v.ID,
+			Money:     collectionMoney,
+			Ctime:     collectionTime,
 		})
 	}
 	return status

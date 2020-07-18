@@ -3,6 +3,7 @@ package dal
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"runtime"
 	"strconv"
 	"strings"
@@ -278,6 +279,7 @@ func (r *repo) LastCollectionReport(stationID int) (report app.CollectionReport,
 }
 
 func (r *repo) SaveCollectionReport(report app.CollectionReport) (err error) {
+	fmt.Println("DAL: SaveCollectionReport")
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlAddCollectionReport, report)
 		return err
