@@ -284,33 +284,20 @@ func (a *app) StatusCollection() StatusCollection {
 
 		report, err := a.repo.LastCollectionReport(v.ID)
 
-		fmt.Println("Station begin")
-
 		// if the post is new, and no collections found at this moment
 		if err != nil {
 			// set very old date
 			collectionTime = time.Date(
 				2000, 1, 1, 0, 0, 0, 0, time.UTC)
-			fmt.Println("Old date set")
 		} else {
 			collectionTime = report.Ctime
-			fmt.Println("Last date set")
 		}
 
-		fmt.Println("Now: ")
-		fmt.Println(time.Now().Local())
-
-		fmt.Println("Collection time: ")
-		fmt.Println(collectionTime)
-
-		moneyReport, err := a.repo.MoneyReport(v.ID, time.Now(), collectionTime)
+		moneyReport, err := a.repo.MoneyReport(v.ID, collectionTime, time.Now())
 		if err != nil {
 			collectionMoney = 0
-			fmt.Println("Money = 0, because of error in DAL")
 		} else {
 			collectionMoney = moneyReport.Banknotes + moneyReport.Coins
-			fmt.Print("Money calculated: ")
-			fmt.Println(collectionMoney)
 		}
 
 		status.Stations = append(status.Stations, CollectionReport{
