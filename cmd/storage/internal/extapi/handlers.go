@@ -1,6 +1,7 @@
 package extapi
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
@@ -120,7 +121,29 @@ func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewSaveMoneyInternalServerError()
 	}
+}
 
+func (svc *service) saveCollection(params op.SaveCollectionParams) op.SaveCollectionResponder {
+	log.Info("save collection", "ip", params.HTTPRequest.RemoteAddr)
+
+	var toSave = app.CollectionReport{
+		StationID: int(params.Args.ID),
+		Money:     int(params.Args.Money),
+	}
+
+	fmt.Print("Save collection handler. ID = ")
+	fmt.Print(int(params.Args.ID))
+	fmt.Print("; Money = ")
+	fmt.Println(int(params.Args.Money))
+
+	err := svc.app.SaveCollectionReport(toSave)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSaveCollectionNoContent()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewSaveCollectionInternalServerError()
+	}
 }
 
 func (svc *service) ping(params op.PingParams) op.PingResponder {
@@ -145,6 +168,11 @@ func (svc *service) info(params op.InfoParams) op.InfoResponder {
 func (svc *service) status(params op.StatusParams) op.StatusResponder {
 	report := svc.app.StatusReport()
 	return op.NewStatusOK().WithPayload(apiStatusReport(report))
+}
+
+func (svc *service) statusCollection(params op.StatusCollectionParams) op.StatusCollectionResponder {
+	collection := svc.app.StatusCollection()
+	return op.NewStatusCollectionOK().WithPayload(apiStatusCollectionReport(collection))
 }
 
 func (svc *service) addServiceAmount(params op.AddServiceAmountParams) op.AddServiceAmountResponder {

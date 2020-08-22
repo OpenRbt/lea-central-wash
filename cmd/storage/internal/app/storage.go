@@ -1,8 +1,10 @@
 package app
 
 import (
-	"time"
+	"fmt"
 	"strconv"
+	"time"
+
 	"github.com/powerman/structlog"
 )
 
@@ -44,9 +46,9 @@ func (a *app) loadStations() error {
 	}
 	stations := map[string]StationData{}
 	noHash := []StationData{}
-	
+
 	// Calculate how many stations
-	createCount := 12 - len(res) 
+	createCount := 12 - len(res)
 	currentID := 1
 
 	log.Info("CreateCount", "count", createCount)
@@ -182,6 +184,12 @@ func (a *app) SaveMoneyReport(report MoneyReport) error {
 	return a.repo.SaveMoneyReport(report)
 }
 
+// SaveCollectionReport gets app.CollectionReport struct
+func (a *app) SaveCollectionReport(report CollectionReport) error {
+	fmt.Println("APP: SaveCollectionReport")
+	return a.repo.SaveCollectionReport(report)
+}
+
 // SaveRelayReport gets app.RelayReport struct
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
@@ -264,6 +272,50 @@ func (a *app) StatusReport() StatusReport {
 	return report
 }
 
+func (a *app) StatusCollection() StatusCollection {
+	status := StatusCollection{}
+
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+
+	for _, v := range a.stations {
+		var collectionTime time.Time
+		var collectionMoney int
+
+		report, err := a.repo.LastCollectionReport(v.ID)
+
+		// if the post is new, and no collections found at this moment
+		if err != nil {
+			// set very old date
+			collectionTime = time.Date(
+				2000, 1, 1, 0, 0, 0, 0, time.UTC)
+		} else {
+			collectionTime = report.Ctime
+		}
+
+		t := time.Now()
+		loc, err := time.LoadLocation("Europe/Moscow")
+		t = t.In(loc)
+
+		fmt.Println(t)
+		fmt.Println(collectionTime)
+
+		moneyReport, err := a.repo.MoneyReport(v.ID, collectionTime, time.Now())
+		if err != nil {
+			collectionMoney = 0
+		} else {
+			collectionMoney = moneyReport.Banknotes + moneyReport.Coins
+		}
+
+		status.Stations = append(status.Stations, CollectionReport{
+			StationID: v.ID,
+			Money:     collectionMoney,
+			Ctime:     collectionTime,
+		})
+	}
+	return status
+}
+
 func (a *app) SetStation(station SetStation) error {
 	err := a.repo.SetStation(station)
 	if err != nil {
@@ -289,6 +341,7 @@ func (a *app) StationReport(id int, startDate, endDate time.Time) (MoneyReport, 
 	if err != nil {
 		return MoneyReport{}, RelayReport{}, err
 	}
+
 	stat, err := a.repo.RelayStatReport(id, startDate, endDate)
 
 	return report, stat, err

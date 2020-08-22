@@ -59,6 +59,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.SaveHandler = op.SaveHandlerFunc(func(params op.SaveParams) op.SaveResponder {
 		return op.SaveNotImplemented()
 	})
+	api.SaveCollectionHandler = op.SaveCollectionHandlerFunc(func(params op.SaveCollectionParams) op.SaveCollectionResponder {
+		return op.SaveCollectionNotImplemented()
+	})
 	api.SaveMoneyHandler = op.SaveMoneyHandlerFunc(func(params op.SaveMoneyParams) op.SaveMoneyResponder {
 		return op.SaveMoneyNotImplemented()
 	})
@@ -73,6 +76,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	})
 	api.StatusHandler = op.StatusHandlerFunc(func(params op.StatusParams) op.StatusResponder {
 		return op.StatusNotImplemented()
+	})
+	api.StatusCollectionHandler = op.StatusCollectionHandlerFunc(func(params op.StatusCollectionParams) op.StatusCollectionResponder {
+		return op.StatusCollectionNotImplemented()
 	})
 
 	api.ServerShutdown = func() {}

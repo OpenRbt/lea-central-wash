@@ -19,6 +19,12 @@ type MoneyReport struct {
 	Service      int
 }
 
+type CollectionReport struct {
+	StationID int
+	Money     int
+	Ctime     time.Time
+}
+
 type RelayStat struct {
 	RelayID       int
 	SwitchedCount int

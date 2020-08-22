@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, DateUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Grids, ExtCtrls, ActnList, ComCtrls, EditBtn, ComboEx, DateTimePicker,
-  fphttpclient, Fpjson, jsonparser, superobject, Types, manager;
+  fphttpclient, Fpjson, jsonparser, superobject, Types, manager, collection;
 
 type
 
@@ -16,6 +16,7 @@ type
   TMainForm = class(TForm)
     btnManage: TButton;
     btnDay: TButton;
+    btnMoneyCollection: TButton;
     btnWeek: TButton;
     btnMonth: TButton;
     btnYear: TButton;
@@ -43,6 +44,7 @@ type
     UpdateTimer: TTimer;
     procedure btnDayClick(Sender: TObject);
     procedure btnManageClick(Sender: TObject);
+    procedure btnMoneyCollectionClick(Sender: TObject);
     procedure btnMonthClick(Sender: TObject);
     procedure btnUpdateClick(Sender: TObject);
     procedure btnWeekClick(Sender: TObject);
@@ -460,9 +462,11 @@ begin
         StationsData.Cursor := crHourGlass;
         MoneyData.Cursor := crHourGlass;
         btnManage.Cursor := crHourGlass;
+        btnMoneyCollection.Cursor := crHourGlass;
 
         // Disable controls in case of failure
         btnManage.Enabled := False;
+        btnMoneyCollection.Enabled := False;
         DisableAllItems(Sender);
 
         RequestAnswer := Get('http://localhost:8020/status');
@@ -479,7 +483,6 @@ begin
           // Iterate over all incoming stations from server
           for i := 1 to Stations.Length do
           begin
-            // Get current station
             Station := Stations.O[i - 1];
 
             // If the station has ID
@@ -500,10 +503,8 @@ begin
                  CellColor[pos] := 1;
               end;
 
-              // Write the status message to the grid line
               StationsData.Cells[2, pos] := Station.s['status'];
 
-              // Write the name to the grid, if it exists
               if Station.AsObject.Exists('name') then
               begin
                  StationsData.Cells[3, pos] := Station.s['name'];
@@ -514,6 +515,7 @@ begin
               if not cbIsBlocked.Checked then
                  EnableItemOnPos(pos, Sender);
               btnManage.Enabled := True;
+              btnMoneyCollection.Enabled := True;
 
               // ID and Hash both exist => station is already paired
               // We need to add it's ID to list and choose the Hash by default
@@ -558,12 +560,14 @@ begin
       StationsData.Cursor := crDefault;
       MoneyData.Cursor := crDefault;
       btnManage.Cursor := crDefault;
+      btnMoneyCollection.Cursor := crDefault;
     end;
 
   MainForm.Cursor := crDefault;
   StationsData.Cursor := crDefault;
   MoneyData.Cursor := crDefault;
   btnManage.Cursor := crDefault;
+  btnMoneyCollection.Cursor := crDefault;
 end;
 
 procedure TMainForm.btnUpdateClick(Sender: TObject);
@@ -596,6 +600,7 @@ begin
   AvailableHashes := TStringList.Create;
 
   btnManage.Enabled := False;
+  btnMoneyCollection.Enabled := True;
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
@@ -711,6 +716,11 @@ begin
 
     ManageForm.ShowModal;
   end;
+end;
+
+procedure TMainForm.btnMoneyCollectionClick(Sender: TObject);
+begin
+    MoneyCollectionForm.ShowModal;
 end;
 
 procedure TMainForm.btnMonthClick(Sender: TObject);

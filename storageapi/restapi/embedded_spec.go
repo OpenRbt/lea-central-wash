@@ -30,7 +30,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.5.0"
+    "version": "1.6.0"
   },
   "basePath": "/",
   "paths": {
@@ -313,6 +313,29 @@ func init() {
         }
       }
     },
+    "/save-collection": {
+      "post": {
+        "operationId": "saveCollection",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CollectionReport"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/save-money": {
       "post": {
         "operationId": "saveMoney",
@@ -464,9 +487,39 @@ func init() {
           }
         }
       }
+    },
+    "/status-collection": {
+      "get": {
+        "operationId": "statusCollection",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StatusCollectionReport"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
     }
   },
   "definitions": {
+    "CollectionReport": {
+      "type": "object",
+      "properties": {
+        "ctime": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "money": {
+          "type": "integer"
+        }
+      }
+    },
     "Hash": {
       "type": "string",
       "minLength": 1
@@ -586,6 +639,17 @@ func init() {
         "offline",
         "online"
       ]
+    },
+    "StatusCollectionReport": {
+      "type": "object",
+      "properties": {
+        "stations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CollectionReport"
+          }
+        }
+      }
     },
     "StatusReport": {
       "type": "object",
@@ -622,7 +686,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.5.0"
+    "version": "1.6.0"
   },
   "basePath": "/",
   "paths": {
@@ -905,6 +969,29 @@ func init() {
         }
       }
     },
+    "/save-collection": {
+      "post": {
+        "operationId": "saveCollection",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CollectionReport"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/save-money": {
       "post": {
         "operationId": "saveMoney",
@@ -1056,9 +1143,39 @@ func init() {
           }
         }
       }
+    },
+    "/status-collection": {
+      "get": {
+        "operationId": "statusCollection",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StatusCollectionReport"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
     }
   },
   "definitions": {
+    "CollectionReport": {
+      "type": "object",
+      "properties": {
+        "ctime": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "money": {
+          "type": "integer"
+        }
+      }
+    },
     "Hash": {
       "type": "string",
       "minLength": 1
@@ -1178,6 +1295,17 @@ func init() {
         "offline",
         "online"
       ]
+    },
+    "StatusCollectionReport": {
+      "type": "object",
+      "properties": {
+        "stations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CollectionReport"
+          }
+        }
+      }
     },
     "StatusReport": {
       "type": "object",

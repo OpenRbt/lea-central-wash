@@ -39,8 +39,17 @@ WHERE id = :id
 INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service)  
 VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service)
 	`
+	sqlAddCollectionReport = `
+INSERT INTO money_collection (station_id, money)  
+VALUES 	(:station_id, :money)
+	`
 	sqlLastMoneyReport = `
 SELECT station_id, banknotes, cars_total, coins, electronical, service FROM money_report WHERE station_id = :station_id
+ORDER BY id DESC
+LIMIT 1
+	`
+	sqlLastCollectionReport = `
+SELECT station_id, money, ctime FROM money_collection WHERE station_id = :station_id
 ORDER BY id DESC
 LIMIT 1
 	`
@@ -134,6 +143,9 @@ type (
 		Name string
 	}
 	argLastMoneyReport struct {
+		StationID int
+	}
+	argLastCollectionReport struct {
 		StationID int
 	}
 	argLastRelayReport struct {

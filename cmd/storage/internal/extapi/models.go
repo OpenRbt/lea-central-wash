@@ -34,6 +34,26 @@ func apiMoneyReport(data *app.MoneyReport) *model.MoneyReport {
 	}
 }
 
+func apiStatusCollectionReport(v app.StatusCollection) *model.StatusCollectionReport {
+	var stations []*model.CollectionReport
+
+	for i, _ := range v.Stations {
+		stations = append(stations, apiCollectionReport(v.Stations[i]))
+	}
+
+	return &model.StatusCollectionReport{
+		Stations: stations,
+	}
+}
+
+func apiCollectionReport(v app.CollectionReport) *model.CollectionReport {
+	return &model.CollectionReport{
+		ID:    int64(v.StationID),
+		Money: int64(v.Money),
+		Ctime: v.Ctime.Unix(),
+	}
+}
+
 func apiStatusReport(v app.StatusReport) *model.StatusReport {
 	var stationStatus []*model.StationStatus
 	for i, _ := range v.Stations {
