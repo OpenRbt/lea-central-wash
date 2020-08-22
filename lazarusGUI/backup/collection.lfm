@@ -1,0 +1,106 @@
+object MoneyCollectionForm: TMoneyCollectionForm
+  Left = 384
+  Height = 929
+  Top = 100
+  Width = 1283
+  BorderIcons = [biSystemMenu]
+  Caption = 'Money Collection'
+  ClientHeight = 929
+  ClientWidth = 1283
+  Constraints.MaxHeight = 929
+  Constraints.MinHeight = 929
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '2.0.10.0'
+  Scaled = False
+  WindowState = wsMaximized
+  object CollectionData: TStringGrid
+    Left = 0
+    Height = 836
+    Top = 96
+    Width = 1280
+    AutoEdit = False
+    BorderSpacing.CellAlignHorizontal = ccaCenter
+    ColCount = 3
+    DefaultColWidth = 426
+    DefaultRowHeight = 64
+    DoubleBuffered = True
+    ExtendedSelect = False
+    FixedCols = 0
+    Font.Height = 40
+    Font.Quality = fqCleartypeNatural
+    HeaderHotZones = []
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goSmoothScroll, goSelectionActive, goRowHighlight]
+    ParentDoubleBuffered = False
+    ParentFont = False
+    ParentShowHint = False
+    RowCount = 13
+    ScrollBars = ssNone
+    TabOrder = 0
+    TitleFont.Height = 35
+    TitleFont.Name = 'd'
+    TitleFont.Quality = fqCleartypeNatural
+    TitleFont.Style = [fsBold]
+    TitleStyle = tsStandard
+    Cells = (
+      15
+      0
+      0
+      'Station ID'
+      0
+      1
+      '1'
+      0
+      2
+      '2'
+      0
+      3
+      '3'
+      0
+      4
+      '4'
+      0
+      5
+      '5'
+      0
+      6
+      '6'
+      0
+      7
+      '7'
+      0
+      8
+      '8'
+      0
+      9
+      '9'
+      0
+      10
+      '10'
+      0
+      11
+      '11'
+      0
+      12
+      '12'
+      1
+      0
+      'Cash inside'
+      2
+      0
+      'Collection Date'
+    )
+  end
+  object BtnCollect: TButton
+    Left = 8
+    Height = 81
+    Top = 8
+    Width = 416
+    Caption = 'Collect money'
+    Font.Height = -27
+    Font.Style = [fsBold]
+    OnClick = BtnCollectClick
+    ParentFont = False
+    TabOrder = 1
+  end
+end
