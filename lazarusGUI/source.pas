@@ -38,7 +38,6 @@ type
     dtTo: TDateTimePicker;
     Label1: TLabel;
     Label2: TLabel;
-    Logo: TImage;
     StationsData: TStringGrid;
     MoneyData: TStringGrid;
     UpdateTimer: TTimer;

@@ -1,13 +1,13 @@
 object ManageForm: TManageForm
-  Left = 567
+  Left = 813
   Height = 392
-  Top = 250
+  Top = 525
   Width = 1105
   Caption = 'Manage Station'
   ClientHeight = 392
   ClientWidth = 1105
   OnShow = FormShow
-  LCLVersion = '2.0.6.0'
+  LCLVersion = '2.0.10.0'
   object Panel1: TPanel
     Left = 8
     Height = 263
@@ -29,10 +29,10 @@ object ManageForm: TManageForm
   end
   object editMoney: TLabeledEdit
     Left = 14
-    Height = 48
+    Height = 67
     Top = 58
     Width = 216
-    EditLabel.Height = 30
+    EditLabel.Height = 42
     EditLabel.Width = 216
     EditLabel.Caption = 'Service Money:'
     EditLabel.ParentColor = False
@@ -61,14 +61,14 @@ object ManageForm: TManageForm
     Height = 271
     Top = 4
     Width = 845
-    ClientHeight = 251
+    ClientHeight = 267
     ClientWidth = 841
     TabOrder = 4
     object Label1: TLabel
       Left = 314
-      Height = 30
+      Height = 42
       Top = -6
-      Width = 189
+      Width = 292
       Caption = 'Price management:'
       Font.Height = 30
       Font.Style = [fsBold]

@@ -1,0 +1,123 @@
+object ManageForm: TManageForm
+  Left = 813
+  Height = 392
+  Top = 525
+  Width = 1105
+  Caption = 'Manage Station'
+  ClientHeight = 392
+  ClientWidth = 1105
+  OnShow = FormShow
+  LCLVersion = '2.0.10.0'
+  object Panel1: TPanel
+    Left = 8
+    Height = 263
+    Top = 12
+    Width = 237
+    TabOrder = 3
+  end
+  object btnOK: TButton
+    Left = 8
+    Height = 96
+    Top = 287
+    Width = 237
+    Caption = 'OK'
+    Font.Height = 40
+    Font.Style = [fsBold]
+    ModalResult = 1
+    ParentFont = False
+    TabOrder = 0
+  end
+  object editMoney: TLabeledEdit
+    Left = 14
+    Height = 67
+    Top = 58
+    Width = 216
+    EditLabel.Height = 42
+    EditLabel.Width = 216
+    EditLabel.Caption = 'Service Money:'
+    EditLabel.ParentColor = False
+    EditLabel.ParentFont = False
+    EditLabel.Font.Height = 30
+    EditLabel.Font.Style = [fsBold]
+    Font.Height = 40
+    ParentFont = False
+    TabOrder = 1
+    Text = '0'
+  end
+  object btnSendMoney: TButton
+    Left = 14
+    Height = 90
+    Top = 134
+    Width = 216
+    Caption = '+ Money'
+    Font.Height = 45
+    Font.Style = [fsBold]
+    OnClick = btnSendMoneyClick
+    ParentFont = False
+    TabOrder = 2
+  end
+  object GroupBox2: TGroupBox
+    Left = 249
+    Height = 271
+    Top = 4
+    Width = 845
+    ClientHeight = 267
+    ClientWidth = 841
+    TabOrder = 4
+    object Label1: TLabel
+      Left = 314
+      Height = 42
+      Top = -6
+      Width = 292
+      Caption = 'Price management:'
+      Font.Height = 30
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object PricesData: TStringGrid
+      Left = 11
+      Height = 205
+      Top = 35
+      Width = 823
+      AutoEdit = False
+      ColCount = 7
+      DefaultColWidth = 117
+      DefaultRowHeight = 100
+      Font.Height = 35
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
+      ParentFont = False
+      RowCount = 2
+      TabOrder = 0
+      TitleFont.Height = 25
+      OnEditingDone = PricesDataEditingDone
+      Cells = (
+        8
+        0
+        0
+        'Program'
+        0
+        1
+        'Price'
+        1
+        0
+        '1'
+        2
+        0
+        '2'
+        3
+        0
+        '3'
+        4
+        0
+        '4'
+        5
+        0
+        '5'
+        6
+        0
+        '6'
+      )
+    end
+  end
+end
