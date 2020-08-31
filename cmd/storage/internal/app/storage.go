@@ -13,7 +13,7 @@ var log = structlog.New() //nolint:gochecknoglobals
 // Save accepts key-value pair and writes it to DAL
 // Checks the pairment of hash and ID of specified wash machine
 func (a *app) Save(hash string, key string, value string) error {
-	stationID, err := a.GetId(hash)
+	stationID, err := a.FindStationIDByHash(hash)
 	if err != nil {
 		log.Info("Hash is not paired with the ID", "hash", hash, "id", stationID)
 		return ErrNotFound
@@ -25,7 +25,7 @@ func (a *app) Save(hash string, key string, value string) error {
 // Load accepts key and returns value from DAL
 // Checks the pairment of hash and ID of specified wash machine
 func (a *app) Load(hash string, key string) (string, error) {
-	stationID, err := a.GetId(hash)
+	stationID, err := a.FindStationIDByHash(hash)
 	if err != nil {
 		log.Info("Hash is not paired with the ID", "hash", hash, "id", stationID)
 		return "", ErrNotFound
@@ -74,7 +74,7 @@ func (a *app) loadStations() error {
 		return err
 	}
 
-	for i, _ := range res {
+	for i := range res {
 		if res[i].Hash != "" {
 			stations[res[i].Hash] = StationData{
 				ID:   res[i].ID,
@@ -96,8 +96,8 @@ func (a *app) loadStations() error {
 	return nil
 }
 
-// Set accepts existing hash and writes specified StationData
-func (a *app) Set(hash string, station StationData) error {
+// SaveStationData accepts existing hash and writes specified StationData
+func (a *app) SaveStationData(hash string, station StationData) error {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
@@ -127,8 +127,8 @@ func (a *app) Ping(hash string) int {
 	return serviceMoney
 }
 
-// Get accepts exising hash and returns StationData
-func (a *app) Get(hash string) (StationData, error) {
+// StationDataByHash accepts exising hash and returns StationData
+func (a *app) StationDataByHash(hash string) (StationData, error) {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
@@ -143,14 +143,14 @@ func (a *app) Get(hash string) (StationData, error) {
 // SetServiceAmount changes service money in map to the specified value
 // Returns ErrNotFound, if id is not valid, else nil
 func (a *app) AddServiceAmount(hash string, money int) error {
-	data, err := a.Get(hash)
+	data, err := a.StationDataByHash(hash)
 	if err != nil && data.ID < 1 {
 		log.Info("Can't set service money - station is unknown")
 		return ErrNotFound
 	}
 
 	data.ServiceMoney = data.ServiceMoney + money
-	err = a.Set(hash, data)
+	err = a.SaveStationData(hash, data)
 	if err != nil {
 		log.Info("Can't set service money - station is unknown")
 		return ErrNotFound
@@ -158,9 +158,9 @@ func (a *app) AddServiceAmount(hash string, money int) error {
 	return nil
 }
 
-// GetId finds ID by hash
+// FindStationIDByHash finds ID by hash
 // Returns ErrNotFound, if hash is not valid, else nil
-func (a *app) GetId(hash string) (int, error) {
+func (a *app) FindStationIDByHash(hash string) (int, error) {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 	station, ok := a.stations[hash]
@@ -174,11 +174,23 @@ func (a *app) GetId(hash string) (int, error) {
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
 func (a *app) SaveMoneyReport(report MoneyReport) error {
-	stationID, err := a.GetId(report.Hash)
+	stationID, err := a.FindStationIDByHash(report.Hash)
 	if err != nil {
 		log.Info("Hash is not paired with the ID", "hash", report.Hash, "id", stationID)
 		return ErrNotFound
 	}
+	lastReport, err := a.FindLastReport(stationID)
+	if err != nil {
+		log.Info("Last report is not found", "hash", report.Hash, "id", stationID)
+		return ErrNotFound
+	}
+	// Sometimes station reports much less than it should report, so we calc the difference always
+	reportDifference := a.FindReportDifference(stationID)
+
+	updatedReport, newReportDifference := a.UpdatedReport(&report, lastReport, reportDifference)
+
+	a.SaveReportDifference(stationID, &newReportDifference)
+	a.SaveLastReport(stationID, &updatedReport)
 
 	report.StationID = stationID
 	return a.repo.SaveMoneyReport(report)
@@ -194,12 +206,12 @@ func (a *app) SaveCollectionReport(report CollectionReport) error {
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
 func (a *app) SaveRelayReport(report RelayReport) error {
-	stationID, err := a.GetId(report.Hash)
+	// TODO: remove race conditions here
+	stationID, err := a.FindStationIDByHash(report.Hash)
 	if err != nil {
 		log.Info("Hash is not paired with the ID", "hash", report.Hash, "id", stationID)
 		return ErrNotFound
 	}
-	report.StationID = stationID
 	return a.repo.SaveRelayReport(report)
 }
 
@@ -207,7 +219,7 @@ func (a *app) SaveRelayReport(report RelayReport) error {
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
 func (a *app) LoadMoneyReport(hash string) (*MoneyReport, error) {
-	stationID, err := a.GetId(hash)
+	stationID, err := a.FindStationIDByHash(hash)
 	if err != nil {
 		log.Info("Hash is not paired with the ID", hash, stationID)
 
@@ -223,7 +235,7 @@ func (a *app) LoadMoneyReport(hash string) (*MoneyReport, error) {
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
 func (a *app) LoadRelayReport(hash string) (*RelayReport, error) {
-	stationID, err := a.GetId(hash)
+	stationID, err := a.FindStationIDByHash(hash)
 	if err != nil {
 		log.Info("Hash is not paired with the ID", hash, stationID)
 
@@ -262,7 +274,7 @@ func (a *app) StatusReport() StatusReport {
 			Status: status,
 		})
 	}
-	for i, _ := range a.stationsNoHash {
+	for i := range a.stationsNoHash {
 		report.Stations = append(report.Stations, StationStatus{
 			ID:     a.stationsNoHash[i].ID,
 			Name:   a.stationsNoHash[i].Name,

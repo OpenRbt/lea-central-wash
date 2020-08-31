@@ -1,0 +1,98 @@
+# github.com/PuerkitoBio/purell v1.1.1
+github.com/PuerkitoBio/purell
+# github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578
+github.com/PuerkitoBio/urlesc
+# github.com/asaskevich/govalidator v0.0.0-20190424111038-f61b66f89f4a
+github.com/asaskevich/govalidator
+# github.com/davecgh/go-spew v1.1.1
+github.com/davecgh/go-spew/spew
+# github.com/docker/go-units v0.4.0
+github.com/docker/go-units
+# github.com/go-openapi/analysis v0.19.5
+github.com/go-openapi/analysis
+github.com/go-openapi/analysis/internal
+# github.com/go-openapi/errors v0.19.2
+github.com/go-openapi/errors
+# github.com/go-openapi/jsonpointer v0.19.3
+github.com/go-openapi/jsonpointer
+# github.com/go-openapi/jsonreference v0.19.2
+github.com/go-openapi/jsonreference
+# github.com/go-openapi/loads v0.19.3
+github.com/go-openapi/loads
+# github.com/go-openapi/runtime v0.19.6
+github.com/go-openapi/runtime
+github.com/go-openapi/runtime/client
+github.com/go-openapi/runtime/flagext
+github.com/go-openapi/runtime/logger
+github.com/go-openapi/runtime/middleware
+github.com/go-openapi/runtime/middleware/denco
+github.com/go-openapi/runtime/middleware/header
+github.com/go-openapi/runtime/middleware/untyped
+github.com/go-openapi/runtime/security
+# github.com/go-openapi/spec v0.19.3
+github.com/go-openapi/spec
+# github.com/go-openapi/strfmt v0.19.3
+github.com/go-openapi/strfmt
+# github.com/go-openapi/swag v0.19.5
+github.com/go-openapi/swag
+# github.com/go-openapi/validate v0.19.3
+github.com/go-openapi/validate
+# github.com/go-stack/stack v1.8.0
+github.com/go-stack/stack
+# github.com/jessevdk/go-flags v1.4.0
+github.com/jessevdk/go-flags
+# github.com/jmoiron/sqlx v1.2.0
+github.com/jmoiron/sqlx
+github.com/jmoiron/sqlx/reflectx
+# github.com/lib/pq v1.8.0
+github.com/lib/pq
+github.com/lib/pq/oid
+github.com/lib/pq/scram
+# github.com/mailru/easyjson v0.0.0-20190626092158-b2ccc519800e
+github.com/mailru/easyjson/buffer
+github.com/mailru/easyjson/jlexer
+github.com/mailru/easyjson/jwriter
+# github.com/mitchellh/mapstructure v1.1.2
+github.com/mitchellh/mapstructure
+# github.com/pkg/errors v0.8.1
+github.com/pkg/errors
+# github.com/pmezard/go-difflib v1.0.0
+github.com/pmezard/go-difflib/difflib
+# github.com/powerman/check v1.1.0
+github.com/powerman/check
+# github.com/powerman/must v0.1.0
+github.com/powerman/must
+# github.com/powerman/narada4d v1.2.1
+github.com/powerman/narada4d/protocol/goose-postgres
+github.com/powerman/narada4d/schemaver
+# github.com/powerman/pqx v0.6.0
+github.com/powerman/pqx
+# github.com/powerman/sqlxx v0.1.0
+github.com/powerman/sqlxx
+# github.com/powerman/structlog v0.5.0
+github.com/powerman/structlog
+# github.com/pressly/goose v2.6.0+incompatible
+github.com/pressly/goose
+# github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a
+github.com/smartystreets/goconvey/convey/gotest
+github.com/smartystreets/goconvey/convey/reporting
+# go.mongodb.org/mongo-driver v1.1.1
+go.mongodb.org/mongo-driver/bson
+go.mongodb.org/mongo-driver/bson/bsoncodec
+go.mongodb.org/mongo-driver/bson/bsonrw
+go.mongodb.org/mongo-driver/bson/bsontype
+go.mongodb.org/mongo-driver/bson/primitive
+go.mongodb.org/mongo-driver/x/bsonx/bsoncore
+# golang.org/x/net v0.0.0-20190912160710-24e19bdeb0f2
+golang.org/x/net/idna
+golang.org/x/net/netutil
+# golang.org/x/sys v0.0.0-20190626221950-04f50cda93cb
+golang.org/x/sys/unix
+# golang.org/x/text v0.3.2
+golang.org/x/text/secure/bidirule
+golang.org/x/text/transform
+golang.org/x/text/unicode/bidi
+golang.org/x/text/unicode/norm
+golang.org/x/text/width
+# gopkg.in/yaml.v2 v2.2.2
+gopkg.in/yaml.v2

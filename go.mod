@@ -12,7 +12,7 @@ require (
 	github.com/go-openapi/validate v0.19.3
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/jmoiron/sqlx v1.2.0
-	github.com/lib/pq v1.2.0
+	github.com/lib/pq v1.8.0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/powerman/check v1.1.0
 	github.com/powerman/gotest v0.3.0 // indirect
