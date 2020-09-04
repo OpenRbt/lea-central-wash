@@ -13,16 +13,24 @@ type keypair struct {
 	Value     string
 }
 
+// DB can save something in memory
 type DB struct {
-	keypair []keypair
-	mutex   sync.Mutex
+	keypair  []keypair
+	mutex    sync.Mutex
+	stations map[int]app.SetStationParams
+	mReport  app.MoneyReport
+	rReport  app.RelayReport
 }
 
 // New DB
 func New() *DB {
-	return &DB{keypair: []keypair{}}
+	return &DB{
+		keypair:  []keypair{},
+		stations: make(map[int]app.SetStationParams),
+	}
 }
 
+// Load loads a value for station by key
 func (t *DB) Load(stationID int, key string) (string, error) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
@@ -34,6 +42,7 @@ func (t *DB) Load(stationID int, key string) (string, error) {
 	return t.keypair[i].Value, nil
 }
 
+// Save just saves a value for station for key
 func (t *DB) Save(stationID int, key string, value string) (err error) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
@@ -52,7 +61,7 @@ func (t *DB) Save(stationID int, key string, value string) (err error) {
 }
 
 func (t *DB) findKey(stationID int, key string) int {
-	for i, _ := range t.keypair {
+	for i := range t.keypair {
 		if t.keypair[i].StationID == stationID && t.keypair[i].Key == key {
 			return i
 		}
@@ -65,46 +74,65 @@ func (t *DB) Info() string {
 	return "memdb"
 }
 
-func (t *DB) SetStation(station app.SetStation) error {
+// SetStation remembers a station
+func (t *DB) SetStation(station app.SetStationParams) error {
+	t.stations[station.ID] = station
 	return nil
 }
 
-func (t *DB) Stations() (stations []app.SetStation, err error) {
-	return nil, nil
+// Stations returns all stations
+func (t *DB) Stations() (stations []app.SetStationParams, err error) {
+	res := make([]app.SetStationParams, 0, len(t.stations))
+	for _, val := range t.stations {
+		res = append(res, val)
+	}
+	return res, nil
 }
 
+// DelStation just removes a station
 func (t *DB) DelStation(id int) error {
+	delete(t.stations, id)
 	return nil
 }
 
+// LastMoneyReport ..
 func (t *DB) LastMoneyReport(stationID int) (report app.MoneyReport, err error) {
-	return
+	return t.mReport, nil
 }
 
+// SaveMoneyReport ..
 func (t *DB) SaveMoneyReport(report app.MoneyReport) error {
+	t.mReport = report
 	return nil
 }
 
+// LastRelayReport ..
 func (t *DB) LastRelayReport(stationID int) (report app.RelayReport, err error) {
-	return
+	return t.rReport, nil
 }
 
+// SaveRelayReport ...
 func (t *DB) SaveRelayReport(report app.RelayReport) error {
+	t.rReport = report
 	return nil
 }
 
+// MoneyReport ...
 func (t *DB) MoneyReport(stationID int, startDate, endDate time.Time) (report app.MoneyReport, err error) {
 	return
 }
 
+// RelayStatReport ...
 func (t *DB) RelayStatReport(stationID int, startDate, endDate time.Time) (report app.RelayReport, err error) {
 	return
 }
 
+// LastCollectionReport ...
 func (t *DB) LastCollectionReport(stationID int) (report app.CollectionReport, err error) {
 	return
 }
 
+// SaveCollectionReport ...
 func (t *DB) SaveCollectionReport(report app.CollectionReport) error {
 	return nil
 }

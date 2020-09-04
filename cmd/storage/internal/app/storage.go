@@ -54,7 +54,7 @@ func (a *app) loadStations() error {
 	log.Info("CreateCount", "count", createCount)
 
 	for createCount > 0 {
-		err = a.repo.SetStation(SetStation{
+		err = a.repo.SetStation(SetStationParams{
 			ID:   0,
 			Hash: "",
 			Name: "Station" + strconv.Itoa(currentID),
@@ -174,26 +174,30 @@ func (a *app) FindStationIDByHash(hash string) (int, error) {
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
 func (a *app) SaveMoneyReport(report MoneyReport) error {
+	fmt.Println("-----------------------------------------SAVE MONEY REPORT ------------------")
 	stationID, err := a.FindStationIDByHash(report.Hash)
 	if err != nil {
 		log.Info("Hash is not paired with the ID", "hash", report.Hash, "id", stationID)
 		return ErrNotFound
 	}
+	fmt.Printf("station id found: %+v\n", stationID)
 	lastReport, err := a.FindLastReport(stationID)
+	fmt.Printf("lastReport found: %+v\n", lastReport)
 	if err != nil {
 		log.Info("Last report is not found", "hash", report.Hash, "id", stationID)
 		return ErrNotFound
 	}
 	// Sometimes station reports much less than it should report, so we calc the difference always
 	reportDifference := a.FindReportDifference(stationID)
+	fmt.Printf("difference found: %+v\n", reportDifference)
 
 	updatedReport, newReportDifference := a.UpdatedReport(&report, lastReport, reportDifference)
-
+	fmt.Printf("updatedReport, newReportDifference found: %+v,\n%+v\n", updatedReport, newReportDifference)
 	a.SaveReportDifference(stationID, &newReportDifference)
 	a.SaveLastReport(stationID, &updatedReport)
 
 	report.StationID = stationID
-	return a.repo.SaveMoneyReport(report)
+	return a.repo.SaveMoneyReport(updatedReport)
 }
 
 // SaveCollectionReport gets app.CollectionReport struct
@@ -328,7 +332,7 @@ func (a *app) StatusCollection() StatusCollection {
 	return status
 }
 
-func (a *app) SetStation(station SetStation) error {
+func (a *app) SetStation(station SetStationParams) error {
 	err := a.repo.SetStation(station)
 	if err != nil {
 		return err

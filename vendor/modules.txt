@@ -39,6 +39,12 @@ github.com/go-openapi/swag
 github.com/go-openapi/validate
 # github.com/go-stack/stack v1.8.0
 github.com/go-stack/stack
+# github.com/google/go-cmp v0.3.0
+github.com/google/go-cmp/cmp
+github.com/google/go-cmp/cmp/internal/diff
+github.com/google/go-cmp/cmp/internal/flags
+github.com/google/go-cmp/cmp/internal/function
+github.com/google/go-cmp/cmp/internal/value
 # github.com/jessevdk/go-flags v1.4.0
 github.com/jessevdk/go-flags
 # github.com/jmoiron/sqlx v1.2.0

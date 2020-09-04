@@ -193,7 +193,7 @@ func (svc *service) setStation(params op.SetStationParams) op.SetStationResponde
 	if params.Args.ID == 0 && params.Args.Name == "" {
 		return op.NewSetStationUnprocessableEntity()
 	}
-	err := svc.app.SetStation(app.SetStation{
+	err := svc.app.SetStation(app.SetStationParams {
 		ID:   int(params.Args.ID),
 		Hash: params.Args.Hash,
 		Name: params.Args.Name,

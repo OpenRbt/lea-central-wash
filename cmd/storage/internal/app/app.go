@@ -37,7 +37,7 @@ type (
 		LoadRelayReport(hash string) (*RelayReport, error)
 
 		StatusReport() StatusReport
-		SetStation(station SetStation) error
+		SetStation(station SetStationParams) error
 		DelStation(id int) error
 		StationReport(id int, startDate, endDate time.Time) (MoneyReport, RelayReport, error)
 
@@ -75,8 +75,8 @@ type (
 		Save(stationID int, key string, value string) error
 		Load(stationID int, key string) (string, error)
 		Info() string
-		SetStation(station SetStation) error
-		Stations() (stations []SetStation, err error)
+		SetStation(station SetStationParams) error
+		Stations() (stations []SetStationParams, err error)
 		DelStation(id int) error
 		LastMoneyReport(stationID int) (MoneyReport, error)
 		SaveMoneyReport(MoneyReport) error
@@ -147,8 +147,8 @@ type StationStatus struct {
 	Status Status
 }
 
-// SetStation is a struct required to assign a new ID to a hash
-type SetStation struct {
+// SetStationParams is a struct required to assign a new ID to a hash
+type SetStationParams struct {
 	Hash string
 	ID   int
 	Name string

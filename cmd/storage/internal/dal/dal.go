@@ -106,7 +106,7 @@ func (r *repo) Save(stationID int, key string, value string) (err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) SetStation(station app.SetStation) (err error) {
+func (r *repo) SetStation(station app.SetStationParams) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlStationNullHash, argStationNullHash{
 			Hash: station.Hash,
@@ -141,7 +141,7 @@ func (r *repo) DelStation(id int) (err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) Stations() (stations []app.SetStation, err error) {
+func (r *repo) Stations() (stations []app.SetStationParams, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res []resStation
 		err := tx.NamedSelectContext(ctx, &res, sqlGetStation, argGetStation{})
