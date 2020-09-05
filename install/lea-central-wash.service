@@ -2,7 +2,7 @@
 Description=Lea Central Wash Server
 
 [Service]
-ExecStart={DIR}/storage
+ExecStart={DIR}/storage.exe
 WorkingDirectory={DIR}
 StandardOutput=inherit
 StandardInput=inherit

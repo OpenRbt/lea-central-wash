@@ -14,8 +14,10 @@ var (
 	FirstHash      = "B1B2B3B4B5B6"
 )
 
-func NewTestApplication() app.App {
-	repo := memdb.New()
+func NewTestApplication(repo app.Repo) app.App {
+	if repo == nil {
+		repo = memdb.New()
+	}
 	application := app.New(repo, nil)
 	station := app.SetStationParams{
 		Hash: FirstHash,
@@ -70,7 +72,7 @@ func SampleDiff() app.MoneyReport {
 }
 
 func TestSmokeApp(t *testing.T) {
-	application := NewTestApplication()
+	application := NewTestApplication(nil)
 	foundID, err := application.FindStationIDByHash(FirstHash)
 	if err != nil {
 		t.Error(err)
@@ -80,7 +82,7 @@ func TestSmokeApp(t *testing.T) {
 	}
 }
 func TestSaveRecoverReport(t *testing.T) {
-	application := NewTestApplication()
+	application := NewTestApplication(nil)
 	reportPtr, err := application.FindLastReport(FirstStationID)
 	if err != nil {
 		t.Error(err)
@@ -138,7 +140,7 @@ func TestAddUp(t *testing.T) {
 }
 
 func TestNegativeDifferenceCalcInternalFuncs(t *testing.T) {
-	application := NewTestApplication()
+	application := NewTestApplication(nil)
 	negativeReport := SampleNegativeReport()
 
 	application.SaveLastReport(FirstStationID, &negativeReport)
@@ -202,7 +204,7 @@ func TestNegativeDifferenceCalcInternalFuncs(t *testing.T) {
 }
 
 func TestNegativeDifferenceCalcAppLayer(t *testing.T) {
-	application := NewTestApplication()
+	application := NewTestApplication(nil)
 
 	report := SampleMoneyReport()
 	report.StationID = FirstStationID
@@ -231,5 +233,20 @@ func TestNegativeDifferenceCalcAppLayer(t *testing.T) {
 	loadedRep.AddUp(&negativePiece)
 	if !cmp.Equal(originalReport, *loadedRep) {
 		t.Error("reports must be equal again")
+	}
+}
+
+func TestReportIsPushedToDB(t *testing.T) {
+	DB := memdb.New()
+	application := NewTestApplication(DB)
+	report := SampleMoneyReport()
+	err := application.SaveMoneyReport(report)
+	if err != nil {
+		t.Error(err)
+	}
+	anotherApplication := NewTestApplication(DB)
+	loadedReport, err := anotherApplication.LoadMoneyReport(FirstHash)
+	if !cmp.Equal(report, *loadedReport) {
+		t.Error("Can't load the report :(")
 	}
 }
