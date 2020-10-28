@@ -10,8 +10,20 @@ ON CONFLICT (station_id, key)
 DO
 	UPDATE SET value = :value
 	`
+	sqlSetValueIfNotExists = `
+INSERT INTO keypair (station_id, key, value)  
+VALUES 	(:station_id, :key, :value)
+ON CONFLICT (station_id, key)
+DO NOTHING
+	`
 	sqlGetValue = `
 SELECT value  FROM keypair  WHERE station_id = :station_id and key = :key
+	`
+	sqlGetStationsKeyPair = `
+	SELECT s.id, s.hash, s.name, k.key, k.value
+	FROM station s
+	JOIN keypair k on s.id = k.station_id
+	ORDER BY s.id, k.key
 	`
 	sqlAddStation = `
 INSERT INTO station (hash, name)  
@@ -180,5 +192,12 @@ type (
 		StationID int
 		StartDate time.Time
 		EndDate   time.Time
+	}
+	resStationKeyPair struct {
+		Hash  *string
+		ID    int
+		Name  string
+		Key   string
+		Value string
 	}
 )

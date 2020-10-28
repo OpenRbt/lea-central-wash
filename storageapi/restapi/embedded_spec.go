@@ -336,6 +336,41 @@ func init() {
         }
       }
     },
+    "/save-if-not-exists": {
+      "post": {
+        "operationId": "saveIfNotExists",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash",
+                "keyPair"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "keyPair": {
+                  "$ref": "#/definitions/KeyPair"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/save-money": {
       "post": {
         "operationId": "saveMoney",
@@ -425,6 +460,40 @@ func init() {
         }
       }
     },
+    "/station-by-hash": {
+      "post": {
+        "operationId": "stationByHash",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/station-report": {
       "post": {
         "operationId": "stationReport",
@@ -465,6 +534,25 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/stations-key-pair": {
+      "post": {
+        "operationId": "stationsKeyPair",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/StationKeyPair"
+              }
+            }
           },
           "500": {
             "description": "internal error"
@@ -596,6 +684,27 @@ func init() {
         },
         "totalTimeOn": {
           "type": "integer"
+        }
+      }
+    },
+    "StationKeyPair": {
+      "type": "object",
+      "properties": {
+        "hash": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "id": {
+          "type": "integer"
+        },
+        "keyPairs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/KeyPair"
+          }
+        },
+        "name": {
+          "type": "string"
         }
       }
     },
@@ -992,6 +1101,41 @@ func init() {
         }
       }
     },
+    "/save-if-not-exists": {
+      "post": {
+        "operationId": "saveIfNotExists",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash",
+                "keyPair"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "keyPair": {
+                  "$ref": "#/definitions/KeyPair"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/save-money": {
       "post": {
         "operationId": "saveMoney",
@@ -1081,6 +1225,40 @@ func init() {
         }
       }
     },
+    "/station-by-hash": {
+      "post": {
+        "operationId": "stationByHash",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/station-report": {
       "post": {
         "operationId": "stationReport",
@@ -1121,6 +1299,25 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/stations-key-pair": {
+      "post": {
+        "operationId": "stationsKeyPair",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/StationKeyPair"
+              }
+            }
           },
           "500": {
             "description": "internal error"
@@ -1252,6 +1449,27 @@ func init() {
         },
         "totalTimeOn": {
           "type": "integer"
+        }
+      }
+    },
+    "StationKeyPair": {
+      "type": "object",
+      "properties": {
+        "hash": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "id": {
+          "type": "integer"
+        },
+        "keyPairs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/KeyPair"
+          }
+        },
+        "name": {
+          "type": "string"
         }
       }
     },

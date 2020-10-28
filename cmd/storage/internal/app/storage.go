@@ -22,6 +22,18 @@ func (a *app) Save(hash string, key string, value string) error {
 	return a.repo.Save(stationID, key, value)
 }
 
+// Save accepts key-value pair and if not exists writes it to DAL
+// Checks the pairment of hash and ID of specified wash machine
+func (a *app) SaveIfNotExists(hash string, key string, value string) error {
+	stationID, err := a.GetId(hash)
+	if err != nil {
+		log.Info("Hash is not paired with the ID", "hash", hash, "id", stationID)
+		return ErrNotFound
+	}
+
+	return a.repo.SaveIfNotExists(stationID, key, value)
+}
+
 // Load accepts key and returns value from DAL
 // Checks the pairment of hash and ID of specified wash machine
 func (a *app) Load(hash string, key string) (string, error) {
@@ -74,7 +86,7 @@ func (a *app) loadStations() error {
 		return err
 	}
 
-	for i, _ := range res {
+	for i := range res {
 		if res[i].Hash != "" {
 			stations[res[i].Hash] = StationData{
 				ID:   res[i].ID,
@@ -262,7 +274,7 @@ func (a *app) StatusReport() StatusReport {
 			Status: status,
 		})
 	}
-	for i, _ := range a.stationsNoHash {
+	for i := range a.stationsNoHash {
 		report.Stations = append(report.Stations, StationStatus{
 			ID:     a.stationsNoHash[i].ID,
 			Name:   a.stationsNoHash[i].Name,
@@ -345,4 +357,8 @@ func (a *app) StationReport(id int, startDate, endDate time.Time) (MoneyReport, 
 	stat, err := a.repo.RelayStatReport(id, startDate, endDate)
 
 	return report, stat, err
+}
+
+func (a *app) StationsKeyPair() ([]StationKeyPair, error) {
+	return a.repo.StationsKeyPair()
 }

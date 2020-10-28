@@ -305,6 +305,34 @@ func (a *Client) SaveCollection(params *SaveCollectionParams) (*SaveCollectionNo
 }
 
 /*
+SaveIfNotExists save if not exists API
+*/
+func (a *Client) SaveIfNotExists(params *SaveIfNotExistsParams) (*SaveIfNotExistsNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSaveIfNotExistsParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "saveIfNotExists",
+		Method:             "POST",
+		PathPattern:        "/save-if-not-exists",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SaveIfNotExistsReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*SaveIfNotExistsNoContent), nil
+
+}
+
+/*
 SaveMoney save money API
 */
 func (a *Client) SaveMoney(params *SaveMoneyParams) (*SaveMoneyNoContent, error) {
@@ -389,6 +417,34 @@ func (a *Client) SetStation(params *SetStationParams) (*SetStationNoContent, err
 }
 
 /*
+StationByHash station by hash API
+*/
+func (a *Client) StationByHash(params *StationByHashParams) (*StationByHashOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStationByHashParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "stationByHash",
+		Method:             "POST",
+		PathPattern:        "/station-by-hash",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StationByHashReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*StationByHashOK), nil
+
+}
+
+/*
 StationReport station report API
 */
 func (a *Client) StationReport(params *StationReportParams) (*StationReportOK, error) {
@@ -413,6 +469,34 @@ func (a *Client) StationReport(params *StationReportParams) (*StationReportOK, e
 		return nil, err
 	}
 	return result.(*StationReportOK), nil
+
+}
+
+/*
+StationsKeyPair stations key pair API
+*/
+func (a *Client) StationsKeyPair(params *StationsKeyPairParams) (*StationsKeyPairOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStationsKeyPairParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "stationsKeyPair",
+		Method:             "POST",
+		PathPattern:        "/stations-key-pair",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StationsKeyPairReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*StationsKeyPairOK), nil
 
 }
 

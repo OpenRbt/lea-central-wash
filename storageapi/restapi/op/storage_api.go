@@ -77,6 +77,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation SaveCollection has not yet been implemented")
 			return SaveCollectionNotImplemented()
 		}),
+		SaveIfNotExistsHandler: SaveIfNotExistsHandlerFunc(func(params SaveIfNotExistsParams) SaveIfNotExistsResponder {
+			// return middleware.NotImplemented("operation SaveIfNotExists has not yet been implemented")
+			return SaveIfNotExistsNotImplemented()
+		}),
 		SaveMoneyHandler: SaveMoneyHandlerFunc(func(params SaveMoneyParams) SaveMoneyResponder {
 			// return middleware.NotImplemented("operation SaveMoney has not yet been implemented")
 			return SaveMoneyNotImplemented()
@@ -89,9 +93,17 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation SetStation has not yet been implemented")
 			return SetStationNotImplemented()
 		}),
+		StationByHashHandler: StationByHashHandlerFunc(func(params StationByHashParams) StationByHashResponder {
+			// return middleware.NotImplemented("operation StationByHash has not yet been implemented")
+			return StationByHashNotImplemented()
+		}),
 		StationReportHandler: StationReportHandlerFunc(func(params StationReportParams) StationReportResponder {
 			// return middleware.NotImplemented("operation StationReport has not yet been implemented")
 			return StationReportNotImplemented()
+		}),
+		StationsKeyPairHandler: StationsKeyPairHandlerFunc(func(params StationsKeyPairParams) StationsKeyPairResponder {
+			// return middleware.NotImplemented("operation StationsKeyPair has not yet been implemented")
+			return StationsKeyPairNotImplemented()
 		}),
 		StatusHandler: StatusHandlerFunc(func(params StatusParams) StatusResponder {
 			// return middleware.NotImplemented("operation Status has not yet been implemented")
@@ -152,14 +164,20 @@ type StorageAPI struct {
 	SaveHandler SaveHandler
 	// SaveCollectionHandler sets the operation handler for the save collection operation
 	SaveCollectionHandler SaveCollectionHandler
+	// SaveIfNotExistsHandler sets the operation handler for the save if not exists operation
+	SaveIfNotExistsHandler SaveIfNotExistsHandler
 	// SaveMoneyHandler sets the operation handler for the save money operation
 	SaveMoneyHandler SaveMoneyHandler
 	// SaveRelayHandler sets the operation handler for the save relay operation
 	SaveRelayHandler SaveRelayHandler
 	// SetStationHandler sets the operation handler for the set station operation
 	SetStationHandler SetStationHandler
+	// StationByHashHandler sets the operation handler for the station by hash operation
+	StationByHashHandler StationByHashHandler
 	// StationReportHandler sets the operation handler for the station report operation
 	StationReportHandler StationReportHandler
+	// StationsKeyPairHandler sets the operation handler for the stations key pair operation
+	StationsKeyPairHandler StationsKeyPairHandler
 	// StatusHandler sets the operation handler for the status operation
 	StatusHandler StatusHandler
 	// StatusCollectionHandler sets the operation handler for the status collection operation
@@ -267,6 +285,10 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "SaveCollectionHandler")
 	}
 
+	if o.SaveIfNotExistsHandler == nil {
+		unregistered = append(unregistered, "SaveIfNotExistsHandler")
+	}
+
 	if o.SaveMoneyHandler == nil {
 		unregistered = append(unregistered, "SaveMoneyHandler")
 	}
@@ -279,8 +301,16 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "SetStationHandler")
 	}
 
+	if o.StationByHashHandler == nil {
+		unregistered = append(unregistered, "StationByHashHandler")
+	}
+
 	if o.StationReportHandler == nil {
 		unregistered = append(unregistered, "StationReportHandler")
+	}
+
+	if o.StationsKeyPairHandler == nil {
+		unregistered = append(unregistered, "StationsKeyPairHandler")
 	}
 
 	if o.StatusHandler == nil {
@@ -442,6 +472,11 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/save-if-not-exists"] = NewSaveIfNotExists(o.context, o.SaveIfNotExistsHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/save-money"] = NewSaveMoney(o.context, o.SaveMoneyHandler)
 
 	if o.handlers["POST"] == nil {
@@ -457,7 +492,17 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/station-by-hash"] = NewStationByHash(o.context, o.StationByHashHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/station-report"] = NewStationReport(o.context, o.StationReportHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/stations-key-pair"] = NewStationsKeyPair(o.context, o.StationsKeyPairHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)

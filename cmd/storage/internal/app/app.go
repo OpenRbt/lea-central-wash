@@ -19,7 +19,9 @@ type (
 	App interface {
 		// Key-value methods
 		Save(hash string, key string, value string) error
+		SaveIfNotExists(hash string, key string, value string) error
 		Load(hash string, key string) (string, error)
+		StationsKeyPair() ([]StationKeyPair, error)
 
 		// DBMS info method
 		Info() string
@@ -48,6 +50,7 @@ type (
 	// Repo is a DAL interface.
 	Repo interface {
 		Save(stationID int, key string, value string) error
+		SaveIfNotExists(stationID int, key string, value string) error
 		Load(stationID int, key string) (string, error)
 		Info() string
 		SetStation(station SetStation) error
@@ -61,6 +64,7 @@ type (
 		RelayStatReport(stationID int, startDate, endDate time.Time) (RelayReport, error)
 		LastCollectionReport(stationID int) (report CollectionReport, err error)
 		SaveCollectionReport(report CollectionReport) (err error)
+		StationsKeyPair() ([]StationKeyPair, error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -119,4 +123,16 @@ type SetStation struct {
 	Hash string
 	ID   int
 	Name string
+}
+
+type StationKeyPair struct {
+	Hash    *string
+	ID      int
+	Name    string
+	KeyPair []KeyPair
+}
+
+type KeyPair struct {
+	Key   string
+	Value string
 }

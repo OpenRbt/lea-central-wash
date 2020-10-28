@@ -19,3 +19,26 @@ func appSetStation(v []resStation) []app.SetStation {
 	}
 	return res
 }
+
+func appStationsKeyPair(v []resStationKeyPair) []app.StationKeyPair {
+	var res []app.StationKeyPair
+	id := -1
+	count := -1
+	for i := range v {
+		if id != v[i].ID {
+			res = append(res, app.StationKeyPair{
+				Hash:    v[i].Hash,
+				ID:      v[i].ID,
+				Name:    v[i].Name,
+				KeyPair: []app.KeyPair{},
+			})
+			id = v[i].ID
+			count++
+		}
+		res[count].KeyPair = append(res[count].KeyPair, app.KeyPair{
+			Key:   v[i].Key,
+			Value: v[i].Value,
+		})
+	}
+	return res
+}

@@ -9,7 +9,7 @@ import (
 
 func apiRelayReport(data *app.RelayReport) *model.RelayReport {
 	var relayStats []*model.RelayStat
-	for i, _ := range data.RelayStats {
+	for i := range data.RelayStats {
 		r := model.RelayStat{
 			RelayID:       int64(data.RelayStats[i].RelayID),
 			SwitchedCount: int64(data.RelayStats[i].SwitchedCount),
@@ -37,7 +37,7 @@ func apiMoneyReport(data *app.MoneyReport) *model.MoneyReport {
 func apiStatusCollectionReport(v app.StatusCollection) *model.StatusCollectionReport {
 	var stations []*model.CollectionReport
 
-	for i, _ := range v.Stations {
+	for i := range v.Stations {
 		stations = append(stations, apiCollectionReport(v.Stations[i]))
 	}
 
@@ -56,7 +56,7 @@ func apiCollectionReport(v app.CollectionReport) *model.CollectionReport {
 
 func apiStatusReport(v app.StatusReport) *model.StatusReport {
 	var stationStatus []*model.StationStatus
-	for i, _ := range v.Stations {
+	for i := range v.Stations {
 		stationStatus = append(stationStatus, apiStationStatus(v.Stations[i]))
 	}
 	return &model.StatusReport{
@@ -88,4 +88,28 @@ func apiStatus(v app.Status) model.Status {
 		panic(fmt.Sprintf("unknown status %d", v))
 	}
 	return status
+}
+
+func apiStationsKeyPair(data []app.StationKeyPair) []*model.StationKeyPair {
+	var res []*model.StationKeyPair
+	for i := range data {
+		res = append(res, &model.StationKeyPair{
+			ID:       int64(data[i].ID),
+			Hash:     data[i].Hash,
+			Name:     data[i].Name,
+			KeyPairs: apiKeyPair(data[i].KeyPair),
+		})
+	}
+	return res
+}
+
+func apiKeyPair(data []app.KeyPair) []*model.KeyPair {
+	var res []*model.KeyPair
+	for i := range data {
+		res = append(res, &model.KeyPair{
+			Key:   &data[i].Key,
+			Value: &data[i].Value,
+		})
+	}
+	return res
 }

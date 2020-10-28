@@ -51,8 +51,24 @@ func (t *DB) Save(stationID int, key string, value string) (err error) {
 	return nil
 }
 
+func (t *DB) SaveIfNotExists(stationID int, key string, value string) (err error) {
+	t.mutex.Lock()
+	defer t.mutex.Unlock()
+
+	i := t.findKey(stationID, key)
+	if i < 0 {
+		t.keypair = append(t.keypair, keypair{
+			StationID: stationID,
+			Key:       key,
+			Value:     value,
+		})
+		return nil
+	}
+	return nil
+}
+
 func (t *DB) findKey(stationID int, key string) int {
-	for i, _ := range t.keypair {
+	for i := range t.keypair {
 		if t.keypair[i].StationID == stationID && t.keypair[i].Key == key {
 			return i
 		}
@@ -107,4 +123,8 @@ func (t *DB) LastCollectionReport(stationID int) (report app.CollectionReport, e
 
 func (t *DB) SaveCollectionReport(report app.CollectionReport) error {
 	return nil
+}
+
+func (t *DB) StationsKeyPair() ([]app.StationKeyPair, error) {
+	return nil, nil
 }

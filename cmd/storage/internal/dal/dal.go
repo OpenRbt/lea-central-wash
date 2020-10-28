@@ -106,6 +106,18 @@ func (r *repo) Save(stationID int, key string, value string) (err error) {
 	return //nolint:nakedret
 }
 
+func (r *repo) SaveIfNotExists(stationID int, key string, value string) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlSetValueIfNotExists, argSetValue{
+			StationID: stationID,
+			Key:       key,
+			Value:     value,
+		})
+		return err
+	})
+	return //nolint:nakedret
+}
+
 func (r *repo) SetStation(station app.SetStation) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlStationNullHash, argStationNullHash{
@@ -215,7 +227,7 @@ func (r *repo) SaveRelayReport(report app.RelayReport) (err error) {
 		if err != nil {
 			return err
 		}
-		for i, _ := range report.RelayStats {
+		for i := range report.RelayStats {
 			r := argAddRelayStat{
 				RelayReportID: id,
 				RelayID:       report.RelayStats[i].RelayID,
@@ -283,6 +295,19 @@ func (r *repo) SaveCollectionReport(report app.CollectionReport) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlAddCollectionReport, report)
 		return err
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) StationsKeyPair() (stations []app.StationKeyPair, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res []resStationKeyPair
+		err := tx.NamedSelectContext(ctx, &res, sqlGetStationsKeyPair, argGetStation{})
+		if err != nil {
+			return err
+		}
+		stations = appStationsKeyPair(res)
+		return nil
 	})
 	return //nolint:nakedret
 }

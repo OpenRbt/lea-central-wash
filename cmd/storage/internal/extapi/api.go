@@ -61,6 +61,10 @@ func NewServer(appl app.App, cfg Config) (*restapi.Server, error) {
 	api.StatusCollectionHandler = op.StatusCollectionHandlerFunc(svc.statusCollection)
 	api.SaveCollectionHandler = op.SaveCollectionHandlerFunc(svc.saveCollection)
 
+	api.StationByHashHandler = op.StationByHashHandlerFunc(svc.stationByHash)
+	api.SaveIfNotExistsHandler = op.SaveIfNotExistsHandlerFunc(svc.saveIfNotExists)
+	api.StationsKeyPairHandler = op.StationsKeyPairHandlerFunc(svc.stationsKeyPair)
+
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port

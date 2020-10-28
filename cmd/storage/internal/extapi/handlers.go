@@ -37,6 +37,18 @@ func (svc *service) save(params op.SaveParams) op.SaveResponder {
 	}
 }
 
+func (svc *service) saveIfNotExists(params op.SaveIfNotExistsParams) op.SaveIfNotExistsResponder {
+	log.Info("saveIfNotExists", "hash", params.Args.Hash, "key", *params.Args.KeyPair.Key, "ip", params.HTTPRequest.RemoteAddr)
+	err := svc.app.SaveIfNotExists(string(params.Args.Hash), *params.Args.KeyPair.Key, *params.Args.KeyPair.Value)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSaveIfNotExistsNoContent()
+	default:
+		log.PrintErr(err, "hash", params.Args.Hash, "key", *params.Args.KeyPair.Key, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewSaveIfNotExistsInternalServerError()
+	}
+}
+
 func (svc *service) loadRelay(params op.LoadRelayParams) op.LoadRelayResponder {
 	log.Info("load relay", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 
@@ -60,7 +72,7 @@ func (svc *service) saveRelay(params op.SaveRelayParams) op.SaveRelayResponder {
 	var toSave app.RelayReport
 	toSave.Hash = string(params.Args.Hash)
 
-	for i, _ := range params.Args.RelayStats {
+	for i := range params.Args.RelayStats {
 		r := app.RelayStat{
 			RelayID:       int(params.Args.RelayStats[i].RelayID),
 			SwitchedCount: int(params.Args.RelayStats[i].SwitchedCount),
@@ -251,4 +263,35 @@ func (svc *service) stationReport(params op.StationReportParams) op.StationRepor
 
 func newInt64(v int64) *int64 {
 	return &v
+}
+
+func (svc *service) stationByHash(params op.StationByHashParams) op.StationByHashResponder {
+	log.Info("post by hash", "hash", params.Args.Hash)
+
+	id, err := svc.app.GetId(string(params.Args.Hash))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewStationByHashOK().WithPayload(int64(id))
+	case app.ErrNotFound:
+		log.Info("post by hash: not found", "hash", params.Args.Hash)
+		return op.NewStationByHashOK().WithPayload(0)
+	default:
+		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationByHashInternalServerError()
+	}
+}
+
+func (svc *service) stationsKeyPair(params op.StationsKeyPairParams) op.StationsKeyPairResponder {
+	log.Info("stations key pair", "ip", params.HTTPRequest.RemoteAddr)
+
+	toLoad, err := svc.app.StationsKeyPair()
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewStationsKeyPairOK().WithPayload(apiStationsKeyPair(toLoad))
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationsKeyPairInternalServerError()
+	}
 }
