@@ -109,6 +109,7 @@ func main() { //nolint:gocyclo
 		fmt.Println(cmd, ver, runtime.Version())
 		os.Exit(0)
 	}
+
 	if cfg.db.User == "" {
 		u, err := user.Current()
 		if err != nil {
