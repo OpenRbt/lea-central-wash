@@ -109,7 +109,6 @@ func main() { //nolint:gocyclo
 		fmt.Println(cmd, ver, runtime.Version())
 		os.Exit(0)
 	}
-	log.Debug("main", "db", cfg.db)
 	if cfg.db.User == "" {
 		u, err := user.Current()
 		if err != nil {
