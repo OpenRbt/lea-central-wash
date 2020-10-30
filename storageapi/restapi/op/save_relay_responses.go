@@ -38,6 +38,32 @@ func (o *SaveRelayNoContent) WriteResponse(rw http.ResponseWriter, producer runt
 
 func (o *SaveRelayNoContent) SaveRelayResponder() {}
 
+// SaveRelayNotFoundCode is the HTTP code returned for type SaveRelayNotFound
+const SaveRelayNotFoundCode int = 404
+
+/*SaveRelayNotFound not found
+
+swagger:response saveRelayNotFound
+*/
+type SaveRelayNotFound struct {
+}
+
+// NewSaveRelayNotFound creates SaveRelayNotFound with default headers values
+func NewSaveRelayNotFound() *SaveRelayNotFound {
+
+	return &SaveRelayNotFound{}
+}
+
+// WriteResponse to the client
+func (o *SaveRelayNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(404)
+}
+
+func (o *SaveRelayNotFound) SaveRelayResponder() {}
+
 // SaveRelayInternalServerErrorCode is the HTTP code returned for type SaveRelayInternalServerError
 const SaveRelayInternalServerErrorCode int = 500
 

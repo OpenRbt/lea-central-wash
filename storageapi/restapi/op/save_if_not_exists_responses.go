@@ -38,6 +38,32 @@ func (o *SaveIfNotExistsNoContent) WriteResponse(rw http.ResponseWriter, produce
 
 func (o *SaveIfNotExistsNoContent) SaveIfNotExistsResponder() {}
 
+// SaveIfNotExistsNotFoundCode is the HTTP code returned for type SaveIfNotExistsNotFound
+const SaveIfNotExistsNotFoundCode int = 404
+
+/*SaveIfNotExistsNotFound not found
+
+swagger:response saveIfNotExistsNotFound
+*/
+type SaveIfNotExistsNotFound struct {
+}
+
+// NewSaveIfNotExistsNotFound creates SaveIfNotExistsNotFound with default headers values
+func NewSaveIfNotExistsNotFound() *SaveIfNotExistsNotFound {
+
+	return &SaveIfNotExistsNotFound{}
+}
+
+// WriteResponse to the client
+func (o *SaveIfNotExistsNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(404)
+}
+
+func (o *SaveIfNotExistsNotFound) SaveIfNotExistsResponder() {}
+
 // SaveIfNotExistsInternalServerErrorCode is the HTTP code returned for type SaveIfNotExistsInternalServerError
 const SaveIfNotExistsInternalServerErrorCode int = 500
 

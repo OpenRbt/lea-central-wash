@@ -7,12 +7,7 @@ import (
 func appSetStation(v []resStation) []app.SetStation {
 	var res []app.SetStation
 	for i := range v {
-		hash := ""
-		if v[i].Hash != nil {
-			hash = *v[i].Hash
-		}
 		res = append(res, app.SetStation{
-			Hash: hash,
 			ID:   v[i].ID,
 			Name: v[i].Name,
 		})
@@ -20,14 +15,13 @@ func appSetStation(v []resStation) []app.SetStation {
 	return res
 }
 
-func appStationsKeyPair(v []resStationKeyPair) []app.StationKeyPair {
-	var res []app.StationKeyPair
-	id := -1
+func appStationsVariables(v []resStationsVariables) []app.StationsVariables {
+	var res []app.StationsVariables
+	id := app.StationID(-1)
 	count := -1
 	for i := range v {
 		if id != v[i].ID {
-			res = append(res, app.StationKeyPair{
-				Hash:    v[i].Hash,
+			res = append(res, app.StationsVariables{
 				ID:      v[i].ID,
 				Name:    v[i].Name,
 				KeyPair: []app.KeyPair{},

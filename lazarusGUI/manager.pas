@@ -15,17 +15,28 @@ type
   TManageForm = class(TForm)
     btnOK: TButton;
     btnSendMoney: TButton;
+    btnChangeHash: TButton;
+    btnRemoveHash: TButton;
+    btnChangeName: TButton;
+    cbHash: TComboBox;
+    edName: TEdit;
     editMoney: TLabeledEdit;
     GroupBox2: TGroupBox;
     Label1: TLabel;
     Panel1: TPanel;
     PricesData: TStringGrid;
+    procedure btnChangeHashClick(Sender: TObject);
+    procedure btnChangeNameClick(Sender: TObject);
+    procedure btnRemoveHashClick(Sender: TObject);
     procedure btnSendMoneyClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure PricesDataEditingDone(Sender: TObject);
     procedure SetHash(input: String);
     procedure SetName(input: String);
-    procedure SetID(input: String);
+    procedure SetID(input: integer);
+    procedure SetAvailableHashes(input: TStringList);
+    procedure PairIdAndHash(Hash, StationName: String; ID: integer);
   private
 
   public
@@ -36,14 +47,20 @@ var
   ManageForm: TManageForm;
   StationHash: String;
   StationName: String;
-  StationID: String;
+  StationID: integer;
   RequestAnswer: String;
+  AvailableHashes: TStringList;
 
 implementation
 
 {$R *.lfm}
 
 { TManageForm }
+
+procedure TManageForm.SetAvailableHashes(input: TStringList);
+begin
+     AvailableHashes := input;
+end;
 
 procedure TManageForm.SetHash(input: String);
 begin
@@ -55,7 +72,7 @@ begin
      StationName := input;
 end;
 
-procedure TManageForm.SetID(input: String);
+procedure TManageForm.SetID(input: integer);
 begin
      StationID := input;
 end;
@@ -90,6 +107,30 @@ begin
   end;
 end;
 
+procedure TManageForm.btnChangeHashClick(Sender: TObject);
+begin
+  if cbHash.ItemIndex >= 0 then begin
+    PairIdAndHash(cbHash.Items[cbHash.ItemIndex], StationName, StationID);
+    close;
+  end else ShowMessage('Choose a hash');
+end;
+
+procedure TManageForm.btnChangeNameClick(Sender: TObject);
+begin
+  PairIdAndHash(StationHash, edName.Text, StationID);
+  close;
+end;
+
+procedure TManageForm.btnRemoveHashClick(Sender: TObject);
+begin
+  PairIdAndHash('', StationName, StationID);
+end;
+
+procedure TManageForm.FormCreate(Sender: TObject);
+begin
+
+end;
+
 procedure TManageForm.FormShow(Sender: TObject);
 var
     postJson: TJSONObject;
@@ -98,6 +139,27 @@ var
     Value: String;
 
 begin
+  cbHash.Text:='';
+  cbHash.Items.Clear;
+    PricesData.Enabled:=false;
+    editMoney.Enabled:=false;
+    btnSendMoney.Enabled:=false;
+    btnRemoveHash.Enabled:=false;
+    btnChangeName.Enabled:=false;
+    edName.ReadOnly:=true;
+    edName.Text:=StationName;
+  for i := 0 to AvailableHashes.Count - 1 do
+       cbHash.Items.Add(AvailableHashes.ValueFromIndex[i]);
+
+    cbHash.ItemIndex := cbHash.Items.IndexOf(StationHash);
+    if StationHash <> '' then begin
+    PricesData.Enabled:=true;
+    editMoney.Enabled:=true;
+    btnSendMoney.Enabled:=true;
+    btnRemoveHash.Enabled:=true;
+    btnChangeName.Enabled:=true;
+    edName.ReadOnly:=false;
+
     for i := 1 to 6 do begin
         Key := 'price' + IntToStr(i);
         postJson := TJSONObject.Create;
@@ -114,6 +176,7 @@ begin
         finally
             Free;
         end;
+    end;
     end;
 end;
 
@@ -167,6 +230,31 @@ begin
 
 
 end;
+
+procedure TManageForm.PairIdAndHash(Hash, StationName: String; ID: integer);
+var
+  postJson: TJSONObject;
+
+begin
+  postJson := TJSONObject.Create;
+  postJson.Add('id', ID);
+  postJson.Add('hash', TJSONString.Create(Hash));
+  postJson.Add('name', TJSONString.Create(StationName));
+  With TFPHttpClient.Create(Nil) do
+  try
+   try
+     AddHeader('Content-Type', 'application/json');
+     RequestBody := TStringStream.Create(postJson.AsJSON);
+     Post('http://localhost:8020/set-station');
+   except
+        On E: Exception do
+      end;
+  finally
+     Free;
+  end;
+
+end;
+
 
 end.
 

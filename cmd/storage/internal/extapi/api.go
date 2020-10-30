@@ -1,6 +1,9 @@
 package extapi
 
 import (
+	"sync"
+	"time"
+
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
@@ -11,6 +14,8 @@ import (
 
 var log = structlog.New() //nolint:gochecknoglobals
 
+var errNotFound = errors.New("not found")
+
 // Config contains configuration for internal API service.
 type Config struct {
 	Host     string
@@ -18,15 +23,25 @@ type Config struct {
 	BasePath string
 }
 
+type repo interface {
+	LoadHash() ([]app.StationID, []string, error)
+	SetHash(id app.StationID, hash string) error
+}
+
 type service struct {
-	app app.App
+	app           app.App
+	stations      map[string]app.StationID
+	unknownHash   map[string]time.Time
+	stationsMutex sync.Mutex
+	repo          repo
 }
 
 // NewServer returns Swagger server configured to listen on the TCP network
 // address cfg.Host:cfg.Port and handle requests on incoming connections.
-func NewServer(appl app.App, cfg Config) (*restapi.Server, error) {
+func NewServer(appl app.App, cfg Config, repo repo) (*restapi.Server, error) {
 	svc := &service{
-		app: appl,
+		app:  appl,
+		repo: repo,
 	}
 
 	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
@@ -63,12 +78,16 @@ func NewServer(appl app.App, cfg Config) (*restapi.Server, error) {
 
 	api.StationByHashHandler = op.StationByHashHandlerFunc(svc.stationByHash)
 	api.SaveIfNotExistsHandler = op.SaveIfNotExistsHandlerFunc(svc.saveIfNotExists)
-	api.StationsKeyPairHandler = op.StationsKeyPairHandlerFunc(svc.stationsKeyPair)
+	api.StationsVariablesHandler = op.StationsVariablesHandlerFunc(svc.StationsVariables)
 
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port
-
+	svc.unknownHash = map[string]time.Time{}
+	err = svc.loadHash()
+	if err != nil {
+		return nil, err
+	}
 	log.Info("Swagger REST protocol", "version", swaggerSpec.Spec().Info.Version)
 	return server, nil
 }

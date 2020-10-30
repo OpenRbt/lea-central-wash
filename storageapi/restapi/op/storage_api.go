@@ -37,6 +37,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
+		StationsVariablesHandler: StationsVariablesHandlerFunc(func(params StationsVariablesParams) StationsVariablesResponder {
+			// return middleware.NotImplemented("operation StationsVariables has not yet been implemented")
+			return StationsVariablesNotImplemented()
+		}),
 		AddServiceAmountHandler: AddServiceAmountHandlerFunc(func(params AddServiceAmountParams) AddServiceAmountResponder {
 			// return middleware.NotImplemented("operation AddServiceAmount has not yet been implemented")
 			return AddServiceAmountNotImplemented()
@@ -101,10 +105,6 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation StationReport has not yet been implemented")
 			return StationReportNotImplemented()
 		}),
-		StationsKeyPairHandler: StationsKeyPairHandlerFunc(func(params StationsKeyPairParams) StationsKeyPairResponder {
-			// return middleware.NotImplemented("operation StationsKeyPair has not yet been implemented")
-			return StationsKeyPairNotImplemented()
-		}),
 		StatusHandler: StatusHandlerFunc(func(params StatusParams) StatusResponder {
 			// return middleware.NotImplemented("operation Status has not yet been implemented")
 			return StatusNotImplemented()
@@ -144,6 +144,8 @@ type StorageAPI struct {
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
 
+	// StationsVariablesHandler sets the operation handler for the stations variables operation
+	StationsVariablesHandler StationsVariablesHandler
 	// AddServiceAmountHandler sets the operation handler for the add service amount operation
 	AddServiceAmountHandler AddServiceAmountHandler
 	// DelStationHandler sets the operation handler for the del station operation
@@ -176,8 +178,6 @@ type StorageAPI struct {
 	StationByHashHandler StationByHashHandler
 	// StationReportHandler sets the operation handler for the station report operation
 	StationReportHandler StationReportHandler
-	// StationsKeyPairHandler sets the operation handler for the stations key pair operation
-	StationsKeyPairHandler StationsKeyPairHandler
 	// StatusHandler sets the operation handler for the status operation
 	StatusHandler StatusHandler
 	// StatusCollectionHandler sets the operation handler for the status collection operation
@@ -245,6 +245,10 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.StationsVariablesHandler == nil {
+		unregistered = append(unregistered, "StationsVariablesHandler")
+	}
+
 	if o.AddServiceAmountHandler == nil {
 		unregistered = append(unregistered, "AddServiceAmountHandler")
 	}
@@ -307,10 +311,6 @@ func (o *StorageAPI) Validate() error {
 
 	if o.StationReportHandler == nil {
 		unregistered = append(unregistered, "StationReportHandler")
-	}
-
-	if o.StationsKeyPairHandler == nil {
-		unregistered = append(unregistered, "StationsKeyPairHandler")
 	}
 
 	if o.StatusHandler == nil {
@@ -422,6 +422,11 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/stations-variables"] = NewStationsVariables(o.context, o.StationsVariablesHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/add-service-amount"] = NewAddServiceAmount(o.context, o.AddServiceAmountHandler)
 
 	if o.handlers["POST"] == nil {
@@ -498,11 +503,6 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/station-report"] = NewStationReport(o.context, o.StationReportHandler)
-
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/stations-key-pair"] = NewStationsKeyPair(o.context, o.StationsKeyPairHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)

@@ -128,7 +128,7 @@ definitions:
         value:
           type: string
 
-  StationKeyPair:
+  StationsVariables:
     type: object
     properties:
       id:
@@ -234,6 +234,8 @@ paths:
           in: body
           schema:
             type: object
+            required:
+              - id
             properties:
               id:
                 type: integer
@@ -287,6 +289,8 @@ paths:
       responses:
         204:
           description: OK
+        404:
+          description: not found
         500:
           description: internal error
           
@@ -326,6 +330,8 @@ paths:
       responses:
         204:
           description: OK
+        404:
+          description: not found
         500:
           description: internal error
 
@@ -341,6 +347,8 @@ paths:
       responses:
         204: 
           description: OK
+        404:
+          description: not found
         500:
           description: internal error
 
@@ -388,6 +396,8 @@ paths:
       responses:
         204:
           description: OK
+        404:
+          description: not found
         500:
           description: internal error
   /load:
@@ -495,17 +505,19 @@ paths:
       responses:
         204:
           description: OK
+        404:
+          description: not found
         500:
           description: internal error
-  /stations-key-pair:
+  /stations-variables:
     post:
-      operationId: "stationsKeyPair"
+      operationId: "StationsVariables"
       responses:
         200:
           description: OK
           schema:
             type: array
             items:
-              $ref: '#/definitions/StationKeyPair'
+              $ref: '#/definitions/StationsVariables'
         500:
           description: internal error

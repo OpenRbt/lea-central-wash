@@ -307,6 +307,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "not found"
+          },
           "500": {
             "description": "internal error"
           }
@@ -329,6 +332,9 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"
@@ -365,6 +371,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "not found"
+          },
           "500": {
             "description": "internal error"
           }
@@ -387,6 +396,9 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"
@@ -411,6 +423,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "not found"
+          },
           "500": {
             "description": "internal error"
           }
@@ -427,6 +442,9 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "required": [
+                "id"
+              ],
               "properties": {
                 "hash": {
                   "type": "string"
@@ -541,16 +559,16 @@ func init() {
         }
       }
     },
-    "/stations-key-pair": {
+    "/stations-variables": {
       "post": {
-        "operationId": "stationsKeyPair",
+        "operationId": "StationsVariables",
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/StationKeyPair"
+                "$ref": "#/definitions/StationsVariables"
               }
             }
           },
@@ -687,27 +705,6 @@ func init() {
         }
       }
     },
-    "StationKeyPair": {
-      "type": "object",
-      "properties": {
-        "hash": {
-          "type": "string",
-          "x-nullable": true
-        },
-        "id": {
-          "type": "integer"
-        },
-        "keyPairs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/KeyPair"
-          }
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
     "StationReport": {
       "type": "object",
       "properties": {
@@ -739,6 +736,27 @@ func init() {
         },
         "status": {
           "$ref": "#/definitions/Status"
+        }
+      }
+    },
+    "StationsVariables": {
+      "type": "object",
+      "properties": {
+        "hash": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "id": {
+          "type": "integer"
+        },
+        "keyPairs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/KeyPair"
+          }
+        },
+        "name": {
+          "type": "string"
         }
       }
     },
@@ -1072,6 +1090,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "not found"
+          },
           "500": {
             "description": "internal error"
           }
@@ -1094,6 +1115,9 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"
@@ -1130,6 +1154,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "not found"
+          },
           "500": {
             "description": "internal error"
           }
@@ -1152,6 +1179,9 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"
@@ -1176,6 +1206,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "not found"
+          },
           "500": {
             "description": "internal error"
           }
@@ -1192,6 +1225,9 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "required": [
+                "id"
+              ],
               "properties": {
                 "hash": {
                   "type": "string"
@@ -1306,16 +1342,16 @@ func init() {
         }
       }
     },
-    "/stations-key-pair": {
+    "/stations-variables": {
       "post": {
-        "operationId": "stationsKeyPair",
+        "operationId": "StationsVariables",
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/StationKeyPair"
+                "$ref": "#/definitions/StationsVariables"
               }
             }
           },
@@ -1452,27 +1488,6 @@ func init() {
         }
       }
     },
-    "StationKeyPair": {
-      "type": "object",
-      "properties": {
-        "hash": {
-          "type": "string",
-          "x-nullable": true
-        },
-        "id": {
-          "type": "integer"
-        },
-        "keyPairs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/KeyPair"
-          }
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
     "StationReport": {
       "type": "object",
       "properties": {
@@ -1504,6 +1519,27 @@ func init() {
         },
         "status": {
           "$ref": "#/definitions/Status"
+        }
+      }
+    },
+    "StationsVariables": {
+      "type": "object",
+      "properties": {
+        "hash": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "id": {
+          "type": "integer"
+        },
+        "keyPairs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/KeyPair"
+          }
+        },
+        "name": {
+          "type": "string"
         }
       }
     },

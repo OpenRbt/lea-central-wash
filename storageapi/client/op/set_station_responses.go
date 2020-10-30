@@ -8,8 +8,10 @@ package op
 import (
 	"fmt"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
 )
@@ -177,7 +179,8 @@ type SetStationBody struct {
 	Hash string `json:"hash,omitempty"`
 
 	// id
-	ID int64 `json:"id,omitempty"`
+	// Required: true
+	ID *int64 `json:"id"`
 
 	// name
 	Name string `json:"name,omitempty"`
@@ -185,6 +188,24 @@ type SetStationBody struct {
 
 // Validate validates this set station body
 func (o *SetStationBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *SetStationBody) validateID(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"id", "body", o.ID); err != nil {
+		return err
+	}
+
 	return nil
 }
 

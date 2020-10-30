@@ -34,6 +34,13 @@ func (o *SaveIfNotExistsReader) ReadResponse(response runtime.ClientResponse, co
 		}
 		return result, nil
 
+	case 404:
+		result := NewSaveIfNotExistsNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	case 500:
 		result := NewSaveIfNotExistsInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -63,6 +70,27 @@ func (o *SaveIfNotExistsNoContent) Error() string {
 }
 
 func (o *SaveIfNotExistsNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewSaveIfNotExistsNotFound creates a SaveIfNotExistsNotFound with default headers values
+func NewSaveIfNotExistsNotFound() *SaveIfNotExistsNotFound {
+	return &SaveIfNotExistsNotFound{}
+}
+
+/*SaveIfNotExistsNotFound handles this case with default header values.
+
+not found
+*/
+type SaveIfNotExistsNotFound struct {
+}
+
+func (o *SaveIfNotExistsNotFound) Error() string {
+	return fmt.Sprintf("[POST /save-if-not-exists][%d] saveIfNotExistsNotFound ", 404)
+}
+
+func (o *SaveIfNotExistsNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

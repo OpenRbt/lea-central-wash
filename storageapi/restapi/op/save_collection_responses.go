@@ -38,6 +38,32 @@ func (o *SaveCollectionNoContent) WriteResponse(rw http.ResponseWriter, producer
 
 func (o *SaveCollectionNoContent) SaveCollectionResponder() {}
 
+// SaveCollectionNotFoundCode is the HTTP code returned for type SaveCollectionNotFound
+const SaveCollectionNotFoundCode int = 404
+
+/*SaveCollectionNotFound not found
+
+swagger:response saveCollectionNotFound
+*/
+type SaveCollectionNotFound struct {
+}
+
+// NewSaveCollectionNotFound creates SaveCollectionNotFound with default headers values
+func NewSaveCollectionNotFound() *SaveCollectionNotFound {
+
+	return &SaveCollectionNotFound{}
+}
+
+// WriteResponse to the client
+func (o *SaveCollectionNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(404)
+}
+
+func (o *SaveCollectionNotFound) SaveCollectionResponder() {}
+
 // SaveCollectionInternalServerErrorCode is the HTTP code returned for type SaveCollectionInternalServerError
 const SaveCollectionInternalServerErrorCode int = 500
 

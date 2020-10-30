@@ -38,6 +38,32 @@ func (o *SaveMoneyNoContent) WriteResponse(rw http.ResponseWriter, producer runt
 
 func (o *SaveMoneyNoContent) SaveMoneyResponder() {}
 
+// SaveMoneyNotFoundCode is the HTTP code returned for type SaveMoneyNotFound
+const SaveMoneyNotFoundCode int = 404
+
+/*SaveMoneyNotFound not found
+
+swagger:response saveMoneyNotFound
+*/
+type SaveMoneyNotFound struct {
+}
+
+// NewSaveMoneyNotFound creates SaveMoneyNotFound with default headers values
+func NewSaveMoneyNotFound() *SaveMoneyNotFound {
+
+	return &SaveMoneyNotFound{}
+}
+
+// WriteResponse to the client
+func (o *SaveMoneyNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(404)
+}
+
+func (o *SaveMoneyNotFound) SaveMoneyResponder() {}
+
 // SaveMoneyInternalServerErrorCode is the HTTP code returned for type SaveMoneyInternalServerError
 const SaveMoneyInternalServerErrorCode int = 500
 

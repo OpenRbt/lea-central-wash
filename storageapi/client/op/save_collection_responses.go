@@ -29,6 +29,13 @@ func (o *SaveCollectionReader) ReadResponse(response runtime.ClientResponse, con
 		}
 		return result, nil
 
+	case 404:
+		result := NewSaveCollectionNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	case 500:
 		result := NewSaveCollectionInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -58,6 +65,27 @@ func (o *SaveCollectionNoContent) Error() string {
 }
 
 func (o *SaveCollectionNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewSaveCollectionNotFound creates a SaveCollectionNotFound with default headers values
+func NewSaveCollectionNotFound() *SaveCollectionNotFound {
+	return &SaveCollectionNotFound{}
+}
+
+/*SaveCollectionNotFound handles this case with default header values.
+
+not found
+*/
+type SaveCollectionNotFound struct {
+}
+
+func (o *SaveCollectionNotFound) Error() string {
+	return fmt.Sprintf("[POST /save-collection][%d] saveCollectionNotFound ", 404)
+}
+
+func (o *SaveCollectionNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

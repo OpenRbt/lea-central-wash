@@ -29,6 +29,13 @@ func (o *SaveMoneyReader) ReadResponse(response runtime.ClientResponse, consumer
 		}
 		return result, nil
 
+	case 404:
+		result := NewSaveMoneyNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	case 500:
 		result := NewSaveMoneyInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -58,6 +65,27 @@ func (o *SaveMoneyNoContent) Error() string {
 }
 
 func (o *SaveMoneyNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewSaveMoneyNotFound creates a SaveMoneyNotFound with default headers values
+func NewSaveMoneyNotFound() *SaveMoneyNotFound {
+	return &SaveMoneyNotFound{}
+}
+
+/*SaveMoneyNotFound handles this case with default header values.
+
+not found
+*/
+type SaveMoneyNotFound struct {
+}
+
+func (o *SaveMoneyNotFound) Error() string {
+	return fmt.Sprintf("[POST /save-money][%d] saveMoneyNotFound ", 404)
+}
+
+func (o *SaveMoneyNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

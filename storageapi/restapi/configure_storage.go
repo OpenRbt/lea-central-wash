@@ -32,6 +32,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
+	api.StationsVariablesHandler = op.StationsVariablesHandlerFunc(func(params op.StationsVariablesParams) op.StationsVariablesResponder {
+		return op.StationsVariablesNotImplemented()
+	})
 	api.AddServiceAmountHandler = op.AddServiceAmountHandlerFunc(func(params op.AddServiceAmountParams) op.AddServiceAmountResponder {
 		return op.AddServiceAmountNotImplemented()
 	})
@@ -79,9 +82,6 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	})
 	api.StationReportHandler = op.StationReportHandlerFunc(func(params op.StationReportParams) op.StationReportResponder {
 		return op.StationReportNotImplemented()
-	})
-	api.StationsKeyPairHandler = op.StationsKeyPairHandlerFunc(func(params op.StationsKeyPairParams) op.StationsKeyPairResponder {
-		return op.StationsKeyPairNotImplemented()
 	})
 	api.StatusHandler = op.StatusHandlerFunc(func(params op.StatusParams) op.StatusResponder {
 		return op.StatusNotImplemented()

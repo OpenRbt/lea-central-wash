@@ -25,6 +25,34 @@ type Client struct {
 }
 
 /*
+StationsVariables stations variables API
+*/
+func (a *Client) StationsVariables(params *StationsVariablesParams) (*StationsVariablesOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStationsVariablesParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "StationsVariables",
+		Method:             "POST",
+		PathPattern:        "/stations-variables",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StationsVariablesReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*StationsVariablesOK), nil
+
+}
+
+/*
 AddServiceAmount add service amount API
 */
 func (a *Client) AddServiceAmount(params *AddServiceAmountParams) (*AddServiceAmountNoContent, error) {
@@ -469,34 +497,6 @@ func (a *Client) StationReport(params *StationReportParams) (*StationReportOK, e
 		return nil, err
 	}
 	return result.(*StationReportOK), nil
-
-}
-
-/*
-StationsKeyPair stations key pair API
-*/
-func (a *Client) StationsKeyPair(params *StationsKeyPairParams) (*StationsKeyPairOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewStationsKeyPairParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "stationsKeyPair",
-		Method:             "POST",
-		PathPattern:        "/stations-key-pair",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &StationsKeyPairReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*StationsKeyPairOK), nil
 
 }
 

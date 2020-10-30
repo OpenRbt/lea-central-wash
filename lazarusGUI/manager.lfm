@@ -1,12 +1,14 @@
 object ManageForm: TManageForm
-  Left = 813
+  Left = 505
   Height = 392
-  Top = 525
+  Top = 300
   Width = 1105
   Caption = 'Manage Station'
   ClientHeight = 392
   ClientWidth = 1105
+  OnCreate = FormCreate
   OnShow = FormShow
+  Position = poScreenCenter
   LCLVersion = '2.0.10.0'
   object Panel1: TPanel
     Left = 8
@@ -29,10 +31,10 @@ object ManageForm: TManageForm
   end
   object editMoney: TLabeledEdit
     Left = 14
-    Height = 67
+    Height = 56
     Top = 58
     Width = 216
-    EditLabel.Height = 42
+    EditLabel.Height = 34
     EditLabel.Width = 216
     EditLabel.Caption = 'Service Money:'
     EditLabel.ParentColor = False
@@ -66,9 +68,9 @@ object ManageForm: TManageForm
     TabOrder = 4
     object Label1: TLabel
       Left = 314
-      Height = 42
+      Height = 34
       Top = -6
-      Width = 292
+      Width = 276
       Caption = 'Price management:'
       Font.Height = 30
       Font.Style = [fsBold]
@@ -119,5 +121,59 @@ object ManageForm: TManageForm
         '6'
       )
     end
+  end
+  object cbHash: TComboBox
+    Left = 272
+    Height = 46
+    Top = 280
+    Width = 376
+    Font.Height = 30
+    ItemHeight = 0
+    ParentFont = False
+    TabOrder = 5
+    Text = 'cbHash'
+  end
+  object btnChangeHash: TButton
+    Left = 656
+    Height = 47
+    Top = 279
+    Width = 200
+    Caption = 'Change hash'
+    Font.Height = 30
+    OnClick = btnChangeHashClick
+    ParentFont = False
+    TabOrder = 6
+  end
+  object btnRemoveHash: TButton
+    Left = 872
+    Height = 48
+    Top = 280
+    Width = 208
+    Caption = 'Remove hash'
+    Font.Height = 30
+    OnClick = btnRemoveHashClick
+    ParentFont = False
+    TabOrder = 7
+  end
+  object edName: TEdit
+    Left = 272
+    Height = 44
+    Top = 339
+    Width = 584
+    Font.Height = 30
+    ParentFont = False
+    TabOrder = 8
+    Text = 'edName'
+  end
+  object btnChangeName: TButton
+    Left = 872
+    Height = 40
+    Top = 336
+    Width = 208
+    Caption = 'Change name'
+    Font.Height = 30
+    OnClick = btnChangeNameClick
+    ParentFont = False
+    TabOrder = 9
   end
 end

@@ -2,6 +2,7 @@ package extapi
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
@@ -18,14 +19,12 @@ func apiRelayReport(data *app.RelayReport) *model.RelayReport {
 		relayStats = append(relayStats, &r)
 	}
 	return &model.RelayReport{
-		Hash:       model.Hash(data.Hash),
 		RelayStats: relayStats,
 	}
 }
 
 func apiMoneyReport(data *app.MoneyReport) *model.MoneyReport {
 	return &model.MoneyReport{
-		Hash:         model.Hash(data.Hash),
 		Banknotes:    int64(data.Banknotes),
 		CarsTotal:    int64(data.CarsTotal),
 		Coins:        int64(data.Coins),
@@ -54,11 +53,24 @@ func apiCollectionReport(v app.CollectionReport) *model.CollectionReport {
 	}
 }
 
-func apiStatusReport(v app.StatusReport) *model.StatusReport {
+func (svc *service) apiStatusReport(v app.StatusReport) *model.StatusReport {
 	var stationStatus []*model.StationStatus
 	for i := range v.Stations {
-		stationStatus = append(stationStatus, apiStationStatus(v.Stations[i]))
+		stationStatus = append(stationStatus, svc.apiStationStatus(v.Stations[i]))
 	}
+	for key, value := range svc.unknownHash {
+		var status model.Status
+		if value.Add(time.Second * 1000).After(time.Now()) {
+			status = model.StatusOnline
+		} else {
+			status = model.StatusOffline
+		}
+		stationStatus = append(stationStatus, &model.StationStatus{
+			Hash:   model.Hash(key),
+			Status: status,
+		})
+	}
+
 	return &model.StatusReport{
 		KasseInfo:   v.KasseInfo,
 		KasseStatus: apiStatus(v.KasseStatus),
@@ -67,9 +79,9 @@ func apiStatusReport(v app.StatusReport) *model.StatusReport {
 	}
 }
 
-func apiStationStatus(v app.StationStatus) *model.StationStatus {
+func (svc *service) apiStationStatus(v app.StationStatus) *model.StationStatus {
 	return &model.StationStatus{
-		Hash:   model.Hash(v.Hash),
+		Hash:   model.Hash(svc.getHash(v.ID)),
 		ID:     int64(v.ID),
 		Info:   v.Info,
 		Name:   v.Name,
@@ -90,12 +102,11 @@ func apiStatus(v app.Status) model.Status {
 	return status
 }
 
-func apiStationsKeyPair(data []app.StationKeyPair) []*model.StationKeyPair {
-	var res []*model.StationKeyPair
+func apiStationsVariables(data []app.StationsVariables) []*model.StationsVariables {
+	var res []*model.StationsVariables
 	for i := range data {
-		res = append(res, &model.StationKeyPair{
+		res = append(res, &model.StationsVariables{
 			ID:       int64(data[i].ID),
-			Hash:     data[i].Hash,
 			Name:     data[i].Name,
 			KeyPairs: apiKeyPair(data[i].KeyPair),
 		})

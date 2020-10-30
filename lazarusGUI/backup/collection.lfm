@@ -1,7 +1,7 @@
 object MoneyCollectionForm: TMoneyCollectionForm
-  Left = 384
+  Left = 512
   Height = 929
-  Top = 100
+  Top = 464
   Width = 1283
   BorderIcons = [biSystemMenu]
   Caption = 'Money Collection'

@@ -1,6 +1,10 @@
 package dal
 
-import "time"
+import (
+	"time"
+
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+)
 
 const (
 	sqlSetValue = `
@@ -19,28 +23,34 @@ DO NOTHING
 	sqlGetValue = `
 SELECT value  FROM keypair  WHERE station_id = :station_id and key = :key
 	`
-	sqlGetStationsKeyPair = `
-	SELECT s.id, s.hash, s.name, k.key, k.value
+	sqlGetStationsVariables = `
+	SELECT s.id, s.name, k.key, k.value
 	FROM station s
 	JOIN keypair k on s.id = k.station_id
 	ORDER BY s.id, k.key
 	`
 	sqlAddStation = `
-INSERT INTO station (hash, name)  
-VALUES 	(:hash, :name)
+INSERT INTO station (name)  
+VALUES 	(:name)
+	`
+	sqlAddStationHash = `
+INSERT INTO station_hash (station_id, hash)  
+VALUES 	(:station_id, :hash)
 	`
 	sqlUpdStation = `
 UPDATE station
-SET hash = :hash, name = :name
+SET name = :name
 WHERE id = :id
 	`
 	sqlGetStation = `
-SELECT id, hash, name  FROM station where deleted = false ORDER BY id
+SELECT id, name  FROM station where deleted = false ORDER BY id
+	`
+	sqlLoadHash = `
+SELECT station_id, hash FROM station_hash ORDER BY station_id
 	`
 	sqlStationNullHash = `
-UPDATE station
-SET hash = null
-WHERE hash = :hash
+DELETE FROM station_hash
+WHERE hash = :hash or station_id = :station_id
 	`
 	sqlDelStation = `
 UPDATE station
@@ -121,28 +131,27 @@ GROUP BY station_id
 
 type (
 	argSetValue struct {
-		StationID int
+		StationID app.StationID
 		Key       string
 		Value     string
 	}
 	argGetValue struct {
-		StationID int
+		StationID app.StationID
 		Key       string
 	}
 	argAddStation struct {
-		Hash string
 		Name string
 	}
 	argUpdStation struct {
-		ID   int
-		Hash string
+		ID   app.StationID
 		Name string
 	}
-	argStationNullHash struct {
-		Hash string
+	argStationHash struct {
+		Hash      string
+		StationID app.StationID
 	}
 	argDelStation struct {
-		ID int
+		ID app.StationID
 	}
 	argGetStation struct {
 	}
@@ -150,21 +159,20 @@ type (
 		Value string
 	}
 	resStation struct {
-		Hash *string
-		ID   int
+		ID   app.StationID
 		Name string
 	}
 	argLastMoneyReport struct {
-		StationID int
+		StationID app.StationID
 	}
 	argLastCollectionReport struct {
-		StationID int
+		StationID app.StationID
 	}
 	argLastRelayReport struct {
-		StationID int
+		StationID app.StationID
 	}
 	argAddRelayReport struct {
-		StationID int
+		StationID app.StationID
 	}
 	argAddRelayStat struct {
 		RelayReportID int
@@ -173,7 +181,7 @@ type (
 		TotalTimeOn   int64
 	}
 	resRelayReport struct {
-		ID int
+		ID app.StationID
 	}
 	resRelayStat struct {
 		RelayID       int
@@ -181,23 +189,26 @@ type (
 		TotalTimeOn   int64
 	}
 	argRelayStat struct {
-		RelayReportID int
+		RelayReportID app.StationID
 	}
 	argMoneyReport struct {
-		StationID int
+		StationID app.StationID
 		StartDate time.Time
 		EndDate   time.Time
 	}
 	argRelayStatReport struct {
-		StationID int
+		StationID app.StationID
 		StartDate time.Time
 		EndDate   time.Time
 	}
-	resStationKeyPair struct {
-		Hash  *string
-		ID    int
+	resStationsVariables struct {
+		ID    app.StationID
 		Name  string
 		Key   string
 		Value string
+	}
+	resLoadHash struct {
+		Hash      string
+		StationID app.StationID
 	}
 )
