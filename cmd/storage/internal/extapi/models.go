@@ -60,7 +60,7 @@ func (svc *service) apiStatusReport(v app.StatusReport) *model.StatusReport {
 	}
 	for key, value := range svc.unknownHash {
 		var status model.Status
-		if value.Add(time.Second * 1000).After(time.Now()) {
+		if value.Add(time.Second * 10).After(time.Now()) {
 			status = model.StatusOnline
 		} else {
 			status = model.StatusOffline

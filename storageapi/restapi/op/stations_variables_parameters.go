@@ -22,7 +22,7 @@ func NewStationsVariablesParams() StationsVariablesParams {
 // StationsVariablesParams contains all the bound params for the stations variables operation
 // typically these are obtained from a http.Request
 //
-// swagger:parameters StationsVariables
+// swagger:parameters stationsVariables
 type StationsVariablesParams struct {
 
 	// HTTP Request Object

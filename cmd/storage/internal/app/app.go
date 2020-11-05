@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-const durationStationOffline = time.Second * 1000
+const durationStationOffline = time.Second * 10
 
 // Errors.
 var (
@@ -27,10 +27,11 @@ type (
 		Info() string
 
 		AddServiceAmount(stationID StationID, money int) error
+		OpenStation(StationID) error
 
 		Set(station StationData) error
 		Get(stationID StationID) (StationData, error)
-		Ping(stationID StationID) int
+		Ping(stationID StationID) StationData
 
 		SaveMoneyReport(report MoneyReport) error
 		SaveRelayReport(report RelayReport) error
@@ -65,6 +66,7 @@ type (
 		SaveCollectionReport(report CollectionReport) (err error)
 		StationsVariables() ([]StationsVariables, error)
 		AddStation(name string) error
+		AddOpenStationLog(StationID) error
 		// for api
 		LoadHash() ([]StationID, []string, error)
 		SetHash(StationID, string) error

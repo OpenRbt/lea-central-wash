@@ -139,3 +139,7 @@ func (t *DB) StationsVariables() ([]app.StationsVariables, error) {
 func (t *DB) AddStation(name string) error {
 	return nil
 }
+
+func (t *DB) AddOpenStationLog(id app.StationID) error {
+	return nil
+}

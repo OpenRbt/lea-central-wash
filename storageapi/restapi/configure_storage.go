@@ -32,9 +32,6 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	api.StationsVariablesHandler = op.StationsVariablesHandlerFunc(func(params op.StationsVariablesParams) op.StationsVariablesResponder {
-		return op.StationsVariablesNotImplemented()
-	})
 	api.AddServiceAmountHandler = op.AddServiceAmountHandlerFunc(func(params op.AddServiceAmountParams) op.AddServiceAmountResponder {
 		return op.AddServiceAmountNotImplemented()
 	})
@@ -55,6 +52,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	})
 	api.LoadRelayHandler = op.LoadRelayHandlerFunc(func(params op.LoadRelayParams) op.LoadRelayResponder {
 		return op.LoadRelayNotImplemented()
+	})
+	api.OpenStationHandler = op.OpenStationHandlerFunc(func(params op.OpenStationParams) op.OpenStationResponder {
+		return op.OpenStationNotImplemented()
 	})
 	api.PingHandler = op.PingHandlerFunc(func(params op.PingParams) op.PingResponder {
 		return op.PingNotImplemented()
@@ -82,6 +82,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	})
 	api.StationReportHandler = op.StationReportHandlerFunc(func(params op.StationReportParams) op.StationReportResponder {
 		return op.StationReportNotImplemented()
+	})
+	api.StationsVariablesHandler = op.StationsVariablesHandlerFunc(func(params op.StationsVariablesParams) op.StationsVariablesResponder {
+		return op.StationsVariablesNotImplemented()
 	})
 	api.StatusHandler = op.StatusHandlerFunc(func(params op.StatusParams) op.StatusResponder {
 		return op.StatusNotImplemented()

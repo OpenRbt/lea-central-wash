@@ -30,7 +30,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.6.0"
+    "version": "1.7.0"
   },
   "basePath": "/",
   "paths": {
@@ -231,6 +231,40 @@ func init() {
         }
       }
     },
+    "/open-station": {
+      "post": {
+        "operationId": "openStation",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/ping": {
       "get": {
         "operationId": "getPing",
@@ -266,9 +300,13 @@ func init() {
             "schema": {
               "type": "object",
               "required": [
-                "serviceAmount"
+                "serviceAmount",
+                "openStation"
               ],
               "properties": {
+                "openStation": {
+                  "type": "boolean"
+                },
                 "serviceAmount": {
                   "type": "integer"
                 }
@@ -561,7 +599,7 @@ func init() {
     },
     "/stations-variables": {
       "post": {
-        "operationId": "StationsVariables",
+        "operationId": "stationsVariables",
         "responses": {
           "200": {
             "description": "OK",
@@ -813,7 +851,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.6.0"
+    "version": "1.7.0"
   },
   "basePath": "/",
   "paths": {
@@ -1014,6 +1052,40 @@ func init() {
         }
       }
     },
+    "/open-station": {
+      "post": {
+        "operationId": "openStation",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/ping": {
       "get": {
         "operationId": "getPing",
@@ -1049,9 +1121,13 @@ func init() {
             "schema": {
               "type": "object",
               "required": [
-                "serviceAmount"
+                "serviceAmount",
+                "openStation"
               ],
               "properties": {
+                "openStation": {
+                  "type": "boolean"
+                },
                 "serviceAmount": {
                   "type": "integer"
                 }
@@ -1344,7 +1420,7 @@ func init() {
     },
     "/stations-variables": {
       "post": {
-        "operationId": "StationsVariables",
+        "operationId": "stationsVariables",
         "responses": {
           "200": {
             "description": "OK",

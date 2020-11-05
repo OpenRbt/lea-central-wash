@@ -2,7 +2,7 @@ swagger: "2.0"
 
 info:
   title: Storage
-  version: 1.6.0
+  version: 1.7.0
 
 basePath: /
 schemes:
@@ -448,9 +448,12 @@ paths:
             type: object
             required:
               - serviceAmount
+              - openStation
             properties:
               serviceAmount:
                 type: integer
+              openStation:
+                type: boolean
     get:
       operationId: "getPing"
       responses:
@@ -511,7 +514,7 @@ paths:
           description: internal error
   /stations-variables:
     post:
-      operationId: "StationsVariables"
+      operationId: "stationsVariables"
       responses:
         200:
           description: OK
@@ -519,5 +522,26 @@ paths:
             type: array
             items:
               $ref: '#/definitions/StationsVariables'
+        500:
+          description: internal error
+  /open-station:
+    post:
+      operationId: "openStation"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - stationID
+            properties:
+              stationID:
+                type: integer
+      responses:
+        204:
+          description: OK
+        404:
+          description: not found
         500:
           description: internal error

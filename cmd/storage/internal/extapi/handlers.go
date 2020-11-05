@@ -275,10 +275,11 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		})
 	}
 
-	serviceMoney := svc.app.Ping(stationID)
+	station := svc.app.Ping(stationID)
 
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
-		ServiceAmount: newInt64(int64(serviceMoney)),
+		ServiceAmount: newInt64(int64(station.ServiceMoney)),
+		OpenStation:   &station.OpenStation,
 	})
 }
 
@@ -414,5 +415,19 @@ func (svc *service) StationsVariables(params op.StationsVariablesParams) op.Stat
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewStationsVariablesInternalServerError()
+	}
+}
+
+func (svc *service) openStation(params op.OpenStationParams) op.OpenStationResponder {
+	err := svc.app.OpenStation(app.StationID(*params.Args.StationID))
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewOpenStationNoContent()
+	case app.ErrNotFound:
+		log.Info("open station: not found", "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewOpenStationNotFound()
+	default:
+		log.PrintErr(err, "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewOpenStationInternalServerError()
 	}
 }

@@ -80,6 +80,8 @@ func NewServer(appl app.App, cfg Config, repo repo) (*restapi.Server, error) {
 	api.SaveIfNotExistsHandler = op.SaveIfNotExistsHandlerFunc(svc.saveIfNotExists)
 	api.StationsVariablesHandler = op.StationsVariablesHandlerFunc(svc.StationsVariables)
 
+	api.OpenStationHandler = op.OpenStationHandlerFunc(svc.openStation)
+
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port

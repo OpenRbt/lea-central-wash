@@ -25,34 +25,6 @@ type Client struct {
 }
 
 /*
-StationsVariables stations variables API
-*/
-func (a *Client) StationsVariables(params *StationsVariablesParams) (*StationsVariablesOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewStationsVariablesParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "StationsVariables",
-		Method:             "POST",
-		PathPattern:        "/stations-variables",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &StationsVariablesReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*StationsVariablesOK), nil
-
-}
-
-/*
 AddServiceAmount add service amount API
 */
 func (a *Client) AddServiceAmount(params *AddServiceAmountParams) (*AddServiceAmountNoContent, error) {
@@ -245,6 +217,34 @@ func (a *Client) LoadRelay(params *LoadRelayParams) (*LoadRelayOK, error) {
 		return nil, err
 	}
 	return result.(*LoadRelayOK), nil
+
+}
+
+/*
+OpenStation open station API
+*/
+func (a *Client) OpenStation(params *OpenStationParams) (*OpenStationNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewOpenStationParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "openStation",
+		Method:             "POST",
+		PathPattern:        "/open-station",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &OpenStationReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*OpenStationNoContent), nil
 
 }
 
@@ -497,6 +497,34 @@ func (a *Client) StationReport(params *StationReportParams) (*StationReportOK, e
 		return nil, err
 	}
 	return result.(*StationReportOK), nil
+
+}
+
+/*
+StationsVariables stations variables API
+*/
+func (a *Client) StationsVariables(params *StationsVariablesParams) (*StationsVariablesOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStationsVariablesParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "stationsVariables",
+		Method:             "POST",
+		PathPattern:        "/stations-variables",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StationsVariablesReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*StationsVariablesOK), nil
 
 }
 

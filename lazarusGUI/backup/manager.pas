@@ -17,15 +17,20 @@ type
     btnSendMoney: TButton;
     btnChangeHash: TButton;
     btnRemoveHash: TButton;
+    btnChangeName: TButton;
+    btnOpenStation: TButton;
     cbHash: TComboBox;
+    edName: TEdit;
     editMoney: TLabeledEdit;
     GroupBox2: TGroupBox;
     Label1: TLabel;
     Panel1: TPanel;
     PricesData: TStringGrid;
     procedure btnChangeHashClick(Sender: TObject);
+    procedure btnChangeNameClick(Sender: TObject);
     procedure btnRemoveHashClick(Sender: TObject);
     procedure btnSendMoneyClick(Sender: TObject);
+    procedure btnOpenStationClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure PricesDataEditingDone(Sender: TObject);
@@ -104,12 +109,37 @@ begin
   end;
 end;
 
+procedure TManageForm.btnOpenStationClick(Sender: TObject);
+begin
+        postJson := TJSONObject.Create;
+        postJson.Add('stationID', StationID);
+
+        With TFPHttpClient.Create(Nil) do
+        try
+           try
+              AddHeader('Content-Type', 'application/json');
+              RequestBody := TStringStream.Create(postJson.AsJSON);
+              Post('http://localhost:8020/open-station');
+           except
+           end;
+
+        finally
+            Free;
+        end;
+end;
+
 procedure TManageForm.btnChangeHashClick(Sender: TObject);
 begin
   if cbHash.ItemIndex >= 0 then begin
     PairIdAndHash(cbHash.Items[cbHash.ItemIndex], StationName, StationID);
     close;
   end else ShowMessage('Choose a hash');
+end;
+
+procedure TManageForm.btnChangeNameClick(Sender: TObject);
+begin
+  PairIdAndHash(StationHash, edName.Text, StationID);
+  close;
 end;
 
 procedure TManageForm.btnRemoveHashClick(Sender: TObject);
@@ -136,6 +166,10 @@ begin
     editMoney.Enabled:=false;
     btnSendMoney.Enabled:=false;
     btnRemoveHash.Enabled:=false;
+    btnChangeName.Enabled:=false;
+    btnOpenStation.Enabled:=false;
+    edName.ReadOnly:=true;
+    edName.Text:=StationName;
   for i := 0 to AvailableHashes.Count - 1 do
        cbHash.Items.Add(AvailableHashes.ValueFromIndex[i]);
 
@@ -145,6 +179,9 @@ begin
     editMoney.Enabled:=true;
     btnSendMoney.Enabled:=true;
     btnRemoveHash.Enabled:=true;
+    btnChangeName.Enabled:=true;
+    btnOpenStation.Enabled:=true;
+    edName.ReadOnly:=false;
 
     for i := 1 to 6 do begin
         Key := 'price' + IntToStr(i);

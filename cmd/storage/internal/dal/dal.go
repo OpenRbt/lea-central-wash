@@ -343,3 +343,13 @@ func (r *repo) SetHash(id app.StationID, hash string) error {
 	})
 	return err
 }
+
+func (r *repo) AddOpenStationLog(stationID app.StationID) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlOpenStationLogAdd, argOpenStationLogAdd{
+			StationID: stationID,
+		})
+		return err
+	})
+	return //nolint:nakedret
+}

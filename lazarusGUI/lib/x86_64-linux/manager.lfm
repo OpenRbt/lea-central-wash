@@ -11,11 +11,42 @@ object ManageForm: TManageForm
   Position = poScreenCenter
   LCLVersion = '2.0.10.0'
   object Panel1: TPanel
-    Left = 8
-    Height = 263
-    Top = 12
-    Width = 237
-    TabOrder = 3
+    Left = 0
+    Height = 196
+    Top = 4
+    Width = 248
+    ClientHeight = 196
+    ClientWidth = 248
+    TabOrder = 1
+    object editMoney: TLabeledEdit
+      Left = 14
+      Height = 56
+      Top = 40
+      Width = 226
+      EditLabel.Height = 34
+      EditLabel.Width = 226
+      EditLabel.Caption = 'Service Money:'
+      EditLabel.ParentColor = False
+      EditLabel.ParentFont = False
+      EditLabel.Font.Height = 30
+      EditLabel.Font.Style = [fsBold]
+      Font.Height = 40
+      ParentFont = False
+      TabOrder = 0
+      Text = '0'
+    end
+    object btnSendMoney: TButton
+      Left = 16
+      Height = 90
+      Top = 104
+      Width = 224
+      Caption = '+ Money'
+      Font.Height = 45
+      Font.Style = [fsBold]
+      OnClick = btnSendMoneyClick
+      ParentFont = False
+      TabOrder = 1
+    end
   end
   object btnOK: TButton
     Left = 8
@@ -29,35 +60,6 @@ object ManageForm: TManageForm
     ParentFont = False
     TabOrder = 0
   end
-  object editMoney: TLabeledEdit
-    Left = 14
-    Height = 56
-    Top = 58
-    Width = 216
-    EditLabel.Height = 34
-    EditLabel.Width = 216
-    EditLabel.Caption = 'Service Money:'
-    EditLabel.ParentColor = False
-    EditLabel.ParentFont = False
-    EditLabel.Font.Height = 30
-    EditLabel.Font.Style = [fsBold]
-    Font.Height = 40
-    ParentFont = False
-    TabOrder = 1
-    Text = '0'
-  end
-  object btnSendMoney: TButton
-    Left = 14
-    Height = 90
-    Top = 134
-    Width = 216
-    Caption = '+ Money'
-    Font.Height = 45
-    Font.Style = [fsBold]
-    OnClick = btnSendMoneyClick
-    ParentFont = False
-    TabOrder = 2
-  end
   object GroupBox2: TGroupBox
     Left = 249
     Height = 271
@@ -65,7 +67,7 @@ object ManageForm: TManageForm
     Width = 845
     ClientHeight = 267
     ClientWidth = 841
-    TabOrder = 4
+    TabOrder = 2
     object Label1: TLabel
       Left = 314
       Height = 34
@@ -130,7 +132,7 @@ object ManageForm: TManageForm
     Font.Height = 30
     ItemHeight = 0
     ParentFont = False
-    TabOrder = 5
+    TabOrder = 3
     Text = 'cbHash'
   end
   object btnChangeHash: TButton
@@ -142,7 +144,7 @@ object ManageForm: TManageForm
     Font.Height = 30
     OnClick = btnChangeHashClick
     ParentFont = False
-    TabOrder = 6
+    TabOrder = 4
   end
   object btnRemoveHash: TButton
     Left = 872
@@ -153,7 +155,7 @@ object ManageForm: TManageForm
     Font.Height = 30
     OnClick = btnRemoveHashClick
     ParentFont = False
-    TabOrder = 7
+    TabOrder = 5
   end
   object edName: TEdit
     Left = 272
@@ -162,7 +164,7 @@ object ManageForm: TManageForm
     Width = 584
     Font.Height = 30
     ParentFont = False
-    TabOrder = 8
+    TabOrder = 6
     Text = 'edName'
   end
   object btnChangeName: TButton
@@ -174,6 +176,17 @@ object ManageForm: TManageForm
     Font.Height = 30
     OnClick = btnChangeNameClick
     ParentFont = False
-    TabOrder = 9
+    TabOrder = 7
+  end
+  object btnOpenStation: TButton
+    Left = 16
+    Height = 48
+    Top = 216
+    Width = 216
+    Caption = 'open station'
+    Font.Height = 30
+    OnClick = btnOpenStationClick
+    ParentFont = False
+    TabOrder = 8
   end
 end

@@ -7,6 +7,10 @@ import (
 )
 
 const (
+	sqlOpenStationLogAdd = `
+INSERT INTO open_station_log (station_id)  
+VALUES 	(:station_id)
+	`
 	sqlSetValue = `
 INSERT INTO keypair (station_id, key, value)  
 VALUES 	(:station_id, :key, :value)
@@ -179,6 +183,9 @@ type (
 		RelayID       int
 		SwitchedCount int
 		TotalTimeOn   int64
+	}
+	argOpenStationLogAdd struct {
+		StationID app.StationID
 	}
 	resRelayReport struct {
 		ID app.StationID

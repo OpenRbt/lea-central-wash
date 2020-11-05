@@ -7,6 +7,7 @@ type StationData struct {
 	Name         string
 	ServiceMoney int
 	LastPing     time.Time
+	OpenStation  bool
 }
 
 type MoneyReport struct {

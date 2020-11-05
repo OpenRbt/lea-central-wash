@@ -92,7 +92,7 @@ func (a *app) Set(station StationData) error {
 }
 
 // Ping sets the time of the last ping and returns service money.
-func (a *app) Ping(id StationID) int {
+func (a *app) Ping(id StationID) StationData {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 	var station StationData
@@ -101,11 +101,12 @@ func (a *app) Ping(id StationID) int {
 	} else {
 		station = StationData{}
 	}
+	oldStation := station
 	station.LastPing = time.Now()
-	serviceMoney := station.ServiceMoney
 	station.ServiceMoney = 0
+	station.OpenStation = false
 	a.stations[id] = station
-	return serviceMoney
+	return oldStation
 }
 
 // Get accepts exising hash and returns StationData
@@ -135,6 +136,29 @@ func (a *app) AddServiceAmount(id StationID, money int) error {
 	if err != nil {
 		log.Info("Can't set service money - station is unknown")
 		return ErrNotFound
+	}
+	return nil
+}
+
+// OpenStation changes open station in map to the specified value
+// Returns ErrNotFound, if id is not valid, else nil
+func (a *app) OpenStation(id StationID) error {
+	data, err := a.Get(id)
+	if err != nil && data.ID < 1 {
+		log.Info("Can't open station - station is unknown")
+		return ErrNotFound
+	}
+
+	data.OpenStation = true
+	err = a.Set(data)
+	if err != nil {
+		log.Info("Can't open station - station is unknown")
+		return ErrNotFound
+	}
+	err = a.repo.AddOpenStationLog(id)
+	if err != nil {
+		log.Info("OpenStation: error saving log", "err", err)
+		return err
 	}
 	return nil
 }
