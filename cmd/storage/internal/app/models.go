@@ -3,15 +3,15 @@ package app
 import "time"
 
 type StationData struct {
-	ID           int
+	ID           StationID
 	Name         string
 	ServiceMoney int
 	LastPing     time.Time
+	OpenStation  bool
 }
 
 type MoneyReport struct {
-	Hash         string
-	StationID    int
+	StationID    StationID
 	Banknotes    int
 	CarsTotal    int
 	Coins        int
@@ -20,7 +20,7 @@ type MoneyReport struct {
 }
 
 type CollectionReport struct {
-	StationID int
+	StationID StationID
 	Money     int
 	Ctime     time.Time
 }
@@ -32,7 +32,6 @@ type RelayStat struct {
 }
 
 type RelayReport struct {
-	Hash       string
-	StationID  int
+	StationID  StationID
 	RelayStats []RelayStat
 }

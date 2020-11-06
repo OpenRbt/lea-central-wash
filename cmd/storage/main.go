@@ -126,20 +126,24 @@ func main() { //nolint:gocyclo
 	structlog.DefaultLogger.SetLogLevel(structlog.ParseLevel(cfg.logLevel))
 	log.Info("started", "version", ver)
 
-	ctx, cancel := context.WithTimeout(context.Background(), connectTimeout)
-
-	db, err := connectDB(ctx)
-	if err != nil {
-		log.Warn("Warning: DB is not connected", "err", err)
+	var db *sqlx.DB
+	var err error
+	count := 0
+	for db == nil && count < 20 {
+		ctx, cancel := context.WithTimeout(context.Background(), connectTimeout)
+		db, err = connectDB(ctx)
+		if err != nil {
+			log.Warn("Warning: DB is not connected", "err", err)
+		}
+		count++
+		cancel()
 	}
-
 	errc := make(chan error)
 	go run(db, errc)
 	if err := <-errc; err != nil {
 		log.Fatal(err)
 	}
 
-	cancel()
 	log.Info("finished", "version", ver)
 }
 
@@ -196,7 +200,7 @@ func run(db *sqlx.DB, errc chan<- error) {
 	kasse := svckasse.New(cfg.kasse)
 	appl := app.New(repo, kasse)
 
-	extsrv, err := extapi.NewServer(appl, cfg.extapi)
+	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo)
 	if err != nil {
 		errc <- err
 		return

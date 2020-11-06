@@ -29,6 +29,13 @@ func (o *SaveRelayReader) ReadResponse(response runtime.ClientResponse, consumer
 		}
 		return result, nil
 
+	case 404:
+		result := NewSaveRelayNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	case 500:
 		result := NewSaveRelayInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -58,6 +65,27 @@ func (o *SaveRelayNoContent) Error() string {
 }
 
 func (o *SaveRelayNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewSaveRelayNotFound creates a SaveRelayNotFound with default headers values
+func NewSaveRelayNotFound() *SaveRelayNotFound {
+	return &SaveRelayNotFound{}
+}
+
+/*SaveRelayNotFound handles this case with default header values.
+
+not found
+*/
+type SaveRelayNotFound struct {
+}
+
+func (o *SaveRelayNotFound) Error() string {
+	return fmt.Sprintf("[POST /save-relay][%d] saveRelayNotFound ", 404)
+}
+
+func (o *SaveRelayNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

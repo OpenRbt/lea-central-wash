@@ -2,7 +2,7 @@ swagger: "2.0"
 
 info:
   title: Storage
-  version: 1.6.0
+  version: 1.7.0
 
 basePath: /
 schemes:
@@ -128,6 +128,21 @@ definitions:
         value:
           type: string
 
+  StationsVariables:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      hash:
+        type: string
+        x-nullable: true
+      keyPairs:
+        type: array
+        items:
+          $ref: '#/definitions/KeyPair'
+
 consumes:
   - application/json
 produces:
@@ -219,6 +234,8 @@ paths:
           in: body
           schema:
             type: object
+            required:
+              - id
             properties:
               id:
                 type: integer
@@ -272,6 +289,8 @@ paths:
       responses:
         204:
           description: OK
+        404:
+          description: not found
         500:
           description: internal error
           
@@ -311,6 +330,8 @@ paths:
       responses:
         204:
           description: OK
+        404:
+          description: not found
         500:
           description: internal error
 
@@ -326,6 +347,8 @@ paths:
       responses:
         204: 
           description: OK
+        404:
+          description: not found
         500:
           description: internal error
 
@@ -373,6 +396,8 @@ paths:
       responses:
         204:
           description: OK
+        404:
+          description: not found
         500:
           description: internal error
   /load:
@@ -423,9 +448,12 @@ paths:
             type: object
             required:
               - serviceAmount
+              - openStation
             properties:
               serviceAmount:
                 type: integer
+              openStation:
+                type: boolean
     get:
       operationId: "getPing"
       responses:
@@ -439,3 +467,81 @@ paths:
           description: OK
           schema:
             type: string
+  /station-by-hash:
+    post:
+      operationId: "stationByHash"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - hash
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+      responses:
+        200:
+          description: OK
+          schema:
+            type: integer
+        500:
+          description: internal error
+  /save-if-not-exists:
+    post:
+      operationId: "saveIfNotExists"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - hash
+              - keyPair
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+              keyPair:
+                $ref: '#/definitions/KeyPair'
+      responses:
+        204:
+          description: OK
+        404:
+          description: not found
+        500:
+          description: internal error
+  /stations-variables:
+    post:
+      operationId: "stationsVariables"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/StationsVariables'
+        500:
+          description: internal error
+  /open-station:
+    post:
+      operationId: "openStation"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - stationID
+            properties:
+              stationID:
+                type: integer
+      responses:
+        204:
+          description: OK
+        404:
+          description: not found
+        500:
+          description: internal error

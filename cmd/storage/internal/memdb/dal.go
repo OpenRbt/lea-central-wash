@@ -8,7 +8,7 @@ import (
 )
 
 type keypair struct {
-	StationID int
+	StationID app.StationID
 	Key       string
 	Value     string
 }
@@ -23,7 +23,14 @@ func New() *DB {
 	return &DB{keypair: []keypair{}}
 }
 
-func (t *DB) Load(stationID int, key string) (string, error) {
+func (t *DB) LoadHash() ([]app.StationID, []string, error) {
+	return nil, nil, nil
+}
+func (t *DB) SetHash(id app.StationID, hash string) error {
+	return nil
+}
+
+func (t *DB) Load(stationID app.StationID, key string) (string, error) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
@@ -34,7 +41,7 @@ func (t *DB) Load(stationID int, key string) (string, error) {
 	return t.keypair[i].Value, nil
 }
 
-func (t *DB) Save(stationID int, key string, value string) (err error) {
+func (t *DB) Save(stationID app.StationID, key string, value string) (err error) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
@@ -51,8 +58,24 @@ func (t *DB) Save(stationID int, key string, value string) (err error) {
 	return nil
 }
 
-func (t *DB) findKey(stationID int, key string) int {
-	for i, _ := range t.keypair {
+func (t *DB) SaveIfNotExists(stationID app.StationID, key string, value string) (err error) {
+	t.mutex.Lock()
+	defer t.mutex.Unlock()
+
+	i := t.findKey(stationID, key)
+	if i < 0 {
+		t.keypair = append(t.keypair, keypair{
+			StationID: stationID,
+			Key:       key,
+			Value:     value,
+		})
+		return nil
+	}
+	return nil
+}
+
+func (t *DB) findKey(stationID app.StationID, key string) int {
+	for i := range t.keypair {
 		if t.keypair[i].StationID == stationID && t.keypair[i].Key == key {
 			return i
 		}
@@ -73,11 +96,11 @@ func (t *DB) Stations() (stations []app.SetStation, err error) {
 	return nil, nil
 }
 
-func (t *DB) DelStation(id int) error {
+func (t *DB) DelStation(id app.StationID) error {
 	return nil
 }
 
-func (t *DB) LastMoneyReport(stationID int) (report app.MoneyReport, err error) {
+func (t *DB) LastMoneyReport(stationID app.StationID) (report app.MoneyReport, err error) {
 	return
 }
 
@@ -85,7 +108,7 @@ func (t *DB) SaveMoneyReport(report app.MoneyReport) error {
 	return nil
 }
 
-func (t *DB) LastRelayReport(stationID int) (report app.RelayReport, err error) {
+func (t *DB) LastRelayReport(stationID app.StationID) (report app.RelayReport, err error) {
 	return
 }
 
@@ -93,18 +116,30 @@ func (t *DB) SaveRelayReport(report app.RelayReport) error {
 	return nil
 }
 
-func (t *DB) MoneyReport(stationID int, startDate, endDate time.Time) (report app.MoneyReport, err error) {
+func (t *DB) MoneyReport(stationID app.StationID, startDate, endDate time.Time) (report app.MoneyReport, err error) {
 	return
 }
 
-func (t *DB) RelayStatReport(stationID int, startDate, endDate time.Time) (report app.RelayReport, err error) {
+func (t *DB) RelayStatReport(stationID app.StationID, startDate, endDate time.Time) (report app.RelayReport, err error) {
 	return
 }
 
-func (t *DB) LastCollectionReport(stationID int) (report app.CollectionReport, err error) {
+func (t *DB) LastCollectionReport(stationID app.StationID) (report app.CollectionReport, err error) {
 	return
 }
 
 func (t *DB) SaveCollectionReport(report app.CollectionReport) error {
+	return nil
+}
+
+func (t *DB) StationsVariables() ([]app.StationsVariables, error) {
+	return nil, nil
+}
+
+func (t *DB) AddStation(name string) error {
+	return nil
+}
+
+func (t *DB) AddOpenStationLog(id app.StationID) error {
 	return nil
 }

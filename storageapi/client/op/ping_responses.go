@@ -128,6 +128,10 @@ swagger:model PingOKBody
 */
 type PingOKBody struct {
 
+	// open station
+	// Required: true
+	OpenStation *bool `json:"openStation"`
+
 	// service amount
 	// Required: true
 	ServiceAmount *int64 `json:"serviceAmount"`
@@ -137,6 +141,10 @@ type PingOKBody struct {
 func (o *PingOKBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := o.validateOpenStation(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validateServiceAmount(formats); err != nil {
 		res = append(res, err)
 	}
@@ -144,6 +152,15 @@ func (o *PingOKBody) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (o *PingOKBody) validateOpenStation(formats strfmt.Registry) error {
+
+	if err := validate.Required("pingOK"+"."+"openStation", "body", o.OpenStation); err != nil {
+		return err
+	}
+
 	return nil
 }
 

@@ -53,6 +53,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.LoadRelayHandler = op.LoadRelayHandlerFunc(func(params op.LoadRelayParams) op.LoadRelayResponder {
 		return op.LoadRelayNotImplemented()
 	})
+	api.OpenStationHandler = op.OpenStationHandlerFunc(func(params op.OpenStationParams) op.OpenStationResponder {
+		return op.OpenStationNotImplemented()
+	})
 	api.PingHandler = op.PingHandlerFunc(func(params op.PingParams) op.PingResponder {
 		return op.PingNotImplemented()
 	})
@@ -61,6 +64,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	})
 	api.SaveCollectionHandler = op.SaveCollectionHandlerFunc(func(params op.SaveCollectionParams) op.SaveCollectionResponder {
 		return op.SaveCollectionNotImplemented()
+	})
+	api.SaveIfNotExistsHandler = op.SaveIfNotExistsHandlerFunc(func(params op.SaveIfNotExistsParams) op.SaveIfNotExistsResponder {
+		return op.SaveIfNotExistsNotImplemented()
 	})
 	api.SaveMoneyHandler = op.SaveMoneyHandlerFunc(func(params op.SaveMoneyParams) op.SaveMoneyResponder {
 		return op.SaveMoneyNotImplemented()
@@ -71,8 +77,14 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.SetStationHandler = op.SetStationHandlerFunc(func(params op.SetStationParams) op.SetStationResponder {
 		return op.SetStationNotImplemented()
 	})
+	api.StationByHashHandler = op.StationByHashHandlerFunc(func(params op.StationByHashParams) op.StationByHashResponder {
+		return op.StationByHashNotImplemented()
+	})
 	api.StationReportHandler = op.StationReportHandlerFunc(func(params op.StationReportParams) op.StationReportResponder {
 		return op.StationReportNotImplemented()
+	})
+	api.StationsVariablesHandler = op.StationsVariablesHandlerFunc(func(params op.StationsVariablesParams) op.StationsVariablesResponder {
+		return op.StationsVariablesNotImplemented()
 	})
 	api.StatusHandler = op.StatusHandlerFunc(func(params op.StatusParams) op.StatusResponder {
 		return op.StatusNotImplemented()

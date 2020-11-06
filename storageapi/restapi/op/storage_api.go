@@ -65,6 +65,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation LoadRelay has not yet been implemented")
 			return LoadRelayNotImplemented()
 		}),
+		OpenStationHandler: OpenStationHandlerFunc(func(params OpenStationParams) OpenStationResponder {
+			// return middleware.NotImplemented("operation OpenStation has not yet been implemented")
+			return OpenStationNotImplemented()
+		}),
 		PingHandler: PingHandlerFunc(func(params PingParams) PingResponder {
 			// return middleware.NotImplemented("operation Ping has not yet been implemented")
 			return PingNotImplemented()
@@ -76,6 +80,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		SaveCollectionHandler: SaveCollectionHandlerFunc(func(params SaveCollectionParams) SaveCollectionResponder {
 			// return middleware.NotImplemented("operation SaveCollection has not yet been implemented")
 			return SaveCollectionNotImplemented()
+		}),
+		SaveIfNotExistsHandler: SaveIfNotExistsHandlerFunc(func(params SaveIfNotExistsParams) SaveIfNotExistsResponder {
+			// return middleware.NotImplemented("operation SaveIfNotExists has not yet been implemented")
+			return SaveIfNotExistsNotImplemented()
 		}),
 		SaveMoneyHandler: SaveMoneyHandlerFunc(func(params SaveMoneyParams) SaveMoneyResponder {
 			// return middleware.NotImplemented("operation SaveMoney has not yet been implemented")
@@ -89,9 +97,17 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation SetStation has not yet been implemented")
 			return SetStationNotImplemented()
 		}),
+		StationByHashHandler: StationByHashHandlerFunc(func(params StationByHashParams) StationByHashResponder {
+			// return middleware.NotImplemented("operation StationByHash has not yet been implemented")
+			return StationByHashNotImplemented()
+		}),
 		StationReportHandler: StationReportHandlerFunc(func(params StationReportParams) StationReportResponder {
 			// return middleware.NotImplemented("operation StationReport has not yet been implemented")
 			return StationReportNotImplemented()
+		}),
+		StationsVariablesHandler: StationsVariablesHandlerFunc(func(params StationsVariablesParams) StationsVariablesResponder {
+			// return middleware.NotImplemented("operation StationsVariables has not yet been implemented")
+			return StationsVariablesNotImplemented()
 		}),
 		StatusHandler: StatusHandlerFunc(func(params StatusParams) StatusResponder {
 			// return middleware.NotImplemented("operation Status has not yet been implemented")
@@ -146,20 +162,28 @@ type StorageAPI struct {
 	LoadMoneyHandler LoadMoneyHandler
 	// LoadRelayHandler sets the operation handler for the load relay operation
 	LoadRelayHandler LoadRelayHandler
+	// OpenStationHandler sets the operation handler for the open station operation
+	OpenStationHandler OpenStationHandler
 	// PingHandler sets the operation handler for the ping operation
 	PingHandler PingHandler
 	// SaveHandler sets the operation handler for the save operation
 	SaveHandler SaveHandler
 	// SaveCollectionHandler sets the operation handler for the save collection operation
 	SaveCollectionHandler SaveCollectionHandler
+	// SaveIfNotExistsHandler sets the operation handler for the save if not exists operation
+	SaveIfNotExistsHandler SaveIfNotExistsHandler
 	// SaveMoneyHandler sets the operation handler for the save money operation
 	SaveMoneyHandler SaveMoneyHandler
 	// SaveRelayHandler sets the operation handler for the save relay operation
 	SaveRelayHandler SaveRelayHandler
 	// SetStationHandler sets the operation handler for the set station operation
 	SetStationHandler SetStationHandler
+	// StationByHashHandler sets the operation handler for the station by hash operation
+	StationByHashHandler StationByHashHandler
 	// StationReportHandler sets the operation handler for the station report operation
 	StationReportHandler StationReportHandler
+	// StationsVariablesHandler sets the operation handler for the stations variables operation
+	StationsVariablesHandler StationsVariablesHandler
 	// StatusHandler sets the operation handler for the status operation
 	StatusHandler StatusHandler
 	// StatusCollectionHandler sets the operation handler for the status collection operation
@@ -255,6 +279,10 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "LoadRelayHandler")
 	}
 
+	if o.OpenStationHandler == nil {
+		unregistered = append(unregistered, "OpenStationHandler")
+	}
+
 	if o.PingHandler == nil {
 		unregistered = append(unregistered, "PingHandler")
 	}
@@ -265,6 +293,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.SaveCollectionHandler == nil {
 		unregistered = append(unregistered, "SaveCollectionHandler")
+	}
+
+	if o.SaveIfNotExistsHandler == nil {
+		unregistered = append(unregistered, "SaveIfNotExistsHandler")
 	}
 
 	if o.SaveMoneyHandler == nil {
@@ -279,8 +311,16 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "SetStationHandler")
 	}
 
+	if o.StationByHashHandler == nil {
+		unregistered = append(unregistered, "StationByHashHandler")
+	}
+
 	if o.StationReportHandler == nil {
 		unregistered = append(unregistered, "StationReportHandler")
+	}
+
+	if o.StationsVariablesHandler == nil {
+		unregistered = append(unregistered, "StationsVariablesHandler")
 	}
 
 	if o.StatusHandler == nil {
@@ -427,6 +467,11 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/open-station"] = NewOpenStation(o.context, o.OpenStationHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/ping"] = NewPing(o.context, o.PingHandler)
 
 	if o.handlers["POST"] == nil {
@@ -438,6 +483,11 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/save-collection"] = NewSaveCollection(o.context, o.SaveCollectionHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/save-if-not-exists"] = NewSaveIfNotExists(o.context, o.SaveIfNotExistsHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -457,7 +507,17 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/station-by-hash"] = NewStationByHash(o.context, o.StationByHashHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/station-report"] = NewStationReport(o.context, o.StationReportHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/stations-variables"] = NewStationsVariables(o.context, o.StationsVariablesHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)

@@ -30,7 +30,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.6.0"
+    "version": "1.7.0"
   },
   "basePath": "/",
   "paths": {
@@ -231,6 +231,40 @@ func init() {
         }
       }
     },
+    "/open-station": {
+      "post": {
+        "operationId": "openStation",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/ping": {
       "get": {
         "operationId": "getPing",
@@ -266,9 +300,13 @@ func init() {
             "schema": {
               "type": "object",
               "required": [
-                "serviceAmount"
+                "serviceAmount",
+                "openStation"
               ],
               "properties": {
+                "openStation": {
+                  "type": "boolean"
+                },
                 "serviceAmount": {
                   "type": "integer"
                 }
@@ -307,6 +345,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "not found"
+          },
           "500": {
             "description": "internal error"
           }
@@ -329,6 +370,47 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/save-if-not-exists": {
+      "post": {
+        "operationId": "saveIfNotExists",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash",
+                "keyPair"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "keyPair": {
+                  "$ref": "#/definitions/KeyPair"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"
@@ -353,6 +435,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "not found"
+          },
           "500": {
             "description": "internal error"
           }
@@ -376,6 +461,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "not found"
+          },
           "500": {
             "description": "internal error"
           }
@@ -392,6 +480,9 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "required": [
+                "id"
+              ],
               "properties": {
                 "hash": {
                   "type": "string"
@@ -418,6 +509,40 @@ func init() {
           },
           "422": {
             "description": "validation error"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station-by-hash": {
+      "post": {
+        "operationId": "stationByHash",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "integer"
+            }
           },
           "500": {
             "description": "internal error"
@@ -465,6 +590,25 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/stations-variables": {
+      "post": {
+        "operationId": "stationsVariables",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/StationsVariables"
+              }
+            }
           },
           "500": {
             "description": "internal error"
@@ -630,6 +774,27 @@ func init() {
         },
         "status": {
           "$ref": "#/definitions/Status"
+        }
+      }
+    },
+    "StationsVariables": {
+      "type": "object",
+      "properties": {
+        "hash": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "id": {
+          "type": "integer"
+        },
+        "keyPairs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/KeyPair"
+          }
+        },
+        "name": {
+          "type": "string"
         }
       }
     },
@@ -686,7 +851,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.6.0"
+    "version": "1.7.0"
   },
   "basePath": "/",
   "paths": {
@@ -887,6 +1052,40 @@ func init() {
         }
       }
     },
+    "/open-station": {
+      "post": {
+        "operationId": "openStation",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/ping": {
       "get": {
         "operationId": "getPing",
@@ -922,9 +1121,13 @@ func init() {
             "schema": {
               "type": "object",
               "required": [
-                "serviceAmount"
+                "serviceAmount",
+                "openStation"
               ],
               "properties": {
+                "openStation": {
+                  "type": "boolean"
+                },
                 "serviceAmount": {
                   "type": "integer"
                 }
@@ -963,6 +1166,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "not found"
+          },
           "500": {
             "description": "internal error"
           }
@@ -985,6 +1191,47 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/save-if-not-exists": {
+      "post": {
+        "operationId": "saveIfNotExists",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash",
+                "keyPair"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "keyPair": {
+                  "$ref": "#/definitions/KeyPair"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"
@@ -1009,6 +1256,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "not found"
+          },
           "500": {
             "description": "internal error"
           }
@@ -1032,6 +1282,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "not found"
+          },
           "500": {
             "description": "internal error"
           }
@@ -1048,6 +1301,9 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "required": [
+                "id"
+              ],
               "properties": {
                 "hash": {
                   "type": "string"
@@ -1074,6 +1330,40 @@ func init() {
           },
           "422": {
             "description": "validation error"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station-by-hash": {
+      "post": {
+        "operationId": "stationByHash",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "integer"
+            }
           },
           "500": {
             "description": "internal error"
@@ -1121,6 +1411,25 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/stations-variables": {
+      "post": {
+        "operationId": "stationsVariables",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/StationsVariables"
+              }
+            }
           },
           "500": {
             "description": "internal error"
@@ -1286,6 +1595,27 @@ func init() {
         },
         "status": {
           "$ref": "#/definitions/Status"
+        }
+      }
+    },
+    "StationsVariables": {
+      "type": "object",
+      "properties": {
+        "hash": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "id": {
+          "type": "integer"
+        },
+        "keyPairs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/KeyPair"
+          }
+        },
+        "name": {
+          "type": "string"
         }
       }
     },

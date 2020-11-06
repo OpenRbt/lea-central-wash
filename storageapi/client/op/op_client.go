@@ -221,6 +221,34 @@ func (a *Client) LoadRelay(params *LoadRelayParams) (*LoadRelayOK, error) {
 }
 
 /*
+OpenStation open station API
+*/
+func (a *Client) OpenStation(params *OpenStationParams) (*OpenStationNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewOpenStationParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "openStation",
+		Method:             "POST",
+		PathPattern:        "/open-station",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &OpenStationReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*OpenStationNoContent), nil
+
+}
+
+/*
 Ping ping API
 */
 func (a *Client) Ping(params *PingParams) (*PingOK, error) {
@@ -301,6 +329,34 @@ func (a *Client) SaveCollection(params *SaveCollectionParams) (*SaveCollectionNo
 		return nil, err
 	}
 	return result.(*SaveCollectionNoContent), nil
+
+}
+
+/*
+SaveIfNotExists save if not exists API
+*/
+func (a *Client) SaveIfNotExists(params *SaveIfNotExistsParams) (*SaveIfNotExistsNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSaveIfNotExistsParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "saveIfNotExists",
+		Method:             "POST",
+		PathPattern:        "/save-if-not-exists",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SaveIfNotExistsReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*SaveIfNotExistsNoContent), nil
 
 }
 
@@ -389,6 +445,34 @@ func (a *Client) SetStation(params *SetStationParams) (*SetStationNoContent, err
 }
 
 /*
+StationByHash station by hash API
+*/
+func (a *Client) StationByHash(params *StationByHashParams) (*StationByHashOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStationByHashParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "stationByHash",
+		Method:             "POST",
+		PathPattern:        "/station-by-hash",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StationByHashReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*StationByHashOK), nil
+
+}
+
+/*
 StationReport station report API
 */
 func (a *Client) StationReport(params *StationReportParams) (*StationReportOK, error) {
@@ -413,6 +497,34 @@ func (a *Client) StationReport(params *StationReportParams) (*StationReportOK, e
 		return nil, err
 	}
 	return result.(*StationReportOK), nil
+
+}
+
+/*
+StationsVariables stations variables API
+*/
+func (a *Client) StationsVariables(params *StationsVariablesParams) (*StationsVariablesOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStationsVariablesParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "stationsVariables",
+		Method:             "POST",
+		PathPattern:        "/stations-variables",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StationsVariablesReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*StationsVariablesOK), nil
 
 }
 

@@ -34,6 +34,13 @@ func (o *SaveReader) ReadResponse(response runtime.ClientResponse, consumer runt
 		}
 		return result, nil
 
+	case 404:
+		result := NewSaveNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	case 500:
 		result := NewSaveInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -63,6 +70,27 @@ func (o *SaveNoContent) Error() string {
 }
 
 func (o *SaveNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewSaveNotFound creates a SaveNotFound with default headers values
+func NewSaveNotFound() *SaveNotFound {
+	return &SaveNotFound{}
+}
+
+/*SaveNotFound handles this case with default header values.
+
+not found
+*/
+type SaveNotFound struct {
+}
+
+func (o *SaveNotFound) Error() string {
+	return fmt.Sprintf("[POST /save][%d] saveNotFound ", 404)
+}
+
+func (o *SaveNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }
