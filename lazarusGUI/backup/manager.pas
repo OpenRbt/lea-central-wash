@@ -24,10 +24,13 @@ type
     editMoney: TLabeledEdit;
     GroupBox2: TGroupBox;
     Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
     Panel1: TPanel;
     PricesData: TStringGrid;
     procedure btnChangeHashClick(Sender: TObject);
     procedure btnChangeNameClick(Sender: TObject);
+    procedure btnOKClick(Sender: TObject);
     procedure btnRemoveHashClick(Sender: TObject);
     procedure btnSendMoneyClick(Sender: TObject);
     procedure btnOpenStationClick(Sender: TObject);
@@ -110,22 +113,38 @@ begin
 end;
 
 procedure TManageForm.btnOpenStationClick(Sender: TObject);
+var
+  postJson: TJSONObject;
+  Reply, BoxStyle: Integer;
+  btnYesNo, yesAnswer: Integer;
+  icoQuestion: Integer;
+
 begin
-        postJson := TJSONObject.Create;
-        postJson.Add('stationID', StationID);
+// taken from constants as lazarus and freepascal are QUITE BUGGY still
+// and I already got an issue using these constants original names
+// so decided to hardcode for now
+  btnYesNo := $00000004;
+  icoQuestion := $00000020;
+  yesAnswer := 6;
+  BoxStyle := icoQuestion + btnYesNo;
+  Reply := Application.MessageBox('REALLY OPEN STATION BOX DOOR?', 'WARNING', BoxStyle);
+  if Reply <> IDYES then exit;
 
-        With TFPHttpClient.Create(Nil) do
-        try
-           try
-              AddHeader('Content-Type', 'application/json');
-              RequestBody := TStringStream.Create(postJson.AsJSON);
-              Post('http://localhost:8020/open-station');
-           except
-           end;
+  postJson := TJSONObject.Create;
+  postJson.Add('stationID', StationID);
 
-        finally
-            Free;
-        end;
+  With TFPHttpClient.Create(Nil) do
+  try
+     try
+        AddHeader('Content-Type', 'application/json');
+        RequestBody := TStringStream.Create(postJson.AsJSON);
+        Post('http://localhost:8020/open-station');
+     except
+     end;
+
+  finally
+      Free;
+  end;
 end;
 
 procedure TManageForm.btnChangeHashClick(Sender: TObject);
@@ -140,6 +159,11 @@ procedure TManageForm.btnChangeNameClick(Sender: TObject);
 begin
   PairIdAndHash(StationHash, edName.Text, StationID);
   close;
+end;
+
+procedure TManageForm.btnOKClick(Sender: TObject);
+begin
+
 end;
 
 procedure TManageForm.btnRemoveHashClick(Sender: TObject);

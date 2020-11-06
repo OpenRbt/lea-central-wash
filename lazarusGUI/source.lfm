@@ -1,13 +1,14 @@
 object MainForm: TMainForm
-  Left = 180
+  Left = 283
   Height = 520
-  Top = 196
+  Top = 281
   Width = 1220
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsDialog
   Caption = 'Car Wash Control Panel'
   ClientHeight = 520
   ClientWidth = 1220
+  DesignTimePPI = 192
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
@@ -157,9 +158,9 @@ object MainForm: TMainForm
   end
   object dtFrom: TDateTimePicker
     Left = 304
-    Height = 21
+    Height = 23
     Top = 9
-    Width = 147
+    Width = 166
     CenturyFrom = 1941
     MaxDate = 2958465
     MinDate = 36526
@@ -182,9 +183,9 @@ object MainForm: TMainForm
   end
   object dtTo: TDateTimePicker
     Left = 304
-    Height = 21
+    Height = 23
     Top = 41
-    Width = 147
+    Width = 166
     CenturyFrom = 1941
     MaxDate = 2958465
     MinDate = 36613
@@ -251,9 +252,9 @@ object MainForm: TMainForm
   end
   object Label1: TLabel
     Left = 255
-    Height = 17
+    Height = 20
     Top = 9
-    Width = 38
+    Width = 41
     Caption = 'From:'
     Font.Height = 14
     Font.Style = [fsBold]
@@ -262,9 +263,9 @@ object MainForm: TMainForm
   end
   object Label2: TLabel
     Left = 255
-    Height = 17
+    Height = 20
     Top = 41
-    Width = 20
+    Width = 21
     Caption = 'To:'
     Font.Height = 14
     Font.Style = [fsBold]
@@ -273,7 +274,7 @@ object MainForm: TMainForm
   end
   object cbMoneyRealTime: TCheckBox
     Left = 144
-    Height = 24
+    Height = 22
     Top = 9
     Width = 89
     Caption = 'Real Time'

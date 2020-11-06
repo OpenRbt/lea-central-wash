@@ -198,7 +198,6 @@ begin
 
         RequestAnswer := Get('http://localhost:8020/status');
         Data := SO(UTF8Decode(RequestAnswer));
-//        ShowMessage('UpdateStations');
         // Check the null data in stations array
         if Data.S['stations'] <> '' then
         begin
@@ -240,7 +239,6 @@ begin
                    // Check that this hash is new in the list
                    if findRes < 0 then begin
                       AvailableHashes.Add(Station.s['hash']);
-                      ShowMessage(Station.s['hash']);
                    end;
               end;
             end
