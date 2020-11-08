@@ -128,7 +128,7 @@ begin
   yesAnswer := 6;
   BoxStyle := icoQuestion + btnYesNo;
   Reply := Application.MessageBox('REALLY OPEN STATION BOX DOOR?', 'WARNING', BoxStyle);
-  if Reply <> IDYES then exit;
+  if Reply <> yesAnswer then exit;
 
   postJson := TJSONObject.Create;
   postJson.Add('stationID', StationID);
@@ -239,8 +239,8 @@ var
 begin
    valueInsideText := -1;
    if TryStrToInt(PricesData.Cells[PricesData.Col, PricesData.Row], Longint(valueInsideText)) then begin
-      if valueInsideText > 99 then
-         PricesData.Cells[PricesData.Col, PricesData.Row] := IntToStr(99);
+      if valueInsideText > 10000 then
+         PricesData.Cells[PricesData.Col, PricesData.Row] := IntToStr(10000);
       if valueInsideText < 10 then
          PricesData.Cells[PricesData.Col, PricesData.Row] := IntToStr(10);
    end

@@ -239,8 +239,8 @@ var
 begin
    valueInsideText := -1;
    if TryStrToInt(PricesData.Cells[PricesData.Col, PricesData.Row], Longint(valueInsideText)) then begin
-      if valueInsideText > 99 then
-         PricesData.Cells[PricesData.Col, PricesData.Row] := IntToStr(99);
+      if valueInsideText > 10000 then
+         PricesData.Cells[PricesData.Col, PricesData.Row] := IntToStr(10000);
       if valueInsideText < 10 then
          PricesData.Cells[PricesData.Col, PricesData.Row] := IntToStr(10);
    end

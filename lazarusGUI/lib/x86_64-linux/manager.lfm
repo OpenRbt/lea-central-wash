@@ -1,50 +1,49 @@
 object ManageForm: TManageForm
   Left = 520
-  Height = 710
+  Height = 355
   Top = 459
-  Width = 1513
+  Width = 756
   Caption = 'Manage Station'
-  ClientHeight = 710
-  ClientWidth = 1513
-  DesignTimePPI = 192
+  ClientHeight = 355
+  ClientWidth = 756
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '2.0.10.0'
   object Panel1: TPanel
     Left = 0
-    Height = 504
-    Top = 8
-    Width = 374
-    ClientHeight = 504
-    ClientWidth = 374
+    Height = 252
+    Top = 4
+    Width = 187
+    ClientHeight = 252
+    ClientWidth = 187
     ParentFont = False
     TabOrder = 1
     object editMoney: TLabeledEdit
-      Left = 28
-      Height = 108
-      Top = 80
-      Width = 316
-      EditLabel.Height = 60
-      EditLabel.Width = 316
+      Left = 14
+      Height = 61
+      Top = 40
+      Width = 158
+      EditLabel.Height = 33
+      EditLabel.Width = 158
       EditLabel.Caption = 'Service:'
       EditLabel.ParentColor = False
       EditLabel.ParentFont = False
-      EditLabel.Font.Height = -53
+      EditLabel.Font.Height = -27
       EditLabel.Font.Name = 'Sans'
-      Font.Height = -85
+      Font.Height = -43
       Font.Name = 'Sans'
       ParentFont = False
       TabOrder = 0
       Text = '0'
     end
     object btnSendMoney: TButton
-      Left = 32
-      Height = 108
-      Top = 208
-      Width = 312
+      Left = 16
+      Height = 54
+      Top = 104
+      Width = 156
       Caption = '+ Money'
-      Font.Height = -53
+      Font.Height = -27
       Font.Name = 'Sans'
       OnClick = btnSendMoneyClick
       ParentFont = False
@@ -52,12 +51,12 @@ object ManageForm: TManageForm
     end
   end
   object btnOK: TButton
-    Left = 16
-    Height = 152
-    Top = 528
-    Width = 354
+    Left = 8
+    Height = 76
+    Top = 264
+    Width = 177
     Caption = 'OK'
-    Font.Height = 80
+    Font.Height = 40
     Font.Style = [fsBold]
     ModalResult = 1
     OnClick = btnOKClick
@@ -65,45 +64,43 @@ object ManageForm: TManageForm
     TabOrder = 0
   end
   object GroupBox2: TGroupBox
-    Left = 392
-    Height = 278
-    Top = 8
-    Width = 1104
-    ClientHeight = 274
-    ClientWidth = 1100
+    Left = 196
+    Height = 139
+    Top = 4
+    Width = 552
+    ClientHeight = 135
+    ClientWidth = 548
     ParentFont = False
     TabOrder = 2
     object Label1: TLabel
-      Left = 22
-      Height = 83
-      Top = -10
-      Width = 274
+      Left = 11
+      Height = 34
+      Top = -5
+      Width = 133
       Caption = 'Price list:'
-      Font.Height = 60
+      Font.Height = 30
       Font.Style = [fsBold]
       ParentColor = False
       ParentFont = False
     end
     object PricesData: TStringGrid
-      Left = 22
-      Height = 170
-      Top = 70
-      Width = 1070
+      Left = 11
+      Height = 101
+      Top = 35
+      Width = 535
       AutoEdit = False
       ColCount = 10
-      DefaultColWidth = 150
-      DefaultRowHeight = 80
-      Font.Height = -32
+      DefaultColWidth = 75
+      DefaultRowHeight = 40
+      Font.Height = -16
       Font.Name = 'Sans'
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
       ParentFont = False
       RowCount = 2
       TabOrder = 0
-      TitleFont.Height = -32
-      TitleFont.Name = 'Sans'
       OnEditingDone = PricesDataEditingDone
       Cells = (
-        8
+        11
         0
         0
         'Program'
@@ -128,15 +125,24 @@ object ManageForm: TManageForm
         6
         0
         '6'
+        7
+        0
+        '7'
+        8
+        0
+        '8'
+        9
+        0
+        '9'
       )
     end
   end
   object cbHash: TComboBox
-    Left = 392
-    Height = 54
-    Top = 552
-    Width = 424
-    Font.Height = -37
+    Left = 196
+    Height = 35
+    Top = 276
+    Width = 212
+    Font.Height = -19
     Font.Name = 'Sans'
     ItemHeight = 0
     ParentFont = False
@@ -144,82 +150,82 @@ object ManageForm: TManageForm
     Text = 'cbHash'
   end
   object btnChangeHash: TButton
-    Left = 392
-    Height = 54
-    Top = 616
-    Width = 488
+    Left = 196
+    Height = 27
+    Top = 308
+    Width = 244
     Caption = 'Set / Connect / Save'
-    Font.Height = -37
+    Font.Height = -19
     Font.Name = 'Sans'
     OnClick = btnChangeHashClick
     ParentFont = False
     TabOrder = 4
   end
   object btnRemoveHash: TButton
-    Left = 824
-    Height = 54
-    Top = 552
-    Width = 56
+    Left = 412
+    Height = 27
+    Top = 276
+    Width = 28
     Caption = 'X'
-    Font.Height = -37
+    Font.Height = -19
     Font.Name = 'Sans'
     OnClick = btnRemoveHashClick
     ParentFont = False
     TabOrder = 5
   end
   object edName: TEdit
-    Left = 392
-    Height = 54
-    Top = 360
-    Width = 488
-    Font.Height = -37
+    Left = 196
+    Height = 33
+    Top = 180
+    Width = 244
+    Font.Height = -19
     Font.Name = 'Sans'
     ParentFont = False
     TabOrder = 6
     Text = 'edName'
   end
   object btnChangeName: TButton
-    Left = 392
-    Height = 56
-    Top = 424
-    Width = 488
+    Left = 196
+    Height = 28
+    Top = 212
+    Width = 244
     Caption = 'Save name'
-    Font.Height = -37
+    Font.Height = -19
     Font.Name = 'Sans'
     OnClick = btnChangeNameClick
     ParentFont = False
     TabOrder = 7
   end
   object btnOpenStation: TButton
-    Left = 32
-    Height = 96
-    Top = 344
-    Width = 312
+    Left = 16
+    Height = 48
+    Top = 172
+    Width = 156
     Caption = 'open door'
-    Font.Height = -27
+    Font.Height = -14
     Font.Name = 'Sans'
     OnClick = btnOpenStationClick
     ParentFont = False
     TabOrder = 8
   end
   object Label2: TLabel
-    Left = 392
-    Height = 42
-    Top = 312
-    Width = 237
+    Left = 196
+    Height = 23
+    Top = 156
+    Width = 137
     Caption = 'Display name:'
-    Font.Height = -37
+    Font.Height = -19
     Font.Name = 'Sans'
     ParentColor = False
     ParentFont = False
   end
   object Label3: TLabel
-    Left = 400
-    Height = 42
-    Top = 504
-    Width = 250
+    Left = 200
+    Height = 23
+    Top = 252
+    Width = 139
     Caption = 'Real box code:'
-    Font.Height = -37
+    Font.Height = -19
     Font.Name = 'Sans'
     ParentColor = False
     ParentFont = False
