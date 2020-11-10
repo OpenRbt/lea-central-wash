@@ -282,7 +282,6 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 var
   s: TTextStyle;
-  i: integer;
 begin
   Sleep(1000);
   s := StationsData.DefaultTextStyle;

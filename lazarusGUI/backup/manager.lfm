@@ -1,10 +1,10 @@
 object ManageForm: TManageForm
   Left = 520
-  Height = 355
+  Height = 412
   Top = 459
   Width = 756
   Caption = 'Manage Station'
-  ClientHeight = 355
+  ClientHeight = 412
   ClientWidth = 756
   OnCreate = FormCreate
   OnShow = FormShow
@@ -51,9 +51,9 @@ object ManageForm: TManageForm
     end
   end
   object btnOK: TButton
-    Left = 8
+    Left = 10
     Height = 76
-    Top = 264
+    Top = 320
     Width = 177
     Caption = 'OK'
     Font.Height = 40
@@ -85,7 +85,7 @@ object ManageForm: TManageForm
     end
     object PricesData: TStringGrid
       Left = 11
-      Height = 85
+      Height = 101
       Top = 35
       Width = 535
       AutoEdit = False
@@ -98,9 +98,8 @@ object ManageForm: TManageForm
       ParentFont = False
       RowCount = 2
       TabOrder = 0
-      OnEditingDone = PricesDataEditingDone
       Cells = (
-        8
+        11
         0
         0
         'Program'
@@ -125,13 +124,22 @@ object ManageForm: TManageForm
         6
         0
         '6'
+        7
+        0
+        '7'
+        8
+        0
+        '8'
+        9
+        0
+        '9'
       )
     end
   end
   object cbHash: TComboBox
     Left = 196
     Height = 35
-    Top = 276
+    Top = 336
     Width = 212
     Font.Height = -19
     Font.Name = 'Sans'
@@ -143,7 +151,7 @@ object ManageForm: TManageForm
   object btnChangeHash: TButton
     Left = 196
     Height = 27
-    Top = 308
+    Top = 368
     Width = 244
     Caption = 'Set / Connect / Save'
     Font.Height = -19
@@ -155,7 +163,7 @@ object ManageForm: TManageForm
   object btnRemoveHash: TButton
     Left = 412
     Height = 27
-    Top = 276
+    Top = 336
     Width = 28
     Caption = 'X'
     Font.Height = -19
@@ -167,7 +175,7 @@ object ManageForm: TManageForm
   object edName: TEdit
     Left = 196
     Height = 33
-    Top = 180
+    Top = 240
     Width = 244
     Font.Height = -19
     Font.Name = 'Sans'
@@ -178,7 +186,7 @@ object ManageForm: TManageForm
   object btnChangeName: TButton
     Left = 196
     Height = 28
-    Top = 212
+    Top = 272
     Width = 244
     Caption = 'Save name'
     Font.Height = -19
@@ -202,7 +210,7 @@ object ManageForm: TManageForm
   object Label2: TLabel
     Left = 196
     Height = 23
-    Top = 156
+    Top = 216
     Width = 137
     Caption = 'Display name:'
     Font.Height = -19
@@ -213,12 +221,21 @@ object ManageForm: TManageForm
   object Label3: TLabel
     Left = 200
     Height = 23
-    Top = 252
+    Top = 312
     Width = 139
     Caption = 'Real box code:'
     Font.Height = -19
     Font.Name = 'Sans'
     ParentColor = False
     ParentFont = False
+  end
+  object Button1: TButton
+    Left = 196
+    Height = 48
+    Top = 152
+    Width = 156
+    Caption = 'Save price'
+    OnClick = Button1Click
+    TabOrder = 9
   end
 end

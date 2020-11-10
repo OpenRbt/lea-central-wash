@@ -7,8 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, datetimectrls, Source, superobject, manager, collection
-  { you can add units after this };
+  Forms, datetimectrls, Source, superobject, manager, collection, clientAPI;
 
 {$R *.res}
 
@@ -16,6 +15,7 @@ begin
   RequireDerivedFormResource:=True;
   Application.Scaled:=True;
   Application.Initialize;
+  Application.CreateForm(Tclient, Client);
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TManageForm, ManageForm);
   Application.CreateForm(TMoneyCollectionForm, MoneyCollectionForm);
