@@ -395,7 +395,7 @@ func (svc *service) stationByHash(params op.StationByHashParams) op.StationByHas
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewStationByHashOK().WithPayload(int64(id))
-	case app.ErrNotFound:
+	case errNotFound:
 		log.Info("post by hash: not found", "hash", params.Args.Hash)
 		return op.NewStationByHashOK().WithPayload(0)
 	default:
