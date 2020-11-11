@@ -1,0 +1,99 @@
+object ManagePrograms: TManagePrograms
+  Left = 540
+  Height = 480
+  Top = 375
+  Width = 800
+  Caption = 'ManagePrograms'
+  ClientHeight = 480
+  ClientWidth = 800
+  LCLVersion = '2.0.6.0'
+  object ProgramList: TListBox
+    Left = 0
+    Height = 480
+    Top = 0
+    Width = 120
+    Align = alCustom
+    Items.Strings = (
+      'Program 1'
+      'Program 2'
+      'Program 3'
+      'Program 4'
+      'Program 5'
+      'Program 6'
+      'Program 7'
+      'Program 8'
+      'Program 9'
+    )
+    ItemHeight = 23
+    OnClick = ProgramListClick
+    ScrollWidth = 118
+    TabOrder = 0
+  end
+  object btnOk: TButton
+    Left = 0
+    Height = 25
+    Top = 547
+    Width = 75
+    Caption = 'btnOk'
+    TabOrder = 1
+  end
+  object RelayPanel: TPanel
+    Left = 453
+    Height = 480
+    Top = 0
+    Width = 347
+    Align = alRight
+    AutoSize = True
+    Caption = 'RelayPanel'
+    ClientHeight = 480
+    ClientWidth = 347
+    TabOrder = 2
+    object RelayBoxTMPLT: TGroupBox
+      Left = 0
+      Height = 51
+      Top = 1
+      Width = 346
+      Align = alCustom
+      Anchors = [akLeft]
+      AutoSize = True
+      Caption = 'RelayBoxTMPLT'
+      ClientHeight = 33
+      ClientWidth = 344
+      TabOrder = 0
+      Visible = False
+      OnClick = RelayBoxTMPLTClick
+      object relayON: TEdit
+        Left = 104
+        Height = 33
+        Top = 0
+        Width = 80
+        TabOrder = 0
+        Text = 'relayON'
+      end
+      object relayOff: TEdit
+        Left = 184
+        Height = 33
+        Top = 0
+        Width = 80
+        TabOrder = 1
+        Text = 'relayOff'
+      end
+      object relayMSEC: TEdit
+        Left = 264
+        Height = 33
+        Top = 0
+        Width = 80
+        TabOrder = 2
+        Text = 'relayMSEC'
+      end
+      object relayActive: TCheckBox
+        Left = 0
+        Height = 23
+        Top = 0
+        Width = 100
+        Caption = 'relayActive'
+        TabOrder = 3
+      end
+    end
+  end
+end
