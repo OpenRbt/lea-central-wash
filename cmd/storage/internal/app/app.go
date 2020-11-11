@@ -70,6 +70,7 @@ type (
 		// for api
 		LoadHash() ([]StationID, []string, error)
 		SetHash(StationID, string) error
+		CheckDB() (ok bool, err error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {

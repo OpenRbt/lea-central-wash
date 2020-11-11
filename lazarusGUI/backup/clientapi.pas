@@ -18,6 +18,7 @@ type
     procedure PairIdAndHash(Hash, StationName: String; ID: integer);
     procedure OpenStation(id: Integer);
     procedure SendMoney(hash: string; moneyToSend: Integer);
+    function Info():string;
 
   private
   serverEndpoint: string;
@@ -143,7 +144,6 @@ begin
         postJson := TJSONObject.Create;
         postJson.Add('hash', TJSONString.Create(hash));
         postJson.Add('amount', moneyToSend);
-        editMoney.Text := '0';
 
         With TFPHttpClient.Create(Nil) do
         try
@@ -159,6 +159,18 @@ begin
         end;
   end;
 
+function TClient.Info():string;
+begin
+Result :='';
+try
+With TFPHttpClient.Create(Nil) do
+try
+   Result := Get(serverEndpoint + 'info');
+finally
+    Free;
+end;
+except
+end;
 
 end.
 

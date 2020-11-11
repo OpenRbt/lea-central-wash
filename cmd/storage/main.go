@@ -129,11 +129,11 @@ func main() { //nolint:gocyclo
 	var db *sqlx.DB
 	var err error
 	count := 0
-	for db == nil && count < 20 {
+	for db == nil {
 		ctx, cancel := context.WithTimeout(context.Background(), connectTimeout)
 		db, err = connectDB(ctx)
 		if err != nil {
-			log.Warn("Warning: DB is not connected", "err", err)
+			log.Warn("Warning: DB is not connected", "count", count, "err", err)
 		}
 		count++
 		cancel()

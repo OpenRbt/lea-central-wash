@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, DateUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Grids, ExtCtrls, ActnList, ComCtrls, EditBtn, ComboEx, DateTimePicker,
-  fphttpclient, Fpjson, jsonparser, superobject, Types, manager, collection;
+  fphttpclient, Fpjson, jsonparser, superobject, Types, manager, collection, clientAPI;
 
 type
 
@@ -25,6 +25,7 @@ type
     dtTo: TDateTimePicker;
     Label1: TLabel;
     Label2: TLabel;
+    lbStatus: TLabel;
     StationsData: TStringGrid;
     MoneyData: TStringGrid;
     UpdateTimer: TTimer;
@@ -182,7 +183,6 @@ var
   i, pos, findRes: integer;
 
 begin
-  UpdateTimer.Enabled := False;
   with TFPHttpClient.Create(nil) do
     try
       try
@@ -271,7 +271,6 @@ begin
       btnManage.Cursor := crDefault;
       btnMoneyCollection.Cursor := crDefault;
     end;
-  UpdateTimer.Enabled := True;
   MainForm.Cursor := crDefault;
   StationsData.Cursor := crDefault;
   MoneyData.Cursor := crDefault;
@@ -300,7 +299,7 @@ end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
-  UpdateStations(Sender);
+  UpdateCall(Sender);
   UpdateTimer.Enabled := True;
 end;
 
@@ -352,8 +351,24 @@ begin
 end;
 
 procedure TMainForm.UpdateCall(Sender: TObject);
+var
+  info: String;
 begin
+  UpdateTimer.Enabled := False;
+  info := client.Info();
+  if info <> '' then begin
+    lbStatus.Caption:= 'Connected: ' + info;
+    lbStatus.Font.Color:=clGreen;
+  end else begin
+    lbStatus.Caption:= 'Disconnected';
+    lbStatus.Font.Color:=clRed;
+    btnManage.Enabled:= false;
+    btnMoneyCollection.Enabled:= false;
+    UpdateTimer.Enabled := True;
+    exit;
+  end;
   UpdateStations(Sender);
+  UpdateTimer.Enabled := True;
 end;
 
 procedure TMainForm.btnManageClick(Sender: TObject);
