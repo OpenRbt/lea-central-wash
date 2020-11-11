@@ -48,7 +48,7 @@ type
 
   end;
 
-const programmCount = 9;
+const programCount = 9;
 var
   ManageForm: TManageForm;
   StationHash: String;
@@ -132,7 +132,7 @@ begin
   Reply := Application.MessageBox('Save price?', 'WARNING', BoxStyle);
   if Reply <> yesAnswer then exit;
 
-  for i:=1 to programmCount do begin;
+  for i:=1 to programCount do begin;
     if PricesData.Cells[i, 1] <> oldPrice[i] then begin
        // Numeric value in grid cell check
        if TryStrToInt(PricesData.Cells[i, 1], Longint(Value)) then begin
@@ -170,8 +170,16 @@ begin
 end;
 
 procedure TManageForm.FormCreate(Sender: TObject);
+var
+  i: Integer;
 begin
-SetLength(oldPrice, programmCount+1);
+   SetLength(oldPrice, programCount+1);
+   PricesData.Columns.Clear;
+   for i := 1 to programCount do begin
+       PricesData.Columns.Add();
+       PricesData.Columns[i-1].Title.Caption := IntToStr(i);
+       PricesData.Columns[i-1].Width:=50;
+   end;
 end;
 
 procedure TManageForm.FormShow(Sender: TObject);
@@ -203,7 +211,7 @@ begin
     btnOpenStation.Enabled:=true;
     edName.ReadOnly:=false;
 
-    for i := 1 to programmCount do begin
+    for i := 1 to programCount do begin
         Value:= client.PriceByID(StationHash, i);
         PricesData.Cells[i, 1] := Value;
         oldPrice[i]:= Value;

@@ -98,6 +98,18 @@ object ManageForm: TManageForm
       ParentFont = False
       RowCount = 2
       TabOrder = 0
+      ColWidths = (
+        82
+        75
+        75
+        75
+        75
+        75
+        75
+        75
+        75
+        75
+      )
       Cells = (
         11
         0
