@@ -7,6 +7,11 @@ import (
 )
 
 const (
+	sqlCheckDB = `
+SELECT count(column_name) as count_columns
+FROM information_schema.columns 
+WHERE table_name = 'station_hash'
+	`
 	sqlOpenStationLogAdd = `
 INSERT INTO open_station_log (station_id)  
 VALUES 	(:station_id)
@@ -146,6 +151,8 @@ type (
 	argAddStation struct {
 		Name string
 	}
+	argCheckDB struct {
+	}
 	argUpdStation struct {
 		ID   app.StationID
 		Name string
@@ -217,5 +224,8 @@ type (
 	resLoadHash struct {
 		Hash      string
 		StationID app.StationID
+	}
+	resCheckDB struct {
+		CountColumns int
 	}
 )

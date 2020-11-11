@@ -18,6 +18,7 @@ type
     procedure PairIdAndHash(Hash, StationName: String; ID: integer);
     procedure OpenStation(id: Integer);
     procedure SendMoney(hash: string; moneyToSend: Integer);
+    function Info():string;
 
   private
   serverEndpoint: string;
@@ -158,6 +159,19 @@ begin
         end;
   end;
 
+function TClient.Info():string;
+begin
+Result :='';
+try
+With TFPHttpClient.Create(Nil) do
+try
+   Result := Get(serverEndpoint + 'info');
+finally
+    Free;
+end;
+except
+end;
+end;
 
 end.
 

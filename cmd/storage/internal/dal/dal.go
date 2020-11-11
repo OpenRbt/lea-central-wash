@@ -353,3 +353,20 @@ func (r *repo) AddOpenStationLog(stationID app.StationID) (err error) {
 	})
 	return //nolint:nakedret
 }
+
+func (r *repo) CheckDB() (ok bool, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res resCheckDB
+		err := tx.NamedGetContext(ctx, &res, sqlCheckDB, argCheckDB{})
+		switch {
+		case err == sql.ErrNoRows:
+			return app.ErrNotFound
+		case err != nil:
+			return err
+		}
+		log.Info("CheckDB", "count", res.CountColumns)
+		ok = res.CountColumns == 3
+		return nil
+	})
+	return //nolint:nakedret
+}

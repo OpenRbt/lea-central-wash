@@ -143,3 +143,7 @@ func (t *DB) AddStation(name string) error {
 func (t *DB) AddOpenStationLog(id app.StationID) error {
 	return nil
 }
+
+func (t *DB) CheckDB() (bool, error) {
+	return true, nil
+}
