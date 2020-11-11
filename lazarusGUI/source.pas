@@ -304,24 +304,8 @@ begin
 end;
 
 procedure TMainForm.StationsDataDblClick(Sender: TObject);
-var
-  selectedRow: integer;
-  selectedHash: string;
-  selectedName: string;
 begin
-  UpdateTimer.Enabled:=false;
-  selectedRow := StationsData.Row;
-  selectedHash := trim(StationsData.Cells[1, selectedRow]);
-  selectedName := StationsData.Cells[3, selectedRow];
-
-    ManageForm.SetHash(selectedHash);
-    ManageForm.SetID(StationsData.Row);
-    ManageForm.SetName(selectedName);
-    ManageForm.SetAvailableHashes(AvailableHashes);
-    ManageForm.ShowModal;
-  UpdateStations(Sender);
-  UpdateTimer.Enabled:=true;
-
+  btnManageClick(Sender);
 end;
 
 procedure TMainForm.StationsDataDrawCell(Sender: TObject; aCol, aRow: integer;

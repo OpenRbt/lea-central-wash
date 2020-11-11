@@ -65,6 +65,7 @@
         <Filename Value="clientapi.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Client"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
         <UnitName Value="clientAPI"/>
       </Unit4>
