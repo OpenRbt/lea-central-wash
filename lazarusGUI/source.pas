@@ -305,7 +305,7 @@ end;
 
 procedure TMainForm.StationsDataDblClick(Sender: TObject);
 begin
-  btnManageClick(Sender);
+  if btnManage.Enabled then btnManageClick(Sender);
 end;
 
 procedure TMainForm.StationsDataDrawCell(Sender: TObject; aCol, aRow: integer;

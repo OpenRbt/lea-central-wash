@@ -361,8 +361,6 @@ var
   selectedHash: string;
   selectedName: string;
 begin
-//  while not UpdateTimer.Enabled do
-//        sleep(100);
   UpdateTimer.Enabled:=false;
   selectedRow := StationsData.Row;
   selectedHash := trim(StationsData.Cells[1, selectedRow]);
