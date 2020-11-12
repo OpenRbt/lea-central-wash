@@ -72,7 +72,8 @@
       <Unit5>
         <Filename Value="managerrelays.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="ManageRelays"/>
+        <ComponentName Value="ManagePrograms"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="managerRelays"/>
       </Unit5>

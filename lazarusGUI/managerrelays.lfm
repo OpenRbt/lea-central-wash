@@ -1,7 +1,7 @@
 object ManagePrograms: TManagePrograms
-  Left = 540
+  Left = 855
   Height = 480
-  Top = 375
+  Top = 361
   Width = 800
   Caption = 'ManagePrograms'
   ClientHeight = 480
@@ -11,7 +11,7 @@ object ManagePrograms: TManagePrograms
     Left = 0
     Height = 480
     Top = 0
-    Width = 120
+    Width = 150
     Align = alCustom
     Items.Strings = (
       'Program 1'
@@ -26,7 +26,7 @@ object ManagePrograms: TManagePrograms
     )
     ItemHeight = 23
     OnClick = ProgramListClick
-    ScrollWidth = 118
+    ScrollWidth = 148
     TabOrder = 0
   end
   object btnOk: TButton
@@ -37,31 +37,30 @@ object ManagePrograms: TManagePrograms
     Caption = 'btnOk'
     TabOrder = 1
   end
-  object RelayPanel: TPanel
-    Left = 453
-    Height = 480
+  object RelayListBox: TScrollBox
+    Left = 390
+    Height = 400
     Top = 0
-    Width = 347
-    Align = alRight
-    AutoSize = True
-    Caption = 'RelayPanel'
-    ClientHeight = 480
-    ClientWidth = 347
+    Width = 410
+    HorzScrollBar.Page = 390
+    VertScrollBar.Page = 1
+    Align = alCustom
+    Anchors = [akRight]
+    ClientHeight = 398
+    ClientWidth = 408
     TabOrder = 2
     object RelayBoxTMPLT: TGroupBox
       Left = 0
       Height = 51
-      Top = 1
-      Width = 346
+      Top = -4
+      Width = 390
       Align = alCustom
       Anchors = [akLeft]
-      AutoSize = True
       Caption = 'RelayBoxTMPLT'
       ClientHeight = 33
-      ClientWidth = 344
+      ClientWidth = 388
       TabOrder = 0
       Visible = False
-      OnClick = RelayBoxTMPLTClick
       object relayON: TEdit
         Left = 104
         Height = 33
@@ -87,13 +86,49 @@ object ManagePrograms: TManagePrograms
         Text = 'relayMSEC'
       end
       object relayActive: TCheckBox
-        Left = 0
+        Left = 40
         Height = 23
-        Top = 0
-        Width = 100
-        Caption = 'relayActive'
+        Top = 5
+        Width = 23
         TabOrder = 3
       end
+    end
+  end
+  object GroupBox1: TGroupBox
+    Left = 150
+    Height = 180
+    Top = 0
+    Width = 240
+    Caption = 'Program Name'
+    ClientHeight = 162
+    ClientWidth = 238
+    TabOrder = 3
+    object btnSaveProgramName: TButton
+      Left = 10
+      Height = 50
+      Top = 100
+      Width = 100
+      Caption = 'Save'
+      OnClick = btnSaveProgramNameClick
+      TabOrder = 0
+    end
+    object btnCancelProgramName: TButton
+      Left = 130
+      Height = 50
+      Top = 100
+      Width = 100
+      Caption = 'Cancel'
+      OnClick = btnCancelProgramNameClick
+      TabOrder = 1
+    end
+    object programNameEdit: TEdit
+      Left = 0
+      Height = 60
+      Top = 20
+      Width = 240
+      AutoSize = False
+      TabOrder = 2
+      Text = '0'
     end
   end
 end

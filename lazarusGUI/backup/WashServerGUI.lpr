@@ -20,7 +20,8 @@ begin
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TManageForm, ManageForm);
   Application.CreateForm(TMoneyCollectionForm, MoneyCollectionForm);
-  Application.CreateForm(TManageRelays, ManageRelays);
+  Application.CreateForm(TManagePrograms, ManagePrograms);
+  ManagePrograms.ShowModal();
   Application.Run;
 end.
 
