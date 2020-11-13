@@ -8,11 +8,12 @@ object ManagePrograms: TManagePrograms
   ClientWidth = 800
   LCLVersion = '2.0.6.0'
   object ProgramList: TListBox
-    Left = 0
-    Height = 480
-    Top = 0
-    Width = 150
+    Left = 5
+    Height = 360
+    Top = 30
+    Width = 160
     Align = alCustom
+    Anchors = [akLeft]
     Items.Strings = (
       'Program 1'
       'Program 2'
@@ -26,43 +27,39 @@ object ManagePrograms: TManagePrograms
     )
     ItemHeight = 23
     OnClick = ProgramListClick
-    ScrollWidth = 148
+    ScrollWidth = 158
     TabOrder = 0
   end
-  object btnOk: TButton
-    Left = 0
-    Height = 25
-    Top = 547
-    Width = 75
-    Caption = 'btnOk'
-    TabOrder = 1
-  end
   object RelayListBox: TScrollBox
-    Left = 390
-    Height = 400
-    Top = 0
-    Width = 410
-    HorzScrollBar.Page = 390
+    Left = 420
+    Height = 360
+    Top = 30
+    Width = 380
+    HorzScrollBar.Page = 1
+    HorzScrollBar.Visible = False
+    VertScrollBar.Increment = 1
     VertScrollBar.Page = 1
+    VertScrollBar.Smooth = True
+    VertScrollBar.Tracking = True
     Align = alCustom
     Anchors = [akRight]
-    ClientHeight = 398
-    ClientWidth = 408
-    TabOrder = 2
+    ClientHeight = 358
+    ClientWidth = 378
+    TabOrder = 1
     object RelayBoxTMPLT: TGroupBox
       Left = 0
-      Height = 51
-      Top = -4
+      Height = 60
+      Top = 2
       Width = 390
       Align = alCustom
       Anchors = [akLeft]
       Caption = 'RelayBoxTMPLT'
-      ClientHeight = 33
+      ClientHeight = 42
       ClientWidth = 388
       TabOrder = 0
       Visible = False
       object relayON: TEdit
-        Left = 104
+        Left = 45
         Height = 33
         Top = 0
         Width = 80
@@ -70,7 +67,7 @@ object ManagePrograms: TManagePrograms
         Text = 'relayON'
       end
       object relayOff: TEdit
-        Left = 184
+        Left = 135
         Height = 33
         Top = 0
         Width = 80
@@ -78,7 +75,7 @@ object ManagePrograms: TManagePrograms
         Text = 'relayOff'
       end
       object relayMSEC: TEdit
-        Left = 264
+        Left = 225
         Height = 33
         Top = 0
         Width = 80
@@ -86,7 +83,7 @@ object ManagePrograms: TManagePrograms
         Text = 'relayMSEC'
       end
       object relayActive: TCheckBox
-        Left = 40
+        Left = 10
         Height = 23
         Top = 5
         Width = 23
@@ -95,14 +92,14 @@ object ManagePrograms: TManagePrograms
     end
   end
   object GroupBox1: TGroupBox
-    Left = 150
+    Left = 170
     Height = 180
-    Top = 0
+    Top = 30
     Width = 240
     Caption = 'Program Name'
     ClientHeight = 162
     ClientWidth = 238
-    TabOrder = 3
+    TabOrder = 2
     object btnSaveProgramName: TButton
       Left = 10
       Height = 50
@@ -130,5 +127,67 @@ object ManagePrograms: TManagePrograms
       TabOrder = 2
       Text = '0'
     end
+  end
+  object btnOk: TButton
+    Left = 10
+    Height = 70
+    Top = 400
+    Width = 140
+    Align = alCustom
+    Anchors = [akLeft]
+    Caption = 'OK'
+    OnClick = btnOkClick
+    ParentFont = False
+    TabOrder = 3
+  end
+  object btnSaveRelaysConfig: TButton
+    Left = 450
+    Height = 70
+    Top = 400
+    Width = 140
+    Caption = 'Save Configuration'
+    OnClick = btnSaveRelaysConfigClick
+    TabOrder = 4
+  end
+  object btnRevertRelayConfig: TButton
+    Left = 630
+    Height = 70
+    Top = 400
+    Width = 140
+    Caption = 'Revert Changes'
+    OnClick = btnRevertRelayConfigClick
+    TabOrder = 5
+  end
+  object labelRelayActive: TLabel
+    Left = 420
+    Height = 15
+    Top = 10
+    Width = 42
+    Caption = 'Active'
+    ParentColor = False
+  end
+  object labelTimeOn: TLabel
+    Left = 470
+    Height = 15
+    Top = 10
+    Width = 58
+    Caption = 'Time ON'
+    ParentColor = False
+  end
+  object labelTimeOff: TLabel
+    Left = 560
+    Height = 15
+    Top = 10
+    Width = 63
+    Caption = 'Time OFF'
+    ParentColor = False
+  end
+  object labelTimeMsec: TLabel
+    Left = 650
+    Height = 15
+    Top = 10
+    Width = 38
+    Caption = 'MSEC'
+    ParentColor = False
   end
 end

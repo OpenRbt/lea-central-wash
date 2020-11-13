@@ -4,11 +4,11 @@
     <PathDelim Value="\"/>
     <Version Value="11"/>
     <BuildModes Active="Default"/>
-    <Units Count="14">
+    <Units Count="15">
       <Unit0>
         <Filename Value="WashServerGUI.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="30" Y="24"/>
+        <CursorPos X="29" Y="23"/>
         <UsageCount Value="214"/>
         <Loaded Value="True"/>
       </Unit0>
@@ -19,10 +19,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Source"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="160"/>
-        <CursorPos Y="221"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="157"/>
+        <CursorPos X="15" Y="369"/>
         <UsageCount Value="214"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="manager.pas"/>
@@ -31,8 +33,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="6"/>
-        <TopLine Value="157"/>
-        <CursorPos X="18" Y="42"/>
+        <TopLine Value="176"/>
+        <CursorPos X="32" Y="166"/>
+        <FoldState Value=" T3jY0RP"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -44,8 +47,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="5"/>
-        <CursorPos X="48" Y="84"/>
-        <UsageCount Value="162"/>
+        <TopLine Value="43"/>
+        <CursorPos X="70" Y="52"/>
+        <UsageCount Value="170"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit3>
@@ -56,10 +60,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
         <UnitName Value="clientAPI"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="122"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="133"/>
         <CursorPos Y="175"/>
-        <UsageCount Value="57"/>
+        <UsageCount Value="65"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit4>
@@ -71,19 +75,20 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="managerRelays"/>
         <IsVisibleTab Value="True"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="226"/>
-        <CursorPos X="52" Y="248"/>
-        <UsageCount Value="31"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="228"/>
+        <CursorPos X="19" Y="241"/>
+        <FoldState Value=" T3ig0{5D"/>
+        <UsageCount Value="39"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="superobject.pas"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="937"/>
-        <CursorPos Y="922"/>
-        <UsageCount Value="77"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="889"/>
+        <CursorPos X="63" Y="892"/>
+        <UsageCount Value="81"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
@@ -91,21 +96,21 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="120"/>
         <CursorPos X="10" Y="136"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="9"/>
       </Unit7>
       <Unit8>
         <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.2.0\packages\fcl-web\src\base\fphttpclient.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="322"/>
         <CursorPos X="42" Y="70"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="23"/>
       </Unit8>
       <Unit9>
         <Filename Value="..\..\..\..\..\usr\share\lazarus\2.0.10\lcl\include\application.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="2227"/>
         <CursorPos Y="2239"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
       </Unit9>
       <Unit10>
         <Filename Value="..\..\..\..\..\usr\share\lazarus\2.0.10\lcl\grids.pas"/>
@@ -113,152 +118,159 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="3287"/>
         <CursorPos Y="3300"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="19"/>
       </Unit10>
       <Unit11>
         <Filename Value="..\..\..\..\..\usr\lib\lazarus\2.0.6\lcl\stdctrls.pp"/>
         <UnitName Value="StdCtrls"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="652"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="650"/>
         <CursorPos X="14" Y="673"/>
         <FoldState Value=" T8l42vg"/>
-        <UsageCount Value="12"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="13"/>
       </Unit11>
       <Unit12>
         <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\rtl\inc\objpash.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="194"/>
         <CursorPos X="23" Y="194"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit12>
       <Unit13>
         <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\rtl\objpas\sysutils\sysstrh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="87"/>
         <CursorPos X="10" Y="108"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit13>
+      <Unit14>
+        <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\rtl\objpas\classes\classesh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="653"/>
+        <CursorPos X="15" Y="673"/>
+        <UsageCount Value="10"/>
+      </Unit14>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="109" Column="123" TopLine="99"/>
+        <Filename Value="source.pas"/>
+        <Caret Line="369" Column="15" TopLine="343"/>
       </Position1>
       <Position2>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="85" Column="37" TopLine="79"/>
+        <Filename Value="manager.pas"/>
+        <Caret Line="166" Column="3" TopLine="163"/>
       </Position2>
       <Position3>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="86" Column="37" TopLine="80"/>
+        <Caret Line="230" Column="27" TopLine="198"/>
       </Position3>
       <Position4>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="85" Column="37" TopLine="79"/>
+        <Caret Line="229" Column="6" TopLine="190"/>
       </Position4>
       <Position5>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="33" Column="5" TopLine="12"/>
+        <Caret Line="112" Column="15" TopLine="77"/>
       </Position5>
       <Position6>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="89" Column="29" TopLine="74"/>
+        <Filename Value="superobject.pas"/>
+        <Caret Line="920" Column="20" TopLine="901"/>
       </Position6>
       <Position7>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="142" Column="35" TopLine="113"/>
+        <Filename Value="superobject.pas"/>
+        <Caret Line="922" TopLine="901"/>
       </Position7>
       <Position8>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="51" Column="55" TopLine="59"/>
+        <Filename Value="superobject.pas"/>
+        <Caret Line="3434" TopLine="3414"/>
       </Position8>
       <Position9>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="50" Column="55" TopLine="50"/>
+        <Filename Value="manager.pas"/>
+        <Caret Line="192" Column="31" TopLine="182"/>
       </Position9>
       <Position10>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="64" Column="21" TopLine="50"/>
+        <Caret Line="233" Column="17" TopLine="198"/>
       </Position10>
       <Position11>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="65" Column="29" TopLine="50"/>
+        <Caret Line="229" Column="27" TopLine="198"/>
       </Position11>
       <Position12>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="32" Column="26" TopLine="18"/>
+        <Caret Line="37" Column="57" TopLine="32"/>
       </Position12>
       <Position13>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="106" Column="17" TopLine="65"/>
+        <Caret Line="219" Column="49" TopLine="199"/>
       </Position13>
       <Position14>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="160" Column="3" TopLine="129"/>
+        <Caret Line="71" Column="43" TopLine="71"/>
       </Position14>
       <Position15>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="156" Column="30" TopLine="119"/>
+        <Filename Value="superobject.pas"/>
+        <Caret Line="907" Column="131" TopLine="900"/>
       </Position15>
       <Position16>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="160" Column="3" TopLine="113"/>
+        <Caret Line="232" Column="43" TopLine="196"/>
       </Position16>
       <Position17>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="24" Column="15"/>
+        <Caret Line="37" Column="41" TopLine="17"/>
       </Position17>
       <Position18>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="210" Column="5" TopLine="50"/>
+        <Filename Value="manager.pas"/>
+        <Caret Line="168" Column="59" TopLine="155"/>
       </Position18>
       <Position19>
         <Filename Value="managerrelays.pas"/>
+        <Caret Line="204" Column="68" TopLine="196"/>
       </Position19>
       <Position20>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="203" Column="28" TopLine="172"/>
+        <Caret Line="230" Column="6" TopLine="196"/>
       </Position20>
       <Position21>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="174" Column="43" TopLine="163"/>
+        <Caret Line="235" Column="33" TopLine="199"/>
       </Position21>
       <Position22>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="175" Column="43" TopLine="164"/>
+        <Caret Line="214" Column="9" TopLine="189"/>
       </Position22>
       <Position23>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="176" Column="43" TopLine="165"/>
+        <Filename Value="manager.pas"/>
+        <Caret Line="166" Column="32" TopLine="121"/>
       </Position23>
       <Position24>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="177" Column="43" TopLine="166"/>
+        <Caret Line="235" Column="8" TopLine="201"/>
       </Position24>
       <Position25>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="179" Column="43" TopLine="168"/>
+        <Caret Line="237" Column="42" TopLine="201"/>
       </Position25>
       <Position26>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="229" Column="3" TopLine="191"/>
+        <Caret Line="74" Column="29" TopLine="67"/>
       </Position26>
       <Position27>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="234" Column="28" TopLine="52"/>
+        <Caret Line="249" Column="35" TopLine="214"/>
       </Position27>
       <Position28>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="231" Column="61" TopLine="55"/>
+        <Caret Line="172" TopLine="83"/>
       </Position28>
       <Position29>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="215" Column="13" TopLine="59"/>
+        <Caret Line="237" Column="22" TopLine="222"/>
       </Position29>
       <Position30>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="248" Column="52" TopLine="226"/>
+        <Caret Line="256" Column="22" TopLine="222"/>
       </Position30>
     </JumpHistory>
     <RunParams>
@@ -267,7 +279,7 @@
     </RunParams>
   </ProjectSession>
   <Debugging>
-    <BreakPoints Count="1">
+    <BreakPoints Count="2">
       <Item1>
         <Kind Value="bpkSource"/>
         <WatchScope Value="wpsLocal"/>
@@ -275,6 +287,13 @@
         <Source Value="superobject.pas"/>
         <Line Value="176"/>
       </Item1>
+      <Item2>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="superobject.pas"/>
+        <Line Value="922"/>
+      </Item2>
     </BreakPoints>
   </Debugging>
 </CONFIG>
