@@ -17,19 +17,20 @@ type
     btnOk: TButton;
     btnSaveRelaysConfig: TButton;
     btnRevertRelayConfig: TButton;
+    relayLabel: TLabel;
     labelRelayActive: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
+    labelTimeOn: TLabel;
+    labelTimeOff: TLabel;
+    labelTimeMsec: TLabel;
     programNameEdit: TEdit;
     GroupBox1: TGroupBox;
-    RelayBoxTMPLT: TGroupBox;
-    relayActive: TCheckBox;
-    relayON: TEdit;
-    relayOff: TEdit;
-    relayMSEC: TEdit;
     ProgramList: TListBox;
+    relayActive: TCheckBox;
+    RelayBoxTMPLT: TPanel;
     RelayListBox: TScrollBox;
+    relayMSEC: TEdit;
+    relayOff: TEdit;
+    relayON: TEdit;
     procedure btnCancelProgramNameClick(Sender: TObject);
     procedure btnRevertRelayConfigClick(Sender: TObject);
     procedure btnSaveProgramNameClick(Sender: TObject);
@@ -43,15 +44,9 @@ type
 
   end;
 
-  RelayConfigHeader = packed record
-    ActiveLabel: TLabel;
-    TimeOnLabel: TLabel;
-    TimeOffLabel: TLabel;
-    TimeMsecLabel: TLabel;
-  end;
-
   RelayConfig = packed record
-    RelayBox: TGroupBox;
+    RelayPanel: TPanel;
+    RelayLabel: TLabel;
     RelayTrigger: TCheckBox;
     RelayOnTime: TEdit;
     RelayOffTime: TEdit;
@@ -69,19 +64,19 @@ implementation
 {$R *.lfm}
 
 { TManagePrograms }
-procedure PrepareProgramList(ProgramList : TListBox);
+procedure PrepareProgramList(ProgramList: TListBox);
 var
-  i : integer;
-  programsCount : integer;
-  begin
-    ProgramList.Items.Clear;
-    programsCount := 9;
+  i: integer;
+  programsCount: integer;
+begin
+  ProgramList.Items.Clear;
+  programsCount := 9;
 
-    for i:= 0 to programsCount-1 do
-    begin
-      ProgramList.Items.Add('ProgramName ' + IntToStr(i));
-    end;
+  for i := 0 to programsCount - 1 do
+  begin
+    ProgramList.Items.Add('ProgramName ' + IntToStr(i));
   end;
+end;
 
 procedure PrepareRelaysConfig(RelayListBox: TScrollBox);
 var
@@ -96,7 +91,8 @@ begin
       begin
         with configs[i] do
         begin
-          RelayBox.Free;
+          RelayPanel.Free;
+          RelayLabel.Free;
           RelayTrigger.Free;
           RelayOnTime.Free;
           RelayOffTime.Free;
@@ -113,58 +109,77 @@ begin
   SetLength(configs, RelaysCount);
   for i := 0 to 16 do
   begin
-    configs[i].RelayBox := TGroupBox.Create(nil);
+    configs[i].RelayPanel := TPanel.Create(nil);
     configs[i].RelayTrigger := TCheckBox.Create(nil);
     configs[i].RelayOnTime := TEdit.Create(nil);
     configs[i].RelayOffTime := TEdit.Create(nil);
     configs[i].RelayMsec := TEdit.Create(nil);
+    configs[i].RelayLabel := TLabel.Create(nil);
     //Relay Config Creation
-    with configs[i].RelayBox do
+
+    with configs[i].RelayPanel do
     begin
-      Caption := 'Relay ' + IntToStr(i);
       Parent := RelayListBox;
-      Left := 0;
-      Width := 390;
-      Top := 0 + 60 * i;
-      Height := 60;
+      //if i mod 2 <> 0 then
+      //begin
+      //  Left := 380;
+      //end
+      //else
+      //begin
+        Left := 0;
+      //end;
+
+      Width := 380;
+      Top := 35 * i;//* (i div 2);
+      Height := 35;
+    end;
+
+    with configs[i].RelayLabel do
+    begin                     
+      Caption := 'Relay ' + IntToStr(i+1);
+      Parent := configs[i].RelayPanel;
+      Width := 60;
+      Height := 30;
+      Left := 10;
+      Top := 8;
     end;
 
     with configs[i].RelayTrigger do
     begin
-      Parent := configs[i].RelayBox;
+      Parent := configs[i].RelayPanel;
       Width := 40;
-      Height := 30;
-      Left := 10;
+      Height := 33;
+      Left := 80;
       Top := 5;
     end;
 
     with configs[i].RelayOnTime do
     begin
-      Parent := configs[i].RelayBox;
+      Parent := configs[i].RelayPanel;
       Width := 80;
-      Height := 30;
-      Left := 45;
-      Top := 0;
+      Height := 33;
+      Left := 110;
+      Top := 1;
 
     end;
 
     with configs[i].RelayOffTime do
     begin
-      Parent := configs[i].RelayBox;
+      Parent := configs[i].RelayPanel;
       Width := 80;
-      Height := 30;
-      Left := 135;
-      Top := 0;
+      Height := 33;
+      Left := 200;
+      Top := 1;
 
     end;
 
     with configs[i].RelayMsec do
     begin
-      Parent := configs[i].RelayBox;
+      Parent := configs[i].RelayPanel;
       Width := 80;
-      Height := 30;
-      Left := 225;
-      Top := 0;
+      Height := 33;
+      Left := 290;
+      Top := 1;
 
     end;
   end;
@@ -206,8 +221,6 @@ begin
 end;
 
 procedure TManagePrograms.ProgramListClick(Sender: TObject);
-var
-  i: integer;
 begin
   LoadRelaysConfig();
 
@@ -233,7 +246,7 @@ end;
 
 procedure TManagePrograms.btnRevertRelayConfigClick(Sender: TObject);
 begin
-  LoadRelaysConfig();  
+  LoadRelaysConfig();
   ShowMessage('Revert Relays Configuration');
 end;
 
@@ -256,6 +269,7 @@ begin
   SaveRelaysConfig();
 end;
 
+
 procedure TManagePrograms.FormShow(Sender: TObject);
 begin
   Show;
@@ -266,5 +280,3 @@ end;
 
 
 end.
-
-
