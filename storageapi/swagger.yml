@@ -9,7 +9,7 @@ schemes:
   - http
 
 definitions:
-
+        
   StatusReport:
     type: object
     properties:
@@ -142,6 +142,34 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/KeyPair'
+  
+  ProgramInfo:
+    type: object
+    properties:
+      programID:
+        type: integer
+      programName:
+        type: string
+
+  RelaysProgram:
+    type: object
+    properties:
+      config:
+        type: array
+        items:
+          $ref: '#/definitions/RelayConfig'
+
+  RelayConfig:
+    type: object
+    properties:
+      relayID:
+        type: integer
+      timeOn:
+        type: integer
+      timeOff:
+        type: integer
+      Heating:
+        type: integer
 
 consumes:
   - application/json
@@ -540,6 +568,106 @@ paths:
                 type: integer
       responses:
         204:
+          description: OK
+        404:
+          description: not found
+        500:
+          description: internal error
+  
+  /get-programs:
+    post:
+      operationId: "getPrograms"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              -  stationID
+            properties:
+              stationID:
+                type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ProgramInfo'
+        404:
+          description: not found
+        500:
+          description: internal error
+  
+  /set-program-name:
+    post:
+      operationId: "setProgramName"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - programID
+              - name
+            properties:
+              programID:
+                type: integer
+              name:
+                type: string
+      responses:
+        200:
+          description: OK
+        404:
+          description: not found
+        500:
+          description: internal error
+  
+  /get-program-relays:
+    post:
+      operationId: "getProgramRelays"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              -  programID
+            properties:
+              programID:
+                type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/RelaysProgram'
+        404:
+          description: not found
+        500:
+          description: internal error
+          
+  /set-program-relays:
+    post:
+      operationId: "setProgramRelays"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              -  programID
+              -  program
+            properties:
+              programID:
+                type: integer
+              program:
+                $ref: '#/definitions/RelaysProgram'
+      responses:
+        200:
           description: OK
         404:
           description: not found

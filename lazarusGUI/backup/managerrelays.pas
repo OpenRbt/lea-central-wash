@@ -5,7 +5,8 @@ unit managerRelays;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
+  fphttpclient, Fpjson, jsonparser;
 
 type
 
@@ -74,7 +75,7 @@ begin
 
   for i := 0 to programsCount - 1 do
   begin
-    ProgramList.Items.Add('ProgramName ' + IntToStr(i));
+    ProgramList.Items.Add('ProgramName ' + IntToStr(i + 1));
   end;
 end;
 
@@ -100,7 +101,6 @@ begin
         end;
       end;
       Finalize(configs);
-      //Dispose(configs);
     end;
   end;
 
@@ -120,23 +120,15 @@ begin
     with configs[i].RelayPanel do
     begin
       Parent := RelayListBox;
-      //if i mod 2 <> 0 then
-      //begin
-      //  Left := 380;
-      //end
-      //else
-      //begin
-        Left := 0;
-      //end;
-
+      Left := 0;
       Width := 380;
-      Top := 35 * i;//* (i div 2);
+      Top := 35 * i;
       Height := 35;
     end;
 
     with configs[i].RelayLabel do
-    begin                     
-      Caption := 'Relay ' + IntToStr(i+1);
+    begin
+      Caption := 'Relay ' + IntToStr(i + 1);
       Parent := configs[i].RelayPanel;
       Width := 60;
       Height := 30;
@@ -160,7 +152,6 @@ begin
       Height := 33;
       Left := 110;
       Top := 1;
-
     end;
 
     with configs[i].RelayOffTime do
@@ -170,7 +161,6 @@ begin
       Height := 33;
       Left := 200;
       Top := 1;
-
     end;
 
     with configs[i].RelayMsec do
@@ -180,7 +170,6 @@ begin
       Height := 33;
       Left := 290;
       Top := 1;
-
     end;
   end;
   //ShowMessage('RelayPrepared');
