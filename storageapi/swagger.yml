@@ -148,13 +148,15 @@ definitions:
     properties:
       programID:
         type: integer
+        minimum: 1
       programName:
         type: string
+        minLength: 1
 
   RelaysProgram:
     type: object
     properties:
-      config:
+      relays:
         type: array
         items:
           $ref: '#/definitions/RelayConfig'
@@ -164,11 +166,12 @@ definitions:
     properties:
       relayID:
         type: integer
+        minimum: 1
       timeOn:
         type: integer
       timeOff:
         type: integer
-      Heating:
+      prfelight:
         type: integer
 
 consumes:
@@ -588,6 +591,7 @@ paths:
             properties:
               stationID:
                 type: integer
+                minimum: 1
       responses:
         200:
           description: OK
@@ -612,22 +616,26 @@ paths:
             required:
               - programID
               - name
+              - stationID
             properties:
+              stationID:
+                type: integer
+                minimum: 1
               programID:
                 type: integer
+                minimum: 1
               name:
                 type: string
+                minLength: 1
       responses:
-        200:
+        204:
           description: OK
-        404:
-          description: not found
         500:
           description: internal error
   
   /get-program-relays:
     post:
-      operationId: "getProgramRelays"
+      operationId: "programRelays"
       parameters:
         - name: args
           required: true
@@ -636,16 +644,19 @@ paths:
             type: object
             required:
               -  programID
+              - stationID
             properties:
+              stationID:
+                type: integer
+                minimum: 1
               programID:
                 type: integer
+                minimum: 1
       responses:
         200:
           description: OK
           schema:
             $ref: '#/definitions/RelaysProgram'
-        404:
-          description: not found
         500:
           description: internal error
           
@@ -661,15 +672,18 @@ paths:
             required:
               -  programID
               -  program
+              - stationID
             properties:
+              stationID:
+                type: integer
+                minimum: 1
               programID:
                 type: integer
+                minimum: 1
               program:
                 $ref: '#/definitions/RelaysProgram'
       responses:
-        200:
+        204:
           description: OK
-        404:
-          description: not found
         500:
           description: internal error
