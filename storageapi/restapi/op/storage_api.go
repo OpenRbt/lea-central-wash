@@ -73,6 +73,14 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation Ping has not yet been implemented")
 			return PingNotImplemented()
 		}),
+		ProgramRelaysHandler: ProgramRelaysHandlerFunc(func(params ProgramRelaysParams) ProgramRelaysResponder {
+			// return middleware.NotImplemented("operation ProgramRelays has not yet been implemented")
+			return ProgramRelaysNotImplemented()
+		}),
+		ProgramsHandler: ProgramsHandlerFunc(func(params ProgramsParams) ProgramsResponder {
+			// return middleware.NotImplemented("operation Programs has not yet been implemented")
+			return ProgramsNotImplemented()
+		}),
 		SaveHandler: SaveHandlerFunc(func(params SaveParams) SaveResponder {
 			// return middleware.NotImplemented("operation Save has not yet been implemented")
 			return SaveNotImplemented()
@@ -92,6 +100,14 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		SaveRelayHandler: SaveRelayHandlerFunc(func(params SaveRelayParams) SaveRelayResponder {
 			// return middleware.NotImplemented("operation SaveRelay has not yet been implemented")
 			return SaveRelayNotImplemented()
+		}),
+		SetProgramNameHandler: SetProgramNameHandlerFunc(func(params SetProgramNameParams) SetProgramNameResponder {
+			// return middleware.NotImplemented("operation SetProgramName has not yet been implemented")
+			return SetProgramNameNotImplemented()
+		}),
+		SetProgramRelaysHandler: SetProgramRelaysHandlerFunc(func(params SetProgramRelaysParams) SetProgramRelaysResponder {
+			// return middleware.NotImplemented("operation SetProgramRelays has not yet been implemented")
+			return SetProgramRelaysNotImplemented()
 		}),
 		SetStationHandler: SetStationHandlerFunc(func(params SetStationParams) SetStationResponder {
 			// return middleware.NotImplemented("operation SetStation has not yet been implemented")
@@ -166,6 +182,10 @@ type StorageAPI struct {
 	OpenStationHandler OpenStationHandler
 	// PingHandler sets the operation handler for the ping operation
 	PingHandler PingHandler
+	// ProgramRelaysHandler sets the operation handler for the program relays operation
+	ProgramRelaysHandler ProgramRelaysHandler
+	// ProgramsHandler sets the operation handler for the programs operation
+	ProgramsHandler ProgramsHandler
 	// SaveHandler sets the operation handler for the save operation
 	SaveHandler SaveHandler
 	// SaveCollectionHandler sets the operation handler for the save collection operation
@@ -176,6 +196,10 @@ type StorageAPI struct {
 	SaveMoneyHandler SaveMoneyHandler
 	// SaveRelayHandler sets the operation handler for the save relay operation
 	SaveRelayHandler SaveRelayHandler
+	// SetProgramNameHandler sets the operation handler for the set program name operation
+	SetProgramNameHandler SetProgramNameHandler
+	// SetProgramRelaysHandler sets the operation handler for the set program relays operation
+	SetProgramRelaysHandler SetProgramRelaysHandler
 	// SetStationHandler sets the operation handler for the set station operation
 	SetStationHandler SetStationHandler
 	// StationByHashHandler sets the operation handler for the station by hash operation
@@ -287,6 +311,14 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "PingHandler")
 	}
 
+	if o.ProgramRelaysHandler == nil {
+		unregistered = append(unregistered, "ProgramRelaysHandler")
+	}
+
+	if o.ProgramsHandler == nil {
+		unregistered = append(unregistered, "ProgramsHandler")
+	}
+
 	if o.SaveHandler == nil {
 		unregistered = append(unregistered, "SaveHandler")
 	}
@@ -305,6 +337,14 @@ func (o *StorageAPI) Validate() error {
 
 	if o.SaveRelayHandler == nil {
 		unregistered = append(unregistered, "SaveRelayHandler")
+	}
+
+	if o.SetProgramNameHandler == nil {
+		unregistered = append(unregistered, "SetProgramNameHandler")
+	}
+
+	if o.SetProgramRelaysHandler == nil {
+		unregistered = append(unregistered, "SetProgramRelaysHandler")
 	}
 
 	if o.SetStationHandler == nil {
@@ -477,6 +517,16 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/program-relays"] = NewProgramRelays(o.context, o.ProgramRelaysHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/programs"] = NewPrograms(o.context, o.ProgramsHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/save"] = NewSave(o.context, o.SaveHandler)
 
 	if o.handlers["POST"] == nil {
@@ -498,6 +548,16 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/save-relay"] = NewSaveRelay(o.context, o.SaveRelayHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-program-name"] = NewSetProgramName(o.context, o.SetProgramNameHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-program-relays"] = NewSetProgramRelays(o.context, o.SetProgramRelaysHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

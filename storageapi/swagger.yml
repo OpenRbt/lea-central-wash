@@ -2,7 +2,7 @@ swagger: "2.0"
 
 info:
   title: Storage
-  version: 1.7.0
+  version: 1.8.0
 
 basePath: /
 schemes:
@@ -146,30 +146,22 @@ definitions:
   ProgramInfo:
     type: object
     properties:
-      programID:
+      id:
         type: integer
         minimum: 1
-      programName:
+      name:
         type: string
         minLength: 1
-
-  RelaysProgram:
-    type: object
-    properties:
-      relays:
-        type: array
-        items:
-          $ref: '#/definitions/RelayConfig'
 
   RelayConfig:
     type: object
     properties:
-      relayID:
+      id:
         type: integer
         minimum: 1
-      timeOn:
+      timeon:
         type: integer
-      timeOff:
+      timeoff:
         type: integer
       prfelight:
         type: integer
@@ -577,9 +569,9 @@ paths:
         500:
           description: internal error
   
-  /get-programs:
+  /programs:
     post:
-      operationId: "getPrograms"
+      operationId: "programs"
       parameters:
         - name: args
           required: true
@@ -599,8 +591,6 @@ paths:
             type: array
             items:
               $ref: '#/definitions/ProgramInfo'
-        404:
-          description: not found
         500:
           description: internal error
   
@@ -633,7 +623,7 @@ paths:
         500:
           description: internal error
   
-  /get-program-relays:
+  /program-relays:
     post:
       operationId: "programRelays"
       parameters:
@@ -643,7 +633,7 @@ paths:
           schema:
             type: object
             required:
-              -  programID
+              - programID
               - stationID
             properties:
               stationID:
@@ -656,7 +646,12 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/RelaysProgram'
+            type: object
+            properties:
+              relays:
+                type: array
+                items:
+                  $ref: '#/definitions/RelayConfig'
         500:
           description: internal error
           
@@ -680,8 +675,10 @@ paths:
               programID:
                 type: integer
                 minimum: 1
-              program:
-                $ref: '#/definitions/RelaysProgram'
+              relays:
+                type: array
+                items:
+                  $ref: '#/definitions/RelayConfig'
       responses:
         204:
           description: OK

@@ -7,7 +7,7 @@ Package restapi Storage
       http
     Host: localhost
     BasePath: /
-    Version: 1.7.0
+    Version: 1.8.0
 
     Consumes:
     - application/json

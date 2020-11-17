@@ -431,3 +431,150 @@ func (svc *service) openStation(params op.OpenStationParams) op.OpenStationRespo
 		return op.NewOpenStationInternalServerError()
 	}
 }
+
+func (svc *service) setProgramName(params op.SetProgramNameParams) op.SetProgramNameResponder {
+	log.Info("setProgramName", "stationID", *params.Args.StationID, "programID", *params.Args.ProgramID, "name", *params.Args.Name, "ip", params.HTTPRequest.RemoteAddr)
+	var err error
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSetProgramNameNoContent()
+	default:
+		log.PrintErr(err, "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewSetProgramNameInternalServerError()
+	}
+}
+
+func (svc *service) setProgramRelays(params op.SetProgramRelaysParams) op.SetProgramRelaysResponder {
+	log.Info("setProgramRelays", "stationID", *params.Args.StationID, "programID", *params.Args.ProgramID, "relays", params.Args.Relays, "ip", params.HTTPRequest.RemoteAddr)
+	var err error
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSetProgramRelaysNoContent()
+	default:
+		log.PrintErr(err, "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewSetProgramRelaysInternalServerError()
+	}
+}
+
+func (svc *service) programs(params op.ProgramsParams) op.ProgramsResponder {
+	var err error
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewProgramsOK().WithPayload([]*model.ProgramInfo{
+			&model.ProgramInfo{
+				ID:   1,
+				Name: "вода",
+			},
+			&model.ProgramInfo{
+				ID:   2,
+				Name: "пена",
+			},
+			&model.ProgramInfo{
+				ID:   3,
+				Name: "активная пена",
+			},
+			&model.ProgramInfo{
+				ID:   4,
+				Name: "воск",
+			},
+			&model.ProgramInfo{
+				ID:   5,
+				Name: "осмос",
+			},
+			&model.ProgramInfo{
+				ID:   6,
+				Name: "пауза",
+			},
+		})
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewProgramsInternalServerError()
+	}
+}
+
+func (svc *service) programRelays(params op.ProgramRelaysParams) op.ProgramRelaysResponder {
+	var err error
+	log.Info("programRelays", "stationID", *params.Args.StationID, "programID", *params.Args.ProgramID, "ip", params.HTTPRequest.RemoteAddr)
+	relays := []*model.RelayConfig{}
+	switch *params.Args.ProgramID {
+	case 1:
+		relays = []*model.RelayConfig{
+			&model.RelayConfig{
+				ID: 1,
+			},
+			&model.RelayConfig{
+				ID: 6,
+			},
+		}
+	case 2:
+		relays = []*model.RelayConfig{
+			&model.RelayConfig{
+				ID: 1,
+			},
+			&model.RelayConfig{
+				ID:        2,
+				Prfelight: 700,
+				Timeoff:   350,
+				Timeon:    135,
+			},
+			&model.RelayConfig{
+				ID: 6,
+			},
+		}
+	case 3:
+		relays = []*model.RelayConfig{
+			&model.RelayConfig{
+				ID: 1,
+			},
+			&model.RelayConfig{
+				ID:        2,
+				Prfelight: 700,
+				Timeoff:   250,
+				Timeon:    250,
+			},
+			&model.RelayConfig{
+				ID: 6,
+			},
+		}
+	case 4:
+		relays = []*model.RelayConfig{
+			&model.RelayConfig{
+				ID: 1,
+			},
+			&model.RelayConfig{
+				ID:        4,
+				Prfelight: 600,
+				Timeoff:   340,
+				Timeon:    135,
+			},
+			&model.RelayConfig{
+				ID: 6,
+			},
+		}
+	case 5:
+		relays = []*model.RelayConfig{
+			&model.RelayConfig{
+				ID: 5,
+			},
+			&model.RelayConfig{
+				ID: 6,
+			},
+		}
+	case 6:
+		relays = []*model.RelayConfig{
+			&model.RelayConfig{
+				ID: 6,
+			},
+		}
+	}
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewProgramRelaysOK().WithPayload(&op.ProgramRelaysOKBody{
+			Relays: relays,
+		})
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewProgramRelaysInternalServerError()
+	}
+}

@@ -89,6 +89,11 @@ func NewServer(appl app.App, cfg Config, repo repo) (*restapi.Server, error) {
 
 	api.OpenStationHandler = op.OpenStationHandlerFunc(svc.openStation)
 
+	api.SetProgramNameHandler = op.SetProgramNameHandlerFunc(svc.setProgramName)
+	api.ProgramsHandler = op.ProgramsHandlerFunc(svc.programs)
+	api.SetProgramRelaysHandler = op.SetProgramRelaysHandlerFunc(svc.setProgramRelays)
+	api.ProgramRelaysHandler = op.ProgramRelaysHandlerFunc(svc.programRelays)
+
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port

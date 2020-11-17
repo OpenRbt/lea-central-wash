@@ -59,6 +59,12 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.PingHandler = op.PingHandlerFunc(func(params op.PingParams) op.PingResponder {
 		return op.PingNotImplemented()
 	})
+	api.ProgramRelaysHandler = op.ProgramRelaysHandlerFunc(func(params op.ProgramRelaysParams) op.ProgramRelaysResponder {
+		return op.ProgramRelaysNotImplemented()
+	})
+	api.ProgramsHandler = op.ProgramsHandlerFunc(func(params op.ProgramsParams) op.ProgramsResponder {
+		return op.ProgramsNotImplemented()
+	})
 	api.SaveHandler = op.SaveHandlerFunc(func(params op.SaveParams) op.SaveResponder {
 		return op.SaveNotImplemented()
 	})
@@ -73,6 +79,12 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	})
 	api.SaveRelayHandler = op.SaveRelayHandlerFunc(func(params op.SaveRelayParams) op.SaveRelayResponder {
 		return op.SaveRelayNotImplemented()
+	})
+	api.SetProgramNameHandler = op.SetProgramNameHandlerFunc(func(params op.SetProgramNameParams) op.SetProgramNameResponder {
+		return op.SetProgramNameNotImplemented()
+	})
+	api.SetProgramRelaysHandler = op.SetProgramRelaysHandlerFunc(func(params op.SetProgramRelaysParams) op.SetProgramRelaysResponder {
+		return op.SetProgramRelaysNotImplemented()
 	})
 	api.SetStationHandler = op.SetStationHandlerFunc(func(params op.SetStationParams) op.SetStationResponder {
 		return op.SetStationNotImplemented()

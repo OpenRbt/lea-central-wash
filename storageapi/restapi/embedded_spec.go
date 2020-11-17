@@ -30,7 +30,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.7.0"
+    "version": "1.8.0"
   },
   "basePath": "/",
   "paths": {
@@ -316,6 +316,92 @@ func init() {
         }
       }
     },
+    "/program-relays": {
+      "post": {
+        "operationId": "programRelays",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "programID",
+                "stationID"
+              ],
+              "properties": {
+                "programID": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "relays": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/RelayConfig"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/programs": {
+      "post": {
+        "operationId": "programs",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ProgramInfo"
+              }
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/save": {
       "post": {
         "operationId": "save",
@@ -463,6 +549,92 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-program-name": {
+      "post": {
+        "operationId": "setProgramName",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "programID",
+                "name",
+                "stationID"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "programID": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-program-relays": {
+      "post": {
+        "operationId": "setProgramRelays",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "programID",
+                "program",
+                "stationID"
+              ],
+              "properties": {
+                "programID": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "relays": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/RelayConfig"
+                  }
+                },
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
           },
           "500": {
             "description": "internal error"
@@ -706,6 +878,37 @@ func init() {
           "$ref": "#/definitions/Hash"
         },
         "service": {
+          "type": "integer"
+        }
+      }
+    },
+    "ProgramInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "RelayConfig": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "prfelight": {
+          "type": "integer"
+        },
+        "timeoff": {
+          "type": "integer"
+        },
+        "timeon": {
           "type": "integer"
         }
       }
@@ -851,7 +1054,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "title": "Storage",
-    "version": "1.7.0"
+    "version": "1.8.0"
   },
   "basePath": "/",
   "paths": {
@@ -1137,6 +1340,92 @@ func init() {
         }
       }
     },
+    "/program-relays": {
+      "post": {
+        "operationId": "programRelays",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "programID",
+                "stationID"
+              ],
+              "properties": {
+                "programID": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "relays": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/RelayConfig"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/programs": {
+      "post": {
+        "operationId": "programs",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ProgramInfo"
+              }
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/save": {
       "post": {
         "operationId": "save",
@@ -1284,6 +1573,92 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-program-name": {
+      "post": {
+        "operationId": "setProgramName",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "programID",
+                "name",
+                "stationID"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "programID": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-program-relays": {
+      "post": {
+        "operationId": "setProgramRelays",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "programID",
+                "program",
+                "stationID"
+              ],
+              "properties": {
+                "programID": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "relays": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/RelayConfig"
+                  }
+                },
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
           },
           "500": {
             "description": "internal error"
@@ -1527,6 +1902,37 @@ func init() {
           "$ref": "#/definitions/Hash"
         },
         "service": {
+          "type": "integer"
+        }
+      }
+    },
+    "ProgramInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "RelayConfig": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "prfelight": {
+          "type": "integer"
+        },
+        "timeoff": {
+          "type": "integer"
+        },
+        "timeon": {
           "type": "integer"
         }
       }
