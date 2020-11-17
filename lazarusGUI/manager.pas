@@ -163,7 +163,7 @@ end;
 
 procedure TManageForm.btnManageProgramsClick(Sender: TObject);
 begin
-  ManagePrograms.FormShow(self);
+  ManagePrograms.FormShow(self,StationID);
 end;
 
 procedure TManageForm.btnOKClick(Sender: TObject);

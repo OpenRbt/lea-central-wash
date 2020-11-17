@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  fphttpclient, Fpjson, jsonparser;
+  ClientAPI;
 
 type
 
@@ -38,7 +38,8 @@ type
     procedure btnOkClick(Sender: TObject);
     procedure btnSaveRelaysConfigClick(Sender: TObject);
     procedure ProgramListClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    procedure LoadRelaysConfig();
+    procedure FormShow(Sender: TObject; ID: integer);
   private
 
   public
@@ -54,10 +55,13 @@ type
     RelayMsec: TEdit;
   end;
 
+
 var
   ManagePrograms: TManagePrograms;
-  RelaysCount: integer;
+  RelaysCount, StationID, ProgramID: integer;
   configs: array of RelayConfig;
+  programs: ProgramsInfo;
+
 
 
 implementation
@@ -68,14 +72,13 @@ implementation
 procedure PrepareProgramList(ProgramList: TListBox);
 var
   i: integer;
-  programsCount: integer;
 begin
   ProgramList.Items.Clear;
-  programsCount := 9;
+  programs := client.GetPrograms(StationID);
 
-  for i := 0 to programsCount - 1 do
+  for i := 0 to programs.Count - 1 do
   begin
-    ProgramList.Items.Add('ProgramName ' + IntToStr(i + 1));
+    ProgramList.Items.Add(programs.programName[i]);
   end;
 end;
 
@@ -83,7 +86,6 @@ procedure PrepareRelaysConfig(RelayListBox: TScrollBox);
 var
   i: integer;
 begin
-  //Get Relays count request
   if Assigned(configs) then
   begin
     if Length(configs) > 0 then
@@ -106,8 +108,9 @@ begin
 
 
   RelaysCount := 17;
+
   SetLength(configs, RelaysCount);
-  for i := 0 to 16 do
+  for i := 0 to RelaysCount - 1 do
   begin
     configs[i].RelayPanel := TPanel.Create(nil);
     configs[i].RelayTrigger := TCheckBox.Create(nil);
@@ -148,6 +151,7 @@ begin
     with configs[i].RelayOnTime do
     begin
       Parent := configs[i].RelayPanel;
+      NumbersOnly := True;
       Width := 80;
       Height := 33;
       Left := 110;
@@ -157,6 +161,7 @@ begin
     with configs[i].RelayOffTime do
     begin
       Parent := configs[i].RelayPanel;
+      NumbersOnly := True;
       Width := 80;
       Height := 33;
       Left := 200;
@@ -166,6 +171,7 @@ begin
     with configs[i].RelayMsec do
     begin
       Parent := configs[i].RelayPanel;
+      NumbersOnly := True;
       Width := 80;
       Height := 33;
       Left := 290;
@@ -175,47 +181,90 @@ begin
   //ShowMessage('RelayPrepared');
 end;
 
-procedure LoadRelaysConfig();
+procedure TManagePrograms.LoadRelaysConfig();
 var
   i: integer;
+  relays: RelaysInfo;
+
 begin
-  //Get program I relays request
+  relays := client.GetProgramRelays(StationID, ProgramID);
+
+  //Setting Default values
   for i := 0 to RelaysCount - 1 do
   begin
     with configs[i] do
     begin
       RelayTrigger.Checked := False;
-      RelayOnTime.Caption := '0';
-      RelayOffTime.Caption := '10';
-      RelayMsec.Caption := '100';
+      RelayOnTime.Text := '0';
+      RelayOffTime.Text := '0';
+      RelayMsec.Text := '0';
     end;
   end;
-  //ShowMessage('ProgramLoaded');
+
+  //Setting Relays
+  for i := 0 to relays.Count - 1 do
+  begin
+    with configs[relays.realyID[i] + 1] do
+    begin
+      RelayTrigger.Checked := True;
+      RelayOnTime.Text := IntToStr(relays.timeON[i]);
+      RelayOffTime.Text := IntToStr(relays.timeOFF[i]);
+      RelayMsec.Text := IntToStr(relays.preflight[i]);
+    end;
+  end;
 end;
 
 procedure SaveRelaysConfig();
 var
-  i: integer;
+  i, j: integer;
+  relays: RelaysInfo;
+  sendCount: integer;
 begin
+  sendCount := 0;
+  for i := 0 to RelaysCount-1 do
+  begin
+    with configs[i] do
+    begin
+      if RelayTrigger.Checked then
+      begin
+        sendCount := sendCount + 1;
+      end;
+    end;
+  end;
+
+  setlength(relays.realyID, sendCount); 
+  setlength(relays.timeON, sendCount);
+  setlength(relays.timeOFF, sendCount);
+  setlength(relays.preflight, sendCount);
+  j := 0;
   for i := 0 to RelaysCount - 1 do
   begin
     with configs[i] do
     begin
-
+      if RelayTrigger.Checked then
+      begin
+        relays.realyID[j] := i + 1;
+        relays.timeON[j] := StrToInt(RelayOnTime.Text);
+        relays.timeOFF[j] := StrToInt(RelayOffTime.Text);
+        relays.preflight[j] := StrToInt(RelayMsec.Text);
+        j := j + 1;
+      end;
     end;
   end;
-  ShowMessage('Saved Relays Configuration');
-  //Send program I relays request
 
+  client.SetProgramRelays(StationID, ProgramID, relays);
+
+  ShowMessage('Saved Relays Configuration');
 end;
 
 procedure TManagePrograms.ProgramListClick(Sender: TObject);
 begin
-  LoadRelaysConfig();
 
   if ProgramList.ItemIndex <> -1 then
   begin
-    programNameEdit.Text := ProgramList.Items[ProgramList.ItemIndex];
+    ProgramID := programs.programID[ProgramList.ItemIndex];
+    LoadRelaysConfig();
+    programNameEdit.Text := programs.programName[ProgramList.ItemIndex];
   end;
 
 end;
@@ -224,7 +273,7 @@ procedure TManagePrograms.btnCancelProgramNameClick(Sender: TObject);
 begin
   if ProgramList.ItemIndex <> -1 then
   begin
-    programNameEdit.Text := ProgramList.Items[ProgramList.ItemIndex];
+    programNameEdit.Text := programs.programName[ProgramList.ItemIndex];
   end
   else
   begin
@@ -243,13 +292,20 @@ procedure TManagePrograms.btnSaveProgramNameClick(Sender: TObject);
 begin
   if ProgramList.ItemIndex <> -1 then
   begin
+    programs.programName[ProgramList.ItemIndex] := programNameEdit.Text;
     ProgramList.Items[ProgramList.ItemIndex] := programNameEdit.Text;
+
+    client.SetProgramName(StationID, programs.programID[ProgramList.ItemIndex],
+      programs.programName[ProgramList.ItemIndex]);
   end;
-  //Save programName request
 end;
 
 procedure TManagePrograms.btnOkClick(Sender: TObject);
 begin
+  if Assigned(programs.programID) then
+  begin
+    Finalize(programs);
+  end;
   Close;
 end;
 
@@ -259,9 +315,10 @@ begin
 end;
 
 
-procedure TManagePrograms.FormShow(Sender: TObject);
+procedure TManagePrograms.FormShow(Sender: TObject; ID: integer);
 begin
   Show;
+  StationID := ID;
   PrepareProgramList(ProgramList);
   PrepareRelaysConfig(RelayListBox);
   btnCancelProgramNameClick(self);
