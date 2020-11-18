@@ -5,7 +5,7 @@ unit clientAPI;
 interface
 
 uses
-  Classes, SysUtils, fphttpclient, Fpjson, jsonparser;
+  Classes, SysUtils, fphttpclient, Fpjson, jsonparser, Dialogs;
 
 type
 
@@ -206,22 +206,36 @@ begin
   postJson.Add('stationID', stationID);
   with TFPHttpClient.Create(nil) do
     try
-      AddHeader('Content-Type', 'application/json');
-      RequestBody := TStringStream.Create(postJson.AsJSON);
-      RequestAnswer := Post(serverEndpoint + 'programs');
-      programsJson := GetJson(RequestAnswer) as TJsonArray;
+      try
+        AddHeader('Content-Type', 'application/json');
+        RequestBody := TStringStream.Create(postJson.AsJSON);
+        RequestAnswer := Post(serverEndpoint + 'programs');
 
-      setlength(Result.programID, programsJson.Count);
-      setlength(Result.programName, programsJson.Count);
-      Result.Count := programsJson.Count;
+        programsJson := GetJson(RequestAnswer) as TJsonArray;
 
-      for i := 0 to programsJson.Count - 1 do
-      begin
-        with programsJson.items[i] do
+        setlength(Result.programID, programsJson.Count);
+        setlength(Result.programName, programsJson.Count);
+        Result.Count := programsJson.Count;
+
+        for i := 0 to programsJson.Count - 1 do
         begin
-          Result.programID[i] := GetPath('id').AsInteger;
-          Result.programName[i] := GetPath('name').AsString;
+          with programsJson.items[i] do
+          begin
+            Result.programID[i] := GetPath('id').AsInteger;
+            Result.programName[i] := GetPath('name').AsString;
+          end;
         end;
+      except
+        case ResponseStatusCode of
+          0: ShowMessage('Can`t connect to server');
+          500: ShowMessage('Server Error');
+          else
+            ShowMessage('Unexpected Error');
+        end;
+        setlength(Result.programID, 0);
+        setlength(Result.programName, 0);
+        Result.Count := 0;
+
       end;
     finally
       Free
@@ -240,9 +254,18 @@ begin
   postJson.Add('name', programName);
   with TFPHttpClient.Create(nil) do
     try
-      AddHeader('Content-Type', 'application/json');
-      RequestBody := TStringStream.Create(postJson.AsJSON);
-      Post(serverEndpoint + 'set-program-name');
+      try
+        AddHeader('Content-Type', 'application/json');
+        RequestBody := TStringStream.Create(postJson.AsJSON);
+        Post(serverEndpoint + 'set-program-name');
+      except
+        case ResponseStatusCode of
+          0: ShowMessage('Can`t connect to server');
+          500: ShowMessage('Server Error');
+          else
+            ShowMessage('Unexpected Error');
+        end;
+      end;
     finally
       Free
     end;
@@ -261,54 +284,69 @@ begin
   postJson.Add('programID', ProgramID);
   with TFPHttpClient.Create(nil) do
     try
-      AddHeader('Content-Type', 'application/json');
-      RequestBody := TStringStream.Create(postJson.AsJSON);
-      RequestAnswer := Post(serverEndpoint + 'program-relays');
-      relaysJson := GetJson(RequestAnswer).GetPath('relays') as TJsonArray;
+      try
+        AddHeader('Content-Type', 'application/json');
+        RequestBody := TStringStream.Create(postJson.AsJSON);
+        RequestAnswer := Post(serverEndpoint + 'program-relays');
+        relaysJson := GetJson(RequestAnswer).GetPath('relays') as TJsonArray;
 
-      setlength(Result.realyID, relaysJson.Count);
-      setlength(Result.timeON, relaysJson.Count);
-      setlength(Result.timeOFF, relaysJson.Count);
-      setlength(Result.preflight, relaysJson.Count);
+        setlength(Result.realyID, relaysJson.Count);
+        setlength(Result.timeON, relaysJson.Count);
+        setlength(Result.timeOFF, relaysJson.Count);
+        setlength(Result.preflight, relaysJson.Count);
 
-      Result.Count := relaysJson.Count;
+        Result.Count := relaysJson.Count;
 
-      for i := 0 to relaysJson.Count - 1 do
-      begin
-        with relaysJson.items[i] do
+        for i := 0 to relaysJson.Count - 1 do
         begin
-          Result.realyID[i] := FindPath('id').AsInteger;
+          with relaysJson.items[i] do
+          begin
+            Result.realyID[i] := FindPath('id').AsInteger;
 
-          tmp := FindPath('timeon');
-          if tmp <> nil then
-          begin
-            Result.timeON[i] := tmp.AsInteger;
-          end
-          else
-          begin
-            Result.timeON[i] := 0;
-          end;
+            tmp := FindPath('timeon');
+            if tmp <> nil then
+            begin
+              Result.timeON[i] := tmp.AsInteger;
+            end
+            else
+            begin
+              Result.timeON[i] := 0;
+            end;
 
-          tmp := FindPath('timeoff');
-          if tmp <> nil then
-          begin
-            Result.timeOFF[i] := tmp.AsInteger;
-          end
-          else
-          begin
-            Result.timeOFF[i] := 0;
-          end;
+            tmp := FindPath('timeoff');
+            if tmp <> nil then
+            begin
+              Result.timeOFF[i] := tmp.AsInteger;
+            end
+            else
+            begin
+              Result.timeOFF[i] := 0;
+            end;
 
-          tmp := FindPath('prfelight');
-          if tmp <> nil then
-          begin
-            Result.preflight[i] := tmp.AsInteger;
-          end
-          else
-          begin
-            Result.preflight[i] := 0;
+            tmp := FindPath('prfelight');
+            if tmp <> nil then
+            begin
+              Result.preflight[i] := tmp.AsInteger;
+            end
+            else
+            begin
+              Result.preflight[i] := 0;
+            end;
           end;
         end;
+      except
+        case ResponseStatusCode of
+          0: ShowMessage('Can`t connect to server');
+          500: ShowMessage('Server Error');
+          else
+            ShowMessage('Unexpected Error');
+        end;
+        setlength(Result.realyID, 0);
+        setlength(Result.timeON, 0);
+        setlength(Result.timeOFF, 0);
+        setlength(Result.preflight, 0);
+
+        Result.Count := 0;
       end;
     finally
       Free
@@ -325,27 +363,52 @@ var
 begin
 
   postJson := TJSONObject.Create;
-  postJson.Add('stationID', stationID);
+  postJson.Add('stationID', StationID);
   postJson.Add('programID', ProgramID);
   with TFPHttpClient.Create(nil) do
     try
-      AddHeader('Content-Type', 'application/json');
+      try
+        AddHeader('Content-Type', 'application/json');
 
-      relaysJson := TJsonArray.Create;
-      for i := 0 to relays.Count - 1 do
-      begin
-        tmp := TJSONObject.Create;
-        tmp.Add('id', relays.realyID[i]);
-        tmp.Add('timeon', relays.timeON[i]);
-        tmp.Add('timeoff', relays.timeOFF[i]);
-        tmp.Add('prfelight', relays.preflight[i]);
-        relaysJson.Add(tmp);
+        relaysJson := TJsonArray.Create;
+        for i := 0 to relays.Count - 1 do
+        begin
+          tmp := TJSONObject.Create;
+          tmp.Add('id', relays.realyID[i]);
+
+          if relays.timeON[i] <> 0 then
+          begin
+            tmp.Add('timeon', relays.timeON[i]);
+          end;
+
+          if relays.timeOFF[i] <> 0 then
+          begin
+            tmp.Add('timeoff', relays.timeOFF[i]);
+          end;
+
+          if relays.preflight[i] <> 0 then
+          begin
+            tmp.Add('prfelight', relays.preflight[i]);
+          end;
+
+          relaysJson.Add(tmp);
+        end;
+
+        postJson.Add('relays', relaysJson);
+        RequestBody := TStringStream.Create(postJson.AsJSON);
+        Post(serverEndpoint + 'set-program-relays');
+
+      except
+        case ResponseStatusCode of
+          0: ShowMessage('Can`t connect to server');
+          500: ShowMessage('Server Error');
+          else
+            ShowMessage('Unexpected Error');
+        end;
+
       end;
-      postJson.Add('relays', relaysJson);
-      RequestBody := TStringStream.Create(postJson.AsJSON);
-      Post(serverEndpoint + 'set-program-relays');
-    finally
 
+    finally
       Free
     end;
 end;

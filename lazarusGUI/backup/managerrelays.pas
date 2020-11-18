@@ -119,7 +119,6 @@ begin
     configs[i].RelayMsec := TEdit.Create(nil);
     configs[i].RelayLabel := TLabel.Create(nil);
     //Relay Config Creation
-
     with configs[i].RelayPanel do
     begin
       Parent := RelayListBox;
@@ -178,7 +177,6 @@ begin
       Top := 1;
     end;
   end;
-  //ShowMessage('RelayPrepared');
 end;
 
 procedure TManagePrograms.LoadRelaysConfig();
@@ -221,7 +219,7 @@ var
   sendCount: integer;
 begin
   sendCount := 0;
-  for i := 0 to RelaysCount-1 do
+  for i := 0 to RelaysCount - 1 do
   begin
     with configs[i] do
     begin
@@ -231,11 +229,11 @@ begin
       end;
     end;
   end;
-
-  setlength(relays.realyID, sendCount); 
+  setlength(relays.realyID, sendCount);
   setlength(relays.timeON, sendCount);
   setlength(relays.timeOFF, sendCount);
   setlength(relays.preflight, sendCount);
+  relays.Count := sendCount;
   j := 0;
   for i := 0 to RelaysCount - 1 do
   begin
@@ -253,8 +251,6 @@ begin
   end;
 
   client.SetProgramRelays(StationID, ProgramID, relays);
-
-  ShowMessage('Saved Relays Configuration');
 end;
 
 procedure TManagePrograms.ProgramListClick(Sender: TObject);
@@ -285,7 +281,6 @@ end;
 procedure TManagePrograms.btnRevertRelayConfigClick(Sender: TObject);
 begin
   LoadRelaysConfig();
-  ShowMessage('Revert Relays Configuration');
 end;
 
 procedure TManagePrograms.btnSaveProgramNameClick(Sender: TObject);
