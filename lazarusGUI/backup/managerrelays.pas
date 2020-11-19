@@ -40,6 +40,8 @@ type
     procedure ProgramListClick(Sender: TObject);
     procedure LoadRelaysConfig();
     procedure FormShow(Sender: TObject; ID: integer);
+    procedure PrepareProgramList();
+    procedure PrepareRelaysConfig();
   private
 
   public
@@ -68,20 +70,22 @@ implementation
 {$R *.lfm}
 
 { TManagePrograms }
-procedure PrepareProgramList(ProgramList: TListBox);
+procedure TManagePrograms.PrepareProgramList();
 var
-  i: integer;  
+  i: integer;
   programs: ProgramsInfo;
+  status: boolean;
 begin
-  ProgramList.Items.Clear
-  try;
-  programs := client.GetPrograms(StationID);
-                                         
-  except
-    ShowMessage('Cant load programs from server');
+  ProgramList.Items.Clear;
+
+  programs := client.GetPrograms(StationID, status);
+
+  if status = False then
+  begin
     Close;
   end;
-  for i := 0 to 9 do
+
+  for i := 0 to 8 do
   begin
     ProgramList.Items.Add('Program ' + IntToStr(i + 1));
   end;
@@ -92,7 +96,7 @@ begin
   end;
 end;
 
-procedure PrepareRelaysConfig(RelayListBox: TScrollBox);
+procedure TManagePrograms.PrepareRelaysConfig();
 var
   i: integer;
 begin
@@ -193,9 +197,19 @@ procedure TManagePrograms.LoadRelaysConfig();
 var
   i: integer;
   relays: RelaysInfo;
+  status: boolean;
 
 begin
-  relays := client.GetProgramRelays(StationID, ProgramID);
+  relays := client.GetProgramRelays(StationID, ProgramID, status);
+
+  if status = False then
+  begin
+    btnSaveRelaysConfig.Enabled := False;
+  end
+  else
+  begin
+    btnSaveRelaysConfig.Enabled := True;
+  end;
 
   //Setting Default values
   for i := 0 to RelaysCount - 1 do
@@ -227,6 +241,8 @@ var
   i, j: integer;
   relays: RelaysInfo;
   sendCount: integer;
+  status: boolean;
+
 begin
   sendCount := 0;
   for i := 0 to RelaysCount - 1 do
@@ -269,7 +285,12 @@ begin
     end;
   end;
 
-  client.SetProgramRelays(StationID, ProgramID, relays);
+  client.SetProgramRelays(StationID, ProgramID, relays, status);
+
+  if status = False then
+  begin
+    //close;
+  end;
 end;
 
 procedure TManagePrograms.ProgramListClick(Sender: TObject);
@@ -303,13 +324,20 @@ begin
 end;
 
 procedure TManagePrograms.btnSaveProgramNameClick(Sender: TObject);
+var
+  status: boolean;
 begin
   if ProgramList.ItemIndex <> -1 then
   begin
     ProgramList.Items[ProgramList.ItemIndex] := programNameEdit.Text;
 
-    client.SetProgramName(StationID, ProgramList.ItemIndex +1,
-      programNameEdit.Text);
+    client.SetProgramName(StationID, ProgramList.ItemIndex + 1,
+      programNameEdit.Text, status);
+
+    if status = False then
+    begin
+      //close;
+    end;
   end;
 end;
 
@@ -328,8 +356,8 @@ procedure TManagePrograms.FormShow(Sender: TObject; ID: integer);
 begin
   Show;
   StationID := ID;
-  PrepareRelaysConfig(RelayListBox);
-  PrepareProgramList(ProgramList);
+  PrepareRelaysConfig();
+  PrepareProgramList();
   btnCancelProgramNameClick(self);
 end;
 

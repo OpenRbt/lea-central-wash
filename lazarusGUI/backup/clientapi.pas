@@ -34,12 +34,12 @@ type
     procedure SendMoney(hash: string; moneyToSend: integer);
     function Info(): string;
 
-    function GetPrograms(StationID: integer): ProgramsInfo;
+    function GetPrograms(StationID: integer; out successful : boolean): ProgramsInfo;
     procedure SetProgramName(StationID: integer; ProgramID: integer;
-      programName: string);
-    function GetProgramRelays(StationID: integer; ProgramID: integer): RelaysInfo;
+      programName: string; out successful : boolean);
+    function GetProgramRelays(StationID: integer; ProgramID: integer; out successful : boolean): RelaysInfo;
     procedure SetProgramRelays(StationID: integer; ProgramID: integer;
-      relays: RelaysInfo);
+      relays: RelaysInfo; out successful : boolean);
 
   private
     serverEndpoint: string;
@@ -195,13 +195,14 @@ begin
   end;
 end;
 
-function TClient.GetPrograms(StationID: integer): ProgramsInfo;
+function TClient.GetPrograms(StationID: integer, out successful : boolean): ProgramsInfo;
 var
   postJson: TJSONObject;
   programsJson: TJsonArray;
   RequestAnswer: string;
   i: integer;
-begin
+begin         
+  successful:= true;
   postJson := TJSONObject.Create;
   postJson.Add('stationID', stationID);
   with TFPHttpClient.Create(nil) do
@@ -242,7 +243,8 @@ begin
         end;
         setlength(Result.programID, 0);
         setlength(Result.programName, 0);
-        Result.Count := 0;
+        Result.Count := 0;   
+  successful:= false;
 
       end;
     finally
@@ -251,11 +253,12 @@ begin
 end;
 
 procedure TClient.SetProgramName(StationID: integer; ProgramID: integer;
-  programName: string);
+  programName: string, out successful : boolean);
 var
   postJson: TJSONObject;
 begin
-
+        
+  successful:= true;
   postJson := TJSONObject.Create;
   postJson.Add('stationID', StationID);
   postJson.Add('programID', ProgramID);
@@ -279,7 +282,8 @@ begin
           else
             ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
               sLineBreak + ResponseStatusText);
-        end;
+        end;  
+  successful:= false;
       end;
 
 
@@ -288,14 +292,15 @@ begin
     end;
 end;
 
-function TClient.GetProgramRelays(StationID: integer; ProgramID: integer): RelaysInfo;
+function TClient.GetProgramRelays(StationID: integer; ProgramID: integer, out successful : boolean): RelaysInfo;
 var
   postJson: TJSONObject;
   relaysJson: TJsonArray;
   RequestAnswer: string;
   i: integer;
   tmp: TJsonData;
-begin
+begin        
+  successful:= true;
   postJson := TJSONObject.Create;
   postJson.Add('stationID', stationID);
   postJson.Add('programID', ProgramID);
@@ -370,7 +375,8 @@ begin
         setlength(Result.timeOFF, 0);
         setlength(Result.preflight, 0);
 
-        Result.Count := 0;
+        Result.Count := 0;  
+  successful:= false;
       end;
     finally
       Free
@@ -378,14 +384,14 @@ begin
 end;
 
 procedure TClient.SetProgramRelays(StationID: integer; ProgramID: integer;
-  relays: RelaysInfo);
+  relays: RelaysInfo, out successful : boolean);
 var
   postJson: TJSONObject;
   relaysJson: TJsonArray;
   i: integer;
   tmp: TJSONObject;
 begin
-
+  successful:= true;
   postJson := TJSONObject.Create;
   postJson.Add('stationID', StationID);
   postJson.Add('programID', ProgramID);
@@ -434,7 +440,8 @@ begin
           500: ShowMessage('Server Error: 500');
           else
             ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
-              sLineBreak + ResponseStatusText);
+              sLineBreak + ResponseStatusText); 
+  successful:= false;
         end;
       end;
 
