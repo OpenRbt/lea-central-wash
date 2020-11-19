@@ -2,10 +2,10 @@ object ManagePrograms: TManagePrograms
   Left = 371
   Height = 768
   Top = 286
-  Width = 1366
+  Width = 800
   Caption = 'Manage Programs'
   ClientHeight = 768
-  ClientWidth = 1366
+  ClientWidth = 800
   LCLVersion = '2.0.6.0'
   object ProgramList: TListBox
     Left = 5
@@ -31,7 +31,7 @@ object ManagePrograms: TManagePrograms
     TabOrder = 0
   end
   object RelayListBox: TScrollBox
-    Left = 980
+    Left = 414
     Height = 597
     Top = 50
     Width = 380
@@ -103,7 +103,7 @@ object ManagePrograms: TManagePrograms
   object GroupBox1: TGroupBox
     Left = 170
     Height = 180
-    Top = 50
+    Top = 40
     Width = 240
     Caption = 'Program Name'
     ClientHeight = 162
@@ -150,28 +150,34 @@ object ManagePrograms: TManagePrograms
     TabOrder = 3
   end
   object btnSaveRelaysConfig: TButton
-    Left = 1000
+    Left = 434
     Height = 70
     Top = 661
     Width = 140
+    Align = alCustom
+    Anchors = [akRight]
     Caption = 'Save Configuration'
     OnClick = btnSaveRelaysConfigClick
     TabOrder = 4
   end
   object btnRevertRelayConfig: TButton
-    Left = 1200
+    Left = 634
     Height = 70
     Top = 661
     Width = 140
+    Align = alCustom
+    Anchors = [akRight]
     Caption = 'Revert Changes'
     OnClick = btnRevertRelayConfigClick
     TabOrder = 5
   end
   object labelRelayActive: TLabel
-    Left = 1050
+    Left = 484
     Height = 15
     Top = 25
     Width = 42
+    Align = alCustom
+    Anchors = [akRight]
     AutoSize = False
     Caption = 'Active'
     Font.Height = 15
@@ -179,10 +185,12 @@ object ManagePrograms: TManagePrograms
     ParentFont = False
   end
   object labelTimeOn: TLabel
-    Left = 1100
+    Left = 534
     Height = 15
     Top = 25
     Width = 58
+    Align = alCustom
+    Anchors = [akRight]
     AutoSize = False
     Caption = 'Time ON'
     Font.Height = 14
@@ -190,10 +198,12 @@ object ManagePrograms: TManagePrograms
     ParentFont = False
   end
   object labelTimeOff: TLabel
-    Left = 1190
+    Left = 624
     Height = 15
     Top = 25
     Width = 63
+    Align = alCustom
+    Anchors = [akRight]
     AutoSize = False
     Caption = 'Time OFF'
     Font.Height = 14
@@ -201,10 +211,12 @@ object ManagePrograms: TManagePrograms
     ParentFont = False
   end
   object labelTimeMsec: TLabel
-    Left = 1290
+    Left = 724
     Height = 15
     Top = 25
     Width = 38
+    Align = alCustom
+    Anchors = [akRight]
     AutoSize = False
     Caption = 'MSEC'
     Font.Height = 15

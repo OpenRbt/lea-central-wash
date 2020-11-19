@@ -60,7 +60,6 @@ var
   ManagePrograms: TManagePrograms;
   RelaysCount, StationID, ProgramID: integer;
   configs: array of RelayConfig;
-  programs: ProgramsInfo;
 
 
 
@@ -71,14 +70,25 @@ implementation
 { TManagePrograms }
 procedure PrepareProgramList(ProgramList: TListBox);
 var
-  i: integer;
+  i: integer;  
+  programs: ProgramsInfo;
 begin
-  ProgramList.Items.Clear;
+  ProgramList.Items.Clear
+  try;
   programs := client.GetPrograms(StationID);
+                                         
+  except
+    ShowMessage('Cant load programs from server');
+    Close;
+  end;
+  for i := 0 to 9 do
+  begin
+    ProgramList.Items.Add('Program ' + IntToStr(i + 1));
+  end;
 
   for i := 0 to programs.Count - 1 do
   begin
-    ProgramList.Items.Add(programs.programName[i]);
+    ProgramList.Items[programs.programID[i] - 1] := programs.programName[i];
   end;
 end;
 
@@ -202,7 +212,7 @@ begin
   //Setting Relays
   for i := 0 to relays.Count - 1 do
   begin
-    with configs[relays.realyID[i] + 1] do
+    with configs[relays.realyID[i] - 1] do
     begin
       RelayTrigger.Checked := True;
       RelayOnTime.Text := IntToStr(relays.timeON[i]);
@@ -242,9 +252,18 @@ begin
       if RelayTrigger.Checked then
       begin
         relays.realyID[j] := i + 1;
-        relays.timeON[j] := StrToInt(RelayOnTime.Text);
-        relays.timeOFF[j] := StrToInt(RelayOffTime.Text);
-        relays.preflight[j] := StrToInt(RelayMsec.Text);
+        try
+          relays.timeON[j] := StrToInt(RelayOnTime.Text);
+          relays.timeOFF[j] := StrToInt(RelayOffTime.Text);
+          relays.preflight[j] := StrToInt(RelayMsec.Text);
+
+          if (relays.timeON[j] < 0) or (relays.timeOFF[j] < 0) or
+            (relays.preflight[j] < 0) then
+            raise Exception.Create('');
+        except
+          ShowMessage('Incorrect values for relay ' + IntToStr(i + 1));
+          exit;
+        end;
         j := j + 1;
       end;
     end;
@@ -258,9 +277,9 @@ begin
 
   if ProgramList.ItemIndex <> -1 then
   begin
-    ProgramID := programs.programID[ProgramList.ItemIndex];
+    ProgramID := programList.ItemIndex + 1;
     LoadRelaysConfig();
-    programNameEdit.Text := programs.programName[ProgramList.ItemIndex];
+    programNameEdit.Text := programList.Items[programList.ItemIndex];
   end;
 
 end;
@@ -269,7 +288,7 @@ procedure TManagePrograms.btnCancelProgramNameClick(Sender: TObject);
 begin
   if ProgramList.ItemIndex <> -1 then
   begin
-    programNameEdit.Text := programs.programName[ProgramList.ItemIndex];
+    programNameEdit.Text := programList.Items[ProgramList.ItemIndex];
   end
   else
   begin
@@ -287,20 +306,15 @@ procedure TManagePrograms.btnSaveProgramNameClick(Sender: TObject);
 begin
   if ProgramList.ItemIndex <> -1 then
   begin
-    programs.programName[ProgramList.ItemIndex] := programNameEdit.Text;
     ProgramList.Items[ProgramList.ItemIndex] := programNameEdit.Text;
 
-    client.SetProgramName(StationID, programs.programID[ProgramList.ItemIndex],
-      programs.programName[ProgramList.ItemIndex]);
+    client.SetProgramName(StationID, ProgramList.ItemIndex +1,
+      programNameEdit.Text);
   end;
 end;
 
 procedure TManagePrograms.btnOkClick(Sender: TObject);
 begin
-  if Assigned(programs.programID) then
-  begin
-    Finalize(programs);
-  end;
   Close;
 end;
 
@@ -314,8 +328,8 @@ procedure TManagePrograms.FormShow(Sender: TObject; ID: integer);
 begin
   Show;
   StationID := ID;
-  PrepareProgramList(ProgramList);
   PrepareRelaysConfig(RelayListBox);
+  PrepareProgramList(ProgramList);
   btnCancelProgramNameClick(self);
 end;
 

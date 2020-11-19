@@ -32,8 +32,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="166"/>
-        <CursorPos X="41" Y="166"/>
+        <TopLine Value="156"/>
+        <CursorPos X="46" Y="165"/>
         <FoldState Value=" T3jY0RP"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
@@ -45,12 +45,10 @@
         <ComponentName Value="MoneyCollectionForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="40"/>
-        <CursorPos X="24" Y="72"/>
-        <UsageCount Value="197"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="31"/>
+        <CursorPos X="48" Y="49"/>
+        <UsageCount Value="200"/>
       </Unit3>
       <Unit4>
         <Filename Value="clientapi.pas"/>
@@ -60,9 +58,9 @@
         <ResourceBaseClass Value="DataModule"/>
         <UnitName Value="clientAPI"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="375"/>
-        <CursorPos X="23" Y="377"/>
-        <UsageCount Value="92"/>
+        <TopLine Value="220"/>
+        <CursorPos X="38" Y="247"/>
+        <UsageCount Value="99"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit4>
@@ -75,9 +73,9 @@
         <UnitName Value="managerRelays"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="281"/>
-        <CursorPos X="33" Y="296"/>
-        <UsageCount Value="66"/>
+        <TopLine Value="116"/>
+        <CursorPos X="71" Y="131"/>
+        <UsageCount Value="73"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit5>
@@ -86,28 +84,28 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="157"/>
         <CursorPos X="40" Y="173"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="89"/>
       </Unit6>
       <Unit7>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\objpas\sysutils\datih.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="120"/>
         <CursorPos X="10" Y="136"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="4"/>
       </Unit7>
       <Unit8>
         <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.2.0\packages\fcl-web\src\base\fphttpclient.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="322"/>
         <CursorPos X="42" Y="70"/>
-        <UsageCount Value="19"/>
+        <UsageCount Value="18"/>
       </Unit8>
       <Unit9>
         <Filename Value="..\..\..\..\..\usr\share\lazarus\2.0.10\lcl\include\application.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="2227"/>
         <CursorPos Y="2239"/>
-        <UsageCount Value="1"/>
+        <UsageCount Value="0"/>
       </Unit9>
       <Unit10>
         <Filename Value="..\..\..\..\..\usr\share\lazarus\2.0.10\lcl\grids.pas"/>
@@ -115,51 +113,52 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="3287"/>
         <CursorPos Y="3300"/>
-        <UsageCount Value="15"/>
+        <UsageCount Value="14"/>
       </Unit10>
       <Unit11>
         <Filename Value="..\..\..\..\..\usr\lib\lazarus\2.0.6\lcl\stdctrls.pp"/>
         <UnitName Value="StdCtrls"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="650"/>
-        <CursorPos X="14" Y="673"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="806"/>
+        <CursorPos X="14" Y="830"/>
         <FoldState Value=" T8l42vg"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
       </Unit11>
       <Unit12>
         <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\rtl\inc\objpash.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="194"/>
         <CursorPos X="23" Y="194"/>
-        <UsageCount Value="4"/>
+        <UsageCount Value="3"/>
       </Unit12>
       <Unit13>
         <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\rtl\objpas\sysutils\sysstrh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="87"/>
         <CursorPos X="10" Y="108"/>
-        <UsageCount Value="4"/>
+        <UsageCount Value="3"/>
       </Unit13>
       <Unit14>
         <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\rtl\objpas\classes\classesh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="653"/>
         <CursorPos X="15" Y="673"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
       </Unit14>
       <Unit15>
         <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\packages\fcl-web\src\base\fphttpclient.pp"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="338"/>
-        <CursorPos X="32" Y="336"/>
-        <UsageCount Value="15"/>
+        <TopLine Value="271"/>
+        <CursorPos X="14" Y="291"/>
+        <UsageCount Value="14"/>
       </Unit15>
       <Unit16>
         <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\packages\fcl-json\src\fpjson.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="544"/>
         <CursorPos X="14" Y="563"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit16>
       <Unit17>
         <Filename Value="..\..\..\..\..\usr\lib\lazarus\2.0.6\lcl\dialogs.pp"/>
@@ -167,129 +166,129 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="703"/>
         <CursorPos X="22" Y="724"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit17>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="30" HistoryIndex="28">
       <Position1>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="336" Column="45" TopLine="303"/>
+        <Caret Line="352" Column="37" TopLine="327"/>
       </Position1>
       <Position2>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="333" Column="14" TopLine="310"/>
+        <Filename Value="WashServerGUI.lpr"/>
+        <Caret Line="20" Column="31"/>
       </Position2>
       <Position3>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="342" Column="29" TopLine="311"/>
+        <Filename Value="managerrelays.pas"/>
+        <Caret Line="239" Column="29" TopLine="211"/>
       </Position3>
       <Position4>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="247" Column="20" TopLine="219"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="377" Column="51" TopLine="352"/>
       </Position4>
       <Position5>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="235" Column="17" TopLine="202"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="176" Column="7" TopLine="155"/>
       </Position5>
       <Position6>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="238" Column="29" TopLine="214"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="228" Column="33" TopLine="196"/>
       </Position6>
       <Position7>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="258" Column="23" TopLine="227"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="230" Column="15" TopLine="209"/>
       </Position7>
       <Position8>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="343" Column="22" TopLine="311"/>
+        <Caret Line="8" Column="63"/>
       </Position8>
       <Position9>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="315" Column="11" TopLine="274"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="377" Column="23" TopLine="375"/>
       </Position9>
       <Position10>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="347" Column="23" TopLine="312"/>
+        <Filename Value="managerrelays.pas"/>
+        <Caret Line="317" Column="37" TopLine="281"/>
       </Position10>
       <Position11>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="322" Column="22" TopLine="285"/>
+        <Caret Line="323" Column="37" TopLine="287"/>
       </Position11>
       <Position12>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="342" Column="9" TopLine="310"/>
+        <Filename Value="managerrelays.pas"/>
+        <Caret Line="269" Column="62" TopLine="246"/>
       </Position12>
       <Position13>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="336" Column="52" TopLine="310"/>
+        <Caret Line="343" Column="53" TopLine="323"/>
       </Position13>
       <Position14>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="344" Column="27" TopLine="312"/>
+        <Caret Line="420" Column="37" TopLine="393"/>
       </Position14>
       <Position15>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="213" Column="30" TopLine="192"/>
+        <Caret Line="232" Column="62" TopLine="211"/>
       </Position15>
       <Position16>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="221" Column="61" TopLine="202"/>
+        <Filename Value="managerrelays.pas"/>
+        <Caret Line="159" Column="36" TopLine="146"/>
       </Position16>
       <Position17>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="212" Column="19" TopLine="198"/>
+        <Filename Value="managerrelays.pas"/>
+        <Caret Line="175" Column="11" TopLine="149"/>
       </Position17>
       <Position18>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="231" Column="28" TopLine="211"/>
+        <Filename Value="..\..\..\..\..\usr\lib\lazarus\2.0.6\lcl\stdctrls.pp"/>
+        <Caret Line="939" Column="14" TopLine="921"/>
       </Position18>
       <Position19>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="237" Column="34" TopLine="211"/>
+        <Filename Value="managerrelays.pas"/>
+        <Caret Line="179" Column="71" TopLine="149"/>
       </Position19>
       <Position20>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="352" Column="37" TopLine="327"/>
+        <Filename Value="managerrelays.pas"/>
+        <Caret Line="160" Column="7" TopLine="140"/>
       </Position20>
       <Position21>
-        <Filename Value="WashServerGUI.lpr"/>
-        <Caret Line="20" Column="31"/>
+        <Filename Value="managerrelays.pas"/>
+        <Caret Line="158" Column="29" TopLine="137"/>
       </Position21>
       <Position22>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="239" Column="29" TopLine="211"/>
+        <Caret Line="177" Column="43" TopLine="143"/>
       </Position22>
       <Position23>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="377" Column="51" TopLine="352"/>
+        <Filename Value="..\..\..\..\..\usr\lib\lazarus\2.0.6\lcl\stdctrls.pp"/>
+        <Caret Line="939" Column="14" TopLine="913"/>
       </Position23>
       <Position24>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="176" Column="7" TopLine="155"/>
+        <Filename Value="managerrelays.pas"/>
+        <Caret Line="256" Column="41" TopLine="241"/>
       </Position24>
       <Position25>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="228" Column="33" TopLine="196"/>
+        <Filename Value="managerrelays.pas"/>
+        <Caret Line="255" Column="38" TopLine="237"/>
       </Position25>
       <Position26>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="230" Column="15" TopLine="209"/>
+        <Filename Value="managerrelays.pas"/>
+        <Caret Line="74" Column="28" TopLine="43"/>
       </Position26>
       <Position27>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="8" Column="63"/>
+        <Filename Value="managerrelays.pas"/>
+        <Caret Line="307" Column="28" TopLine="288"/>
       </Position27>
       <Position28>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="253" Column="57" TopLine="281"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="439" Column="36" TopLine="404"/>
       </Position28>
       <Position29>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="377" Column="23" TopLine="375"/>
+        <Filename Value="managerrelays.pas"/>
+        <Caret Line="328" Column="8" TopLine="300"/>
       </Position29>
       <Position30>
         <Filename Value="managerrelays.pas"/>
-        <Caret Line="317" Column="37" TopLine="281"/>
+        <Caret Line="71" Column="11" TopLine="58"/>
       </Position30>
     </JumpHistory>
     <RunParams>

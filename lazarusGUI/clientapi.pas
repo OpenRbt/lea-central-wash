@@ -225,12 +225,20 @@ begin
             Result.programName[i] := GetPath('name').AsString;
           end;
         end;
+
+
+        if ResponseStatusCode <> 200 then
+        begin
+          raise Exception.Create(IntToStr(ResponseStatusCode));
+        end;
+
       except
         case ResponseStatusCode of
           0: ShowMessage('Can`t connect to server');
-          500: ShowMessage('Server Error');
+          500: ShowMessage('Server Error: 500');
           else
-            ShowMessage('Unexpected Error');
+            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+              sLineBreak + ResponseStatusText);
         end;
         setlength(Result.programID, 0);
         setlength(Result.programName, 0);
@@ -258,14 +266,23 @@ begin
         AddHeader('Content-Type', 'application/json');
         RequestBody := TStringStream.Create(postJson.AsJSON);
         Post(serverEndpoint + 'set-program-name');
+
+        if ResponseStatusCode <> 204 then
+        begin
+          raise Exception.Create(IntToStr(ResponseStatusCode));
+        end;
+
       except
         case ResponseStatusCode of
           0: ShowMessage('Can`t connect to server');
-          500: ShowMessage('Server Error');
+          500: ShowMessage('Server Error: 500');
           else
-            ShowMessage('Unexpected Error');
+            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+              sLineBreak + ResponseStatusText);
         end;
       end;
+
+
     finally
       Free
     end;
@@ -334,12 +351,19 @@ begin
             end;
           end;
         end;
+
+        if ResponseStatusCode <> 200 then
+        begin
+          raise Exception.Create(IntToStr(ResponseStatusCode));
+        end;
+
       except
         case ResponseStatusCode of
           0: ShowMessage('Can`t connect to server');
-          500: ShowMessage('Server Error');
+          500: ShowMessage('Server Error: 500');
           else
-            ShowMessage('Unexpected Error');
+            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+              sLineBreak + ResponseStatusText);
         end;
         setlength(Result.realyID, 0);
         setlength(Result.timeON, 0);
@@ -398,14 +422,20 @@ begin
         RequestBody := TStringStream.Create(postJson.AsJSON);
         Post(serverEndpoint + 'set-program-relays');
 
+
+        if ResponseStatusCode <> 204 then
+        begin
+          raise Exception.Create(IntToStr(ResponseStatusCode));
+        end;
+
       except
         case ResponseStatusCode of
           0: ShowMessage('Can`t connect to server');
-          500: ShowMessage('Server Error');
+          500: ShowMessage('Server Error: 500');
           else
-            ShowMessage('Unexpected Error');
+            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+              sLineBreak + ResponseStatusText);
         end;
-
       end;
 
     finally
