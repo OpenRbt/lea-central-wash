@@ -5,7 +5,8 @@ CREATE TABLE station_program (
     station_id      INT         NOT NULL REFERENCES station(id),
     program_id      INT         NOT NULL,
     name            TEXT        NOT NULL DEFAULT '',
-    program_data    TEXT        NOT NULL DEFAULT '[]'
+    relays    TEXT        NOT NULL DEFAULT '[]'
+    PRIMARY KEY (station_id, program_id)
 );
 
 -- +goose Down
