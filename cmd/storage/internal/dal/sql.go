@@ -136,6 +136,16 @@ GROUP BY station_id
 		) AS RR
 		GROUP BY relay_id	
 	`
+
+	sqlPrograms = `
+	SELECT program_id,
+       name
+	FROM station_program
+	WHERE station_id = :sID
+	ORDER BY program_id ASC
+	`
+
+	sqlProgramRelays = `SELECT relays from station_program WHERE station_id = :sID and program_id = :pID`
 )
 
 type (
@@ -227,5 +237,41 @@ type (
 	}
 	resCheckDB struct {
 		CountColumns int
+	}
+
+	ProgramInfo struct {
+		pID  int
+		name string
+	}
+
+	argPrograms struct {
+		sID app.StationID
+	}
+
+	resPrograms struct {
+		programs []ProgramInfo
+	}
+
+	argProgramRelays struct {
+		sID app.StationID
+		pID int
+	}
+
+	resProgramRelaysResponse struct {
+		sID    app.StationID
+		pID    int
+		relays string
+	}
+
+	argSetProgramName struct {
+		sID  app.StationID
+		pID  int
+		name string
+	}
+
+	argSetProgramRelays struct {
+		sID    app.StationID
+		pID    int
+		relays string
 	}
 )

@@ -370,3 +370,37 @@ func (r *repo) CheckDB() (ok bool, err error) {
 	})
 	return //nolint:nakedret
 }
+
+func (r *repo) Programs(StationID app.StationID) (programs []ProgramInfo, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+
+		err = tx.NamedSelectContext(ctx, &programs, sqlPrograms, argPrograms{
+			sID: StationID,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+	return
+}
+
+func (r *repo) ProgramRelays(StationID app.StationID, ProgramID int) (relays string, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+
+		err = tx.NamedSelectContext(ctx, &relays, sqlProgramRelays, argProgramRelays{
+			sID: StationID,
+			pID: ProgramID,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return
+}
