@@ -1,14 +1,13 @@
 -- +goose Up
 -- SQL in this section is executed when the migration is applied.
 
-CREATE TABLE station_programs (
-    id              SERIAL      PRIMARY KEY,
+CREATE TABLE station_program (
     station_id      INT         NOT NULL REFERENCES station(id),
     program_id      INT         NOT NULL,
-    program_name    TEXT         NOT NULL,
-    program_data    TEXT
+    name            TEXT        NOT NULL DEFAULT '',
+    program_data    TEXT        NOT NULL DEFAULT '[]'
 );
 
 -- +goose Down
 -- SQL in this section is executed when the migration is rolled back.
-DROP TABLE station_programs;
+DROP TABLE station_program;
