@@ -223,4 +223,11 @@ object ManagePrograms: TManagePrograms
     ParentColor = False
     ParentFont = False
   end
+  object StationInfo: TLabel
+    Left = 15
+    Height = 1
+    Top = 25
+    Width = 1
+    ParentColor = False
+  end
 end

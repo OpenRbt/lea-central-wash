@@ -18,6 +18,7 @@ type
     btnOk: TButton;
     btnSaveRelaysConfig: TButton;
     btnRevertRelayConfig: TButton;
+    StationInfo: TLabel;
     relayLabel: TLabel;
     labelRelayActive: TLabel;
     labelTimeOn: TLabel;
@@ -39,7 +40,7 @@ type
     procedure btnSaveRelaysConfigClick(Sender: TObject);
     procedure ProgramListClick(Sender: TObject);
     procedure LoadRelaysConfig();
-    procedure FormShow(Sender: TObject; ID: integer);
+    procedure FormShow(Sender: TObject; ID: integer; stationName:string);
     procedure PrepareProgramList();
     procedure PrepareRelaysConfig();
   private
@@ -351,9 +352,11 @@ begin
 end;
 
 
-procedure TManagePrograms.FormShow(Sender: TObject; ID: integer);
+
+procedure TManagePrograms.FormShow(Sender: TObject; ID: integer; stationName:string);
 begin
   Show;
+  StationInfo.Caption:= 'Station ID: ' + IntToStr(ID) + ' - ' + stationName;
   StationID := ID;
   PrepareRelaysConfig();
   PrepareProgramList();

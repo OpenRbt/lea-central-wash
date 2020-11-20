@@ -35,3 +35,33 @@ type RelayReport struct {
 	StationID  StationID
 	RelayStats []RelayStat
 }
+
+type ProgramID int
+
+type ProgramInfo struct {
+	pID  ProgramID
+	Name string
+}
+
+type Programs struct {
+	sID      StationID
+	programs []ProgramInfo
+}
+
+type SetProgramName struct {
+	sID  StationID
+	pID  ProgramID
+	Name string
+}
+
+type ProgramRelays struct {
+	sID     StationID
+	pID     ProgramID
+	program string
+}
+
+type SetProgramRelays struct {
+	sID     StationID
+	pID     ProgramID
+	program string
+}
