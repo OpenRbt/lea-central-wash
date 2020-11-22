@@ -404,3 +404,39 @@ func (r *repo) ProgramRelays(StationID app.StationID, ProgramID int) (relays str
 
 	return
 }
+
+func (r *repo) SetProgramName(StationID app.StationID, ProgramID int, name string) (err error) {
+
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err = tx.NamedExec(sqlSetProgramName, argSetProgramName{
+			sID:  StationID,
+			pID:  ProgramID,
+			name: name,
+		})
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return
+}
+
+func (r *repo) SetProgramRelays(StationID app.StationID, ProgramID int, relay string) (err error) {
+
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err = tx.NamedExec(sqlSetProgramRelays, argSetProgramRelays{
+			sID:    StationID,
+			pID:    ProgramID,
+			relays: relay,
+		})
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return
+}

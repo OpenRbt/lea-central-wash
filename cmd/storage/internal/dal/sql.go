@@ -145,7 +145,26 @@ GROUP BY station_id
 	ORDER BY program_id ASC
 	`
 
-	sqlProgramRelays = `SELECT relays from station_program WHERE station_id = :sID and program_id = :pID`
+	sqlProgramRelays = `
+	SELECT relays
+	FROM station_program
+	WHERE station_id = :sID
+  	AND program_id = :pID
+	`
+
+	sqlSetProgramName = `
+	INSERT INTO station_program (station_id, program_id, name)
+	VALUES (:sID, :pID, :name) ON CONFLICT (station_id, program_id) DO
+	UPDATE
+	SET name = EXCLUDED.name
+	`
+
+	sqlSetProgramRelays = `
+	INSERT INTO station_program (station_id, program_id, relays)
+	VALUES (:sID, :pID, :relays) ON CONFLICT (station_id, program_id) DO
+	UPDATE
+	SET relays = EXCLUDED.relays
+	`
 )
 
 type (
