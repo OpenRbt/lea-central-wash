@@ -141,3 +141,15 @@ type KeyPair struct {
 	Key   string
 	Value string
 }
+
+type Relay struct {
+	ID        int
+	timeOn    int
+	timeOff   int
+	preflight int
+}
+
+type Program struct {
+	ID   int
+	Name string
+}

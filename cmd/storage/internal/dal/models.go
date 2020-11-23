@@ -1,6 +1,8 @@
 package dal
 
 import (
+	"encoding/json"
+
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 )
 
@@ -35,4 +37,30 @@ func appStationsVariables(v []resStationsVariables) []app.StationsVariables {
 		})
 	}
 	return res
+}
+
+func appPrograms(p []resPrograms) (res []app.Program) {
+	for i := range p {
+		res = append(res, app.Program{
+			ID:   p[i].ID,
+			Name: p[i].Name,
+		})
+	}
+	return res
+}
+
+func appUnPackProgramRelays(jsonRelays string) (res []app.Relay, err error) {
+
+	err = json.Unmarshal([]byte(jsonRelays), &res)
+
+	return res, err
+}
+
+func appPackProgramRelays(relays []app.Relay) (jsonRelays string, err error) {
+	var bytes []byte
+	bytes, err = json.Marshal(relays)
+
+	jsonRelays = string(bytes)
+
+	return jsonRelays, err
 }

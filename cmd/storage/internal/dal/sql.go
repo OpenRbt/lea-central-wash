@@ -141,27 +141,27 @@ GROUP BY station_id
 	SELECT program_id,
        name
 	FROM station_program
-	WHERE station_id = :sID
+	WHERE station_id = :StationID
 	ORDER BY program_id ASC
 	`
 
 	sqlProgramRelays = `
 	SELECT relays
 	FROM station_program
-	WHERE station_id = :sID
-  	AND program_id = :pID
+	WHERE station_id = :StationID
+  	AND program_id = :ProgramID
 	`
 
 	sqlSetProgramName = `
 	INSERT INTO station_program (station_id, program_id, name)
-	VALUES (:sID, :pID, :name) ON CONFLICT (station_id, program_id) DO
+	VALUES (:StationID, :ProgramID, :name) ON CONFLICT (station_id, program_id) DO
 	UPDATE
 	SET name = EXCLUDED.name
 	`
 
 	sqlSetProgramRelays = `
 	INSERT INTO station_program (station_id, program_id, relays)
-	VALUES (:sID, :pID, :relays) ON CONFLICT (station_id, program_id) DO
+	VALUES (:StationID, :ProgramID, :relays) ON CONFLICT (station_id, program_id) DO
 	UPDATE
 	SET relays = EXCLUDED.relays
 	`
@@ -258,39 +258,35 @@ type (
 		CountColumns int
 	}
 
-	ProgramInfo struct {
-		pID  int
-		name string
-	}
-
 	argPrograms struct {
-		sID app.StationID
+		StationID app.StationID
 	}
 
 	resPrograms struct {
-		programs []ProgramInfo
+		ID   int
+		Name string
 	}
 
 	argProgramRelays struct {
-		sID app.StationID
-		pID int
+		StationID app.StationID
+		ProgramID int
 	}
 
-	resProgramRelaysResponse struct {
-		sID    app.StationID
-		pID    int
-		relays string
+	resProgramRelays struct {
+		StationID app.StationID
+		ProgramID int
+		relays    string
 	}
 
 	argSetProgramName struct {
-		sID  app.StationID
-		pID  int
-		name string
+		StationID app.StationID
+		ProgramID int
+		Name      string
 	}
 
 	argSetProgramRelays struct {
-		sID    app.StationID
-		pID    int
-		relays string
+		StationID app.StationID
+		ProgramID int
+		Relays    string
 	}
 )
