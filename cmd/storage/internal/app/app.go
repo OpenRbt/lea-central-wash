@@ -144,9 +144,9 @@ type KeyPair struct {
 
 type Relay struct {
 	ID        int
-	timeOn    int
-	timeOff   int
-	preflight int
+	TimeOn    int
+	TimeOff   int
+	Preflight int
 }
 
 type Program struct {

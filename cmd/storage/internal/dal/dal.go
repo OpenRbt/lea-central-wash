@@ -373,17 +373,16 @@ func (r *repo) CheckDB() (ok bool, err error) {
 
 func (r *repo) Programs(ID app.StationID) (programs []app.Program, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-
 		var res []resPrograms
 		err = tx.NamedGetContext(ctx, &res, sqlPrograms, argPrograms{
 			StationID: ID,
 		})
 
-		programs = appPrograms(res)
-
 		if err != nil {
 			return err
 		}
+
+		programs = appPrograms(res)
 
 		return nil
 	})
@@ -398,11 +397,11 @@ func (r *repo) ProgramRelays(ID app.StationID, ProgramID int) (relays []app.Rela
 			ProgramID: ProgramID,
 		})
 
-		relays, err = appUnPackProgramRelays(jsonRelays)
-
 		if err != nil {
 			return err
 		}
+
+		relays = appProgramRelays(jsonRelays)
 
 		return nil
 	})
@@ -431,10 +430,7 @@ func (r *repo) SetProgramName(ID app.StationID, ProgramID int, name string) (err
 func (r *repo) SetProgramRelays(ID app.StationID, ProgramID int, relays []app.Relay) (err error) {
 
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		relaysJSON, err := appPackProgramRelays(relays)
-		if err != nil {
-			return err
-		}
+		relaysJSON := dalProgramRelays(relays)
 
 		_, err = tx.NamedExec(sqlSetProgramRelays, argSetProgramRelays{
 			StationID: ID,

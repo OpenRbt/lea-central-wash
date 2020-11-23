@@ -49,18 +49,22 @@ func appPrograms(p []resPrograms) (res []app.Program) {
 	return res
 }
 
-func appUnPackProgramRelays(jsonRelays string) (res []app.Relay, err error) {
+func appProgramRelays(jsonRelays string) (res []app.Relay) {
+	err := json.Unmarshal([]byte(jsonRelays), &res)
 
-	err = json.Unmarshal([]byte(jsonRelays), &res)
-
-	return res, err
+	if err != nil {
+		panic(err)
+	}
+	return res
 }
 
-func appPackProgramRelays(relays []app.Relay) (jsonRelays string, err error) {
-	var bytes []byte
-	bytes, err = json.Marshal(relays)
+func dalProgramRelays(relays []app.Relay) (jsonRelays string) {
+	bytes, err := json.Marshal(relays)
+
+	if err != nil {
+		panic(err)
+	}
 
 	jsonRelays = string(bytes)
-
-	return jsonRelays, err
+	return jsonRelays
 }

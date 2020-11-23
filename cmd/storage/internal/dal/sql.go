@@ -154,16 +154,16 @@ GROUP BY station_id
 
 	sqlSetProgramName = `
 	INSERT INTO station_program (station_id, program_id, name)
-	VALUES (:StationID, :ProgramID, :name) ON CONFLICT (station_id, program_id) DO
+	VALUES (:station_id, :program_id, :name) ON CONFLICT (station_id, program_id) DO
 	UPDATE
-	SET name = EXCLUDED.name
+	SET name = :name
 	`
 
 	sqlSetProgramRelays = `
 	INSERT INTO station_program (station_id, program_id, relays)
-	VALUES (:StationID, :ProgramID, :relays) ON CONFLICT (station_id, program_id) DO
+	VALUES (:station_id, :program_id, :relays) ON CONFLICT (station_id, program_id) DO
 	UPDATE
-	SET relays = EXCLUDED.relays
+	SET relays = :relays
 	`
 )
 
@@ -275,7 +275,7 @@ type (
 	resProgramRelays struct {
 		StationID app.StationID
 		ProgramID int
-		relays    string
+		Relays    string
 	}
 
 	argSetProgramName struct {
