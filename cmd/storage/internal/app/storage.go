@@ -307,3 +307,10 @@ func (a *app) StationReport(id StationID, startDate, endDate time.Time) (MoneyRe
 func (a *app) StationsVariables() ([]StationsVariables, error) {
 	return a.repo.StationsVariables()
 }
+
+func (a *app) Programs(ID StationID) (programs []Program, err error) {
+	return a.repo.Programs(ID)
+}
+func (a *app) SetProgramName(ID StationID, ProgramID int, name string) (err error) {
+	return a.repo.SetProgramName(ID, ProgramID, name)
+}

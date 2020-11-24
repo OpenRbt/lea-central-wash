@@ -378,6 +378,10 @@ func (r *repo) Programs(ID app.StationID) (programs []app.Program, err error) {
 			StationID: ID,
 		})
 
+		if err == sql.ErrNoRows {
+			return nil
+		}
+
 		if err != nil {
 			return err
 		}
@@ -396,6 +400,10 @@ func (r *repo) ProgramRelays(ID app.StationID, ProgramID int) (relays []app.Rela
 			StationID: ID,
 			ProgramID: ProgramID,
 		})
+
+		if err == sql.ErrNoRows {
+			return nil
+		}
 
 		if err != nil {
 			return err

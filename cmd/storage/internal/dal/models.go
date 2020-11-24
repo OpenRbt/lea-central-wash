@@ -42,7 +42,7 @@ func appStationsVariables(v []resStationsVariables) []app.StationsVariables {
 func appPrograms(p []resPrograms) (res []app.Program) {
 	for i := range p {
 		res = append(res, app.Program{
-			ID:   p[i].ID,
+			ID:   p[i].ProgramID,
 			Name: p[i].Name,
 		})
 	}

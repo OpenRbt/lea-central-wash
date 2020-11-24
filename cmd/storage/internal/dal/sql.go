@@ -141,15 +141,15 @@ GROUP BY station_id
 	SELECT program_id,
        name
 	FROM station_program
-	WHERE station_id = :StationID
+	WHERE station_id = :station_id
 	ORDER BY program_id ASC
 	`
 
 	sqlProgramRelays = `
 	SELECT relays
 	FROM station_program
-	WHERE station_id = :StationID
-  	AND program_id = :ProgramID
+	WHERE station_id = :station_id
+  	AND program_id = :program_id
 	`
 
 	sqlSetProgramName = `
@@ -263,8 +263,8 @@ type (
 	}
 
 	resPrograms struct {
-		ID   int
-		Name string
+		ProgramID int
+		Name      string
 	}
 
 	argProgramRelays struct {

@@ -45,6 +45,9 @@ type (
 
 		StatusCollection() StatusCollection
 		SaveCollectionReport(report CollectionReport) error
+
+		Programs(ID StationID) (programs []Program, err error)
+		SetProgramName(ID StationID, ProgramID int, name string) (err error)
 	}
 
 	// Repo is a DAL interface.
@@ -71,6 +74,9 @@ type (
 		LoadHash() ([]StationID, []string, error)
 		SetHash(StationID, string) error
 		CheckDB() (ok bool, err error)
+
+		Programs(ID StationID) (programs []Program, err error)
+		SetProgramName(ID StationID, ProgramID int, name string) (err error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {

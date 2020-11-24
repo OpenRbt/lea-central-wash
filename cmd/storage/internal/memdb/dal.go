@@ -147,3 +147,10 @@ func (t *DB) AddOpenStationLog(id app.StationID) error {
 func (t *DB) CheckDB() (bool, error) {
 	return true, nil
 }
+
+func (t *DB) Programs(ID app.StationID) (programs []app.Program, err error) {
+	return
+}
+func (t *DB) SetProgramName(ID app.StationID, ProgramID int, name string) (err error) {
+	return
+}

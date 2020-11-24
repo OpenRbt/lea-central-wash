@@ -1,6 +1,7 @@
 package extapi
 
 import (
+	"database/sql"
 	"fmt"
 	"time"
 
@@ -435,6 +436,7 @@ func (svc *service) openStation(params op.OpenStationParams) op.OpenStationRespo
 func (svc *service) setProgramName(params op.SetProgramNameParams) op.SetProgramNameResponder {
 	log.Info("setProgramName", "stationID", *params.Args.StationID, "programID", *params.Args.ProgramID, "name", *params.Args.Name, "ip", params.HTTPRequest.RemoteAddr)
 	var err error
+	err = svc.app.SetProgramName(app.StationID(*params.Args.StationID), int(*params.Args.ProgramID), *params.Args.Name)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewSetProgramNameNoContent()
@@ -457,36 +459,20 @@ func (svc *service) setProgramRelays(params op.SetProgramRelaysParams) op.SetPro
 }
 
 func (svc *service) programs(params op.ProgramsParams) op.ProgramsResponder {
-	var err error
+	res, err := svc.app.Programs(app.StationID(*params.Args.StationID))
 
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewProgramsOK().WithPayload([]*model.ProgramInfo{
-			&model.ProgramInfo{
-				ID:   1,
-				Name: "вода",
-			},
-			&model.ProgramInfo{
-				ID:   2,
-				Name: "пена",
-			},
-			&model.ProgramInfo{
-				ID:   3,
-				Name: "активная пена",
-			},
-			&model.ProgramInfo{
-				ID:   4,
-				Name: "воск",
-			},
-			&model.ProgramInfo{
-				ID:   5,
-				Name: "осмос",
-			},
-			&model.ProgramInfo{
-				ID:   6,
-				Name: "пауза",
-			},
-		})
+		var out []*model.ProgramInfo
+		for i := range res {
+			out = append(out, &model.ProgramInfo{
+				ID:   int64(res[i].ID),
+				Name: res[i].Name,
+			})
+		}
+		return op.NewProgramsOK().WithPayload(out)
+	case sql.ErrNoRows:
+		return op.NewProgramsOK().WithPayload([]*model.ProgramInfo{})
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewProgramsInternalServerError()
