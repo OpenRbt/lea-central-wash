@@ -34,12 +34,13 @@ type
     procedure SendMoney(hash: string; moneyToSend: integer);
     function Info(): string;
 
-    function GetPrograms(StationID: integer; out successful : boolean): ProgramsInfo;
+    function GetPrograms(StationID: integer; out successful: boolean): ProgramsInfo;
     procedure SetProgramName(StationID: integer; ProgramID: integer;
-      programName: string; out successful : boolean);
-    function GetProgramRelays(StationID: integer; ProgramID: integer; out successful : boolean): RelaysInfo;
+      programName: string; out successful: boolean);
+    function GetProgramRelays(StationID: integer; ProgramID: integer;
+      out successful: boolean): RelaysInfo;
     procedure SetProgramRelays(StationID: integer; ProgramID: integer;
-      relays: RelaysInfo; out successful : boolean);
+      relays: RelaysInfo; out successful: boolean);
 
   private
     serverEndpoint: string;
@@ -195,14 +196,15 @@ begin
   end;
 end;
 
-function TClient.GetPrograms(StationID: integer, out successful : boolean): ProgramsInfo;
+function TClient.GetPrograms(StationID: integer; out successful: boolean): ProgramsInfo;
 var
   postJson: TJSONObject;
   programsJson: TJsonArray;
   RequestAnswer: string;
   i: integer;
-begin         
-  successful:= true;
+  tmp :TJSONData;
+begin
+  successful := True;
   postJson := TJSONObject.Create;
   postJson.Add('stationID', stationID);
   with TFPHttpClient.Create(nil) do
@@ -223,7 +225,9 @@ begin
           with programsJson.items[i] do
           begin
             Result.programID[i] := GetPath('id').AsInteger;
-            Result.programName[i] := GetPath('name').AsString;
+            tmp := FindPath('name');
+            if tmp <> nil then
+               Result.programName[i] := GetPath('name').AsString;
           end;
         end;
 
@@ -243,8 +247,8 @@ begin
         end;
         setlength(Result.programID, 0);
         setlength(Result.programName, 0);
-        Result.Count := 0;   
-  successful:= false;
+        Result.Count := 0;
+        successful := False;
 
       end;
     finally
@@ -253,12 +257,12 @@ begin
 end;
 
 procedure TClient.SetProgramName(StationID: integer; ProgramID: integer;
-  programName: string, out successful : boolean);
+  programName: string; out successful: boolean);
 var
   postJson: TJSONObject;
 begin
-        
-  successful:= true;
+
+  successful := True;
   postJson := TJSONObject.Create;
   postJson.Add('stationID', StationID);
   postJson.Add('programID', ProgramID);
@@ -282,8 +286,8 @@ begin
           else
             ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
               sLineBreak + ResponseStatusText);
-        end;  
-  successful:= false;
+        end;
+        successful := False;
       end;
 
 
@@ -292,15 +296,16 @@ begin
     end;
 end;
 
-function TClient.GetProgramRelays(StationID: integer; ProgramID: integer, out successful : boolean): RelaysInfo;
+function TClient.GetProgramRelays(StationID: integer; ProgramID: integer;
+  out successful: boolean): RelaysInfo;
 var
   postJson: TJSONObject;
   relaysJson: TJsonArray;
   RequestAnswer: string;
   i: integer;
   tmp: TJsonData;
-begin        
-  successful:= true;
+begin
+  successful := True;
   postJson := TJSONObject.Create;
   postJson.Add('stationID', stationID);
   postJson.Add('programID', ProgramID);
@@ -375,8 +380,8 @@ begin
         setlength(Result.timeOFF, 0);
         setlength(Result.preflight, 0);
 
-        Result.Count := 0;  
-  successful:= false;
+        Result.Count := 0;
+        successful := False;
       end;
     finally
       Free
@@ -384,14 +389,14 @@ begin
 end;
 
 procedure TClient.SetProgramRelays(StationID: integer; ProgramID: integer;
-  relays: RelaysInfo, out successful : boolean);
+  relays: RelaysInfo; out successful: boolean);
 var
   postJson: TJSONObject;
   relaysJson: TJsonArray;
   i: integer;
   tmp: TJSONObject;
 begin
-  successful:= true;
+  successful := True;
   postJson := TJSONObject.Create;
   postJson.Add('stationID', StationID);
   postJson.Add('programID', ProgramID);
@@ -418,7 +423,7 @@ begin
 
           if relays.preflight[i] <> 0 then
           begin
-            tmp.Add('prfelight', relays.preflight[i]);
+            tmp.Add('preflight', relays.preflight[i]);
           end;
 
           relaysJson.Add(tmp);
@@ -440,8 +445,8 @@ begin
           500: ShowMessage('Server Error: 500');
           else
             ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
-              sLineBreak + ResponseStatusText); 
-  successful:= false;
+              sLineBreak + ResponseStatusText);
+            successful := False;
         end;
       end;
 

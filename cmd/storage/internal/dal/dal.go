@@ -371,11 +371,11 @@ func (r *repo) CheckDB() (ok bool, err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) Programs(ID app.StationID) (programs []app.Program, err error) {
+func (r *repo) Programs(id app.StationID) (programs []app.Program, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res []resPrograms
 		err = tx.NamedSelectContext(ctx, &res, sqlPrograms, argPrograms{
-			StationID: ID,
+			StationID: id,
 		})
 
 		if err == sql.ErrNoRows {
@@ -393,12 +393,12 @@ func (r *repo) Programs(ID app.StationID) (programs []app.Program, err error) {
 	return
 }
 
-func (r *repo) ProgramRelays(ID app.StationID, ProgramID int) (relays []app.Relay, err error) {
+func (r *repo) ProgramRelays(id app.StationID, programID int) (relays []app.Relay, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var jsonRelays string
 		err = tx.NamedGetContext(ctx, &jsonRelays, sqlProgramRelays, argProgramRelays{
-			StationID: ID,
-			ProgramID: ProgramID,
+			StationID: id,
+			ProgramID: programID,
 		})
 
 		if err == sql.ErrNoRows {
@@ -417,12 +417,12 @@ func (r *repo) ProgramRelays(ID app.StationID, ProgramID int) (relays []app.Rela
 	return
 }
 
-func (r *repo) SetProgramName(ID app.StationID, ProgramID int, name string) (err error) {
+func (r *repo) SetProgramName(id app.StationID, programID int, name string) (err error) {
 
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err = tx.NamedExec(sqlSetProgramName, argSetProgramName{
-			StationID: ID,
-			ProgramID: ProgramID,
+			StationID: id,
+			ProgramID: programID,
 			Name:      name,
 		})
 		if err != nil {
@@ -435,14 +435,14 @@ func (r *repo) SetProgramName(ID app.StationID, ProgramID int, name string) (err
 	return
 }
 
-func (r *repo) SetProgramRelays(ID app.StationID, ProgramID int, relays []app.Relay) (err error) {
+func (r *repo) SetProgramRelays(id app.StationID, programID int, relays []app.Relay) (err error) {
 
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		relaysJSON := dalProgramRelays(relays)
 
 		_, err = tx.NamedExec(sqlSetProgramRelays, argSetProgramRelays{
-			StationID: ID,
-			ProgramID: ProgramID,
+			StationID: id,
+			ProgramID: programID,
 			Relays:    relaysJSON,
 		})
 		if err != nil {

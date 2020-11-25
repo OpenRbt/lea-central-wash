@@ -93,6 +93,7 @@ begin
 
   for i := 0 to programs.Count - 1 do
   begin
+    if programs.programName[i] <> "" then
     ProgramList.Items[programs.programID[i] - 1] := programs.programName[i];
   end;
 end;
@@ -356,7 +357,7 @@ end;
 procedure TManagePrograms.FormShow(Sender: TObject; ID: integer; stationName:string);
 begin
   Show;
-  StationInfo.Caption:= 'Statiom ID: ' + IntToStr(ID) + ' - ' + stationName;
+  StationInfo.Caption:= 'Station ID: ' + IntToStr(ID) + ' - ' + stationName;
   StationID := ID;
   PrepareRelaysConfig();
   PrepareProgramList();

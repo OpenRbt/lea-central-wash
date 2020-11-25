@@ -93,6 +93,7 @@ begin
 
   for i := 0 to programs.Count - 1 do
   begin
+    if programs.programName[i] <> '' then
     ProgramList.Items[programs.programID[i] - 1] := programs.programName[i];
   end;
 end;

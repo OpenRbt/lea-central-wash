@@ -202,6 +202,7 @@ var
   programsJson: TJsonArray;
   RequestAnswer: string;
   i: integer;
+  tmp :TJSONData;
 begin
   successful := True;
   postJson := TJSONObject.Create;
@@ -224,7 +225,9 @@ begin
           with programsJson.items[i] do
           begin
             Result.programID[i] := GetPath('id').AsInteger;
-            Result.programName[i] := GetPath('name').AsString;
+            tmp := FindPath('name');
+            if tmp <> nil then
+               Result.programName[i] := GetPath('name').AsString;
           end;
         end;
 

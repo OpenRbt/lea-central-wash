@@ -448,7 +448,21 @@ func (svc *service) setProgramName(params op.SetProgramNameParams) op.SetProgram
 
 func (svc *service) setProgramRelays(params op.SetProgramRelaysParams) op.SetProgramRelaysResponder {
 	log.Info("setProgramRelays", "stationID", *params.Args.StationID, "programID", *params.Args.ProgramID, "relays", params.Args.Relays, "ip", params.HTTPRequest.RemoteAddr)
+
 	var err error
+
+	tmp := []app.Relay{}
+
+	for i := range params.Args.Relays {
+		tmp = append(tmp, app.Relay{
+			ID:        int(params.Args.Relays[i].ID),
+			TimeOn:    int(params.Args.Relays[i].Timeon),
+			TimeOff:   int(params.Args.Relays[i].Timeoff),
+			Preflight: int(params.Args.Relays[i].Prfelight),
+		})
+	}
+
+	err = svc.app.SetProgramRelays(app.StationID(*params.Args.StationID), int(*params.Args.ProgramID), tmp)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewSetProgramRelaysNoContent()
@@ -482,80 +496,26 @@ func (svc *service) programs(params op.ProgramsParams) op.ProgramsResponder {
 func (svc *service) programRelays(params op.ProgramRelaysParams) op.ProgramRelaysResponder {
 	var err error
 	log.Info("programRelays", "stationID", *params.Args.StationID, "programID", *params.Args.ProgramID, "ip", params.HTTPRequest.RemoteAddr)
+
+	res, err := svc.app.ProgramRelays(app.StationID(*params.Args.StationID), int(*params.Args.ProgramID))
+
 	relays := []*model.RelayConfig{}
-	switch *params.Args.ProgramID {
-	case 1:
-		relays = []*model.RelayConfig{
-			&model.RelayConfig{
-				ID: 1,
-			},
-			&model.RelayConfig{
-				ID: 6,
-			},
-		}
-	case 2:
-		relays = []*model.RelayConfig{
-			&model.RelayConfig{
-				ID: 1,
-			},
-			&model.RelayConfig{
-				ID:        2,
-				Prfelight: 700,
-				Timeoff:   350,
-				Timeon:    135,
-			},
-			&model.RelayConfig{
-				ID: 6,
-			},
-		}
-	case 3:
-		relays = []*model.RelayConfig{
-			&model.RelayConfig{
-				ID: 1,
-			},
-			&model.RelayConfig{
-				ID:        2,
-				Prfelight: 700,
-				Timeoff:   250,
-				Timeon:    250,
-			},
-			&model.RelayConfig{
-				ID: 6,
-			},
-		}
-	case 4:
-		relays = []*model.RelayConfig{
-			&model.RelayConfig{
-				ID: 1,
-			},
-			&model.RelayConfig{
-				ID:        4,
-				Prfelight: 600,
-				Timeoff:   340,
-				Timeon:    135,
-			},
-			&model.RelayConfig{
-				ID: 6,
-			},
-		}
-	case 5:
-		relays = []*model.RelayConfig{
-			&model.RelayConfig{
-				ID: 5,
-			},
-			&model.RelayConfig{
-				ID: 6,
-			},
-		}
-	case 6:
-		relays = []*model.RelayConfig{
-			&model.RelayConfig{
-				ID: 6,
-			},
-		}
+
+	for i := range res {
+		relays = append(relays, &model.RelayConfig{
+			ID:        int64(res[i].ID),
+			Timeon:    int64(res[i].TimeOn),
+			Timeoff:   int64(res[i].TimeOff),
+			Prfelight: int64(res[i].Preflight),
+		})
 	}
+
 	switch errors.Cause(err) {
 	case nil:
+		return op.NewProgramRelaysOK().WithPayload(&op.ProgramRelaysOKBody{
+			Relays: relays,
+		})
+	case sql.ErrNoRows:
 		return op.NewProgramRelaysOK().WithPayload(&op.ProgramRelaysOKBody{
 			Relays: relays,
 		})
