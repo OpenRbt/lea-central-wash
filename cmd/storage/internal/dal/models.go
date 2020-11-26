@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 func appSetStation(v []resStation) []app.SetStation {
@@ -44,16 +43,6 @@ func appPrograms(p []resPrograms) (res []app.Program) {
 	for i := range p {
 		res = append(res, app.Program{
 			ID:   p[i].ProgramID,
-			Name: p[i].Name,
-		})
-	}
-	return res
-}
-
-func dalPrograms(p []app.Program) (res []*model.ProgramInfo) {
-	for i := range p {
-		res = append(res, &model.ProgramInfo{
-			ID:   int64(p[i].ID),
 			Name: p[i].Name,
 		})
 	}

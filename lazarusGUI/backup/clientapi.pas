@@ -202,7 +202,7 @@ var
   programsJson: TJsonArray;
   RequestAnswer: string;
   i: integer;
-  tmp :TJSONData;
+  tmp: TJSONData;
 begin
   successful := True;
   postJson := TJSONObject.Create;
@@ -213,6 +213,11 @@ begin
         AddHeader('Content-Type', 'application/json');
         RequestBody := TStringStream.Create(postJson.AsJSON);
         RequestAnswer := Post(serverEndpoint + 'programs');
+
+        if ResponseStatusCode <> 200 then
+        begin
+          raise Exception.Create(IntToStr(ResponseStatusCode));
+        end;
 
         programsJson := GetJson(RequestAnswer) as TJsonArray;
 
@@ -227,15 +232,11 @@ begin
             Result.programID[i] := GetPath('id').AsInteger;
             tmp := FindPath('name');
             if tmp <> nil then
-               Result.programName[i] := GetPath('name').AsString;
+              Result.programName[i] := GetPath('name').AsString;
           end;
         end;
 
 
-        if ResponseStatusCode <> 200 then
-        begin
-          raise Exception.Create(IntToStr(ResponseStatusCode));
-        end;
 
       except
         case ResponseStatusCode of
@@ -315,7 +316,17 @@ begin
         AddHeader('Content-Type', 'application/json');
         RequestBody := TStringStream.Create(postJson.AsJSON);
         RequestAnswer := Post(serverEndpoint + 'program-relays');
+
+        if ResponseStatusCode <> 200 then
+        begin
+          raise Exception.Create(IntToStr(ResponseStatusCode));
+        end;
+              
+        writeln(RequestAnswer);
+
         relaysJson := GetJson(RequestAnswer).GetPath('relays') as TJsonArray;
+
+        writeln(relaysJson.AsJSON);
 
         setlength(Result.realyID, relaysJson.Count);
         setlength(Result.timeON, relaysJson.Count);
@@ -323,7 +334,6 @@ begin
         setlength(Result.preflight, relaysJson.Count);
 
         Result.Count := relaysJson.Count;
-
         for i := 0 to relaysJson.Count - 1 do
         begin
           with relaysJson.items[i] do
@@ -362,10 +372,6 @@ begin
           end;
         end;
 
-        if ResponseStatusCode <> 200 then
-        begin
-          raise Exception.Create(IntToStr(ResponseStatusCode));
-        end;
 
       except
         case ResponseStatusCode of
@@ -423,7 +429,7 @@ begin
 
           if relays.preflight[i] <> 0 then
           begin
-            tmp.Add('preflight', relays.preflight[i]);
+            tmp.Add('prfelight', relays.preflight[i]);
           end;
 
           relaysJson.Add(tmp);

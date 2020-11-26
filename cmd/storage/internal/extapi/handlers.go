@@ -477,13 +477,7 @@ func (svc *service) programs(params op.ProgramsParams) op.ProgramsResponder {
 
 	switch errors.Cause(err) {
 	case nil:
-		var out []*model.ProgramInfo
-		for i := range res {
-			out = append(out, &model.ProgramInfo{
-				ID:   int64(res[i].ID),
-				Name: res[i].Name,
-			})
-		}
+		out := apiPrograms(res)
 		return op.NewProgramsOK().WithPayload(out)
 	case sql.ErrNoRows:
 		return op.NewProgramsOK().WithPayload([]*model.ProgramInfo{})
@@ -499,17 +493,7 @@ func (svc *service) programRelays(params op.ProgramRelaysParams) op.ProgramRelay
 
 	res, err := svc.app.ProgramRelays(app.StationID(*params.Args.StationID), int(*params.Args.ProgramID))
 
-	relays := []*model.RelayConfig{}
-
-	for i := range res {
-		relays = append(relays, &model.RelayConfig{
-			ID:        int64(res[i].ID),
-			Timeon:    int64(res[i].TimeOn),
-			Timeoff:   int64(res[i].TimeOff),
-			Prfelight: int64(res[i].Preflight),
-		})
-	}
-
+	relays := apiRelays(res)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewProgramRelaysOK().WithPayload(&op.ProgramRelaysOKBody{

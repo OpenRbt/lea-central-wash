@@ -124,3 +124,27 @@ func apiKeyPair(data []app.KeyPair) []*model.KeyPair {
 	}
 	return res
 }
+
+func apiPrograms(p []app.Program) (res []*model.ProgramInfo) {
+	res = []*model.ProgramInfo{}
+	for i := range p {
+		res = append(res, &model.ProgramInfo{
+			ID:   int64(p[i].ID),
+			Name: p[i].Name,
+		})
+	}
+	return res
+}
+
+func apiRelays(r []app.Relay) (res []*model.RelayConfig) {
+	res = []*model.RelayConfig{}
+	for i := range r {
+		res = append(res, &model.RelayConfig{
+			ID:        int64(r[i].ID),
+			Timeon:    int64(r[i].TimeOn),
+			Timeoff:   int64(r[i].TimeOff),
+			Prfelight: int64(r[i].Preflight),
+		})
+	}
+	return res
+}
