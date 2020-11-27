@@ -1,7 +1,6 @@
 package extapi
 
 import (
-	"database/sql"
 	"fmt"
 	"time"
 
@@ -477,10 +476,7 @@ func (svc *service) programs(params op.ProgramsParams) op.ProgramsResponder {
 
 	switch errors.Cause(err) {
 	case nil:
-		out := apiPrograms(res)
-		return op.NewProgramsOK().WithPayload(out)
-	case sql.ErrNoRows:
-		return op.NewProgramsOK().WithPayload([]*model.ProgramInfo{})
+		return op.NewProgramsOK().WithPayload(apiPrograms(res))
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewProgramsInternalServerError()
@@ -493,15 +489,10 @@ func (svc *service) programRelays(params op.ProgramRelaysParams) op.ProgramRelay
 
 	res, err := svc.app.ProgramRelays(app.StationID(*params.Args.StationID), int(*params.Args.ProgramID))
 
-	relays := apiRelays(res)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewProgramRelaysOK().WithPayload(&op.ProgramRelaysOKBody{
-			Relays: relays,
-		})
-	case sql.ErrNoRows:
-		return op.NewProgramRelaysOK().WithPayload(&op.ProgramRelaysOKBody{
-			Relays: relays,
+			Relays: apiRelays(res),
 		})
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)

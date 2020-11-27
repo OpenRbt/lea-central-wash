@@ -40,7 +40,7 @@ type
     procedure btnSaveRelaysConfigClick(Sender: TObject);
     procedure ProgramListClick(Sender: TObject);
     procedure LoadRelaysConfig();
-    procedure FormShow(Sender: TObject; ID: integer; stationName:string);
+    procedure FormShow(Sender: TObject; ID: integer; stationName: string);
     procedure PrepareProgramList();
     procedure PrepareRelaysConfig();
   private
@@ -58,6 +58,12 @@ type
     RelayMsec: TEdit;
   end;
 
+
+const
+  MAX_PROGRAMS = 9;
+
+const
+  MAX_RELAYS = 17;
 
 var
   ManagePrograms: TManagePrograms;
@@ -79,22 +85,22 @@ var
 begin
   ProgramList.Items.Clear;
 
-  programs := client.GetPrograms(StationID, status);
+  status := client.GetPrograms(StationID, programs);
 
   if status = False then
   begin
     Close;
   end;
 
-  for i := 0 to 8 do
+  for i := 0 to MAX_PROGRAMS-1 do
   begin
     ProgramList.Items.Add('Program ' + IntToStr(i + 1));
   end;
 
   for i := 0 to programs.Count - 1 do
   begin
-    if programs.programName[i] <> "" then
-    ProgramList.Items[programs.programID[i] - 1] := programs.programName[i];
+    if programs.programName[i] <> '' then
+      ProgramList.Items[programs.programID[i] - 1] := programs.programName[i];
   end;
 end;
 
@@ -122,11 +128,8 @@ begin
     end;
   end;
 
-
-  RelaysCount := 17;
-
-  SetLength(configs, RelaysCount);
-  for i := 0 to RelaysCount - 1 do
+  SetLength(configs, MAX_RELAYS);
+  for i := 0 to MAX_RELAYS - 1 do
   begin
     configs[i].RelayPanel := TPanel.Create(nil);
     configs[i].RelayTrigger := TCheckBox.Create(nil);
@@ -202,7 +205,7 @@ var
   status: boolean;
 
 begin
-  relays := client.GetProgramRelays(StationID, ProgramID, status);
+  status := client.GetProgramRelays(StationID, ProgramID, relays);
 
   if status = False then
   begin
@@ -214,7 +217,7 @@ begin
   end;
 
   //Setting Default values
-  for i := 0 to RelaysCount - 1 do
+  for i := 0 to MAX_RELAYS - 1 do
   begin
     with configs[i] do
     begin
@@ -247,7 +250,7 @@ var
 
 begin
   sendCount := 0;
-  for i := 0 to RelaysCount - 1 do
+  for i := 0 to MAX_RELAYS - 1 do
   begin
     with configs[i] do
     begin
@@ -263,7 +266,7 @@ begin
   setlength(relays.preflight, sendCount);
   relays.Count := sendCount;
   j := 0;
-  for i := 0 to RelaysCount - 1 do
+  for i := 0 to MAX_RELAYS - 1 do
   begin
     with configs[i] do
     begin
@@ -354,10 +357,10 @@ end;
 
 
 
-procedure TManagePrograms.FormShow(Sender: TObject; ID: integer; stationName:string);
+procedure TManagePrograms.FormShow(Sender: TObject; ID: integer; stationName: string);
 begin
   Show;
-  StationInfo.Caption:= 'Station ID: ' + IntToStr(ID) + ' - ' + stationName;
+  StationInfo.Caption := 'Station ID: ' + IntToStr(ID) + ' - ' + stationName;
   StationID := ID;
   PrepareRelaysConfig();
   PrepareProgramList();

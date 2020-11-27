@@ -425,11 +425,8 @@ func (r *repo) SetProgramName(id app.StationID, programID int, name string) (err
 			ProgramID: programID,
 			Name:      name,
 		})
-		if err != nil {
-			return err
-		}
 
-		return nil
+		return err
 	})
 
 	return
@@ -445,11 +442,8 @@ func (r *repo) SetProgramRelays(id app.StationID, programID int, relays []app.Re
 			ProgramID: programID,
 			Relays:    relaysJSON,
 		})
-		if err != nil {
-			return err
-		}
 
-		return nil
+		return err
 	})
 
 	return

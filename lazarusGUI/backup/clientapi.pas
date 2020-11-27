@@ -34,11 +34,11 @@ type
     procedure SendMoney(hash: string; moneyToSend: integer);
     function Info(): string;
 
-    function GetPrograms(StationID: integer; out successful: boolean): ProgramsInfo;
+    function GetPrograms(StationID: integer; out programs: ProgramsInfo): boolean;
     procedure SetProgramName(StationID: integer; ProgramID: integer;
       programName: string; out successful: boolean);
     function GetProgramRelays(StationID: integer; ProgramID: integer;
-      out successful: boolean): RelaysInfo;
+      out Relays: RelaysInfo): boolean;
     procedure SetProgramRelays(StationID: integer; ProgramID: integer;
       relays: RelaysInfo; out successful: boolean);
 
@@ -196,7 +196,7 @@ begin
   end;
 end;
 
-function TClient.GetPrograms(StationID: integer; out successful: boolean): ProgramsInfo;
+function TClient.GetPrograms(StationID: integer; out programs: ProgramsInfo): boolean;
 var
   postJson: TJSONObject;
   programsJson: TJsonArray;
@@ -204,7 +204,7 @@ var
   i: integer;
   tmp: TJSONData;
 begin
-  successful := True;
+  Result := True;
   postJson := TJSONObject.Create;
   postJson.Add('stationID', stationID);
   with TFPHttpClient.Create(nil) do
@@ -221,18 +221,18 @@ begin
 
         programsJson := GetJson(RequestAnswer) as TJsonArray;
 
-        setlength(Result.programID, programsJson.Count);
-        setlength(Result.programName, programsJson.Count);
-        Result.Count := programsJson.Count;
+        setlength(programs.programID, programsJson.Count);
+        setlength(programs.programName, programsJson.Count);
+        programs.Count := programsJson.Count;
 
         for i := 0 to programsJson.Count - 1 do
         begin
           with programsJson.items[i] do
           begin
-            Result.programID[i] := GetPath('id').AsInteger;
+            programs.programID[i] := GetPath('id').AsInteger;
             tmp := FindPath('name');
             if tmp <> nil then
-              Result.programName[i] := GetPath('name').AsString;
+              programs.programName[i] := GetPath('name').AsString;
           end;
         end;
 
@@ -246,10 +246,10 @@ begin
             ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
               sLineBreak + ResponseStatusText);
         end;
-        setlength(Result.programID, 0);
-        setlength(Result.programName, 0);
-        Result.Count := 0;
-        successful := False;
+        setlength(programs.programID, 0);
+        setlength(programs.programName, 0);
+        programs.Count := 0;
+        Result := False;
 
       end;
     finally
@@ -258,12 +258,11 @@ begin
 end;
 
 procedure TClient.SetProgramName(StationID: integer; ProgramID: integer;
-  programName: string; out successful: boolean);
+  programName: string; out sucessful: boolean);
 var
   postJson: TJSONObject;
 begin
-
-  successful := True;
+  sucessful := True;
   postJson := TJSONObject.Create;
   postJson.Add('stationID', StationID);
   postJson.Add('programID', ProgramID);
@@ -288,7 +287,7 @@ begin
             ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
               sLineBreak + ResponseStatusText);
         end;
-        successful := False;
+        sucessful := False;
       end;
 
 
@@ -298,7 +297,7 @@ begin
 end;
 
 function TClient.GetProgramRelays(StationID: integer; ProgramID: integer;
-  out successful: boolean): RelaysInfo;
+  out Relays: RelaysInfo): boolean;
 var
   postJson: TJSONObject;
   relaysJson: TJsonArray;
@@ -306,7 +305,7 @@ var
   i: integer;
   tmp: TJsonData;
 begin
-  successful := True;
+  Result := True;
   postJson := TJSONObject.Create;
   postJson.Add('stationID', stationID);
   postJson.Add('programID', ProgramID);
@@ -321,53 +320,49 @@ begin
         begin
           raise Exception.Create(IntToStr(ResponseStatusCode));
         end;
-              
-        writeln(RequestAnswer);
 
         relaysJson := GetJson(RequestAnswer).GetPath('relays') as TJsonArray;
 
-        writeln(relaysJson.AsJSON);
+        setlength(Relays.realyID, relaysJson.Count);
+        setlength(Relays.timeON, relaysJson.Count);
+        setlength(Relays.timeOFF, relaysJson.Count);
+        setlength(Relays.preflight, relaysJson.Count);
 
-        setlength(Result.realyID, relaysJson.Count);
-        setlength(Result.timeON, relaysJson.Count);
-        setlength(Result.timeOFF, relaysJson.Count);
-        setlength(Result.preflight, relaysJson.Count);
-
-        Result.Count := relaysJson.Count;
+        Relays.Count := relaysJson.Count;
         for i := 0 to relaysJson.Count - 1 do
         begin
           with relaysJson.items[i] do
           begin
-            Result.realyID[i] := FindPath('id').AsInteger;
+            Relays.realyID[i] := FindPath('id').AsInteger;
 
             tmp := FindPath('timeon');
             if tmp <> nil then
             begin
-              Result.timeON[i] := tmp.AsInteger;
+              Relays.timeON[i] := tmp.AsInteger;
             end
             else
             begin
-              Result.timeON[i] := 0;
+              Relays.timeON[i] := 0;
             end;
 
             tmp := FindPath('timeoff');
             if tmp <> nil then
             begin
-              Result.timeOFF[i] := tmp.AsInteger;
+              Relays.timeOFF[i] := tmp.AsInteger;
             end
             else
             begin
-              Result.timeOFF[i] := 0;
+              Relays.timeOFF[i] := 0;
             end;
 
             tmp := FindPath('prfelight');
             if tmp <> nil then
             begin
-              Result.preflight[i] := tmp.AsInteger;
+              Relays.preflight[i] := tmp.AsInteger;
             end
             else
             begin
-              Result.preflight[i] := 0;
+              Relays.preflight[i] := 0;
             end;
           end;
         end;
@@ -381,13 +376,13 @@ begin
             ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
               sLineBreak + ResponseStatusText);
         end;
-        setlength(Result.realyID, 0);
-        setlength(Result.timeON, 0);
-        setlength(Result.timeOFF, 0);
-        setlength(Result.preflight, 0);
+        setlength(Relays.realyID, 0);
+        setlength(Relays.timeON, 0);
+        setlength(Relays.timeOFF, 0);
+        setlength(Relays.preflight, 0);
 
-        Result.Count := 0;
-        successful := False;
+        Relays.Count := 0;
+        Result := False;
       end;
     finally
       Free
