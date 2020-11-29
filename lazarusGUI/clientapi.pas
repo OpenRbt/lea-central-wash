@@ -17,7 +17,7 @@ type
 
   RelaysInfo = packed record
     Count: integer;
-    realyID: array of integer;
+    relayID: array of integer;
     timeON: array of integer;
     timeOFF: array of integer;
     preflight: array of integer;
@@ -323,7 +323,7 @@ begin
 
         relaysJson := GetJson(RequestAnswer).GetPath('relays') as TJsonArray;
 
-        setlength(Relays.realyID, relaysJson.Count);
+        setlength(Relays.relayID, relaysJson.Count);
         setlength(Relays.timeON, relaysJson.Count);
         setlength(Relays.timeOFF, relaysJson.Count);
         setlength(Relays.preflight, relaysJson.Count);
@@ -333,7 +333,7 @@ begin
         begin
           with relaysJson.items[i] do
           begin
-            Relays.realyID[i] := FindPath('id').AsInteger;
+            Relays.relayID[i] := FindPath('id').AsInteger;
 
             tmp := FindPath('timeon');
             if tmp <> nil then
@@ -376,7 +376,7 @@ begin
             ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
               sLineBreak + ResponseStatusText);
         end;
-        setlength(Relays.realyID, 0);
+        setlength(Relays.relayID, 0);
         setlength(Relays.timeON, 0);
         setlength(Relays.timeOFF, 0);
         setlength(Relays.preflight, 0);
@@ -410,7 +410,7 @@ begin
         for i := 0 to relays.Count - 1 do
         begin
           tmp := TJSONObject.Create;
-          tmp.Add('id', relays.realyID[i]);
+          tmp.Add('id', relays.relayID[i]);
 
           if relays.timeON[i] <> 0 then
           begin

@@ -43,6 +43,7 @@ type
     procedure FormShow(Sender: TObject; ID: integer; stationName: string);
     procedure PrepareProgramList();
     procedure PrepareRelaysConfig();
+    procedure CheckRelaysChanges();
   private
 
   public
@@ -67,7 +68,8 @@ const
 
 var
   ManagePrograms: TManagePrograms;
-  RelaysCount, StationID, ProgramID: integer;
+  StationID: integer = -1;
+  ProgramID: integer = -1;
   configs: array of RelayConfig;
 
 
@@ -92,7 +94,7 @@ begin
     Close;
   end;
 
-  for i := 0 to MAX_PROGRAMS-1 do
+  for i := 0 to MAX_PROGRAMS - 1 do
   begin
     ProgramList.Items.Add('Program ' + IntToStr(i + 1));
   end;
@@ -231,7 +233,7 @@ begin
   //Setting Relays
   for i := 0 to relays.Count - 1 do
   begin
-    with configs[relays.realyID[i] - 1] do
+    with configs[relays.relayID[i] - 1] do
     begin
       RelayTrigger.Checked := True;
       RelayOnTime.Text := IntToStr(relays.timeON[i]);
@@ -260,7 +262,7 @@ begin
       end;
     end;
   end;
-  setlength(relays.realyID, sendCount);
+  setlength(relays.relayID, sendCount);
   setlength(relays.timeON, sendCount);
   setlength(relays.timeOFF, sendCount);
   setlength(relays.preflight, sendCount);
@@ -272,7 +274,7 @@ begin
     begin
       if RelayTrigger.Checked then
       begin
-        relays.realyID[j] := i + 1;
+        relays.relayID[j] := i + 1;
         try
           relays.timeON[j] := StrToInt(RelayOnTime.Text);
           relays.timeOFF[j] := StrToInt(RelayOffTime.Text);
@@ -303,6 +305,8 @@ begin
 
   if ProgramList.ItemIndex <> -1 then
   begin
+    if ProgramID <> -1 then
+      CheckRelaysChanges();
     ProgramID := programList.ItemIndex + 1;
     LoadRelaysConfig();
     programNameEdit.Text := programList.Items[programList.ItemIndex];
@@ -347,6 +351,8 @@ end;
 
 procedure TManagePrograms.btnOkClick(Sender: TObject);
 begin
+  StationID := -1;
+  ProgramID := -1;
   Close;
 end;
 
@@ -355,7 +361,76 @@ begin
   SaveRelaysConfig();
 end;
 
+procedure TManagePrograms.CheckRelaysChanges();
+var
+  oldRelays, newRelays: RelaysInfo;
+  relayCount, i, j: integer;
+  status, changes: boolean;
+begin
 
+  relayCount := 0;
+  for i := 0 to MAX_RELAYS - 1 do
+  begin
+    with configs[i] do
+    begin
+      if RelayTrigger.Checked then
+      begin
+        relayCount := relayCount + 1;
+      end;
+    end;
+  end;
+  setlength(newRelays.relayID, relayCount);
+  setlength(newRelays.timeON, relayCount);
+  setlength(newRelays.timeOFF, relayCount);
+  setlength(newRelays.preflight, relayCount);
+  newRelays.Count := relayCount;
+  j := 0;
+  for i := 0 to MAX_RELAYS - 1 do
+  begin
+    with configs[i] do
+    begin
+      if RelayTrigger.Checked then
+      begin
+        newRelays.relayID[j] := i + 1;
+        newRelays.timeON[j] := StrToInt(RelayOnTime.Text);
+        newRelays.timeOFF[j] := StrToInt(RelayOffTime.Text);
+        newRelays.preflight[j] := StrToInt(RelayMsec.Text);
+        j := j + 1;
+      end;
+    end;
+  end;
+
+  status := client.GetProgramRelays(StationID, ProgramID, oldRelays);
+  changes := False;
+  if status then
+  begin
+    if oldRelays.Count <> newRelays.Count then
+    begin
+      changes := True;
+    end
+    else
+    begin
+      for i := 0 to newRelays.Count - 1 do
+      begin
+        if oldRelays.relayID[i] <> newRelays.relayID[i] then
+        begin
+          changes := True;
+          break;
+        end;
+      end;
+    end;
+
+    if changes then
+    begin
+      case QuestionDLG('Save changes?', 'Program ' + IntToStr(ProgramID + 1) + ' changed' +
+          sLineBreak + 'Save new program?', mtCustom,
+          [mrYes, 'Save', mrNo, 'Don`t Save'], '') of
+        mrYes: SaveRelaysConfig();
+      end;
+    end;
+  end;
+
+end;
 
 procedure TManagePrograms.FormShow(Sender: TObject; ID: integer; stationName: string);
 begin

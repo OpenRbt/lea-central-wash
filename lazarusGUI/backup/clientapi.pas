@@ -17,7 +17,7 @@ type
 
   RelaysInfo = packed record
     Count: integer;
-    realyID: array of integer;
+    relayID: array of integer;
     timeON: array of integer;
     timeOFF: array of integer;
     preflight: array of integer;
@@ -36,7 +36,7 @@ type
 
     function GetPrograms(StationID: integer; out programs: ProgramsInfo): boolean;
     procedure SetProgramName(StationID: integer; ProgramID: integer;
-      programName: string; out successful: boolean);
+      programName: string;out successful: boolean);
     function GetProgramRelays(StationID: integer; ProgramID: integer;
       out Relays: RelaysInfo): boolean;
     procedure SetProgramRelays(StationID: integer; ProgramID: integer;
@@ -258,11 +258,11 @@ begin
 end;
 
 procedure TClient.SetProgramName(StationID: integer; ProgramID: integer;
-  programName: string; out sucessful: boolean);
+  programName: string; out successful: boolean);
 var
   postJson: TJSONObject;
 begin
-  sucessful := True;
+  successful := True;
   postJson := TJSONObject.Create;
   postJson.Add('stationID', StationID);
   postJson.Add('programID', ProgramID);
@@ -287,7 +287,7 @@ begin
             ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
               sLineBreak + ResponseStatusText);
         end;
-        sucessful := False;
+        successful := False;
       end;
 
 
