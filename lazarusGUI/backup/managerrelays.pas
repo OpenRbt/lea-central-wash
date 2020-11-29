@@ -422,7 +422,7 @@ begin
 
     if changes then
     begin
-      case QuestionDLG('Save changes?', 'Program ' + IntToStr(ProgramID + 1) + ' changed' +
+      case QuestionDLG('Save changes?', 'Program ' + IntToStr(ProgramID) + ' changed' +
           sLineBreak + 'Save new program?', mtCustom,
           [mrYes, 'Save', mrNo, 'Don`t Save'], '') of
         mrYes: SaveRelaysConfig();
