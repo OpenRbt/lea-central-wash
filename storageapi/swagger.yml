@@ -696,6 +696,11 @@ paths:
             properties:
               tax:
                 type: string
+                enum:
+                  - TAX_VAT110
+                  - TAX_VAT0 
+                  - TAX_NO
+                  - TAX_VAT120
         500:
           description: internal error
 
@@ -713,6 +718,11 @@ paths:
             properties:
               taxValue:
                 type: string
+                enum:
+                  - TAX_VAT110
+                  - TAX_VAT0 
+                  - TAX_NO
+                  - TAX_VAT120
       responses:
         204:
           description: OK
