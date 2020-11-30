@@ -5,4 +5,5 @@ object Client: TClient
   HorizontalOffset = 298
   VerticalOffset = 159
   Width = 150
+  PPI = 96
 end

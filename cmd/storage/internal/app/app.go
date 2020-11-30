@@ -45,6 +45,11 @@ type (
 
 		StatusCollection() StatusCollection
 		SaveCollectionReport(report CollectionReport) error
+
+		Programs(id StationID) (programs []Program, err error)
+		SetProgramName(id StationID, programID int, name string) (err error)
+		ProgramRelays(id StationID, programID int) (relays []Relay, err error)
+		SetProgramRelays(id StationID, programID int, relays []Relay) (err error)
 	}
 
 	// Repo is a DAL interface.
@@ -71,6 +76,11 @@ type (
 		LoadHash() ([]StationID, []string, error)
 		SetHash(StationID, string) error
 		CheckDB() (ok bool, err error)
+
+		Programs(id StationID) (programs []Program, err error)
+		SetProgramName(id StationID, programID int, name string) (err error)
+		ProgramRelays(id StationID, programID int) (relays []Relay, err error)
+		SetProgramRelays(id StationID, programID int, relays []Relay) (err error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -140,4 +150,16 @@ type StationsVariables struct {
 type KeyPair struct {
 	Key   string
 	Value string
+}
+
+type Relay struct {
+	ID        int
+	TimeOn    int
+	TimeOff   int
+	Preflight int
+}
+
+type Program struct {
+	ID   int
+	Name string
 }

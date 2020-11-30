@@ -2,14 +2,14 @@ swagger: "2.0"
 
 info:
   title: Storage
-  version: 1.7.0
+  version: 1.8.0
 
 basePath: /
 schemes:
   - http
 
 definitions:
-
+        
   StatusReport:
     type: object
     properties:
@@ -142,6 +142,29 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/KeyPair'
+  
+  ProgramInfo:
+    type: object
+    properties:
+      id:
+        type: integer
+        minimum: 1
+      name:
+        type: string
+        minLength: 1
+
+  RelayConfig:
+    type: object
+    properties:
+      id:
+        type: integer
+        minimum: 1
+      timeon:
+        type: integer
+      timeoff:
+        type: integer
+      prfelight:
+        type: integer
 
 consumes:
   - application/json
@@ -543,5 +566,121 @@ paths:
           description: OK
         404:
           description: not found
+        500:
+          description: internal error
+  
+  /programs:
+    post:
+      operationId: "programs"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              -  stationID
+            properties:
+              stationID:
+                type: integer
+                minimum: 1
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ProgramInfo'
+        500:
+          description: internal error
+  
+  /set-program-name:
+    post:
+      operationId: "setProgramName"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - programID
+              - name
+              - stationID
+            properties:
+              stationID:
+                type: integer
+                minimum: 1
+              programID:
+                type: integer
+                minimum: 1
+              name:
+                type: string
+                minLength: 1
+      responses:
+        204:
+          description: OK
+        500:
+          description: internal error
+  
+  /program-relays:
+    post:
+      operationId: "programRelays"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - programID
+              - stationID
+            properties:
+              stationID:
+                type: integer
+                minimum: 1
+              programID:
+                type: integer
+                minimum: 1
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              relays:
+                type: array
+                items:
+                  $ref: '#/definitions/RelayConfig'
+        500:
+          description: internal error
+          
+  /set-program-relays:
+    post:
+      operationId: "setProgramRelays"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              -  programID
+              -  program
+              - stationID
+            properties:
+              stationID:
+                type: integer
+                minimum: 1
+              programID:
+                type: integer
+                minimum: 1
+              relays:
+                type: array
+                items:
+                  $ref: '#/definitions/RelayConfig'
+      responses:
+        204:
+          description: OK
         500:
           description: internal error

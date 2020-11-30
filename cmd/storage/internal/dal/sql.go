@@ -136,6 +136,35 @@ GROUP BY station_id
 		) AS RR
 		GROUP BY relay_id	
 	`
+
+	sqlPrograms = `
+	SELECT program_id,
+       name
+	FROM station_program
+	WHERE station_id = :station_id
+	ORDER BY program_id ASC
+	`
+
+	sqlProgramRelays = `
+	SELECT relays
+	FROM station_program
+	WHERE station_id = :station_id
+  	AND program_id = :program_id
+	`
+
+	sqlSetProgramName = `
+	INSERT INTO station_program (station_id, program_id, name)
+	VALUES (:station_id, :program_id, :name) ON CONFLICT (station_id, program_id) DO
+	UPDATE
+	SET name = :name
+	`
+
+	sqlSetProgramRelays = `
+	INSERT INTO station_program (station_id, program_id, relays)
+	VALUES (:station_id, :program_id, :relays) ON CONFLICT (station_id, program_id) DO
+	UPDATE
+	SET relays = :relays
+	`
 )
 
 type (
@@ -227,5 +256,37 @@ type (
 	}
 	resCheckDB struct {
 		CountColumns int
+	}
+
+	argPrograms struct {
+		StationID app.StationID
+	}
+
+	resPrograms struct {
+		ProgramID int
+		Name      string
+	}
+
+	argProgramRelays struct {
+		StationID app.StationID
+		ProgramID int
+	}
+
+	resProgramRelays struct {
+		StationID app.StationID
+		ProgramID int
+		Relays    string
+	}
+
+	argSetProgramName struct {
+		StationID app.StationID
+		ProgramID int
+		Name      string
+	}
+
+	argSetProgramRelays struct {
+		StationID app.StationID
+		ProgramID int
+		Relays    string
 	}
 )

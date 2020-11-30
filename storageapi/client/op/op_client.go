@@ -277,6 +277,62 @@ func (a *Client) Ping(params *PingParams) (*PingOK, error) {
 }
 
 /*
+ProgramRelays program relays API
+*/
+func (a *Client) ProgramRelays(params *ProgramRelaysParams) (*ProgramRelaysOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewProgramRelaysParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "programRelays",
+		Method:             "POST",
+		PathPattern:        "/program-relays",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &ProgramRelaysReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*ProgramRelaysOK), nil
+
+}
+
+/*
+Programs programs API
+*/
+func (a *Client) Programs(params *ProgramsParams) (*ProgramsOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewProgramsParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "programs",
+		Method:             "POST",
+		PathPattern:        "/programs",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &ProgramsReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*ProgramsOK), nil
+
+}
+
+/*
 Save save API
 */
 func (a *Client) Save(params *SaveParams) (*SaveNoContent, error) {
@@ -413,6 +469,62 @@ func (a *Client) SaveRelay(params *SaveRelayParams) (*SaveRelayNoContent, error)
 		return nil, err
 	}
 	return result.(*SaveRelayNoContent), nil
+
+}
+
+/*
+SetProgramName set program name API
+*/
+func (a *Client) SetProgramName(params *SetProgramNameParams) (*SetProgramNameNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetProgramNameParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "setProgramName",
+		Method:             "POST",
+		PathPattern:        "/set-program-name",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetProgramNameReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*SetProgramNameNoContent), nil
+
+}
+
+/*
+SetProgramRelays set program relays API
+*/
+func (a *Client) SetProgramRelays(params *SetProgramRelaysParams) (*SetProgramRelaysNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetProgramRelaysParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "setProgramRelays",
+		Method:             "POST",
+		PathPattern:        "/set-program-relays",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetProgramRelaysReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*SetProgramRelaysNoContent), nil
 
 }
 

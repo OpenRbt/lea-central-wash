@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Grids, Buttons, ClientAPI;
+  Grids, Buttons, ClientAPI, managerRelays;
 
 type
 
@@ -20,6 +20,7 @@ type
     btnChangeName: TButton;
     btnOpenStation: TButton;
     Button1: TButton;
+    btnManagePrograms: TButton;
     cbHash: TComboBox;
     edName: TEdit;
     editMoney: TLabeledEdit;
@@ -31,6 +32,7 @@ type
     PricesData: TStringGrid;
     procedure btnChangeHashClick(Sender: TObject);
     procedure btnChangeNameClick(Sender: TObject);
+    procedure btnManageProgramsClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnRemoveHashClick(Sender: TObject);
     procedure btnSendMoneyClick(Sender: TObject);
@@ -48,7 +50,7 @@ type
 
   end;
 
-const programCount = 199;
+const programCount = 9;
 var
   ManageForm: TManageForm;
   StationHash: String;
@@ -157,6 +159,11 @@ procedure TManageForm.btnChangeNameClick(Sender: TObject);
 begin
   client.PairIdAndHash(StationHash, edName.Text, StationID);
   close;
+end;
+
+procedure TManageForm.btnManageProgramsClick(Sender: TObject);
+begin
+  ManagePrograms.FormShow(self,StationID);
 end;
 
 procedure TManageForm.btnOKClick(Sender: TObject);

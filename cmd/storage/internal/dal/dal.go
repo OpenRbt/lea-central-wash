@@ -370,3 +370,81 @@ func (r *repo) CheckDB() (ok bool, err error) {
 	})
 	return //nolint:nakedret
 }
+
+func (r *repo) Programs(id app.StationID) (programs []app.Program, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res []resPrograms
+		err = tx.NamedSelectContext(ctx, &res, sqlPrograms, argPrograms{
+			StationID: id,
+		})
+
+		if err == sql.ErrNoRows {
+			return nil
+		}
+
+		if err != nil {
+			return err
+		}
+
+		programs = appPrograms(res)
+
+		return nil
+	})
+	return
+}
+
+func (r *repo) ProgramRelays(id app.StationID, programID int) (relays []app.Relay, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var jsonRelays string
+		err = tx.NamedGetContext(ctx, &jsonRelays, sqlProgramRelays, argProgramRelays{
+			StationID: id,
+			ProgramID: programID,
+		})
+
+		if err == sql.ErrNoRows {
+			return nil
+		}
+
+		if err != nil {
+			return err
+		}
+
+		relays = appProgramRelays(jsonRelays)
+
+		return nil
+	})
+
+	return
+}
+
+func (r *repo) SetProgramName(id app.StationID, programID int, name string) (err error) {
+
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err = tx.NamedExec(sqlSetProgramName, argSetProgramName{
+			StationID: id,
+			ProgramID: programID,
+			Name:      name,
+		})
+
+		return err
+	})
+
+	return
+}
+
+func (r *repo) SetProgramRelays(id app.StationID, programID int, relays []app.Relay) (err error) {
+
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		relaysJSON := dalProgramRelays(relays)
+
+		_, err = tx.NamedExec(sqlSetProgramRelays, argSetProgramRelays{
+			StationID: id,
+			ProgramID: programID,
+			Relays:    relaysJSON,
+		})
+
+		return err
+	})
+
+	return
+}

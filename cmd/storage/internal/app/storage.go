@@ -307,3 +307,16 @@ func (a *app) StationReport(id StationID, startDate, endDate time.Time) (MoneyRe
 func (a *app) StationsVariables() ([]StationsVariables, error) {
 	return a.repo.StationsVariables()
 }
+
+func (a *app) Programs(id StationID) (programs []Program, err error) {
+	return a.repo.Programs(id)
+}
+func (a *app) SetProgramName(id StationID, programID int, name string) (err error) {
+	return a.repo.SetProgramName(id, programID, name)
+}
+func (a *app) ProgramRelays(id StationID, programID int) (relays []Relay, err error) {
+	return a.repo.ProgramRelays(id, programID)
+}
+func (a *app) SetProgramRelays(id StationID, programID int, relays []Relay) (err error) {
+	return a.repo.SetProgramRelays(id, programID, relays)
+}
