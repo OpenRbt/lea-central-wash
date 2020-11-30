@@ -684,3 +684,71 @@ paths:
           description: OK
         500:
           description: internal error
+  
+  /kasse-tax:
+    post:
+      operationId: "kasseTax"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              tax:
+                type: string
+        500:
+          description: internal error
+
+  /set-kasse-tax:
+    post:
+      operationId: "setKasseTax"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - taxValue
+            properties:
+              taxValue:
+                type: string
+      responses:
+        204:
+          description: OK
+        500:
+          description: internal error
+
+  /kasse-title:
+    post:
+      operationId: "kasseTitle"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+        500:
+          description: internal error
+
+  /set-kasse-title:
+    post:
+      operationId: "setKasseTitle"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - title
+            properties:
+              title:
+                type: string
+      responses:
+        204:
+          description: OK
+        500:
+          description: internal error

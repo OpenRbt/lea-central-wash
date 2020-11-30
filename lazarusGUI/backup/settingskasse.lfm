@@ -1,0 +1,80 @@
+object settingsKasse: TsettingsKasse
+  Left = 1382
+  Height = 240
+  Top = 588
+  Width = 320
+  Caption = 'settingsKasse'
+  ClientHeight = 240
+  ClientWidth = 320
+  LCLVersion = '2.0.6.0'
+  object btnClose: TButton
+    Left = 88
+    Height = 73
+    Top = 160
+    Width = 140
+    Caption = 'btnClose'
+    OnClick = btnCloseClick
+    TabOrder = 0
+  end
+  object btnTAX: TButton
+    Left = 240
+    Height = 25
+    Top = 8
+    Width = 75
+    Caption = 'btnTAX'
+    OnClick = btnTAXClick
+    TabOrder = 1
+  end
+  object btnTitle: TButton
+    Left = 240
+    Height = 25
+    Top = 72
+    Width = 75
+    Caption = 'btnTitle'
+    OnClick = btnTitleClick
+    TabOrder = 2
+  end
+  object labelTAX: TLabel
+    Left = 8
+    Height = 15
+    Top = 8
+    Width = 26
+    Caption = 'TAX'
+    ParentColor = False
+  end
+  object labelTitle: TLabel
+    Left = 8
+    Height = 15
+    Top = 72
+    Width = 36
+    Caption = 'TITLE'
+    ParentColor = False
+  end
+  object textTitle: TEdit
+    Left = 88
+    Height = 33
+    Top = 72
+    Width = 140
+    TabOrder = 3
+    Text = 'textTitle'
+  end
+  object comboBoxTAX: TComboBox
+    Left = 88
+    Height = 33
+    Top = 8
+    Width = 140
+    ItemHeight = 0
+    Items.Strings = (
+      'TAX 18%'
+      'TAX 10%'
+      'TAX 18/118'
+      'TAX 10/110'
+      'TAX 0%'
+      'NO TAX'
+      'TAX 20%'
+      'TAX 20/120'
+    )
+    TabOrder = 4
+    Text = 'comboBoxTAX'
+  end
+end
