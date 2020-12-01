@@ -1,7 +1,7 @@
 object settingsKasse: TsettingsKasse
-  Left = 1382
+  Left = 1061
   Height = 240
-  Top = 588
+  Top = 630
   Width = 320
   Caption = 'settingsKasse'
   ClientHeight = 240
@@ -16,24 +16,6 @@ object settingsKasse: TsettingsKasse
     OnClick = btnCloseClick
     TabOrder = 0
   end
-  object btnTAX: TButton
-    Left = 240
-    Height = 25
-    Top = 8
-    Width = 75
-    Caption = 'btnTAX'
-    OnClick = btnTAXClick
-    TabOrder = 1
-  end
-  object btnTitle: TButton
-    Left = 240
-    Height = 25
-    Top = 72
-    Width = 75
-    Caption = 'btnTitle'
-    OnClick = btnTitleClick
-    TabOrder = 2
-  end
   object labelTAX: TLabel
     Left = 8
     Height = 15
@@ -45,7 +27,7 @@ object settingsKasse: TsettingsKasse
   object labelTitle: TLabel
     Left = 8
     Height = 15
-    Top = 72
+    Top = 48
     Width = 36
     Caption = 'TITLE'
     ParentColor = False
@@ -53,9 +35,9 @@ object settingsKasse: TsettingsKasse
   object textTitle: TEdit
     Left = 88
     Height = 33
-    Top = 72
+    Top = 48
     Width = 140
-    TabOrder = 3
+    TabOrder = 1
     Text = 'textTitle'
   end
   object comboBoxTAX: TComboBox
@@ -74,7 +56,7 @@ object settingsKasse: TsettingsKasse
       'TAX 20%'
       'TAX 20/120'
     )
-    TabOrder = 4
+    TabOrder = 2
     Text = 'comboBoxTAX'
   end
 end

@@ -5,7 +5,8 @@ unit settingsKasse;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ClientAPI;
 
 type
 
@@ -13,8 +14,6 @@ type
 
   TsettingsKasse = class(TForm)
     btnClose: TButton;
-    btnTAX: TButton;
-    btnTitle: TButton;
     comboBoxTAX: TComboBox;
     textTitle: TEdit;
     labelTAX: TLabel;
@@ -26,6 +25,7 @@ type
     procedure LoadSettings();
     procedure SaveTax();
     procedure SaveTitle();
+    procedure CheckChanges();
   private
 
   public
@@ -42,11 +42,22 @@ implementation
 { TsettingsKasse }
 
 procedure TsettingsKasse.LoadSettings();
+var
+  Kasse: KasseInfo;
+  status: boolean;
 begin
-  //Get current tax from server
-  comboBoxTax.ItemIndex := 1;
-  //Get title from server
-  textTitle.Text := 'Car Washing';
+  status := client.GetKasse(Kasse);
+  if status then
+  begin
+    //Get current tax from server
+    comboBoxTax.ItemIndex := 1;
+    //Get title from server
+    textTitle.Text := Kasse.receiptItemNae;
+  end
+  else
+  begin
+    btnCloseClick(self);
+  end;
 end;
 
 procedure TsettingsKasse.SaveTax();
@@ -61,17 +72,23 @@ end;
 
 procedure TsettingsKasse.btnTAXClick(Sender: TObject);
 begin
-
+  SaveTax();
 end;
 
 procedure TsettingsKasse.btnCloseClick(Sender: TObject);
 begin
-
+  CheckChanges();
+  Close();
 end;
 
 procedure TsettingsKasse.btnTitleClick(Sender: TObject);
 begin
+  SaveTitle();
+end;
 
+procedure TsettingsKasse.CheckChanges();
+begin
+  SaveTitle();
 end;
 
 procedure TsettingsKasse.FormShow(Sender: TObject);

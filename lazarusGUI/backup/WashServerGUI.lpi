@@ -81,6 +81,7 @@
         <Filename Value="settingskasse.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="settingsKasse"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="settingsKasse"/>
       </Unit6>

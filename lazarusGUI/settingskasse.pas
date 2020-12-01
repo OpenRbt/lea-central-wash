@@ -5,7 +5,8 @@ unit settingsKasse;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ClientAPI;
 
 type
 
@@ -13,8 +14,6 @@ type
 
   TsettingsKasse = class(TForm)
     btnClose: TButton;
-    btnTAX: TButton;
-    btnTitle: TButton;
     comboBoxTAX: TComboBox;
     textTitle: TEdit;
     labelTAX: TLabel;
@@ -43,11 +42,22 @@ implementation
 { TsettingsKasse }
 
 procedure TsettingsKasse.LoadSettings();
+var
+  Kasse: KasseInfo;
+  status: boolean;
 begin
-  //Get current tax from server
-  comboBoxTax.ItemIndex := 1;
-  //Get title from server
-  textTitle.Text := 'Car Washing';
+  status := client.GetKasse(Kasse);
+  if status then
+  begin
+    //Get current tax from server
+    comboBoxTax.ItemIndex := 1;
+    //Get title from server
+    textTitle.Text := Kasse.receiptItemName;
+  end
+  else
+  begin
+    btnCloseClick(self);
+  end;
 end;
 
 procedure TsettingsKasse.SaveTax();
