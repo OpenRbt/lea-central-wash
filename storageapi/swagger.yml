@@ -169,22 +169,22 @@ definitions:
   KasseConfig:
     type: object
     properties:
-      Tax:
+      tax:
         type: string
         enum:
           - TAX_VAT110
           - TAX_VAT0 
           - TAX_NO
           - TAX_VAT120
-      Title:
+      receiptItemName:
         type: string
         minLength: 1
-      Cashier:
+      cashier:
         type: string
         minLength: 1
-      Identifier:
+      cashierINN:
         type: string
-        minLength: 1
+        minLength: 12
 
 consumes:
   - application/json
