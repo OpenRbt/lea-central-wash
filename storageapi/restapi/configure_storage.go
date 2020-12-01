@@ -44,6 +44,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.InfoHandler = op.InfoHandlerFunc(func(params op.InfoParams) op.InfoResponder {
 		return op.InfoNotImplemented()
 	})
+	api.KasseHandler = op.KasseHandlerFunc(func(params op.KasseParams) op.KasseResponder {
+		return op.KasseNotImplemented()
+	})
 	api.LoadHandler = op.LoadHandlerFunc(func(params op.LoadParams) op.LoadResponder {
 		return op.LoadNotImplemented()
 	})
@@ -79,6 +82,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	})
 	api.SaveRelayHandler = op.SaveRelayHandlerFunc(func(params op.SaveRelayParams) op.SaveRelayResponder {
 		return op.SaveRelayNotImplemented()
+	})
+	api.SetKasseHandler = op.SetKasseHandlerFunc(func(params op.SetKasseParams) op.SetKasseResponder {
+		return op.SetKasseNotImplemented()
 	})
 	api.SetProgramNameHandler = op.SetProgramNameHandlerFunc(func(params op.SetProgramNameParams) op.SetProgramNameResponder {
 		return op.SetProgramNameNotImplemented()

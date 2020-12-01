@@ -714,12 +714,7 @@ paths:
         200:
           description: OK
           schema:
-            type: object
-            required:
-              - kasse
-            properties:
-              kasse:
-                $ref: '#/definitions/KasseConfig'
+            $ref: '#/definitions/KasseConfig'
         404:
           description: not found
         500:
@@ -732,12 +727,7 @@ paths:
           required: true
           in: body
           schema:
-            type: object
-            required:
-              - kasse
-            properties:
-              kasse:
-                $ref: '#/definitions/KasseConfig'
+            $ref: '#/definitions/KasseConfig'
       responses:
         204:
           description: OK
