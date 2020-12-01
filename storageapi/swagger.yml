@@ -165,6 +165,14 @@ definitions:
         type: integer
       prfelight:
         type: integer
+        
+  Tax:
+    type: string
+    enum:
+      - TAX_VAT110
+      - TAX_VAT0 
+      - TAX_NO
+      - TAX_VAT120
 
 consumes:
   - application/json
@@ -685,67 +693,27 @@ paths:
         500:
           description: internal error
   
-  /kasse-tax:
+  /kasse:
     post:
-      operationId: "kasseTax"
+      operationId: "kasse"
       responses:
         200:
           description: OK
-          schema:
-            type: object
-            properties:
-              tax:
-                type: string
-                enum:
-                  - TAX_VAT110
-                  - TAX_VAT0 
-                  - TAX_NO
-                  - TAX_VAT120
-        500:
-          description: internal error
-
-  /set-kasse-tax:
-    post:
-      operationId: "setKasseTax"
-      parameters:
-        - name: args
-          required: true
-          in: body
           schema:
             type: object
             required:
-              - taxValue
+              - tax
+              - title
             properties:
-              taxValue:
-                type: string
-                enum:
-                  - TAX_VAT110
-                  - TAX_VAT0 
-                  - TAX_NO
-                  - TAX_VAT120
-      responses:
-        204:
-          description: OK
-        500:
-          description: internal error
-
-  /kasse-title:
-    post:
-      operationId: "kasseTitle"
-      responses:
-        200:
-          description: OK
-          schema:
-            type: object
-            properties:
+              tax:
+                $ref: '#/definitions/Tax'
               title:
                 type: string
         500:
           description: internal error
-
-  /set-kasse-title:
+  /set-kasse:
     post:
-      operationId: "setKasseTitle"
+      operationId: "setKasse"
       parameters:
         - name: args
           required: true
@@ -753,8 +721,11 @@ paths:
           schema:
             type: object
             required:
+              - tax
               - title
             properties:
+              tax:
+                $ref: '#/definitions/Tax'
               title:
                 type: string
       responses:
