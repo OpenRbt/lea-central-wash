@@ -165,14 +165,26 @@ definitions:
         type: integer
       prfelight:
         type: integer
-        
-  Tax:
-    type: string
-    enum:
-      - TAX_VAT110
-      - TAX_VAT0 
-      - TAX_NO
-      - TAX_VAT120
+  
+  KasseConfig:
+    type: object
+    properties:
+      Tax:
+        type: string
+        enum:
+          - TAX_VAT110
+          - TAX_VAT0 
+          - TAX_NO
+          - TAX_VAT120
+      Title:
+        type: string
+        minLength: 1
+      Cashier:
+        type: string
+        minLength: 1
+      Identifier:
+        type: string
+        minLength: 1
 
 consumes:
   - application/json
@@ -702,13 +714,12 @@ paths:
           schema:
             type: object
             required:
-              - tax
-              - title
+              - kasse
             properties:
-              tax:
-                $ref: '#/definitions/Tax'
-              title:
-                type: string
+              kasse:
+                $ref: '#/definitions/KasseConfig'
+        404:
+          description: not found
         500:
           description: internal error
   /set-kasse:
@@ -721,13 +732,10 @@ paths:
           schema:
             type: object
             required:
-              - tax
-              - title
+              - kasse
             properties:
-              tax:
-                $ref: '#/definitions/Tax'
-              title:
-                type: string
+              kasse:
+                $ref: '#/definitions/KasseConfig'
       responses:
         204:
           description: OK
