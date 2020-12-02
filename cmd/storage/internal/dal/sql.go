@@ -165,6 +165,18 @@ GROUP BY station_id
 	UPDATE
 	SET relays = :relays
 	`
+
+	sqlKasse = `
+	SELECT receipt_item, tax_type, cashier_full_name, cashier_inn
+	FROM kasse
+	order by ctime desc
+	limit 1
+	`
+
+	sqlSetKasse = `
+	INSERT INTO kasse(receipt_item, tax_type, cashier_full_name, cashier_inn)
+	VALUES (:receipt_item, :tax_type, :cashier_full_name, :cashier_inn)
+	`
 )
 
 type (
