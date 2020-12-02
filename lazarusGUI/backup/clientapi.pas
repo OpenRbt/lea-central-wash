@@ -25,7 +25,7 @@ type
 
   KasseInfo = packed record
     Tax: string;
-    receiptItemNae: string;
+    receiptItemName: string;
     cashier: string;
     cashierINN: string;
   end;
@@ -489,7 +489,7 @@ begin
         AnswerJson := GetJson(RequestAnswer);
 
         Kasse.Tax := AnswerJson.GetPath('tax').AsString;
-        Kasse.receiptItemNae := AnswerJson.GetPath('receiptItemName').AsString;
+        Kasse.receiptItemName := AnswerJson.GetPath('receiptItemName').AsString;
         Kasse.cashier := AnswerJson.GetPath('cashier').AsString;
         Kasse.cashierINN := AnswerJson.GetPath('cashierINN').AsString;
       except
@@ -516,9 +516,10 @@ begin
   successful := True;
   postJson := TJSONObject.Create;
   postJson.Add('tax', Kasse.Tax);
-  postJson.Add('receiptItemName', Kasse.receiptItemNae);
+  postJson.Add('receiptItemName', Kasse.receiptItemName);
   postJson.Add('cashier', Kasse.cashier);
   postJson.Add('cashierINN', Kasse.cashierINN);
+  writeln(postJson.AsJSON);
   with TFPHttpClient.Create(nil) do
     try
       try

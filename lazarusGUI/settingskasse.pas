@@ -15,17 +15,18 @@ type
   TsettingsKasse = class(TForm)
     btnClose: TButton;
     comboBoxTAX: TComboBox;
-    textTitle: TEdit;
+    labelCashier: TLabel;
+    labelCashierINN: TLabel;
+    textReceiptItem: TEdit;
     labelTAX: TLabel;
-    labelTitle: TLabel;
+    labelReceiptItem: TLabel;
+    textCashier: TEdit;
+    textCashierINN: TEdit;
     procedure btnCloseClick(Sender: TObject);
-    procedure btnTAXClick(Sender: TObject);
-    procedure btnTitleClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure LoadSettings();
-    procedure SaveTax();
-    procedure SaveTitle();
     procedure CheckChanges();
+    procedure SaveSettings();
   private
 
   public
@@ -45,14 +46,22 @@ procedure TsettingsKasse.LoadSettings();
 var
   Kasse: KasseInfo;
   status: boolean;
+  i: integer;
 begin
   status := client.GetKasse(Kasse);
   if status then
   begin
-    //Get current tax from server
-    comboBoxTax.ItemIndex := 1;
-    //Get title from server
-    textTitle.Text := Kasse.receiptItemName;
+    for i := 0 to comboBoxTax.Items.Count do
+    begin
+      if comboBoxTax.items[i] = Kasse.Tax then
+      begin
+        comboBoxTax.ItemIndex := i;
+        break;
+      end;
+    end;
+    textReceiptItem.Text := Kasse.receiptItemName;
+    textCashier.Text := Kasse.cashier;
+    textCashierINN.Text := Kasse.cashierINN;
   end
   else
   begin
@@ -60,19 +69,17 @@ begin
   end;
 end;
 
-procedure TsettingsKasse.SaveTax();
+procedure TsettingsKasse.SaveSettings();
+var
+  Kasse: KasseInfo;
+  status: boolean;
 begin
+  Kasse.cashier := textCashier.Text;
+  Kasse.cashierINN := textCashierINN.Text;
+  kasse.Tax := comboBoxTax.Items[comboboxTax.ItemIndex];
+  kasse.receiptItemName := textReceiptItem.Text;
 
-end;
-
-procedure TsettingsKasse.SaveTitle();
-begin
-
-end;
-
-procedure TsettingsKasse.btnTAXClick(Sender: TObject);
-begin
-  SaveTax();
+  client.SetKasse(kasse, status);
 end;
 
 procedure TsettingsKasse.btnCloseClick(Sender: TObject);
@@ -81,14 +88,53 @@ begin
   Close();
 end;
 
-procedure TsettingsKasse.btnTitleClick(Sender: TObject);
-begin
-  SaveTitle();
-end;
-
 procedure TsettingsKasse.CheckChanges();
+var
+  oldKasse: kasseinfo;
+  status: boolean;
+  changes: boolean;
 begin
-  SaveTitle();
+  status := client.GetKasse(oldKasse);
+  changes := False;
+
+  if status then
+  begin
+    if textReceiptItem.Text <> oldKasse.receiptItemName then
+    begin
+      changes := True;
+    end
+    else
+    if textCashier.Text <> oldKasse.cashier then
+    begin
+      changes := True;
+    end
+    else
+    if textCashierINN.Text <> oldKasse.cashierINN then
+    begin
+      changes := True;
+    end
+    else
+    if comboBoxTax.Items[comboBoxTax.ItemIndex] <> oldKasse.Tax then
+    begin
+      changes := True;
+    end;
+
+
+    //comboBoxTax.ItemIndex := 1;
+    if changes then
+    begin
+      case QuestionDLG('Save changes?', 'Save new kasse configuration?',
+          mtCustom, [mrYes, 'Save', mrNo, 'Don`t Save'], '') of
+        mrYes: SaveSettings();
+      end;
+    end;
+
+  end
+  else
+  begin
+    btnCloseClick(self);
+  end;
+
 end;
 
 procedure TsettingsKasse.FormShow(Sender: TObject);

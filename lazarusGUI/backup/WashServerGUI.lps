@@ -56,12 +56,11 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
         <UnitName Value="clientAPI"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="501"/>
-        <CursorPos X="57" Y="521"/>
+        <TopLine Value="511"/>
+        <CursorPos X="28" Y="522"/>
         <FoldState Value=" T3lZ0x021?"/>
-        <UsageCount Value="112"/>
+        <UsageCount Value="115"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit4>
@@ -73,8 +72,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="managerRelays"/>
         <EditorIndex Value="3"/>
-        <CursorPos X="80" Y="8"/>
-        <UsageCount Value="86"/>
+        <TopLine Value="403"/>
+        <CursorPos X="41" Y="425"/>
+        <UsageCount Value="89"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit5>
@@ -85,10 +85,11 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="settingsKasse"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
-        <TopLine Value="37"/>
-        <CursorPos X="103" Y="50"/>
-        <UsageCount Value="22"/>
+        <TopLine Value="61"/>
+        <CursorPos X="44" Y="81"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit6>
@@ -182,123 +183,123 @@
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="26" Column="15"/>
+        <Filename Value="managerrelays.pas"/>
+        <Caret Line="43" Column="23" TopLine="25"/>
       </Position1>
       <Position2>
         <Filename Value="settingskasse.pas"/>
-        <Caret Line="27" Column="15"/>
+        <Caret Line="26" Column="13" TopLine="19"/>
       </Position2>
       <Position3>
         <Filename Value="settingskasse.pas"/>
-        <Caret Line="28" Column="15"/>
+        <Caret Line="44" Column="31" TopLine="25"/>
       </Position3>
       <Position4>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="30" Column="15"/>
+        <Filename Value="WashServerGUI.lpr"/>
+        <Caret Line="25" Column="26"/>
       </Position4>
       <Position5>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="41" Column="3" TopLine="7"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="51" Column="55" TopLine="27"/>
       </Position5>
       <Position6>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="52" Column="3" TopLine="15"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="206" Column="4" TopLine="203"/>
       </Position6>
       <Position7>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="43" Column="23" TopLine="21"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="51" Column="13" TopLine="22"/>
       </Position7>
       <Position8>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="92" Column="5" TopLine="61"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="492" Column="49" TopLine="400"/>
       </Position8>
       <Position9>
-        <Filename Value="managerrelays.pas"/>
-        <Caret Line="43" Column="23" TopLine="25"/>
+        <Filename Value="clientapi.pas"/>
       </Position9>
       <Position10>
         <Filename Value="settingskasse.pas"/>
-        <Caret Line="26" Column="13" TopLine="19"/>
+        <Caret Line="57" Column="38" TopLine="48"/>
       </Position10>
       <Position11>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="44" Column="31" TopLine="25"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="474" Column="38" TopLine="386"/>
       </Position11>
       <Position12>
-        <Filename Value="WashServerGUI.lpr"/>
-        <Caret Line="25" Column="26"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="493" Column="97" TopLine="466"/>
       </Position12>
       <Position13>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="51" Column="55" TopLine="27"/>
+        <Caret Line="490" Column="36" TopLine="393"/>
       </Position13>
       <Position14>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="206" Column="4" TopLine="203"/>
+        <Filename Value="settingskasse.pas"/>
+        <Caret Line="63" Column="5" TopLine="39"/>
       </Position14>
       <Position15>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="51" Column="13" TopLine="22"/>
+        <Filename Value="settingskasse.pas"/>
+        <Caret Line="62" Column="5" TopLine="38"/>
       </Position15>
       <Position16>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="492" Column="49" TopLine="400"/>
+        <Filename Value="settingskasse.pas"/>
+        <Caret Line="61" Column="5" TopLine="37"/>
       </Position16>
       <Position17>
         <Filename Value="clientapi.pas"/>
+        <Caret Line="52" Column="15" TopLine="39"/>
       </Position17>
       <Position18>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="57" Column="38" TopLine="48"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="310" Column="11" TopLine="300"/>
       </Position18>
       <Position19>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="474" Column="38" TopLine="386"/>
+        <Caret Line="305" Column="11" TopLine="269"/>
       </Position19>
       <Position20>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="493" Column="97" TopLine="466"/>
+        <Caret Line="494" Column="69" TopLine="473"/>
       </Position20>
       <Position21>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="490" Column="36" TopLine="393"/>
+        <Caret Line="493" Column="15" TopLine="474"/>
       </Position21>
       <Position22>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="63" Column="5" TopLine="39"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="515" Column="9" TopLine="495"/>
       </Position22>
       <Position23>
         <Filename Value="settingskasse.pas"/>
-        <Caret Line="62" Column="5" TopLine="38"/>
+        <Caret Line="68" Column="39" TopLine="44"/>
       </Position23>
       <Position24>
         <Filename Value="settingskasse.pas"/>
-        <Caret Line="61" Column="5" TopLine="37"/>
+        <Caret Line="62" Column="3" TopLine="44"/>
       </Position24>
       <Position25>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="52" Column="15" TopLine="39"/>
+        <Filename Value="settingskasse.pas"/>
+        <Caret Line="64" Column="3" TopLine="46"/>
       </Position25>
       <Position26>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="310" Column="11" TopLine="300"/>
+        <Filename Value="settingskasse.pas"/>
+        <Caret Line="62" Column="3" TopLine="32"/>
       </Position26>
       <Position27>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="305" Column="11" TopLine="269"/>
+        <Filename Value="settingskasse.pas"/>
+        <Caret Line="66" Column="3" TopLine="36"/>
       </Position27>
       <Position28>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="494" Column="69" TopLine="473"/>
+        <Filename Value="settingskasse.pas"/>
+        <Caret Line="72" Column="50" TopLine="42"/>
       </Position28>
       <Position29>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="493" Column="15" TopLine="474"/>
+        <Filename Value="settingskasse.pas"/>
+        <Caret Line="116" Column="64" TopLine="99"/>
       </Position29>
       <Position30>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="515" Column="9" TopLine="495"/>
+        <Filename Value="settingskasse.pas"/>
+        <Caret Line="110" Column="39" TopLine="97"/>
       </Position30>
     </JumpHistory>
     <RunParams>

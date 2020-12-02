@@ -10,7 +10,7 @@ object settingsKasse: TsettingsKasse
   object btnClose: TButton
     Left = 88
     Height = 73
-    Top = 160
+    Top = 168
     Width = 140
     Caption = 'btnClose'
     OnClick = btnCloseClick
@@ -24,39 +24,67 @@ object settingsKasse: TsettingsKasse
     Caption = 'TAX'
     ParentColor = False
   end
-  object labelTitle: TLabel
+  object labelReceiptItem: TLabel
     Left = 8
     Height = 15
     Top = 48
-    Width = 36
-    Caption = 'TITLE'
+    Width = 82
+    Caption = 'ReceiptItem'
     ParentColor = False
   end
-  object textTitle: TEdit
-    Left = 88
+  object textReceiptItem: TEdit
+    Left = 104
     Height = 33
     Top = 48
-    Width = 140
+    Width = 208
     TabOrder = 1
-    Text = 'textTitle'
+    Text = 'textReceiptItem'
   end
   object comboBoxTAX: TComboBox
-    Left = 88
+    Left = 104
     Height = 33
     Top = 8
-    Width = 140
+    Width = 208
     ItemHeight = 0
     Items.Strings = (
-      'TAX 18%'
-      'TAX 10%'
-      'TAX 18/118'
-      'TAX 10/110'
-      'TAX 0%'
-      'NO TAX'
-      'TAX 20%'
-      'TAX 20/120'
+      'TAX_VAT110'
+      'TAX_VAT0'
+      'TAX_NO'
+      'TAX_VAT120'
     )
     TabOrder = 2
     Text = 'comboBoxTAX'
+  end
+  object textCashier: TEdit
+    Left = 104
+    Height = 33
+    Top = 88
+    Width = 208
+    TabOrder = 3
+    Text = 'textCashier'
+  end
+  object labelCashier: TLabel
+    Left = 8
+    Height = 15
+    Top = 88
+    Width = 50
+    Caption = 'Cashier'
+    ParentColor = False
+  end
+  object textCashierINN: TEdit
+    Left = 104
+    Height = 33
+    Top = 128
+    Width = 208
+    TabOrder = 4
+    Text = 'textCashierINN'
+  end
+  object labelCashierINN: TLabel
+    Left = 8
+    Height = 15
+    Top = 128
+    Width = 76
+    Caption = 'CashierINN'
+    ParentColor = False
   end
 end

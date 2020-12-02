@@ -499,3 +499,38 @@ func (svc *service) programRelays(params op.ProgramRelaysParams) op.ProgramRelay
 		return op.NewProgramRelaysInternalServerError()
 	}
 }
+
+func (svc *service) kasse(params op.KasseParams) op.KasseResponder {
+	var err error
+
+	info := model.KasseConfig{
+		Cashier:         "TestCashier",
+		CashierINN:      "123456789012",
+		Tax:             "TAX_NO",
+		ReceiptItemName: "TestItem",
+	}
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewKasseOK().WithPayload(&info)
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewKasseInternalServerError()
+	}
+
+}
+
+func (svc *service) setKasse(params op.SetKasseParams) op.SetKasseResponder {
+	var err error
+
+	log.Info(params.Args)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSetKasseNoContent()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewSetKasseInternalServerError()
+	}
+
+}
