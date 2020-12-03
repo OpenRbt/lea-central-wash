@@ -22,7 +22,7 @@ begin
   Application.CreateForm(TMoneyCollectionForm, MoneyCollectionForm);
   Application.CreateForm(TManagePrograms, ManagePrograms);
   Application.CreateForm(TsettingsKasse, settingKasse);
-  settingKasse.FormShow();
+  settingKasse.FormShow(nil);
   Application.Run;
 end.
 

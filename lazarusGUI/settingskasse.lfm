@@ -3,7 +3,7 @@ object settingsKasse: TsettingsKasse
   Height = 240
   Top = 630
   Width = 320
-  Caption = 'settingsKasse'
+  Caption = 'Kasse settings'
   ClientHeight = 240
   ClientWidth = 320
   LCLVersion = '2.0.6.0'
@@ -12,7 +12,7 @@ object settingsKasse: TsettingsKasse
     Height = 73
     Top = 168
     Width = 140
-    Caption = 'btnClose'
+    Caption = 'Close'
     OnClick = btnCloseClick
     TabOrder = 0
   end

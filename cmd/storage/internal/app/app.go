@@ -52,6 +52,7 @@ type (
 		SetProgramRelays(id StationID, programID int, relays []Relay) (err error)
 
 		Kasse() (kasse Kasse, err error)
+		SetKasse(kasse Kasse) (err error)
 	}
 
 	// Repo is a DAL interface.
@@ -85,6 +86,7 @@ type (
 		SetProgramRelays(id StationID, programID int, relays []Relay) (err error)
 
 		Kasse() (kasse Kasse, err error)
+		SetKasse(kasse Kasse) (err error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -169,8 +171,8 @@ type Program struct {
 }
 
 type Kasse struct {
-	Receipt_item      string
-	Tax_type          string
-	Cashier_full_name string
-	Cashier_inn       string
+	ReceiptItem     string
+	TaxType         string
+	CashierFullName string
+	CashierINN      string
 }

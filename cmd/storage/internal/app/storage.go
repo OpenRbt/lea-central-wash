@@ -324,3 +324,6 @@ func (a *app) SetProgramRelays(id StationID, programID int, relays []Relay) (err
 func (a *app) Kasse() (kasse Kasse, err error) {
 	return a.repo.Kasse()
 }
+func (a *app) SetKasse(kasse Kasse) (err error) {
+	return a.repo.SetKasse(kasse)
+}

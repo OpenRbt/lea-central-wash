@@ -12,7 +12,7 @@ object settingsKasse: TsettingsKasse
     Height = 73
     Top = 168
     Width = 140
-    Caption = 'btnClose'
+    Caption = 'Close'
     OnClick = btnCloseClick
     TabOrder = 0
   end

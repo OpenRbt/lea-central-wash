@@ -514,7 +514,12 @@ func (svc *service) kasse(params op.KasseParams) op.KasseResponder {
 }
 
 func (svc *service) setKasse(params op.SetKasseParams) op.SetKasseResponder {
-	var err error
+	err := svc.app.SetKasse(app.Kasse{
+		CashierFullName: params.Args.Cashier,
+		CashierINN:      params.Args.CashierINN,
+		TaxType:         params.Args.Tax,
+		ReceiptItem:     params.Args.ReceiptItemName,
+	})
 
 	log.Info(params.Args)
 

@@ -68,3 +68,12 @@ func dalProgramRelays(relays []app.Relay) (jsonRelays string) {
 	jsonRelays = string(bytes)
 	return jsonRelays
 }
+
+func appKasse(k resKasse) (res app.Kasse) {
+	res.CashierFullName = k.CashierFullName
+	res.CashierINN = k.CashierINN
+	res.ReceiptItem = k.ReceiptItem
+	res.TaxType = k.TaxType
+
+	return res
+}

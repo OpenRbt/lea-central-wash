@@ -302,10 +302,19 @@ type (
 		Relays    string
 	}
 
+	argKasseGet struct {
+	}
+
 	resKasse struct {
-		receipt_item      string
-		tax_type          string
-		cashier_full_name string
-		cashier_inn       string
+		ReceiptItem     string
+		TaxType         string
+		CashierFullName string
+		CashierINN      string
+	}
+	argSetKasse struct {
+		ReceiptItem     string
+		TaxType         string
+		CashierFullName string
+		CashierINN      string
 	}
 )

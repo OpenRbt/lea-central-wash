@@ -488,10 +488,22 @@ begin
 
         AnswerJson := GetJson(RequestAnswer);
 
-        Kasse.Tax := AnswerJson.GetPath('tax').AsString;
-        Kasse.receiptItemName := AnswerJson.GetPath('receiptItemName').AsString;
-        Kasse.cashier := AnswerJson.GetPath('cashier').AsString;
-        Kasse.cashierINN := AnswerJson.GetPath('cashierINN').AsString;
+        tmp := AnswerJson.FindPath('tax');
+
+        if tmp <> nil then
+        begin
+          Kasse.Tax := AnswerJson.GetPath('tax').AsString;
+          Kasse.receiptItemName := AnswerJson.GetPath('receiptItemName').AsString;
+          Kasse.cashier := AnswerJson.GetPath('cashier').AsString;
+          Kasse.cashierINN := AnswerJson.GetPath('cashierINN').AsString;
+        end
+        else
+        begin
+          Kasse.Tax := 'TAX_NO';
+          Kasse.receiptItemName := 'CAR WASHING';
+          Kasse.cashier := 'NEW CASHIER';
+          Kasse.cashierINN := '000000000000';
+        end;
       except
         case ResponseStatusCode of
           0: ShowMessage('Can`t connect to server');
