@@ -301,4 +301,11 @@ type (
 		ProgramID int
 		Relays    string
 	}
+
+	resKasse struct {
+		receipt_item      string
+		tax_type          string
+		cashier_full_name string
+		cashier_inn       string
+	}
 )

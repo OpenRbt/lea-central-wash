@@ -448,3 +448,19 @@ func (r *repo) SetProgramRelays(id app.StationID, programID int, relays []app.Re
 
 	return
 }
+
+func (r *repo) Kasse() (kasse app.Kasse, err error) {
+
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+
+		err = tx.NamedGetContext(ctx, &kasse, sqlKasse, nil)
+
+		if err == sql.ErrNoRows {
+			return nil
+		}
+
+		return err
+	})
+
+	return
+}
