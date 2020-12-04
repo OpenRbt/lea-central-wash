@@ -1,14 +1,14 @@
 object settingsKasse: TsettingsKasse
-  Left = 1061
-  Height = 240
-  Top = 630
+  Left = 834
+  Height = 250
+  Top = 641
   Width = 320
-  Caption = 'settingsKasse'
-  ClientHeight = 240
+  Caption = 'Kasse settings'
+  ClientHeight = 250
   ClientWidth = 320
   LCLVersion = '2.0.6.0'
   object btnClose: TButton
-    Left = 88
+    Left = 8
     Height = 73
     Top = 168
     Width = 140

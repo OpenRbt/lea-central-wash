@@ -14,6 +14,7 @@ type
 
   TsettingsKasse = class(TForm)
     btnClose: TButton;
+    btnSave: TButton;
     comboBoxTAX: TComboBox;
     labelCashier: TLabel;
     labelCashierINN: TLabel;
@@ -23,6 +24,7 @@ type
     textCashier: TEdit;
     textCashierINN: TEdit;
     procedure btnCloseClick(Sender: TObject);
+    procedure btnSaveClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure LoadSettings();
     procedure CheckChanges();
@@ -86,6 +88,11 @@ procedure TsettingsKasse.btnCloseClick(Sender: TObject);
 begin
   CheckChanges();
   Close();
+end;
+
+procedure TsettingsKasse.btnSaveClick(Sender: TObject);
+begin
+  SaveSettings();
 end;
 
 procedure TsettingsKasse.CheckChanges();
