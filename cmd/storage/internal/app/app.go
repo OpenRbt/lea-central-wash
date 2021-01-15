@@ -86,6 +86,10 @@ type (
 	KasseSvc interface {
 		Info() (string, error)
 	}
+	// WeatherSvc is an interface for the weather service
+	WeatherSvc interface {
+		CurrentTemperature() (float64, error)
+	}
 )
 
 type app struct {

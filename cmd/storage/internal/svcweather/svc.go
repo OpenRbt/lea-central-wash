@@ -12,25 +12,22 @@ import (
 	"strings"
 	"time"
 
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/powerman/structlog"
 )
 
 var log = structlog.New()
 
-// type Config struct {
-// 	Endpoint string
-// }
+type client struct {
+	ipV4addr string
+}
 
-// type client struct {
-// 	cfg Config
-// }
-
-// // New creates and returns new WeatherSvc.
-// func New(cfg Config) WeatherSvc {
-// 	return &client{
-// 		cfg: cfg,
-// 	}
-// }
+// New creates and returns a new WeatherSvc.
+func New(request *http.Request) app.WeatherSvc {
+	return &client{
+		ipV4addr: clientIP(request),
+	}
+}
 
 const openWeatherURL = "http://api.openweathermap.org/data/2.5/weather"
 
@@ -40,10 +37,8 @@ var (
 )
 
 // CurrentTemperature returns current temperature based on the client's IP address
-// Param: an http GET request from a client
-// Requires X-FORWARDED-FOR header to be set to the IP address of the client
-func /*(c *client)*/ CurrentTemperature(clientRequest *http.Request) (float64, error) {
-	lat, long, err := clientCoordinates(clientRequest)
+func (c *client) CurrentTemperature() (float64, error) {
+	lat, long, err := clientCoordinates(c.ipV4addr)
 
 	if err != nil {
 		return 0, err
@@ -101,20 +96,8 @@ func /*(c *client)*/ CurrentTemperature(clientRequest *http.Request) (float64, e
 	return temp, nil
 }
 
-// Gets an http GET request from a client
-// Returns latitude and longitude of the client's IP address
-// Requires X-FORWARDED-FOR header to be set to the IP address of the client
-func clientCoordinates(clientRequest *http.Request) (string, string, error) {
-
-	clientIP := clientRequest.Header.Get("X-FORWARDED-FOR")
-
-	if clientIP == "" {
-		log.Err("Forwarded header not found")
-		return "0", "0", errors.New("Could not identify the client's IP")
-	}
-
-	// log.Info("Client IP: " + clientIP)
-
+// clientCoordinates returns the latitude and longitude of the client's IP address
+func clientCoordinates(clientIP string) (string, string, error) {
 	var coords coordinates
 
 	if ipifyAPIkey != "" {
@@ -136,8 +119,7 @@ type ipapi struct { // throws RateLimited error all too often on a free plan
 type ipify struct { // 1000 requests per month on free subscription. Requires environment variable IPIFY_API_KEY to be set
 }
 
-// Returns latitude and longitude of the client's IP address
-// Requires X-FORWARDED-FOR header to be set to the IP address in question
+// latLng returns latitude and longitude of the client's IP address
 func (coord ipapi) latLng(clientIP string) (string, string, error) {
 
 	URL := "https://ipapi.co/" + string(clientIP) + "/latlong/" // throws RateLimited error all too often on a free plan
@@ -168,8 +150,7 @@ func (coord ipapi) latLng(clientIP string) (string, string, error) {
 	return latlng[0], latlng[1], nil
 }
 
-// Returns latitude and longitude of the client's IP address
-// Requires X-FORWARDED-FOR header to be set to the IP address in question
+// latLng returns latitude and longitude of the client's IP address
 // Requires environment variable IPIFY_API_KEY to be set
 func (coord ipify) latLng(clientIP string) (string, string, error) {
 
@@ -226,6 +207,16 @@ func (coord ipify) latLng(clientIP string) (string, string, error) {
 
 	log.Info("Lat, Long: " + fmt.Sprintf("%f", lat) + ", " + fmt.Sprintf("%f", lng))
 	return fmt.Sprintf("%f", lat), fmt.Sprintf("%f", lng), nil
+}
+
+// clientIP gets a requests IP address by reading off the forwarded-for
+// header (for proxies) and falls back to use the remote address.
+func clientIP(r *http.Request) string {
+	forwarded := r.Header.Get("X-FORWARDED-FOR")
+	if forwarded != "" {
+		return forwarded
+	}
+	return r.RemoteAddr
 }
 
 func newClient() *http.Client {
