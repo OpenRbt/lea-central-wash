@@ -25,6 +25,13 @@ func (a *app) SaveIfNotExists(id StationID, key string, value string) error {
 // Load accepts key and returns value from DAL
 // Checks the pairment of hash and ID of specified wash machine
 func (a *app) Load(id StationID, key string) (string, error) {
+	if key == "curr_temp" {
+		val, err := a.weatherSvc.CurrentTemperature()
+		if err != nil {
+			log.Info("curr_temp", "err", err)
+		}
+		return val, nil
+	}
 	return a.repo.Load(id, key)
 }
 

@@ -18,15 +18,22 @@ import (
 
 var log = structlog.New()
 
-type client struct {
+type service struct {
 	ipV4addr string
 }
 
-// New creates and returns a new WeatherSvc.
-func New(request *http.Request) app.WeatherSvc {
-	return &client{
-		ipV4addr: clientIP(request),
+var instance = &service{ipV4addr: ""}
+
+// Instance creates and returns an instance of a WeatherSvc.
+func Instance() app.WeatherSvc {
+	if instance.ipV4addr == "" {
+		ip, err := clientIP()
+		if err != nil {
+			panic(err)
+		}
+		instance.ipV4addr = ip
 	}
+	return instance
 }
 
 const openWeatherURL = "http://api.openweathermap.org/data/2.5/weather"
@@ -37,16 +44,16 @@ var (
 )
 
 // CurrentTemperature returns current temperature based on the client's IP address
-func (c *client) CurrentTemperature() (float64, error) {
-	lat, long, err := clientCoordinates(c.ipV4addr)
+func (s *service) CurrentTemperature() (string, error) {
+	lat, long, err := clientCoordinates(s.ipV4addr)
 
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
 	if openWeatherAPIkey == "" {
 		log.Err("OPENWEATHER_API_KEY is required, please set the environment variable, e.g. by running `export OPENWEATHER_API_KEY=<Your API key>` in the terminal")
-		return 0, errors.New("OPENWEATHER_API_KEY is missing")
+		return "", errors.New("OPENWEATHER_API_KEY is missing")
 	}
 
 	weatherRequest, err := http.NewRequest("GET", openWeatherURL+"?units=metric&lat="+lat+"&lon="+long+"&appid="+openWeatherAPIkey, nil)
@@ -55,7 +62,7 @@ func (c *client) CurrentTemperature() (float64, error) {
 	weatherResponse, err := client.Do(weatherRequest)
 	if err != nil {
 		log.Err(openWeatherURL + " returned an error: " + err.Error())
-		return 0, errors.New(openWeatherURL + " returned an error")
+		return "", errors.New(openWeatherURL + " returned an error")
 	}
 	defer log.WarnIfFail(weatherResponse.Body.Close)
 
@@ -63,7 +70,7 @@ func (c *client) CurrentTemperature() (float64, error) {
 		weatherResponseBody, _ := ioutil.ReadAll(weatherResponse.Body)
 		message := fmt.Sprintf("%s returned a status code %d %s", openWeatherURL, weatherResponse.StatusCode, string(weatherResponseBody))
 		log.Err(message)
-		return 0, errors.New(message)
+		return "", errors.New(message)
 	}
 
 	weatherResponseBody, _ := ioutil.ReadAll(weatherResponse.Body)
@@ -74,21 +81,21 @@ func (c *client) CurrentTemperature() (float64, error) {
 	if result == nil {
 		const message = openWeatherURL + " returned an empty response"
 		log.Err(message)
-		return 0, errors.New(message)
+		return "", errors.New(message)
 	}
 
 	main, hasMain := result["main"].(map[string]interface{})
 	if !hasMain {
 		const message = openWeatherURL + ": no property 'main' found in the response"
 		log.Err(message)
-		return 0, errors.New(message)
+		return "", errors.New(message)
 	}
 
-	temp, hasTemp := main["temp"].(float64)
+	temp, hasTemp := main["temp"].(string)
 	if !hasTemp {
 		const message = openWeatherURL + ": no property 'temp' found in the response"
 		log.Err(message)
-		return 0, errors.New(message)
+		return "", errors.New(message)
 	}
 
 	// log.Info("Temperature is %f\n", temp)
@@ -209,14 +216,33 @@ func (coord ipify) latLng(clientIP string) (string, string, error) {
 	return fmt.Sprintf("%f", lat), fmt.Sprintf("%f", lng), nil
 }
 
-// clientIP gets a requests IP address by reading off the forwarded-for
-// header (for proxies) and falls back to use the remote address.
-func clientIP(r *http.Request) string {
-	forwarded := r.Header.Get("X-FORWARDED-FOR")
-	if forwarded != "" {
-		return forwarded
+func clientIP() (string, error) {
+	const url = "https://api.ipify.org?format=text" // we are using a pulib IP API, we're using ipify here, below are some others
+	// https://www.ipify.org
+	// http://myexternalip.com
+	// http://api.ident.me
+	// http://whatismyipaddress.com/api
+
+	respIP, respErr := http.Get(url)
+
+	if respErr != nil {
+		panic(respErr)
 	}
-	return r.RemoteAddr
+
+	defer log.WarnIfFail(respIP.Body.Close)
+
+	if respIP.StatusCode != http.StatusOK {
+		log.Err("%s returned a status code %d", url, respIP.StatusCode)
+		return "", fmt.Errorf("%s returned a status code %d", url, respIP.StatusCode)
+	}
+
+	ip, err := ioutil.ReadAll(respIP.Body)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return string(ip), nil
 }
 
 func newClient() *http.Client {
