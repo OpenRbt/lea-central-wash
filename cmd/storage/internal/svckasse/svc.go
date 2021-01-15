@@ -9,12 +9,16 @@ import (
 	"net/http"
 	"time"
 
-	app "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 
 	"github.com/powerman/structlog"
 )
 
 var log = structlog.New()
+
+type Config struct {
+	Endpoint string
+}
 
 type client struct {
 	cfg Config
