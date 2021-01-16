@@ -88,7 +88,7 @@ type (
 	}
 	// WeatherSvc is an interface for the weather service
 	WeatherSvc interface {
-		CurrentTemperature() (string, error)
+		CurrentTemperature() (float64, error)
 	}
 )
 
