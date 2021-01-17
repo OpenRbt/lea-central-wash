@@ -90,7 +90,10 @@ func Instance(openWeatherConfig *APIConfig, coordsConfig *APIConfig) (app.Weathe
 // CurrentTemperature returns current temperature based on the client's IP address
 func (s *service) CurrentTemperature() (float64, error) {
 	if !s.isInitialized() {
-		s.initialize()
+		err := s.initialize()
+		if err != nil {
+			return 0, err
+		}
 	}
 
 	currentTime := time.Now()
