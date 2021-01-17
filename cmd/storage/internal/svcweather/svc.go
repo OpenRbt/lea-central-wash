@@ -1,20 +1,19 @@
 package svcweather
 
 import (
-	"crypto/tls"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
-	"net"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/def"
+
 	"github.com/powerman/structlog"
 )
+
+var log = structlog.New()
 
 // MeasurementInterval is the time interval (in seconds) between fetching new temperature values from a remote service
 const MeasurementInterval = 300
@@ -27,52 +26,76 @@ type timeValPair struct {
 }
 
 type service struct {
-	ipV4addr        ipV4addr
-	lat             string
-	lng             string
-	lastMeasurement timeValPair
+	lat                string
+	lng                string
+	lastMeasurement    timeValPair
+	openWeatherBaseURL string
+	openWeatherAPIKey  string
 }
 
-var log = structlog.New()
+// APIConfig values
+type APIConfig struct {
+	BaseURL string
+	APIKey  string
+}
 
-var instance = &service{
-	ipV4addr:        "",
-	lat:             "",
-	lng:             "",
-	lastMeasurement: timeValPair{},
+type coordinates interface {
+	LatLng(clientIP ipV4addr) (string, string, error)
+}
+
+type ipapi struct { // throws RateLimited error all too often on a free plan
+}
+
+type ipify struct { // 1000 requests per month on free subscription. Requires environment variable IPIFY_API_KEY to be set
+	BaseURL string
+	APIKey  string
 }
 
 // Instance creates and returns an instance of a WeatherSvc.
-func Instance() app.WeatherSvc {
-	if instance.ipV4addr == "" {
-		ip, ipErr := clientIP()
-		if ipErr != nil {
-			panic(ipErr)
-		}
-		lat, lng, coordErr := clientCoordinates(ip)
-		if coordErr != nil {
-			panic(ipErr)
-		}
-		instance.ipV4addr = ip
-		instance.lat = lat
-		instance.lng = lng
+func Instance(openWeatherConfig *APIConfig, coordsConfig *APIConfig) app.WeatherSvc {
+	newInstance := &service{}
+
+	if openWeatherConfig == nil {
+		log.Fatal("Must provide an OpenWeatherAPI configuration")
 	}
-	return instance
+	newInstance.openWeatherBaseURL = openWeatherConfig.BaseURL
+	newInstance.openWeatherAPIKey = openWeatherConfig.APIKey
+
+	ip, ipErr := clientIP()
+	if ipErr != nil {
+		log.Fatal(ipErr)
+	}
+
+	coords := &ipapi{}
+	var lat string
+	var lng string
+	var errCoord error
+
+	lat, lng, errCoord = coords.LatLng(ip)
+	if errCoord != nil && coordsConfig != nil {
+		coords := &ipify{
+			BaseURL: coordsConfig.BaseURL,
+			APIKey:  coordsConfig.APIKey,
+		}
+		lat, lng, errCoord = coords.LatLng(ip)
+		if errCoord != nil {
+			panic(errCoord)
+		}
+	}
+	newInstance.lat = lat
+	newInstance.lng = lng
+
+	return newInstance
 }
 
 // CurrentTemperature returns current temperature based on the client's IP address
 func (s *service) CurrentTemperature() (float64, error) {
-	return s.withLastMeasurementCheck(s.currentTemperature)
-}
-
-func (s *service) withLastMeasurementCheck(f func() (float64, error)) (float64, error) {
-
 	currentTime := time.Now()
 	if (currentTime.Unix() - s.lastMeasurement.time.Unix()) <= MeasurementInterval {
 		return s.lastMeasurement.value, nil
 	}
 
-	val, err := f()
+	val, err := s.currentTemperature()
 
 	if err != nil {
 		return val, err
@@ -88,106 +111,121 @@ func (s *service) withLastMeasurementCheck(f func() (float64, error)) (float64, 
 
 // CurrentTemperature returns current temperature based on the client's IP address
 func (s *service) currentTemperature() (float64, error) {
-
-	if def.OpenWeatherAPIkey == "" {
-		log.Err("OPENWEATHER_API_KEY is required, please set the environment variable, e.g. by running `export OPENWEATHER_API_KEY=<Your API key>` in the terminal")
-		return 0, errors.New("OPENWEATHER_API_KEY is missing")
+	if s.openWeatherAPIKey == "" {
+		err := &ErrMissingEnvironmentVariable{
+			Name: "OPENWEATHER_API_KEY",
+		}
+		return 0, err.Error()
 	}
 
-	weatherRequest, err := http.NewRequest("GET", def.OpenWeatherURL+"?units=metric&lat="+s.lat+"&lon="+s.lng+"&appid="+def.OpenWeatherAPIkey, nil)
+	path := fmt.Sprintf("%s?units=metric&lat=%s&lon=%s&appid=%s", s.openWeatherBaseURL, s.lat, s.lng, s.openWeatherAPIKey)
+	weatherRequest, errHTTPNet := http.NewRequest("GET", path, nil)
+	if errHTTPNet != nil {
+		log.Fatal(errHTTPNet)
+	}
 
 	client := newClient()
-	weatherResponse, err := client.Do(weatherRequest)
-	if err != nil {
-		log.Err(def.OpenWeatherURL + " returned an error: " + err.Error())
-		return 0, errors.New(def.OpenWeatherURL + " returned an error")
+	weatherResponse, errHTTPReq := client.Do(weatherRequest)
+	if weatherResponse != nil {
+		defer log.WarnIfFail(weatherResponse.Body.Close)
 	}
-	defer log.WarnIfFail(weatherResponse.Body.Close)
+
+	if errHTTPReq != nil {
+		err := &ErrFailedHTTPRequest{
+			URL: s.openWeatherBaseURL,
+		}
+		return 0, err.Error()
+	}
 
 	if weatherResponse.StatusCode != http.StatusOK {
-		weatherResponseBody, _ := ioutil.ReadAll(weatherResponse.Body)
-		message := fmt.Sprintf("%s returned a status code %d %s", def.OpenWeatherURL, weatherResponse.StatusCode, string(weatherResponseBody))
-		log.Err(message)
-		return 0, errors.New(message)
+		weatherResponseBody, errIO := ioutil.ReadAll(weatherResponse.Body)
+		if errIO != nil {
+			log.Fatal(errIO)
+		}
+		err := &ErrBadStatusCode{
+			URL:        s.openWeatherBaseURL,
+			StatusCode: weatherResponse.StatusCode,
+			Reason:     string(weatherResponseBody),
+		}
+		return 0, err.Error()
 	}
 
-	weatherResponseBody, _ := ioutil.ReadAll(weatherResponse.Body)
-
+	weatherResponseBody, errIO := ioutil.ReadAll(weatherResponse.Body)
+	if errIO != nil {
+		log.Fatal(errIO)
+	}
 	var result map[string]interface{}
 
 	json.Unmarshal(weatherResponseBody, &result)
 	if result == nil {
-		message := def.OpenWeatherURL + " returned an empty response"
-		log.Err(message)
-		return 0, errors.New(message)
+		err := &ErrNoPayload{
+			URL: s.openWeatherBaseURL,
+		}
+		return 0, err.Error()
 	}
 
 	main, hasMain := result["main"].(map[string]interface{})
 	if !hasMain {
-		message := def.OpenWeatherURL + ": no property 'main' found in the response"
-		log.Err(message)
-		return 0, errors.New(message)
+		err := &ErrNoPropertyFound{
+			URL:      s.openWeatherBaseURL,
+			Property: "main",
+		}
+		return 0, err.Error()
 	}
 
 	temp, hasTemp := main["temp"].(float64)
 	if !hasTemp {
-		message := def.OpenWeatherURL + ": no property 'temp' found in the response"
-		log.Err(message)
-		return 0, errors.New(message)
+		err := &ErrNoPropertyFound{
+			URL:      s.openWeatherBaseURL,
+			Property: "temp",
+		}
+		return 0, err.Error()
 	}
 
 	return temp, nil
 }
 
-type coordinates interface {
-	latLng(clientIP ipV4addr) (string, string, error)
-}
+// LatLng returns latitude and longitude of the client's IP address
+func (coord ipapi) LatLng(clientIP ipV4addr) (string, string, error) {
+	const baseURL = "https://ipapi.co/"
 
-type ipapi struct { // throws RateLimited error all too often on a free plan
-}
+	path := fmt.Sprintf("%s%s/latlong", baseURL, string(clientIP)) // throws RateLimited error all too often on a free plan
 
-type ipify struct { // 1000 requests per month on free subscription. Requires environment variable IPIFY_API_KEY to be set
-}
-
-// clientCoordinates returns the latitude and longitude of the client's IP address
-func clientCoordinates(clientIP ipV4addr) (string, string, error) {
-	var coords coordinates
-
-	coords = new(ipapi) // Try a free provider first, may throw a RateLimited error
-	lat, lng, err := coords.latLng(clientIP)
-
-	if err != nil && def.IpifyAPIkey != "" {
-		coords = new(ipify) // Try a provider with monthly subscription. May exceed the subscription rate
-		lat, lng, err = coords.latLng(clientIP)
+	reqLatLng, errHTTPNet := http.NewRequest("GET", path, nil)
+	if errHTTPNet != nil {
+		log.Fatal(errHTTPNet)
 	}
 
-	return lat, lng, err
-}
-
-// latLng returns latitude and longitude of the client's IP address
-func (coord ipapi) latLng(clientIP ipV4addr) (string, string, error) {
-
-	URL := "https://ipapi.co/" + string(clientIP) + "/latlong/" // throws RateLimited error all too often on a free plan
-
-	reqLatLng, err := http.NewRequest("GET", URL, nil)
 	client := newClient()
-	respLatLng, err := client.Do(reqLatLng)
-
-	if err != nil {
-		log.Err(URL + " returned an error " + err.Error())
-		return "", "", errors.New(URL + " returned an error")
+	respLatLng, errHTTPReq := client.Do(reqLatLng)
+	if respLatLng != nil {
+		defer log.WarnIfFail(respLatLng.Body.Close)
 	}
-	defer log.WarnIfFail(respLatLng.Body.Close)
+
+	if errHTTPReq != nil {
+		err := &ErrFailedHTTPRequest{
+			URL: baseURL,
+		}
+		return "", "", err.Error()
+	}
 
 	if respLatLng.StatusCode != http.StatusOK {
-		bodyLatLng, _ := ioutil.ReadAll(respLatLng.Body)
-		message := fmt.Sprintf("%s returned a status code %d %s", URL, respLatLng.StatusCode, string(bodyLatLng))
-		log.Err(message)
-		return "", "", errors.New(message)
+		bodyLatLng, errIO := ioutil.ReadAll(respLatLng.Body)
+		if errIO != nil {
+			log.Fatal(errIO)
+		}
+		err := &ErrBadStatusCode{
+			URL:        baseURL,
+			StatusCode: respLatLng.StatusCode,
+			Reason:     string(bodyLatLng),
+		}
+		return "", "", err.Error()
 	}
 
-	bodyLatLong, _ := ioutil.ReadAll(respLatLng.Body)
-
+	bodyLatLong, errIO := ioutil.ReadAll(respLatLng.Body)
+	if errIO != nil {
+		log.Fatal(errIO)
+	}
 	latlng := strings.Split(string(bodyLatLong), ",")
 
 	log.Info("IPAPI Lat, Long: " + latlng[0] + ", " + latlng[1])
@@ -195,104 +233,82 @@ func (coord ipapi) latLng(clientIP ipV4addr) (string, string, error) {
 	return latlng[0], latlng[1], nil
 }
 
-// latLng returns latitude and longitude of the client's IP address
-// Requires environment variable IPIFY_API_KEY to be set
-func (coord ipify) latLng(clientIP ipV4addr) (string, string, error) {
+// LatLng returns latitude and longitude of the client's IP address
+func (coord ipify) LatLng(clientIP ipV4addr) (string, string, error) {
+	path := fmt.Sprintf("%s?apiKey=%s&ipAddress=%s", coord.BaseURL, coord.APIKey, string(clientIP))
 
-	URL := "https://geo.ipify.org/api/v1?apiKey=" + def.IpifyAPIkey + "&ipAddress=" + string(clientIP)
-
-	reqLatLng, err := http.NewRequest("GET", URL, nil)
-	client := newClient()
-	respLatLng, err := client.Do(reqLatLng)
-
-	if err != nil {
-		message := URL + " returned an error"
-		log.Err(message + " " + err.Error())
-		return "", "", errors.New(message)
+	reqLatLng, errHTTPNet := http.NewRequest("GET", path, nil)
+	if errHTTPNet != nil {
+		log.Fatal(errHTTPNet)
 	}
-	defer log.WarnIfFail(respLatLng.Body.Close)
+
+	client := newClient()
+	respLatLng, errHTTPReq := client.Do(reqLatLng)
+	if respLatLng != nil {
+		defer log.WarnIfFail(respLatLng.Body.Close)
+	}
+
+	if errHTTPReq != nil {
+		err := &ErrFailedHTTPRequest{
+			URL: coord.BaseURL,
+		}
+		return "", "", err.Error()
+	}
 
 	if respLatLng.StatusCode != http.StatusOK {
-		bodyLatLng, _ := ioutil.ReadAll(respLatLng.Body)
-		message := fmt.Sprintf("%s returned a status code %d %s", URL, respLatLng.StatusCode, string(bodyLatLng))
-		log.Err(message)
-		return "", "", errors.New(message)
+		bodyLatLng, errIO := ioutil.ReadAll(respLatLng.Body)
+		if errIO != nil {
+			log.Fatal(errIO)
+		}
+		err := &ErrBadStatusCode{
+			URL:        coord.BaseURL,
+			StatusCode: respLatLng.StatusCode,
+			Reason:     string(bodyLatLng),
+		}
+		return "", "", err.Error()
 	}
 
-	bodyLatLng, _ := ioutil.ReadAll(respLatLng.Body)
+	bodyLatLng, errIO := ioutil.ReadAll(respLatLng.Body)
+	if errIO != nil {
+		log.Fatal(errIO)
+	}
 
 	var result map[string]interface{}
 	json.Unmarshal(bodyLatLng, &result)
 	if result == nil {
-		message := URL + " returned an empty response"
-		log.Err(message)
-		return "", "", errors.New(message)
+		err := &ErrNoPayload{
+			URL: coord.BaseURL,
+		}
+		return "", "", err.Error()
 	}
 
 	location, hasLocation := result["location"].(map[string]interface{})
 	if !hasLocation {
-		message := URL + ": no property 'location' found in the response"
-		log.Err(message)
-		return "", "", errors.New(message)
+		err := &ErrNoPropertyFound{
+			URL:      coord.BaseURL,
+			Property: "location",
+		}
+		return "", "", err.Error()
 	}
 
 	lat, hasLat := location["lat"].(float64)
 	if !hasLat {
-		message := URL + ": no property 'lat' found in the response"
-		log.Err(message)
-		return "", "", errors.New(message)
+		err := &ErrNoPropertyFound{
+			URL:      coord.BaseURL,
+			Property: "lat",
+		}
+		return "", "", err.Error()
 	}
 
 	lng, hasLng := location["lng"].(float64)
 	if !hasLng {
-		message := URL + ": no property 'lng' found in the response"
-		log.Err(message)
-		return "", "", errors.New(message)
+		err := &ErrNoPropertyFound{
+			URL:      coord.BaseURL,
+			Property: "lng",
+		}
+		return "", "", err.Error()
 	}
 
 	log.Info("IPIFY Lat, Long: " + fmt.Sprintf("%f", lat) + ", " + fmt.Sprintf("%f", lng))
 	return fmt.Sprintf("%f", lat), fmt.Sprintf("%f", lng), nil
-}
-
-func clientIP() (ipV4addr, error) {
-	const url = "https://api.ipify.org?format=text" // we are using a pulib IP API, we're using ipify here, below are some others
-	// https://www.ipify.org
-	// http://myexternalip.com
-	// http://api.ident.me
-	// http://whatismyipaddress.com/api
-
-	respIP, respErr := http.Get(url)
-
-	if respErr != nil {
-		panic(respErr)
-	}
-
-	defer log.WarnIfFail(respIP.Body.Close)
-
-	if respIP.StatusCode != http.StatusOK {
-		log.Err("%s returned a status code %d", url, respIP.StatusCode)
-		return "", fmt.Errorf("%s returned a status code %d", url, respIP.StatusCode)
-	}
-
-	ip, err := ioutil.ReadAll(respIP.Body)
-
-	if err != nil {
-		panic(err)
-	}
-
-	return ipV4addr(ip), nil
-}
-
-func newClient() *http.Client {
-	return &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, //nolint:gosec
-			Proxy:           http.ProxyFromEnvironment,
-			DialContext: (&net.Dialer{
-				Timeout:   30 * time.Second,
-				KeepAlive: 30 * time.Second,
-				DualStack: true,
-			}).DialContext,
-		},
-	}
 }

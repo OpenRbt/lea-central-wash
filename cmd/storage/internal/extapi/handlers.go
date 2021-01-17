@@ -5,15 +5,14 @@ import (
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/def"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
 	"github.com/pkg/errors"
 )
 
 func (svc *service) getID(hash string) (app.StationID, error) {
-	if hash == def.TestHash {
-		return def.TestStationID, nil // For testing purposes
+	if hash == app.TestHash {
+		return app.TestStationID, nil // For testing purposes
 	}
 	svc.stationsMutex.Lock()
 	defer svc.stationsMutex.Unlock()

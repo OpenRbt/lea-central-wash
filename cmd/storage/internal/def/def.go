@@ -28,37 +28,27 @@ const (
 	LogHTTPStatus = "httpStatus"
 )
 
-// Key aliases
-const (
-	TemperatureCurrent = "curr_temp"
-)
-
-// For testing purposes
-const (
-	TestHash      = "TEST"
-	TestStationID = 999
-)
-
 // Default values.
 var (
 	oapiHost, _, oapiBasePath = swaggerEndpoint()
 
-	TestTimeFactor    = floatGetenv("GO_TEST_TIME_FACTOR", 1.0)
-	TestSecond        = time.Duration(float64(time.Second) * TestTimeFactor)
-	DBHost            = strGetenv("STORAGE_DB_HOST", "")
-	DBPort            = intGetenv("STORAGE_DB_PORT", 5432)
-	DBUser            = strGetenv("STORAGE_DB_USER", "")
-	DBPass            = strGetenv("STORAGE_DB_PASS", "")
-	DBName            = strGetenv("STORAGE_DB_NAME", "")
-	DBSchema          = strGetenv("STORAGE_DB_SCHEMA", "public")
-	GooseDir          = "cmd/storage/internal/migration"
-	ExtAPIHost        = strGetenv("STORAGE_EXT_HOST", oapiHost)
-	ExtAPIPort        = intGetenv("STORAGE_EXT_PORT", 8020)
-	ExtAPIBasePath    = strGetenv("STORAGE_EXT_BASEPATH", oapiBasePath)
-	KasseEndpoint     = strGetenv("STORAGE_KASSE_ENDPOINT", "https://localhost:8443")
-	OpenWeatherURL    = "http://api.openweathermap.org/data/2.5/weather"
-	OpenWeatherAPIkey = strGetenv("OPENWEATHER_API_KEY", "")
-	IpifyAPIkey       = strGetenv("IPIFY_API_KEY", "")
+	TestTimeFactor     = floatGetenv("GO_TEST_TIME_FACTOR", 1.0)
+	TestSecond         = time.Duration(float64(time.Second) * TestTimeFactor)
+	DBHost             = strGetenv("STORAGE_DB_HOST", "")
+	DBPort             = intGetenv("STORAGE_DB_PORT", 5432)
+	DBUser             = strGetenv("STORAGE_DB_USER", "")
+	DBPass             = strGetenv("STORAGE_DB_PASS", "")
+	DBName             = strGetenv("STORAGE_DB_NAME", "")
+	DBSchema           = strGetenv("STORAGE_DB_SCHEMA", "public")
+	GooseDir           = "cmd/storage/internal/migration"
+	ExtAPIHost         = strGetenv("STORAGE_EXT_HOST", oapiHost)
+	ExtAPIPort         = intGetenv("STORAGE_EXT_PORT", 8020)
+	ExtAPIBasePath     = strGetenv("STORAGE_EXT_BASEPATH", oapiBasePath)
+	KasseEndpoint      = strGetenv("STORAGE_KASSE_ENDPOINT", "https://localhost:8443")
+	OpenWeatherBaseURL = "http://api.openweathermap.org/data/2.5/weather"
+	OpenWeatherAPIKey  = strGetenv("OPENWEATHER_API_KEY", "")
+	IpifyBaseURL       = "https://geo.ipify.org/api/v1"
+	IpifyAPIKey        = strGetenv("IPIFY_API_KEY", "")
 )
 
 var initErr error

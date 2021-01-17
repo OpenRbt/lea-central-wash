@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/def"
 	"github.com/powerman/structlog"
 )
 
@@ -27,10 +26,10 @@ func (a *app) SaveIfNotExists(id StationID, key string, value string) error {
 // Checks the pairment of hash and ID of specified wash machine
 func (a *app) Load(id StationID, key string) (string, error) {
 	switch key {
-	case def.TemperatureCurrent:
+	case TemperatureCurrent:
 		val, err := a.weatherSvc.CurrentTemperature()
 		if err != nil {
-			log.Info(def.TemperatureCurrent, "err", err)
+			log.Info(TemperatureCurrent, "err", err)
 			return "", err
 		}
 		return fmt.Sprintf("%f", val), nil

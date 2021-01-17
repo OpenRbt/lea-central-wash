@@ -8,6 +8,17 @@ import (
 
 const durationStationOffline = time.Second * 10
 
+// For testing purposes
+const (
+	TestHash      = "TEST"
+	TestStationID = 999
+)
+
+// Key aliases
+const (
+	TemperatureCurrent = "curr_temp"
+)
+
 // Errors.
 var (
 	ErrNotFound     = errors.New("not found")

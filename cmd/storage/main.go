@@ -199,7 +199,16 @@ func run(db *sqlx.DB, errc chan<- error) {
 	}
 
 	kasse := svckasse.New(cfg.kasse)
-	weather := svcweather.Instance()
+	weather := svcweather.Instance(
+		&svcweather.APIConfig{
+			BaseURL: def.OpenWeatherBaseURL,
+			APIKey:  def.OpenWeatherAPIKey,
+		},
+		&svcweather.APIConfig{
+			BaseURL: def.IpifyBaseURL,
+			APIKey:  def.IpifyAPIKey,
+		})
+
 	appl := app.New(repo, kasse, weather)
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo)
