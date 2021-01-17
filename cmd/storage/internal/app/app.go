@@ -8,6 +8,17 @@ import (
 
 const durationStationOffline = time.Second * 10
 
+// For testing purposes
+const (
+	TestHash      = "TEST"
+	TestStationID = 999
+)
+
+// Key aliases
+const (
+	TemperatureCurrent = "curr_temp"
+)
+
 // Errors.
 var (
 	ErrNotFound     = errors.New("not found")
@@ -86,6 +97,10 @@ type (
 	KasseSvc interface {
 		Info() (string, error)
 	}
+	// WeatherSvc is an interface for the weather service
+	WeatherSvc interface {
+		CurrentTemperature() (float64, error)
+	}
 )
 
 type app struct {
@@ -93,14 +108,16 @@ type app struct {
 	stations      map[StationID]StationData
 	stationsMutex sync.Mutex
 	kasseSvc      KasseSvc
+	weatherSvc    WeatherSvc
 }
 
 // New creates and returns new App.
-func New(repo Repo, kasseSvc KasseSvc) App {
+func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc) App {
 	appl := &app{
-		repo:     repo,
-		stations: make(map[StationID]StationData),
-		kasseSvc: kasseSvc,
+		repo:       repo,
+		stations:   make(map[StationID]StationData),
+		kasseSvc:   kasseSvc,
+		weatherSvc: weatherSvc,
 	}
 	appl.loadStations()
 	return appl

@@ -21,6 +21,7 @@ import (
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/memdb"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/migration"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/svckasse"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/svcweather"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 	"github.com/powerman/must"
@@ -198,7 +199,20 @@ func run(db *sqlx.DB, errc chan<- error) {
 	}
 
 	kasse := svckasse.New(cfg.kasse)
-	appl := app.New(repo, kasse)
+	weather, errWeatherSvc := svcweather.Instance(
+		&svcweather.APIConfig{
+			BaseURL: def.OpenWeatherBaseURL,
+			APIKey:  def.OpenWeatherAPIKey,
+		},
+		&svcweather.APIConfig{
+			BaseURL: def.IpifyBaseURL,
+			APIKey:  def.IpifyAPIKey,
+		})
+	if errWeatherSvc != nil {
+		// do something
+	}
+
+	appl := app.New(repo, kasse, weather)
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo)
 	if err != nil {
