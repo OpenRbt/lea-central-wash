@@ -26,6 +26,7 @@ type timeValPair struct {
 }
 
 type service struct {
+	ipV4addr           ipV4addr
 	lat                string
 	lng                string
 	lastMeasurement    timeValPair
@@ -51,45 +52,47 @@ type ipify struct { // 1000 requests per month on free subscription. Requires en
 	APIKey  string
 }
 
+var ipifyClient = &ipify{}
+
 // Instance creates and returns an instance of a WeatherSvc.
-func Instance(openWeatherConfig *APIConfig, coordsConfig *APIConfig) app.WeatherSvc {
+func Instance(openWeatherConfig *APIConfig, coordsConfig *APIConfig) (app.WeatherSvc, error) {
 	newInstance := &service{}
 
 	if openWeatherConfig == nil {
-		log.Fatal("Must provide an OpenWeatherAPI configuration")
+		err := &ErrBadConfig{
+			Param: "openWeatherConfig",
+		}
+		return newInstance, err.Error()
+	}
+	if openWeatherConfig.BaseURL == "" {
+		err := &ErrBadConfig{
+			Param: "OpenWeatherBaseURL",
+		}
+		return newInstance, err.Error()
+	}
+	if openWeatherConfig.APIKey == "" {
+		err := &ErrBadConfig{
+			Param: "OPENWEATHER_API_KEY",
+		}
+		return newInstance, err.Error()
 	}
 	newInstance.openWeatherBaseURL = openWeatherConfig.BaseURL
 	newInstance.openWeatherAPIKey = openWeatherConfig.APIKey
 
-	ip, ipErr := clientIP()
-	if ipErr != nil {
-		log.Fatal(ipErr)
+	if coordsConfig != nil {
+		ipifyClient.BaseURL = coordsConfig.BaseURL
+		ipifyClient.APIKey = coordsConfig.APIKey
 	}
 
-	coords := &ipapi{}
-	var lat string
-	var lng string
-	var errCoord error
-
-	lat, lng, errCoord = coords.LatLng(ip)
-	if errCoord != nil && coordsConfig != nil {
-		coords := &ipify{
-			BaseURL: coordsConfig.BaseURL,
-			APIKey:  coordsConfig.APIKey,
-		}
-		lat, lng, errCoord = coords.LatLng(ip)
-		if errCoord != nil {
-			panic(errCoord)
-		}
-	}
-	newInstance.lat = lat
-	newInstance.lng = lng
-
-	return newInstance
+	return newInstance, nil
 }
 
 // CurrentTemperature returns current temperature based on the client's IP address
 func (s *service) CurrentTemperature() (float64, error) {
+	if !s.isInitialized() {
+		s.initialize()
+	}
+
 	currentTime := time.Now()
 	if (currentTime.Unix() - s.lastMeasurement.time.Unix()) <= MeasurementInterval {
 		return s.lastMeasurement.value, nil
@@ -111,17 +114,10 @@ func (s *service) CurrentTemperature() (float64, error) {
 
 // CurrentTemperature returns current temperature based on the client's IP address
 func (s *service) currentTemperature() (float64, error) {
-	if s.openWeatherAPIKey == "" {
-		err := &ErrMissingEnvironmentVariable{
-			Name: "OPENWEATHER_API_KEY",
-		}
-		return 0, err.Error()
-	}
-
 	path := fmt.Sprintf("%s?units=metric&lat=%s&lon=%s&appid=%s", s.openWeatherBaseURL, s.lat, s.lng, s.openWeatherAPIKey)
 	weatherRequest, errHTTPNet := http.NewRequest("GET", path, nil)
 	if errHTTPNet != nil {
-		log.Fatal(errHTTPNet)
+		return 0, errHTTPNet
 	}
 
 	client := newClient()
@@ -140,7 +136,7 @@ func (s *service) currentTemperature() (float64, error) {
 	if weatherResponse.StatusCode != http.StatusOK {
 		weatherResponseBody, errIO := ioutil.ReadAll(weatherResponse.Body)
 		if errIO != nil {
-			log.Fatal(errIO)
+			return 0, errIO
 		}
 		err := &ErrBadStatusCode{
 			URL:        s.openWeatherBaseURL,
@@ -152,7 +148,7 @@ func (s *service) currentTemperature() (float64, error) {
 
 	weatherResponseBody, errIO := ioutil.ReadAll(weatherResponse.Body)
 	if errIO != nil {
-		log.Fatal(errIO)
+		return 0, errIO
 	}
 	var result map[string]interface{}
 
@@ -185,6 +181,36 @@ func (s *service) currentTemperature() (float64, error) {
 	return temp, nil
 }
 
+func (s *service) isInitialized() bool {
+	return s.ipV4addr != ""
+}
+
+func (s *service) initialize() error {
+	ip, ipErr := clientIP()
+	if ipErr != nil {
+		return ipErr
+	}
+
+	s.ipV4addr = ip
+
+	coords := &ipapi{}
+	var lat string
+	var lng string
+	var errCoord error
+
+	lat, lng, errCoord = coords.LatLng(ip)
+	if errCoord != nil {
+		lat, lng, errCoord = ipifyClient.LatLng(ip)
+		if errCoord != nil {
+			return errCoord
+		}
+	}
+	s.lat = lat
+	s.lng = lng
+
+	return nil
+}
+
 // LatLng returns latitude and longitude of the client's IP address
 func (coord ipapi) LatLng(clientIP ipV4addr) (string, string, error) {
 	const baseURL = "https://ipapi.co/"
@@ -193,7 +219,7 @@ func (coord ipapi) LatLng(clientIP ipV4addr) (string, string, error) {
 
 	reqLatLng, errHTTPNet := http.NewRequest("GET", path, nil)
 	if errHTTPNet != nil {
-		log.Fatal(errHTTPNet)
+		return "", "", errHTTPNet
 	}
 
 	client := newClient()
@@ -212,7 +238,7 @@ func (coord ipapi) LatLng(clientIP ipV4addr) (string, string, error) {
 	if respLatLng.StatusCode != http.StatusOK {
 		bodyLatLng, errIO := ioutil.ReadAll(respLatLng.Body)
 		if errIO != nil {
-			log.Fatal(errIO)
+			return "", "", errIO
 		}
 		err := &ErrBadStatusCode{
 			URL:        baseURL,
@@ -224,7 +250,7 @@ func (coord ipapi) LatLng(clientIP ipV4addr) (string, string, error) {
 
 	bodyLatLong, errIO := ioutil.ReadAll(respLatLng.Body)
 	if errIO != nil {
-		log.Fatal(errIO)
+		return "", "", errIO
 	}
 	latlng := strings.Split(string(bodyLatLong), ",")
 
@@ -239,7 +265,7 @@ func (coord ipify) LatLng(clientIP ipV4addr) (string, string, error) {
 
 	reqLatLng, errHTTPNet := http.NewRequest("GET", path, nil)
 	if errHTTPNet != nil {
-		log.Fatal(errHTTPNet)
+		return "", "", errHTTPNet
 	}
 
 	client := newClient()
@@ -258,7 +284,7 @@ func (coord ipify) LatLng(clientIP ipV4addr) (string, string, error) {
 	if respLatLng.StatusCode != http.StatusOK {
 		bodyLatLng, errIO := ioutil.ReadAll(respLatLng.Body)
 		if errIO != nil {
-			log.Fatal(errIO)
+			return "", "", errIO
 		}
 		err := &ErrBadStatusCode{
 			URL:        coord.BaseURL,
@@ -270,7 +296,7 @@ func (coord ipify) LatLng(clientIP ipV4addr) (string, string, error) {
 
 	bodyLatLng, errIO := ioutil.ReadAll(respLatLng.Body)
 	if errIO != nil {
-		log.Fatal(errIO)
+		return "", "", errIO
 	}
 
 	var result map[string]interface{}

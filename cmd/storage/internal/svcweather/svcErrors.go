@@ -23,14 +23,14 @@ type ErrFailedHTTPRequest struct {
 	URL string
 }
 
-// ErrMissingEnvironmentVariable type
-type ErrMissingEnvironmentVariable struct {
-	Name string
-}
-
 // ErrNoPayload type
 type ErrNoPayload struct {
 	URL string
+}
+
+// ErrBadConfig type
+type ErrBadConfig struct {
+	Param string
 }
 
 // Error returns a new ErrPropertyFound
@@ -51,14 +51,14 @@ func (err *ErrFailedHTTPRequest) Error() error {
 	return errors.New(message)
 }
 
-// Error returns a new ErrMissingEnvironmentVariable
-func (err *ErrMissingEnvironmentVariable) Error() error {
-	message := fmt.Sprintf("Missing an environment variable %s", err.Name)
-	return errors.New(message)
-}
-
 // Error returns a new ErrNoPayload
 func (err *ErrNoPayload) Error() error {
 	message := fmt.Sprintf("No payload returned by URL: %s", err.URL)
+	return errors.New(message)
+}
+
+// Error returns a new ErrBadConfig
+func (err *ErrBadConfig) Error() error {
+	message := fmt.Sprintf("Bad or missing configuration parameter: %s", err.Param)
 	return errors.New(message)
 }

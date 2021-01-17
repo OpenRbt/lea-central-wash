@@ -199,7 +199,7 @@ func run(db *sqlx.DB, errc chan<- error) {
 	}
 
 	kasse := svckasse.New(cfg.kasse)
-	weather := svcweather.Instance(
+	weather, errWeatherSvc := svcweather.Instance(
 		&svcweather.APIConfig{
 			BaseURL: def.OpenWeatherBaseURL,
 			APIKey:  def.OpenWeatherAPIKey,
@@ -208,6 +208,10 @@ func run(db *sqlx.DB, errc chan<- error) {
 			BaseURL: def.IpifyBaseURL,
 			APIKey:  def.IpifyAPIKey,
 		})
+
+	if errWeatherSvc != nil {
+		// do something
+	}
 
 	appl := app.New(repo, kasse, weather)
 

@@ -17,7 +17,7 @@ func clientIP() (ipV4addr, error) {
 
 	reqIP, errHTTPNet := http.NewRequest("GET", url, nil)
 	if errHTTPNet != nil {
-		log.Fatal(errHTTPNet)
+		return "", errHTTPNet
 	}
 
 	client := newClient()
@@ -36,7 +36,7 @@ func clientIP() (ipV4addr, error) {
 	if respIP.StatusCode != http.StatusOK {
 		bodyIP, errIO := ioutil.ReadAll(respIP.Body)
 		if errIO != nil {
-			log.Fatal(errIO)
+			return "", errIO
 		}
 		err := &ErrBadStatusCode{
 			URL:        url,
@@ -49,7 +49,7 @@ func clientIP() (ipV4addr, error) {
 	ip, errIO := ioutil.ReadAll(respIP.Body)
 
 	if errIO != nil {
-		log.Fatal(errIO)
+		return "", errIO
 	}
 
 	return ipV4addr(ip), nil
