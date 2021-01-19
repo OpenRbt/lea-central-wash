@@ -10,7 +10,7 @@ const durationStationOffline = time.Second * 10
 
 // For testing purposes
 const (
-	TestHash      = "000000000000"
+	TestHash      = "TEST"
 	TestStationID = 999
 )
 

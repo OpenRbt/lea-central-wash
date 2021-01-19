@@ -87,4 +87,13 @@ object settingsKasse: TsettingsKasse
     Caption = 'CashierINN'
     ParentColor = False
   end
+  object btnSave: TButton
+    Left = 172
+    Height = 73
+    Top = 168
+    Width = 140
+    Caption = 'Save'
+    OnClick = btnSaveClick
+    TabOrder = 5
+  end
 end

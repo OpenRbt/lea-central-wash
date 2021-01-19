@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, DateUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Grids, ExtCtrls, ActnList, ComCtrls, EditBtn, ComboEx, DateTimePicker,
-  fphttpclient, Fpjson, jsonparser, superobject, Types, manager, collection, clientAPI;
+  fphttpclient, Fpjson, jsonparser, superobject, Types, manager, collection, clientAPI,settingsKasse;
 
 type
 
@@ -20,6 +20,7 @@ type
     btnWeek: TButton;
     btnMonth: TButton;
     btnYear: TButton;
+    btnKasseSetting: TButton;
     cbMoneyRealTime: TCheckBox;
     dtFrom: TDateTimePicker;
     dtTo: TDateTimePicker;
@@ -30,6 +31,7 @@ type
     MoneyData: TStringGrid;
     UpdateTimer: TTimer;
     procedure btnDayClick(Sender: TObject);
+    procedure btnKasseSettingClick(Sender: TObject);
     procedure btnManageClick(Sender: TObject);
     procedure btnMoneyCollectionClick(Sender: TObject);
     procedure btnMonthClick(Sender: TObject);
@@ -400,6 +402,11 @@ begin
   dtFrom.DateTime := EncodeDateTime(currentYear, currentMonth,
     currentDay, 0, 0, 0, 0);
   dtTo.DateTime := Now();
+end;
+
+procedure TMainForm.btnKasseSettingClick(Sender: TObject);
+begin
+  settingKasse.FormShow(self);
 end;
 
 procedure TMainForm.btnWeekClick(Sender: TObject);

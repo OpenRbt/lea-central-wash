@@ -1,7 +1,7 @@
 object ManageForm: TManageForm
   Left = 882
   Height = 412
-  Top = 416
+  Top = 366
   Width = 756
   Caption = 'Manage Station'
   ClientHeight = 412
