@@ -11,6 +11,9 @@ import (
 )
 
 func (svc *service) getID(hash string) (app.StationID, error) {
+	if hash == app.TestHash {
+		return app.TestStationID, nil // For testing purposes
+	}
 	svc.stationsMutex.Lock()
 	defer svc.stationsMutex.Unlock()
 	id, ok := svc.stations[hash]
