@@ -51,10 +51,6 @@ type APIConfig struct {
 	APIKey  string
 }
 
-// type coordinates interface {
-// 	LatLng(clientIP ipV4addr) (float64, float64, error)
-// }
-
 type ipapi struct { // throws RateLimited error all too often on a free plan
 }
 
