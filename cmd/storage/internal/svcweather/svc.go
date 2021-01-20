@@ -110,11 +110,15 @@ func Instance(weatherProviderConfig *APIKeyConfig, coordsConfig *APIKeyConfig) (
 		provider.APIKey = weatherProviderConfig.APIKey
 		newInstance.provider = provider
 		break
-	default:
+	case app.MeteoInfo:
 		provider := &meteoInfoProvider{}
 		provider.Name = weatherProviderConfig.Name
 		provider.BaseURL = weatherProviderConfig.BaseURL
 		newInstance.provider = provider
+		break
+	default:
+		log.Info("Missing a valid weather provider configuration")
+		return newInstance, ErrBadConfig
 	}
 
 	if coordsConfig != nil {
