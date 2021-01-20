@@ -17,6 +17,9 @@ const (
 // Key aliases
 const (
 	TemperatureCurrent = "curr_temp"
+	MeteoInfo          = "meteoinfo"
+	OpenWeather        = "openWeather"
+	Ipify              = "ipify"
 )
 
 // Errors.

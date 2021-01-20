@@ -199,15 +199,21 @@ func run(db *sqlx.DB, errc chan<- error) {
 	}
 
 	kasse := svckasse.New(cfg.kasse)
-	weather, errWeatherSvc := svcweather.Instance(
-		&svcweather.APIConfig{
-			BaseURL: def.OpenWeatherBaseURL,
-			APIKey:  def.OpenWeatherAPIKey,
-		},
-		&svcweather.APIConfig{
-			BaseURL: def.IpifyBaseURL,
-			APIKey:  def.IpifyAPIKey,
-		})
+
+	// providerConfig := &svcweather.APIKeyConfig{}
+	// providerConfig.Name = app.OpenWeather
+	// providerConfig.BaseURL = def.OpenWeatherBaseURL
+	// providerConfig.APIKey = def.OpenWeatherAPIKey
+	// coordsConfig := &svcweather.APIKeyConfig{}
+	// coordsConfig.Name = app.Ipify
+	// coordsConfig.BaseURL = def.IpifyBaseURL
+	// coordsConfig.APIKey = def.IpifyAPIKey
+
+	providerConfig := &svcweather.APIKeyConfig{}
+	providerConfig.Name = app.MeteoInfo
+	providerConfig.BaseURL = def.MeteoInfoBaseURL
+
+	weather, errWeatherSvc := svcweather.Instance(providerConfig, nil)
 	if errWeatherSvc != nil {
 		// do something
 	}

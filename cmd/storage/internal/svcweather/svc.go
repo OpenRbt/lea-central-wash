@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"github.com/PuerkitoBio/goquery"
 
 	"github.com/powerman/structlog"
 )
@@ -37,23 +38,42 @@ type timeValPair struct {
 }
 
 type service struct {
-	ipV4addr           ipV4addr
-	lat                float64
-	lng                float64
-	lastMeasurement    timeValPair
-	openWeatherBaseURL string
-	openWeatherAPIKey  string
+	lastMeasurement timeValPair
+	provider        weatherProviderInterface
 }
 
 // APIConfig values
 type APIConfig struct {
+	Name    string
 	BaseURL string
-	APIKey  string
 }
 
-// type coordinates interface {
-// 	LatLng(clientIP ipV4addr) (float64, float64, error)
-// }
+// APIKeyConfig values
+type APIKeyConfig struct {
+	APIConfig
+	APIKey string
+}
+
+type weatherProviderInterface interface {
+	CurrentTemperature() (float64, error)
+	IsInitialized() bool
+	Initialize() error
+}
+
+type openWeatherProvider struct {
+	APIKeyConfig
+	ipV4addr ipV4addr
+	lat      float64
+	lng      float64
+}
+
+type meteoInfoProvider struct {
+	APIConfig
+}
+
+type coordinates interface {
+	LatLng(clientIP ipV4addr) (float64, float64, error)
+}
 
 type ipapi struct { // throws RateLimited error all too often on a free plan
 }
@@ -66,23 +86,36 @@ type ipify struct { // 1000 requests per month on free subscription. Requires en
 var ipifyClient = &ipify{}
 
 // Instance creates and returns an instance of a WeatherSvc.
-func Instance(openWeatherConfig *APIConfig, coordsConfig *APIConfig) (app.WeatherSvc, error) {
+func Instance(weatherProviderConfig *APIKeyConfig, coordsConfig *APIKeyConfig) (app.WeatherSvc, error) {
 	newInstance := &service{}
 
-	if openWeatherConfig == nil {
-		log.Info("Missing openWeatherConfig")
+	if weatherProviderConfig == nil {
+		log.Info("Missing a weather provider config")
 		return newInstance, ErrBadConfig
 	}
-	if openWeatherConfig.BaseURL == "" {
-		log.Info("Missing OpenWeatherBaseURL")
+	if weatherProviderConfig.BaseURL == "" {
+		log.Info("Missing a weather provider base URL")
 		return newInstance, ErrBadConfig
 	}
-	if openWeatherConfig.APIKey == "" {
-		log.Info("Missing OpenWeatherAPIKey")
-		return newInstance, ErrBadConfig
+
+	switch weatherProviderConfig.Name {
+	case app.OpenWeather:
+		if weatherProviderConfig.APIKey == "" {
+			log.Info("Missing OpenWeatherAPIKey")
+			return newInstance, ErrBadConfig
+		}
+		provider := &openWeatherProvider{}
+		provider.Name = weatherProviderConfig.Name
+		provider.BaseURL = weatherProviderConfig.BaseURL
+		provider.APIKey = weatherProviderConfig.APIKey
+		newInstance.provider = provider
+		break
+	default:
+		provider := &meteoInfoProvider{}
+		provider.Name = weatherProviderConfig.Name
+		provider.BaseURL = weatherProviderConfig.BaseURL
+		newInstance.provider = provider
 	}
-	newInstance.openWeatherBaseURL = openWeatherConfig.BaseURL
-	newInstance.openWeatherAPIKey = openWeatherConfig.APIKey
 
 	if coordsConfig != nil {
 		ipifyClient.BaseURL = coordsConfig.BaseURL
@@ -94,8 +127,8 @@ func Instance(openWeatherConfig *APIConfig, coordsConfig *APIConfig) (app.Weathe
 
 // CurrentTemperature returns current temperature based on the client's IP address
 func (s *service) CurrentTemperature() (float64, error) {
-	if !s.isInitialized() {
-		err := s.initialize()
+	if !s.provider.IsInitialized() {
+		err := s.provider.Initialize()
 		if err != nil {
 			return 0, err
 		}
@@ -106,7 +139,7 @@ func (s *service) CurrentTemperature() (float64, error) {
 		return s.lastMeasurement.value, nil
 	}
 
-	val, err := s.currentTemperature()
+	val, err := s.provider.CurrentTemperature()
 
 	if err != nil {
 		return val, err
@@ -120,9 +153,8 @@ func (s *service) CurrentTemperature() (float64, error) {
 	return val, err
 }
 
-// CurrentTemperature returns current temperature based on the client's IP address
-func (s *service) currentTemperature() (float64, error) {
-	path := fmt.Sprintf("%s?units=metric&lat=%f&lon=%f&appid=%s", s.openWeatherBaseURL, s.lat, s.lng, s.openWeatherAPIKey)
+func (p *meteoInfoProvider) CurrentTemperature() (float64, error) {
+	var path = p.BaseURL
 	weatherRequest, errHTTPNet := http.NewRequest("GET", path, nil)
 	if errHTTPNet != nil {
 		return 0, errHTTPNet
@@ -135,12 +167,65 @@ func (s *service) currentTemperature() (float64, error) {
 	}
 
 	if errHTTPReq != nil {
-		log.Info(fmt.Sprintf("Failed HTTP request to %s", s.openWeatherBaseURL))
+		log.Info(fmt.Sprintf("Failed HTTP request to %s", path))
+		return 0, ErrHTTPRequest
+	}
+
+	// Load the HTML document
+	doc, err := goquery.NewDocumentFromReader(weatherResponse.Body)
+	if err != nil {
+		log.Info(fmt.Sprintf("Could not parse the response from %s", path))
+		return 0, err
+	}
+
+	// Find the row with text Температура воздуха and the corresponding temperature value
+	var temp float64
+	var errParse = ErrPropertyNotFound
+	doc.Find("tr").EachWithBreak(func(i int, s *goquery.Selection) bool {
+		title := s.Children().First().Text()
+		if strings.Contains(title, "Температура воздуха") {
+			temp, errParse = strconv.ParseFloat(s.Children().Last().Text(), 64)
+			return false
+		}
+		return true
+	})
+	if errParse != nil {
+		log.Info(fmt.Sprintf("Property 'Температура воздуха' not found in the response from %s", path))
+		return 0, err
+	}
+
+	return temp, nil
+}
+
+func (p *meteoInfoProvider) IsInitialized() bool {
+	return true
+}
+
+func (p *meteoInfoProvider) Initialize() error {
+	return nil
+}
+
+// CurrentTemperature returns current temperature based on the client's IP address
+func (s *openWeatherProvider) CurrentTemperature() (float64, error) {
+	path := fmt.Sprintf("%s?units=metric&lat=%f&lon=%f&appid=%s", s.BaseURL, s.lat, s.lng, s.APIKey)
+	weatherRequest, errHTTPNet := http.NewRequest("GET", path, nil)
+	if errHTTPNet != nil {
+		return 0, errHTTPNet
+	}
+
+	client := newClient()
+	weatherResponse, errHTTPReq := client.Do(weatherRequest)
+	if weatherResponse != nil {
+		defer log.WarnIfFail(weatherResponse.Body.Close)
+	}
+
+	if errHTTPReq != nil {
+		log.Info(fmt.Sprintf("Failed HTTP request to %s", s.BaseURL))
 		return 0, ErrHTTPRequest
 	}
 
 	if weatherResponse.StatusCode != http.StatusOK {
-		log.Info(fmt.Sprintf("Bad status code %d returned by %s", weatherResponse.StatusCode, s.openWeatherBaseURL))
+		log.Info(fmt.Sprintf("Bad status code %d returned by %s", weatherResponse.StatusCode, s.BaseURL))
 		return 0, ErrBadStatusCode
 	}
 
@@ -152,30 +237,30 @@ func (s *service) currentTemperature() (float64, error) {
 
 	json.Unmarshal(weatherResponseBody, &result)
 	if result == nil {
-		log.Info(fmt.Sprintf("No payload returned by %s", s.openWeatherBaseURL))
+		log.Info(fmt.Sprintf("No payload returned by %s", s.BaseURL))
 		return 0, ErrNoPayload
 	}
 
 	main, hasMain := result["main"].(map[string]interface{})
 	if !hasMain {
-		log.Info(fmt.Sprintf("Property 'main' not found in the response from %s", s.openWeatherBaseURL))
+		log.Info(fmt.Sprintf("Property 'main' not found in the response from %s", s.BaseURL))
 		return 0, ErrPropertyNotFound
 	}
 
 	temp, hasTemp := main["temp"].(float64)
 	if !hasTemp {
-		log.Info(fmt.Sprintf("Property 'temp' not found in the response from %s", s.openWeatherBaseURL))
+		log.Info(fmt.Sprintf("Property 'temp' not found in the response from %s", s.BaseURL))
 		return 0, ErrPropertyNotFound
 	}
 
 	return temp, nil
 }
 
-func (s *service) isInitialized() bool {
+func (s *openWeatherProvider) IsInitialized() bool {
 	return s.ipV4addr != ""
 }
 
-func (s *service) initialize() error {
+func (s *openWeatherProvider) Initialize() error {
 	ip, ipErr := clientIP()
 	if ipErr != nil {
 		return ipErr
