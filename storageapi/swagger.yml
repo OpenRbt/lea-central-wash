@@ -165,6 +165,28 @@ definitions:
         type: integer
       prfelight:
         type: integer
+  
+  KasseConfig:
+    type: object
+    properties:
+      tax:
+        type: string
+        enum:
+          - TAX_VAT110
+          - TAX_VAT0 
+          - TAX_NO
+          - TAX_VAT120
+      receiptItemName:
+        type: string
+        minLength: 1
+      cashier:
+        type: string
+        minLength: 1
+      cashierINN:
+        type: string
+        minLength: 12
+        maxLength: 12
+        pattern: '^[0123456789]{12}$'
 
 consumes:
   - application/json
@@ -679,6 +701,33 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/RelayConfig'
+      responses:
+        204:
+          description: OK
+        500:
+          description: internal error
+  
+  /kasse:
+    post:
+      operationId: "kasse"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/KasseConfig'
+        404:
+          description: not found
+        500:
+          description: internal error
+  /set-kasse:
+    post:
+      operationId: "setKasse"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/KasseConfig'
       responses:
         204:
           description: OK

@@ -115,6 +115,25 @@ func init() {
         }
       }
     },
+    "/kasse": {
+      "post": {
+        "operationId": "kasse",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/KasseConfig"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/load": {
       "post": {
         "operationId": "load",
@@ -556,6 +575,29 @@ func init() {
         }
       }
     },
+    "/set-kasse": {
+      "post": {
+        "operationId": "setKasse",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/KasseConfig"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/set-program-name": {
       "post": {
         "operationId": "setProgramName",
@@ -839,6 +881,34 @@ func init() {
     "Hash": {
       "type": "string",
       "minLength": 1
+    },
+    "KasseConfig": {
+      "type": "object",
+      "properties": {
+        "cashier": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cashierINN": {
+          "type": "string",
+          "maxLength": 12,
+          "minLength": 12,
+          "pattern": "^[0123456789]{12}$"
+        },
+        "receiptItemName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tax": {
+          "type": "string",
+          "enum": [
+            "TAX_VAT110",
+            "TAX_VAT0",
+            "TAX_NO",
+            "TAX_VAT120"
+          ]
+        }
+      }
     },
     "KeyPair": {
       "type": "object",
@@ -1139,6 +1209,25 @@ func init() {
         }
       }
     },
+    "/kasse": {
+      "post": {
+        "operationId": "kasse",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/KasseConfig"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/load": {
       "post": {
         "operationId": "load",
@@ -1580,6 +1669,29 @@ func init() {
         }
       }
     },
+    "/set-kasse": {
+      "post": {
+        "operationId": "setKasse",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/KasseConfig"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/set-program-name": {
       "post": {
         "operationId": "setProgramName",
@@ -1863,6 +1975,34 @@ func init() {
     "Hash": {
       "type": "string",
       "minLength": 1
+    },
+    "KasseConfig": {
+      "type": "object",
+      "properties": {
+        "cashier": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cashierINN": {
+          "type": "string",
+          "maxLength": 12,
+          "minLength": 12,
+          "pattern": "^[0123456789]{12}$"
+        },
+        "receiptItemName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tax": {
+          "type": "string",
+          "enum": [
+            "TAX_VAT110",
+            "TAX_VAT0",
+            "TAX_NO",
+            "TAX_VAT120"
+          ]
+        }
+      }
     },
     "KeyPair": {
       "type": "object",

@@ -1,0 +1,99 @@
+object settingsKasse: TsettingsKasse
+  Left = 834
+  Height = 250
+  Top = 564
+  Width = 320
+  Caption = 'Kasse settings'
+  ClientHeight = 250
+  ClientWidth = 320
+  LCLVersion = '2.0.6.0'
+  object btnClose: TButton
+    Left = 8
+    Height = 73
+    Top = 168
+    Width = 140
+    Caption = 'Close'
+    OnClick = btnCloseClick
+    TabOrder = 0
+  end
+  object labelTAX: TLabel
+    Left = 8
+    Height = 15
+    Top = 8
+    Width = 26
+    Caption = 'TAX'
+    ParentColor = False
+  end
+  object labelReceiptItem: TLabel
+    Left = 8
+    Height = 15
+    Top = 48
+    Width = 82
+    Caption = 'ReceiptItem'
+    ParentColor = False
+  end
+  object textReceiptItem: TEdit
+    Left = 104
+    Height = 33
+    Top = 48
+    Width = 208
+    TabOrder = 1
+    Text = 'textReceiptItem'
+  end
+  object comboBoxTAX: TComboBox
+    Left = 104
+    Height = 33
+    Top = 8
+    Width = 208
+    ItemHeight = 0
+    Items.Strings = (
+      'TAX_VAT110'
+      'TAX_VAT0'
+      'TAX_NO'
+      'TAX_VAT120'
+    )
+    TabOrder = 2
+    Text = 'comboBoxTAX'
+  end
+  object textCashier: TEdit
+    Left = 104
+    Height = 33
+    Top = 88
+    Width = 208
+    TabOrder = 3
+    Text = 'textCashier'
+  end
+  object labelCashier: TLabel
+    Left = 8
+    Height = 15
+    Top = 88
+    Width = 50
+    Caption = 'Cashier'
+    ParentColor = False
+  end
+  object textCashierINN: TEdit
+    Left = 104
+    Height = 33
+    Top = 128
+    Width = 208
+    TabOrder = 4
+    Text = 'textCashierINN'
+  end
+  object labelCashierINN: TLabel
+    Left = 8
+    Height = 15
+    Top = 128
+    Width = 76
+    Caption = 'CashierINN'
+    ParentColor = False
+  end
+  object btnSave: TButton
+    Left = 172
+    Height = 73
+    Top = 168
+    Width = 140
+    Caption = 'Save'
+    OnClick = btnSaveClick
+    TabOrder = 5
+  end
+end

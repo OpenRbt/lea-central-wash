@@ -53,6 +53,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation Info has not yet been implemented")
 			return InfoNotImplemented()
 		}),
+		KasseHandler: KasseHandlerFunc(func(params KasseParams) KasseResponder {
+			// return middleware.NotImplemented("operation Kasse has not yet been implemented")
+			return KasseNotImplemented()
+		}),
 		LoadHandler: LoadHandlerFunc(func(params LoadParams) LoadResponder {
 			// return middleware.NotImplemented("operation Load has not yet been implemented")
 			return LoadNotImplemented()
@@ -100,6 +104,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		SaveRelayHandler: SaveRelayHandlerFunc(func(params SaveRelayParams) SaveRelayResponder {
 			// return middleware.NotImplemented("operation SaveRelay has not yet been implemented")
 			return SaveRelayNotImplemented()
+		}),
+		SetKasseHandler: SetKasseHandlerFunc(func(params SetKasseParams) SetKasseResponder {
+			// return middleware.NotImplemented("operation SetKasse has not yet been implemented")
+			return SetKasseNotImplemented()
 		}),
 		SetProgramNameHandler: SetProgramNameHandlerFunc(func(params SetProgramNameParams) SetProgramNameResponder {
 			// return middleware.NotImplemented("operation SetProgramName has not yet been implemented")
@@ -172,6 +180,8 @@ type StorageAPI struct {
 	GetPingHandler GetPingHandler
 	// InfoHandler sets the operation handler for the info operation
 	InfoHandler InfoHandler
+	// KasseHandler sets the operation handler for the kasse operation
+	KasseHandler KasseHandler
 	// LoadHandler sets the operation handler for the load operation
 	LoadHandler LoadHandler
 	// LoadMoneyHandler sets the operation handler for the load money operation
@@ -196,6 +206,8 @@ type StorageAPI struct {
 	SaveMoneyHandler SaveMoneyHandler
 	// SaveRelayHandler sets the operation handler for the save relay operation
 	SaveRelayHandler SaveRelayHandler
+	// SetKasseHandler sets the operation handler for the set kasse operation
+	SetKasseHandler SetKasseHandler
 	// SetProgramNameHandler sets the operation handler for the set program name operation
 	SetProgramNameHandler SetProgramNameHandler
 	// SetProgramRelaysHandler sets the operation handler for the set program relays operation
@@ -291,6 +303,10 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "InfoHandler")
 	}
 
+	if o.KasseHandler == nil {
+		unregistered = append(unregistered, "KasseHandler")
+	}
+
 	if o.LoadHandler == nil {
 		unregistered = append(unregistered, "LoadHandler")
 	}
@@ -337,6 +353,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.SaveRelayHandler == nil {
 		unregistered = append(unregistered, "SaveRelayHandler")
+	}
+
+	if o.SetKasseHandler == nil {
+		unregistered = append(unregistered, "SetKasseHandler")
 	}
 
 	if o.SetProgramNameHandler == nil {
@@ -492,6 +512,11 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/kasse"] = NewKasse(o.context, o.KasseHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/load"] = NewLoad(o.context, o.LoadHandler)
 
 	if o.handlers["POST"] == nil {
@@ -548,6 +573,11 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/save-relay"] = NewSaveRelay(o.context, o.SaveRelayHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-kasse"] = NewSetKasse(o.context, o.SetKasseHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

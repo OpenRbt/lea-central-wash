@@ -1,7 +1,7 @@
 object MainForm: TMainForm
   Left = 283
   Height = 520
-  Top = 281
+  Top = 247
   Width = 1220
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsDialog
@@ -11,7 +11,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '2.0.10.0'
+  LCLVersion = '2.0.6.0'
   Scaled = False
   object StationsData: TStringGrid
     Left = 8
@@ -251,9 +251,9 @@ object MainForm: TMainForm
   end
   object Label1: TLabel
     Left = 255
-    Height = 17
+    Height = 15
     Top = 9
-    Width = 38
+    Width = 37
     Caption = 'From:'
     Font.Height = 14
     Font.Style = [fsBold]
@@ -262,9 +262,9 @@ object MainForm: TMainForm
   end
   object Label2: TLabel
     Left = 255
-    Height = 17
+    Height = 15
     Top = 41
-    Width = 20
+    Width = 19
     Caption = 'To:'
     Font.Height = 14
     Font.Style = [fsBold]
@@ -273,7 +273,7 @@ object MainForm: TMainForm
   end
   object cbMoneyRealTime: TCheckBox
     Left = 144
-    Height = 24
+    Height = 23
     Top = 9
     Width = 89
     Caption = 'Real Time'
@@ -298,7 +298,7 @@ object MainForm: TMainForm
   end
   object lbStatus: TLabel
     Left = 704
-    Height = 19
+    Height = 17
     Top = 24
     Width = 58
     Caption = 'lbStatus'
@@ -306,11 +306,20 @@ object MainForm: TMainForm
     ParentColor = False
     ParentFont = False
   end
+  object btnKasseSetting: TButton
+    Left = 144
+    Height = 35
+    Top = 40
+    Width = 104
+    Caption = 'Kasse Settings'
+    OnClick = btnKasseSettingClick
+    TabOrder = 11
+  end
   object UpdateTimer: TTimer
     Enabled = False
     Interval = 10000
     OnTimer = UpdateCall
-    Left = 736
-    Top = 16
+    left = 736
+    top = 16
   end
 end

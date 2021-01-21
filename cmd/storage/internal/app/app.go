@@ -10,13 +10,16 @@ const durationStationOffline = time.Second * 10
 
 // For testing purposes
 const (
-	TestHash      = "000000000000"
+	TestHash      = "TEST"
 	TestStationID = 999
 )
 
 // Key aliases
 const (
 	TemperatureCurrent = "curr_temp"
+	MeteoInfo          = "meteoinfo"
+	OpenWeather        = "openWeather"
+	Ipify              = "ipify"
 )
 
 // Errors.
@@ -61,6 +64,9 @@ type (
 		SetProgramName(id StationID, programID int, name string) (err error)
 		ProgramRelays(id StationID, programID int) (relays []Relay, err error)
 		SetProgramRelays(id StationID, programID int, relays []Relay) (err error)
+
+		Kasse() (kasse Kasse, err error)
+		SetKasse(kasse Kasse) (err error)
 	}
 
 	// Repo is a DAL interface.
@@ -92,6 +98,9 @@ type (
 		SetProgramName(id StationID, programID int, name string) (err error)
 		ProgramRelays(id StationID, programID int) (relays []Relay, err error)
 		SetProgramRelays(id StationID, programID int, relays []Relay) (err error)
+
+		Kasse() (kasse Kasse, err error)
+		SetKasse(kasse Kasse) (err error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -179,4 +188,11 @@ type Relay struct {
 type Program struct {
 	ID   int
 	Name string
+}
+
+type Kasse struct {
+	ReceiptItem     string
+	TaxType         string
+	CashierFullName string
+	CashierINN      string
 }

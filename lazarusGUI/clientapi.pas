@@ -23,6 +23,13 @@ type
     preflight: array of integer;
   end;
 
+  KasseInfo = packed record
+    Tax: string;
+    receiptItemName: string;
+    cashier: string;
+    cashierINN: string;
+  end;
+
   { TClient }
 
   TClient = class(TDataModule)
@@ -36,11 +43,13 @@ type
 
     function GetPrograms(StationID: integer; out programs: ProgramsInfo): boolean;
     procedure SetProgramName(StationID: integer; ProgramID: integer;
-      programName: string;out successful: boolean);
+      programName: string; out successful: boolean);
     function GetProgramRelays(StationID: integer; ProgramID: integer;
       out Relays: RelaysInfo): boolean;
     procedure SetProgramRelays(StationID: integer; ProgramID: integer;
       relays: RelaysInfo; out successful: boolean);
+    function GetKasse(out Kasse: KasseInfo): boolean;
+    procedure SetKasse(Kasse: KasseInfo; out successful: boolean);
 
   private
     serverEndpoint: string;
@@ -450,6 +459,101 @@ begin
             successful := False;
         end;
       end;
+
+    finally
+      Free
+    end;
+end;
+
+function TClient.GetKasse(out Kasse: KasseInfo): boolean;
+var
+  postJson: TJSONObject;
+  RequestAnswer: string;
+  AnswerJson: TJsonData;
+  tmp: TJsonData;
+begin
+  Result := True;
+  postJson := TJSONObject.Create;
+  with TFPHttpClient.Create(nil) do
+    try
+      try
+        AddHeader('Content-Type', 'application/json');
+        RequestBody := TStringStream.Create(postJson.AsJSON);
+        RequestAnswer := Post(serverEndpoint + 'kasse');
+
+        if ResponseStatusCode <> 200 then
+        begin
+          raise Exception.Create(IntToStr(ResponseStatusCode));
+        end;
+
+        AnswerJson := GetJson(RequestAnswer);
+
+        tmp := AnswerJson.FindPath('tax');
+
+        if tmp <> nil then
+        begin
+          Kasse.Tax := AnswerJson.GetPath('tax').AsString;
+          Kasse.receiptItemName := AnswerJson.GetPath('receiptItemName').AsString;
+          Kasse.cashier := AnswerJson.GetPath('cashier').AsString;
+          Kasse.cashierINN := AnswerJson.GetPath('cashierINN').AsString;
+        end
+        else
+        begin
+          Kasse.Tax := 'TAX_NO';
+          Kasse.receiptItemName := 'CAR WASHING';
+          Kasse.cashier := 'NEW CASHIER';
+          Kasse.cashierINN := '000000000000';
+        end;
+      except
+        case ResponseStatusCode of
+          0: ShowMessage('Can`t connect to server');
+          404: ShowMessage('Server Error: 404');
+          500: ShowMessage('Server Error: 500');
+          else
+            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+              sLineBreak + ResponseStatusText);
+        end;
+        Result := False;
+
+      end;
+    finally
+      Free
+    end;
+end;
+
+procedure TClient.SetKasse(Kasse: KasseInfo; out successful: boolean);
+var
+  postJson: TJSONObject;
+begin
+  successful := True;
+  postJson := TJSONObject.Create;
+  postJson.Add('tax', Kasse.Tax);
+  postJson.Add('receiptItemName', Kasse.receiptItemName);
+  postJson.Add('cashier', Kasse.cashier);
+  postJson.Add('cashierINN', Kasse.cashierINN);
+  with TFPHttpClient.Create(nil) do
+    try
+      try
+        AddHeader('Content-Type', 'application/json');
+        RequestBody := TStringStream.Create(postJson.AsJSON);
+        Post(serverEndpoint + 'set-kasse');
+
+        if ResponseStatusCode <> 204 then
+        begin
+          raise Exception.Create(IntToStr(ResponseStatusCode));
+        end;
+
+      except
+        case ResponseStatusCode of
+          0: ShowMessage('Can`t connect to server');
+          500: ShowMessage('Server Error: 500');
+          else
+            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+              sLineBreak + ResponseStatusText);
+        end;
+        successful := False;
+      end;
+
 
     finally
       Free

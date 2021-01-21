@@ -160,3 +160,10 @@ func (t *DB) ProgramRelays(id app.StationID, programID int) (relays []app.Relay,
 func (t *DB) SetProgramRelays(id app.StationID, programID int, relays []app.Relay) (err error) {
 	return
 }
+
+func (t *DB) Kasse() (kasse app.Kasse, err error) {
+	return
+}
+func (t *DB) SetKasse(kasse app.Kasse) (err error) {
+	return
+}

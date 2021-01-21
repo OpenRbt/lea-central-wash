@@ -448,3 +448,37 @@ func (r *repo) SetProgramRelays(id app.StationID, programID int, relays []app.Re
 
 	return
 }
+
+func (r *repo) Kasse() (kasse app.Kasse, err error) {
+
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res resKasse
+		err = tx.NamedGetContext(ctx, &res, sqlKasse, argKasseGet{})
+
+		if err == sql.ErrNoRows {
+			return nil
+		}
+
+		kasse = appKasse(res)
+		return err
+	})
+
+	return
+}
+
+func (r *repo) SetKasse(kasse app.Kasse) (err error) {
+
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+
+		_, err = tx.NamedExec(sqlSetKasse, argSetKasse{
+			CashierFullName: kasse.CashierFullName,
+			CashierINN:      kasse.CashierINN,
+			TaxType:         kasse.TaxType,
+			ReceiptItem:     kasse.ReceiptItem,
+		})
+
+		return err
+	})
+
+	return
+}

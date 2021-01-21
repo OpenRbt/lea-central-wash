@@ -148,3 +148,14 @@ func apiRelays(r []app.Relay) (res []*model.RelayConfig) {
 	}
 	return res
 }
+
+func apiKasse(k app.Kasse) (res *model.KasseConfig) {
+	res = &model.KasseConfig{
+		Cashier:         k.CashierFullName,
+		CashierINN:      k.CashierINN,
+		ReceiptItemName: k.ReceiptItem,
+		Tax:             k.TaxType,
+	}
+
+	return res
+}

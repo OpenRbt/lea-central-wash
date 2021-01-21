@@ -502,3 +502,36 @@ func (svc *service) programRelays(params op.ProgramRelaysParams) op.ProgramRelay
 		return op.NewProgramRelaysInternalServerError()
 	}
 }
+
+func (svc *service) kasse(params op.KasseParams) op.KasseResponder {
+	res, err := svc.app.Kasse()
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewKasseOK().WithPayload(apiKasse(res))
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewKasseInternalServerError()
+	}
+
+}
+
+func (svc *service) setKasse(params op.SetKasseParams) op.SetKasseResponder {
+	err := svc.app.SetKasse(app.Kasse{
+		CashierFullName: params.Args.Cashier,
+		CashierINN:      params.Args.CashierINN,
+		TaxType:         params.Args.Tax,
+		ReceiptItem:     params.Args.ReceiptItemName,
+	})
+
+	log.Info(params.Args)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSetKasseNoContent()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewSetKasseInternalServerError()
+	}
+
+}

@@ -412,7 +412,10 @@ begin
     begin
       for i := 0 to newRelays.Count - 1 do
       begin
-        if oldRelays.relayID[i] <> newRelays.relayID[i] then
+        if (oldRelays.relayID[i] <> newRelays.relayID[i]) or
+          (oldRelays.timeON[i] <> newRelays.timeON[i]) or
+          (oldRelays.timeOFF[i] <> newRelays.timeOFF[i]) or
+          (oldRelays.preflight[i] <> newRelays.preflight[i]) then
         begin
           changes := True;
           break;
@@ -422,8 +425,8 @@ begin
 
     if changes then
     begin
-      case QuestionDLG('Save changes?', 'Program ' + IntToStr(ProgramID) + ' changed' +
-          sLineBreak + 'Save new program?', mtCustom,
+      case QuestionDLG('Save changes?', 'Program ' + IntToStr(ProgramID) +
+          ' changed' + sLineBreak + 'Save new program?', mtCustom,
           [mrYes, 'Save', mrNo, 'Don`t Save'], '') of
         mrYes: SaveRelaysConfig();
       end;

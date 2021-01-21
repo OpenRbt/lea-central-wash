@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, datetimectrls, Source, superobject, manager, collection, clientAPI,
-  managerRelays;
+  managerRelays, settingsKasse;
 
 {$R *.res}
 
@@ -21,6 +21,7 @@ begin
   Application.CreateForm(TManageForm, ManageForm);
   Application.CreateForm(TMoneyCollectionForm, MoneyCollectionForm);
   Application.CreateForm(TManagePrograms, ManagePrograms);
+  Application.CreateForm(TsettingsKasse, settingKasse);
   Application.Run;
 end.
 

@@ -137,6 +137,34 @@ func (a *Client) Info(params *InfoParams) (*InfoOK, error) {
 }
 
 /*
+Kasse kasse API
+*/
+func (a *Client) Kasse(params *KasseParams) (*KasseOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewKasseParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "kasse",
+		Method:             "POST",
+		PathPattern:        "/kasse",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &KasseReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*KasseOK), nil
+
+}
+
+/*
 Load load API
 */
 func (a *Client) Load(params *LoadParams) (*LoadOK, error) {
@@ -469,6 +497,34 @@ func (a *Client) SaveRelay(params *SaveRelayParams) (*SaveRelayNoContent, error)
 		return nil, err
 	}
 	return result.(*SaveRelayNoContent), nil
+
+}
+
+/*
+SetKasse set kasse API
+*/
+func (a *Client) SetKasse(params *SetKasseParams) (*SetKasseNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetKasseParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "setKasse",
+		Method:             "POST",
+		PathPattern:        "/set-kasse",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetKasseReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*SetKasseNoContent), nil
 
 }
 
