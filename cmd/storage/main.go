@@ -21,6 +21,7 @@ import (
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/memdb"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/migration"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/svckasse"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/svcweather"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 	"github.com/powerman/must"
@@ -194,7 +195,25 @@ func run(db *sqlx.DB, errc chan<- error) {
 	}
 
 	kasse := svckasse.New(cfg.kasse)
-	appl := app.New(repo, kasse)
+
+	// providerConfig := &svcweather.APIKeyConfig{}
+	// providerConfig.Name = app.OpenWeather
+	// providerConfig.BaseURL = def.OpenWeatherBaseURL
+	// providerConfig.APIKey = def.OpenWeatherAPIKey
+	// coordsConfig := &svcweather.APIKeyConfig{}
+	// coordsConfig.Name = app.Ipify
+	// coordsConfig.BaseURL = def.IpifyBaseURL
+	// coordsConfig.APIKey = def.IpifyAPIKey
+	providerConfig := &svcweather.APIKeyConfig{}
+	providerConfig.Name = app.MeteoInfo
+	providerConfig.BaseURL = def.MeteoInfoBaseURL
+
+	weather, errWeatherSvc := svcweather.Instance(providerConfig, nil)
+	if errWeatherSvc != nil {
+		// do something
+	}
+
+	appl := app.New(repo, kasse, weather)
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi)
 	if err != nil {

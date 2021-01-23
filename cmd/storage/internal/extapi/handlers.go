@@ -111,6 +111,7 @@ func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 		Coins:        int(params.Args.Coins),
 		Electronical: int(params.Args.Electronical),
 		Service:      int(params.Args.Service),
+		Ctime:        time.Now().UTC(),
 	}
 
 	err := svc.app.SaveMoneyReport(toSave)
@@ -129,6 +130,7 @@ func (svc *service) saveCollection(params op.SaveCollectionParams) op.SaveCollec
 	var toSave = app.CollectionReport{
 		StationID: int(params.Args.ID),
 		Money:     int(params.Args.Money),
+		Ctime:     time.Now().UTC(),
 	}
 
 	fmt.Print("Save collection handler. ID = ")
@@ -193,7 +195,7 @@ func (svc *service) setStation(params op.SetStationParams) op.SetStationResponde
 	if params.Args.ID == 0 && params.Args.Name == "" {
 		return op.NewSetStationUnprocessableEntity()
 	}
-	err := svc.app.SetStation(app.SetStationParams {
+	err := svc.app.SetStation(app.SetStationParams{
 		ID:   int(params.Args.ID),
 		Hash: params.Args.Hash,
 		Name: params.Args.Name,

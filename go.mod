@@ -3,6 +3,7 @@ module github.com/DiaElectronics/lea-central-wash
 go 1.13
 
 require (
+	github.com/PuerkitoBio/goquery v1.6.1
 	github.com/go-openapi/errors v0.19.2
 	github.com/go-openapi/loads v0.19.3
 	github.com/go-openapi/runtime v0.19.6
@@ -23,5 +24,5 @@ require (
 	github.com/powerman/sqlxx v0.1.0
 	github.com/powerman/structlog v0.5.0
 	github.com/pressly/goose v2.6.0+incompatible
-	golang.org/x/net v0.0.0-20190912160710-24e19bdeb0f2
+	golang.org/x/net v0.0.0-20200202094626-16171245cfb2
 )

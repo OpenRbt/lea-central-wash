@@ -30,8 +30,17 @@ func (a *app) Load(hash string, key string) (string, error) {
 		log.Info("Hash is not paired with the ID", "hash", hash, "id", stationID)
 		return "", ErrNotFound
 	}
-
-	return a.repo.Load(stationID, key)
+	switch key {
+	case TemperatureCurrent:
+		val, err := a.weatherSvc.CurrentTemperature()
+		if err != nil {
+			log.Info(TemperatureCurrent, "err", err)
+			return "", err
+		}
+		return fmt.Sprintf("%f", val), nil
+	default:
+		return a.repo.Load(stationID, key)
+	}
 }
 
 func (a *app) Info() string {
