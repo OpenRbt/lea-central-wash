@@ -10,85 +10,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (svc *service) getID(hash string) (app.StationID, error) {
-	if hash == app.TestHash {
-		return app.TestStationID, nil // For testing purposes
-	}
-	svc.stationsMutex.Lock()
-	defer svc.stationsMutex.Unlock()
-	id, ok := svc.stations[hash]
-	if !ok {
-		return -1, errNotFound
-	}
-	return id, nil
-}
-
-func (svc *service) getHash(id app.StationID) string {
-	svc.stationsMutex.Lock()
-	defer svc.stationsMutex.Unlock()
-	for key, value := range svc.stations {
-		if value == id {
-			return key
-		}
-	}
-	return ""
-}
-
-func (svc *service) getIDAndAddHash(hash string) (app.StationID, error) {
-	svc.stationsMutex.Lock()
-	defer svc.stationsMutex.Unlock()
-	id, ok := svc.stations[hash]
-	if !ok {
-		svc.unknownHash[hash] = time.Now()
-		return -1, errNotFound
-	}
-	return id, nil
-}
-
-func (svc *service) loadHash() error {
-	ids, hash, err := svc.repo.LoadHash()
-	if err != nil {
-		log.Info("loadHash", "err", err)
-		return err
-	}
-	stations := map[string]app.StationID{}
-	for i := range ids {
-		if hash[i] != "" {
-			stations[hash[i]] = ids[i]
-		}
-	}
-	svc.stationsMutex.Lock()
-	defer svc.stationsMutex.Unlock()
-	for key := range stations {
-		if _, ok := svc.unknownHash[key]; ok {
-			delete(svc.unknownHash, key)
-		}
-	}
-	svc.stations = stations
-	return nil
-}
-
-func (svc *service) setHash(id app.StationID, hash string) error {
-	stationID, err := svc.getID(hash)
-	if err == nil && stationID == id {
-		return nil
-	}
-	err = svc.repo.SetHash(id, hash)
-	if err != nil {
-		return err
-	}
-	svc.loadHash()
-	return nil
-}
-
 func (svc *service) load(params op.LoadParams) op.LoadResponder {
 	log.Info("load", "hash", params.Args.Hash, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
-	stationID, err := svc.getID(string(params.Args.Hash))
-	if err != nil {
-		log.Info("load: not found", "hash", params.Args.Hash, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewLoadNotFound()
-	}
-	value, err := svc.app.Load(stationID, *params.Args.Key)
+	value, err := svc.app.Load(string(params.Args.Hash), *params.Args.Key)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewLoadOK().WithPayload(string(value))
@@ -103,55 +27,20 @@ func (svc *service) load(params op.LoadParams) op.LoadResponder {
 
 func (svc *service) save(params op.SaveParams) op.SaveResponder {
 	log.Info("save", "hash", params.Args.Hash, "key", *params.Args.KeyPair.Key, "ip", params.HTTPRequest.RemoteAddr)
-	stationID, err := svc.getID(string(params.Args.Hash))
-	if err != nil {
-		log.Info("save: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSaveNotFound()
-	}
-
-	err = svc.app.Save(stationID, *params.Args.KeyPair.Key, *params.Args.KeyPair.Value)
+	err := svc.app.Save(string(params.Args.Hash), *params.Args.KeyPair.Key, *params.Args.KeyPair.Value)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewSaveNoContent()
-	case app.ErrNotFound:
-		log.Info("save: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSaveNotFound()
 	default:
 		log.PrintErr(err, "hash", params.Args.Hash, "key", *params.Args.KeyPair.Key, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewSaveInternalServerError()
 	}
 }
 
-func (svc *service) saveIfNotExists(params op.SaveIfNotExistsParams) op.SaveIfNotExistsResponder {
-	log.Info("saveIfNotExists", "hash", params.Args.Hash, "key", *params.Args.KeyPair.Key, "ip", params.HTTPRequest.RemoteAddr)
-	stationID, err := svc.getID(string(params.Args.Hash))
-	if err != nil {
-		log.Info("save if not exists: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSaveIfNotExistsNotFound()
-	}
-
-	err = svc.app.SaveIfNotExists(stationID, *params.Args.KeyPair.Key, *params.Args.KeyPair.Value)
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewSaveIfNotExistsNoContent()
-	case app.ErrNotFound:
-		log.Info("save: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSaveIfNotExistsNotFound()
-	default:
-		log.PrintErr(err, "hash", params.Args.Hash, "key", *params.Args.KeyPair.Key, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSaveIfNotExistsInternalServerError()
-	}
-}
-
 func (svc *service) loadRelay(params op.LoadRelayParams) op.LoadRelayResponder {
 	log.Info("load relay", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-	stationID, err := svc.getID(string(params.Args.Hash))
-	if err != nil {
-		log.Info("load relay: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewLoadRelayNotFound()
-	}
 
-	toLoad, err := svc.app.LoadRelayReport(stationID)
+	toLoad, err := svc.app.LoadRelayReport(string(params.Args.Hash))
 
 	switch errors.Cause(err) {
 	case nil:
@@ -169,14 +58,9 @@ func (svc *service) saveRelay(params op.SaveRelayParams) op.SaveRelayResponder {
 	log.Info("save relay", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 
 	var toSave app.RelayReport
-	var err error
-	toSave.StationID, err = svc.getID(string(params.Args.Hash))
-	if err != nil {
-		log.Info("save relay: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSaveRelayNotFound()
-	}
+	toSave.Hash = string(params.Args.Hash)
 
-	for i := range params.Args.RelayStats {
+	for i, _ := range params.Args.RelayStats {
 		r := app.RelayStat{
 			RelayID:       int(params.Args.RelayStats[i].RelayID),
 			SwitchedCount: int(params.Args.RelayStats[i].SwitchedCount),
@@ -185,7 +69,7 @@ func (svc *service) saveRelay(params op.SaveRelayParams) op.SaveRelayResponder {
 		toSave.RelayStats = append(toSave.RelayStats, r)
 	}
 
-	err = svc.app.SaveRelayReport(toSave)
+	err := svc.app.SaveRelayReport(toSave)
 
 	switch errors.Cause(err) {
 	case nil:
@@ -198,13 +82,12 @@ func (svc *service) saveRelay(params op.SaveRelayParams) op.SaveRelayResponder {
 
 func (svc *service) loadMoney(params op.LoadMoneyParams) op.LoadMoneyResponder {
 	log.Info("load money", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-	stationID, err := svc.getID(string(params.Args.Hash))
-	if err != nil {
-		log.Info("load money: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewLoadMoneyNotFound()
+	err := app.ErrNotFound
+	if params.Args.Hash == "give me report" {
+		err = nil
 	}
 
-	toLoad, err := svc.app.LoadMoneyReport(stationID)
+	toLoad, err := svc.app.LoadMoneyReport(string(params.Args.Hash))
 
 	switch errors.Cause(err) {
 	case nil:
@@ -220,14 +103,9 @@ func (svc *service) loadMoney(params op.LoadMoneyParams) op.LoadMoneyResponder {
 
 func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 	log.Info("save money", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-	stationID, err := svc.getID(string(params.Args.Hash))
-	if err != nil {
-		log.Info("save money: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSaveMoneyNotFound()
-	}
 
 	var toSave = app.MoneyReport{
-		StationID:    stationID,
+		Hash:         string(params.Args.Hash),
 		Banknotes:    int(params.Args.Banknotes),
 		CarsTotal:    int(params.Args.CarsTotal),
 		Coins:        int(params.Args.Coins),
@@ -236,7 +114,7 @@ func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 		Ctime:        time.Now().UTC(),
 	}
 
-	err = svc.app.SaveMoneyReport(toSave)
+	err := svc.app.SaveMoneyReport(toSave)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewSaveMoneyNoContent()
@@ -250,7 +128,7 @@ func (svc *service) saveCollection(params op.SaveCollectionParams) op.SaveCollec
 	log.Info("save collection", "ip", params.HTTPRequest.RemoteAddr)
 
 	var toSave = app.CollectionReport{
-		StationID: app.StationID(params.Args.ID),
+		StationID: int(params.Args.ID),
 		Money:     int(params.Args.Money),
 		Ctime:     time.Now().UTC(),
 	}
@@ -272,19 +150,11 @@ func (svc *service) saveCollection(params op.SaveCollectionParams) op.SaveCollec
 
 func (svc *service) ping(params op.PingParams) op.PingResponder {
 	log.Info("post ping", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-	stationID, err := svc.getIDAndAddHash(string(params.Args.Hash))
-	if err != nil {
-		log.Info("post ping: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewPingOK().WithPayload(&op.PingOKBody{
-			ServiceAmount: newInt64(int64(0)),
-		})
-	}
 
-	station := svc.app.Ping(stationID)
+	serviceMoney := svc.app.Ping(string(params.Args.Hash))
 
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
-		ServiceAmount: newInt64(int64(station.ServiceMoney)),
-		OpenStation:   &station.OpenStation,
+		ServiceAmount: newInt64(int64(serviceMoney)),
 	})
 }
 
@@ -298,9 +168,8 @@ func (svc *service) info(params op.InfoParams) op.InfoResponder {
 }
 
 func (svc *service) status(params op.StatusParams) op.StatusResponder {
-	log.Info("status", "ip", params.HTTPRequest.RemoteAddr)
 	report := svc.app.StatusReport()
-	return op.NewStatusOK().WithPayload(svc.apiStatusReport(report))
+	return op.NewStatusOK().WithPayload(apiStatusReport(report))
 }
 
 func (svc *service) statusCollection(params op.StatusCollectionParams) op.StatusCollectionResponder {
@@ -309,13 +178,7 @@ func (svc *service) statusCollection(params op.StatusCollectionParams) op.Status
 }
 
 func (svc *service) addServiceAmount(params op.AddServiceAmountParams) op.AddServiceAmountResponder {
-	stationID, err := svc.getID(string(params.Args.Hash))
-	if err != nil {
-		log.Info("add service ammount: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewAddServiceAmountNotFound()
-	}
-
-	err = svc.app.AddServiceAmount(stationID, int(params.Args.Amount))
+	err := svc.app.AddServiceAmount(params.Args.Hash, int(params.Args.Amount))
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewAddServiceAmountNoContent()
@@ -329,12 +192,12 @@ func (svc *service) addServiceAmount(params op.AddServiceAmountParams) op.AddSer
 }
 
 func (svc *service) setStation(params op.SetStationParams) op.SetStationResponder {
-	if *params.Args.ID == 0 && params.Args.Name == "" {
+	if params.Args.ID == 0 && params.Args.Name == "" {
 		return op.NewSetStationUnprocessableEntity()
 	}
-	svc.setHash(app.StationID(*params.Args.ID), params.Args.Hash)
-	err := svc.app.SetStation(app.SetStation{
-		ID:   app.StationID(*params.Args.ID),
+	err := svc.app.SetStation(app.SetStationParams{
+		ID:   int(params.Args.ID),
+		Hash: params.Args.Hash,
 		Name: params.Args.Name,
 	})
 	switch errors.Cause(err) {
@@ -353,7 +216,7 @@ func (svc *service) setStation(params op.SetStationParams) op.SetStationResponde
 }
 
 func (svc *service) delStation(params op.DelStationParams) op.DelStationResponder {
-	err := svc.app.DelStation(app.StationID(*params.Args.ID))
+	err := svc.app.DelStation(int(*params.Args.ID))
 
 	switch errors.Cause(err) {
 	case nil:
@@ -368,9 +231,9 @@ func (svc *service) delStation(params op.DelStationParams) op.DelStationResponde
 }
 
 func (svc *service) stationReport(params op.StationReportParams) op.StationReportResponder {
-	log.Info("station report", "id", *params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+	log.Info("station report", "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
 
-	money, relay, err := svc.app.StationReport(app.StationID(*params.Args.ID), time.Unix(*params.Args.StartDate, 0), time.Unix(*params.Args.EndDate, 0))
+	money, relay, err := svc.app.StationReport(int(*params.Args.ID), time.Unix(*params.Args.StartDate, 0), time.Unix(*params.Args.EndDate, 0))
 
 	switch errors.Cause(err) {
 	case nil:
@@ -380,7 +243,7 @@ func (svc *service) stationReport(params op.StationReportParams) op.StationRepor
 		res.RelayStats = apiRelay.RelayStats
 		return op.NewStationReportOK().WithPayload(res)
 	case app.ErrNotFound:
-		log.Info("station report: not found", "id", *params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+		log.Info("station report: not found", "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewStationReportNotFound()
 	default:
 		log.PrintErr(err, "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
@@ -390,150 +253,4 @@ func (svc *service) stationReport(params op.StationReportParams) op.StationRepor
 
 func newInt64(v int64) *int64 {
 	return &v
-}
-
-func (svc *service) stationByHash(params op.StationByHashParams) op.StationByHashResponder {
-	log.Info("post by hash", "hash", params.Args.Hash)
-
-	id, err := svc.getID(string(params.Args.Hash))
-
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewStationByHashOK().WithPayload(int64(id))
-	case errNotFound:
-		log.Info("post by hash: not found", "hash", params.Args.Hash)
-		return op.NewStationByHashOK().WithPayload(0)
-	default:
-		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewStationByHashInternalServerError()
-	}
-}
-
-func (svc *service) StationsVariables(params op.StationsVariablesParams) op.StationsVariablesResponder {
-	log.Info("stations key pair", "ip", params.HTTPRequest.RemoteAddr)
-
-	toLoad, err := svc.app.StationsVariables()
-
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewStationsVariablesOK().WithPayload(apiStationsVariables(toLoad))
-	default:
-		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewStationsVariablesInternalServerError()
-	}
-}
-
-func (svc *service) openStation(params op.OpenStationParams) op.OpenStationResponder {
-	err := svc.app.OpenStation(app.StationID(*params.Args.StationID))
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewOpenStationNoContent()
-	case app.ErrNotFound:
-		log.Info("open station: not found", "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewOpenStationNotFound()
-	default:
-		log.PrintErr(err, "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewOpenStationInternalServerError()
-	}
-}
-
-func (svc *service) setProgramName(params op.SetProgramNameParams) op.SetProgramNameResponder {
-	log.Info("setProgramName", "stationID", *params.Args.StationID, "programID", *params.Args.ProgramID, "name", *params.Args.Name, "ip", params.HTTPRequest.RemoteAddr)
-	var err error
-	err = svc.app.SetProgramName(app.StationID(*params.Args.StationID), int(*params.Args.ProgramID), *params.Args.Name)
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewSetProgramNameNoContent()
-	default:
-		log.PrintErr(err, "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSetProgramNameInternalServerError()
-	}
-}
-
-func (svc *service) setProgramRelays(params op.SetProgramRelaysParams) op.SetProgramRelaysResponder {
-	log.Info("setProgramRelays", "stationID", *params.Args.StationID, "programID", *params.Args.ProgramID, "relays", params.Args.Relays, "ip", params.HTTPRequest.RemoteAddr)
-
-	var err error
-
-	tmp := []app.Relay{}
-
-	for i := range params.Args.Relays {
-		tmp = append(tmp, app.Relay{
-			ID:        int(params.Args.Relays[i].ID),
-			TimeOn:    int(params.Args.Relays[i].Timeon),
-			TimeOff:   int(params.Args.Relays[i].Timeoff),
-			Preflight: int(params.Args.Relays[i].Prfelight),
-		})
-	}
-
-	err = svc.app.SetProgramRelays(app.StationID(*params.Args.StationID), int(*params.Args.ProgramID), tmp)
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewSetProgramRelaysNoContent()
-	default:
-		log.PrintErr(err, "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSetProgramRelaysInternalServerError()
-	}
-}
-
-func (svc *service) programs(params op.ProgramsParams) op.ProgramsResponder {
-	res, err := svc.app.Programs(app.StationID(*params.Args.StationID))
-
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewProgramsOK().WithPayload(apiPrograms(res))
-	default:
-		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewProgramsInternalServerError()
-	}
-}
-
-func (svc *service) programRelays(params op.ProgramRelaysParams) op.ProgramRelaysResponder {
-	var err error
-	log.Info("programRelays", "stationID", *params.Args.StationID, "programID", *params.Args.ProgramID, "ip", params.HTTPRequest.RemoteAddr)
-
-	res, err := svc.app.ProgramRelays(app.StationID(*params.Args.StationID), int(*params.Args.ProgramID))
-
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewProgramRelaysOK().WithPayload(&op.ProgramRelaysOKBody{
-			Relays: apiRelays(res),
-		})
-	default:
-		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewProgramRelaysInternalServerError()
-	}
-}
-
-func (svc *service) kasse(params op.KasseParams) op.KasseResponder {
-	res, err := svc.app.Kasse()
-
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewKasseOK().WithPayload(apiKasse(res))
-	default:
-		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewKasseInternalServerError()
-	}
-
-}
-
-func (svc *service) setKasse(params op.SetKasseParams) op.SetKasseResponder {
-	err := svc.app.SetKasse(app.Kasse{
-		CashierFullName: params.Args.Cashier,
-		CashierINN:      params.Args.CashierINN,
-		TaxType:         params.Args.Tax,
-		ReceiptItem:     params.Args.ReceiptItemName,
-	})
-
-	log.Info(params.Args)
-
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewSetKasseNoContent()
-	default:
-		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSetKasseInternalServerError()
-	}
-
 }

@@ -106,7 +106,7 @@ func (r *repo) Save(stationID app.StationID, key string, value string) (err erro
 	return //nolint:nakedret
 }
 
-func (r *repo) SaveIfNotExists(stationID app.StationID, key string, value string) (err error) {
+func (r *repo) SetStation(station app.SetStationParams) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlSetValueIfNotExists, argSetValue{
 			StationID: stationID,
@@ -149,7 +149,7 @@ func (r *repo) DelStation(id app.StationID) (err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) Stations() (stations []app.SetStation, err error) {
+func (r *repo) Stations() (stations []app.SetStationParams, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res []resStation
 		err := tx.NamedSelectContext(ctx, &res, sqlGetStation, argGetStation{})
@@ -258,7 +258,6 @@ func (r *repo) SaveRelayReport(report app.RelayReport) (err error) {
 
 func (r *repo) MoneyReport(stationID app.StationID, startDate, endDate time.Time) (report app.MoneyReport, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		report = app.MoneyReport{}
 		err := tx.NamedGetContext(ctx, &report, sqlMoneyReport, argMoneyReport{
 			StationID: stationID,
 			StartDate: startDate,
@@ -272,7 +271,7 @@ func (r *repo) MoneyReport(stationID app.StationID, startDate, endDate time.Time
 		}
 		return nil
 	})
-	return report, nil
+	return //nolint:nakedret
 }
 
 func (r *repo) RelayStatReport(stationID app.StationID, startDate, endDate time.Time) (report app.RelayReport, err error) {

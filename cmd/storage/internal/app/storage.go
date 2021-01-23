@@ -12,30 +12,26 @@ var log = structlog.New() //nolint:gochecknoglobals
 
 // Save accepts key-value pair and writes it to DAL
 // Checks the pairment of hash and ID of specified wash machine
-func (a *app) Save(id StationID, key string, value string) error {
-	return a.repo.Save(id, key, value)
-}
+func (a *app) Save(hash string, key string, value string) error {
+	stationID, err := a.FindStationIDByHash(hash)
+	if err != nil {
+		log.Info("Hash is not paired with the ID", "hash", hash, "id", stationID)
+		return ErrNotFound
+	}
 
-// Save accepts key-value pair and if not exists writes it to DAL
-// Checks the pairment of hash and ID of specified wash machine
-func (a *app) SaveIfNotExists(id StationID, key string, value string) error {
-	return a.repo.SaveIfNotExists(id, key, value)
+	return a.repo.Save(stationID, key, value)
 }
 
 // Load accepts key and returns value from DAL
 // Checks the pairment of hash and ID of specified wash machine
-func (a *app) Load(id StationID, key string) (string, error) {
-	switch key {
-	case TemperatureCurrent:
-		val, err := a.weatherSvc.CurrentTemperature()
-		if err != nil {
-			log.Info(TemperatureCurrent, "err", err)
-			return "", err
-		}
-		return fmt.Sprintf("%f", val), nil
-	default:
-		return a.repo.Load(id, key)
+func (a *app) Load(hash string, key string) (string, error) {
+	stationID, err := a.FindStationIDByHash(hash)
+	if err != nil {
+		log.Info("Hash is not paired with the ID", "hash", hash, "id", stationID)
+		return "", ErrNotFound
 	}
+
+	return a.repo.Load(stationID, key)
 }
 
 func (a *app) Info() string {
@@ -48,7 +44,8 @@ func (a *app) loadStations() error {
 		log.Info("loadStations", "err", err)
 		return err
 	}
-	stations := map[StationID]StationData{}
+	stations := map[string]StationData{}
+	noHash := []StationData{}
 
 	// Calculate how many stations
 	createCount := 12 - len(res)
@@ -57,7 +54,11 @@ func (a *app) loadStations() error {
 	log.Info("CreateCount", "count", createCount)
 
 	for createCount > 0 {
-		err = a.repo.AddStation("Station" + strconv.Itoa(currentID))
+		err = a.repo.SetStation(SetStationParams{
+			ID:   0,
+			Hash: "",
+			Name: "Station" + strconv.Itoa(currentID),
+		})
 		if err != nil {
 			log.Info("Error", "error", err)
 			return err
@@ -74,27 +75,35 @@ func (a *app) loadStations() error {
 	}
 
 	for i := range res {
-		stations[res[i].ID] = StationData{
-			ID:   res[i].ID,
-			Name: res[i].Name,
+		if res[i].Hash != "" {
+			stations[res[i].Hash] = StationData{
+				ID:   res[i].ID,
+				Name: res[i].Name,
+			}
+		} else {
+			noHash = append(noHash, StationData{
+				ID:   res[i].ID,
+				Name: res[i].Name,
+			})
 		}
 	}
 
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
+	a.stationsNoHash = noHash
 	a.stations = stations
 
 	return nil
 }
 
-// Set accepts existing hash and writes specified StationData
-func (a *app) Set(station StationData) error {
+// SaveStationData accepts existing hash and writes specified StationData
+func (a *app) SaveStationData(hash string, station StationData) error {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
-	if value, exist := a.stations[station.ID]; exist {
+	if value, exist := a.stations[hash]; exist {
 		value = station
-		a.stations[station.ID] = value
+		a.stations[hash] = value
 	} else {
 		return ErrNotFound
 	}
@@ -102,30 +111,29 @@ func (a *app) Set(station StationData) error {
 }
 
 // Ping sets the time of the last ping and returns service money.
-func (a *app) Ping(id StationID) StationData {
+func (a *app) Ping(hash string) int {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 	var station StationData
-	if v, ok := a.stations[id]; ok {
+	if v, ok := a.stations[hash]; ok {
 		station = v
 	} else {
 		station = StationData{}
 	}
-	oldStation := station
 	station.LastPing = time.Now()
+	serviceMoney := station.ServiceMoney
 	station.ServiceMoney = 0
-	station.OpenStation = false
-	a.stations[id] = station
-	return oldStation
+	a.stations[hash] = station
+	return serviceMoney
 }
 
-// Get accepts exising hash and returns StationData
-func (a *app) Get(id StationID) (StationData, error) {
+// StationDataByHash accepts exising hash and returns StationData
+func (a *app) StationDataByHash(hash string) (StationData, error) {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
 	// TODO: if error - return empty StationData, not nil
-	value, exist := a.stations[id]
+	value, exist := a.stations[hash]
 	if !exist {
 		return StationData{}, ErrNotFound
 	}
@@ -134,15 +142,15 @@ func (a *app) Get(id StationID) (StationData, error) {
 
 // SetServiceAmount changes service money in map to the specified value
 // Returns ErrNotFound, if id is not valid, else nil
-func (a *app) AddServiceAmount(id StationID, money int) error {
-	data, err := a.Get(id)
+func (a *app) AddServiceAmount(hash string, money int) error {
+	data, err := a.StationDataByHash(hash)
 	if err != nil && data.ID < 1 {
 		log.Info("Can't set service money - station is unknown")
 		return ErrNotFound
 	}
 
 	data.ServiceMoney = data.ServiceMoney + money
-	err = a.Set(data)
+	err = a.SaveStationData(hash, data)
 	if err != nil {
 		log.Info("Can't set service money - station is unknown")
 		return ErrNotFound
@@ -150,34 +158,46 @@ func (a *app) AddServiceAmount(id StationID, money int) error {
 	return nil
 }
 
-// OpenStation changes open station in map to the specified value
-// Returns ErrNotFound, if id is not valid, else nil
-func (a *app) OpenStation(id StationID) error {
-	data, err := a.Get(id)
-	if err != nil && data.ID < 1 {
-		log.Info("Can't open station - station is unknown")
-		return ErrNotFound
+// FindStationIDByHash finds ID by hash
+// Returns ErrNotFound, if hash is not valid, else nil
+func (a *app) FindStationIDByHash(hash string) (int, error) {
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+	station, ok := a.stations[hash]
+	if !ok {
+		return -1, ErrNotFound
 	}
-
-	data.OpenStation = true
-	err = a.Set(data)
-	if err != nil {
-		log.Info("Can't open station - station is unknown")
-		return ErrNotFound
-	}
-	err = a.repo.AddOpenStationLog(id)
-	if err != nil {
-		log.Info("OpenStation: error saving log", "err", err)
-		return err
-	}
-	return nil
+	return station.ID, nil
 }
 
 // SaveMoneyReport gets app.MoneyReport struct
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
 func (a *app) SaveMoneyReport(report MoneyReport) error {
-	return a.repo.SaveMoneyReport(report)
+	fmt.Println("-----------------------------------------SAVE MONEY REPORT ------------------")
+	stationID, err := a.FindStationIDByHash(report.Hash)
+	if err != nil {
+		log.Info("Hash is not paired with the ID", "hash", report.Hash, "id", stationID)
+		return ErrNotFound
+	}
+	fmt.Printf("station id found: %+v\n", stationID)
+	lastReport, err := a.FindLastReport(stationID)
+	fmt.Printf("lastReport found: %+v\n", lastReport)
+	if err != nil {
+		log.Info("Last report is not found", "hash", report.Hash, "id", stationID)
+		return ErrNotFound
+	}
+	// Sometimes station reports much less than it should report, so we calc the difference always
+	reportDifference := a.FindReportDifference(stationID)
+	fmt.Printf("difference found: %+v\n", reportDifference)
+
+	updatedReport, newReportDifference := a.UpdatedReport(&report, lastReport, reportDifference)
+	fmt.Printf("updatedReport, newReportDifference found: %+v,\n%+v\n", updatedReport, newReportDifference)
+	a.SaveReportDifference(stationID, &newReportDifference)
+	a.SaveLastReport(stationID, &updatedReport)
+
+	report.StationID = stationID
+	return a.repo.SaveMoneyReport(updatedReport)
 }
 
 // SaveCollectionReport gets app.CollectionReport struct
@@ -190,22 +210,43 @@ func (a *app) SaveCollectionReport(report CollectionReport) error {
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
 func (a *app) SaveRelayReport(report RelayReport) error {
+	// TODO: remove race conditions here
+	stationID, err := a.FindStationIDByHash(report.Hash)
+	if err != nil {
+		log.Info("Hash is not paired with the ID", "hash", report.Hash, "id", stationID)
+		return ErrNotFound
+	}
 	return a.repo.SaveRelayReport(report)
 }
 
 // LoadMoneyReport gets hash string
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
-func (a *app) LoadMoneyReport(id StationID) (*MoneyReport, error) {
-	report, err := a.repo.LastMoneyReport(id)
+func (a *app) LoadMoneyReport(hash string) (*MoneyReport, error) {
+	stationID, err := a.FindStationIDByHash(hash)
+	if err != nil {
+		log.Info("Hash is not paired with the ID", hash, stationID)
+
+		// TODO: change nil to empty report here
+		return nil, ErrNotFound
+	}
+
+	report, err := a.repo.LastMoneyReport(stationID)
 	return &report, err
 }
 
 // LoadRelayReport gets hash string
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
-func (a *app) LoadRelayReport(id StationID) (*RelayReport, error) {
-	report, err := a.repo.LastRelayReport(id)
+func (a *app) LoadRelayReport(hash string) (*RelayReport, error) {
+	stationID, err := a.FindStationIDByHash(hash)
+	if err != nil {
+		log.Info("Hash is not paired with the ID", hash, stationID)
+
+		// TODO: change nil to empty report here
+		return nil, ErrNotFound
+	}
+	report, err := a.repo.LastRelayReport(stationID)
 	return &report, err
 }
 
@@ -223,7 +264,7 @@ func (a *app) StatusReport() StatusReport {
 
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
-	for _, v := range a.stations {
+	for key, v := range a.stations {
 		var status Status
 		if v.LastPing.Add(durationStationOffline).After(time.Now()) {
 			status = StatusOnline
@@ -231,9 +272,17 @@ func (a *app) StatusReport() StatusReport {
 			status = StatusOffline
 		}
 		report.Stations = append(report.Stations, StationStatus{
+			Hash:   key,
 			ID:     v.ID,
 			Name:   v.Name,
 			Status: status,
+		})
+	}
+	for i := range a.stationsNoHash {
+		report.Stations = append(report.Stations, StationStatus{
+			ID:     a.stationsNoHash[i].ID,
+			Name:   a.stationsNoHash[i].Name,
+			Status: StatusOffline,
 		})
 	}
 	return report
@@ -261,13 +310,13 @@ func (a *app) StatusCollection() StatusCollection {
 		}
 
 		t := time.Now()
-		// loc, err := time.LoadLocation("Europe/Moscow")
-		// t = t.In(loc)
+		loc, err := time.LoadLocation("Europe/Moscow")
+		t = t.In(loc)
 
 		fmt.Println(t)
 		fmt.Println(collectionTime)
 
-		moneyReport, err := a.repo.MoneyReport(v.ID, collectionTime, t)
+		moneyReport, err := a.repo.MoneyReport(v.ID, collectionTime, time.Now())
 		if err != nil {
 			collectionMoney = 0
 		} else {
@@ -283,7 +332,7 @@ func (a *app) StatusCollection() StatusCollection {
 	return status
 }
 
-func (a *app) SetStation(station SetStation) error {
+func (a *app) SetStation(station SetStationParams) error {
 	err := a.repo.SetStation(station)
 	if err != nil {
 		return err
@@ -292,7 +341,7 @@ func (a *app) SetStation(station SetStation) error {
 	return nil
 }
 
-func (a *app) DelStation(id StationID) error {
+func (a *app) DelStation(id int) error {
 	err := a.repo.DelStation(id)
 	if err != nil {
 		return err
@@ -303,7 +352,7 @@ func (a *app) DelStation(id StationID) error {
 
 // Date time zone is UTC.
 // The method searches for less than or equal to the end date and subtracts a report from it with a date less than or equal to the start date.
-func (a *app) StationReport(id StationID, startDate, endDate time.Time) (MoneyReport, RelayReport, error) {
+func (a *app) StationReport(id int, startDate, endDate time.Time) (MoneyReport, RelayReport, error) {
 	report, err := a.repo.MoneyReport(id, startDate, endDate)
 	if err != nil {
 		return MoneyReport{}, RelayReport{}, err
@@ -312,28 +361,4 @@ func (a *app) StationReport(id StationID, startDate, endDate time.Time) (MoneyRe
 	stat, err := a.repo.RelayStatReport(id, startDate, endDate)
 
 	return report, stat, err
-}
-
-func (a *app) StationsVariables() ([]StationsVariables, error) {
-	return a.repo.StationsVariables()
-}
-
-func (a *app) Programs(id StationID) (programs []Program, err error) {
-	return a.repo.Programs(id)
-}
-func (a *app) SetProgramName(id StationID, programID int, name string) (err error) {
-	return a.repo.SetProgramName(id, programID, name)
-}
-func (a *app) ProgramRelays(id StationID, programID int) (relays []Relay, err error) {
-	return a.repo.ProgramRelays(id, programID)
-}
-func (a *app) SetProgramRelays(id StationID, programID int, relays []Relay) (err error) {
-	return a.repo.SetProgramRelays(id, programID, relays)
-}
-
-func (a *app) Kasse() (kasse Kasse, err error) {
-	return a.repo.Kasse()
-}
-func (a *app) SetKasse(kasse Kasse) (err error) {
-	return a.repo.SetKasse(kasse)
 }

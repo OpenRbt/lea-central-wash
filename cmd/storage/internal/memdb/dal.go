@@ -14,23 +14,23 @@ type keypair struct {
 }
 
 type DB struct {
-	keypair []keypair
-	mutex   sync.Mutex
+	keypair  []keypair
+	mutex    sync.Mutex
+	stations map[int]app.SetStationParams
+	mReport  app.MoneyReport
+	rReport  app.RelayReport
 }
 
 // New DB
 func New() *DB {
-	return &DB{keypair: []keypair{}}
+	return &DB{
+		keypair:  []keypair{},
+		stations: make(map[int]app.SetStationParams),
+	}
 }
 
-func (t *DB) LoadHash() ([]app.StationID, []string, error) {
-	return nil, nil, nil
-}
-func (t *DB) SetHash(id app.StationID, hash string) error {
-	return nil
-}
-
-func (t *DB) Load(stationID app.StationID, key string) (string, error) {
+// Load loads a value for station by key
+func (t *DB) Load(stationID int, key string) (string, error) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
@@ -41,7 +41,8 @@ func (t *DB) Load(stationID app.StationID, key string) (string, error) {
 	return t.keypair[i].Value, nil
 }
 
-func (t *DB) Save(stationID app.StationID, key string, value string) (err error) {
+// Save just saves a value for station for key
+func (t *DB) Save(stationID int, key string, value string) (err error) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
@@ -58,23 +59,7 @@ func (t *DB) Save(stationID app.StationID, key string, value string) (err error)
 	return nil
 }
 
-func (t *DB) SaveIfNotExists(stationID app.StationID, key string, value string) (err error) {
-	t.mutex.Lock()
-	defer t.mutex.Unlock()
-
-	i := t.findKey(stationID, key)
-	if i < 0 {
-		t.keypair = append(t.keypair, keypair{
-			StationID: stationID,
-			Key:       key,
-			Value:     value,
-		})
-		return nil
-	}
-	return nil
-}
-
-func (t *DB) findKey(stationID app.StationID, key string) int {
+func (t *DB) findKey(stationID int, key string) int {
 	for i := range t.keypair {
 		if t.keypair[i].StationID == stationID && t.keypair[i].Key == key {
 			return i
@@ -88,43 +73,61 @@ func (t *DB) Info() string {
 	return "memdb"
 }
 
-func (t *DB) SetStation(station app.SetStation) error {
+// SetStation remembers a station
+func (t *DB) SetStation(station app.SetStationParams) error {
+	t.stations[station.ID] = station
 	return nil
 }
 
-func (t *DB) Stations() (stations []app.SetStation, err error) {
-	return nil, nil
+// Stations returns all stations
+func (t *DB) Stations() (stations []app.SetStationParams, err error) {
+	res := make([]app.SetStationParams, 0, len(t.stations))
+	for _, val := range t.stations {
+		res = append(res, val)
+	}
+	return res, nil
 }
 
-func (t *DB) DelStation(id app.StationID) error {
+// DelStation just removes a station
+func (t *DB) DelStation(id int) error {
+	delete(t.stations, id)
 	return nil
 }
 
-func (t *DB) LastMoneyReport(stationID app.StationID) (report app.MoneyReport, err error) {
-	return
+// LastMoneyReport ..
+func (t *DB) LastMoneyReport(stationID int) (report app.MoneyReport, err error) {
+	return t.mReport, nil
 }
 
+// SaveMoneyReport ..
 func (t *DB) SaveMoneyReport(report app.MoneyReport) error {
+	t.mReport = report
 	return nil
 }
 
-func (t *DB) LastRelayReport(stationID app.StationID) (report app.RelayReport, err error) {
-	return
+// LastRelayReport ..
+func (t *DB) LastRelayReport(stationID int) (report app.RelayReport, err error) {
+	return t.rReport, nil
 }
 
+// SaveRelayReport ...
 func (t *DB) SaveRelayReport(report app.RelayReport) error {
+	t.rReport = report
 	return nil
 }
 
-func (t *DB) MoneyReport(stationID app.StationID, startDate, endDate time.Time) (report app.MoneyReport, err error) {
+// MoneyReport ...
+func (t *DB) MoneyReport(stationID int, startDate, endDate time.Time) (report app.MoneyReport, err error) {
 	return
 }
 
-func (t *DB) RelayStatReport(stationID app.StationID, startDate, endDate time.Time) (report app.RelayReport, err error) {
+// RelayStatReport ...
+func (t *DB) RelayStatReport(stationID int, startDate, endDate time.Time) (report app.RelayReport, err error) {
 	return
 }
 
-func (t *DB) LastCollectionReport(stationID app.StationID) (report app.CollectionReport, err error) {
+// LastCollectionReport ...
+func (t *DB) LastCollectionReport(stationID int) (report app.CollectionReport, err error) {
 	return
 }
 

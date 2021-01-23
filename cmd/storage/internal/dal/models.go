@@ -6,9 +6,15 @@ import (
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 )
 
-func appSetStation(v []resStation) []app.SetStation {
-	var res []app.SetStation
+func appSetStation(v []resStation) []app.SetStationParams {
+	var res []app.SetStationParams
 	for i := range v {
+	hash := ""
+	if v[i].Hash != nil {
+		hash = *v[i].Hash
+	}
+	res = append(res, app.SetStationParams{
+		Hash: hash,
 		res = append(res, app.SetStation{
 			ID:   v[i].ID,
 			Name: v[i].Name,
