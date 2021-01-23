@@ -17,6 +17,7 @@ type MoneyReport struct {
 	Coins        int
 	Electronical int
 	Service      int
+	Ctime        time.Time
 }
 
 type CollectionReport struct {

@@ -67,12 +67,12 @@ SET deleted = true, hash = null
 WHERE id = :id
 	`
 	sqlAddMoneyReport = `
-INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service)  
-VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service)
+INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, ctime)  
+VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :ctime)
 	`
 	sqlAddCollectionReport = `
-INSERT INTO money_collection (station_id, money)  
-VALUES 	(:station_id, :money)
+INSERT INTO money_collection (station_id, money, ctime)  
+VALUES 	(:station_id, :money, :ctime)
 	`
 	sqlLastMoneyReport = `
 SELECT station_id, banknotes, cars_total, coins, electronical, service FROM money_report WHERE station_id = :station_id
@@ -111,7 +111,7 @@ SELECT station_id, sum(banknotes) banknotes, sum(cars_total) cars_total, sum(coi
 		union all
 		(
 		SELECT station_id, -banknotes, -cars_total, -coins, -electronical, -service 
-		FROM money_report WHERE station_id = :station_id and ctime <= :start_date
+		FROM money_report WHERE station_id = :station_id and ctime < :start_date
 		ORDER BY id DESC
 		LIMIT 1
 		) 

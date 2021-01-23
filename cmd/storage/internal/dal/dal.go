@@ -258,6 +258,7 @@ func (r *repo) SaveRelayReport(report app.RelayReport) (err error) {
 
 func (r *repo) MoneyReport(stationID app.StationID, startDate, endDate time.Time) (report app.MoneyReport, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		report = app.MoneyReport{}
 		err := tx.NamedGetContext(ctx, &report, sqlMoneyReport, argMoneyReport{
 			StationID: stationID,
 			StartDate: startDate,
@@ -271,7 +272,7 @@ func (r *repo) MoneyReport(stationID app.StationID, startDate, endDate time.Time
 		}
 		return nil
 	})
-	return //nolint:nakedret
+	return report, nil
 }
 
 func (r *repo) RelayStatReport(stationID app.StationID, startDate, endDate time.Time) (report app.RelayReport, err error) {

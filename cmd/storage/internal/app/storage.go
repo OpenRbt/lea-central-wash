@@ -261,13 +261,13 @@ func (a *app) StatusCollection() StatusCollection {
 		}
 
 		t := time.Now()
-		loc, err := time.LoadLocation("Europe/Moscow")
-		t = t.In(loc)
+		// loc, err := time.LoadLocation("Europe/Moscow")
+		// t = t.In(loc)
 
 		fmt.Println(t)
 		fmt.Println(collectionTime)
 
-		moneyReport, err := a.repo.MoneyReport(v.ID, collectionTime, time.Now())
+		moneyReport, err := a.repo.MoneyReport(v.ID, collectionTime, t)
 		if err != nil {
 			collectionMoney = 0
 		} else {
