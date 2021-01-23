@@ -192,11 +192,11 @@ func (svc *service) addServiceAmount(params op.AddServiceAmountParams) op.AddSer
 }
 
 func (svc *service) setStation(params op.SetStationParams) op.SetStationResponder {
-	if params.Args.ID == 0 && params.Args.Name == "" {
+	if *params.Args.ID == 0 && params.Args.Name == "" {
 		return op.NewSetStationUnprocessableEntity()
 	}
 	err := svc.app.SetStation(app.SetStationParams{
-		ID:   int(params.Args.ID),
+		ID:   int(*params.Args.ID),
 		Hash: params.Args.Hash,
 		Name: params.Args.Name,
 	})

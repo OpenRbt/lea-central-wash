@@ -1,65 +1,34 @@
 package dal
 
-import (
-	"time"
-
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-)
+import "time"
 
 const (
-	sqlCheckDB = `
-SELECT count(column_name) as count_columns
-FROM information_schema.columns 
-WHERE table_name = 'station_hash'
-	`
-	sqlOpenStationLogAdd = `
-INSERT INTO open_station_log (station_id)  
-VALUES 	(:station_id)
-	`
 	sqlSetValue = `
-INSERT INTO keypair (station_id, key, value)  
-VALUES 	(:station_id, :key, :value)
-ON CONFLICT (station_id, key)
-DO
+	INSERT INTO keypair (station_id, key, value)  
+	VALUES 	(:station_id, :key, :value)
+	ON CONFLICT (station_id, key)
+	DO
 	UPDATE SET value = :value
 	`
-	sqlSetValueIfNotExists = `
-INSERT INTO keypair (station_id, key, value)  
-VALUES 	(:station_id, :key, :value)
-ON CONFLICT (station_id, key)
-DO NOTHING
-	`
 	sqlGetValue = `
-SELECT value  FROM keypair  WHERE station_id = :station_id and key = :key
-	`
-	sqlGetStationsVariables = `
-	SELECT s.id, s.name, k.key, k.value
-	FROM station s
-	JOIN keypair k on s.id = k.station_id
-	ORDER BY s.id, k.key
+	SELECT value  FROM keypair  WHERE station_id = :station_id and key = :key
 	`
 	sqlAddStation = `
-INSERT INTO station (name)  
-VALUES 	(:name)
-	`
-	sqlAddStationHash = `
-INSERT INTO station_hash (station_id, hash)  
-VALUES 	(:station_id, :hash)
+	INSERT INTO station (hash, name)  
+	VALUES 	(:hash, :name)
 	`
 	sqlUpdStation = `
 UPDATE station
-SET name = :name
+SET hash = :hash, name = :name
 WHERE id = :id
 	`
 	sqlGetStation = `
-SELECT id, name  FROM station where deleted = false ORDER BY id
-	`
-	sqlLoadHash = `
-SELECT station_id, hash FROM station_hash ORDER BY station_id
+	SELECT id, hash, name  FROM station where deleted = false ORDER BY id
 	`
 	sqlStationNullHash = `
-DELETE FROM station_hash
-WHERE hash = :hash or station_id = :station_id
+	UPDATE station
+	SET hash = null
+	WHERE hash = :hash
 	`
 	sqlDelStation = `
 UPDATE station
@@ -111,7 +80,7 @@ SELECT station_id, sum(banknotes) banknotes, sum(cars_total) cars_total, sum(coi
 		union all
 		(
 		SELECT station_id, -banknotes, -cars_total, -coins, -electronical, -service 
-		FROM money_report WHERE station_id = :station_id and ctime < :start_date
+		FROM money_report WHERE station_id = :station_id and ctime <= :start_date
 		ORDER BY id DESC
 		LIMIT 1
 		) 
@@ -136,74 +105,32 @@ GROUP BY station_id
 		) AS RR
 		GROUP BY relay_id	
 	`
-
-	sqlPrograms = `
-	SELECT program_id,
-       name
-	FROM station_program
-	WHERE station_id = :station_id
-	ORDER BY program_id ASC
-	`
-
-	sqlProgramRelays = `
-	SELECT relays
-	FROM station_program
-	WHERE station_id = :station_id
-  	AND program_id = :program_id
-	`
-
-	sqlSetProgramName = `
-	INSERT INTO station_program (station_id, program_id, name)
-	VALUES (:station_id, :program_id, :name) ON CONFLICT (station_id, program_id) DO
-	UPDATE
-	SET name = :name
-	`
-
-	sqlSetProgramRelays = `
-	INSERT INTO station_program (station_id, program_id, relays)
-	VALUES (:station_id, :program_id, :relays) ON CONFLICT (station_id, program_id) DO
-	UPDATE
-	SET relays = :relays
-	`
-
-	sqlKasse = `
-	SELECT receipt_item, tax_type, cashier_full_name, cashier_inn
-	FROM kasse
-	order by ctime desc
-	limit 1
-	`
-
-	sqlSetKasse = `
-	INSERT INTO kasse(receipt_item, tax_type, cashier_full_name, cashier_inn)
-	VALUES (:receipt_item, :tax_type, :cashier_full_name, :cashier_inn)
-	`
 )
 
 type (
 	argSetValue struct {
-		StationID app.StationID
+		StationID int
 		Key       string
 		Value     string
 	}
 	argGetValue struct {
-		StationID app.StationID
+		StationID int
 		Key       string
 	}
 	argAddStation struct {
+		Hash string
 		Name string
-	}
-	argCheckDB struct {
 	}
 	argUpdStation struct {
-		ID   app.StationID
+		ID   int
+		Hash string
 		Name string
 	}
-	argStationHash struct {
-		Hash      string
-		StationID app.StationID
+	argStationNullHash struct {
+		Hash string
 	}
 	argDelStation struct {
-		ID app.StationID
+		ID int
 	}
 	argGetStation struct {
 	}
@@ -211,20 +138,21 @@ type (
 		Value string
 	}
 	resStation struct {
-		ID   app.StationID
+		Hash *string
+		ID   int
 		Name string
 	}
 	argLastMoneyReport struct {
-		StationID app.StationID
+		StationID int
 	}
 	argLastCollectionReport struct {
-		StationID app.StationID
+		StationID int
 	}
 	argLastRelayReport struct {
-		StationID app.StationID
+		StationID int
 	}
 	argAddRelayReport struct {
-		StationID app.StationID
+		StationID int
 	}
 	argAddRelayStat struct {
 		RelayReportID int
@@ -232,11 +160,8 @@ type (
 		SwitchedCount int
 		TotalTimeOn   int64
 	}
-	argOpenStationLogAdd struct {
-		StationID app.StationID
-	}
 	resRelayReport struct {
-		ID app.StationID
+		ID int
 	}
 	resRelayStat struct {
 		RelayID       int
@@ -244,77 +169,16 @@ type (
 		TotalTimeOn   int64
 	}
 	argRelayStat struct {
-		RelayReportID app.StationID
+		RelayReportID int
 	}
 	argMoneyReport struct {
-		StationID app.StationID
+		StationID int
 		StartDate time.Time
 		EndDate   time.Time
 	}
 	argRelayStatReport struct {
-		StationID app.StationID
+		StationID int
 		StartDate time.Time
 		EndDate   time.Time
-	}
-	resStationsVariables struct {
-		ID    app.StationID
-		Name  string
-		Key   string
-		Value string
-	}
-	resLoadHash struct {
-		Hash      string
-		StationID app.StationID
-	}
-	resCheckDB struct {
-		CountColumns int
-	}
-
-	argPrograms struct {
-		StationID app.StationID
-	}
-
-	resPrograms struct {
-		ProgramID int
-		Name      string
-	}
-
-	argProgramRelays struct {
-		StationID app.StationID
-		ProgramID int
-	}
-
-	resProgramRelays struct {
-		StationID app.StationID
-		ProgramID int
-		Relays    string
-	}
-
-	argSetProgramName struct {
-		StationID app.StationID
-		ProgramID int
-		Name      string
-	}
-
-	argSetProgramRelays struct {
-		StationID app.StationID
-		ProgramID int
-		Relays    string
-	}
-
-	argKasseGet struct {
-	}
-
-	resKasse struct {
-		ReceiptItem     string
-		TaxType         string
-		CashierFullName string
-		CashierINN      string
-	}
-	argSetKasse struct {
-		ReceiptItem     string
-		TaxType         string
-		CashierFullName string
-		CashierINN      string
 	}
 )

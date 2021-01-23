@@ -75,7 +75,7 @@ func (r *repo) schemaLock(f func() error) func() error {
 	}
 }
 
-func (r *repo) Load(stationID app.StationID, key string) (value string, err error) {
+func (r *repo) Load(stationID int, key string) (value string, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res resGetValue
 		err := tx.NamedGetContext(ctx, &res, sqlGetValue, argGetValue{
@@ -94,7 +94,7 @@ func (r *repo) Load(stationID app.StationID, key string) (value string, err erro
 	return //nolint:nakedret
 }
 
-func (r *repo) Save(stationID app.StationID, key string, value string) (err error) {
+func (r *repo) Save(stationID int, key string, value string) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlSetValue, argSetValue{
 			StationID: stationID,
@@ -108,20 +108,22 @@ func (r *repo) Save(stationID app.StationID, key string, value string) (err erro
 
 func (r *repo) SetStation(station app.SetStationParams) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlSetValueIfNotExists, argSetValue{
-			StationID: stationID,
-			Key:       key,
-			Value:     value,
+		_, err := tx.NamedExec(sqlStationNullHash, argStationNullHash{
+			Hash: station.Hash,
 		})
-		return err
-	})
-	return //nolint:nakedret
-}
-
-func (r *repo) SetStation(station app.SetStation) (err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		if err != nil {
+			return err
+		}
+		if station.ID == 0 {
+			_, err := tx.NamedExec(sqlAddStation, argAddStation{
+				Hash: station.Hash,
+				Name: station.Name,
+			})
+			return err
+		}
 		_, err = tx.NamedExec(sqlUpdStation, argUpdStation{
 			ID:   station.ID,
+			Hash: station.Hash,
 			Name: station.Name,
 		})
 		return err
@@ -129,17 +131,7 @@ func (r *repo) SetStation(station app.SetStation) (err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) AddStation(name string) (err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err = tx.NamedExec(sqlAddStation, argAddStation{
-			Name: name,
-		})
-		return err
-	})
-	return //nolint:nakedret
-}
-
-func (r *repo) DelStation(id app.StationID) (err error) {
+func (r *repo) DelStation(id int) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlDelStation, argDelStation{
 			ID: id,
@@ -162,28 +154,12 @@ func (r *repo) Stations() (stations []app.SetStationParams, err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) LoadHash() (ids []app.StationID, hash []string, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res []resLoadHash
-		err := tx.NamedSelectContext(ctx, &res, sqlLoadHash, argGetStation{})
-		if err != nil {
-			return err
-		}
-		for i := range res {
-			ids = append(ids, res[i].StationID)
-			hash = append(hash, res[i].Hash)
-		}
-		return nil
-	})
-	return //nolint:nakedret
-}
-
 // Info returns database information
 func (r *repo) Info() string {
 	return "postgres"
 }
 
-func (r *repo) LastMoneyReport(stationID app.StationID) (report app.MoneyReport, err error) {
+func (r *repo) LastMoneyReport(stationID int) (report app.MoneyReport, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		err := tx.NamedGetContext(ctx, &report, sqlLastMoneyReport, argLastMoneyReport{
 			StationID: stationID,
@@ -207,7 +183,7 @@ func (r *repo) SaveMoneyReport(report app.MoneyReport) (err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) LastRelayReport(stationID app.StationID) (report app.RelayReport, err error) {
+func (r *repo) LastRelayReport(stationID int) (report app.RelayReport, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res resRelayReport
 		err := tx.NamedGetContext(ctx, &res, sqlLastRelayReport, argLastRelayReport{
@@ -239,7 +215,7 @@ func (r *repo) SaveRelayReport(report app.RelayReport) (err error) {
 		if err != nil {
 			return err
 		}
-		for i := range report.RelayStats {
+		for i, _ := range report.RelayStats {
 			r := argAddRelayStat{
 				RelayReportID: id,
 				RelayID:       report.RelayStats[i].RelayID,
@@ -256,7 +232,7 @@ func (r *repo) SaveRelayReport(report app.RelayReport) (err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) MoneyReport(stationID app.StationID, startDate, endDate time.Time) (report app.MoneyReport, err error) {
+func (r *repo) MoneyReport(stationID int, startDate, endDate time.Time) (report app.MoneyReport, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		err := tx.NamedGetContext(ctx, &report, sqlMoneyReport, argMoneyReport{
 			StationID: stationID,
@@ -274,7 +250,7 @@ func (r *repo) MoneyReport(stationID app.StationID, startDate, endDate time.Time
 	return //nolint:nakedret
 }
 
-func (r *repo) RelayStatReport(stationID app.StationID, startDate, endDate time.Time) (report app.RelayReport, err error) {
+func (r *repo) RelayStatReport(stationID int, startDate, endDate time.Time) (report app.RelayReport, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		err := tx.NamedSelectContext(ctx, &report.RelayStats, sqlRelayStatReport, argRelayStatReport{
 			StationID: stationID,
@@ -286,7 +262,7 @@ func (r *repo) RelayStatReport(stationID app.StationID, startDate, endDate time.
 	return //nolint:nakedret
 }
 
-func (r *repo) LastCollectionReport(stationID app.StationID) (report app.CollectionReport, err error) {
+func (r *repo) LastCollectionReport(stationID int) (report app.CollectionReport, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		err := tx.NamedGetContext(ctx, &report, sqlLastCollectionReport, argLastCollectionReport{
 			StationID: stationID,
@@ -309,176 +285,4 @@ func (r *repo) SaveCollectionReport(report app.CollectionReport) (err error) {
 		return err
 	})
 	return //nolint:nakedret
-}
-
-func (r *repo) StationsVariables() (stations []app.StationsVariables, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res []resStationsVariables
-		err := tx.NamedSelectContext(ctx, &res, sqlGetStationsVariables, argGetStation{})
-		if err != nil {
-			return err
-		}
-		stations = appStationsVariables(res)
-		return nil
-	})
-	return //nolint:nakedret
-}
-
-func (r *repo) SetHash(id app.StationID, hash string) error {
-	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlStationNullHash, argStationHash{
-			StationID: id,
-			Hash:      hash,
-		})
-		if err != nil {
-			return err
-		}
-		if hash != "" {
-			_, err = tx.NamedExec(sqlAddStationHash, argStationHash{
-				StationID: id,
-				Hash:      hash,
-			})
-		}
-		return err
-	})
-	return err
-}
-
-func (r *repo) AddOpenStationLog(stationID app.StationID) (err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlOpenStationLogAdd, argOpenStationLogAdd{
-			StationID: stationID,
-		})
-		return err
-	})
-	return //nolint:nakedret
-}
-
-func (r *repo) CheckDB() (ok bool, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res resCheckDB
-		err := tx.NamedGetContext(ctx, &res, sqlCheckDB, argCheckDB{})
-		switch {
-		case err == sql.ErrNoRows:
-			return app.ErrNotFound
-		case err != nil:
-			return err
-		}
-		log.Info("CheckDB", "count", res.CountColumns)
-		ok = res.CountColumns == 3
-		return nil
-	})
-	return //nolint:nakedret
-}
-
-func (r *repo) Programs(id app.StationID) (programs []app.Program, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res []resPrograms
-		err = tx.NamedSelectContext(ctx, &res, sqlPrograms, argPrograms{
-			StationID: id,
-		})
-
-		if err == sql.ErrNoRows {
-			return nil
-		}
-
-		if err != nil {
-			return err
-		}
-
-		programs = appPrograms(res)
-
-		return nil
-	})
-	return
-}
-
-func (r *repo) ProgramRelays(id app.StationID, programID int) (relays []app.Relay, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var jsonRelays string
-		err = tx.NamedGetContext(ctx, &jsonRelays, sqlProgramRelays, argProgramRelays{
-			StationID: id,
-			ProgramID: programID,
-		})
-
-		if err == sql.ErrNoRows {
-			return nil
-		}
-
-		if err != nil {
-			return err
-		}
-
-		relays = appProgramRelays(jsonRelays)
-
-		return nil
-	})
-
-	return
-}
-
-func (r *repo) SetProgramName(id app.StationID, programID int, name string) (err error) {
-
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err = tx.NamedExec(sqlSetProgramName, argSetProgramName{
-			StationID: id,
-			ProgramID: programID,
-			Name:      name,
-		})
-
-		return err
-	})
-
-	return
-}
-
-func (r *repo) SetProgramRelays(id app.StationID, programID int, relays []app.Relay) (err error) {
-
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		relaysJSON := dalProgramRelays(relays)
-
-		_, err = tx.NamedExec(sqlSetProgramRelays, argSetProgramRelays{
-			StationID: id,
-			ProgramID: programID,
-			Relays:    relaysJSON,
-		})
-
-		return err
-	})
-
-	return
-}
-
-func (r *repo) Kasse() (kasse app.Kasse, err error) {
-
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res resKasse
-		err = tx.NamedGetContext(ctx, &res, sqlKasse, argKasseGet{})
-
-		if err == sql.ErrNoRows {
-			return nil
-		}
-
-		kasse = appKasse(res)
-		return err
-	})
-
-	return
-}
-
-func (r *repo) SetKasse(kasse app.Kasse) (err error) {
-
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-
-		_, err = tx.NamedExec(sqlSetKasse, argSetKasse{
-			CashierFullName: kasse.CashierFullName,
-			CashierINN:      kasse.CashierINN,
-			TaxType:         kasse.TaxType,
-			ReceiptItem:     kasse.ReceiptItem,
-		})
-
-		return err
-	})
-
-	return
 }

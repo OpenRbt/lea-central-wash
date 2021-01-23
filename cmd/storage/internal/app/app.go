@@ -58,6 +58,7 @@ type (
 		StatusCollection() StatusCollection
 		SaveCollectionReport(report CollectionReport) error
 	}
+
 	// ApplicationStationIDsManager has methods describing manipulating with IDs
 	ApplicationStationIDsManager interface {
 		FindStationIDByHash(hash string) (int, error)
@@ -143,10 +144,12 @@ const (
 	StatusOnline  Status = 2
 )
 
+// StatusCollection is to be removed, it is for inkassation report
 type StatusCollection struct {
 	Stations []CollectionReport
 }
 
+// StatusReport is something which need to be rebuilt...
 type StatusReport struct {
 	KasseInfo   string
 	KasseStatus Status
