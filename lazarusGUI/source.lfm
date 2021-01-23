@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 16
+  Left = 283
   Height = 520
-  Top = 168
+  Top = 247
   Width = 1220
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsDialog
@@ -11,7 +11,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '2.0.10.0'
+  LCLVersion = '2.0.6.0'
   Scaled = False
   object StationsData: TStringGrid
     Left = 8
@@ -38,6 +38,7 @@ object MainForm: TMainForm
     TitleFont.Name = 'Sans'
     TitleFont.Quality = fqCleartypeNatural
     TitleStyle = tsStandard
+    OnDblClick = StationsDataDblClick
     OnDrawCell = StationsDataDrawCell
     Cells = (
       16
@@ -130,6 +131,7 @@ object MainForm: TMainForm
     TitleFont.Name = 'Sans'
     TitleFont.Quality = fqCleartypeNatural
     TitleStyle = tsStandard
+    OnDblClick = StationsDataDblClick
     OnDrawCell = StationsDataDrawCell
     Cells = (
       6
@@ -155,7 +157,7 @@ object MainForm: TMainForm
   end
   object dtFrom: TDateTimePicker
     Left = 304
-    Height = 23
+    Height = 21
     Top = 9
     Width = 147
     CenturyFrom = 1941
@@ -172,7 +174,7 @@ object MainForm: TMainForm
     TimeDisplay = tdHMS
     DateMode = dmComboBox
     Date = 43918
-    Time = 0.994340358796762
+    Time = 0.990325717590167
     UseDefaultSeparators = True
     HideDateTimeParts = []
     MonthNames = 'Long'
@@ -180,7 +182,7 @@ object MainForm: TMainForm
   end
   object dtTo: TDateTimePicker
     Left = 304
-    Height = 23
+    Height = 21
     Top = 41
     Width = 147
     CenturyFrom = 1941
@@ -197,7 +199,7 @@ object MainForm: TMainForm
     TimeDisplay = tdHMS
     DateMode = dmComboBox
     Date = 43918
-    Time = 0.994340358796762
+    Time = 0.990325717590167
     UseDefaultSeparators = True
     HideDateTimeParts = []
     MonthNames = 'Long'
@@ -249,9 +251,9 @@ object MainForm: TMainForm
   end
   object Label1: TLabel
     Left = 255
-    Height = 20
+    Height = 15
     Top = 9
-    Width = 41
+    Width = 37
     Caption = 'From:'
     Font.Height = 14
     Font.Style = [fsBold]
@@ -260,9 +262,9 @@ object MainForm: TMainForm
   end
   object Label2: TLabel
     Left = 255
-    Height = 20
+    Height = 15
     Top = 41
-    Width = 21
+    Width = 19
     Caption = 'To:'
     Font.Height = 14
     Font.Style = [fsBold]
@@ -271,7 +273,7 @@ object MainForm: TMainForm
   end
   object cbMoneyRealTime: TCheckBox
     Left = 144
-    Height = 22
+    Height = 23
     Top = 9
     Width = 89
     Caption = 'Real Time'
@@ -280,19 +282,6 @@ object MainForm: TMainForm
     ParentFont = False
     State = cbChecked
     TabOrder = 9
-  end
-  object cbIsBlocked: TCheckBox
-    Left = 144
-    Height = 22
-    Top = 41
-    Width = 96
-    Caption = 'Block Hash'
-    Checked = True
-    Font.Height = 14
-    OnChange = cbIsBlockedChange
-    ParentFont = False
-    State = cbChecked
-    TabOrder = 10
   end
   object btnMoneyCollection: TButton
     Left = 8
@@ -305,13 +294,32 @@ object MainForm: TMainForm
     Font.Style = [fsBold]
     OnClick = btnMoneyCollectionClick
     ParentFont = False
+    TabOrder = 10
+  end
+  object lbStatus: TLabel
+    Left = 704
+    Height = 17
+    Top = 24
+    Width = 58
+    Caption = 'lbStatus'
+    Font.Height = -16
+    ParentColor = False
+    ParentFont = False
+  end
+  object btnKasseSetting: TButton
+    Left = 144
+    Height = 35
+    Top = 40
+    Width = 104
+    Caption = 'Kasse Settings'
+    OnClick = btnKasseSettingClick
     TabOrder = 11
   end
   object UpdateTimer: TTimer
     Enabled = False
     Interval = 10000
     OnTimer = UpdateCall
-    Left = 736
-    Top = 16
+    left = 736
+    top = 16
   end
 end

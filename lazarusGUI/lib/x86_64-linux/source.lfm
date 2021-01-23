@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 256
+  Left = 283
   Height = 520
-  Top = 190
+  Top = 247
   Width = 1220
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsDialog
@@ -11,7 +11,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '2.0.10.0'
+  LCLVersion = '2.0.6.0'
   Scaled = False
   object StationsData: TStringGrid
     Left = 8
@@ -40,7 +40,6 @@ object MainForm: TMainForm
     TitleStyle = tsStandard
     OnDblClick = StationsDataDblClick
     OnDrawCell = StationsDataDrawCell
-    OnSelection = StationsDataSelection
     Cells = (
       16
       0
@@ -158,7 +157,7 @@ object MainForm: TMainForm
   end
   object dtFrom: TDateTimePicker
     Left = 304
-    Height = 23
+    Height = 21
     Top = 9
     Width = 147
     CenturyFrom = 1941
@@ -175,6 +174,7 @@ object MainForm: TMainForm
     TimeDisplay = tdHMS
     DateMode = dmComboBox
     Date = 43918
+    Time = 0.990325717590167
     UseDefaultSeparators = True
     HideDateTimeParts = []
     MonthNames = 'Long'
@@ -182,7 +182,7 @@ object MainForm: TMainForm
   end
   object dtTo: TDateTimePicker
     Left = 304
-    Height = 23
+    Height = 21
     Top = 41
     Width = 147
     CenturyFrom = 1941
@@ -199,6 +199,7 @@ object MainForm: TMainForm
     TimeDisplay = tdHMS
     DateMode = dmComboBox
     Date = 43918
+    Time = 0.990325717590167
     UseDefaultSeparators = True
     HideDateTimeParts = []
     MonthNames = 'Long'
@@ -250,9 +251,9 @@ object MainForm: TMainForm
   end
   object Label1: TLabel
     Left = 255
-    Height = 20
+    Height = 15
     Top = 9
-    Width = 41
+    Width = 37
     Caption = 'From:'
     Font.Height = 14
     Font.Style = [fsBold]
@@ -261,181 +262,18 @@ object MainForm: TMainForm
   end
   object Label2: TLabel
     Left = 255
-    Height = 20
+    Height = 15
     Top = 41
-    Width = 21
+    Width = 19
     Caption = 'To:'
     Font.Height = 14
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
   end
-  object cbHash1: TComboBox
-    Left = 168
-    Height = 32
-    Top = 112
-    Width = 160
-    ArrowKeysTraverseList = False
-    AutoDropDown = True
-    AutoSize = False
-    Font.Height = 14
-    Font.Name = 'Arial'
-    ItemHeight = 0
-    OnEditingDone = cbHash1EditingDone
-    ParentFont = False
-    ParentShowHint = False
-    TabOrder = 9
-  end
-  object cbHash2: TComboBox
-    Left = 168
-    Height = 32
-    Top = 144
-    Width = 160
-    ArrowKeysTraverseList = False
-    AutoSize = False
-    Font.Height = 14
-    Font.Name = 'Arial'
-    ItemHeight = 0
-    OnEditingDone = cbHash2EditingDone
-    ParentFont = False
-    ParentShowHint = False
-    TabOrder = 10
-  end
-  object cbHash3: TComboBox
-    Left = 168
-    Height = 32
-    Top = 176
-    Width = 160
-    ArrowKeysTraverseList = False
-    AutoSize = False
-    Font.Height = 14
-    Font.Name = 'Arial'
-    ItemHeight = 0
-    OnEditingDone = cbHash3EditingDone
-    ParentFont = False
-    TabOrder = 11
-  end
-  object cbHash4: TComboBox
-    Left = 168
-    Height = 32
-    Top = 208
-    Width = 160
-    ArrowKeysTraverseList = False
-    AutoSize = False
-    Font.Height = 14
-    Font.Name = 'Arial'
-    ItemHeight = 0
-    OnEditingDone = cbHash4EditingDone
-    ParentFont = False
-    TabOrder = 12
-  end
-  object cbHash5: TComboBox
-    Left = 168
-    Height = 32
-    Top = 240
-    Width = 160
-    AutoSize = False
-    Font.Height = 14
-    Font.Name = 'Arial'
-    ItemHeight = 0
-    OnEditingDone = cbHash5EditingDone
-    ParentFont = False
-    TabOrder = 13
-  end
-  object cbHash6: TComboBox
-    Left = 168
-    Height = 32
-    Top = 272
-    Width = 160
-    AutoSize = False
-    Font.Height = 14
-    Font.Name = 'Arial'
-    ItemHeight = 0
-    OnEditingDone = cbHash6EditingDone
-    ParentFont = False
-    TabOrder = 14
-  end
-  object cbHash7: TComboBox
-    Left = 168
-    Height = 32
-    Top = 304
-    Width = 160
-    AutoSize = False
-    Font.Height = 14
-    Font.Name = 'Arial'
-    ItemHeight = 0
-    OnEditingDone = cbHash7EditingDone
-    ParentFont = False
-    TabOrder = 15
-  end
-  object cbHash8: TComboBox
-    Left = 168
-    Height = 32
-    Top = 336
-    Width = 160
-    AutoSize = False
-    Font.Height = 14
-    Font.Name = 'Arial'
-    ItemHeight = 0
-    OnEditingDone = cbHash8EditingDone
-    ParentFont = False
-    TabOrder = 16
-  end
-  object cbHash9: TComboBox
-    Left = 168
-    Height = 32
-    Top = 368
-    Width = 160
-    AutoSize = False
-    Font.Height = 14
-    Font.Name = 'Arial'
-    ItemHeight = 0
-    OnEditingDone = cbHash9EditingDone
-    ParentFont = False
-    TabOrder = 17
-  end
-  object cbHash10: TComboBox
-    Left = 168
-    Height = 32
-    Top = 400
-    Width = 160
-    AutoSize = False
-    Font.Height = 14
-    Font.Name = 'Arial'
-    ItemHeight = 0
-    OnEditingDone = cbHash10EditingDone
-    ParentFont = False
-    TabOrder = 18
-  end
-  object cbHash11: TComboBox
-    Left = 168
-    Height = 32
-    Top = 432
-    Width = 160
-    AutoSize = False
-    Font.Height = 14
-    Font.Name = 'Arial'
-    ItemHeight = 0
-    OnEditingDone = cbHash11EditingDone
-    ParentFont = False
-    TabOrder = 19
-  end
-  object cbHash12: TComboBox
-    Left = 168
-    Height = 32
-    Top = 464
-    Width = 160
-    AutoSize = False
-    Font.Height = 14
-    Font.Name = 'Arial'
-    ItemHeight = 0
-    OnEditingDone = cbHash12EditingDone
-    ParentFont = False
-    TabOrder = 20
-  end
   object cbMoneyRealTime: TCheckBox
     Left = 144
-    Height = 22
+    Height = 23
     Top = 9
     Width = 89
     Caption = 'Real Time'
@@ -443,20 +281,7 @@ object MainForm: TMainForm
     Font.Height = 14
     ParentFont = False
     State = cbChecked
-    TabOrder = 21
-  end
-  object cbIsBlocked: TCheckBox
-    Left = 144
-    Height = 22
-    Top = 41
-    Width = 96
-    Caption = 'Block Hash'
-    Checked = True
-    Font.Height = 14
-    OnChange = cbIsBlockedChange
-    ParentFont = False
-    State = cbChecked
-    TabOrder = 22
+    TabOrder = 9
   end
   object btnMoneyCollection: TButton
     Left = 8
@@ -469,13 +294,32 @@ object MainForm: TMainForm
     Font.Style = [fsBold]
     OnClick = btnMoneyCollectionClick
     ParentFont = False
-    TabOrder = 23
+    TabOrder = 10
+  end
+  object lbStatus: TLabel
+    Left = 704
+    Height = 17
+    Top = 24
+    Width = 58
+    Caption = 'lbStatus'
+    Font.Height = -16
+    ParentColor = False
+    ParentFont = False
+  end
+  object btnKasseSetting: TButton
+    Left = 144
+    Height = 35
+    Top = 40
+    Width = 104
+    Caption = 'Kasse Settings'
+    OnClick = btnKasseSettingClick
+    TabOrder = 11
   end
   object UpdateTimer: TTimer
     Enabled = False
     Interval = 10000
     OnTimer = UpdateCall
-    Left = 736
-    Top = 16
+    left = 736
+    top = 16
   end
 end

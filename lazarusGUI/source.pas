@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, DateUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Grids, ExtCtrls, ActnList, ComCtrls, EditBtn, ComboEx, DateTimePicker,
-  fphttpclient, Fpjson, jsonparser, superobject, Types, manager, collection;
+  fphttpclient, Fpjson, jsonparser, superobject, Types, manager, collection, clientAPI,settingsKasse;
 
 type
 
@@ -20,33 +20,33 @@ type
     btnWeek: TButton;
     btnMonth: TButton;
     btnYear: TButton;
-    cbIsBlocked: TCheckBox;
+    btnKasseSetting: TButton;
     cbMoneyRealTime: TCheckBox;
     dtFrom: TDateTimePicker;
     dtTo: TDateTimePicker;
     Label1: TLabel;
     Label2: TLabel;
+    lbStatus: TLabel;
     StationsData: TStringGrid;
     MoneyData: TStringGrid;
     UpdateTimer: TTimer;
     procedure btnDayClick(Sender: TObject);
+    procedure btnKasseSettingClick(Sender: TObject);
     procedure btnManageClick(Sender: TObject);
     procedure btnMoneyCollectionClick(Sender: TObject);
     procedure btnMonthClick(Sender: TObject);
-    procedure btnUpdateClick(Sender: TObject);
     procedure btnWeekClick(Sender: TObject);
     procedure btnYearClick(Sender: TObject);
-    procedure cbIsBlockedChange(Sender: TObject);
     procedure dtFromEditingDone(Sender: TObject);
     procedure dtToEditingDone(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure StationsDataDblClick(Sender: TObject);
     procedure UpdateStations(Sender: TObject);
     procedure StationsDataDrawCell(Sender: TObject; aCol, aRow: integer;
       aRect: TRect; aState: TGridDrawState);
     procedure UpdateCall(Sender: TObject);
 
-    procedure PairIdAndHash(Hash, StationName: String; ID: integer; Sender: TObject);
     procedure LoadMoney(ID: integer; Sender: TObject);
 
   private
@@ -59,11 +59,6 @@ type
 var
   MainForm: TMainForm;
   RequestAnswer: string;
-
-  // This array stores color ID-s of fixed column
-  // 0 - None, 1 - Green, 2 - Red
-  CellColor: array [1..12] of integer;
-
   AvailableHashes: TStringList;
 
 implementation
@@ -182,43 +177,112 @@ begin
 
 end;
 
-procedure TMainForm.PairIdAndHash(Hash, StationName: String; ID: integer; Sender: TObject);
+procedure TMainForm.UpdateStations(Sender: TObject);
 var
-  postJson: TJSONObject;
+  Data: ISuperObject;
+  Station: ISuperObject;
+  Stations: TSuperArray;
+  i, pos, findRes: integer;
 
 begin
-  postJson := TJSONObject.Create;
-  postJson.Add('id', ID);
-  postJson.Add('hash', TJSONString.Create(Hash));
-  postJson.Add('name', TJSONString.Create(StationName));
-  With TFPHttpClient.Create(Nil) do
-  try
-   try
-     AddHeader('Content-Type', 'application/json');
-     RequestBody := TStringStream.Create(postJson.AsJSON);
-     Post('http://localhost:8020/set-station');
-   except
+  with TFPHttpClient.Create(nil) do
+    try
+      try
+        MainForm.Cursor := crHourGlass;
+        StationsData.Cursor := crHourGlass;
+        MoneyData.Cursor := crHourGlass;
+        btnManage.Cursor := crHourGlass;
+        btnMoneyCollection.Cursor := crHourGlass;
+
+        // Disable controls in case of failure
+        btnManage.Enabled := False;
+        btnMoneyCollection.Enabled := False;
+
+        RequestAnswer := Get('http://localhost:8020/status');
+        Data := SO(UTF8Decode(RequestAnswer));
+        // Check the null data in stations array
+        if Data.S['stations'] <> '' then
+        begin
+          Stations := Data.A['stations'];
+
+          // Iterate over all incoming stations from server
+          for i := 1 to Stations.Length do
+          begin
+            Station := Stations.O[i - 1];
+
+            // If the station has ID
+            if Station.AsObject.Exists('id') then
+            begin
+              pos := StrToInt(Station.s['id']);
+
+              LoadMoney(pos, Sender);
+
+              StationsData.Cells[2, pos] := Station.s['status'];
+              if Station.AsObject.Exists('name') then
+              begin
+                 StationsData.Cells[3, pos] := Station.s['name'];
+              end;
+              if Station.AsObject.Exists('hash') then
+                 StationsData.Cells[1, pos] := Station.s['hash']
+                 else StationsData.Cells[1, pos] := ' ';
+
+              // END OF GENERAL DATA
+
+              // Make controls in the specified line active
+              btnManage.Enabled := True;
+              btnMoneyCollection.Enabled := True;
+
+              // ID and Hash both exist => station is already paired
+              // We need to add it's ID to list and choose the Hash by default
+              if Station.AsObject.Exists('hash') then
+              begin
+                   findRes := AvailableHashes.IndexOf(Station.s['hash']);
+
+                   // Check that this hash is new in the list
+                   if findRes < 0 then begin
+                      AvailableHashes.Add(Station.s['hash']);
+                   end;
+              end;
+            end
+            else
+            begin
+              // If only Hash exists - add this data to the list
+              if Station.AsObject.Exists('hash') then
+              begin
+                   findRes := AvailableHashes.IndexOf(Station.s['hash']);
+
+                   // Check that this hash is new in the list
+                   if findRes < 0 then begin
+                      AvailableHashes.Add(Station.s['hash']);
+                   end;
+              end;
+            end;
+            // END OF ADDITIONAL DATA
+          end;
+        end;
+        // END OF ARRAY PARSE
+
+      except
         On E: Exception do
       end;
-  finally
-     Free;
-  end;
-
-end;
-
-
-procedure TMainForm.btnUpdateClick(Sender: TObject);
-begin
-  UpdateStations(Sender);
-
-  if UpdateTimer.Enabled = False then
-    UpdateTimer.Enabled := True;
+    finally
+      Free;
+      MainForm.Cursor := crDefault;
+      StationsData.Cursor := crDefault;
+      MoneyData.Cursor := crDefault;
+      btnManage.Cursor := crDefault;
+      btnMoneyCollection.Cursor := crDefault;
+    end;
+  MainForm.Cursor := crDefault;
+  StationsData.Cursor := crDefault;
+  MoneyData.Cursor := crDefault;
+  btnManage.Cursor := crDefault;
+  btnMoneyCollection.Cursor := crDefault;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 var
   s: TTextStyle;
-  i: integer;
 begin
   Sleep(1000);
   s := StationsData.DefaultTextStyle;
@@ -229,9 +293,6 @@ begin
   s.Alignment := taCenter;
   MoneyData.DefaultTextStyle := s;
 
-  for i := 0 to 12 do
-    CellColor[i] := 0;
-
   AvailableHashes := TStringList.Create;
 
   btnManage.Enabled := False;
@@ -240,85 +301,81 @@ end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
-  UpdateStations(Sender);
-
-  if UpdateTimer.Enabled = False then
-    UpdateTimer.Enabled := True;
+  UpdateCall(Sender);
+  UpdateTimer.Enabled := True;
 end;
 
 procedure TMainForm.StationsDataDblClick(Sender: TObject);
-var
-  selectedRow: integer;
-  selectedHash: string;
-  selectedID: string;
-  selectedName: string;
 begin
-  selectedRow := StationsData.Row;
-  selectedHash := StationsData.Cells[1, selectedRow];
-  selectedID := IntToStr(StationsData.Row);
-  selectedName := StationsData.Cells[3, selectedRow];
-
-  if selectedHash <> '' then
-  begin
-    ManageForm.SetHash(selectedHash);
-    ManageForm.SetID(selectedID);
-    ManageForm.SetName(selectedName);
-
-    ManageForm.ShowModal;
-  end;
+  if btnManage.Enabled then btnManageClick(Sender);
 end;
 
 procedure TMainForm.StationsDataDrawCell(Sender: TObject; aCol, aRow: integer;
   aRect: TRect; aState: TGridDrawState);
 var
-  currentColor: integer;
+  status: string;
 begin
   // We draw colored cells in status column only
   if (aCol = 2) and (aRow <> 0) then
   begin
-    currentColor := CellColor[aRow];
-    if currentColor = 1 then
+    status := StationsData.Cells[2,aRow];
+    if status = 'online' then
     begin
       StationsData.Canvas.Brush.Color := clGreen;
       StationsData.Canvas.FillRect(aRect);
       StationsData.Canvas.TextRect(aRect,
         aRect.Left + (aRect.Right - aRect.Left) div 2, aRect.Top + 2, 'online');
     end;
-    if currentColor = 2 then
+    if status = 'offline' then
     begin
       StationsData.Canvas.Brush.Color := clRed;
       StationsData.Canvas.FillRect(aRect);
       StationsData.Canvas.TextRect(aRect,
-        aRect.Left + (aRect.Right - aRect.Left) div 2, aRect.Top + 2, 'offline');
+       aRect.Left + (aRect.Right - aRect.Left) div 2, aRect.Top + 2, 'offline');
     end;
   end;
 end;
 
 procedure TMainForm.UpdateCall(Sender: TObject);
+var
+  info: String;
 begin
+  UpdateTimer.Enabled := False;
+  info := client.Info();
+  if info <> '' then begin
+    lbStatus.Caption:= 'Connected: ' + info;
+    lbStatus.Font.Color:=clGreen;
+  end else begin
+    lbStatus.Caption:= 'Disconnected';
+    lbStatus.Font.Color:=clRed;
+    btnManage.Enabled:= false;
+    btnMoneyCollection.Enabled:= false;
+    UpdateTimer.Enabled := True;
+    exit;
+  end;
   UpdateStations(Sender);
+  UpdateTimer.Enabled := True;
 end;
 
 procedure TMainForm.btnManageClick(Sender: TObject);
 var
   selectedRow: integer;
   selectedHash: string;
-  selectedID: string;
   selectedName: string;
 begin
+  UpdateTimer.Enabled:=false;
   selectedRow := StationsData.Row;
-  selectedHash := StationsData.Cells[1, selectedRow];
-  selectedID := IntToStr(StationsData.Row);
+  selectedHash := trim(StationsData.Cells[1, selectedRow]);
   selectedName := StationsData.Cells[3, selectedRow];
 
-  if selectedHash <> '' then
-  begin
     ManageForm.SetHash(selectedHash);
-    ManageForm.SetID(selectedID);
+    ManageForm.SetID(StationsData.Row);
     ManageForm.SetName(selectedName);
-
+    ManageForm.SetAvailableHashes(AvailableHashes);
     ManageForm.ShowModal;
-  end;
+  UpdateStations(Sender);
+  UpdateTimer.Enabled:=true;
+
 end;
 
 procedure TMainForm.btnMoneyCollectionClick(Sender: TObject);
@@ -345,6 +402,11 @@ begin
   dtFrom.DateTime := EncodeDateTime(currentYear, currentMonth,
     currentDay, 0, 0, 0, 0);
   dtTo.DateTime := Now();
+end;
+
+procedure TMainForm.btnKasseSettingClick(Sender: TObject);
+begin
+  settingKasse.FormShow(self);
 end;
 
 procedure TMainForm.btnWeekClick(Sender: TObject);
@@ -377,18 +439,6 @@ begin
   DecodeDate(Now(), currentYear, currentMonth, currentDay);
   dtFrom.DateTime := EncodeDateTime(currentYear, 1, 1, 0, 0, 0, 0);
   dtTo.DateTime := Now();
-end;
-
-procedure TMainForm.cbIsBlockedChange(Sender: TObject);
-begin
-     if cbIsBlocked.Checked then
-     begin
-          DisableAllItems(Sender);
-     end
-     else
-     begin
-          EnableAllItems(Sender);
-     end;
 end;
 
 procedure TMainForm.dtFromEditingDone(Sender: TObject);
