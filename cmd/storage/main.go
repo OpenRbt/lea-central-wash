@@ -47,6 +47,8 @@ var (
 	gitBranch   string
 	gitRevision string
 	buildDate   string
+	dbChange    bool
+	timeCheck   bool
 
 	cmd = strings.TrimSuffix(path.Base(os.Args[0]), ".test")
 	ver = strings.Join(strings.Fields(strings.Join([]string{gitVersion, gitBranch, gitRevision, buildDate}, " ")), " ")
@@ -82,6 +84,8 @@ func init() { //nolint:gochecknoinits
 	flag.IntVar(&cfg.extapi.Port, "extapi.port", def.ExtAPIPort, "serve external API on `port` (>0)")
 	flag.StringVar(&cfg.extapi.BasePath, "extapi.basepath", def.ExtAPIBasePath, "serve external API on `path`")
 	flag.StringVar(&cfg.kasse.Endpoint, "kasse.endpoint", def.KasseEndpoint, "endpoint online kasse")
+	flag.BoolVar(&dbChange, "d", false, "change database from postgres to memdb")
+	flag.BoolVar(&timeCheck, "t", false, "check time")
 
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",
@@ -89,12 +93,15 @@ func init() { //nolint:gochecknoinits
 }
 
 func main() { //nolint:gocyclo
+
 	flag.Usage = func() {
 		fmt.Printf("Usage of %s:\n", cmd)
 		flag.PrintDefaults()
 		fmt.Print(goose.Usage)
 	}
 	flag.Parse()
+
+	checkTime(timeCheck)
 
 	switch {
 	case cfg.db.Port <= 0:
@@ -131,14 +138,16 @@ func main() { //nolint:gocyclo
 	var db *sqlx.DB
 	var err error
 	count := 0
-	for db == nil {
-		ctx, cancel := context.WithTimeout(context.Background(), connectTimeout)
-		db, err = connectDB(ctx)
-		if err != nil {
-			log.Warn("Warning: DB is not connected", "count", count, "err", err)
+	if !dbChange {
+		for db == nil {
+			ctx, cancel := context.WithTimeout(context.Background(), connectTimeout)
+			db, err = connectDB(ctx)
+			if err != nil {
+				log.Warn("Warning: DB is not connected", "count", count, "err", err)
+			}
+			count++
+			cancel()
 		}
-		count++
-		cancel()
 	}
 	errc := make(chan error)
 	go run(db, errc)
@@ -228,4 +237,16 @@ func run(db *sqlx.DB, errc chan<- error) {
 	}
 	log.Info("serve Swagger REST protocol", def.LogHost, cfg.extapi.Host, def.LogPort, cfg.extapi.Port)
 	errc <- extsrv.Serve()
+}
+
+func checkTime(chck bool) {
+	if chck {
+		sysDate := (time.Now()).UTC()
+		compDate := time.Date(2021, time.January, 1, 12, 0, 0, 0, time.UTC)
+		for compDate.Sub(sysDate) > 0 {
+			t1 := time.NewTimer(time.Minute)
+			<-t1.C
+			sysDate = (time.Now()).UTC()
+		}
+	}
 }
