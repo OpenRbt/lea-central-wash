@@ -113,20 +113,24 @@ type (
 )
 
 type app struct {
-	repo          Repo
-	stations      map[StationID]StationData
-	stationsMutex sync.Mutex
-	kasseSvc      KasseSvc
-	weatherSvc    WeatherSvc
+	repo               Repo
+	stations           map[StationID]StationData
+	lastReports        map[StationID]MoneyReport
+	reportsDifferences map[StationID]MoneyReport
+	stationsMutex      sync.Mutex
+	kasseSvc           KasseSvc
+	weatherSvc         WeatherSvc
 }
 
 // New creates and returns new App.
 func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc) App {
 	appl := &app{
-		repo:       repo,
-		stations:   make(map[StationID]StationData),
-		kasseSvc:   kasseSvc,
-		weatherSvc: weatherSvc,
+		repo:               repo,
+		stations:           make(map[StationID]StationData),
+		lastReports:        make(map[StationID]MoneyReport),
+		reportsDifferences: make(map[StationID]MoneyReport),
+		kasseSvc:           kasseSvc,
+		weatherSvc:         weatherSvc,
 	}
 	appl.loadStations()
 	return appl

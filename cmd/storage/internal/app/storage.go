@@ -119,7 +119,7 @@ func (a *app) Ping(id StationID) StationData {
 	return oldStation
 }
 
-// Get accepts exising hash and returns StationData
+// Get accepts existing hash and returns StationData
 func (a *app) Get(id StationID) (StationData, error) {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
@@ -173,11 +173,120 @@ func (a *app) OpenStation(id StationID) error {
 	return nil
 }
 
+// IsZero checks if report money is zero
+func (m *MoneyReport) IsZero() bool {
+	if m == nil {
+		return true
+	}
+	// real money is empty
+	if m.Banknotes != 0 || m.Electronical != 0 || m.Coins != 0 {
+		return false
+	}
+	// other stuff is empty
+	if m.CarsTotal != 0 || m.Service != 0 {
+		return false
+	}
+	return true
+}
+
+// AddUp adds up another values
+func (m *MoneyReport) AddUp(AnotherMoneyReport *MoneyReport) {
+	if m == nil || AnotherMoneyReport == nil {
+		return
+	}
+	m.Banknotes += AnotherMoneyReport.Banknotes
+	m.Coins += AnotherMoneyReport.Coins
+	m.Electronical += AnotherMoneyReport.Electronical
+	m.CarsTotal += AnotherMoneyReport.CarsTotal
+	m.Service += AnotherMoneyReport.Service
+}
+
+// AlignWith returns a difference which allows adding up current report to not-negative values
+func (m *MoneyReport) AlignWith(AnotherMoneyReport *MoneyReport) MoneyReport {
+	difference := MoneyReport{}
+	if m == nil || AnotherMoneyReport == nil {
+		return difference
+	}
+	difference.Banknotes = howMuchToZero(m.Banknotes, AnotherMoneyReport.Banknotes)
+	difference.Coins = howMuchToZero(m.Coins, AnotherMoneyReport.Coins)
+	difference.Electronical = howMuchToZero(m.Electronical, AnotherMoneyReport.Electronical)
+	difference.CarsTotal = howMuchToZero(m.CarsTotal, AnotherMoneyReport.CarsTotal)
+	difference.Service = howMuchToZero(m.Service, AnotherMoneyReport.Service)
+	return difference
+}
+
+func howMuchToZero(Source, AlignWith int) int {
+	if AlignWith < 0 {
+		AlignWith = 0
+	}
+	if AlignWith > Source {
+		return AlignWith - Source
+	}
+	return 0
+}
+
+// FindReportDifference gets calculated difference.
+// If current report is less than what is saved in the database
+// we must calculate the difference and always add it,
+func (a *app) FindReportDifference(id StationID) *MoneyReport {
+	resultDifference, ok := a.reportsDifferences[id]
+	if ok {
+		return &resultDifference
+	}
+	return &MoneyReport{
+		StationID: id,
+	}
+}
+
+// UpdatedReport calculates the report we must save in the database, returns updatedReport and new reportDifference
+func (a *app) UpdatedReport(ReceivedReport, LastCachedReport, ReportDifference *MoneyReport) (FinalReport, NewReportDiff MoneyReport) {
+	FinalReport = *ReceivedReport
+	NewReportDiff = *ReportDifference
+
+	if !ReportDifference.IsZero() {
+		FinalReport.AddUp(ReportDifference)
+	}
+	additionalDifference := FinalReport.AlignWith(LastCachedReport)
+	if !additionalDifference.IsZero() {
+		FinalReport.AddUp(&additionalDifference)
+		NewReportDiff.AddUp(&additionalDifference)
+	}
+	return FinalReport, NewReportDiff
+}
+
+// SaveReportDifference just saves the calculated difference in cache
+func (a *app) CacheReportDifference(id StationID, ReportDifference *MoneyReport) {
+	a.reportsDifferences[id] = *ReportDifference
+}
+
+// SaveLastReportJust updates
+func (a *app) CacheUpdatedReport(id StationID, UpdatedReport *MoneyReport) {
+	a.lastReports[id] = *UpdatedReport
+}
+
 // SaveMoneyReport gets app.MoneyReport struct
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
 func (a *app) SaveMoneyReport(report MoneyReport) error {
-	return a.repo.SaveMoneyReport(report)
+	fmt.Println("-----------------------------------------SAVE MONEY REPORT ------------------")
+	lastReport, err := a.repo.LastMoneyReport(report.StationID)
+	if err != nil {
+		log.Info(fmt.Sprintf("Last report is not found, StationID=%d", report.StationID))
+		lastReport = MoneyReport{}
+		// return ErrNotFound
+	} else {
+		log.Info(fmt.Sprintf("LastReport found: %+v\n", lastReport))
+	}
+	// Sometimes station reports much less than it should report, so we calc the difference always
+	reportDifference := a.FindReportDifference(report.StationID)
+	fmt.Printf("difference found: %+v\n", reportDifference)
+
+	updatedReport, newReportDifference := a.UpdatedReport(&report, &lastReport, reportDifference)
+	fmt.Printf("updatedReport, newReportDifference found: %+v,\n%+v\n", updatedReport, newReportDifference)
+	a.CacheReportDifference(report.StationID, &newReportDifference)
+	a.CacheUpdatedReport(report.StationID, &updatedReport)
+
+	return a.repo.SaveMoneyReport(updatedReport)
 }
 
 // SaveCollectionReport gets app.CollectionReport struct

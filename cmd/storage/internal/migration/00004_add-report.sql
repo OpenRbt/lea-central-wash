@@ -9,7 +9,7 @@ CREATE TABLE money_report (
 	coins        INT,
 	electronical INT,
 	service      INT,
-    ctime        timestamp default now()
+    ctime        timestamp NOT NULL
 );
 
 CREATE TABLE relay_report (
