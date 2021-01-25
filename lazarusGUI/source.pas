@@ -75,6 +75,7 @@ var
   unixFrom: Longint;
   unixTo:   Longint;
   totalMoney: integer;
+  LocalTimeOffset: Longint;
 
 const
   UnixStartDate: TDateTime = 25569.0;
@@ -93,9 +94,10 @@ begin
   begin
      unixTo := Round((dtTo.DateTime - UnixStartDate) * 86400);
   end;
-
-  postJson.Add('startDate', unixFrom);
-  postJson.Add('endDate', unixTo);
+  // API requires UTC time; UTC = LocalTime + GetLocalTimeOffset
+  LocalTimeOffset := GetLocalTimeOffset() * 60;
+  postJson.Add('startDate', unixFrom + LocalTimeOffset);
+  postJson.Add('endDate',   unixTo   + LocalTimeOffset);
 
   With TFPHttpClient.Create(Nil) do
   try

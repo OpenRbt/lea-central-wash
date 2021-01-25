@@ -102,22 +102,34 @@ SELECT relay_id, switched_count, total_time_on FROM relay_stat WHERE relay_repor
 ORDER BY relay_id
 	`
 	sqlMoneyReport = `
-SELECT station_id, sum(banknotes) banknotes, sum(cars_total) cars_total, sum(coins) coins, sum(electronical) electronical, sum(service) service FROM (
-		(SELECT station_id, banknotes, cars_total, coins, electronical, service 
-		FROM money_report WHERE station_id = :station_id and ctime <= :end_date 
-		ORDER BY id DESC
-		LIMIT 1
-		)
-		union all
-		(
-		SELECT station_id, -banknotes, -cars_total, -coins, -electronical, -service 
-		FROM money_report WHERE station_id = :station_id and ctime <= :start_date
-		ORDER BY id DESC
-		LIMIT 1
-		) 
-		) AS MR
-GROUP BY station_id
+	SELECT station_id, 
+		   sum(banknotes) as banknotes, 
+		   sum(cars_total) as cars_total, 
+		   sum(coins) as coins, 
+		   sum(electronical) as electronical, 
+		   sum(service) as service 
+	FROM money_report
+	WHERE :start_date < ctime AND ctime <= :end_date
+	GROUP BY station_id
+	HAVING station_id = :station_id
 	`
+	// 	sqlMoneyReport = `
+	// SELECT station_id, sum(banknotes) banknotes, sum(cars_total) cars_total, sum(coins) coins, sum(electronical) electronical, sum(service) service FROM (
+	// 		(SELECT station_id, banknotes, cars_total, coins, electronical, service
+	// 		FROM money_report WHERE station_id = :station_id and ctime <= :end_date
+	// 		ORDER BY id DESC
+	// 		LIMIT 1
+	// 		)
+	// 		union all
+	// 		(
+	// 		SELECT station_id, -banknotes, -cars_total, -coins, -electronical, -service
+	// 		FROM money_report WHERE station_id = :station_id and ctime <= :start_date
+	// 		ORDER BY id DESC
+	// 		LIMIT 1
+	// 		)
+	// 		) AS MR
+	// GROUP BY station_id
+	// 	`
 	sqlRelayStatReport = `
 	SELECT relay_id, sum(switched_count) switched_count, sum(total_time_on) total_time_on FROM (
 		(SELECT relay_id, switched_count, total_time_on 

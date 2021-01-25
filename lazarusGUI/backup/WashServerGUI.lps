@@ -22,6 +22,7 @@
         <EditorIndex Value="1"/>
         <TopLine Value="381"/>
         <CursorPos X="31" Y="409"/>
+        <ComponentState Value="1"/>
         <UsageCount Value="214"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -34,6 +35,7 @@
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="6"/>
         <CursorPos X="17" Y="166"/>
+        <ComponentState Value="1"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -59,7 +61,7 @@
         <EditorIndex Value="2"/>
         <TopLine Value="474"/>
         <CursorPos X="61" Y="501"/>
-        <UsageCount Value="117"/>
+        <UsageCount Value="118"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -72,7 +74,8 @@
         <EditorIndex Value="3"/>
         <TopLine Value="388"/>
         <CursorPos X="41" Y="425"/>
-        <UsageCount Value="91"/>
+        <ComponentState Value="1"/>
+        <UsageCount Value="92"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit5>
@@ -85,7 +88,8 @@
         <UnitName Value="settingsKasse"/>
         <EditorIndex Value="4"/>
         <CursorPos X="35" Y="42"/>
-        <UsageCount Value="27"/>
+        <ComponentState Value="1"/>
+        <UsageCount Value="28"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit6>
@@ -95,7 +99,7 @@
         <EditorIndex Value="5"/>
         <TopLine Value="920"/>
         <CursorPos Y="936"/>
-        <UsageCount Value="89"/>
+        <UsageCount Value="90"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>

@@ -73,6 +73,7 @@ var
   RequestAnswer: string;
   ConvertedTime: TDateTime;
   i, id, timeUnix: integer;
+  LocalTimeOffset: Integer;
 begin
   s := CollectionData.DefaultTextStyle;
   s.Alignment := taCenter;
@@ -87,7 +88,7 @@ begin
       if Data.S['stations'] <> '' then
       begin
         Stations := Data.A['stations'];
-
+        LocalTimeOffset := GetLocalTimeOffset()*60;
         for i := 1 to Stations.Length do
         begin
           Station := Stations.O[i - 1];
@@ -108,7 +109,8 @@ begin
             if Station.AsObject.Exists('ctime') then
             begin
                timeUnix := Station.I['ctime'];
-               convertedTime := UnixToDateTime(timeUnix);
+               // API returns UTC time; LocalTime = UTC - GetLocalTimeOffset
+               convertedTime := UnixToDateTime(timeUnix - LocalTimeOffset);
                CollectionData.Cells[2, id] := DateTimeToStr(convertedTime);
             end
             else

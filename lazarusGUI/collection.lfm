@@ -1,7 +1,7 @@
 object MoneyCollectionForm: TMoneyCollectionForm
   Left = 400
   Height = 929
-  Top = 379
+  Top = 114
   Width = 1283
   BorderIcons = [biSystemMenu]
   Caption = 'Money Collection'
@@ -11,7 +11,7 @@ object MoneyCollectionForm: TMoneyCollectionForm
   Constraints.MinHeight = 929
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '2.0.10.0'
+  LCLVersion = '2.0.6.0'
   Scaled = False
   WindowState = wsMaximized
   object CollectionData: TStringGrid

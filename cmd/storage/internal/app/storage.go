@@ -268,25 +268,27 @@ func (a *app) CacheUpdatedReport(id StationID, UpdatedReport *MoneyReport) {
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
 func (a *app) SaveMoneyReport(report MoneyReport) error {
-	fmt.Println("-----------------------------------------SAVE MONEY REPORT ------------------")
-	lastReport, err := a.repo.LastMoneyReport(report.StationID)
-	if err != nil {
-		log.Info(fmt.Sprintf("Last report is not found, StationID=%d", report.StationID))
-		lastReport = MoneyReport{}
-		// return ErrNotFound
-	} else {
-		log.Info(fmt.Sprintf("LastReport found: %+v\n", lastReport))
-	}
-	// Sometimes station reports much less than it should report, so we calc the difference always
-	reportDifference := a.FindReportDifference(report.StationID)
-	fmt.Printf("difference found: %+v\n", reportDifference)
+	// fmt.Println("-----------------------------------------SAVE MONEY REPORT ------------------")
+	// lastReport, err := a.repo.LastMoneyReport(report.StationID)
+	// if err != nil {
+	// 	log.Info(fmt.Sprintf("Last report is not found, StationID=%d", report.StationID))
+	// 	lastReport = MoneyReport{}
+	// 	// return ErrNotFound
+	// } else {
+	// 	log.Info(fmt.Sprintf("LastReport found: %+v\n", lastReport))
+	// }
+	// // Sometimes station reports much less than it should report, so we calc the difference always
+	// reportDifference := a.FindReportDifference(report.StationID)
+	// fmt.Printf("difference found: %+v\n", reportDifference)
 
-	updatedReport, newReportDifference := a.UpdatedReport(&report, &lastReport, reportDifference)
-	fmt.Printf("updatedReport, newReportDifference found: %+v,\n%+v\n", updatedReport, newReportDifference)
-	a.CacheReportDifference(report.StationID, &newReportDifference)
-	a.CacheUpdatedReport(report.StationID, &updatedReport)
+	// updatedReport, newReportDifference := a.UpdatedReport(&report, &lastReport, reportDifference)
+	// fmt.Printf("updatedReport, newReportDifference found: %+v,\n%+v\n", updatedReport, newReportDifference)
+	// a.CacheReportDifference(report.StationID, &newReportDifference)
+	// a.CacheUpdatedReport(report.StationID, &updatedReport)
 
-	return a.repo.SaveMoneyReport(updatedReport)
+	// Sometimes station reports much less than it should report, hmm...
+	// How do I, as a server, know what a station should report?
+	return a.repo.SaveMoneyReport(report)
 }
 
 // SaveCollectionReport gets app.CollectionReport struct
@@ -369,14 +371,13 @@ func (a *app) StatusCollection() StatusCollection {
 			collectionTime = report.Ctime
 		}
 
-		t := time.Now()
-		loc, err := time.LoadLocation("Europe/Moscow")
-		t = t.In(loc)
+		t := time.Now().UTC()
 
-		fmt.Println(t)
-		fmt.Println(collectionTime)
+		log.Info(fmt.Sprintf("StationID=%d", v.ID))
+		log.Info(fmt.Sprintf("Last collection on %s", collectionTime))
+		log.Info(fmt.Sprintf("Current time is %s", t))
 
-		moneyReport, err := a.repo.MoneyReport(v.ID, collectionTime, time.Now())
+		moneyReport, err := a.repo.MoneyReport(v.ID, collectionTime, t)
 		if err != nil {
 			collectionMoney = 0
 		} else {

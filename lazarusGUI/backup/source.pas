@@ -78,6 +78,7 @@ var
 
 const
   UnixStartDate: TDateTime = 25569.0;
+  LocalTimeOffset: Integer = GetLocalTimeOffset() * 60;
 
 begin
   postJson := TJSONObject.Create;
@@ -93,9 +94,9 @@ begin
   begin
      unixTo := Round((dtTo.DateTime - UnixStartDate) * 86400);
   end;
-
-  postJson.Add('startDate', unixFrom);
-  postJson.Add('endDate', unixTo);
+  // API requires UTC time; UTC = LocalTime + GetLocalTimeOffset
+  postJson.Add('startDate', unixFrom + LocalTimeOffset);
+  postJson.Add('endDate',   unixTo   + LocalTimeOffset);
 
   With TFPHttpClient.Create(Nil) do
   try
