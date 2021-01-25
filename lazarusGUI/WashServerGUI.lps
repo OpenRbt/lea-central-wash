@@ -19,10 +19,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Source"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="381"/>
-        <CursorPos X="31" Y="409"/>
-        <ComponentState Value="1"/>
+        <TopLine Value="98"/>
+        <CursorPos X="3" Y="102"/>
         <UsageCount Value="214"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -35,7 +35,6 @@
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="6"/>
         <CursorPos X="17" Y="166"/>
-        <ComponentState Value="1"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -74,7 +73,6 @@
         <EditorIndex Value="3"/>
         <TopLine Value="388"/>
         <CursorPos X="41" Y="425"/>
-        <ComponentState Value="1"/>
         <UsageCount Value="92"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -88,14 +86,12 @@
         <UnitName Value="settingsKasse"/>
         <EditorIndex Value="4"/>
         <CursorPos X="35" Y="42"/>
-        <ComponentState Value="1"/>
         <UsageCount Value="28"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="superobject.pas"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
         <TopLine Value="920"/>
         <CursorPos Y="936"/>
@@ -183,127 +179,123 @@
         <UsageCount Value="9"/>
       </Unit18>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
         <Filename Value="settingskasse.pas"/>
-        <Caret Line="61" Column="5" TopLine="37"/>
+        <Caret Line="116" Column="64" TopLine="99"/>
       </Position1>
       <Position2>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="52" Column="15" TopLine="39"/>
+        <Filename Value="settingskasse.pas"/>
+        <Caret Line="110" Column="39" TopLine="97"/>
       </Position2>
       <Position3>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="310" Column="11" TopLine="300"/>
+        <Filename Value="settingskasse.pas"/>
+        <Caret Line="93" Column="114" TopLine="25"/>
       </Position3>
       <Position4>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="305" Column="11" TopLine="269"/>
+        <Caret Line="51" Column="14" TopLine="32"/>
       </Position4>
       <Position5>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="494" Column="69" TopLine="473"/>
+        <Caret Line="502" Column="45" TopLine="475"/>
       </Position5>
       <Position6>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="493" Column="15" TopLine="474"/>
+        <Filename Value="WashServerGUI.lpr"/>
+        <Caret Line="16" Column="41"/>
       </Position6>
       <Position7>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="515" Column="9" TopLine="495"/>
+        <Filename Value="source.pas"/>
+        <Caret Line="50" Column="15" TopLine="39"/>
       </Position7>
       <Position8>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="68" Column="39" TopLine="44"/>
+        <Filename Value="source.pas"/>
+        <Caret Line="52" Column="15" TopLine="41"/>
       </Position8>
       <Position9>
         <Filename Value="settingskasse.pas"/>
-        <Caret Line="62" Column="3" TopLine="44"/>
+        <Caret Line="42" Column="35"/>
       </Position9>
       <Position10>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="64" Column="3" TopLine="46"/>
+        <Filename Value="WashServerGUI.lpr"/>
+        <Caret Line="22" Column="133"/>
       </Position10>
       <Position11>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="62" Column="3" TopLine="32"/>
+        <Filename Value="superobject.pas"/>
+        <Caret Line="922" TopLine="894"/>
       </Position11>
       <Position12>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="66" Column="3" TopLine="36"/>
+        <Filename Value="superobject.pas"/>
+        <Caret Line="923" TopLine="895"/>
       </Position12>
       <Position13>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="72" Column="50" TopLine="42"/>
+        <Filename Value="superobject.pas"/>
+        <Caret Line="924" TopLine="896"/>
       </Position13>
       <Position14>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="116" Column="64" TopLine="99"/>
+        <Filename Value="superobject.pas"/>
+        <Caret Line="925" TopLine="897"/>
       </Position14>
       <Position15>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="110" Column="39" TopLine="97"/>
+        <Filename Value="superobject.pas"/>
+        <Caret Line="927" TopLine="899"/>
       </Position15>
       <Position16>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="93" Column="114" TopLine="25"/>
+        <Filename Value="superobject.pas"/>
+        <Caret Line="928" TopLine="900"/>
       </Position16>
       <Position17>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="51" Column="14" TopLine="32"/>
+        <Filename Value="superobject.pas"/>
+        <Caret Line="930" TopLine="902"/>
       </Position17>
       <Position18>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="502" Column="45" TopLine="475"/>
+        <Filename Value="source.pas"/>
+        <Caret Line="409" Column="31" TopLine="385"/>
       </Position18>
       <Position19>
-        <Filename Value="WashServerGUI.lpr"/>
-        <Caret Line="16" Column="41"/>
+        <Filename Value="source.pas"/>
+        <Caret Line="416" Column="31" TopLine="392"/>
       </Position19>
       <Position20>
         <Filename Value="source.pas"/>
-        <Caret Line="50" Column="15" TopLine="39"/>
+        <Caret Line="55" Column="19" TopLine="48"/>
       </Position20>
       <Position21>
         <Filename Value="source.pas"/>
-        <Caret Line="52" Column="15" TopLine="41"/>
+        <Caret Line="391" TopLine="388"/>
       </Position21>
       <Position22>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="42" Column="35"/>
+        <Filename Value="source.pas"/>
+        <Caret Line="426" TopLine="420"/>
       </Position22>
       <Position23>
-        <Filename Value="WashServerGUI.lpr"/>
-        <Caret Line="22" Column="133"/>
+        <Filename Value="source.pas"/>
+        <Caret Line="448" TopLine="443"/>
       </Position23>
       <Position24>
-        <Filename Value="superobject.pas"/>
-        <Caret Line="922" TopLine="894"/>
+        <Filename Value="source.pas"/>
+        <Caret Line="409" TopLine="404"/>
       </Position24>
       <Position25>
-        <Filename Value="superobject.pas"/>
-        <Caret Line="923" TopLine="895"/>
+        <Filename Value="source.pas"/>
+        <Caret Line="399" TopLine="394"/>
       </Position25>
       <Position26>
-        <Filename Value="superobject.pas"/>
-        <Caret Line="924" TopLine="896"/>
+        <Filename Value="source.pas"/>
+        <Caret Line="469" TopLine="452"/>
       </Position26>
       <Position27>
-        <Filename Value="superobject.pas"/>
-        <Caret Line="925" TopLine="897"/>
+        <Filename Value="source.pas"/>
+        <Caret Line="427" Column="3" TopLine="422"/>
       </Position27>
       <Position28>
-        <Filename Value="superobject.pas"/>
-        <Caret Line="927" TopLine="899"/>
+        <Filename Value="source.pas"/>
+        <Caret Line="346" Column="3" TopLine="342"/>
       </Position28>
       <Position29>
-        <Filename Value="superobject.pas"/>
-        <Caret Line="928" TopLine="900"/>
+        <Filename Value="source.pas"/>
+        <Caret Line="47" Column="29" TopLine="36"/>
       </Position29>
-      <Position30>
-        <Filename Value="superobject.pas"/>
-        <Caret Line="930" TopLine="902"/>
-      </Position30>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

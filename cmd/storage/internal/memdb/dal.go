@@ -120,6 +120,10 @@ func (t *DB) MoneyReport(stationID app.StationID, startDate, endDate time.Time) 
 	return
 }
 
+func (t *DB) MoneyInStation(stationID app.StationID) (report app.MoneyReport, err error) {
+	return
+}
+
 func (t *DB) RelayStatReport(stationID app.StationID, startDate, endDate time.Time) (report app.RelayReport, err error) {
 	return
 }

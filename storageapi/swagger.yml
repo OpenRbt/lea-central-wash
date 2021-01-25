@@ -216,6 +216,8 @@ paths:
               endDate:
                 description: Unix time
                 type: integer
+              moneyInStation:
+                type: boolean
       responses:
         200:
           description: OK

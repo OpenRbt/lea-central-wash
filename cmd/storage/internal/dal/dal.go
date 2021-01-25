@@ -274,6 +274,22 @@ func (r *repo) MoneyReport(stationID app.StationID, startDate, endDate time.Time
 	return //nolint:nakedret
 }
 
+func (r *repo) MoneyInStation(stationID app.StationID) (report app.MoneyReport, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &report, sqlMoneyInStation, argMoneyInStation{
+			StationID: stationID,
+		})
+		switch {
+		case err == sql.ErrNoRows:
+			return app.ErrNotFound
+		case err != nil:
+			return err
+		}
+		return nil
+	})
+	return //nolint:nakedret
+}
+
 func (r *repo) RelayStatReport(stationID app.StationID, startDate, endDate time.Time) (report app.RelayReport, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		err := tx.NamedSelectContext(ctx, &report.RelayStats, sqlRelayStatReport, argRelayStatReport{
@@ -305,7 +321,9 @@ func (r *repo) LastCollectionReport(stationID app.StationID) (report app.Collect
 func (r *repo) SaveCollectionReport(report app.CollectionReport) (err error) {
 	fmt.Println("DAL: SaveCollectionReport")
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlAddCollectionReport, report)
+		_, err := tx.NamedExec(sqlAddCollectionReport, argAddCollectionReport{
+			StationID: report.StationID,
+		})
 		return err
 	})
 	return //nolint:nakedret

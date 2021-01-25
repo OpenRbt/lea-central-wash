@@ -21,6 +21,7 @@ type
     btnMonth: TButton;
     btnYear: TButton;
     btnKasseSetting: TButton;
+    btnMoneyInStation: TButton;
     cbMoneyRealTime: TCheckBox;
     dtFrom: TDateTimePicker;
     dtTo: TDateTimePicker;
@@ -34,6 +35,7 @@ type
     procedure btnKasseSettingClick(Sender: TObject);
     procedure btnManageClick(Sender: TObject);
     procedure btnMoneyCollectionClick(Sender: TObject);
+    procedure btnMoneyInStationClick(Sender: TObject);
     procedure btnMonthClick(Sender: TObject);
     procedure btnWeekClick(Sender: TObject);
     procedure btnYearClick(Sender: TObject);
@@ -50,6 +52,7 @@ type
     procedure LoadMoney(ID: integer; Sender: TObject);
 
   private
+    moneyInStation: boolean;
 
   public
     property GetStationsData: TStringGrid read StationsData;
@@ -96,7 +99,7 @@ begin
 
   postJson.Add('startDate', unixFrom);
   postJson.Add('endDate', unixTo);
-
+  postJson.Add('moneyInStation', moneyInStation);
   With TFPHttpClient.Create(Nil) do
   try
     try
@@ -383,10 +386,16 @@ begin
     MoneyCollectionForm.ShowModal;
 end;
 
+procedure TMainForm.btnMoneyInStationClick(Sender: TObject);
+begin
+  moneyInStation:=true;
+end;
+
 procedure TMainForm.btnMonthClick(Sender: TObject);
 var
   currentYear, currentMonth, currentDay: word;
 begin
+  moneyInStation:=false;
   cbMoneyRealTime.Checked := False;
   DecodeDate(Now(), currentYear, currentMonth, currentDay);
   dtFrom.DateTime := EncodeDateTime(currentYear, currentMonth, 1, 0, 0, 0, 0);
@@ -397,6 +406,7 @@ procedure TMainForm.btnDayClick(Sender: TObject);
 var
   currentYear, currentMonth, currentDay: word;
 begin
+  moneyInStation:=false;
   cbMoneyRealTime.Checked := False;
   DecodeDate(Now(), currentYear, currentMonth, currentDay);
   dtFrom.DateTime := EncodeDateTime(currentYear, currentMonth,
@@ -414,6 +424,7 @@ var
   currentYear, currentMonth, currentDay, currentNameOfTheDay: word;
   tmpTime: TDateTime;
 begin
+  moneyInStation:=false;
   cbMoneyRealTime.Checked := False;
   tmpTime := Now();
 
@@ -435,6 +446,7 @@ procedure TMainForm.btnYearClick(Sender: TObject);
 var
   currentYear, currentMonth, currentDay: word;
 begin
+  moneyInStation:=false;
   cbMoneyRealTime.Checked := False;
   DecodeDate(Now(), currentYear, currentMonth, currentDay);
   dtFrom.DateTime := EncodeDateTime(currentYear, 1, 1, 0, 0, 0, 0);
@@ -443,6 +455,7 @@ end;
 
 procedure TMainForm.dtFromEditingDone(Sender: TObject);
 begin
+  moneyInStation:=false;
   cbMoneyRealTime.Checked := False;
   if CompareDateTime(dtFrom.DateTime, dtTo.DateTime) > 0 then
   begin
@@ -452,6 +465,7 @@ end;
 
 procedure TMainForm.dtToEditingDone(Sender: TObject);
 begin
+  moneyInStation:=false;
   cbMoneyRealTime.Checked := False;
   if CompareDateTime(dtFrom.DateTime, dtTo.DateTime) > 0 then
   begin

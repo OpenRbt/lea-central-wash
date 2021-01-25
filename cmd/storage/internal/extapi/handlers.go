@@ -368,7 +368,7 @@ func (svc *service) delStation(params op.DelStationParams) op.DelStationResponde
 func (svc *service) stationReport(params op.StationReportParams) op.StationReportResponder {
 	log.Info("station report", "id", *params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
 
-	money, relay, err := svc.app.StationReport(app.StationID(*params.Args.ID), time.Unix(*params.Args.StartDate, 0), time.Unix(*params.Args.EndDate, 0))
+	money, relay, err := svc.app.StationReport(app.StationID(*params.Args.ID), time.Unix(*params.Args.StartDate, 0), time.Unix(*params.Args.EndDate, 0), params.Args.MoneyInStation)
 
 	switch errors.Cause(err) {
 	case nil:

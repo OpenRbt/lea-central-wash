@@ -73,6 +73,9 @@ type StationReportBody struct {
 	// Required: true
 	ID *int64 `json:"id"`
 
+	// money in station
+	MoneyInStation bool `json:"moneyInStation,omitempty"`
+
 	// Unix time
 	// Required: true
 	StartDate *int64 `json:"startDate"`

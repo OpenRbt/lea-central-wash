@@ -787,6 +787,9 @@ func init() {
                 "id": {
                   "type": "integer"
                 },
+                "moneyInStation": {
+                  "type": "boolean"
+                },
                 "startDate": {
                   "description": "Unix time",
                   "type": "integer"
@@ -1880,6 +1883,9 @@ func init() {
                 },
                 "id": {
                   "type": "integer"
+                },
+                "moneyInStation": {
+                  "type": "boolean"
                 },
                 "startDate": {
                   "description": "Unix time",
