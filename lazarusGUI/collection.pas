@@ -16,6 +16,7 @@ type
     BtnCollect: TButton;
     CollectionData: TStringGrid;
     procedure BtnCollectClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
 
@@ -44,7 +45,6 @@ begin
   begin
     postJson := TJSONObject.Create;
     postJson.Add('id', CollectionData.Row);
-    postJson.Add('money', StrToInt(CollectionData.Cells[1, CollectionData.Row]));
 
     With TFPHttpClient.Create(Nil) do
     try
@@ -62,6 +62,11 @@ begin
        Free;
     end;
   end;
+end;
+
+procedure TMoneyCollectionForm.FormCreate(Sender: TObject);
+begin
+
 end;
 
 procedure TMoneyCollectionForm.FormShow(Sender: TObject);
@@ -96,24 +101,63 @@ begin
           begin
             id := Station.I['id'];
 
-            if Station.AsObject.Exists('money') then
+            if Station.AsObject.Exists('electronical') then
             begin
-               CollectionData.Cells[1, id] := IntToStr(Station.I['money']);
+               CollectionData.Cells[1, id] := IntToStr(Station.I['electronical']);
             end
             else
             begin
                CollectionData.Cells[1, id] := '0';
             end;
 
-            if Station.AsObject.Exists('ctime') then
+            if Station.AsObject.Exists('coins') then
             begin
-               timeUnix := Station.I['ctime'];
-               convertedTime := UnixToDateTime(timeUnix);
-               CollectionData.Cells[2, id] := DateTimeToStr(convertedTime);
+               CollectionData.Cells[2, id] := IntToStr(Station.I['coins']);
             end
             else
             begin
-               CollectionData.Cells[2, id] := '-----';
+               CollectionData.Cells[2, id] := '0';
+            end;
+
+            if Station.AsObject.Exists('banknotes') then
+            begin
+               CollectionData.Cells[3, id] := IntToStr(Station.I['banknotes']);
+            end
+            else
+            begin
+               CollectionData.Cells[3, id] := '0';
+            end;
+
+            if Station.AsObject.Exists('carsTotal') then
+            begin
+               CollectionData.Cells[4, id] := IntToStr(Station.I['carsTotal']);
+            end
+            else
+            begin
+               CollectionData.Cells[4, id] := '0';
+            end;
+
+            if Station.AsObject.Exists('service') then
+            begin
+               CollectionData.Cells[5, id] := IntToStr(Station.I['service']);
+            end
+            else
+            begin
+               CollectionData.Cells[5, id] := '0';
+            end;
+
+            if Station.AsObject.Exists('ctime') then
+            begin
+               timeUnix := Station.I['ctime'];
+               if timeUnix>0 then begin
+               // API returns UTC time; LocalTime = UTC - GetLocalTimeOffset
+               convertedTime := UnixToDateTime(timeUnix-GetLocalTimeOffset()*60);
+               CollectionData.Cells[6, id] := DateTimeToStr(convertedTime);
+               end else CollectionData.Cells[6, id] := '-----';
+            end
+            else
+            begin
+               CollectionData.Cells[6, id] := '-----';
             end;
           end;
         end;

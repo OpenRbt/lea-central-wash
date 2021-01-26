@@ -8,7 +8,11 @@ package op
 import (
 	"net/http"
 
+	errors "github.com/go-openapi/errors"
 	middleware "github.com/go-openapi/runtime/middleware"
+	strfmt "github.com/go-openapi/strfmt"
+	swag "github.com/go-openapi/swag"
+	validate "github.com/go-openapi/validate"
 )
 
 // SaveCollectionHandlerFunc turns a function with the right signature into a save collection handler
@@ -55,4 +59,54 @@ func (o *SaveCollection) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
+}
+
+// SaveCollectionBody save collection body
+// swagger:model SaveCollectionBody
+type SaveCollectionBody struct {
+
+	// id
+	// Required: true
+	ID *int64 `json:"id"`
+}
+
+// Validate validates this save collection body
+func (o *SaveCollectionBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *SaveCollectionBody) validateID(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"id", "body", o.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *SaveCollectionBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *SaveCollectionBody) UnmarshalBinary(b []byte) error {
+	var res SaveCollectionBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
 }

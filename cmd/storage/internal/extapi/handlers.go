@@ -1,7 +1,6 @@
 package extapi
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
@@ -246,19 +245,9 @@ func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 }
 
 func (svc *service) saveCollection(params op.SaveCollectionParams) op.SaveCollectionResponder {
-	log.Info("save collection", "ip", params.HTTPRequest.RemoteAddr)
+	log.Info("save collection", "stationID", *params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
 
-	var toSave = app.CollectionReport{
-		StationID: app.StationID(params.Args.ID),
-		Money:     int(params.Args.Money),
-	}
-
-	fmt.Print("Save collection handler. ID = ")
-	fmt.Print(int(params.Args.ID))
-	fmt.Print("; Money = ")
-	fmt.Println(int(params.Args.Money))
-
-	err := svc.app.SaveCollectionReport(toSave)
+	err := svc.app.SaveCollectionReport(app.StationID(*params.Args.ID))
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewSaveCollectionNoContent()
@@ -365,10 +354,10 @@ func (svc *service) delStation(params op.DelStationParams) op.DelStationResponde
 	}
 }
 
-func (svc *service) stationReport(params op.StationReportParams) op.StationReportResponder {
-	log.Info("station report", "id", *params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+func (svc *service) stationReportDates(params op.StationReportDatesParams) op.StationReportDatesResponder {
+	log.Info("station report dates", "id", *params.Args.ID, "start", time.Unix(*params.Args.StartDate, 0), "end", time.Unix(*params.Args.EndDate, 0), "ip", params.HTTPRequest.RemoteAddr)
 
-	money, relay, err := svc.app.StationReport(app.StationID(*params.Args.ID), time.Unix(*params.Args.StartDate, 0), time.Unix(*params.Args.EndDate, 0))
+	money, relay, err := svc.app.StationReportDates(app.StationID(*params.Args.ID), time.Unix(*params.Args.StartDate, 0), time.Unix(*params.Args.EndDate, 0))
 
 	switch errors.Cause(err) {
 	case nil:
@@ -376,13 +365,34 @@ func (svc *service) stationReport(params op.StationReportParams) op.StationRepor
 		res.MoneyReport = apiMoneyReport(&money)
 		apiRelay := apiRelayReport(&relay)
 		res.RelayStats = apiRelay.RelayStats
-		return op.NewStationReportOK().WithPayload(res)
+		return op.NewStationReportDatesOK().WithPayload(res)
 	case app.ErrNotFound:
 		log.Info("station report: not found", "id", *params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewStationReportNotFound()
+		return op.NewStationReportDatesNotFound()
 	default:
 		log.PrintErr(err, "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewStationReportInternalServerError()
+		return op.NewStationReportDatesInternalServerError()
+	}
+}
+
+func (svc *service) stationReportCurrentMoney(params op.StationReportCurrentMoneyParams) op.StationReportCurrentMoneyResponder {
+	log.Info("station report current money", "id", *params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+
+	money, relay, err := svc.app.StationReportCurrentMoney(app.StationID(*params.Args.ID))
+
+	switch errors.Cause(err) {
+	case nil:
+		res := &model.StationReport{}
+		res.MoneyReport = apiMoneyReport(&money)
+		apiRelay := apiRelayReport(&relay)
+		res.RelayStats = apiRelay.RelayStats
+		return op.NewStationReportCurrentMoneyOK().WithPayload(res)
+	case app.ErrNotFound:
+		log.Info("station report: not found", "id", *params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationReportCurrentMoneyNotFound()
+	default:
+		log.PrintErr(err, "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationReportCurrentMoneyInternalServerError()
 	}
 }
 

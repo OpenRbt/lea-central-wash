@@ -67,12 +67,28 @@ SET deleted = true, hash = null
 WHERE id = :id
 	`
 	sqlAddMoneyReport = `
-INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service)  
-VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service)
+INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, ctime)  
+VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :ctime)
 	`
 	sqlAddCollectionReport = `
-INSERT INTO money_collection (station_id, money)  
-VALUES 	(:station_id, :money)
+	INSERT INTO money_collection (station_id, banknotes, cars_total, coins, electronical, service, last_money_report_id, ctime) 
+	(
+	SELECT station_id, 
+			   sum(banknotes) as banknotes, 
+			   sum(cars_total) as cars_total, 
+			   sum(coins) as coins, 
+			   sum(electronical) as electronical, 
+			   sum(service) as service,
+			   max(id) as max_id,
+			   :ctime
+		FROM money_report
+	WHERE station_id = :station_id and id > coalesce(
+	(SELECT last_money_report_id FROM money_collection WHERE station_id = :station_id
+	ORDER BY id DESC
+	LIMIT 1)
+	,0)
+	GROUP BY station_id
+	)	
 	`
 	sqlLastMoneyReport = `
 SELECT station_id, banknotes, cars_total, coins, electronical, service FROM money_report WHERE station_id = :station_id
@@ -80,7 +96,7 @@ ORDER BY id DESC
 LIMIT 1
 	`
 	sqlLastCollectionReport = `
-SELECT station_id, money, ctime FROM money_collection WHERE station_id = :station_id
+SELECT station_id, banknotes, cars_total, coins, electronical, service, ctime FROM money_collection WHERE station_id = :station_id
 ORDER BY id DESC
 LIMIT 1
 	`
@@ -102,21 +118,31 @@ SELECT relay_id, switched_count, total_time_on FROM relay_stat WHERE relay_repor
 ORDER BY relay_id
 	`
 	sqlMoneyReport = `
-SELECT station_id, sum(banknotes) banknotes, sum(cars_total) cars_total, sum(coins) coins, sum(electronical) electronical, sum(service) service FROM (
-		(SELECT station_id, banknotes, cars_total, coins, electronical, service 
-		FROM money_report WHERE station_id = :station_id and ctime <= :end_date 
+	SELECT station_id, 
+		   sum(banknotes) as banknotes, 
+		   sum(cars_total) as cars_total, 
+		   sum(coins) as coins, 
+		   sum(electronical) as electronical, 
+		   sum(service) as service 
+	FROM money_report
+	WHERE :start_date < ctime AND ctime <= :end_date AND station_id = :station_id
+	GROUP BY station_id
+	`
+	sqlCurrentMoney = `
+	SELECT station_id, 
+		   sum(banknotes) as banknotes, 
+		   sum(cars_total) as cars_total, 
+		   sum(coins) as coins, 
+		   sum(electronical) as electronical, 
+		   sum(service) as service 
+	FROM money_report
+	WHERE id > coalesce(
+		(SELECT last_money_report_id FROM money_collection WHERE station_id = 4
 		ORDER BY id DESC
-		LIMIT 1
-		)
-		union all
-		(
-		SELECT station_id, -banknotes, -cars_total, -coins, -electronical, -service 
-		FROM money_report WHERE station_id = :station_id and ctime <= :start_date
-		ORDER BY id DESC
-		LIMIT 1
-		) 
-		) AS MR
-GROUP BY station_id
+		LIMIT 1)
+		,0)
+		AND station_id = :station_id
+	GROUP BY station_id
 	`
 	sqlRelayStatReport = `
 	SELECT relay_id, sum(switched_count) switched_count, sum(total_time_on) total_time_on FROM (
@@ -251,6 +277,13 @@ type (
 		StartDate time.Time
 		EndDate   time.Time
 	}
+	argCurrentMoney struct {
+		StationID app.StationID
+	}
+	argAddCollectionReport struct {
+		StationID app.StationID
+		Ctime     time.Time
+	}
 	argRelayStatReport struct {
 		StationID app.StationID
 		StartDate time.Time
@@ -316,5 +349,14 @@ type (
 		TaxType         string
 		CashierFullName string
 		CashierINN      string
+	}
+	argAddMoneyReport struct {
+		StationID    app.StationID
+		Banknotes    int
+		CarsTotal    int
+		Coins        int
+		Electronical int
+		Service      int
+		Ctime        time.Time
 	}
 )

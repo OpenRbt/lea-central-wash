@@ -47,9 +47,13 @@ func apiStatusCollectionReport(v app.StatusCollection) *model.StatusCollectionRe
 
 func apiCollectionReport(v app.CollectionReport) *model.CollectionReport {
 	return &model.CollectionReport{
-		ID:    int64(v.StationID),
-		Money: int64(v.Money),
-		Ctime: v.Ctime.Unix(),
+		ID:           int64(v.StationID),
+		Banknotes:    int64(v.Banknotes),
+		CarsTotal:    int64(v.CarsTotal),
+		Coins:        int64(v.Coins),
+		Electronical: int64(v.Electronical),
+		Service:      int64(v.Service),
+		Ctime:        v.Ctime.Unix(),
 	}
 }
 

@@ -77,7 +77,8 @@ func NewServer(appl app.App, cfg Config, repo repo) (*restapi.Server, error) {
 	api.StatusHandler = op.StatusHandlerFunc(svc.status)
 	api.SetStationHandler = op.SetStationHandlerFunc(svc.setStation)
 	api.DelStationHandler = op.DelStationHandlerFunc(svc.delStation)
-	api.StationReportHandler = op.StationReportHandlerFunc(svc.stationReport)
+	api.StationReportDatesHandler = op.StationReportDatesHandlerFunc(svc.stationReportDates)
+	api.StationReportCurrentMoneyHandler = op.StationReportCurrentMoneyHandlerFunc(svc.stationReportCurrentMoney)
 	api.AddServiceAmountHandler = op.AddServiceAmountHandlerFunc(svc.addServiceAmount)
 
 	api.StatusCollectionHandler = op.StatusCollectionHandlerFunc(svc.statusCollection)

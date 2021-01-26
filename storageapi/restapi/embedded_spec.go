@@ -468,7 +468,15 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CollectionReport"
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
             }
           }
         ],
@@ -764,9 +772,46 @@ func init() {
         }
       }
     },
-    "/station-report": {
+    "/station-report-current-money": {
       "post": {
-        "operationId": "stationReport",
+        "operationId": "stationReportCurrentMoney",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationReport"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station-report-dates": {
+      "post": {
+        "operationId": "stationReportDates",
         "parameters": [
           {
             "name": "args",
@@ -867,13 +912,25 @@ func init() {
     "CollectionReport": {
       "type": "object",
       "properties": {
+        "banknotes": {
+          "type": "integer"
+        },
+        "carsTotal": {
+          "type": "integer"
+        },
+        "coins": {
+          "type": "integer"
+        },
         "ctime": {
+          "type": "integer"
+        },
+        "electronical": {
           "type": "integer"
         },
         "id": {
           "type": "integer"
         },
-        "money": {
+        "service": {
           "type": "integer"
         }
       }
@@ -1562,7 +1619,15 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CollectionReport"
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
             }
           }
         ],
@@ -1858,9 +1923,46 @@ func init() {
         }
       }
     },
-    "/station-report": {
+    "/station-report-current-money": {
       "post": {
-        "operationId": "stationReport",
+        "operationId": "stationReportCurrentMoney",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationReport"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station-report-dates": {
+      "post": {
+        "operationId": "stationReportDates",
         "parameters": [
           {
             "name": "args",
@@ -1961,13 +2063,25 @@ func init() {
     "CollectionReport": {
       "type": "object",
       "properties": {
+        "banknotes": {
+          "type": "integer"
+        },
+        "carsTotal": {
+          "type": "integer"
+        },
+        "coins": {
+          "type": "integer"
+        },
         "ctime": {
+          "type": "integer"
+        },
+        "electronical": {
           "type": "integer"
         },
         "id": {
           "type": "integer"
         },
-        "money": {
+        "service": {
           "type": "integer"
         }
       }

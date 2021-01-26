@@ -1,16 +1,17 @@
 object MoneyCollectionForm: TMoneyCollectionForm
-  Left = 512
+  Left = 221
   Height = 929
-  Top = 464
-  Width = 1283
+  Top = 142
+  Width = 1514
   BorderIcons = [biSystemMenu]
   Caption = 'Money Collection'
   ClientHeight = 929
-  ClientWidth = 1283
+  ClientWidth = 1514
   Constraints.MaxHeight = 929
   Constraints.MinHeight = 929
+  OnCreate = FormCreate
   OnShow = FormShow
-  Position = poScreenCenter
+  Position = poDesktopCenter
   LCLVersion = '2.0.10.0'
   Scaled = False
   WindowState = wsMaximized
@@ -18,16 +19,16 @@ object MoneyCollectionForm: TMoneyCollectionForm
     Left = 0
     Height = 836
     Top = 96
-    Width = 1280
+    Width = 1496
     AutoEdit = False
     BorderSpacing.CellAlignHorizontal = ccaCenter
-    ColCount = 3
-    DefaultColWidth = 426
-    DefaultRowHeight = 64
+    ColCount = 7
+    DefaultColWidth = 200
+    DefaultRowHeight = 50
     DoubleBuffered = True
     ExtendedSelect = False
     FixedCols = 0
-    Font.Height = 40
+    Font.Height = 16
     Font.Quality = fqCleartypeNatural
     HeaderHotZones = []
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goSmoothScroll, goSelectionActive, goRowHighlight]
@@ -37,13 +38,22 @@ object MoneyCollectionForm: TMoneyCollectionForm
     RowCount = 13
     ScrollBars = ssNone
     TabOrder = 0
-    TitleFont.Height = 35
+    TitleFont.Height = 20
     TitleFont.Name = 'd'
     TitleFont.Quality = fqCleartypeNatural
     TitleFont.Style = [fsBold]
     TitleStyle = tsStandard
+    ColWidths = (
+      200
+      200
+      200
+      200
+      200
+      200
+      274
+    )
     Cells = (
-      15
+      19
       0
       0
       'Station ID'
@@ -85,10 +95,22 @@ object MoneyCollectionForm: TMoneyCollectionForm
       '12'
       1
       0
-      'Cash inside'
+      'Card'
       2
       0
-      'Collection Date'
+      'Coin'
+      3
+      0
+      'Banknotes'
+      4
+      0
+      'Clients'
+      5
+      0
+      'Service'
+      6
+      0
+      'Last Collection Date'
     )
   end
   object BtnCollect: TButton

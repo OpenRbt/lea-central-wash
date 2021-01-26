@@ -181,9 +181,9 @@ func (a *app) SaveMoneyReport(report MoneyReport) error {
 }
 
 // SaveCollectionReport gets app.CollectionReport struct
-func (a *app) SaveCollectionReport(report CollectionReport) error {
+func (a *app) SaveCollectionReport(id StationID) error {
 	fmt.Println("APP: SaveCollectionReport")
-	return a.repo.SaveCollectionReport(report)
+	return a.repo.SaveCollectionReport(id)
 }
 
 // SaveRelayReport gets app.RelayReport struct
@@ -246,39 +246,14 @@ func (a *app) StatusCollection() StatusCollection {
 	defer a.stationsMutex.Unlock()
 
 	for _, v := range a.stations {
-		var collectionTime time.Time
-		var collectionMoney int
-
 		report, err := a.repo.LastCollectionReport(v.ID)
-
-		// if the post is new, and no collections found at this moment
-		if err != nil {
-			// set very old date
-			collectionTime = time.Date(
-				2000, 1, 1, 0, 0, 0, 0, time.UTC)
+		if err == nil {
+			status.Stations = append(status.Stations, report)
 		} else {
-			collectionTime = report.Ctime
+			status.Stations = append(status.Stations, CollectionReport{
+				StationID: v.ID,
+			})
 		}
-
-		t := time.Now()
-		loc, err := time.LoadLocation("Europe/Moscow")
-		t = t.In(loc)
-
-		fmt.Println(t)
-		fmt.Println(collectionTime)
-
-		moneyReport, err := a.repo.MoneyReport(v.ID, collectionTime, time.Now())
-		if err != nil {
-			collectionMoney = 0
-		} else {
-			collectionMoney = moneyReport.Banknotes + moneyReport.Coins
-		}
-
-		status.Stations = append(status.Stations, CollectionReport{
-			StationID: v.ID,
-			Money:     collectionMoney,
-			Ctime:     collectionTime,
-		})
 	}
 	return status
 }
@@ -302,14 +277,25 @@ func (a *app) DelStation(id StationID) error {
 }
 
 // Date time zone is UTC.
-// The method searches for less than or equal to the end date and subtracts a report from it with a date less than or equal to the start date.
-func (a *app) StationReport(id StationID, startDate, endDate time.Time) (MoneyReport, RelayReport, error) {
+// StationReportDates amount of money for the specified period.
+func (a *app) StationReportDates(id StationID, startDate, endDate time.Time) (MoneyReport, RelayReport, error) {
 	report, err := a.repo.MoneyReport(id, startDate, endDate)
 	if err != nil {
 		return MoneyReport{}, RelayReport{}, err
 	}
-
 	stat, err := a.repo.RelayStatReport(id, startDate, endDate)
+
+	return report, stat, err
+}
+
+// StationReportCurrentMoney current amount of money in the station, after the last collection
+func (a *app) StationReportCurrentMoney(id StationID) (MoneyReport, RelayReport, error) {
+	report, err := a.repo.CurrentMoney(id)
+	if err != nil {
+		return MoneyReport{}, RelayReport{}, err
+	}
+
+	stat, err := a.repo.RelayStatReport(id, time.Unix(0, 0), time.Now().UTC())
 
 	return report, stat, err
 }

@@ -201,7 +201,15 @@ func (r *repo) LastMoneyReport(stationID app.StationID) (report app.MoneyReport,
 
 func (r *repo) SaveMoneyReport(report app.MoneyReport) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlAddMoneyReport, report)
+		_, err := tx.NamedExec(sqlAddMoneyReport, argAddMoneyReport{
+			StationID:    report.StationID,
+			Banknotes:    report.Banknotes,
+			CarsTotal:    report.CarsTotal,
+			Coins:        report.Coins,
+			Electronical: report.Electronical,
+			Service:      report.Service,
+			Ctime:        time.Now().UTC(),
+		})
 		return err
 	})
 	return //nolint:nakedret
@@ -274,6 +282,22 @@ func (r *repo) MoneyReport(stationID app.StationID, startDate, endDate time.Time
 	return //nolint:nakedret
 }
 
+func (r *repo) CurrentMoney(stationID app.StationID) (report app.MoneyReport, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &report, sqlCurrentMoney, argCurrentMoney{
+			StationID: stationID,
+		})
+		switch {
+		case err == sql.ErrNoRows:
+			return app.ErrNotFound
+		case err != nil:
+			return err
+		}
+		return nil
+	})
+	return //nolint:nakedret
+}
+
 func (r *repo) RelayStatReport(stationID app.StationID, startDate, endDate time.Time) (report app.RelayReport, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		err := tx.NamedSelectContext(ctx, &report.RelayStats, sqlRelayStatReport, argRelayStatReport{
@@ -302,10 +326,13 @@ func (r *repo) LastCollectionReport(stationID app.StationID) (report app.Collect
 	return //nolint:nakedret
 }
 
-func (r *repo) SaveCollectionReport(report app.CollectionReport) (err error) {
+func (r *repo) SaveCollectionReport(id app.StationID) (err error) {
 	fmt.Println("DAL: SaveCollectionReport")
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlAddCollectionReport, report)
+		_, err := tx.NamedExec(sqlAddCollectionReport, argAddCollectionReport{
+			StationID: id,
+			Ctime:     time.Now().UTC(),
+		})
 		return err
 	})
 	return //nolint:nakedret

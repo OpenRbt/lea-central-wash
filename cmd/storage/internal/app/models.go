@@ -20,9 +20,13 @@ type MoneyReport struct {
 }
 
 type CollectionReport struct {
-	StationID StationID
-	Money     int
-	Ctime     time.Time
+	StationID    StationID
+	Banknotes    int
+	CarsTotal    int
+	Coins        int
+	Electronical int
+	Service      int
+	Ctime        time.Time
 }
 
 type RelayStat struct {
