@@ -21,13 +21,12 @@ type
     btnMonth: TButton;
     btnYear: TButton;
     btnKasseSetting: TButton;
-    btnMoneyInStation: TButton;
-    cbMoneyRealTime: TCheckBox;
     dtFrom: TDateTimePicker;
     dtTo: TDateTimePicker;
     Label1: TLabel;
     Label2: TLabel;
     lbStatus: TLabel;
+    rgReportType: TRadioGroup;
     StationsData: TStringGrid;
     MoneyData: TStringGrid;
     UpdateTimer: TTimer;
@@ -35,7 +34,6 @@ type
     procedure btnKasseSettingClick(Sender: TObject);
     procedure btnManageClick(Sender: TObject);
     procedure btnMoneyCollectionClick(Sender: TObject);
-    procedure btnMoneyInStationClick(Sender: TObject);
     procedure btnMonthClick(Sender: TObject);
     procedure btnWeekClick(Sender: TObject);
     procedure btnYearClick(Sender: TObject);
@@ -52,7 +50,6 @@ type
     procedure LoadMoney(ID: integer; Sender: TObject);
 
   private
-    moneyInStation: boolean;
 
   public
     property GetStationsData: TStringGrid read StationsData;
@@ -78,6 +75,7 @@ var
   unixFrom: Longint;
   unixTo:   Longint;
   totalMoney: integer;
+  url: string;
 
 const
   UnixStartDate: TDateTime = 25569.0;
@@ -87,25 +85,19 @@ begin
   postJson.Add('id', ID);
 
   unixFrom := Round((dtFrom.DateTime - UnixStartDate) * 86400);
+  unixTo := Round((dtTo.DateTime - UnixStartDate) * 86400);
 
-  if cbMoneyRealTime.Checked then
-  begin
-     unixTo := Round((Now() - UnixStartDate) * 86400);
-  end
-  else
-  begin
-     unixTo := Round((dtTo.DateTime - UnixStartDate) * 86400);
-  end;
-
-  postJson.Add('startDate', unixFrom);
-  postJson.Add('endDate', unixTo);
-  postJson.Add('moneyInStation', moneyInStation);
+  // API requires UTC time; UTC = LocalTime + GetLocalTimeOffset
+  postJson.Add('startDate', unixFrom + GetLocalTimeOffset() * 60);
+  postJson.Add('endDate',   unixTo   + GetLocalTimeOffset() * 60);
+  if rgReportType.ItemIndex = 1 then url:= 'http://localhost:8020/station-report-dates'
+                  else url:= 'http://localhost:8020/station-report-current-money';
   With TFPHttpClient.Create(Nil) do
   try
     try
      AddHeader('Content-Type', 'application/json');
      RequestBody := TStringStream.Create(postJson.AsJSON);
-     RequestAnswer := Post('http://localhost:8020/station-report');
+     RequestAnswer := Post(url);
      Data := SO(UTF8Decode(RequestAnswer));
 
      if Data.S['moneyReport'] <> '' then
@@ -300,6 +292,7 @@ begin
 
   btnManage.Enabled := False;
   btnMoneyCollection.Enabled := True;
+  btnDayClick(Sender);
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
@@ -386,32 +379,26 @@ begin
     MoneyCollectionForm.ShowModal;
 end;
 
-procedure TMainForm.btnMoneyInStationClick(Sender: TObject);
-begin
-  moneyInStation:=true;
-end;
-
 procedure TMainForm.btnMonthClick(Sender: TObject);
 var
   currentYear, currentMonth, currentDay: word;
 begin
-  moneyInStation:=false;
-  cbMoneyRealTime.Checked := False;
+  rgReportType.ItemIndex:=1;
   DecodeDate(Now(), currentYear, currentMonth, currentDay);
   dtFrom.DateTime := EncodeDateTime(currentYear, currentMonth, 1, 0, 0, 0, 0);
-  dtTo.DateTime := Now();
+  dtTo.DateTime := IncMonth(dtFrom.DateTime, 1)-0.000001;
 end;
 
 procedure TMainForm.btnDayClick(Sender: TObject);
 var
   currentYear, currentMonth, currentDay: word;
 begin
-  moneyInStation:=false;
-  cbMoneyRealTime.Checked := False;
+  rgReportType.ItemIndex:=1;
   DecodeDate(Now(), currentYear, currentMonth, currentDay);
   dtFrom.DateTime := EncodeDateTime(currentYear, currentMonth,
     currentDay, 0, 0, 0, 0);
-  dtTo.DateTime := Now();
+  dtTo.DateTime := EncodeDateTime(currentYear, currentMonth,
+    currentDay, 23, 59, 59, 999);
 end;
 
 procedure TMainForm.btnKasseSettingClick(Sender: TObject);
@@ -424,8 +411,7 @@ var
   currentYear, currentMonth, currentDay, currentNameOfTheDay: word;
   tmpTime: TDateTime;
 begin
-  moneyInStation:=false;
-  cbMoneyRealTime.Checked := False;
+  rgReportType.ItemIndex:=1;
   tmpTime := Now();
 
   currentNameOfTheDay := DayOfTheWeek(tmpTime);
@@ -439,24 +425,22 @@ begin
   DecodeDate(tmpTime, currentYear, currentMonth, currentDay);
   dtFrom.DateTime := EncodeDateTime(currentYear, currentMonth,
     currentDay, 0, 0, 0, 0);
-  dtTo.DateTime := Now();
+  dtTo.DateTime := dtFrom.DateTime+7-0.000001;
 end;
 
 procedure TMainForm.btnYearClick(Sender: TObject);
 var
   currentYear, currentMonth, currentDay: word;
 begin
-  moneyInStation:=false;
-  cbMoneyRealTime.Checked := False;
+  rgReportType.ItemIndex:=1;
   DecodeDate(Now(), currentYear, currentMonth, currentDay);
   dtFrom.DateTime := EncodeDateTime(currentYear, 1, 1, 0, 0, 0, 0);
-  dtTo.DateTime := Now();
+    dtTo.DateTime := IncMonth(dtFrom.DateTime, 12)-0.000001;
 end;
 
 procedure TMainForm.dtFromEditingDone(Sender: TObject);
 begin
-  moneyInStation:=false;
-  cbMoneyRealTime.Checked := False;
+  rgReportType.ItemIndex:=1;
   if CompareDateTime(dtFrom.DateTime, dtTo.DateTime) > 0 then
   begin
     dtFrom.DateTime := dtTo.DateTime;
@@ -465,8 +449,7 @@ end;
 
 procedure TMainForm.dtToEditingDone(Sender: TObject);
 begin
-  moneyInStation:=false;
-  cbMoneyRealTime.Checked := False;
+  rgReportType.ItemIndex:=1;
   if CompareDateTime(dtFrom.DateTime, dtTo.DateTime) > 0 then
   begin
     dtTo.DateTime := dtFrom.DateTime;

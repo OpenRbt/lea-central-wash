@@ -201,7 +201,15 @@ func (r *repo) LastMoneyReport(stationID app.StationID) (report app.MoneyReport,
 
 func (r *repo) SaveMoneyReport(report app.MoneyReport) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlAddMoneyReport, report)
+		_, err := tx.NamedExec(sqlAddMoneyReport, argAddMoneyReport{
+			StationID:    report.StationID,
+			Banknotes:    report.Banknotes,
+			CarsTotal:    report.CarsTotal,
+			Coins:        report.Coins,
+			Electronical: report.Electronical,
+			Service:      report.Service,
+			Ctime:        time.Now().UTC(),
+		})
 		return err
 	})
 	return //nolint:nakedret
@@ -274,9 +282,9 @@ func (r *repo) MoneyReport(stationID app.StationID, startDate, endDate time.Time
 	return //nolint:nakedret
 }
 
-func (r *repo) MoneyInStation(stationID app.StationID) (report app.MoneyReport, err error) {
+func (r *repo) CurrentMoney(stationID app.StationID) (report app.MoneyReport, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		err := tx.NamedGetContext(ctx, &report, sqlMoneyInStation, argMoneyInStation{
+		err := tx.NamedGetContext(ctx, &report, sqlCurrentMoney, argCurrentMoney{
 			StationID: stationID,
 		})
 		switch {
@@ -323,6 +331,7 @@ func (r *repo) SaveCollectionReport(report app.CollectionReport) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlAddCollectionReport, argAddCollectionReport{
 			StationID: report.StationID,
+			Ctime:     time.Now().UTC(),
 		})
 		return err
 	})

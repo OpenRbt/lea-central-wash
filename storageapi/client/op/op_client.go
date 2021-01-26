@@ -641,30 +641,58 @@ func (a *Client) StationByHash(params *StationByHashParams) (*StationByHashOK, e
 }
 
 /*
-StationReport station report API
+StationReportCurrentMoney station report current money API
 */
-func (a *Client) StationReport(params *StationReportParams) (*StationReportOK, error) {
+func (a *Client) StationReportCurrentMoney(params *StationReportCurrentMoneyParams) (*StationReportCurrentMoneyOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewStationReportParams()
+		params = NewStationReportCurrentMoneyParams()
 	}
 
 	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "stationReport",
+		ID:                 "stationReportCurrentMoney",
 		Method:             "POST",
-		PathPattern:        "/station-report",
+		PathPattern:        "/station-report-current-money",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http"},
 		Params:             params,
-		Reader:             &StationReportReader{formats: a.formats},
+		Reader:             &StationReportCurrentMoneyReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return result.(*StationReportOK), nil
+	return result.(*StationReportCurrentMoneyOK), nil
+
+}
+
+/*
+StationReportDates station report dates API
+*/
+func (a *Client) StationReportDates(params *StationReportDatesParams) (*StationReportDatesOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStationReportDatesParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "stationReportDates",
+		Method:             "POST",
+		PathPattern:        "/station-report-dates",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StationReportDatesReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*StationReportDatesOK), nil
 
 }
 

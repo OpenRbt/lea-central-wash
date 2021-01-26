@@ -125,9 +125,13 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation StationByHash has not yet been implemented")
 			return StationByHashNotImplemented()
 		}),
-		StationReportHandler: StationReportHandlerFunc(func(params StationReportParams) StationReportResponder {
-			// return middleware.NotImplemented("operation StationReport has not yet been implemented")
-			return StationReportNotImplemented()
+		StationReportCurrentMoneyHandler: StationReportCurrentMoneyHandlerFunc(func(params StationReportCurrentMoneyParams) StationReportCurrentMoneyResponder {
+			// return middleware.NotImplemented("operation StationReportCurrentMoney has not yet been implemented")
+			return StationReportCurrentMoneyNotImplemented()
+		}),
+		StationReportDatesHandler: StationReportDatesHandlerFunc(func(params StationReportDatesParams) StationReportDatesResponder {
+			// return middleware.NotImplemented("operation StationReportDates has not yet been implemented")
+			return StationReportDatesNotImplemented()
 		}),
 		StationsVariablesHandler: StationsVariablesHandlerFunc(func(params StationsVariablesParams) StationsVariablesResponder {
 			// return middleware.NotImplemented("operation StationsVariables has not yet been implemented")
@@ -216,8 +220,10 @@ type StorageAPI struct {
 	SetStationHandler SetStationHandler
 	// StationByHashHandler sets the operation handler for the station by hash operation
 	StationByHashHandler StationByHashHandler
-	// StationReportHandler sets the operation handler for the station report operation
-	StationReportHandler StationReportHandler
+	// StationReportCurrentMoneyHandler sets the operation handler for the station report current money operation
+	StationReportCurrentMoneyHandler StationReportCurrentMoneyHandler
+	// StationReportDatesHandler sets the operation handler for the station report dates operation
+	StationReportDatesHandler StationReportDatesHandler
 	// StationsVariablesHandler sets the operation handler for the stations variables operation
 	StationsVariablesHandler StationsVariablesHandler
 	// StatusHandler sets the operation handler for the status operation
@@ -375,8 +381,12 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "StationByHashHandler")
 	}
 
-	if o.StationReportHandler == nil {
-		unregistered = append(unregistered, "StationReportHandler")
+	if o.StationReportCurrentMoneyHandler == nil {
+		unregistered = append(unregistered, "StationReportCurrentMoneyHandler")
+	}
+
+	if o.StationReportDatesHandler == nil {
+		unregistered = append(unregistered, "StationReportDatesHandler")
 	}
 
 	if o.StationsVariablesHandler == nil {
@@ -602,7 +612,12 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/station-report"] = NewStationReport(o.context, o.StationReportHandler)
+	o.handlers["POST"]["/station-report-current-money"] = NewStationReportCurrentMoney(o.context, o.StationReportCurrentMoneyHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/station-report-dates"] = NewStationReportDates(o.context, o.StationReportDatesHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

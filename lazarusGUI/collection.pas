@@ -108,7 +108,8 @@ begin
             if Station.AsObject.Exists('ctime') then
             begin
                timeUnix := Station.I['ctime'];
-               convertedTime := UnixToDateTime(timeUnix);
+               // API returns UTC time; LocalTime = UTC - GetLocalTimeOffset
+               convertedTime := UnixToDateTime(timeUnix-GetLocalTimeOffset()*60);
                CollectionData.Cells[2, id] := DateTimeToStr(convertedTime);
             end
             else

@@ -67,11 +67,11 @@ SET deleted = true, hash = null
 WHERE id = :id
 	`
 	sqlAddMoneyReport = `
-INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service)  
-VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service)
+INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, ctime)  
+VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :ctime)
 	`
 	sqlAddCollectionReport = `
-	INSERT INTO money_collection (station_id, banknotes, cars_total, coins, electronical, service,last_money_report_id) 
+	INSERT INTO money_collection (station_id, banknotes, cars_total, coins, electronical, service, last_money_report_id, ctime) 
 	(
 	SELECT station_id, 
 			   sum(banknotes) as banknotes, 
@@ -79,7 +79,8 @@ VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service)
 			   sum(coins) as coins, 
 			   sum(electronical) as electronical, 
 			   sum(service) as service,
-			   max(id) as max_id
+			   max(id) as max_id,
+			   :ctime
 		FROM money_report
 	WHERE station_id = :station_id and id > coalesce(
 	(SELECT last_money_report_id FROM money_collection WHERE station_id = :station_id
@@ -127,7 +128,7 @@ ORDER BY relay_id
 	WHERE :start_date < ctime AND ctime <= :end_date AND station_id = :station_id
 	GROUP BY station_id
 	`
-	sqlMoneyInStation = `
+	sqlCurrentMoney = `
 	SELECT station_id, 
 		   sum(banknotes) as banknotes, 
 		   sum(cars_total) as cars_total, 
@@ -276,11 +277,12 @@ type (
 		StartDate time.Time
 		EndDate   time.Time
 	}
-	argMoneyInStation struct {
+	argCurrentMoney struct {
 		StationID app.StationID
 	}
 	argAddCollectionReport struct {
 		StationID app.StationID
+		Ctime     time.Time
 	}
 	argRelayStatReport struct {
 		StationID app.StationID
@@ -347,5 +349,14 @@ type (
 		TaxType         string
 		CashierFullName string
 		CashierINN      string
+	}
+	argAddMoneyReport struct {
+		StationID    app.StationID
+		Banknotes    int
+		CarsTotal    int
+		Coins        int
+		Electronical int
+		Service      int
+		Ctime        time.Time
 	}
 )

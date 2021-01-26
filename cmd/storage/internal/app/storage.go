@@ -260,14 +260,7 @@ func (a *app) StatusCollection() StatusCollection {
 			collectionTime = report.Ctime
 		}
 
-		t := time.Now()
-		loc, err := time.LoadLocation("Europe/Moscow")
-		t = t.In(loc)
-
-		fmt.Println(t)
-		fmt.Println(collectionTime)
-
-		moneyReport, err := a.repo.MoneyReport(v.ID, collectionTime, time.Now())
+		moneyReport, err := a.repo.CurrentMoney(v.ID)
 		if err != nil {
 			collectionMoney = 0
 		} else {
@@ -303,22 +296,25 @@ func (a *app) DelStation(id StationID) error {
 
 // Date time zone is UTC.
 // The method searches for less than or equal to the end date and subtracts a report from it with a date less than or equal to the start date.
-func (a *app) StationReport(id StationID, startDate, endDate time.Time, moneyInStation bool) (MoneyReport, RelayReport, error) {
-	var report MoneyReport
-	var err error
-	if moneyInStation {
-		report, err = a.repo.MoneyInStation(id)
-		if err != nil {
-			return MoneyReport{}, RelayReport{}, err
-		}
-	} else {
-		report, err = a.repo.MoneyReport(id, startDate, endDate)
-		if err != nil {
-			return MoneyReport{}, RelayReport{}, err
-		}
+func (a *app) StationReportDates(id StationID, startDate, endDate time.Time) (MoneyReport, RelayReport, error) {
+	report, err := a.repo.MoneyReport(id, startDate, endDate)
+	if err != nil {
+		return MoneyReport{}, RelayReport{}, err
+	}
+	stat, err := a.repo.RelayStatReport(id, startDate, endDate)
+
+	return report, stat, err
+}
+
+// Date time zone is UTC.
+// The method searches for less than or equal to the end date and subtracts a report from it with a date less than or equal to the start date.
+func (a *app) StationReportCurrentMoney(id StationID) (MoneyReport, RelayReport, error) {
+	report, err := a.repo.CurrentMoney(id)
+	if err != nil {
+		return MoneyReport{}, RelayReport{}, err
 	}
 
-	stat, err := a.repo.RelayStatReport(id, startDate, endDate)
+	stat, err := a.repo.RelayStatReport(id, time.Unix(0, 0), time.Now().UTC())
 
 	return report, stat, err
 }

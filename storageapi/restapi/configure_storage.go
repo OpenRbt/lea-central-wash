@@ -98,8 +98,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.StationByHashHandler = op.StationByHashHandlerFunc(func(params op.StationByHashParams) op.StationByHashResponder {
 		return op.StationByHashNotImplemented()
 	})
-	api.StationReportHandler = op.StationReportHandlerFunc(func(params op.StationReportParams) op.StationReportResponder {
-		return op.StationReportNotImplemented()
+	api.StationReportCurrentMoneyHandler = op.StationReportCurrentMoneyHandlerFunc(func(params op.StationReportCurrentMoneyParams) op.StationReportCurrentMoneyResponder {
+		return op.StationReportCurrentMoneyNotImplemented()
+	})
+	api.StationReportDatesHandler = op.StationReportDatesHandlerFunc(func(params op.StationReportDatesParams) op.StationReportDatesResponder {
+		return op.StationReportDatesNotImplemented()
 	})
 	api.StationsVariablesHandler = op.StationsVariablesHandlerFunc(func(params op.StationsVariablesParams) op.StationsVariablesResponder {
 		return op.StationsVariablesNotImplemented()

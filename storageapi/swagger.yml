@@ -194,9 +194,9 @@ produces:
   - application/json          
 
 paths:
-  /station-report:
+  /station-report-dates:
     post:
-      operationId: "stationReport"
+      operationId: "stationReportDates"
       parameters:
         - name: args
           required: true
@@ -216,8 +216,29 @@ paths:
               endDate:
                 description: Unix time
                 type: integer
-              moneyInStation:
-                type: boolean
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/StationReport'
+        404:
+          description: not found
+        500:
+          description: internal error
+  /station-report-current-money:
+    post:
+      operationId: "stationReportCurrentMoney"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - id
+            properties:
+              id:
+                type: integer
       responses:
         200:
           description: OK

@@ -55,7 +55,8 @@ type (
 		StatusReport() StatusReport
 		SetStation(station SetStation) error
 		DelStation(id StationID) error
-		StationReport(id StationID, startDate, endDate time.Time, moneyInStation bool) (MoneyReport, RelayReport, error)
+		StationReportDates(id StationID, startDate, endDate time.Time) (MoneyReport, RelayReport, error)
+		StationReportCurrentMoney(id StationID) (MoneyReport, RelayReport, error)
 
 		StatusCollection() StatusCollection
 		SaveCollectionReport(report CollectionReport) error
@@ -89,7 +90,7 @@ type (
 		StationsVariables() ([]StationsVariables, error)
 		AddStation(name string) error
 		AddOpenStationLog(StationID) error
-		MoneyInStation(StationID) (MoneyReport, error)
+		CurrentMoney(StationID) (MoneyReport, error)
 
 		// for api
 		LoadHash() ([]StationID, []string, error)
