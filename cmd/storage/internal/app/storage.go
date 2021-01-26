@@ -295,7 +295,7 @@ func (a *app) DelStation(id StationID) error {
 }
 
 // Date time zone is UTC.
-// The method searches for less than or equal to the end date and subtracts a report from it with a date less than or equal to the start date.
+// StationReportDates amount of money for the specified period.
 func (a *app) StationReportDates(id StationID, startDate, endDate time.Time) (MoneyReport, RelayReport, error) {
 	report, err := a.repo.MoneyReport(id, startDate, endDate)
 	if err != nil {
@@ -306,8 +306,7 @@ func (a *app) StationReportDates(id StationID, startDate, endDate time.Time) (Mo
 	return report, stat, err
 }
 
-// Date time zone is UTC.
-// The method searches for less than or equal to the end date and subtracts a report from it with a date less than or equal to the start date.
+// StationReportCurrentMoney current amount of money in the station, after the last collection
 func (a *app) StationReportCurrentMoney(id StationID) (MoneyReport, RelayReport, error) {
 	report, err := a.repo.CurrentMoney(id)
 	if err != nil {
