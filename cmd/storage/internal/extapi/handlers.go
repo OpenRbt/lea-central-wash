@@ -1,7 +1,6 @@
 package extapi
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
@@ -246,19 +245,9 @@ func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 }
 
 func (svc *service) saveCollection(params op.SaveCollectionParams) op.SaveCollectionResponder {
-	log.Info("save collection", "ip", params.HTTPRequest.RemoteAddr)
+	log.Info("save collection", "stationID", *params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
 
-	var toSave = app.CollectionReport{
-		StationID: app.StationID(params.Args.ID),
-		Money:     int(params.Args.Money),
-	}
-
-	fmt.Print("Save collection handler. ID = ")
-	fmt.Print(int(params.Args.ID))
-	fmt.Print("; Money = ")
-	fmt.Println(int(params.Args.Money))
-
-	err := svc.app.SaveCollectionReport(toSave)
+	err := svc.app.SaveCollectionReport(app.StationID(*params.Args.ID))
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewSaveCollectionNoContent()

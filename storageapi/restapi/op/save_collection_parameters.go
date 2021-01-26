@@ -12,8 +12,6 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // NewSaveCollectionParams creates a new SaveCollectionParams object
@@ -36,7 +34,7 @@ type SaveCollectionParams struct {
 	  Required: true
 	  In: body
 	*/
-	Args *model.CollectionReport
+	Args SaveCollectionBody
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -50,7 +48,7 @@ func (o *SaveCollectionParams) BindRequest(r *http.Request, route *middleware.Ma
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body model.CollectionReport
+		var body SaveCollectionBody
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
 				res = append(res, errors.Required("args", "body"))
@@ -64,7 +62,7 @@ func (o *SaveCollectionParams) BindRequest(r *http.Request, route *middleware.Ma
 			}
 
 			if len(res) == 0 {
-				o.Args = &body
+				o.Args = body
 			}
 		}
 	} else {

@@ -293,6 +293,7 @@ begin
   btnManage.Enabled := False;
   btnMoneyCollection.Enabled := True;
   btnDayClick(Sender);
+  rgReportType.ItemIndex:=0;
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);

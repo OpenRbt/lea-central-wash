@@ -96,7 +96,7 @@ ORDER BY id DESC
 LIMIT 1
 	`
 	sqlLastCollectionReport = `
-SELECT station_id, (banknotes + coins) as money, ctime FROM money_collection WHERE station_id = :station_id
+SELECT station_id, banknotes, cars_total, coins, electronical, service, ctime FROM money_collection WHERE station_id = :station_id
 ORDER BY id DESC
 LIMIT 1
 	`

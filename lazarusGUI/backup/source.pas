@@ -292,6 +292,7 @@ begin
 
   btnManage.Enabled := False;
   btnMoneyCollection.Enabled := True;
+  btnDayClick(Sender);
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);

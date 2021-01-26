@@ -15,14 +15,26 @@ import (
 // swagger:model CollectionReport
 type CollectionReport struct {
 
+	// banknotes
+	Banknotes int64 `json:"banknotes,omitempty"`
+
+	// cars total
+	CarsTotal int64 `json:"carsTotal,omitempty"`
+
+	// coins
+	Coins int64 `json:"coins,omitempty"`
+
 	// ctime
 	Ctime int64 `json:"ctime,omitempty"`
+
+	// electronical
+	Electronical int64 `json:"electronical,omitempty"`
 
 	// id
 	ID int64 `json:"id,omitempty"`
 
-	// money
-	Money int64 `json:"money,omitempty"`
+	// service
+	Service int64 `json:"service,omitempty"`
 }
 
 // Validate validates this collection report

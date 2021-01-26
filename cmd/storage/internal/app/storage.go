@@ -181,9 +181,9 @@ func (a *app) SaveMoneyReport(report MoneyReport) error {
 }
 
 // SaveCollectionReport gets app.CollectionReport struct
-func (a *app) SaveCollectionReport(report CollectionReport) error {
+func (a *app) SaveCollectionReport(id StationID) error {
 	fmt.Println("APP: SaveCollectionReport")
-	return a.repo.SaveCollectionReport(report)
+	return a.repo.SaveCollectionReport(id)
 }
 
 // SaveRelayReport gets app.RelayReport struct
@@ -246,32 +246,14 @@ func (a *app) StatusCollection() StatusCollection {
 	defer a.stationsMutex.Unlock()
 
 	for _, v := range a.stations {
-		var collectionTime time.Time
-		var collectionMoney int
-
 		report, err := a.repo.LastCollectionReport(v.ID)
-
-		// if the post is new, and no collections found at this moment
-		if err != nil {
-			// set very old date
-			collectionTime = time.Date(
-				2000, 1, 1, 0, 0, 0, 0, time.UTC)
+		if err == nil {
+			status.Stations = append(status.Stations, report)
 		} else {
-			collectionTime = report.Ctime
+			status.Stations = append(status.Stations, CollectionReport{
+				StationID: v.ID,
+			})
 		}
-
-		moneyReport, err := a.repo.CurrentMoney(v.ID)
-		if err != nil {
-			collectionMoney = 0
-		} else {
-			collectionMoney = moneyReport.Banknotes + moneyReport.Coins
-		}
-
-		status.Stations = append(status.Stations, CollectionReport{
-			StationID: v.ID,
-			Money:     collectionMoney,
-			Ctime:     collectionTime,
-		})
 	}
 	return status
 }

@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 284
+  Left = 344
   Height = 520
-  Top = 247
+  Top = 383
   Width = 1220
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsDialog

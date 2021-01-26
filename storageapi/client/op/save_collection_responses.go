@@ -8,7 +8,10 @@ package op
 import (
 	"fmt"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
 )
@@ -108,5 +111,56 @@ func (o *SaveCollectionInternalServerError) Error() string {
 
 func (o *SaveCollectionInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	return nil
+}
+
+/*SaveCollectionBody save collection body
+swagger:model SaveCollectionBody
+*/
+type SaveCollectionBody struct {
+
+	// id
+	// Required: true
+	ID *int64 `json:"id"`
+}
+
+// Validate validates this save collection body
+func (o *SaveCollectionBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *SaveCollectionBody) validateID(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"id", "body", o.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *SaveCollectionBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *SaveCollectionBody) UnmarshalBinary(b []byte) error {
+	var res SaveCollectionBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }

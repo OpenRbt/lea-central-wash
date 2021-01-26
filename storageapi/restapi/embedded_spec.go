@@ -468,7 +468,15 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CollectionReport"
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
             }
           }
         ],
@@ -904,13 +912,25 @@ func init() {
     "CollectionReport": {
       "type": "object",
       "properties": {
+        "banknotes": {
+          "type": "integer"
+        },
+        "carsTotal": {
+          "type": "integer"
+        },
+        "coins": {
+          "type": "integer"
+        },
         "ctime": {
+          "type": "integer"
+        },
+        "electronical": {
           "type": "integer"
         },
         "id": {
           "type": "integer"
         },
-        "money": {
+        "service": {
           "type": "integer"
         }
       }
@@ -1599,7 +1619,15 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CollectionReport"
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
             }
           }
         ],
@@ -2035,13 +2063,25 @@ func init() {
     "CollectionReport": {
       "type": "object",
       "properties": {
+        "banknotes": {
+          "type": "integer"
+        },
+        "carsTotal": {
+          "type": "integer"
+        },
+        "coins": {
+          "type": "integer"
+        },
         "ctime": {
+          "type": "integer"
+        },
+        "electronical": {
           "type": "integer"
         },
         "id": {
           "type": "integer"
         },
-        "money": {
+        "service": {
           "type": "integer"
         }
       }

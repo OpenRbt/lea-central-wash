@@ -15,8 +15,6 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 
 	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // NewSaveCollectionParams creates a new SaveCollectionParams object
@@ -64,7 +62,7 @@ for the save collection operation typically these are written to a http.Request
 type SaveCollectionParams struct {
 
 	/*Args*/
-	Args *model.CollectionReport
+	Args SaveCollectionBody
 
 	timeout    time.Duration
 	Context    context.Context
@@ -105,13 +103,13 @@ func (o *SaveCollectionParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithArgs adds the args to the save collection params
-func (o *SaveCollectionParams) WithArgs(args *model.CollectionReport) *SaveCollectionParams {
+func (o *SaveCollectionParams) WithArgs(args SaveCollectionBody) *SaveCollectionParams {
 	o.SetArgs(args)
 	return o
 }
 
 // SetArgs adds the args to the save collection params
-func (o *SaveCollectionParams) SetArgs(args *model.CollectionReport) {
+func (o *SaveCollectionParams) SetArgs(args SaveCollectionBody) {
 	o.Args = args
 }
 
@@ -123,10 +121,8 @@ func (o *SaveCollectionParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 	}
 	var res []error
 
-	if o.Args != nil {
-		if err := r.SetBodyParam(o.Args); err != nil {
-			return err
-		}
+	if err := r.SetBodyParam(o.Args); err != nil {
+		return err
 	}
 
 	if len(res) > 0 {

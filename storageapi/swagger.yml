@@ -54,11 +54,19 @@ definitions:
     type: object
     properties:
       id:
-          type: integer
-      money:
-          type: integer
+        type: integer
+      carsTotal:
+        type: integer
+      coins:
+        type: integer
+      banknotes:
+        type: integer
+      electronical:
+        type: integer
+      service:
+        type: integer
       ctime:
-          type: integer
+        type: integer
     
   MoneyReport:
     type: object
@@ -411,7 +419,12 @@ paths:
           required: true
           in: body
           schema:
-            $ref: '#/definitions/CollectionReport'
+            type: object
+            required:
+              - id
+            properties:
+              id:
+                type: integer
       responses:
         204: 
           description: OK
