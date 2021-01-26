@@ -138,7 +138,13 @@ func main() { //nolint:gocyclo
 	var db *sqlx.DB
 	var err error
 	count := 0
-	if !dbChange {
+	if dbChange {
+		errc := make(chan error)
+		go connectMemDB(db, errc)
+		if err := <-errc; err != nil {
+			log.Fatal(err)
+		}
+	} else {
 		for db == nil {
 			ctx, cancel := context.WithTimeout(context.Background(), connectTimeout)
 			db, err = connectDB(ctx)
@@ -148,11 +154,11 @@ func main() { //nolint:gocyclo
 			count++
 			cancel()
 		}
-	}
-	errc := make(chan error)
-	go run(db, errc)
-	if err := <-errc; err != nil {
-		log.Fatal(err)
+		errc := make(chan error)
+		go run(db, errc)
+		if err := <-errc; err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	log.Info("finished", "version", ver)
@@ -183,6 +189,37 @@ func connectDB(ctx context.Context) (*sqlx.DB, error) {
 	}
 
 	return sqlx.NewDb(db, "postgres"), nil
+}
+
+func connectMemDB(db *sqlx.DB, errc chan<- error) {
+
+	var repo app.Repo
+	log.Info("USING MEM DB")
+	repo = memdb.New()
+
+	kasse := svckasse.New(cfg.kasse)
+	weather, errWeatherSvc := svcweather.Instance(
+		&svcweather.APIConfig{
+			BaseURL: def.OpenWeatherBaseURL,
+			APIKey:  def.OpenWeatherAPIKey,
+		},
+		&svcweather.APIConfig{
+			BaseURL: def.IpifyBaseURL,
+			APIKey:  def.IpifyAPIKey,
+		})
+	if errWeatherSvc != nil {
+		// do something
+	}
+
+	appl := app.New(repo, kasse, weather)
+
+	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo)
+	if err != nil {
+		errc <- err
+		return
+	}
+	log.Info("serve Swagger REST protocol", def.LogHost, cfg.extapi.Host, def.LogPort, cfg.extapi.Port)
+	errc <- extsrv.Serve()
 }
 
 func run(db *sqlx.DB, errc chan<- error) {
