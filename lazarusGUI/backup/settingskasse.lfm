@@ -1,12 +1,12 @@
 object settingsKasse: TsettingsKasse
   Left = 834
   Height = 250
-  Top = 641
+  Top = 564
   Width = 320
   Caption = 'Kasse settings'
   ClientHeight = 250
   ClientWidth = 320
-  LCLVersion = '2.0.6.0'
+  LCLVersion = '2.0.10.0'
   object btnClose: TButton
     Left = 8
     Height = 73
@@ -18,7 +18,7 @@ object settingsKasse: TsettingsKasse
   end
   object labelTAX: TLabel
     Left = 8
-    Height = 15
+    Height = 17
     Top = 8
     Width = 26
     Caption = 'TAX'
@@ -26,7 +26,7 @@ object settingsKasse: TsettingsKasse
   end
   object labelReceiptItem: TLabel
     Left = 8
-    Height = 15
+    Height = 17
     Top = 48
     Width = 82
     Caption = 'ReceiptItem'
@@ -34,7 +34,7 @@ object settingsKasse: TsettingsKasse
   end
   object textReceiptItem: TEdit
     Left = 104
-    Height = 33
+    Height = 27
     Top = 48
     Width = 208
     TabOrder = 1
@@ -42,7 +42,7 @@ object settingsKasse: TsettingsKasse
   end
   object comboBoxTAX: TComboBox
     Left = 104
-    Height = 33
+    Height = 29
     Top = 8
     Width = 208
     ItemHeight = 0
@@ -57,7 +57,7 @@ object settingsKasse: TsettingsKasse
   end
   object textCashier: TEdit
     Left = 104
-    Height = 33
+    Height = 27
     Top = 88
     Width = 208
     TabOrder = 3
@@ -65,23 +65,15 @@ object settingsKasse: TsettingsKasse
   end
   object labelCashier: TLabel
     Left = 8
-    Height = 15
+    Height = 17
     Top = 88
     Width = 50
     Caption = 'Cashier'
     ParentColor = False
   end
-  object textCashierINN: TEdit
-    Left = 104
-    Height = 33
-    Top = 128
-    Width = 208
-    TabOrder = 4
-    Text = 'textCashierINN'
-  end
   object labelCashierINN: TLabel
     Left = 8
-    Height = 15
+    Height = 17
     Top = 128
     Width = 76
     Caption = 'CashierINN'
@@ -94,6 +86,18 @@ object settingsKasse: TsettingsKasse
     Width = 140
     Caption = 'Save'
     OnClick = btnSaveClick
+    TabOrder = 4
+  end
+  object textCashierINN: TMaskEdit
+    Left = 104
+    Height = 27
+    Top = 128
+    Width = 104
+    CharCase = ecNormal
+    MaxLength = 12
     TabOrder = 5
+    EditMask = '999999999999;1;_'
+    Text = '            '
+    SpaceChar = '_'
   end
 end

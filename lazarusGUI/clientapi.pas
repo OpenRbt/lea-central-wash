@@ -480,11 +480,13 @@ begin
         AddHeader('Content-Type', 'application/json');
         RequestBody := TStringStream.Create(postJson.AsJSON);
         RequestAnswer := Post(serverEndpoint + 'kasse');
-
-        if ResponseStatusCode <> 200 then
-        begin
-          raise Exception.Create(IntToStr(ResponseStatusCode));
-        end;
+        if ResponseStatusCode = 404 then begin
+          Kasse.Tax := 'TAX_NO';
+          Kasse.receiptItemName := 'CAR WASHING';
+          Kasse.cashier := 'NEW CASHIER';
+          Kasse.cashierINN := '000000000000';
+        end else
+            if ResponseStatusCode <> 200 then raise Exception.Create(IntToStr(ResponseStatusCode));
 
         AnswerJson := GetJson(RequestAnswer);
 
@@ -492,10 +494,10 @@ begin
 
         if tmp <> nil then
         begin
-          Kasse.Tax := AnswerJson.GetPath('tax').AsString;
-          Kasse.receiptItemName := AnswerJson.GetPath('receiptItemName').AsString;
-          Kasse.cashier := AnswerJson.GetPath('cashier').AsString;
-          Kasse.cashierINN := AnswerJson.GetPath('cashierINN').AsString;
+          if AnswerJson.FindPath('tax') <> nil then Kasse.Tax := AnswerJson.GetPath('tax').AsString;
+          if AnswerJson.FindPath('receiptItemName') <> nil then Kasse.receiptItemName := AnswerJson.GetPath('receiptItemName').AsString;
+          if AnswerJson.FindPath('cashier') <> nil then Kasse.cashier := AnswerJson.GetPath('cashier').AsString;
+          if AnswerJson.FindPath('cashierINN') <> nil then Kasse.cashierINN := AnswerJson.GetPath('cashierINN').AsString;
         end
         else
         begin

@@ -5,8 +5,8 @@ unit settingsKasse;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ClientAPI;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
+  MaskEdit, ClientAPI;
 
 type
 
@@ -18,17 +18,17 @@ type
     comboBoxTAX: TComboBox;
     labelCashier: TLabel;
     labelCashierINN: TLabel;
+    textCashierINN: TMaskEdit;
     textReceiptItem: TEdit;
     labelTAX: TLabel;
     labelReceiptItem: TLabel;
     textCashier: TEdit;
-    textCashierINN: TEdit;
     procedure btnCloseClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure LoadSettings();
     procedure CheckChanges();
-    procedure SaveSettings();
+    function SaveSettings():boolean;
   private
 
   public
@@ -67,11 +67,11 @@ begin
   end
   else
   begin
-    btnCloseClick(self);
+    close;
   end;
 end;
 
-procedure TsettingsKasse.SaveSettings();
+function TsettingsKasse.SaveSettings():boolean;
 var
   Kasse: KasseInfo;
   status: boolean;
@@ -80,8 +80,13 @@ begin
   Kasse.cashierINN := textCashierINN.Text;
   kasse.Tax := comboBoxTax.Items[comboboxTax.ItemIndex];
   kasse.receiptItemName := textReceiptItem.Text;
-
+  if (Kasse.cashier <> '') and (length(Kasse.cashierINN)<>12) then begin
+    ShowMessage('not correct cashiers inn');
+    Result:= false;
+    exit;
+  end;
   client.SetKasse(kasse, status);
+  Result:=status;
 end;
 
 procedure TsettingsKasse.btnCloseClick(Sender: TObject);
@@ -91,8 +96,11 @@ begin
 end;
 
 procedure TsettingsKasse.btnSaveClick(Sender: TObject);
+var
+  status:boolean;
 begin
-  SaveSettings();
+  status:=SaveSettings();
+  if status then close;
 end;
 
 procedure TsettingsKasse.CheckChanges();
