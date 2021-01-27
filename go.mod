@@ -1,4 +1,4 @@
-module github.com/OpenRbt/lea-central-wash
+module github.com/DiaElectronics/lea-central-wash
 
 go 1.13
 
