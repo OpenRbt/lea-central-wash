@@ -115,6 +115,7 @@ func (a *app) Ping(id StationID) StationData {
 	station.LastPing = time.Now()
 	station.ServiceMoney = 0
 	station.OpenStation = false
+	station.HasChanged = false
 	a.stations[id] = station
 	return oldStation
 }

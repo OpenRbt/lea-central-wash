@@ -320,9 +320,13 @@ func init() {
               "type": "object",
               "required": [
                 "serviceAmount",
-                "openStation"
+                "openStation",
+                "hasChanged"
               ],
               "properties": {
+                "hasChanged": {
+                  "type": "boolean"
+                },
                 "openStation": {
                   "type": "boolean"
                 },
@@ -1471,9 +1475,13 @@ func init() {
               "type": "object",
               "required": [
                 "serviceAmount",
-                "openStation"
+                "openStation",
+                "hasChanged"
               ],
               "properties": {
+                "hasChanged": {
+                  "type": "boolean"
+                },
                 "openStation": {
                   "type": "boolean"
                 },

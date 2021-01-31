@@ -128,6 +128,10 @@ swagger:model PingOKBody
 */
 type PingOKBody struct {
 
+	// has changed
+	// Required: true
+	HasChanged *bool `json:"hasChanged"`
+
 	// open station
 	// Required: true
 	OpenStation *bool `json:"openStation"`
@@ -141,6 +145,10 @@ type PingOKBody struct {
 func (o *PingOKBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := o.validateHasChanged(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validateOpenStation(formats); err != nil {
 		res = append(res, err)
 	}
@@ -152,6 +160,15 @@ func (o *PingOKBody) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (o *PingOKBody) validateHasChanged(formats strfmt.Registry) error {
+
+	if err := validate.Required("pingOK"+"."+"hasChanged", "body", o.HasChanged); err != nil {
+		return err
+	}
+
 	return nil
 }
 

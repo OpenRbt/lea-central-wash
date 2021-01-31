@@ -530,10 +530,13 @@ paths:
             required:
               - serviceAmount
               - openStation
+              - hasChanged
             properties:
               serviceAmount:
                 type: integer
               openStation:
+                type: boolean
+              hasChanged:
                 type: boolean
     get:
       operationId: "getPing"

@@ -112,6 +112,20 @@ type (
 	// WeatherSvc is an interface for the weather service
 	WeatherSvc interface {
 		CurrentTemperature() (float64, error)
+		RegisterProvider(svcp WeatherSvcProvider, priority int) error
+	}
+	// WeatherSvcProvider is an interface for the weather service provider
+	WeatherSvcProvider interface {
+		CurrentTemperature() (float64, error)
+		IsInitialized() bool
+		Initialize(config *APIKeyConfig) error
+		Name() string
+	}
+	// APIKeyConfig values
+	APIKeyConfig struct {
+		ProviderName string
+		BaseURL      string
+		APIKey       string
 	}
 )
 

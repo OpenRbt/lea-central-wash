@@ -200,22 +200,27 @@ func run(db *sqlx.DB, errc chan<- error) {
 
 	kasse := svckasse.New(cfg.kasse)
 
-	// providerConfig := &svcweather.APIKeyConfig{}
-	// providerConfig.Name = app.OpenWeather
-	// providerConfig.BaseURL = def.OpenWeatherBaseURL
-	// providerConfig.APIKey = def.OpenWeatherAPIKey
-	// coordsConfig := &svcweather.APIKeyConfig{}
-	// coordsConfig.Name = app.Ipify
-	// coordsConfig.BaseURL = def.IpifyBaseURL
-	// coordsConfig.APIKey = def.IpifyAPIKey
-
-	providerConfig := &svcweather.APIKeyConfig{}
-	providerConfig.Name = app.MeteoInfo
-	providerConfig.BaseURL = def.MeteoInfoBaseURL
-
-	weather, errWeatherSvc := svcweather.Instance(providerConfig, nil)
-	if errWeatherSvc != nil {
-		// do something
+	weather := svcweather.Instance()
+	meteoInfoConfig := &app.APIKeyConfig{}
+	meteoInfoConfig.ProviderName = app.MeteoInfo
+	meteoInfoConfig.BaseURL = def.MeteoInfoBaseURL
+	meteoInfo, errMeteo := svcweather.New(meteoInfoConfig)
+	if errMeteo == nil {
+		weather.RegisterProvider(meteoInfo, 0)
+	}
+	openWeatherConfig := &app.APIKeyConfig{}
+	openWeatherConfig.ProviderName = app.OpenWeather
+	openWeatherConfig.BaseURL = def.OpenWeatherBaseURL
+	openWeatherConfig.APIKey = def.OpenWeatherAPIKey
+	openWeather, errOpenWeather := svcweather.New(openWeatherConfig)
+	if errOpenWeather == nil {
+		coordsConfig := &app.APIKeyConfig{}
+		coordsConfig.ProviderName = app.Ipify
+		coordsConfig.BaseURL = def.IpifyBaseURL
+		coordsConfig.APIKey = def.IpifyAPIKey
+		if err := openWeather.Initialize(coordsConfig); err == nil {
+			weather.RegisterProvider(openWeather, 1)
+		}
 	}
 
 	appl := app.New(repo, kasse, weather)

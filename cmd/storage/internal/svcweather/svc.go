@@ -39,36 +39,18 @@ type timeValPair struct {
 
 type service struct {
 	lastMeasurement timeValPair
-	provider        weatherProviderInterface
-}
-
-// APIConfig values
-type APIConfig struct {
-	Name    string
-	BaseURL string
-}
-
-// APIKeyConfig values
-type APIKeyConfig struct {
-	APIConfig
-	APIKey string
-}
-
-type weatherProviderInterface interface {
-	CurrentTemperature() (float64, error)
-	IsInitialized() bool
-	Initialize() error
+	providers       map[int]app.WeatherSvcProvider
 }
 
 type openWeatherProvider struct {
-	APIKeyConfig
+	app.APIKeyConfig
 	ipV4addr ipV4addr
 	lat      float64
 	lng      float64
 }
 
 type meteoInfoProvider struct {
-	APIConfig
+	app.APIKeyConfig
 }
 
 type coordinates interface {
@@ -79,81 +61,95 @@ type ipapi struct { // throws RateLimited error all too often on a free plan
 }
 
 type ipify struct { // 1000 requests per month on free subscription. Requires environment variable IPIFY_API_KEY to be set
-	BaseURL string
-	APIKey  string
+	app.APIKeyConfig
 }
 
-var ipifyClient = &ipify{}
-
 // Instance creates and returns an instance of a WeatherSvc.
-func Instance(weatherProviderConfig *APIKeyConfig, coordsConfig *APIKeyConfig) (app.WeatherSvc, error) {
+func Instance() app.WeatherSvc {
 	newInstance := &service{}
+	newInstance.providers = make(map[int]app.WeatherSvcProvider)
+	return newInstance
+}
 
+// New returns a new weather service provider
+func New(weatherProviderConfig *app.APIKeyConfig) (app.WeatherSvcProvider, error) {
 	if weatherProviderConfig == nil {
 		log.Info("Missing a weather provider config")
-		return newInstance, ErrBadConfig
+		return nil, ErrBadConfig
 	}
 	if weatherProviderConfig.BaseURL == "" {
 		log.Info("Missing a weather provider base URL")
-		return newInstance, ErrBadConfig
+		return nil, ErrBadConfig
+	}
+	if weatherProviderConfig.ProviderName == "" {
+		log.Info("Missing a weather provider name")
+		return nil, ErrBadConfig
 	}
 
-	switch weatherProviderConfig.Name {
+	switch weatherProviderConfig.ProviderName {
 	case app.OpenWeather:
 		if weatherProviderConfig.APIKey == "" {
 			log.Info("Missing OpenWeatherAPIKey")
-			return newInstance, ErrBadConfig
+			return nil, ErrBadConfig
 		}
 		provider := &openWeatherProvider{}
-		provider.Name = weatherProviderConfig.Name
+		provider.ProviderName = weatherProviderConfig.ProviderName
 		provider.BaseURL = weatherProviderConfig.BaseURL
 		provider.APIKey = weatherProviderConfig.APIKey
-		newInstance.provider = provider
-		break
+		return provider, nil
 	case app.MeteoInfo:
 		provider := &meteoInfoProvider{}
-		provider.Name = weatherProviderConfig.Name
+		provider.ProviderName = weatherProviderConfig.ProviderName
 		provider.BaseURL = weatherProviderConfig.BaseURL
-		newInstance.provider = provider
-		break
+		return provider, nil
 	default:
 		log.Info("Missing a valid weather provider configuration")
-		return newInstance, ErrBadConfig
+		return nil, ErrBadConfig
 	}
+}
 
-	if coordsConfig != nil {
-		ipifyClient.BaseURL = coordsConfig.BaseURL
-		ipifyClient.APIKey = coordsConfig.APIKey
+func (s *service) RegisterProvider(provider app.WeatherSvcProvider, priority int) error {
+	if provider == nil {
+		log.Info("Missing a weather service provider config")
+		return ErrBadConfig
 	}
-
-	return newInstance, nil
+	if priority < 0 {
+		log.Info("Priority must be a positive integer")
+		return ErrBadConfig
+	}
+	if _, hasProvider := s.providers[priority]; !hasProvider {
+		log.Info(fmt.Sprintf("Registered %s weather provider", provider.Name()))
+		s.providers[priority] = provider
+	}
+	return nil
 }
 
 // CurrentTemperature returns current temperature based on the client's IP address
 func (s *service) CurrentTemperature() (float64, error) {
-	if !s.provider.IsInitialized() {
-		err := s.provider.Initialize()
-		if err != nil {
-			return 0, err
+	var val float64
+	var err error
+	for index := 0; index < len(s.providers); index++ {
+		provider := s.providers[index]
+		if !provider.IsInitialized() {
+			log.Info(fmt.Sprintf("Provider %s has not been initialized", provider.Name()))
+			continue
 		}
+
+		currentTime := time.Now()
+		if (currentTime.Unix() - s.lastMeasurement.time.Unix()) <= MeasurementInterval {
+			return s.lastMeasurement.value, nil
+		}
+		log.Info(fmt.Sprintf("Using %s weather provider", provider.Name()))
+		val, err = provider.CurrentTemperature()
+
+		if err == nil {
+			log.Printf("Temperature at %s is %f", currentTime.String(), val)
+			s.lastMeasurement.value = val
+			s.lastMeasurement.time = currentTime
+			return val, err
+		}
+		log.Info(err.Error())
 	}
-
-	currentTime := time.Now()
-	if (currentTime.Unix() - s.lastMeasurement.time.Unix()) <= MeasurementInterval {
-		return s.lastMeasurement.value, nil
-	}
-
-	val, err := s.provider.CurrentTemperature()
-
-	if err != nil {
-		return val, err
-	}
-
-	log.Printf("Temperature at %s is %f\n", currentTime.String(), val)
-
-	s.lastMeasurement.value = val
-	s.lastMeasurement.time = currentTime
-
 	return val, err
 }
 
@@ -195,23 +191,31 @@ func (p *meteoInfoProvider) CurrentTemperature() (float64, error) {
 	})
 	if errParse != nil {
 		log.Info(fmt.Sprintf("Property 'Температура воздуха' not found in the response from %s", path))
-		return 0, err
+		return 0, errParse
 	}
 
 	return temp, nil
+}
+
+func (p *meteoInfoProvider) Name() string {
+	return p.ProviderName
 }
 
 func (p *meteoInfoProvider) IsInitialized() bool {
 	return true
 }
 
-func (p *meteoInfoProvider) Initialize() error {
+func (p *meteoInfoProvider) Initialize(config *app.APIKeyConfig) error {
 	return nil
 }
 
+func (p *openWeatherProvider) Name() string {
+	return p.ProviderName
+}
+
 // CurrentTemperature returns current temperature based on the client's IP address
-func (s *openWeatherProvider) CurrentTemperature() (float64, error) {
-	path := fmt.Sprintf("%s?units=metric&lat=%f&lon=%f&appid=%s", s.BaseURL, s.lat, s.lng, s.APIKey)
+func (p *openWeatherProvider) CurrentTemperature() (float64, error) {
+	path := fmt.Sprintf("%s?units=metric&lat=%f&lon=%f&appid=%s", p.BaseURL, p.lat, p.lng, p.APIKey)
 	weatherRequest, errHTTPNet := http.NewRequest("GET", path, nil)
 	if errHTTPNet != nil {
 		return 0, errHTTPNet
@@ -224,12 +228,12 @@ func (s *openWeatherProvider) CurrentTemperature() (float64, error) {
 	}
 
 	if errHTTPReq != nil {
-		log.Info(fmt.Sprintf("Failed HTTP request to %s", s.BaseURL))
+		log.Info(fmt.Sprintf("Failed HTTP request to %s", p.BaseURL))
 		return 0, ErrHTTPRequest
 	}
 
 	if weatherResponse.StatusCode != http.StatusOK {
-		log.Info(fmt.Sprintf("Bad status code %d returned by %s", weatherResponse.StatusCode, s.BaseURL))
+		log.Info(fmt.Sprintf("Bad status code %d returned by %s", weatherResponse.StatusCode, p.BaseURL))
 		return 0, ErrBadStatusCode
 	}
 
@@ -241,51 +245,56 @@ func (s *openWeatherProvider) CurrentTemperature() (float64, error) {
 
 	json.Unmarshal(weatherResponseBody, &result)
 	if result == nil {
-		log.Info(fmt.Sprintf("No payload returned by %s", s.BaseURL))
+		log.Info(fmt.Sprintf("No payload returned by %s", p.BaseURL))
 		return 0, ErrNoPayload
 	}
 
 	main, hasMain := result["main"].(map[string]interface{})
 	if !hasMain {
-		log.Info(fmt.Sprintf("Property 'main' not found in the response from %s", s.BaseURL))
+		log.Info(fmt.Sprintf("Property 'main' not found in the response from %s", p.BaseURL))
 		return 0, ErrPropertyNotFound
 	}
 
 	temp, hasTemp := main["temp"].(float64)
 	if !hasTemp {
-		log.Info(fmt.Sprintf("Property 'temp' not found in the response from %s", s.BaseURL))
+		log.Info(fmt.Sprintf("Property 'temp' not found in the response from %s", p.BaseURL))
 		return 0, ErrPropertyNotFound
 	}
 
 	return temp, nil
 }
 
-func (s *openWeatherProvider) IsInitialized() bool {
-	return s.ipV4addr != ""
+func (p *openWeatherProvider) IsInitialized() bool {
+	return p.ipV4addr != ""
 }
 
-func (s *openWeatherProvider) Initialize() error {
+func (p *openWeatherProvider) Initialize(coordsConfig *app.APIKeyConfig) error {
 	ip, ipErr := clientIP()
 	if ipErr != nil {
 		return ipErr
 	}
 
-	s.ipV4addr = ip
+	p.ipV4addr = ip
 
-	coords := &ipapi{}
 	var lat float64
 	var lng float64
 	var errCoord error
 
-	lat, lng, errCoord = coords.LatLng(ip)
-	if errCoord != nil {
+	if coordsConfig != nil {
+		ipifyClient := &ipify{}
+		ipifyClient.BaseURL = coordsConfig.BaseURL
+		ipifyClient.APIKey = coordsConfig.APIKey
 		lat, lng, errCoord = ipifyClient.LatLng(ip)
 		if errCoord != nil {
-			return errCoord
+			coords := &ipapi{}
+			lat, lng, errCoord = coords.LatLng(ip)
 		}
 	}
-	s.lat = lat
-	s.lng = lng
+	if errCoord != nil {
+		return errCoord
+	}
+	p.lat = lat
+	p.lng = lng
 
 	return nil
 }
