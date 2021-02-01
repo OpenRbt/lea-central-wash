@@ -8,6 +8,15 @@ basePath: /
 schemes:
   - http
 
+securityDefinitions:
+  pinCode:
+    type: apiKey
+    in: header
+    name: Pin
+
+security:
+  - pinCode: []
+
 definitions:
         
   StatusReport:
@@ -205,6 +214,7 @@ paths:
   /station-report-dates:
     post:
       operationId: "stationReportDates"
+      security: []
       parameters:
         - name: args
           required: true
@@ -236,6 +246,7 @@ paths:
   /station-report-current-money:
     post:
       operationId: "stationReportCurrentMoney"
+      security: []
       parameters:
         - name: args
           required: true
@@ -260,6 +271,7 @@ paths:
   /status:
     get:
       operationId: "status"
+      security: []
       responses:
         200:
           description: OK
@@ -271,6 +283,7 @@ paths:
   /status-collection:
     get:
       operationId: "statusCollection"
+      security: []      
       responses:
         200:
           description: OK
@@ -304,6 +317,7 @@ paths:
   /set-station:
     post:
       operationId: "setStation"
+      security: []
       parameters:
         - name: args
           required: true
@@ -334,6 +348,7 @@ paths:
   /del-station:
     post:
       operationId: "delStation"
+      security: []
       parameters:
         - name: args
           required: true
@@ -356,6 +371,7 @@ paths:
   /save-relay:
     post:
       operationId: "saveRelay"
+      security: []
       parameters:
         - name: args
           required: true
@@ -373,6 +389,7 @@ paths:
   /load-relay:
     post:
       operationId: "loadRelay"
+      security: []
       parameters:
         - name: args
           required: true
@@ -397,6 +414,7 @@ paths:
   /save-money:
     post:
       operationId: "saveMoney"
+      security: []
       parameters:
         - name: args
           required: true
@@ -414,6 +432,7 @@ paths:
   /save-collection:
     post:
       operationId: "saveCollection"
+      security: []
       parameters:
         - name: args
           required: true
@@ -436,6 +455,7 @@ paths:
   /load-money:
     post:
       operationId: "loadMoney"
+      security: []
       parameters:
         - name: args
           required: true
@@ -460,6 +480,7 @@ paths:
   /save:
     post:
       operationId: "save"
+      security: []
       parameters:
         - name: args
           required: true
@@ -484,6 +505,7 @@ paths:
   /load:
     post:
       operationId: "load"
+      security: []
       parameters:
         - name: args
           required: true
@@ -511,6 +533,7 @@ paths:
   /ping:
     post:
       operationId: "ping"
+      security: []
       parameters:
         - name: args
           required: true
@@ -537,12 +560,14 @@ paths:
                 type: boolean
     get:
       operationId: "getPing"
+      security: []
       responses:
         200:
           description: OK
   /info:
     get:
       operationId: "info"
+      security: []
       responses:
         200:
           description: OK
@@ -551,6 +576,7 @@ paths:
   /station-by-hash:
     post:
       operationId: "stationByHash"
+      security: []
       parameters:
         - name: args
           required: true
@@ -572,6 +598,7 @@ paths:
   /save-if-not-exists:
     post:
       operationId: "saveIfNotExists"
+      security: []
       parameters:
         - name: args
           required: true
@@ -596,6 +623,7 @@ paths:
   /stations-variables:
     post:
       operationId: "stationsVariables"
+      security: []
       responses:
         200:
           description: OK
@@ -608,6 +636,7 @@ paths:
   /open-station:
     post:
       operationId: "openStation"
+      security: []
       parameters:
         - name: args
           required: true
@@ -630,6 +659,7 @@ paths:
   /programs:
     post:
       operationId: "programs"
+      security: []
       parameters:
         - name: args
           required: true
@@ -655,6 +685,7 @@ paths:
   /set-program-name:
     post:
       operationId: "setProgramName"
+      security: []
       parameters:
         - name: args
           required: true
@@ -684,6 +715,7 @@ paths:
   /program-relays:
     post:
       operationId: "programRelays"
+      security: []
       parameters:
         - name: args
           required: true
@@ -716,6 +748,7 @@ paths:
   /set-program-relays:
     post:
       operationId: "setProgramRelays"
+      security: []
       parameters:
         - name: args
           required: true
@@ -746,6 +779,7 @@ paths:
   /kasse:
     post:
       operationId: "kasse"
+      security: []
       responses:
         200:
           description: OK
@@ -758,6 +792,7 @@ paths:
   /set-kasse:
     post:
       operationId: "setKasse"
+      security: []
       parameters:
         - name: args
           required: true

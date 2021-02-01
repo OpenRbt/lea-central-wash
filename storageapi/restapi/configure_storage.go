@@ -9,10 +9,11 @@ import (
 	errors "github.com/go-openapi/errors"
 	runtime "github.com/go-openapi/runtime"
 
+	"github.com/DiaElectronics/lea-central-wash/storageapi"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
 )
 
-//go:generate swagger generate server --target ../../storageapi --name Storage --spec ../swagger.yml --api-package op --model-package model --exclude-main --strict
+//go:generate swagger generate server --target ../../storageapi --name Storage --spec ../swagger.yml --api-package op --model-package model --principal storageapi.Profile --exclude-main --strict
 
 func configureFlags(api *op.StorageAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
@@ -32,7 +33,17 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	api.AddServiceAmountHandler = op.AddServiceAmountHandlerFunc(func(params op.AddServiceAmountParams) op.AddServiceAmountResponder {
+	// Applies when the "Pin" header is set
+	api.PinCodeAuth = func(token string) (*storageapi.Profile, error) {
+		return nil, errors.NotImplemented("api key auth (pinCode) Pin from header param [Pin] has not yet been implemented")
+	}
+
+	// Set your custom authorizer if needed. Default one is security.Authorized()
+	// Expected interface runtime.Authorizer
+	//
+	// Example:
+	// api.APIAuthorizer = security.Authorized()
+	api.AddServiceAmountHandler = op.AddServiceAmountHandlerFunc(func(params op.AddServiceAmountParams, principal *storageapi.Profile) op.AddServiceAmountResponder {
 		return op.AddServiceAmountNotImplemented()
 	})
 	api.DelStationHandler = op.DelStationHandlerFunc(func(params op.DelStationParams) op.DelStationResponder {

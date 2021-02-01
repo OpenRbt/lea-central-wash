@@ -4,6 +4,8 @@ import (
 	"errors"
 	"sync"
 	"time"
+
+	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
 
 const durationStationOffline = time.Second * 10
@@ -13,6 +15,9 @@ const (
 	TestHash      = "TEST"
 	TestStationID = 999
 )
+
+// Auth is a synonym for convenience.
+type Auth = storageapi.Profile
 
 // Key aliases
 const (
@@ -40,7 +45,7 @@ type (
 		// DBMS info method
 		Info() string
 
-		AddServiceAmount(stationID StationID, money int) error
+		AddServiceAmount(auth Auth, stationID StationID, money int) error
 		OpenStation(StationID) error
 
 		Set(station StationData) error
@@ -198,4 +203,13 @@ type Kasse struct {
 	TaxType         string
 	CashierFullName string
 	CashierINN      string
+}
+
+type Profile struct {
+	ID   int
+	Name string
+}
+
+func (p Profile) Get() Profile {
+	return p
 }

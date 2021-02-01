@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/auth"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
 	"github.com/go-openapi/loads"
@@ -35,14 +36,16 @@ type service struct {
 	unknownHash   map[string]time.Time
 	stationsMutex sync.Mutex
 	repo          repo
+	authAccess    auth.Check
 }
 
 // NewServer returns Swagger server configured to listen on the TCP network
 // address cfg.Host:cfg.Port and handle requests on incoming connections.
-func NewServer(appl app.App, cfg Config, repo repo) (*restapi.Server, error) {
+func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*restapi.Server, error) {
 	svc := &service{
-		app:  appl,
-		repo: repo,
+		app:        appl,
+		repo:       repo,
+		authAccess: authAccess,
 	}
 	ok, err := svc.repo.CheckDB()
 	if err != nil || !ok {
@@ -61,7 +64,7 @@ func NewServer(appl app.App, cfg Config, repo repo) (*restapi.Server, error) {
 	swaggerSpec.Spec().BasePath = cfg.BasePath
 	api := op.NewStorageAPI(swaggerSpec)
 	api.Logger = structlog.New(structlog.KeyUnit, "swagger").Printf
-
+	api.PinCodeAuth = authAccess.CheckAuth
 	api.LoadHandler = op.LoadHandlerFunc(svc.load)
 	api.PingHandler = op.PingHandlerFunc(svc.ping)
 	api.GetPingHandler = op.GetPingHandlerFunc(svc.getPing)

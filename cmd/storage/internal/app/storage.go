@@ -134,7 +134,7 @@ func (a *app) Get(id StationID) (StationData, error) {
 
 // SetServiceAmount changes service money in map to the specified value
 // Returns ErrNotFound, if id is not valid, else nil
-func (a *app) AddServiceAmount(id StationID, money int) error {
+func (a *app) AddServiceAmount(auth Auth, id StationID, money int) error {
 	data, err := a.Get(id)
 	if err != nil && data.ID < 1 {
 		log.Info("Can't set service money - station is unknown")
