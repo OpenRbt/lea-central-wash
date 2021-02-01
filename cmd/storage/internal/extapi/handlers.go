@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/storageapi"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
 	"github.com/pkg/errors"
@@ -296,7 +295,7 @@ func (svc *service) statusCollection(params op.StatusCollectionParams) op.Status
 	return op.NewStatusCollectionOK().WithPayload(apiStatusCollectionReport(collection))
 }
 
-func (svc *service) addServiceAmount(params op.AddServiceAmountParams, auth *storageapi.Profile) op.AddServiceAmountResponder {
+func (svc *service) addServiceAmount(params op.AddServiceAmountParams, auth *app.Auth) op.AddServiceAmountResponder {
 	log.Debug("add service ammount", "user", auth.Name)
 	log.Info("add service ammount: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 

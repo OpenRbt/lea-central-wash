@@ -204,12 +204,3 @@ type Kasse struct {
 	CashierFullName string
 	CashierINN      string
 }
-
-type Profile struct {
-	ID   int
-	Name string
-}
-
-func (p Profile) Get() Profile {
-	return p
-}
