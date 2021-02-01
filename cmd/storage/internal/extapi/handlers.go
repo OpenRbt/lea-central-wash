@@ -295,14 +295,17 @@ func (svc *service) statusCollection(params op.StatusCollectionParams) op.Status
 	return op.NewStatusCollectionOK().WithPayload(apiStatusCollectionReport(collection))
 }
 
-func (svc *service) addServiceAmount(params op.AddServiceAmountParams) op.AddServiceAmountResponder {
+func (svc *service) addServiceAmount(params op.AddServiceAmountParams, auth *app.Auth) op.AddServiceAmountResponder {
+	log.Debug("add service ammount", "user", auth.Name)
+	log.Info("add service ammount: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+
 	stationID, err := svc.getID(string(params.Args.Hash))
 	if err != nil {
 		log.Info("add service ammount: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewAddServiceAmountNotFound()
 	}
 
-	err = svc.app.AddServiceAmount(stationID, int(params.Args.Amount))
+	err = svc.app.AddServiceAmount(*auth, stationID, int(params.Args.Amount))
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewAddServiceAmountNoContent()

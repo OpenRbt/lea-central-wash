@@ -70,6 +70,7 @@ func init() {
     },
     "/del-station": {
       "post": {
+        "security": [],
         "operationId": "delStation",
         "parameters": [
           {
@@ -104,6 +105,7 @@ func init() {
     },
     "/info": {
       "get": {
+        "security": [],
         "operationId": "info",
         "responses": {
           "200": {
@@ -117,6 +119,7 @@ func init() {
     },
     "/kasse": {
       "post": {
+        "security": [],
         "operationId": "kasse",
         "responses": {
           "200": {
@@ -136,6 +139,7 @@ func init() {
     },
     "/load": {
       "post": {
+        "security": [],
         "operationId": "load",
         "parameters": [
           {
@@ -178,6 +182,7 @@ func init() {
     },
     "/load-money": {
       "post": {
+        "security": [],
         "operationId": "loadMoney",
         "parameters": [
           {
@@ -215,6 +220,7 @@ func init() {
     },
     "/load-relay": {
       "post": {
+        "security": [],
         "operationId": "loadRelay",
         "parameters": [
           {
@@ -252,6 +258,7 @@ func init() {
     },
     "/open-station": {
       "post": {
+        "security": [],
         "operationId": "openStation",
         "parameters": [
           {
@@ -286,6 +293,7 @@ func init() {
     },
     "/ping": {
       "get": {
+        "security": [],
         "operationId": "getPing",
         "responses": {
           "200": {
@@ -294,6 +302,7 @@ func init() {
         }
       },
       "post": {
+        "security": [],
         "operationId": "ping",
         "parameters": [
           {
@@ -337,6 +346,7 @@ func init() {
     },
     "/program-relays": {
       "post": {
+        "security": [],
         "operationId": "programRelays",
         "parameters": [
           {
@@ -385,6 +395,7 @@ func init() {
     },
     "/programs": {
       "post": {
+        "security": [],
         "operationId": "programs",
         "parameters": [
           {
@@ -423,6 +434,7 @@ func init() {
     },
     "/save": {
       "post": {
+        "security": [],
         "operationId": "save",
         "parameters": [
           {
@@ -461,6 +473,7 @@ func init() {
     },
     "/save-collection": {
       "post": {
+        "security": [],
         "operationId": "saveCollection",
         "parameters": [
           {
@@ -495,6 +508,7 @@ func init() {
     },
     "/save-if-not-exists": {
       "post": {
+        "security": [],
         "operationId": "saveIfNotExists",
         "parameters": [
           {
@@ -533,6 +547,7 @@ func init() {
     },
     "/save-money": {
       "post": {
+        "security": [],
         "operationId": "saveMoney",
         "parameters": [
           {
@@ -559,6 +574,7 @@ func init() {
     },
     "/save-relay": {
       "post": {
+        "security": [],
         "operationId": "saveRelay",
         "parameters": [
           {
@@ -585,6 +601,7 @@ func init() {
     },
     "/set-kasse": {
       "post": {
+        "security": [],
         "operationId": "setKasse",
         "parameters": [
           {
@@ -608,6 +625,7 @@ func init() {
     },
     "/set-program-name": {
       "post": {
+        "security": [],
         "operationId": "setProgramName",
         "parameters": [
           {
@@ -650,6 +668,7 @@ func init() {
     },
     "/set-program-relays": {
       "post": {
+        "security": [],
         "operationId": "setProgramRelays",
         "parameters": [
           {
@@ -694,6 +713,7 @@ func init() {
     },
     "/set-station": {
       "post": {
+        "security": [],
         "operationId": "setStation",
         "parameters": [
           {
@@ -740,6 +760,7 @@ func init() {
     },
     "/station-by-hash": {
       "post": {
+        "security": [],
         "operationId": "stationByHash",
         "parameters": [
           {
@@ -774,6 +795,7 @@ func init() {
     },
     "/station-report-current-money": {
       "post": {
+        "security": [],
         "operationId": "stationReportCurrentMoney",
         "parameters": [
           {
@@ -811,6 +833,7 @@ func init() {
     },
     "/station-report-dates": {
       "post": {
+        "security": [],
         "operationId": "stationReportDates",
         "parameters": [
           {
@@ -858,6 +881,7 @@ func init() {
     },
     "/stations-variables": {
       "post": {
+        "security": [],
         "operationId": "stationsVariables",
         "responses": {
           "200": {
@@ -877,6 +901,7 @@ func init() {
     },
     "/status": {
       "get": {
+        "security": [],
         "operationId": "status",
         "responses": {
           "200": {
@@ -893,6 +918,7 @@ func init() {
     },
     "/status-collection": {
       "get": {
+        "security": [],
         "operationId": "statusCollection",
         "responses": {
           "200": {
@@ -1166,7 +1192,19 @@ func init() {
         }
       }
     }
-  }
+  },
+  "securityDefinitions": {
+    "pinCode": {
+      "type": "apiKey",
+      "name": "Pin",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "pinCode": []
+    }
+  ]
 }`))
 	FlatSwaggerJSON = json.RawMessage([]byte(`{
   "consumes": [
@@ -1221,6 +1259,7 @@ func init() {
     },
     "/del-station": {
       "post": {
+        "security": [],
         "operationId": "delStation",
         "parameters": [
           {
@@ -1255,6 +1294,7 @@ func init() {
     },
     "/info": {
       "get": {
+        "security": [],
         "operationId": "info",
         "responses": {
           "200": {
@@ -1268,6 +1308,7 @@ func init() {
     },
     "/kasse": {
       "post": {
+        "security": [],
         "operationId": "kasse",
         "responses": {
           "200": {
@@ -1287,6 +1328,7 @@ func init() {
     },
     "/load": {
       "post": {
+        "security": [],
         "operationId": "load",
         "parameters": [
           {
@@ -1329,6 +1371,7 @@ func init() {
     },
     "/load-money": {
       "post": {
+        "security": [],
         "operationId": "loadMoney",
         "parameters": [
           {
@@ -1366,6 +1409,7 @@ func init() {
     },
     "/load-relay": {
       "post": {
+        "security": [],
         "operationId": "loadRelay",
         "parameters": [
           {
@@ -1403,6 +1447,7 @@ func init() {
     },
     "/open-station": {
       "post": {
+        "security": [],
         "operationId": "openStation",
         "parameters": [
           {
@@ -1437,6 +1482,7 @@ func init() {
     },
     "/ping": {
       "get": {
+        "security": [],
         "operationId": "getPing",
         "responses": {
           "200": {
@@ -1445,6 +1491,7 @@ func init() {
         }
       },
       "post": {
+        "security": [],
         "operationId": "ping",
         "parameters": [
           {
@@ -1488,6 +1535,7 @@ func init() {
     },
     "/program-relays": {
       "post": {
+        "security": [],
         "operationId": "programRelays",
         "parameters": [
           {
@@ -1536,6 +1584,7 @@ func init() {
     },
     "/programs": {
       "post": {
+        "security": [],
         "operationId": "programs",
         "parameters": [
           {
@@ -1574,6 +1623,7 @@ func init() {
     },
     "/save": {
       "post": {
+        "security": [],
         "operationId": "save",
         "parameters": [
           {
@@ -1612,6 +1662,7 @@ func init() {
     },
     "/save-collection": {
       "post": {
+        "security": [],
         "operationId": "saveCollection",
         "parameters": [
           {
@@ -1646,6 +1697,7 @@ func init() {
     },
     "/save-if-not-exists": {
       "post": {
+        "security": [],
         "operationId": "saveIfNotExists",
         "parameters": [
           {
@@ -1684,6 +1736,7 @@ func init() {
     },
     "/save-money": {
       "post": {
+        "security": [],
         "operationId": "saveMoney",
         "parameters": [
           {
@@ -1710,6 +1763,7 @@ func init() {
     },
     "/save-relay": {
       "post": {
+        "security": [],
         "operationId": "saveRelay",
         "parameters": [
           {
@@ -1736,6 +1790,7 @@ func init() {
     },
     "/set-kasse": {
       "post": {
+        "security": [],
         "operationId": "setKasse",
         "parameters": [
           {
@@ -1759,6 +1814,7 @@ func init() {
     },
     "/set-program-name": {
       "post": {
+        "security": [],
         "operationId": "setProgramName",
         "parameters": [
           {
@@ -1801,6 +1857,7 @@ func init() {
     },
     "/set-program-relays": {
       "post": {
+        "security": [],
         "operationId": "setProgramRelays",
         "parameters": [
           {
@@ -1845,6 +1902,7 @@ func init() {
     },
     "/set-station": {
       "post": {
+        "security": [],
         "operationId": "setStation",
         "parameters": [
           {
@@ -1891,6 +1949,7 @@ func init() {
     },
     "/station-by-hash": {
       "post": {
+        "security": [],
         "operationId": "stationByHash",
         "parameters": [
           {
@@ -1925,6 +1984,7 @@ func init() {
     },
     "/station-report-current-money": {
       "post": {
+        "security": [],
         "operationId": "stationReportCurrentMoney",
         "parameters": [
           {
@@ -1962,6 +2022,7 @@ func init() {
     },
     "/station-report-dates": {
       "post": {
+        "security": [],
         "operationId": "stationReportDates",
         "parameters": [
           {
@@ -2009,6 +2070,7 @@ func init() {
     },
     "/stations-variables": {
       "post": {
+        "security": [],
         "operationId": "stationsVariables",
         "responses": {
           "200": {
@@ -2028,6 +2090,7 @@ func init() {
     },
     "/status": {
       "get": {
+        "security": [],
         "operationId": "status",
         "responses": {
           "200": {
@@ -2044,6 +2107,7 @@ func init() {
     },
     "/status-collection": {
       "get": {
+        "security": [],
         "operationId": "statusCollection",
         "responses": {
           "200": {
@@ -2317,6 +2381,18 @@ func init() {
         }
       }
     }
-  }
+  },
+  "securityDefinitions": {
+    "pinCode": {
+      "type": "apiKey",
+      "name": "Pin",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "pinCode": []
+    }
+  ]
 }`))
 }

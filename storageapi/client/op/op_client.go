@@ -27,7 +27,7 @@ type Client struct {
 /*
 AddServiceAmount add service amount API
 */
-func (a *Client) AddServiceAmount(params *AddServiceAmountParams) (*AddServiceAmountNoContent, error) {
+func (a *Client) AddServiceAmount(params *AddServiceAmountParams, authInfo runtime.ClientAuthInfoWriter) (*AddServiceAmountNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewAddServiceAmountParams()
@@ -42,6 +42,7 @@ func (a *Client) AddServiceAmount(params *AddServiceAmountParams) (*AddServiceAm
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &AddServiceAmountReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})

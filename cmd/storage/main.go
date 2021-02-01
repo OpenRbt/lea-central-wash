@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/auth"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/dal"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/def"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/extapi"
@@ -220,7 +221,7 @@ func run(db *sqlx.DB, errc chan<- error) {
 
 	appl := app.New(repo, kasse, weather)
 
-	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo)
+	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
 	if err != nil {
 		errc <- err
 		return
