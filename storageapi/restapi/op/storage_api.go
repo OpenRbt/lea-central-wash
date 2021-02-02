@@ -18,6 +18,8 @@ import (
 	spec "github.com/go-openapi/spec"
 	strfmt "github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+
+	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
 
 // NewStorageAPI creates a new Storage instance
@@ -89,7 +91,7 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation Save has not yet been implemented")
 			return SaveNotImplemented()
 		}),
-		SaveCollectionHandler: SaveCollectionHandlerFunc(func(params SaveCollectionParams, principal interface{}) SaveCollectionResponder {
+		SaveCollectionHandler: SaveCollectionHandlerFunc(func(params SaveCollectionParams, principal *storageapi.Profile) SaveCollectionResponder {
 			// return middleware.NotImplemented("operation SaveCollection has not yet been implemented")
 			return SaveCollectionNotImplemented()
 		}),
@@ -141,13 +143,13 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation Status has not yet been implemented")
 			return StatusNotImplemented()
 		}),
-		StatusCollectionHandler: StatusCollectionHandlerFunc(func(params StatusCollectionParams, principal interface{}) StatusCollectionResponder {
+		StatusCollectionHandler: StatusCollectionHandlerFunc(func(params StatusCollectionParams, principal *storageapi.Profile) StatusCollectionResponder {
 			// return middleware.NotImplemented("operation StatusCollection has not yet been implemented")
 			return StatusCollectionNotImplemented()
 		}),
 
 		// Applies when the "Pin" header is set
-		PinCodeAuth: func(token string) (interface{}, error) {
+		PinCodeAuth: func(token string) (*storageapi.Profile, error) {
 			return nil, errors.NotImplemented("api key auth (pinCode) Pin from header param [Pin] has not yet been implemented")
 		},
 
@@ -186,7 +188,7 @@ type StorageAPI struct {
 
 	// PinCodeAuth registers a function that takes a token and returns a principal
 	// it performs authentication based on an api key Pin provided in the header
-	PinCodeAuth func(string) (interface{}, error)
+	PinCodeAuth func(string) (*storageapi.Profile, error)
 
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
@@ -441,7 +443,9 @@ func (o *StorageAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) m
 
 		case "pinCode":
 
-			result[name] = o.APIKeyAuthenticator(scheme.Name, scheme.In, o.PinCodeAuth)
+			result[name] = o.APIKeyAuthenticator(scheme.Name, scheme.In, func(token string) (interface{}, error) {
+				return o.PinCodeAuth(token)
+			})
 
 		}
 	}

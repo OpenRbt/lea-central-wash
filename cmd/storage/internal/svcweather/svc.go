@@ -12,7 +12,6 @@ import (
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/PuerkitoBio/goquery"
-	"golang.org/x/crypto/bcrypt"
 
 	"github.com/powerman/structlog"
 )
@@ -69,9 +68,6 @@ type ipify struct { // 1000 requests per month on free subscription. Requires en
 func Instance() app.WeatherSvc {
 	newInstance := &service{}
 	newInstance.providers = make(map[int]app.WeatherSvcProvider)
-	password := []byte("1234")
-	passHash, _ := bcrypt.GenerateFromPassword(password, 20)
-	log.Info("PASSWORD HASH IS ", passHash)
 	return newInstance
 }
 

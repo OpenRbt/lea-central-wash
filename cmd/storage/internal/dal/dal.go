@@ -75,6 +75,19 @@ func (r *repo) schemaLock(f func() error) func() error {
 	}
 }
 
+func (r *repo) Users() (users []app.UserData, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res []resUser
+		err := tx.NamedSelectContext(ctx, &res, sqlGetUser, argGetUser{})
+		if err != nil {
+			return err
+		}
+		users = appSetUser(res)
+		return nil
+	})
+	return //nolint:nakedret
+}
+
 func (r *repo) Load(stationID app.StationID, key string) (value string, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res resGetValue

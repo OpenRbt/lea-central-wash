@@ -13,19 +13,21 @@ import (
 	strfmt "github.com/go-openapi/strfmt"
 	swag "github.com/go-openapi/swag"
 	validate "github.com/go-openapi/validate"
+
+	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
 
 // SaveCollectionHandlerFunc turns a function with the right signature into a save collection handler
-type SaveCollectionHandlerFunc func(SaveCollectionParams, interface{}) SaveCollectionResponder
+type SaveCollectionHandlerFunc func(SaveCollectionParams, *storageapi.Profile) SaveCollectionResponder
 
 // Handle executing the request and returning a response
-func (fn SaveCollectionHandlerFunc) Handle(params SaveCollectionParams, principal interface{}) SaveCollectionResponder {
+func (fn SaveCollectionHandlerFunc) Handle(params SaveCollectionParams, principal *storageapi.Profile) SaveCollectionResponder {
 	return fn(params, principal)
 }
 
 // SaveCollectionHandler interface for that can handle valid save collection params
 type SaveCollectionHandler interface {
-	Handle(SaveCollectionParams, interface{}) SaveCollectionResponder
+	Handle(SaveCollectionParams, *storageapi.Profile) SaveCollectionResponder
 }
 
 // NewSaveCollection creates a new http.Handler for the save collection operation
@@ -58,9 +60,9 @@ func (o *SaveCollection) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if aCtx != nil {
 		r = aCtx
 	}
-	var principal interface{}
+	var principal *storageapi.Profile
 	if uprinc != nil {
-		principal = uprinc
+		principal = uprinc.(*storageapi.Profile) // this is really a storageapi.Profile, I promise
 	}
 
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params

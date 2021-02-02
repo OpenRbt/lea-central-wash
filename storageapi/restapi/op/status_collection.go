@@ -9,19 +9,21 @@ import (
 	"net/http"
 
 	middleware "github.com/go-openapi/runtime/middleware"
+
+	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
 
 // StatusCollectionHandlerFunc turns a function with the right signature into a status collection handler
-type StatusCollectionHandlerFunc func(StatusCollectionParams, interface{}) StatusCollectionResponder
+type StatusCollectionHandlerFunc func(StatusCollectionParams, *storageapi.Profile) StatusCollectionResponder
 
 // Handle executing the request and returning a response
-func (fn StatusCollectionHandlerFunc) Handle(params StatusCollectionParams, principal interface{}) StatusCollectionResponder {
+func (fn StatusCollectionHandlerFunc) Handle(params StatusCollectionParams, principal *storageapi.Profile) StatusCollectionResponder {
 	return fn(params, principal)
 }
 
 // StatusCollectionHandler interface for that can handle valid status collection params
 type StatusCollectionHandler interface {
-	Handle(StatusCollectionParams, interface{}) StatusCollectionResponder
+	Handle(StatusCollectionParams, *storageapi.Profile) StatusCollectionResponder
 }
 
 // NewStatusCollection creates a new http.Handler for the status collection operation
@@ -54,9 +56,9 @@ func (o *StatusCollection) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if aCtx != nil {
 		r = aCtx
 	}
-	var principal interface{}
+	var principal *storageapi.Profile
 	if uprinc != nil {
-		principal = uprinc
+		principal = uprinc.(*storageapi.Profile) // this is really a storageapi.Profile, I promise
 	}
 
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params

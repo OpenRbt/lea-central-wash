@@ -196,7 +196,7 @@ func (a *app) SaveMoneyReport(report MoneyReport) error {
 }
 
 // SaveCollectionReport gets app.CollectionReport struct
-func (a *app) SaveCollectionReport(id StationID) error {
+func (a *app) SaveCollectionReport(auth Auth, id StationID) error {
 	fmt.Println("APP: SaveCollectionReport")
 	return a.repo.SaveCollectionReport(id)
 }
@@ -214,6 +214,11 @@ func (a *app) SaveRelayReport(report RelayReport) error {
 func (a *app) LoadMoneyReport(id StationID) (*MoneyReport, error) {
 	report, err := a.repo.LastMoneyReport(id)
 	return &report, err
+}
+
+func (a *app) Users() ([]UserData, error) {
+	users, err := a.repo.Users()
+	return users, err
 }
 
 // LoadRelayReport gets hash string
@@ -254,7 +259,7 @@ func (a *app) StatusReport() StatusReport {
 	return report
 }
 
-func (a *app) StatusCollection() StatusCollection {
+func (a *app) StatusCollection(auth Auth) StatusCollection {
 	status := StatusCollection{}
 
 	a.stationsMutex.Lock()
