@@ -32,6 +32,16 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
+	// Applies when the "Pin" header is set
+	api.PinCodeAuth = func(token string) (interface{}, error) {
+		return nil, errors.NotImplemented("api key auth (pinCode) Pin from header param [Pin] has not yet been implemented")
+	}
+
+	// Set your custom authorizer if needed. Default one is security.Authorized()
+	// Expected interface runtime.Authorizer
+	//
+	// Example:
+	// api.APIAuthorizer = security.Authorized()
 	api.AddServiceAmountHandler = op.AddServiceAmountHandlerFunc(func(params op.AddServiceAmountParams) op.AddServiceAmountResponder {
 		return op.AddServiceAmountNotImplemented()
 	})
@@ -71,7 +81,7 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.SaveHandler = op.SaveHandlerFunc(func(params op.SaveParams) op.SaveResponder {
 		return op.SaveNotImplemented()
 	})
-	api.SaveCollectionHandler = op.SaveCollectionHandlerFunc(func(params op.SaveCollectionParams) op.SaveCollectionResponder {
+	api.SaveCollectionHandler = op.SaveCollectionHandlerFunc(func(params op.SaveCollectionParams, principal interface{}) op.SaveCollectionResponder {
 		return op.SaveCollectionNotImplemented()
 	})
 	api.SaveIfNotExistsHandler = op.SaveIfNotExistsHandlerFunc(func(params op.SaveIfNotExistsParams) op.SaveIfNotExistsResponder {
@@ -110,7 +120,7 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.StatusHandler = op.StatusHandlerFunc(func(params op.StatusParams) op.StatusResponder {
 		return op.StatusNotImplemented()
 	})
-	api.StatusCollectionHandler = op.StatusCollectionHandlerFunc(func(params op.StatusCollectionParams) op.StatusCollectionResponder {
+	api.StatusCollectionHandler = op.StatusCollectionHandlerFunc(func(params op.StatusCollectionParams, principal interface{}) op.StatusCollectionResponder {
 		return op.StatusCollectionNotImplemented()
 	})
 

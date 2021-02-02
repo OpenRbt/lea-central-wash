@@ -32,6 +32,13 @@ func (o *SaveCollectionReader) ReadResponse(response runtime.ClientResponse, con
 		}
 		return result, nil
 
+	case 401:
+		result := NewSaveCollectionUnauthorized()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	case 404:
 		result := NewSaveCollectionNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -68,6 +75,31 @@ func (o *SaveCollectionNoContent) Error() string {
 }
 
 func (o *SaveCollectionNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewSaveCollectionUnauthorized creates a SaveCollectionUnauthorized with default headers values
+func NewSaveCollectionUnauthorized() *SaveCollectionUnauthorized {
+	return &SaveCollectionUnauthorized{}
+}
+
+/*SaveCollectionUnauthorized handles this case with default header values.
+
+PIN is missing or invalid
+*/
+type SaveCollectionUnauthorized struct {
+	WWWAuthenticate string
+}
+
+func (o *SaveCollectionUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /save-collection][%d] saveCollectionUnauthorized ", 401)
+}
+
+func (o *SaveCollectionUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// response header WWW_Authenticate
+	o.WWWAuthenticate = response.GetHeader("WWW_Authenticate")
 
 	return nil
 }

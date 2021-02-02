@@ -13,7 +13,21 @@ var log = structlog.New() //nolint:gochecknoglobals
 // Save accepts key-value pair and writes it to DAL
 // Checks the pairment of hash and ID of specified wash machine
 func (a *app) Save(id StationID, key string, value string) error {
-	return a.repo.Save(id, key, value)
+	if err := a.repo.Save(id, key, value); err != nil {
+		return err
+	}
+	data, err := a.Get(id)
+	if err != nil && data.ID < 1 {
+		log.Info("Can't open station - station is unknown")
+		return ErrNotFound
+	}
+	data.HasChanged = true
+	err = a.Set(data)
+	if err != nil {
+		log.Info("Can't open station - station is unknown")
+		return ErrNotFound
+	}
+	return nil
 }
 
 // Save accepts key-value pair and if not exists writes it to DAL

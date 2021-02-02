@@ -89,7 +89,7 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation Save has not yet been implemented")
 			return SaveNotImplemented()
 		}),
-		SaveCollectionHandler: SaveCollectionHandlerFunc(func(params SaveCollectionParams) SaveCollectionResponder {
+		SaveCollectionHandler: SaveCollectionHandlerFunc(func(params SaveCollectionParams, principal interface{}) SaveCollectionResponder {
 			// return middleware.NotImplemented("operation SaveCollection has not yet been implemented")
 			return SaveCollectionNotImplemented()
 		}),
@@ -141,10 +141,18 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation Status has not yet been implemented")
 			return StatusNotImplemented()
 		}),
-		StatusCollectionHandler: StatusCollectionHandlerFunc(func(params StatusCollectionParams) StatusCollectionResponder {
+		StatusCollectionHandler: StatusCollectionHandlerFunc(func(params StatusCollectionParams, principal interface{}) StatusCollectionResponder {
 			// return middleware.NotImplemented("operation StatusCollection has not yet been implemented")
 			return StatusCollectionNotImplemented()
 		}),
+
+		// Applies when the "Pin" header is set
+		PinCodeAuth: func(token string) (interface{}, error) {
+			return nil, errors.NotImplemented("api key auth (pinCode) Pin from header param [Pin] has not yet been implemented")
+		},
+
+		// default authorizer is authorized meaning no requests are blocked
+		APIAuthorizer: security.Authorized(),
 	}
 }
 
@@ -175,6 +183,13 @@ type StorageAPI struct {
 
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
+
+	// PinCodeAuth registers a function that takes a token and returns a principal
+	// it performs authentication based on an api key Pin provided in the header
+	PinCodeAuth func(string) (interface{}, error)
+
+	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
+	APIAuthorizer runtime.Authorizer
 
 	// AddServiceAmountHandler sets the operation handler for the add service amount operation
 	AddServiceAmountHandler AddServiceAmountHandler
@@ -291,6 +306,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.JSONProducer == nil {
 		unregistered = append(unregistered, "JSONProducer")
+	}
+
+	if o.PinCodeAuth == nil {
+		unregistered = append(unregistered, "PinAuth")
 	}
 
 	if o.AddServiceAmountHandler == nil {
@@ -416,14 +435,24 @@ func (o *StorageAPI) ServeErrorFor(operationID string) func(http.ResponseWriter,
 // AuthenticatorsFor gets the authenticators for the specified security schemes
 func (o *StorageAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) map[string]runtime.Authenticator {
 
-	return nil
+	result := make(map[string]runtime.Authenticator)
+	for name, scheme := range schemes {
+		switch name {
+
+		case "pinCode":
+
+			result[name] = o.APIKeyAuthenticator(scheme.Name, scheme.In, o.PinCodeAuth)
+
+		}
+	}
+	return result
 
 }
 
 // Authorizer returns the registered authorizer
 func (o *StorageAPI) Authorizer() runtime.Authorizer {
 
-	return nil
+	return o.APIAuthorizer
 
 }
 

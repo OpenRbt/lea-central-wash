@@ -12,16 +12,16 @@ import (
 )
 
 // StatusCollectionHandlerFunc turns a function with the right signature into a status collection handler
-type StatusCollectionHandlerFunc func(StatusCollectionParams) StatusCollectionResponder
+type StatusCollectionHandlerFunc func(StatusCollectionParams, interface{}) StatusCollectionResponder
 
 // Handle executing the request and returning a response
-func (fn StatusCollectionHandlerFunc) Handle(params StatusCollectionParams) StatusCollectionResponder {
-	return fn(params)
+func (fn StatusCollectionHandlerFunc) Handle(params StatusCollectionParams, principal interface{}) StatusCollectionResponder {
+	return fn(params, principal)
 }
 
 // StatusCollectionHandler interface for that can handle valid status collection params
 type StatusCollectionHandler interface {
-	Handle(StatusCollectionParams) StatusCollectionResponder
+	Handle(StatusCollectionParams, interface{}) StatusCollectionResponder
 }
 
 // NewStatusCollection creates a new http.Handler for the status collection operation
@@ -46,12 +46,25 @@ func (o *StatusCollection) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	}
 	var Params = NewStatusCollectionParams()
 
+	uprinc, aCtx, err := o.Context.Authorize(r, route)
+	if err != nil {
+		o.Context.Respond(rw, r, route.Produces, route, err)
+		return
+	}
+	if aCtx != nil {
+		r = aCtx
+	}
+	var principal interface{}
+	if uprinc != nil {
+		principal = uprinc
+	}
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
-	res := o.Handler.Handle(Params) // actually handle the request
+	res := o.Handler.Handle(Params, principal) // actually handle the request
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 

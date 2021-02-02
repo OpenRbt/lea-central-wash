@@ -38,6 +38,54 @@ func (o *SaveCollectionNoContent) WriteResponse(rw http.ResponseWriter, producer
 
 func (o *SaveCollectionNoContent) SaveCollectionResponder() {}
 
+// SaveCollectionUnauthorizedCode is the HTTP code returned for type SaveCollectionUnauthorized
+const SaveCollectionUnauthorizedCode int = 401
+
+/*SaveCollectionUnauthorized PIN is missing or invalid
+
+swagger:response saveCollectionUnauthorized
+*/
+type SaveCollectionUnauthorized struct {
+	/*
+
+	 */
+	WWWAuthenticate string `json:"WWW_Authenticate"`
+}
+
+// NewSaveCollectionUnauthorized creates SaveCollectionUnauthorized with default headers values
+func NewSaveCollectionUnauthorized() *SaveCollectionUnauthorized {
+
+	return &SaveCollectionUnauthorized{}
+}
+
+// WithWWWAuthenticate adds the wWWAuthenticate to the save collection unauthorized response
+func (o *SaveCollectionUnauthorized) WithWWWAuthenticate(wWWAuthenticate string) *SaveCollectionUnauthorized {
+	o.WWWAuthenticate = wWWAuthenticate
+	return o
+}
+
+// SetWWWAuthenticate sets the wWWAuthenticate to the save collection unauthorized response
+func (o *SaveCollectionUnauthorized) SetWWWAuthenticate(wWWAuthenticate string) {
+	o.WWWAuthenticate = wWWAuthenticate
+}
+
+// WriteResponse to the client
+func (o *SaveCollectionUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	// response header WWW_Authenticate
+
+	wWWAuthenticate := o.WWWAuthenticate
+	if wWWAuthenticate != "" {
+		rw.Header().Set("WWW_Authenticate", wWWAuthenticate)
+	}
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(401)
+}
+
+func (o *SaveCollectionUnauthorized) SaveCollectionResponder() {}
+
 // SaveCollectionNotFoundCode is the HTTP code returned for type SaveCollectionNotFound
 const SaveCollectionNotFoundCode int = 404
 

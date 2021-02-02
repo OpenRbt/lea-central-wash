@@ -8,6 +8,12 @@ basePath: /
 schemes:
   - http
 
+securityDefinitions:
+   pinCode:
+     type: apiKey
+     in: header
+     name: Pin
+
 definitions:
         
   StatusReport:
@@ -41,6 +47,10 @@ definitions:
   Status:
     type: string
     enum: ["offline", "online"]
+
+  SecurityRoles:
+    type: string
+    enum: ['ADMIN', 'USER']
 
   StatusCollectionReport:
     type: object
@@ -271,6 +281,8 @@ paths:
   /status-collection:
     get:
       operationId: "statusCollection"
+      security:
+        - pinCode: []
       responses:
         200:
           description: OK
@@ -278,6 +290,11 @@ paths:
             $ref: '#/definitions/StatusCollectionReport'
         500:
           description: internal error
+        401:
+          description: PIN is missing or invalid
+          headers:
+            WWW_Authenticate:
+              type: string
 
   /add-service-amount:
     post:
@@ -425,6 +442,8 @@ paths:
             properties:
               id:
                 type: integer
+      security:
+        - pinCode: []
       responses:
         204: 
           description: OK
@@ -432,6 +451,11 @@ paths:
           description: not found
         500:
           description: internal error
+        401:
+          description: PIN is missing or invalid
+          headers:
+            WWW_Authenticate:
+              type: string
 
   /load-money:
     post:

@@ -391,7 +391,7 @@ func (a *Client) Save(params *SaveParams) (*SaveNoContent, error) {
 /*
 SaveCollection save collection API
 */
-func (a *Client) SaveCollection(params *SaveCollectionParams) (*SaveCollectionNoContent, error) {
+func (a *Client) SaveCollection(params *SaveCollectionParams, authInfo runtime.ClientAuthInfoWriter) (*SaveCollectionNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSaveCollectionParams()
@@ -406,6 +406,7 @@ func (a *Client) SaveCollection(params *SaveCollectionParams) (*SaveCollectionNo
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &SaveCollectionReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
@@ -755,7 +756,7 @@ func (a *Client) Status(params *StatusParams) (*StatusOK, error) {
 /*
 StatusCollection status collection API
 */
-func (a *Client) StatusCollection(params *StatusCollectionParams) (*StatusCollectionOK, error) {
+func (a *Client) StatusCollection(params *StatusCollectionParams, authInfo runtime.ClientAuthInfoWriter) (*StatusCollectionOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStatusCollectionParams()
@@ -770,6 +771,7 @@ func (a *Client) StatusCollection(params *StatusCollectionParams) (*StatusCollec
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &StatusCollectionReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})

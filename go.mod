@@ -23,5 +23,6 @@ require (
 	github.com/powerman/sqlxx v0.1.0
 	github.com/powerman/structlog v0.5.0
 	github.com/pressly/goose v2.6.0+incompatible
+	golang.org/x/crypto v0.0.0-20190617133340-57b3e21c3d56
 	golang.org/x/net v0.0.0-20200202094626-16171245cfb2
 )

@@ -465,6 +465,11 @@ func init() {
     },
     "/save-collection": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "saveCollection",
         "parameters": [
           {
@@ -487,6 +492,14 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid",
+            "headers": {
+              "WWW_Authenticate": {
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "not found"
@@ -897,12 +910,25 @@ func init() {
     },
     "/status-collection": {
       "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "statusCollection",
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
               "$ref": "#/definitions/StatusCollectionReport"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid",
+            "headers": {
+              "WWW_Authenticate": {
+                "type": "string"
+              }
             }
           },
           "500": {
@@ -1077,6 +1103,13 @@ func init() {
         }
       }
     },
+    "SecurityRoles": {
+      "type": "string",
+      "enum": [
+        "ADMIN",
+        "USER"
+      ]
+    },
     "StationReport": {
       "type": "object",
       "properties": {
@@ -1169,6 +1202,13 @@ func init() {
           }
         }
       }
+    }
+  },
+  "securityDefinitions": {
+    "pinCode": {
+      "type": "apiKey",
+      "name": "Pin",
+      "in": "header"
     }
   }
 }`))
@@ -1620,6 +1660,11 @@ func init() {
     },
     "/save-collection": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "saveCollection",
         "parameters": [
           {
@@ -1642,6 +1687,14 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid",
+            "headers": {
+              "WWW_Authenticate": {
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "not found"
@@ -2052,12 +2105,25 @@ func init() {
     },
     "/status-collection": {
       "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "statusCollection",
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
               "$ref": "#/definitions/StatusCollectionReport"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid",
+            "headers": {
+              "WWW_Authenticate": {
+                "type": "string"
+              }
             }
           },
           "500": {
@@ -2232,6 +2298,13 @@ func init() {
         }
       }
     },
+    "SecurityRoles": {
+      "type": "string",
+      "enum": [
+        "ADMIN",
+        "USER"
+      ]
+    },
     "StationReport": {
       "type": "object",
       "properties": {
@@ -2324,6 +2397,13 @@ func init() {
           }
         }
       }
+    }
+  },
+  "securityDefinitions": {
+    "pinCode": {
+      "type": "apiKey",
+      "name": "Pin",
+      "in": "header"
     }
   }
 }`))

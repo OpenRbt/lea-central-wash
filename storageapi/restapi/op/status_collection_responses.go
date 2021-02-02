@@ -60,6 +60,54 @@ func (o *StatusCollectionOK) WriteResponse(rw http.ResponseWriter, producer runt
 
 func (o *StatusCollectionOK) StatusCollectionResponder() {}
 
+// StatusCollectionUnauthorizedCode is the HTTP code returned for type StatusCollectionUnauthorized
+const StatusCollectionUnauthorizedCode int = 401
+
+/*StatusCollectionUnauthorized PIN is missing or invalid
+
+swagger:response statusCollectionUnauthorized
+*/
+type StatusCollectionUnauthorized struct {
+	/*
+
+	 */
+	WWWAuthenticate string `json:"WWW_Authenticate"`
+}
+
+// NewStatusCollectionUnauthorized creates StatusCollectionUnauthorized with default headers values
+func NewStatusCollectionUnauthorized() *StatusCollectionUnauthorized {
+
+	return &StatusCollectionUnauthorized{}
+}
+
+// WithWWWAuthenticate adds the wWWAuthenticate to the status collection unauthorized response
+func (o *StatusCollectionUnauthorized) WithWWWAuthenticate(wWWAuthenticate string) *StatusCollectionUnauthorized {
+	o.WWWAuthenticate = wWWAuthenticate
+	return o
+}
+
+// SetWWWAuthenticate sets the wWWAuthenticate to the status collection unauthorized response
+func (o *StatusCollectionUnauthorized) SetWWWAuthenticate(wWWAuthenticate string) {
+	o.WWWAuthenticate = wWWAuthenticate
+}
+
+// WriteResponse to the client
+func (o *StatusCollectionUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	// response header WWW_Authenticate
+
+	wWWAuthenticate := o.WWWAuthenticate
+	if wWWAuthenticate != "" {
+		rw.Header().Set("WWW_Authenticate", wWWAuthenticate)
+	}
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(401)
+}
+
+func (o *StatusCollectionUnauthorized) StatusCollectionResponder() {}
+
 // StatusCollectionInternalServerErrorCode is the HTTP code returned for type StatusCollectionInternalServerError
 const StatusCollectionInternalServerErrorCode int = 500
 
