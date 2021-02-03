@@ -9,13 +9,12 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	errors "github.com/go-openapi/errors"
 	middleware "github.com/go-openapi/runtime/middleware"
 	strfmt "github.com/go-openapi/strfmt"
 	swag "github.com/go-openapi/swag"
 	validate "github.com/go-openapi/validate"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // SetProgramRelaysHandlerFunc turns a function with the right signature into a set program relays handler

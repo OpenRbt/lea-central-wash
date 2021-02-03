@@ -8,6 +8,12 @@ basePath: /
 schemes:
   - http
 
+securityDefinitions:
+   pinCode:
+     type: apiKey
+     in: header
+     name: Pin
+
 definitions:
         
   StatusReport:
@@ -271,6 +277,8 @@ paths:
   /status-collection:
     get:
       operationId: "statusCollection"
+      security:
+        - pinCode: []
       responses:
         200:
           description: OK
@@ -278,6 +286,8 @@ paths:
             $ref: '#/definitions/StatusCollectionReport'
         500:
           description: internal error
+        401:
+          description: PIN is missing or invalid
 
   /add-service-amount:
     post:
@@ -414,6 +424,8 @@ paths:
   /save-collection:
     post:
       operationId: "saveCollection"
+      security:
+        - pinCode: []
       parameters:
         - name: args
           required: true
@@ -432,6 +444,8 @@ paths:
           description: not found
         500:
           description: internal error
+        401:
+          description: PIN is missing or invalid
 
   /load-money:
     post:

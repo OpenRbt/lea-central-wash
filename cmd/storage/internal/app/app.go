@@ -4,6 +4,8 @@ import (
 	"errors"
 	"sync"
 	"time"
+
+	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
 
 const durationStationOffline = time.Second * 10
@@ -13,6 +15,8 @@ const (
 	TestHash      = "TEST"
 	TestStationID = 999
 )
+
+type Auth = storageapi.Profile
 
 // Key aliases
 const (
@@ -58,14 +62,16 @@ type (
 		StationReportDates(id StationID, startDate, endDate time.Time) (MoneyReport, RelayReport, error)
 		StationReportCurrentMoney(id StationID) (MoneyReport, RelayReport, error)
 
-		StatusCollection() StatusCollection
-		SaveCollectionReport(StationID) error
+		StatusCollection(auth Auth) StatusCollection
+		SaveCollectionReport(auth Auth, id StationID) error
 
 		Programs(id StationID) (programs []Program, err error)
 		SetProgramName(id StationID, programID int, name string) (err error)
 		ProgramRelays(id StationID, programID int) (relays []Relay, err error)
 		SetProgramRelays(id StationID, programID int, relays []Relay) (err error)
 
+		Users() (users []UserData, err error)
+		UserRoles(userData UserData) (roles []string, err error)
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
 	}
@@ -91,6 +97,8 @@ type (
 		AddStation(name string) error
 		AddOpenStationLog(StationID) error
 		CurrentMoney(StationID) (MoneyReport, error)
+		Users() (users []UserData, err error)
+		UserRoles(userData UserData) (roles []string, err error)
 
 		// for api
 		LoadHash() ([]StationID, []string, error)

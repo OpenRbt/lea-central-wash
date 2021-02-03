@@ -8,12 +8,11 @@ package op
 import (
 	"net/http"
 
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	errors "github.com/go-openapi/errors"
 	middleware "github.com/go-openapi/runtime/middleware"
 	strfmt "github.com/go-openapi/strfmt"
 	swag "github.com/go-openapi/swag"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // StationByHashHandlerFunc turns a function with the right signature into a station by hash handler

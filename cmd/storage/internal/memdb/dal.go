@@ -96,6 +96,14 @@ func (t *DB) Stations() (stations []app.SetStation, err error) {
 	return nil, nil
 }
 
+func (t *DB) Users() (users []app.UserData, err error) {
+	return nil, nil
+}
+
+func (t *DB) UserRoles(userData app.UserData) (roles []string, err error) {
+	return nil, nil
+}
+
 func (t *DB) DelStation(id app.StationID) error {
 	return nil
 }

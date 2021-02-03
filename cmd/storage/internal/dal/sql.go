@@ -54,6 +54,18 @@ WHERE id = :id
 	sqlGetStation = `
 SELECT id, name  FROM station where deleted = false ORDER BY id
 	`
+
+	sqlGetUser = `
+SELECT u.first_name, u.middle_name, u.last_name, u.password, u.enabled FROM users u
+	`
+
+	sqlGetUserRoles = `
+SELECT user_role FROM user_roles ur 
+WHERE ur.user_first_name = :first_name
+AND ur.user_middle_name = :middle_name
+AND ur.user_last_name = :last_name	
+	`
+
 	sqlLoadHash = `
 SELECT station_id, hash FROM station_hash ORDER BY station_id
 	`
@@ -232,6 +244,23 @@ type (
 		ID app.StationID
 	}
 	argGetStation struct {
+	}
+	argGetUser struct {
+	}
+	argGetUserRoles struct {
+		FirstName  string
+		MiddleName string
+		LastName   string
+	}
+	resUser struct {
+		FirstName  string
+		MiddleName string
+		LastName   string
+		Password   string
+		Enabled    bool
+	}
+	resUserRole struct {
+		UserRole string
 	}
 	resGetValue struct {
 		Value string

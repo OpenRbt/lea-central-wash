@@ -8,10 +8,9 @@ package op
 import (
 	"net/http"
 
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	"github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // ProgramsOKCode is the HTTP code returned for type ProgramsOK

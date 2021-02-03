@@ -461,6 +461,11 @@ func init() {
     },
     "/save-collection": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "saveCollection",
         "parameters": [
           {
@@ -483,6 +488,9 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
           },
           "404": {
             "description": "not found"
@@ -893,6 +901,11 @@ func init() {
     },
     "/status-collection": {
       "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "statusCollection",
         "responses": {
           "200": {
@@ -900,6 +913,9 @@ func init() {
             "schema": {
               "$ref": "#/definitions/StatusCollectionReport"
             }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
           },
           "500": {
             "description": "internal error"
@@ -1165,6 +1181,13 @@ func init() {
           }
         }
       }
+    }
+  },
+  "securityDefinitions": {
+    "pinCode": {
+      "type": "apiKey",
+      "name": "Pin",
+      "in": "header"
     }
   }
 }`))
@@ -1612,6 +1635,11 @@ func init() {
     },
     "/save-collection": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "saveCollection",
         "parameters": [
           {
@@ -1634,6 +1662,9 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
           },
           "404": {
             "description": "not found"
@@ -2044,6 +2075,11 @@ func init() {
     },
     "/status-collection": {
       "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "statusCollection",
         "responses": {
           "200": {
@@ -2051,6 +2087,9 @@ func init() {
             "schema": {
               "$ref": "#/definitions/StatusCollectionReport"
             }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
           },
           "500": {
             "description": "internal error"
@@ -2316,6 +2355,13 @@ func init() {
           }
         }
       }
+    }
+  },
+  "securityDefinitions": {
+    "pinCode": {
+      "type": "apiKey",
+      "name": "Pin",
+      "in": "header"
     }
   }
 }`))
