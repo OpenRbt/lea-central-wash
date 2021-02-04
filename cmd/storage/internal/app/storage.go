@@ -202,16 +202,24 @@ func (a *app) LoadMoneyReport(id StationID) (*MoneyReport, error) {
 	return &report, err
 }
 
+func (a *app) IsEnabled(user *UserData) bool {
+	return user.IsAdmin || user.IsEngineer || user.IsOperator
+}
+
 func (a *app) User(password string) (*UserData, error) {
 	users, errRepo := a.repo.Users()
 	if errRepo != nil {
+		log.Info("REPO: ", errRepo)
 		return nil, errRepo
 	}
 	for u := range users {
 		user := users[u]
+		if !a.IsEnabled(&user) {
+			continue
+		}
 		errPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 		if errPassword == nil {
-			log.Info(fmt.Sprintf("Authenticated as: %s %s %s", user.FirstName, user.MiddleName, user.LastName))
+			log.Info(fmt.Sprintf("Authenticated as login=%s isAdmin=%v", user.Login, user.IsAdmin))
 			return &user, nil
 		}
 	}
@@ -272,7 +280,7 @@ func (a *app) StatusCollection(auth Auth) StatusCollection {
 			})
 		}
 	}
-	log.Info(fmt.Sprintf("/status-collection: %s %s %s isAdmin=%v", auth.FirstName, auth.MiddleName, auth.LastName, auth.IsAdmin))
+	log.Info(fmt.Sprintf("/status-collection: login=%s isAdmin=%v", auth.Login, auth.IsAdmin))
 	return status
 }
 

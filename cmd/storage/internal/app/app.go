@@ -72,6 +72,7 @@ type (
 		SetProgramRelays(id StationID, programID int, relays []Relay) (err error)
 
 		User(password string) (user *UserData, err error)
+		IsEnabled(user *UserData) bool
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
 	}

@@ -56,7 +56,16 @@ SELECT id, name  FROM station where deleted = false ORDER BY id
 	`
 
 	sqlGetUser = `
-SELECT u.id, u.first_name, u.middle_name, u.last_name, u.password, u.is_admin, u.is_operator, u.is_engineer FROM users u
+SELECT 	u.id, 
+		u.login,
+		coalesce(u.first_name, '') as first_name, 
+		coalesce(u.middle_name, '') as middle_name, 
+		coalesce(u.last_name, '') as last_name, 
+		u.password, 
+		u.is_admin, 
+		u.is_operator, 
+		u.is_engineer 
+FROM users u
 	`
 
 	sqlLoadHash = `
@@ -245,6 +254,7 @@ type (
 	}
 	resUser struct {
 		ID         int
+		Login      string
 		FirstName  string
 		MiddleName string
 		LastName   string

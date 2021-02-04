@@ -11,6 +11,7 @@ func appSetUser(v []resUser) []app.UserData {
 	for i := range v {
 		res = append(res, app.UserData{
 			ID:         v[i].ID,
+			Login:      v[i].Login,
 			FirstName:  v[i].FirstName,
 			MiddleName: v[i].MiddleName,
 			LastName:   v[i].LastName,
