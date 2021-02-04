@@ -88,13 +88,11 @@ func (r *repo) Users() (users []app.UserData, err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) UserRoles(userData app.UserData) (roles []string, err error) {
+func (r *repo) UserRoles(id int) (roles []string, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res []resUserRole
 		err := tx.NamedSelectContext(ctx, &res, sqlGetUserRoles, argGetUserRoles{
-			FirstName:  userData.FirstName,
-			MiddleName: userData.MiddleName,
-			LastName:   userData.LastName,
+			ID: id,
 		})
 		if err != nil {
 			return err

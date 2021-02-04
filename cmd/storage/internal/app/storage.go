@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/powerman/structlog"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var log = structlog.New() //nolint:gochecknoglobals
@@ -201,14 +202,29 @@ func (a *app) LoadMoneyReport(id StationID) (*MoneyReport, error) {
 	return &report, err
 }
 
-func (a *app) Users() ([]UserData, error) {
-	users, err := a.repo.Users()
-	return users, err
-}
-
-func (a *app) UserRoles(userData UserData) ([]string, error) {
-	roles, err := a.repo.UserRoles(userData)
-	return roles, err
+func (a *app) User(password string) (*UserData, error) {
+	users, errRepo := a.repo.Users()
+	if errRepo != nil {
+		return nil, errRepo
+	}
+	for u := range users {
+		user := users[u]
+		if !user.Enabled {
+			return nil, ErrAccessDenied
+		}
+		errPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+		if errPassword != nil {
+			return nil, ErrAccessDenied
+		}
+		roles, errRoles := a.repo.UserRoles(user.ID)
+		if errRoles != nil {
+			return nil, errRoles
+		}
+		log.Info(fmt.Sprintf("Authenticated as: %s %s %s %v", user.FirstName, user.MiddleName, user.LastName, roles))
+		user.Roles = roles
+		return &user, nil
+	}
+	return nil, ErrNotFound
 }
 
 // LoadRelayReport gets hash string

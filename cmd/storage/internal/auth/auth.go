@@ -1,14 +1,11 @@
 package auth
 
 import (
-	"fmt"
 	"time"
 
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	oapierrors "github.com/go-openapi/errors"
 	"github.com/powerman/structlog"
-	"golang.org/x/crypto/bcrypt"
-
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 )
 
 var log = structlog.New() //nolint:gochecknoglobals
@@ -43,27 +40,16 @@ func (a *check) CheckAuth(token string) (*app.Auth, error) { //nolint:gocyclo
 			return nil, err
 		}
 	*/
-	users, err := a.app.Users()
+	user, err := a.app.User(token)
 	if err != nil {
-		return nil, err
+		return nil, oapierrors.Unauthenticated("invalid credentials")
 	}
 
-	for u := range users {
-		user := users[u]
-		if errPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(token)); user.Enabled == true && errPassword == nil {
-			roles, errRoles := a.app.UserRoles(user)
-			if errRoles != nil {
-				return nil, errRoles
-			}
-			log.Info(fmt.Sprintf("Authenticated as: %s %s %s %v", user.FirstName, user.MiddleName, user.LastName, roles))
-			return &app.Auth{
-				FirstName:  user.FirstName,
-				MiddleName: user.MiddleName,
-				LastName:   user.LastName,
-				UserRoles:  roles,
-			}, nil
-		}
-	}
-
-	return nil, oapierrors.Unauthenticated("invalid credentials")
+	return &app.Auth{
+		ID:         user.ID,
+		FirstName:  user.FirstName,
+		MiddleName: user.MiddleName,
+		LastName:   user.LastName,
+		UserRoles:  user.Roles,
+	}, nil
 }

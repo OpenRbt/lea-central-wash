@@ -3,6 +3,7 @@ package app
 import "time"
 
 type UserData struct {
+	ID         int
 	FirstName  string
 	MiddleName string
 	LastName   string

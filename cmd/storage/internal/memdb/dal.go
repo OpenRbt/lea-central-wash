@@ -100,7 +100,7 @@ func (t *DB) Users() (users []app.UserData, err error) {
 	return nil, nil
 }
 
-func (t *DB) UserRoles(userData app.UserData) (roles []string, err error) {
+func (t *DB) UserRoles(id int) (roles []string, err error) {
 	return nil, nil
 }
 

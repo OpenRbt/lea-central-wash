@@ -70,8 +70,7 @@ type (
 		ProgramRelays(id StationID, programID int) (relays []Relay, err error)
 		SetProgramRelays(id StationID, programID int, relays []Relay) (err error)
 
-		Users() (users []UserData, err error)
-		UserRoles(userData UserData) (roles []string, err error)
+		User(password string) (user *UserData, err error)
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
 	}
@@ -98,7 +97,7 @@ type (
 		AddOpenStationLog(StationID) error
 		CurrentMoney(StationID) (MoneyReport, error)
 		Users() (users []UserData, err error)
-		UserRoles(userData UserData) (roles []string, err error)
+		UserRoles(id int) (roles []string, err error)
 
 		// for api
 		LoadHash() ([]StationID, []string, error)
