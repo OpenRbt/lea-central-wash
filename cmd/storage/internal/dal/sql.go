@@ -56,12 +56,7 @@ SELECT id, name  FROM station where deleted = false ORDER BY id
 	`
 
 	sqlGetUser = `
-SELECT u.id, u.first_name, u.middle_name, u.last_name, u.password, u.enabled FROM users u
-	`
-
-	sqlGetUserRoles = `
-SELECT user_role FROM user_roles ur 
-WHERE ur.user_id = :id
+SELECT u.id, u.first_name, u.middle_name, u.last_name, u.password, u.is_admin, u.is_operator, u.is_engineer FROM users u
 	`
 
 	sqlLoadHash = `
@@ -254,10 +249,9 @@ type (
 		MiddleName string
 		LastName   string
 		Password   string
-		Enabled    bool
-	}
-	resUserRole struct {
-		UserRole string
+		IsAdmin    bool
+		IsOperator bool
+		IsEngineer bool
 	}
 	resGetValue struct {
 		Value string

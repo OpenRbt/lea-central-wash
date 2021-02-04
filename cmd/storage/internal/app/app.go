@@ -16,6 +16,7 @@ const (
 	TestStationID = 999
 )
 
+// Auth describes user profile.
 type Auth = storageapi.Profile
 
 // Key aliases
@@ -97,7 +98,6 @@ type (
 		AddOpenStationLog(StationID) error
 		CurrentMoney(StationID) (MoneyReport, error)
 		Users() (users []UserData, err error)
-		UserRoles(id int) (roles []string, err error)
 
 		// for api
 		LoadHash() ([]StationID, []string, error)

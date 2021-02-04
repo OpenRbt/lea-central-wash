@@ -100,10 +100,6 @@ func (t *DB) Users() (users []app.UserData, err error) {
 	return nil, nil
 }
 
-func (t *DB) UserRoles(id int) (roles []string, err error) {
-	return nil, nil
-}
-
 func (t *DB) DelStation(id app.StationID) error {
 	return nil
 }

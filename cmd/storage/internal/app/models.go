@@ -8,12 +8,9 @@ type UserData struct {
 	MiddleName string
 	LastName   string
 	Password   string
-	Enabled    bool
-	Roles      []string
-}
-
-type UserRoleData struct {
-	UserRole string
+	IsAdmin    bool
+	IsEngineer bool
+	IsOperator bool
 }
 
 type StationData struct {

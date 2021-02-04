@@ -15,16 +15,10 @@ func appSetUser(v []resUser) []app.UserData {
 			MiddleName: v[i].MiddleName,
 			LastName:   v[i].LastName,
 			Password:   v[i].Password,
-			Enabled:    v[i].Enabled,
+			IsAdmin:    v[i].IsAdmin,
+			IsOperator: v[i].IsOperator,
+			IsEngineer: v[i].IsEngineer,
 		})
-	}
-	return res
-}
-
-func appSetUserRole(v []resUserRole) []string {
-	var res []string
-	for i := range v {
-		res = append(res, v[i].UserRole)
 	}
 	return res
 }

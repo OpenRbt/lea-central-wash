@@ -209,19 +209,11 @@ func (a *app) User(password string) (*UserData, error) {
 	}
 	for u := range users {
 		user := users[u]
-		if !user.Enabled {
-			return nil, ErrAccessDenied
-		}
 		errPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 		if errPassword != nil {
 			return nil, ErrAccessDenied
 		}
-		roles, errRoles := a.repo.UserRoles(user.ID)
-		if errRoles != nil {
-			return nil, errRoles
-		}
-		log.Info(fmt.Sprintf("Authenticated as: %s %s %s %v", user.FirstName, user.MiddleName, user.LastName, roles))
-		user.Roles = roles
+		log.Info(fmt.Sprintf("Authenticated as: %s %s %s", user.FirstName, user.MiddleName, user.LastName))
 		return &user, nil
 	}
 	return nil, ErrNotFound
@@ -281,7 +273,7 @@ func (a *app) StatusCollection(auth Auth) StatusCollection {
 			})
 		}
 	}
-	log.Info(fmt.Sprintf("/status-collection: %s %s %s %v", auth.FirstName, auth.MiddleName, auth.LastName, auth.UserRoles))
+	log.Info(fmt.Sprintf("/status-collection: %s %s %s %v", auth.FirstName, auth.MiddleName, auth.LastName))
 	return status
 }
 

@@ -88,21 +88,6 @@ func (r *repo) Users() (users []app.UserData, err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) UserRoles(id int) (roles []string, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res []resUserRole
-		err := tx.NamedSelectContext(ctx, &res, sqlGetUserRoles, argGetUserRoles{
-			ID: id,
-		})
-		if err != nil {
-			return err
-		}
-		roles = appSetUserRole(res)
-		return nil
-	})
-	return //nolint:nakedret
-}
-
 func (r *repo) Load(stationID app.StationID, key string) (value string, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res resGetValue

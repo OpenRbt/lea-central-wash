@@ -50,6 +50,8 @@ func (a *check) CheckAuth(token string) (*app.Auth, error) { //nolint:gocyclo
 		FirstName:  user.FirstName,
 		MiddleName: user.MiddleName,
 		LastName:   user.LastName,
-		UserRoles:  user.Roles,
+		IsAdmin:    user.IsAdmin,
+		IsOperator: user.IsOperator,
+		IsEngineer: user.IsEngineer,
 	}, nil
 }

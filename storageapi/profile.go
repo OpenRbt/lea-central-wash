@@ -6,5 +6,7 @@ type Profile struct {
 	FirstName  string
 	MiddleName string
 	LastName   string
-	UserRoles  []string
+	IsAdmin    bool
+	IsOperator bool
+	IsEngineer bool
 }
