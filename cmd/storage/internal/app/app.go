@@ -63,8 +63,8 @@ type (
 		StationReportDates(id StationID, startDate, endDate time.Time) (MoneyReport, RelayReport, error)
 		StationReportCurrentMoney(id StationID) (MoneyReport, RelayReport, error)
 
-		StatusCollection(auth Auth) StatusCollection
-		SaveCollectionReport(auth Auth, id StationID) error
+		StatusCollection(auth *Auth) StatusCollection
+		SaveCollectionReport(auth *Auth, id StationID) error
 
 		Programs(id StationID) (programs []Program, err error)
 		SetProgramName(id StationID, programID int, name string) (err error)

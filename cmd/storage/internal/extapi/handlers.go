@@ -246,9 +246,9 @@ func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 
 func (svc *service) saveCollection(params op.SaveCollectionParams, auth *app.Auth) op.SaveCollectionResponder {
 	log.Info("save collection", "stationID", *params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
-	log.Debug("save collection", "user", auth.LastName)
+	log.Debug("save collection", "login", auth.Login, "isAdmin", auth.IsAdmin)
 
-	err := svc.app.SaveCollectionReport(*auth, app.StationID(*params.Args.ID))
+	err := svc.app.SaveCollectionReport(auth, app.StationID(*params.Args.ID))
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewSaveCollectionNoContent()
@@ -292,7 +292,8 @@ func (svc *service) status(params op.StatusParams) op.StatusResponder {
 }
 
 func (svc *service) statusCollection(params op.StatusCollectionParams, auth *app.Auth) op.StatusCollectionResponder {
-	collection := svc.app.StatusCollection(*auth)
+	log.Debug("status collection", "login", auth.Login, "isAdmin", auth.IsAdmin)
+	collection := svc.app.StatusCollection(auth)
 	return op.NewStatusCollectionOK().WithPayload(apiStatusCollectionReport(collection))
 }
 

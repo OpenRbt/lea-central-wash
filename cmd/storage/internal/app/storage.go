@@ -182,7 +182,7 @@ func (a *app) SaveMoneyReport(report MoneyReport) error {
 }
 
 // SaveCollectionReport gets app.CollectionReport struct
-func (a *app) SaveCollectionReport(auth Auth, id StationID) error {
+func (a *app) SaveCollectionReport(auth *Auth, id StationID) error {
 	fmt.Println("APP: SaveCollectionReport")
 	return a.repo.SaveCollectionReport(auth.ID, id)
 }
@@ -219,7 +219,7 @@ func (a *app) User(password string) (*UserData, error) {
 		}
 		errPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 		if errPassword == nil {
-			log.Info(fmt.Sprintf("Authenticated as login=%s isAdmin=%v", user.Login, user.IsAdmin))
+			log.Info("Authenticated", "login", user.Login, "isAdmin", user.IsAdmin)
 			return &user, nil
 		}
 	}
@@ -264,7 +264,7 @@ func (a *app) StatusReport() StatusReport {
 	return report
 }
 
-func (a *app) StatusCollection(auth Auth) StatusCollection {
+func (a *app) StatusCollection(auth *Auth) StatusCollection {
 	status := StatusCollection{}
 
 	a.stationsMutex.Lock()
@@ -280,7 +280,6 @@ func (a *app) StatusCollection(auth Auth) StatusCollection {
 			})
 		}
 	}
-	log.Info(fmt.Sprintf("/status-collection: login=%s isAdmin=%v", auth.Login, auth.IsAdmin))
 	return status
 }
 
