@@ -76,7 +76,7 @@ INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical
 VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :ctime)
 	`
 	sqlAddCollectionReport = `
-	INSERT INTO money_collection (station_id, banknotes, cars_total, coins, electronical, service, last_money_report_id, ctime) 
+	INSERT INTO money_collection (station_id, user_id, banknotes, cars_total, coins, electronical, service, last_money_report_id, ctime) 
 	(
 	SELECT station_id, 
 			   sum(banknotes) as banknotes, 
@@ -302,6 +302,7 @@ type (
 	}
 	argAddCollectionReport struct {
 		StationID app.StationID
+		UserID    int
 		Ctime     time.Time
 	}
 	argRelayStatReport struct {

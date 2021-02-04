@@ -339,11 +339,12 @@ func (r *repo) LastCollectionReport(stationID app.StationID) (report app.Collect
 	return //nolint:nakedret
 }
 
-func (r *repo) SaveCollectionReport(id app.StationID) (err error) {
+func (r *repo) SaveCollectionReport(userID int, id app.StationID) (err error) {
 	fmt.Println("DAL: SaveCollectionReport")
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlAddCollectionReport, argAddCollectionReport{
 			StationID: id,
+			UserID:    userID,
 			Ctime:     time.Now().UTC(),
 		})
 		return err

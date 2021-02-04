@@ -92,7 +92,7 @@ type (
 		MoneyReport(stationID StationID, startDate, endDate time.Time) (MoneyReport, error)
 		RelayStatReport(stationID StationID, startDate, endDate time.Time) (RelayReport, error)
 		LastCollectionReport(stationID StationID) (report CollectionReport, err error)
-		SaveCollectionReport(id StationID) (err error)
+		SaveCollectionReport(userID int, stationID StationID) (err error)
 		StationsVariables() ([]StationsVariables, error)
 		AddStation(name string) error
 		AddOpenStationLog(StationID) error

@@ -184,7 +184,7 @@ func (a *app) SaveMoneyReport(report MoneyReport) error {
 // SaveCollectionReport gets app.CollectionReport struct
 func (a *app) SaveCollectionReport(auth Auth, id StationID) error {
 	fmt.Println("APP: SaveCollectionReport")
-	return a.repo.SaveCollectionReport(id)
+	return a.repo.SaveCollectionReport(auth.ID, id)
 }
 
 // SaveRelayReport gets app.RelayReport struct
@@ -210,13 +210,12 @@ func (a *app) User(password string) (*UserData, error) {
 	for u := range users {
 		user := users[u]
 		errPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-		if errPassword != nil {
-			return nil, ErrAccessDenied
+		if errPassword == nil {
+			log.Info(fmt.Sprintf("Authenticated as: %s %s %s", user.FirstName, user.MiddleName, user.LastName))
+			return &user, nil
 		}
-		log.Info(fmt.Sprintf("Authenticated as: %s %s %s", user.FirstName, user.MiddleName, user.LastName))
-		return &user, nil
 	}
-	return nil, ErrNotFound
+	return nil, ErrAccessDenied
 }
 
 // LoadRelayReport gets hash string
@@ -273,7 +272,7 @@ func (a *app) StatusCollection(auth Auth) StatusCollection {
 			})
 		}
 	}
-	log.Info(fmt.Sprintf("/status-collection: %s %s %s %v", auth.FirstName, auth.MiddleName, auth.LastName))
+	log.Info(fmt.Sprintf("/status-collection: %s %s %s isAdmin=%v", auth.FirstName, auth.MiddleName, auth.LastName, auth.IsAdmin))
 	return status
 }
 

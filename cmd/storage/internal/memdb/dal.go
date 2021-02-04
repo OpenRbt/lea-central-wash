@@ -136,7 +136,7 @@ func (t *DB) LastCollectionReport(stationID app.StationID) (report app.Collectio
 	return
 }
 
-func (t *DB) SaveCollectionReport(id app.StationID) error {
+func (t *DB) SaveCollectionReport(userID int, stationID app.StationID) error {
 	return nil
 }
 
