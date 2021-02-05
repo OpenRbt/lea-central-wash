@@ -8,14 +8,14 @@ first_name  TEXT NOT NULL,
 middle_name TEXT NOT NULL,
 last_name   TEXT NOT NULL,
 password    TEXT NOT NULL,
-is_admin    boolean DEFAULT FALSE,
-is_operator boolean DEFAULT FALSE,
-is_engineer boolean DEFAULT FALSE,
+is_admin    boolean NOT NULL,
+is_operator boolean NOT NULL,
+is_engineer boolean NOT NULL,
 ctime       timestamp default now()
 );
 
-INSERT INTO users (login, first_name, middle_name, last_name, password, is_admin)
-VALUES ('admin', '', '', '', '$2y$10$8yv.lzXgxF8PGLjDecCqsuy3aVqRCRQWUxHgDPQb9QW23Dpk2eY/.', true);
+INSERT INTO users (login, first_name, middle_name, last_name, password, is_admin, is_operator, is_engineer)
+VALUES ('admin', '', '', '', '$2y$10$8yv.lzXgxF8PGLjDecCqsuy3aVqRCRQWUxHgDPQb9QW23Dpk2eY/.', true, false, false);
 
 ALTER TABLE money_collection ADD user_id INT REFERENCES users(id); 
 

@@ -43,13 +43,29 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation AddServiceAmount has not yet been implemented")
 			return AddServiceAmountNotImplemented()
 		}),
+		CreateUserHandler: CreateUserHandlerFunc(func(params CreateUserParams, principal *storageapi.Profile) CreateUserResponder {
+			// return middleware.NotImplemented("operation CreateUser has not yet been implemented")
+			return CreateUserNotImplemented()
+		}),
 		DelStationHandler: DelStationHandlerFunc(func(params DelStationParams) DelStationResponder {
 			// return middleware.NotImplemented("operation DelStation has not yet been implemented")
 			return DelStationNotImplemented()
 		}),
+		DeleteUserHandler: DeleteUserHandlerFunc(func(params DeleteUserParams, principal *storageapi.Profile) DeleteUserResponder {
+			// return middleware.NotImplemented("operation DeleteUser has not yet been implemented")
+			return DeleteUserNotImplemented()
+		}),
 		GetPingHandler: GetPingHandlerFunc(func(params GetPingParams) GetPingResponder {
 			// return middleware.NotImplemented("operation GetPing has not yet been implemented")
 			return GetPingNotImplemented()
+		}),
+		GetUserHandler: GetUserHandlerFunc(func(params GetUserParams, principal *storageapi.Profile) GetUserResponder {
+			// return middleware.NotImplemented("operation GetUser has not yet been implemented")
+			return GetUserNotImplemented()
+		}),
+		GetUsersHandler: GetUsersHandlerFunc(func(params GetUsersParams, principal *storageapi.Profile) GetUsersResponder {
+			// return middleware.NotImplemented("operation GetUsers has not yet been implemented")
+			return GetUsersNotImplemented()
 		}),
 		InfoHandler: InfoHandlerFunc(func(params InfoParams) InfoResponder {
 			// return middleware.NotImplemented("operation Info has not yet been implemented")
@@ -147,6 +163,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation StatusCollection has not yet been implemented")
 			return StatusCollectionNotImplemented()
 		}),
+		UpdateUserHandler: UpdateUserHandlerFunc(func(params UpdateUserParams, principal *storageapi.Profile) UpdateUserResponder {
+			// return middleware.NotImplemented("operation UpdateUser has not yet been implemented")
+			return UpdateUserNotImplemented()
+		}),
 
 		// Applies when the "Pin" header is set
 		PinCodeAuth: func(token string) (*storageapi.Profile, error) {
@@ -195,10 +215,18 @@ type StorageAPI struct {
 
 	// AddServiceAmountHandler sets the operation handler for the add service amount operation
 	AddServiceAmountHandler AddServiceAmountHandler
+	// CreateUserHandler sets the operation handler for the create user operation
+	CreateUserHandler CreateUserHandler
 	// DelStationHandler sets the operation handler for the del station operation
 	DelStationHandler DelStationHandler
+	// DeleteUserHandler sets the operation handler for the delete user operation
+	DeleteUserHandler DeleteUserHandler
 	// GetPingHandler sets the operation handler for the get ping operation
 	GetPingHandler GetPingHandler
+	// GetUserHandler sets the operation handler for the get user operation
+	GetUserHandler GetUserHandler
+	// GetUsersHandler sets the operation handler for the get users operation
+	GetUsersHandler GetUsersHandler
 	// InfoHandler sets the operation handler for the info operation
 	InfoHandler InfoHandler
 	// KasseHandler sets the operation handler for the kasse operation
@@ -247,6 +275,8 @@ type StorageAPI struct {
 	StatusHandler StatusHandler
 	// StatusCollectionHandler sets the operation handler for the status collection operation
 	StatusCollectionHandler StatusCollectionHandler
+	// UpdateUserHandler sets the operation handler for the update user operation
+	UpdateUserHandler UpdateUserHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -318,12 +348,28 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "AddServiceAmountHandler")
 	}
 
+	if o.CreateUserHandler == nil {
+		unregistered = append(unregistered, "CreateUserHandler")
+	}
+
 	if o.DelStationHandler == nil {
 		unregistered = append(unregistered, "DelStationHandler")
 	}
 
+	if o.DeleteUserHandler == nil {
+		unregistered = append(unregistered, "DeleteUserHandler")
+	}
+
 	if o.GetPingHandler == nil {
 		unregistered = append(unregistered, "GetPingHandler")
+	}
+
+	if o.GetUserHandler == nil {
+		unregistered = append(unregistered, "GetUserHandler")
+	}
+
+	if o.GetUsersHandler == nil {
+		unregistered = append(unregistered, "GetUsersHandler")
 	}
 
 	if o.InfoHandler == nil {
@@ -420,6 +466,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.StatusCollectionHandler == nil {
 		unregistered = append(unregistered, "StatusCollectionHandler")
+	}
+
+	if o.UpdateUserHandler == nil {
+		unregistered = append(unregistered, "UpdateUserHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -540,12 +590,32 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/user"] = NewCreateUser(o.context, o.CreateUserHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/del-station"] = NewDelStation(o.context, o.DelStationHandler)
+
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/user"] = NewDeleteUser(o.context, o.DeleteUserHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/ping"] = NewGetPing(o.context, o.GetPingHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/user"] = NewGetUser(o.context, o.GetUserHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/users"] = NewGetUsers(o.context, o.GetUsersHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
@@ -666,6 +736,11 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/status-collection"] = NewStatusCollection(o.context, o.StatusCollectionHandler)
+
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/user"] = NewUpdateUser(o.context, o.UpdateUserHandler)
 
 }
 

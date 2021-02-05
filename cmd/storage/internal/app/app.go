@@ -63,7 +63,7 @@ type (
 		StationReportDates(id StationID, startDate, endDate time.Time) (MoneyReport, RelayReport, error)
 		StationReportCurrentMoney(id StationID) (MoneyReport, RelayReport, error)
 
-		StatusCollection(auth *Auth) StatusCollection
+		StatusCollection() StatusCollection
 		SaveCollectionReport(auth *Auth, id StationID) error
 
 		Programs(id StationID) (programs []Program, err error)
@@ -71,7 +71,12 @@ type (
 		ProgramRelays(id StationID, programID int) (relays []Relay, err error)
 		SetProgramRelays(id StationID, programID int, relays []Relay) (err error)
 
+		Users() (users []UserData, err error)
 		User(password string) (user *UserData, err error)
+		CreateUser(userData UserData) (id int, err error)
+		UpdateUser(userData UserData) (id int, err error)
+		DeleteUser(login string) error
+
 		IsEnabled(user *UserData) bool
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
@@ -98,7 +103,12 @@ type (
 		AddStation(name string) error
 		AddOpenStationLog(StationID) error
 		CurrentMoney(StationID) (MoneyReport, error)
+
+		User(login string) (user UserData, err error)
 		Users() (users []UserData, err error)
+		CreateUser(userData UserData) (newUser UserData, err error)
+		UpdateUser(userData UserData) (newUser UserData, err error)
+		DeleteUser(login string) error
 
 		// for api
 		LoadHash() ([]StationID, []string, error)

@@ -46,11 +46,23 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.AddServiceAmountHandler = op.AddServiceAmountHandlerFunc(func(params op.AddServiceAmountParams) op.AddServiceAmountResponder {
 		return op.AddServiceAmountNotImplemented()
 	})
+	api.CreateUserHandler = op.CreateUserHandlerFunc(func(params op.CreateUserParams, principal *storageapi.Profile) op.CreateUserResponder {
+		return op.CreateUserNotImplemented()
+	})
 	api.DelStationHandler = op.DelStationHandlerFunc(func(params op.DelStationParams) op.DelStationResponder {
 		return op.DelStationNotImplemented()
 	})
+	api.DeleteUserHandler = op.DeleteUserHandlerFunc(func(params op.DeleteUserParams, principal *storageapi.Profile) op.DeleteUserResponder {
+		return op.DeleteUserNotImplemented()
+	})
 	api.GetPingHandler = op.GetPingHandlerFunc(func(params op.GetPingParams) op.GetPingResponder {
 		return op.GetPingNotImplemented()
+	})
+	api.GetUserHandler = op.GetUserHandlerFunc(func(params op.GetUserParams, principal *storageapi.Profile) op.GetUserResponder {
+		return op.GetUserNotImplemented()
+	})
+	api.GetUsersHandler = op.GetUsersHandlerFunc(func(params op.GetUsersParams, principal *storageapi.Profile) op.GetUsersResponder {
+		return op.GetUsersNotImplemented()
 	})
 	api.InfoHandler = op.InfoHandlerFunc(func(params op.InfoParams) op.InfoResponder {
 		return op.InfoNotImplemented()
@@ -123,6 +135,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	})
 	api.StatusCollectionHandler = op.StatusCollectionHandlerFunc(func(params op.StatusCollectionParams, principal *storageapi.Profile) op.StatusCollectionResponder {
 		return op.StatusCollectionNotImplemented()
+	})
+	api.UpdateUserHandler = op.UpdateUserHandlerFunc(func(params op.UpdateUserParams, principal *storageapi.Profile) op.UpdateUserResponder {
+		return op.UpdateUserNotImplemented()
 	})
 
 	api.ServerShutdown = func() {}

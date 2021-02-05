@@ -202,6 +202,46 @@ definitions:
         maxLength: 12
         pattern: '^[0123456789]{12}$'
 
+  UserConfig:
+    type: object
+    required:
+        - login
+        - isAdmin
+        - isOperator
+        - isEngineer
+    properties:
+      login:
+        type: string
+        minLength: 1
+      firstName:
+        type: string
+        minLength: 1
+      middleName:
+        type: string
+        minLength: 1
+      lastName:
+        type: string
+        minLength: 1
+      isAdmin:
+        type: boolean
+      isOperator:
+        type: boolean
+      isEngineer:
+        type: boolean
+      password:
+        type: string
+        minLength: 4
+        maxLength: 4
+        pattern: '^[0123456789]{4}$'
+
+  UsersReport:
+    type: object
+    properties:
+      users:
+          type: array
+          items:
+            $ref: '#/definitions/UserConfig'
+
 consumes:
   - application/json
 produces:
@@ -781,5 +821,108 @@ paths:
       responses:
         204:
           description: OK
+        500:
+          description: internal error
+
+  /users:
+    get:
+      operationId: "getUsers"
+      security:
+        - pinCode: []
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            $ref: '#/definitions/UsersReport'
+        401:
+          description: "PIN is missing or invalid"
+        500:
+          description: internal error
+
+  /user:
+    get:
+      operationId: "getUser"
+      security:
+        - pinCode: []
+      responses:
+        204:
+          description: OK
+        401:
+          description: "PIN is missing or invalid"
+    post:
+      operationId: "createUser"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/UserConfig'
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            required:
+              - id
+            properties:
+              id:
+                type: integer
+        400:
+          description: Bad argument
+        401:
+          description: PIN is missing or invalid
+        500:
+          description: internal error
+    put:
+      operationId: "updateUser"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/UserConfig'
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            required:
+              - id
+            properties:
+              id:
+                type: integer
+        400:
+          description: Bad argument
+        401:
+          description: PIN is missing or invalid
+        500:
+          description: internal error
+    delete:
+      operationId: "deleteUser"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - login
+            properties:
+              login:
+                type: string
+      responses:
+        204:
+          description: OK
+        400:
+          description: Bad argument
+        401:
+          description: PIN is missing or invalid
         500:
           description: internal error

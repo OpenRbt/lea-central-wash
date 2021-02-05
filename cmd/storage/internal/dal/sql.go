@@ -55,17 +55,70 @@ WHERE id = :id
 SELECT id, name  FROM station where deleted = false ORDER BY id
 	`
 
+	sqlGetUsers = `
+SELECT 	id, 
+		login,
+		coalesce(first_name, '') as first_name, 
+		coalesce(middle_name, '') as middle_name, 
+		coalesce(last_name, '') as last_name, 
+		password, 
+		is_admin, 
+		is_operator, 
+		is_engineer 
+FROM users
+	`
+
 	sqlGetUser = `
-SELECT 	u.id, 
-		u.login,
-		coalesce(u.first_name, '') as first_name, 
-		coalesce(u.middle_name, '') as middle_name, 
-		coalesce(u.last_name, '') as last_name, 
-		u.password, 
-		u.is_admin, 
-		u.is_operator, 
-		u.is_engineer 
-FROM users u
+SELECT 	id, 
+		login,
+		coalesce(first_name, '') as first_name, 
+		coalesce(middle_name, '') as middle_name, 
+		coalesce(last_name, '') as last_name, 
+		password, 
+		is_admin, 
+		is_operator, 
+		is_engineer 
+FROM users 
+WHERE login = :login
+	`
+
+	sqlAddUser = `
+INSERT INTO users(login, first_name, middle_name, last_name, password, is_admin, is_operator, is_engineer)
+VALUES (:login, :first_name, :middle_name, :last_name, :password, :is_admin, :is_operator, :is_engineer)
+RETURNING 	id, 
+			login,
+			coalesce(first_name, '') as first_name, 
+			coalesce(middle_name, '') as middle_name, 
+			coalesce(last_name, '') as last_name, 
+			password, 
+			is_admin, 
+			is_operator, 
+			is_engineer 
+	`
+
+	sqlUpdateUser = `
+UPDATE users
+SET first_name = :first_name, 
+	middle_name = :middle_name, 
+	last_name = :last_name, 
+	password = :password, 
+	is_admin = :is_admin, 
+	is_operator = :is_operator, 
+	is_engineer = :is_engineer
+WHERE login = :login
+RETURNING 	id, 
+			login,
+			coalesce(first_name, '') as first_name, 
+			coalesce(middle_name, '') as middle_name, 
+			coalesce(last_name, '') as last_name, 
+			password, 
+			is_admin, 
+			is_operator, 
+			is_engineer 
+	`
+
+	sqlDelUser = `
+DELETE FROM users WHERE login = :login
 	`
 
 	sqlLoadHash = `
@@ -248,9 +301,35 @@ type (
 	argGetStation struct {
 	}
 	argGetUser struct {
+		Login string
+	}
+	argGetUsers struct {
 	}
 	argGetUserRoles struct {
 		ID int
+	}
+	argAddUser struct {
+		Login      string
+		FirstName  string
+		MiddleName string
+		LastName   string
+		Password   string
+		IsAdmin    bool
+		IsEngineer bool
+		IsOperator bool
+	}
+	argUpdateUser struct {
+		Login      string
+		FirstName  string
+		MiddleName string
+		LastName   string
+		Password   string
+		IsAdmin    bool
+		IsEngineer bool
+		IsOperator bool
+	}
+	argDelUser struct {
+		Login string
 	}
 	resUser struct {
 		ID         int

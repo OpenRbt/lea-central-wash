@@ -206,6 +206,14 @@ func (a *app) IsEnabled(user *UserData) bool {
 	return user.IsAdmin || user.IsEngineer || user.IsOperator
 }
 
+func (a *app) Users() ([]UserData, error) {
+	users, errRepo := a.repo.Users()
+	if errRepo != nil {
+		log.Info("REPO: ", errRepo)
+	}
+	return users, errRepo
+}
+
 func (a *app) User(password string) (*UserData, error) {
 	users, errRepo := a.repo.Users()
 	if errRepo != nil {
@@ -224,6 +232,46 @@ func (a *app) User(password string) (*UserData, error) {
 		}
 	}
 	return nil, ErrAccessDenied
+}
+
+func (a *app) CreateUser(userData UserData) (id int, err error) {
+	password, errPassword := bcrypt.GenerateFromPassword([]byte(userData.Password), bcrypt.DefaultCost)
+	if errPassword != nil {
+		return 0, errPassword
+	}
+	userData.Password = string(password)
+	user, err := a.repo.CreateUser(userData)
+	return user.ID, err
+}
+
+func (a *app) UpdateUser(userData UserData) (id int, err error) {
+	user, errOldUser := a.repo.User(userData.Login)
+	if errOldUser != nil {
+		return 0, errOldUser
+	}
+	if userData.FirstName != "" {
+		user.FirstName = userData.FirstName
+	}
+	if userData.MiddleName != "" {
+		user.MiddleName = userData.MiddleName
+	}
+	if userData.LastName != "" {
+		user.LastName = userData.LastName
+	}
+	if userData.Password != "" {
+		password, errPassword := bcrypt.GenerateFromPassword([]byte(userData.Password), bcrypt.DefaultCost)
+		if errPassword != nil {
+			return 0, errPassword
+		}
+		user.Password = string(password)
+	}
+	newUser, err := a.repo.UpdateUser(user)
+	return newUser.ID, err
+}
+
+func (a *app) DeleteUser(login string) error {
+	errRepo := a.repo.DeleteUser(login)
+	return errRepo
 }
 
 // LoadRelayReport gets hash string
@@ -264,7 +312,7 @@ func (a *app) StatusReport() StatusReport {
 	return report
 }
 
-func (a *app) StatusCollection(auth *Auth) StatusCollection {
+func (a *app) StatusCollection() StatusCollection {
 	status := StatusCollection{}
 
 	a.stationsMutex.Lock()

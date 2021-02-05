@@ -922,6 +922,175 @@ func init() {
           }
         }
       }
+    },
+    "/user": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getUser",
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserConfig"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad argument"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserConfig"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad argument"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "login"
+              ],
+              "properties": {
+                "login": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad argument"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getUsers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/UsersReport"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -1178,6 +1347,59 @@ func init() {
           "type": "array",
           "items": {
             "$ref": "#/definitions/StationStatus"
+          }
+        }
+      }
+    },
+    "UserConfig": {
+      "type": "object",
+      "required": [
+        "login",
+        "isAdmin",
+        "isOperator",
+        "isEngineer"
+      ],
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "isAdmin": {
+          "type": "boolean"
+        },
+        "isEngineer": {
+          "type": "boolean"
+        },
+        "isOperator": {
+          "type": "boolean"
+        },
+        "lastName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "login": {
+          "type": "string",
+          "minLength": 1
+        },
+        "middleName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "password": {
+          "type": "string",
+          "maxLength": 4,
+          "minLength": 4,
+          "pattern": "^[0123456789]{4}$"
+        }
+      }
+    },
+    "UsersReport": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserConfig"
           }
         }
       }
@@ -2096,6 +2318,175 @@ func init() {
           }
         }
       }
+    },
+    "/user": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getUser",
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserConfig"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad argument"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserConfig"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad argument"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "login"
+              ],
+              "properties": {
+                "login": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad argument"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getUsers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/UsersReport"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -2352,6 +2743,59 @@ func init() {
           "type": "array",
           "items": {
             "$ref": "#/definitions/StationStatus"
+          }
+        }
+      }
+    },
+    "UserConfig": {
+      "type": "object",
+      "required": [
+        "login",
+        "isAdmin",
+        "isOperator",
+        "isEngineer"
+      ],
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "isAdmin": {
+          "type": "boolean"
+        },
+        "isEngineer": {
+          "type": "boolean"
+        },
+        "isOperator": {
+          "type": "boolean"
+        },
+        "lastName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "login": {
+          "type": "string",
+          "minLength": 1
+        },
+        "middleName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "password": {
+          "type": "string",
+          "maxLength": 4,
+          "minLength": 4,
+          "pattern": "^[0123456789]{4}$"
+        }
+      }
+    },
+    "UsersReport": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserConfig"
           }
         }
       }

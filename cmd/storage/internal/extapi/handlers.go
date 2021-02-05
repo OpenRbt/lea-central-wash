@@ -293,7 +293,7 @@ func (svc *service) status(params op.StatusParams) op.StatusResponder {
 
 func (svc *service) statusCollection(params op.StatusCollectionParams, auth *app.Auth) op.StatusCollectionResponder {
 	log.Debug("status collection", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	collection := svc.app.StatusCollection(auth)
+	collection := svc.app.StatusCollection()
 	return op.NewStatusCollectionOK().WithPayload(apiStatusCollectionReport(collection))
 }
 
@@ -546,4 +546,84 @@ func (svc *service) setKasse(params op.SetKasseParams) op.SetKasseResponder {
 		return op.NewSetKasseInternalServerError()
 	}
 
+}
+
+func (svc *service) getUsers(params op.GetUsersParams, auth *app.Auth) op.GetUsersResponder {
+	log.Debug("getUsers", "login", auth.Login, "isAdmin", auth.IsAdmin)
+	if !auth.IsAdmin {
+		return op.NewGetUsersUnauthorized()
+	}
+	users, err := svc.app.Users()
+	if err != nil {
+		return op.NewGetUsersInternalServerError()
+	}
+	return op.NewGetUsersOK().WithPayload(apiUsersReport(users))
+}
+
+func (svc *service) getUser(params op.GetUserParams, auth *app.Auth) op.GetUserResponder {
+	log.Debug("getUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
+	return op.NewGetUserNoContent()
+}
+
+func (svc *service) createUser(params op.CreateUserParams, auth *app.Auth) op.CreateUserResponder {
+	log.Debug("createUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
+	if !auth.IsAdmin {
+		return op.NewCreateUserUnauthorized()
+	}
+	id, err := svc.app.CreateUser(app.UserData{
+		Login:      *params.Args.Login,
+		FirstName:  params.Args.FirstName,
+		MiddleName: params.Args.MiddleName,
+		LastName:   params.Args.LastName,
+		Password:   params.Args.Password,
+		IsAdmin:    *params.Args.IsAdmin,
+		IsOperator: *params.Args.IsOperator,
+		IsEngineer: *params.Args.IsEngineer,
+	})
+	if err != nil {
+		log.Debug(err)
+		return op.NewCreateUserBadRequest()
+	}
+	log.Debug("created user", "id", id)
+	return op.NewCreateUserOK().WithPayload(&op.CreateUserOKBody{
+		ID: newInt64(int64(id)),
+	})
+}
+
+func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.UpdateUserResponder {
+	log.Debug("updateUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
+	if !auth.IsAdmin {
+		return op.NewUpdateUserUnauthorized()
+	}
+	id, err := svc.app.UpdateUser(app.UserData{
+		Login:      *params.Args.Login,
+		FirstName:  params.Args.FirstName,
+		MiddleName: params.Args.MiddleName,
+		LastName:   params.Args.LastName,
+		Password:   params.Args.Password,
+		IsAdmin:    *params.Args.IsAdmin,
+		IsOperator: *params.Args.IsOperator,
+		IsEngineer: *params.Args.IsEngineer,
+	})
+	if err != nil {
+		log.Debug(err)
+		return op.NewUpdateUserBadRequest()
+	}
+	log.Debug("updated user", "id", id)
+	return op.NewUpdateUserOK().WithPayload(&op.UpdateUserOKBody{
+		ID: newInt64(int64(id)),
+	})
+}
+
+func (svc *service) deleteUser(params op.DeleteUserParams, auth *app.Auth) op.DeleteUserResponder {
+	log.Debug("deleteUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
+	if !auth.IsAdmin {
+		return op.NewDeleteUserUnauthorized()
+	}
+	err := svc.app.DeleteUser(*params.Args.Login)
+	if err != nil {
+		log.Debug(err)
+		return op.NewDeleteUserInternalServerError()
+	}
+	return op.NewDeleteUserNoContent()
 }

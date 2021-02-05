@@ -6,7 +6,7 @@ import (
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 )
 
-func appSetUser(v []resUser) []app.UserData {
+func appSetUsers(v []resUser) []app.UserData {
 	var res []app.UserData
 	for i := range v {
 		res = append(res, app.UserData{

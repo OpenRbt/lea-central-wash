@@ -102,6 +102,12 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.KasseHandler = op.KasseHandlerFunc(svc.kasse)
 	api.SetKasseHandler = op.SetKasseHandlerFunc(svc.setKasse)
 
+	api.GetUsersHandler = op.GetUsersHandlerFunc(svc.getUsers)
+	api.GetUserHandler = op.GetUserHandlerFunc(svc.getUser)
+	api.CreateUserHandler = op.CreateUserHandlerFunc(svc.createUser)
+	api.UpdateUserHandler = op.UpdateUserHandlerFunc(svc.updateUser)
+	api.DeleteUserHandler = op.DeleteUserHandlerFunc(svc.deleteUser)
+
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port

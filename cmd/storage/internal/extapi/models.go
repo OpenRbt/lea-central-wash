@@ -163,3 +163,27 @@ func apiKasse(k app.Kasse) (res *model.KasseConfig) {
 
 	return res
 }
+
+func apiUserReport(v app.UserData) *model.UserConfig {
+	return &model.UserConfig{
+		Login:      &v.Login,
+		FirstName:  v.FirstName,
+		MiddleName: v.MiddleName,
+		LastName:   v.LastName,
+		IsAdmin:    &v.IsAdmin,
+		IsOperator: &v.IsOperator,
+		IsEngineer: &v.IsEngineer,
+	}
+}
+
+func apiUsersReport(userData []app.UserData) *model.UsersReport {
+	var users []*model.UserConfig
+
+	for u := range userData {
+		users = append(users, apiUserReport(userData[u]))
+	}
+
+	return &model.UsersReport{
+		Users: users,
+	}
+}

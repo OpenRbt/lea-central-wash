@@ -75,15 +75,87 @@ func (r *repo) schemaLock(f func() error) func() error {
 	}
 }
 
-func (r *repo) Users() (users []app.UserData, err error) {
+func (r *repo) User(login string) (user app.UserData, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res []resUser
-		err := tx.NamedSelectContext(ctx, &res, sqlGetUser, argGetUser{})
+		err := tx.NamedSelectContext(ctx, &res, sqlGetUser, argGetUser{
+			Login: login,
+		})
 		if err != nil {
 			return err
 		}
-		users = appSetUser(res)
+		users := appSetUsers(res)
+		user = users[0]
 		return nil
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) Users() (users []app.UserData, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res []resUser
+		err := tx.NamedSelectContext(ctx, &res, sqlGetUsers, argGetUsers{})
+		if err != nil {
+			return err
+		}
+		users = appSetUsers(res)
+		return nil
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) CreateUser(userData app.UserData) (newUser app.UserData, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res []resUser
+		errRes := tx.NamedSelectContext(ctx, &res, sqlAddUser, argAddUser{
+			Login:      userData.Login,
+			FirstName:  userData.FirstName,
+			MiddleName: userData.MiddleName,
+			LastName:   userData.LastName,
+			Password:   userData.Password,
+			IsAdmin:    userData.IsAdmin,
+			IsEngineer: userData.IsEngineer,
+			IsOperator: userData.IsOperator,
+		})
+		if errRes != nil {
+			return errRes
+		}
+		users := appSetUsers(res)
+		newUser = users[0]
+		return nil
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) UpdateUser(userData app.UserData) (newUser app.UserData, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res []resUser
+		errRes := tx.NamedSelectContext(ctx, &res, sqlUpdateUser, argUpdateUser{
+			Login:      userData.Login,
+			FirstName:  userData.FirstName,
+			MiddleName: userData.MiddleName,
+			LastName:   userData.LastName,
+			Password:   userData.Password,
+			IsAdmin:    userData.IsAdmin,
+			IsEngineer: userData.IsEngineer,
+			IsOperator: userData.IsOperator,
+		})
+		if errRes != nil {
+			return errRes
+		}
+		users := appSetUsers(res)
+		newUser = users[0]
+		return nil
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) DeleteUser(login string) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlDelUser, argDelUser{
+			Login: login,
+		})
+		return err
 	})
 	return //nolint:nakedret
 }
