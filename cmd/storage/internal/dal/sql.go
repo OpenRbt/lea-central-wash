@@ -79,7 +79,7 @@ SELECT 	id,
 		is_operator, 
 		is_engineer 
 FROM users 
-WHERE login = :login
+WHERE login = lower(:login)
 	`
 
 	sqlAddUser = `
@@ -104,7 +104,7 @@ SET first_name = :first_name,
 	is_admin = :is_admin, 
 	is_operator = :is_operator, 
 	is_engineer = :is_engineer
-WHERE login = :login
+WHERE login = lower(:login)
 RETURNING 	id, 
 			login,
 			first_name, 
@@ -119,7 +119,7 @@ RETURNING 	id,
 	sqlUpdateUserPassword = `
 UPDATE users
 SET password = :new_password 
-WHERE login = :login
+WHERE login = lower(:login)
 RETURNING 	id, 
 			login,
 			first_name, 
@@ -132,7 +132,7 @@ RETURNING 	id,
 	`
 
 	sqlDelUser = `
-DELETE FROM users WHERE login = :login
+DELETE FROM users WHERE login = lower(:login)
 	`
 
 	sqlLoadHash = `
