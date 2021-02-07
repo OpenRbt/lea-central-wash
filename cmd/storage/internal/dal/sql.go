@@ -84,7 +84,7 @@ WHERE login = lower(:login)
 
 	sqlAddUser = `
 INSERT INTO users(login, first_name, middle_name, last_name, password, is_admin, is_operator, is_engineer)
-VALUES (:login, :first_name, :middle_name, :last_name, :password, :is_admin, :is_operator, :is_engineer)
+VALUES (lower(:login), :first_name, :middle_name, :last_name, :password, :is_admin, :is_operator, :is_engineer)
 RETURNING 	id, 
 			login,
 			first_name, 
