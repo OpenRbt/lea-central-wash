@@ -30,6 +30,13 @@ type
     cashierINN: string;
   end;
 
+  CardReaderConfig = packed record
+    StationID: integer;
+    CardReaderType: string;
+    Host: string;
+    Port: string;
+  end;
+
   { TClient }
 
   TClient = class(TDataModule)
@@ -50,6 +57,8 @@ type
       relays: RelaysInfo; out successful: boolean);
     function GetKasse(out Kasse: KasseInfo): boolean;
     procedure SetKasse(Kasse: KasseInfo; out successful: boolean);
+    function GetCardReaderConfig(stationID: integer; out cfg: CardReaderConfig): boolean;
+    function SetCardReaderConfig(cfg: CardReaderConfig): boolean;
 
   private
     serverEndpoint: string;
@@ -494,10 +503,10 @@ begin
 
         if tmp <> nil then
         begin
-          if AnswerJson.Exists('tax') then Kasse.Tax := AnswerJson.GetPath('tax').AsString;
-          if AnswerJson.AsObject.Exists('receiptItemName') then Kasse.receiptItemName := AnswerJson.GetPath('receiptItemName').AsString;
-          if AnswerJson.AsObject.Exists('cashier') then Kasse.cashier := AnswerJson.GetPath('cashier').AsString;
-          if AnswerJson.AsObject.Exists('cashierINN') then Kasse.cashierINN := AnswerJson.GetPath('cashierINN').AsString;
+          if AnswerJson.FindPath('tax') <> nil then Kasse.Tax := AnswerJson.GetPath('tax').AsString;
+          if AnswerJson.FindPath('receiptItemName') <> nil then Kasse.receiptItemName := AnswerJson.GetPath('receiptItemName').AsString;
+          if AnswerJson.FindPath('cashier') <> nil then Kasse.cashier := AnswerJson.GetPath('cashier').AsString;
+          if AnswerJson.FindPath('cashierINN') <> nil then Kasse.cashierINN := AnswerJson.GetPath('cashierINN').AsString;
         end
         else
         begin
@@ -556,6 +565,91 @@ begin
         successful := False;
       end;
 
+
+    finally
+      Free
+    end;
+end;
+
+function TClient.GetCardReaderConfig(stationID: integer; out cfg: CardReaderConfig): boolean;
+var
+  postJson: TJSONObject;
+  RequestAnswer: string;
+  AnswerJson: TJsonData;
+  tmp: TJsonData;
+begin
+  Result := True;
+  postJson := TJSONObject.Create;
+  postJson.Add('stationID', stationID);
+
+  with TFPHttpClient.Create(nil) do
+    try
+      try
+        AddHeader('Content-Type', 'application/json');
+        RequestBody := TStringStream.Create(postJson.AsJSON);
+        RequestAnswer := Post(serverEndpoint + 'card-reader-config');
+        if ResponseStatusCode = 404 then begin
+          cfg.StationID := stationID;
+          cfg.CardReaderType := 'NOT_USED';
+        end else
+            if ResponseStatusCode <> 200 then raise Exception.Create(IntToStr(ResponseStatusCode));
+
+        AnswerJson := GetJson(RequestAnswer);
+
+      if AnswerJson.FindPath('cardReaderType') <> nil then cfg.CardReaderType := AnswerJson.GetPath('cardReaderType').AsString;
+      if AnswerJson.FindPath('host') <> nil then cfg.Host := AnswerJson.GetPath('host').AsString;
+      if AnswerJson.FindPath('port') <> nil then cfg.Port := AnswerJson.GetPath('port').AsString;
+      if AnswerJson.FindPath('stationID') <> nil then cfg.StationID := AnswerJson.GetPath('stationID').AsInteger;
+
+      except
+        case ResponseStatusCode of
+          0: ShowMessage('Can`t connect to server');
+          500: ShowMessage('Server Error: 500');
+          else
+            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+              sLineBreak + ResponseStatusText);
+        end;
+        Result := False;
+
+      end;
+    finally
+      Free
+    end;
+end;
+
+function TClient.SetCardReaderConfig(cfg: CardReaderConfig): boolean;
+var
+  postJson: TJSONObject;
+begin
+  Result := true;
+  postJson := TJSONObject.Create;
+  postJson.Add('stationID', cfg.StationID);
+  postJson.Add('cardReaderType', cfg.CardReaderType);
+  postJson.Add('host', cfg.Host);
+  postJson.Add('port', cfg.Port);
+  with TFPHttpClient.Create(nil) do
+    try
+      try
+        AddHeader('Content-Type', 'application/json');
+        RequestBody := TStringStream.Create(postJson.AsJSON);
+        Post(serverEndpoint + 'set-card-reader-config');
+
+        if ResponseStatusCode <> 204 then
+        begin
+          raise Exception.Create(IntToStr(ResponseStatusCode));
+        end;
+
+      except
+        case ResponseStatusCode of
+          0: ShowMessage('Can`t connect to server');
+          404: ShowMessage('Station not found');
+          500: ShowMessage('Server Error: 500');
+          else
+            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+              sLineBreak + ResponseStatusText);
+        end;
+        Result := False;
+      end;
 
     finally
       Free

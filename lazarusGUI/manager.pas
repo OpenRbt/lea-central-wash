@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Grids, Buttons, ClientAPI, managerRelays;
+  Grids, Buttons, ClientAPI, managerRelays, cardreadercfg;
 
 type
 
@@ -21,6 +21,7 @@ type
     btnOpenStation: TButton;
     Button1: TButton;
     btnManagePrograms: TButton;
+    btnCardReaderConfig: TButton;
     cbHash: TComboBox;
     edName: TEdit;
     editMoney: TLabeledEdit;
@@ -30,6 +31,7 @@ type
     Label3: TLabel;
     Panel1: TPanel;
     PricesData: TStringGrid;
+    procedure btnCardReaderConfigClick(Sender: TObject);
     procedure btnChangeHashClick(Sender: TObject);
     procedure btnChangeNameClick(Sender: TObject);
     procedure btnManageProgramsClick(Sender: TObject);
@@ -153,6 +155,12 @@ begin
     client.PairIdAndHash(cbHash.Items[cbHash.ItemIndex], StationName, StationID);
     close;
   end else ShowMessage('Choose a hash');
+end;
+
+procedure TManageForm.btnCardReaderConfigClick(Sender: TObject);
+begin
+  CardReaderConfigForm.StationID := StationID;
+  CardReaderConfigForm.ShowModal;
 end;
 
 procedure TManageForm.btnChangeNameClick(Sender: TObject);
