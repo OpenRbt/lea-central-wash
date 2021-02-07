@@ -163,3 +163,13 @@ func apiKasse(k app.Kasse) (res *model.KasseConfig) {
 
 	return res
 }
+
+func apiCardReaderConfig(v *app.CardReaderConfig) (res *model.CardReaderConfig) {
+	res = &model.CardReaderConfig{
+		StationID:      newInt64(int64(v.StationID)),
+		CardReaderType: v.CardReaderType,
+		Host:           v.Host,
+		Port:           v.Port,
+	}
+	return res
+}

@@ -39,3 +39,10 @@ type RelayReport struct {
 	StationID  StationID
 	RelayStats []RelayStat
 }
+
+type CardReaderConfig struct {
+	StationID      StationID
+	CardReaderType string
+	Host           string
+	Port           string
+}

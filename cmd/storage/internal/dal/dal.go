@@ -12,6 +12,7 @@ import (
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/migration"
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 	"github.com/pkg/errors"
 	"github.com/powerman/narada4d/schemaver"
 	"github.com/powerman/pqx"
@@ -27,6 +28,11 @@ var log = structlog.New() //nolint:gochecknoglobals
 var ctx = context.Background() //nolint:gochecknoglobals
 
 var errSchemaVer = errors.New("unsupported DB schema version")
+
+func pqErrConflictIn(err error, constraint string) bool {
+	pqErr, ok := err.(*pq.Error)
+	return ok && pqErr.Constraint == constraint
+}
 
 func rollback(tx *sqlxx.Tx) {
 	if err := tx.Rollback(); err != nil && err != sql.ErrTxDone {
@@ -508,4 +514,43 @@ func (r *repo) SetKasse(kasse app.Kasse) (err error) {
 	})
 
 	return
+}
+
+func (r *repo) CardReaderConfig(stationID app.StationID) (cfg *app.CardReaderConfig, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res resGetCardReaderConfig
+		err := tx.NamedGetContext(ctx, &res, sqlGetCardReaderConfig, argGetCardReaderConfig{
+			StationID: stationID,
+		})
+		switch {
+		case err == sql.ErrNoRows:
+			return app.ErrNotFound
+		case err != nil:
+			return err
+		}
+		cfg = &app.CardReaderConfig{
+			StationID:      res.StationID,
+			CardReaderType: res.CardReaderType,
+			Host:           res.Host,
+			Port:           res.Port,
+		}
+		return nil
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) SetCardReaderConfig(cfg app.CardReaderConfig) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlSetCardReaderConfig, argSetCardReaderConfig{
+			StationID:      cfg.StationID,
+			CardReaderType: cfg.CardReaderType,
+			Host:           cfg.Host,
+			Port:           cfg.Port,
+		})
+		if pqErrConflictIn(err, constraintCardReaderStationID) {
+			return app.ErrNotFound
+		}
+		return err
+	})
+	return //nolint:nakedret
 }
