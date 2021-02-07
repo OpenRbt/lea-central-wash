@@ -98,6 +98,10 @@ func NewServer(appl app.App, cfg Config, repo repo) (*restapi.Server, error) {
 	api.KasseHandler = op.KasseHandlerFunc(svc.kasse)
 	api.SetKasseHandler = op.SetKasseHandlerFunc(svc.setKasse)
 
+	api.CardReaderConfigHandler = op.CardReaderConfigHandlerFunc(svc.cardReaderConfig)
+	api.SetCardReaderConfigHandler = op.SetCardReaderConfigHandlerFunc(svc.setCardReaderConfig)
+	api.CardReaderConfigByHashHandler = op.CardReaderConfigByHashHandlerFunc(svc.cardReaderConfigByHash)
+
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port

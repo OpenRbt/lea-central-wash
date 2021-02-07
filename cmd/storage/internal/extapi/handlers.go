@@ -545,3 +545,68 @@ func (svc *service) setKasse(params op.SetKasseParams) op.SetKasseResponder {
 	}
 
 }
+
+func (svc *service) cardReaderConfig(params op.CardReaderConfigParams) op.CardReaderConfigResponder {
+	log.Info("cardReaderConfig", "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
+	res, err := svc.app.CardReaderConfig(app.StationID(*params.Args.StationID))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewCardReaderConfigOK().WithPayload(apiCardReaderConfig(res))
+	case app.ErrNotFound:
+		return op.NewCardReaderConfigNotFound()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewCardReaderConfigInternalServerError()
+	}
+}
+
+func (svc *service) setCardReaderConfig(params op.SetCardReaderConfigParams) op.SetCardReaderConfigResponder {
+	if params.Args.CardReaderType == model.CardReaderConfigCardReaderTypeVENDOTEK && (params.Args.Host == "" || params.Args.Port == "") {
+		return op.NewSetCardReaderConfigUnprocessableEntity().WithPayload("host and port required")
+	}
+	err := svc.app.SetCardReaderConfig(app.CardReaderConfig{
+		StationID:      app.StationID(*params.Args.StationID),
+		CardReaderType: params.Args.CardReaderType,
+		Host:           params.Args.Host,
+		Port:           params.Args.Port,
+	})
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSetCardReaderConfigNoContent()
+	case app.ErrNotFound:
+		return op.NewSetCardReaderConfigNotFound()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewSetCardReaderConfigInternalServerError()
+	}
+
+}
+
+func (svc *service) cardReaderConfigByHash(params op.CardReaderConfigByHashParams) op.CardReaderConfigByHashResponder {
+	log.Info("cardReaderConfig", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	id, err := svc.getID(string(params.Args.Hash))
+	if err != nil {
+		return op.NewCardReaderConfigByHashOK().WithPayload(&model.CardReaderConfig{
+			StationID:      newInt64(int64(id)),
+			CardReaderType: "NOT_USED",
+		})
+	}
+
+	res, err := svc.app.CardReaderConfig(id)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewCardReaderConfigByHashOK().WithPayload(apiCardReaderConfig(res))
+	case app.ErrNotFound:
+		return op.NewCardReaderConfigByHashOK().WithPayload(&model.CardReaderConfig{
+			StationID:      newInt64(int64(id)),
+			CardReaderType: "NOT_USED",
+		})
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewCardReaderConfigByHashInternalServerError()
+	}
+
+}

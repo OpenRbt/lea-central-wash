@@ -53,6 +53,62 @@ func (a *Client) AddServiceAmount(params *AddServiceAmountParams) (*AddServiceAm
 }
 
 /*
+CardReaderConfig card reader config API
+*/
+func (a *Client) CardReaderConfig(params *CardReaderConfigParams) (*CardReaderConfigOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewCardReaderConfigParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "cardReaderConfig",
+		Method:             "POST",
+		PathPattern:        "/card-reader-config",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &CardReaderConfigReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*CardReaderConfigOK), nil
+
+}
+
+/*
+CardReaderConfigByHash card reader config by hash API
+*/
+func (a *Client) CardReaderConfigByHash(params *CardReaderConfigByHashParams) (*CardReaderConfigByHashOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewCardReaderConfigByHashParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "cardReaderConfigByHash",
+		Method:             "POST",
+		PathPattern:        "/card-reader-config-by-hash",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &CardReaderConfigByHashReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*CardReaderConfigByHashOK), nil
+
+}
+
+/*
 DelStation del station API
 */
 func (a *Client) DelStation(params *DelStationParams) (*DelStationNoContent, error) {
@@ -497,6 +553,34 @@ func (a *Client) SaveRelay(params *SaveRelayParams) (*SaveRelayNoContent, error)
 		return nil, err
 	}
 	return result.(*SaveRelayNoContent), nil
+
+}
+
+/*
+SetCardReaderConfig set card reader config API
+*/
+func (a *Client) SetCardReaderConfig(params *SetCardReaderConfigParams) (*SetCardReaderConfigNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetCardReaderConfigParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "setCardReaderConfig",
+		Method:             "POST",
+		PathPattern:        "/set-card-reader-config",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetCardReaderConfigReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*SetCardReaderConfigNoContent), nil
 
 }
 
