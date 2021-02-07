@@ -58,9 +58,9 @@ SELECT id, name  FROM station where deleted = false ORDER BY id
 	sqlGetUsers = `
 SELECT 	id, 
 		login,
-		coalesce(first_name, '') as first_name, 
-		coalesce(middle_name, '') as middle_name, 
-		coalesce(last_name, '') as last_name, 
+		first_name, 
+		middle_name, 
+		last_name, 
 		password, 
 		is_admin, 
 		is_operator, 
@@ -71,9 +71,9 @@ FROM users
 	sqlGetUser = `
 SELECT 	id, 
 		login,
-		coalesce(first_name, '') as first_name, 
-		coalesce(middle_name, '') as middle_name, 
-		coalesce(last_name, '') as last_name, 
+		first_name, 
+		middle_name, 
+		last_name, 
 		password, 
 		is_admin, 
 		is_operator, 
@@ -87,9 +87,9 @@ INSERT INTO users(login, first_name, middle_name, last_name, password, is_admin,
 VALUES (:login, :first_name, :middle_name, :last_name, :password, :is_admin, :is_operator, :is_engineer)
 RETURNING 	id, 
 			login,
-			coalesce(first_name, '') as first_name, 
-			coalesce(middle_name, '') as middle_name, 
-			coalesce(last_name, '') as last_name, 
+			first_name, 
+			middle_name, 
+			last_name, 
 			password, 
 			is_admin, 
 			is_operator, 
@@ -101,20 +101,34 @@ UPDATE users
 SET first_name = :first_name, 
 	middle_name = :middle_name, 
 	last_name = :last_name, 
-	password = :password, 
 	is_admin = :is_admin, 
 	is_operator = :is_operator, 
 	is_engineer = :is_engineer
 WHERE login = :login
 RETURNING 	id, 
 			login,
-			coalesce(first_name, '') as first_name, 
-			coalesce(middle_name, '') as middle_name, 
-			coalesce(last_name, '') as last_name, 
-			password, 
+			first_name, 
+			middle_name, 
+			last_name, 
+			password,
 			is_admin, 
 			is_operator, 
-			is_engineer 
+			is_engineer
+	`
+
+	sqlUpdateUserPassword = `
+UPDATE users
+SET password = :new_password 
+WHERE login = :login
+RETURNING 	id, 
+			login,
+			first_name, 
+			middle_name, 
+			last_name, 
+			password,
+			is_admin, 
+			is_operator, 
+			is_engineer
 	`
 
 	sqlDelUser = `
@@ -327,6 +341,10 @@ type (
 		IsAdmin    bool
 		IsEngineer bool
 		IsOperator bool
+	}
+	argUpdateUserPassword struct {
+		Login       string
+		NewPassword string
 	}
 	argDelUser struct {
 		Login string

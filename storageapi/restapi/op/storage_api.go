@@ -167,6 +167,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation UpdateUser has not yet been implemented")
 			return UpdateUserNotImplemented()
 		}),
+		UpdateUserPasswordHandler: UpdateUserPasswordHandlerFunc(func(params UpdateUserPasswordParams, principal *storageapi.Profile) UpdateUserPasswordResponder {
+			// return middleware.NotImplemented("operation UpdateUserPassword has not yet been implemented")
+			return UpdateUserPasswordNotImplemented()
+		}),
 
 		// Applies when the "Pin" header is set
 		PinCodeAuth: func(token string) (*storageapi.Profile, error) {
@@ -277,6 +281,8 @@ type StorageAPI struct {
 	StatusCollectionHandler StatusCollectionHandler
 	// UpdateUserHandler sets the operation handler for the update user operation
 	UpdateUserHandler UpdateUserHandler
+	// UpdateUserPasswordHandler sets the operation handler for the update user password operation
+	UpdateUserPasswordHandler UpdateUserPasswordHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -470,6 +476,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.UpdateUserHandler == nil {
 		unregistered = append(unregistered, "UpdateUserHandler")
+	}
+
+	if o.UpdateUserPasswordHandler == nil {
+		unregistered = append(unregistered, "UpdateUserPasswordHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -741,6 +751,11 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
 	o.handlers["PUT"]["/user"] = NewUpdateUser(o.context, o.UpdateUserHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/user-password"] = NewUpdateUserPassword(o.context, o.UpdateUserPasswordHandler)
 
 }
 

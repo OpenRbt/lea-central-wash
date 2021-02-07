@@ -84,6 +84,9 @@ func (r *repo) User(login string) (user app.UserData, err error) {
 		if err != nil {
 			return err
 		}
+		if len(res) < 1 {
+			return app.ErrNotFound
+		}
 		users := appSetUsers(res)
 		user = users[0]
 		return nil
@@ -120,6 +123,9 @@ func (r *repo) CreateUser(userData app.UserData) (newUser app.UserData, err erro
 		if errRes != nil {
 			return errRes
 		}
+		if len(res) < 1 {
+			return app.ErrNotFound
+		}
 		users := appSetUsers(res)
 		newUser = users[0]
 		return nil
@@ -135,13 +141,35 @@ func (r *repo) UpdateUser(userData app.UserData) (newUser app.UserData, err erro
 			FirstName:  userData.FirstName,
 			MiddleName: userData.MiddleName,
 			LastName:   userData.LastName,
-			Password:   userData.Password,
 			IsAdmin:    userData.IsAdmin,
 			IsEngineer: userData.IsEngineer,
 			IsOperator: userData.IsOperator,
 		})
 		if errRes != nil {
 			return errRes
+		}
+		if len(res) < 1 {
+			return app.ErrNotFound
+		}
+		users := appSetUsers(res)
+		newUser = users[0]
+		return nil
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) UpdateUserPassword(userData app.UpdatePasswordData) (newUser app.UserData, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res []resUser
+		errRes := tx.NamedSelectContext(ctx, &res, sqlUpdateUserPassword, argUpdateUserPassword{
+			Login:       userData.Login,
+			NewPassword: userData.NewPassword,
+		})
+		if errRes != nil {
+			return errRes
+		}
+		if len(res) < 1 {
+			return app.ErrNotFound
 		}
 		users := appSetUsers(res)
 		newUser = users[0]

@@ -167,9 +167,9 @@ func apiKasse(k app.Kasse) (res *model.KasseConfig) {
 func apiUserReport(v app.UserData) *model.UserConfig {
 	return &model.UserConfig{
 		Login:      &v.Login,
-		FirstName:  v.FirstName,
-		MiddleName: v.MiddleName,
-		LastName:   v.LastName,
+		FirstName:  &v.FirstName,
+		MiddleName: &v.MiddleName,
+		LastName:   &v.LastName,
 		IsAdmin:    &v.IsAdmin,
 		IsOperator: &v.IsOperator,
 		IsEngineer: &v.IsEngineer,

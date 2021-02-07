@@ -139,6 +139,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.UpdateUserHandler = op.UpdateUserHandlerFunc(func(params op.UpdateUserParams, principal *storageapi.Profile) op.UpdateUserResponder {
 		return op.UpdateUserNotImplemented()
 	})
+	api.UpdateUserPasswordHandler = op.UpdateUserPasswordHandlerFunc(func(params op.UpdateUserPasswordParams, principal *storageapi.Profile) op.UpdateUserPasswordResponder {
+		return op.UpdateUserPasswordNotImplemented()
+	})
 
 	api.ServerShutdown = func() {}
 

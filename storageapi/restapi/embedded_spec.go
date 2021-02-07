@@ -953,7 +953,43 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserConfig"
+              "type": "object",
+              "required": [
+                "login"
+              ],
+              "properties": {
+                "firstName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "x-nullable": true
+                },
+                "isAdmin": {
+                  "type": "boolean",
+                  "x-nullable": true
+                },
+                "isEngineer": {
+                  "type": "boolean",
+                  "x-nullable": true
+                },
+                "isOperator": {
+                  "type": "boolean",
+                  "x-nullable": true
+                },
+                "lastName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "x-nullable": true
+                },
+                "login": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "middleName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "x-nullable": true
+                }
+              }
             }
           }
         ],
@@ -1060,6 +1096,74 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/user-password": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "updateUserPassword",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "login",
+                "oldPassword",
+                "newPassword"
+              ],
+              "properties": {
+                "login": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "newPassword": {
+                  "type": "string",
+                  "maxLength": 4,
+                  "minLength": 4,
+                  "pattern": "^[0123456789]{4}$"
+                },
+                "oldPassword": {
+                  "type": "string",
+                  "maxLength": 4,
+                  "minLength": 4,
+                  "pattern": "^[0123456789]{4}$"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"
@@ -1355,9 +1459,13 @@ func init() {
       "type": "object",
       "required": [
         "login",
+        "firstName",
+        "middleName",
+        "lastName",
         "isAdmin",
         "isOperator",
-        "isEngineer"
+        "isEngineer",
+        "password"
       ],
       "properties": {
         "firstName": {
@@ -2349,7 +2457,43 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserConfig"
+              "type": "object",
+              "required": [
+                "login"
+              ],
+              "properties": {
+                "firstName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "x-nullable": true
+                },
+                "isAdmin": {
+                  "type": "boolean",
+                  "x-nullable": true
+                },
+                "isEngineer": {
+                  "type": "boolean",
+                  "x-nullable": true
+                },
+                "isOperator": {
+                  "type": "boolean",
+                  "x-nullable": true
+                },
+                "lastName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "x-nullable": true
+                },
+                "login": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "middleName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "x-nullable": true
+                }
+              }
             }
           }
         ],
@@ -2456,6 +2600,74 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/user-password": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "updateUserPassword",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "login",
+                "oldPassword",
+                "newPassword"
+              ],
+              "properties": {
+                "login": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "newPassword": {
+                  "type": "string",
+                  "maxLength": 4,
+                  "minLength": 4,
+                  "pattern": "^[0123456789]{4}$"
+                },
+                "oldPassword": {
+                  "type": "string",
+                  "maxLength": 4,
+                  "minLength": 4,
+                  "pattern": "^[0123456789]{4}$"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"
@@ -2751,9 +2963,13 @@ func init() {
       "type": "object",
       "required": [
         "login",
+        "firstName",
+        "middleName",
+        "lastName",
         "isAdmin",
         "isOperator",
-        "isEngineer"
+        "isEngineer",
+        "password"
       ],
       "properties": {
         "firstName": {

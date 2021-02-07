@@ -244,28 +244,55 @@ func (a *app) CreateUser(userData UserData) (id int, err error) {
 	return user.ID, err
 }
 
-func (a *app) UpdateUser(userData UserData) (id int, err error) {
+func (a *app) UpdateUser(userData UpdateUserData) (id int, err error) {
+	user, errOldUser := a.repo.User(*userData.Login)
+	if errOldUser != nil {
+		return 0, errOldUser
+	}
+	if userData.FirstName != nil {
+		user.FirstName = *userData.FirstName
+	}
+	if userData.MiddleName != nil {
+		user.MiddleName = *userData.MiddleName
+	}
+	if userData.LastName != nil {
+		user.LastName = *userData.LastName
+	}
+	if userData.IsAdmin != nil {
+		user.IsAdmin = *userData.IsAdmin
+	}
+	if userData.IsOperator != nil {
+		user.IsOperator = *userData.IsOperator
+	}
+	if userData.IsEngineer != nil {
+		user.IsEngineer = *userData.IsEngineer
+	}
+	// if userData.Password != "" {
+	// 	password, errPassword := bcrypt.GenerateFromPassword([]byte(userData.Password), bcrypt.DefaultCost)
+	// 	if errPassword != nil {
+	// 		return 0, errPassword
+	// 	}
+	// 	user.Password = string(password)
+	// }
+	newUser, err := a.repo.UpdateUser(user)
+	return newUser.ID, err
+}
+
+func (a *app) UpdateUserPassword(userData UpdatePasswordData) (id int, err error) {
 	user, errOldUser := a.repo.User(userData.Login)
 	if errOldUser != nil {
 		return 0, errOldUser
 	}
-	if userData.FirstName != "" {
-		user.FirstName = userData.FirstName
+	errOldPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userData.OldPassword))
+	if errOldPassword != nil {
+		return 0, errOldPassword
 	}
-	if userData.MiddleName != "" {
-		user.MiddleName = userData.MiddleName
+	newPassword, errNewPassword := bcrypt.GenerateFromPassword([]byte(userData.NewPassword), bcrypt.DefaultCost)
+	if errNewPassword != nil {
+		return 0, errNewPassword
 	}
-	if userData.LastName != "" {
-		user.LastName = userData.LastName
-	}
-	if userData.Password != "" {
-		password, errPassword := bcrypt.GenerateFromPassword([]byte(userData.Password), bcrypt.DefaultCost)
-		if errPassword != nil {
-			return 0, errPassword
-		}
-		user.Password = string(password)
-	}
-	newUser, err := a.repo.UpdateUser(user)
+	userData.NewPassword = string(newPassword)
+	newUser, err := a.repo.UpdateUserPassword(userData)
 	return newUser.ID, err
 }
 

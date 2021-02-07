@@ -572,10 +572,10 @@ func (svc *service) createUser(params op.CreateUserParams, auth *app.Auth) op.Cr
 	}
 	id, err := svc.app.CreateUser(app.UserData{
 		Login:      *params.Args.Login,
-		FirstName:  params.Args.FirstName,
-		MiddleName: params.Args.MiddleName,
-		LastName:   params.Args.LastName,
-		Password:   params.Args.Password,
+		FirstName:  *params.Args.FirstName,
+		MiddleName: *params.Args.MiddleName,
+		LastName:   *params.Args.LastName,
+		Password:   *params.Args.Password,
 		IsAdmin:    *params.Args.IsAdmin,
 		IsOperator: *params.Args.IsOperator,
 		IsEngineer: *params.Args.IsEngineer,
@@ -595,15 +595,14 @@ func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.Up
 	if !auth.IsAdmin {
 		return op.NewUpdateUserUnauthorized()
 	}
-	id, err := svc.app.UpdateUser(app.UserData{
-		Login:      *params.Args.Login,
+	id, err := svc.app.UpdateUser(app.UpdateUserData{
+		Login:      params.Args.Login,
 		FirstName:  params.Args.FirstName,
 		MiddleName: params.Args.MiddleName,
 		LastName:   params.Args.LastName,
-		Password:   params.Args.Password,
-		IsAdmin:    *params.Args.IsAdmin,
-		IsOperator: *params.Args.IsOperator,
-		IsEngineer: *params.Args.IsEngineer,
+		IsAdmin:    params.Args.IsAdmin,
+		IsOperator: params.Args.IsOperator,
+		IsEngineer: params.Args.IsEngineer,
 	})
 	if err != nil {
 		log.Debug(err)
@@ -611,6 +610,26 @@ func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.Up
 	}
 	log.Debug("updated user", "id", id)
 	return op.NewUpdateUserOK().WithPayload(&op.UpdateUserOKBody{
+		ID: newInt64(int64(id)),
+	})
+}
+
+func (svc *service) updateUserPassword(params op.UpdateUserPasswordParams, auth *app.Auth) op.UpdateUserPasswordResponder {
+	log.Debug("updateUserPassword", "login", auth.Login, "isAdmin", auth.IsAdmin)
+	if !auth.IsAdmin {
+		return op.NewUpdateUserPasswordUnauthorized()
+	}
+	id, err := svc.app.UpdateUserPassword(app.UpdatePasswordData{
+		Login:       *params.Args.Login,
+		OldPassword: *params.Args.OldPassword,
+		NewPassword: *params.Args.NewPassword,
+	})
+	if err != nil {
+		log.Debug(err)
+		return op.NewUpdateUserPasswordNotFound()
+	}
+	log.Debug("updated user", "id", id)
+	return op.NewUpdateUserPasswordOK().WithPayload(&op.UpdateUserPasswordOKBody{
 		ID: newInt64(int64(id)),
 	})
 }

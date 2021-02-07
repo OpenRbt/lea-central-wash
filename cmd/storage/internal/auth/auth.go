@@ -34,12 +34,6 @@ func NewAuthCheck(log *structlog.Logger, appInstance app.App) Check {
 
 // CheckAuth function for check token
 func (a *check) CheckAuth(token string) (*app.Auth, error) { //nolint:gocyclo
-	/*
-		user, err := a.app.GetUserByToken(context.Background(), a.log, token)
-		if err != nil {
-			return nil, err
-		}
-	*/
 	user, err := a.app.User(token)
 	if err != nil {
 		return nil, oapierrors.Unauthenticated("invalid credentials")

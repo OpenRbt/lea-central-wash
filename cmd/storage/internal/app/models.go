@@ -14,6 +14,22 @@ type UserData struct {
 	IsOperator bool
 }
 
+type UpdateUserData struct {
+	Login      *string
+	FirstName  *string
+	MiddleName *string
+	LastName   *string
+	IsAdmin    *bool
+	IsEngineer *bool
+	IsOperator *bool
+}
+
+type UpdatePasswordData struct {
+	Login 		string
+	OldPassword string
+	NewPassword string
+}
+
 type StationData struct {
 	ID           StationID
 	Name         string

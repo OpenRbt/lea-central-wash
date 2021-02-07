@@ -112,6 +112,10 @@ func (t *DB) UpdateUser(userData app.UserData) (newUser app.UserData, err error)
 	return app.UserData{}, nil
 }
 
+func (t *DB) UpdateUserPassword(userData app.UpdatePasswordData) (newUser app.UserData, err error) {
+	return app.UserData{}, nil
+}
+
 func (t *DB) DeleteUser(login string) error {
 	return nil
 }

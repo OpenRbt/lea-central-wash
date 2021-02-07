@@ -74,7 +74,8 @@ type (
 		Users() (users []UserData, err error)
 		User(password string) (user *UserData, err error)
 		CreateUser(userData UserData) (id int, err error)
-		UpdateUser(userData UserData) (id int, err error)
+		UpdateUser(userData UpdateUserData) (id int, err error)
+		UpdateUserPassword(userData UpdatePasswordData) (id int, err error)
 		DeleteUser(login string) error
 
 		IsEnabled(user *UserData) bool
@@ -108,6 +109,7 @@ type (
 		Users() (users []UserData, err error)
 		CreateUser(userData UserData) (newUser UserData, err error)
 		UpdateUser(userData UserData) (newUser UserData, err error)
+		UpdateUserPassword(userData UpdatePasswordData) (newUser UserData, err error)
 		DeleteUser(login string) error
 
 		// for api

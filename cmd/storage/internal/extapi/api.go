@@ -107,6 +107,7 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.CreateUserHandler = op.CreateUserHandlerFunc(svc.createUser)
 	api.UpdateUserHandler = op.UpdateUserHandlerFunc(svc.updateUser)
 	api.DeleteUserHandler = op.DeleteUserHandlerFunc(svc.deleteUser)
+	api.UpdateUserPasswordHandler = op.UpdateUserPasswordHandlerFunc(svc.updateUserPassword)
 
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
