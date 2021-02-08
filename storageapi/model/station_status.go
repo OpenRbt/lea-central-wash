@@ -16,6 +16,12 @@ import (
 // swagger:model StationStatus
 type StationStatus struct {
 
+	// current balance
+	CurrentBalance int64 `json:"currentBalance,omitempty"`
+
+	// current program
+	CurrentProgram int64 `json:"currentProgram,omitempty"`
+
 	// hash
 	Hash Hash `json:"hash,omitempty"`
 
