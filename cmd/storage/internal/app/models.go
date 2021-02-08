@@ -3,11 +3,13 @@ package app
 import "time"
 
 type StationData struct {
-	ID           StationID
-	Name         string
-	ServiceMoney int
-	LastPing     time.Time
-	OpenStation  bool
+	ID             StationID
+	Name           string
+	ServiceMoney   int
+	LastPing       time.Time
+	OpenStation    bool
+	CurrentBalance int
+	CurrentProgram int
 }
 
 type MoneyReport struct {
