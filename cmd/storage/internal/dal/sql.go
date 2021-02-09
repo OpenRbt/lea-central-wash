@@ -7,6 +7,11 @@ import (
 )
 
 const (
+	constraintCardReaderStationID = "card_reader_station_id_fkey"
+	constraintUserLogin           = "users_unique_lower_login_idx"
+)
+
+const (
 	sqlCheckDB = `
 SELECT count(column_name) as count_columns
 FROM information_schema.columns 

@@ -207,11 +207,7 @@ func (a *app) IsEnabled(user *UserData) bool {
 }
 
 func (a *app) Users() ([]UserData, error) {
-	users, errRepo := a.repo.Users()
-	if errRepo != nil {
-		log.Info("REPO: ", errRepo)
-	}
-	return users, errRepo
+	return a.repo.Users()
 }
 
 func (a *app) User(password string) (*UserData, error) {
@@ -241,7 +237,10 @@ func (a *app) CreateUser(userData UserData) (id int, err error) {
 	}
 	userData.Password = string(password)
 	user, err := a.repo.CreateUser(userData)
-	return user.ID, err
+	if err != nil {
+		return 0, err
+	}
+	return user.ID, nil
 }
 
 func (a *app) UpdateUser(userData UpdateUserData) (id int, err error) {
@@ -267,14 +266,10 @@ func (a *app) UpdateUser(userData UpdateUserData) (id int, err error) {
 	if userData.IsEngineer != nil {
 		user.IsEngineer = *userData.IsEngineer
 	}
-	// if userData.Password != "" {
-	// 	password, errPassword := bcrypt.GenerateFromPassword([]byte(userData.Password), bcrypt.DefaultCost)
-	// 	if errPassword != nil {
-	// 		return 0, errPassword
-	// 	}
-	// 	user.Password = string(password)
-	// }
 	newUser, err := a.repo.UpdateUser(user)
+	if err != nil {
+		return 0, err
+	}
 	return newUser.ID, err
 }
 
@@ -297,8 +292,7 @@ func (a *app) UpdateUserPassword(userData UpdatePasswordData) (id int, err error
 }
 
 func (a *app) DeleteUser(login string) error {
-	errRepo := a.repo.DeleteUser(login)
-	return errRepo
+	return a.repo.DeleteUser(login)
 }
 
 // LoadRelayReport gets hash string

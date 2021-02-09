@@ -1008,11 +1008,11 @@ func init() {
               }
             }
           },
-          "400": {
-            "description": "Bad argument"
-          },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
           },
           "500": {
             "description": "internal error"
@@ -1051,11 +1051,26 @@ func init() {
               }
             }
           },
-          "400": {
-            "description": "Bad argument"
-          },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "500": {
             "description": "internal error"
@@ -1090,9 +1105,6 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
-          },
-          "400": {
-            "description": "Bad argument"
           },
           "401": {
             "description": "PIN is missing or invalid"
@@ -2512,11 +2524,11 @@ func init() {
               }
             }
           },
-          "400": {
-            "description": "Bad argument"
-          },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
           },
           "500": {
             "description": "internal error"
@@ -2555,11 +2567,26 @@ func init() {
               }
             }
           },
-          "400": {
-            "description": "Bad argument"
-          },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "500": {
             "description": "internal error"
@@ -2594,9 +2621,6 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
-          },
-          "400": {
-            "description": "Bad argument"
           },
           "401": {
             "description": "PIN is missing or invalid"

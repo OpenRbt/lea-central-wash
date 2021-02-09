@@ -580,14 +580,22 @@ func (svc *service) createUser(params op.CreateUserParams, auth *app.Auth) op.Cr
 		IsOperator: *params.Args.IsOperator,
 		IsEngineer: *params.Args.IsEngineer,
 	})
-	if err != nil {
-		log.Debug(err)
-		return op.NewCreateUserBadRequest()
+	switch errors.Cause(err) {
+	case nil:
+		log.Debug("created user", "id", id)
+		return op.NewCreateUserOK().WithPayload(&op.CreateUserOKBody{
+			ID: newInt64(int64(id)),
+		})
+	case app.ErrConstraintViolation:
+		message := "login is already in use"
+		return op.NewCreateUserConflict().WithPayload(&op.CreateUserConflictBody{
+			Code:    newInt64(int64(op.CreateUserConflictCode)),
+			Message: &message,
+		})
+	default:
+		return op.NewCreateUserInternalServerError()
 	}
-	log.Debug("created user", "id", id)
-	return op.NewCreateUserOK().WithPayload(&op.CreateUserOKBody{
-		ID: newInt64(int64(id)),
-	})
+
 }
 
 func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.UpdateUserResponder {
@@ -604,14 +612,17 @@ func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.Up
 		IsOperator: params.Args.IsOperator,
 		IsEngineer: params.Args.IsEngineer,
 	})
-	if err != nil {
-		log.Debug(err)
-		return op.NewUpdateUserBadRequest()
+	switch errors.Cause(err) {
+	case nil:
+		log.Debug("updated user", "id", id)
+		return op.NewUpdateUserOK().WithPayload(&op.UpdateUserOKBody{
+			ID: newInt64(int64(id)),
+		})
+	case app.ErrNotFound:
+		return op.NewUpdateUserNotFound()
+	default:
+		return op.NewUpdateUserInternalServerError()
 	}
-	log.Debug("updated user", "id", id)
-	return op.NewUpdateUserOK().WithPayload(&op.UpdateUserOKBody{
-		ID: newInt64(int64(id)),
-	})
 }
 
 func (svc *service) updateUserPassword(params op.UpdateUserPasswordParams, auth *app.Auth) op.UpdateUserPasswordResponder {
@@ -624,14 +635,17 @@ func (svc *service) updateUserPassword(params op.UpdateUserPasswordParams, auth 
 		OldPassword: *params.Args.OldPassword,
 		NewPassword: *params.Args.NewPassword,
 	})
-	if err != nil {
-		log.Debug(err)
+	switch errors.Cause(err) {
+	case nil:
+		log.Debug("updated user", "id", id)
+		return op.NewUpdateUserPasswordOK().WithPayload(&op.UpdateUserPasswordOKBody{
+			ID: newInt64(int64(id)),
+		})
+	case app.ErrNotFound:
 		return op.NewUpdateUserPasswordNotFound()
+	default:
+		return op.NewUpdateUserPasswordInternalServerError()
 	}
-	log.Debug("updated user", "id", id)
-	return op.NewUpdateUserPasswordOK().WithPayload(&op.UpdateUserPasswordOKBody{
-		ID: newInt64(int64(id)),
-	})
 }
 
 func (svc *service) deleteUser(params op.DeleteUserParams, auth *app.Auth) op.DeleteUserResponder {
@@ -641,7 +655,6 @@ func (svc *service) deleteUser(params op.DeleteUserParams, auth *app.Auth) op.De
 	}
 	err := svc.app.DeleteUser(*params.Args.Login)
 	if err != nil {
-		log.Debug(err)
 		return op.NewDeleteUserInternalServerError()
 	}
 	return op.NewDeleteUserNoContent()

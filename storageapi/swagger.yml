@@ -920,8 +920,18 @@ paths:
             properties:
               id:
                 type: integer
-        400:
-          description: Bad argument
+        409:
+          description: Conflict
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
         401:
           description: PIN is missing or invalid
         500:
@@ -973,8 +983,8 @@ paths:
             properties:
               id:
                 type: integer
-        400:
-          description: Bad argument
+        404:
+          description: Not found
         401:
           description: PIN is missing or invalid
         500:
@@ -997,8 +1007,6 @@ paths:
       responses:
         204:
           description: OK
-        400:
-          description: Bad argument
         401:
           description: PIN is missing or invalid
         500:

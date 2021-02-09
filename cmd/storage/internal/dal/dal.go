@@ -12,6 +12,7 @@ import (
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/migration"
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 	"github.com/pkg/errors"
 	"github.com/powerman/narada4d/schemaver"
 	"github.com/powerman/pqx"
@@ -27,6 +28,11 @@ var log = structlog.New() //nolint:gochecknoglobals
 var ctx = context.Background() //nolint:gochecknoglobals
 
 var errSchemaVer = errors.New("unsupported DB schema version")
+
+func pqErrConflictIn(err error, constraint string) bool {
+	pqErr, ok := err.(*pq.Error)
+	return ok && pqErr.Constraint == constraint
+}
 
 func rollback(tx *sqlxx.Tx) {
 	if err := tx.Rollback(); err != nil && err != sql.ErrTxDone {
@@ -77,19 +83,13 @@ func (r *repo) schemaLock(f func() error) func() error {
 
 func (r *repo) User(login string) (user app.UserData, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res []resUser
-		err := tx.NamedSelectContext(ctx, &res, sqlGetUser, argGetUser{
+		err := tx.NamedGetContext(ctx, &user, sqlGetUser, argGetUser{
 			Login: login,
 		})
-		if err != nil {
-			return err
-		}
-		if len(res) < 1 {
+		if err == sql.ErrNoRows {
 			return app.ErrNotFound
 		}
-		users := appSetUsers(res)
-		user = users[0]
-		return nil
+		return err
 	})
 	return //nolint:nakedret
 }
@@ -109,8 +109,8 @@ func (r *repo) Users() (users []app.UserData, err error) {
 
 func (r *repo) CreateUser(userData app.UserData) (newUser app.UserData, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res []resUser
-		errRes := tx.NamedSelectContext(ctx, &res, sqlAddUser, argAddUser{
+		// var res []resUser
+		err := tx.NamedGetContext(ctx, &newUser, sqlAddUser, argAddUser{
 			Login:      userData.Login,
 			FirstName:  userData.FirstName,
 			MiddleName: userData.MiddleName,
@@ -120,23 +120,17 @@ func (r *repo) CreateUser(userData app.UserData) (newUser app.UserData, err erro
 			IsEngineer: userData.IsEngineer,
 			IsOperator: userData.IsOperator,
 		})
-		if errRes != nil {
-			return errRes
+		if pqErrConflictIn(err, constraintUserLogin) {
+			return app.ErrConstraintViolation
 		}
-		if len(res) < 1 {
-			return app.ErrNotFound
-		}
-		users := appSetUsers(res)
-		newUser = users[0]
-		return nil
+		return err
 	})
 	return //nolint:nakedret
 }
 
 func (r *repo) UpdateUser(userData app.UserData) (newUser app.UserData, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res []resUser
-		errRes := tx.NamedSelectContext(ctx, &res, sqlUpdateUser, argUpdateUser{
+		err := tx.NamedGetContext(ctx, &newUser, sqlUpdateUser, argUpdateUser{
 			Login:      userData.Login,
 			FirstName:  userData.FirstName,
 			MiddleName: userData.MiddleName,
@@ -145,35 +139,24 @@ func (r *repo) UpdateUser(userData app.UserData) (newUser app.UserData, err erro
 			IsEngineer: userData.IsEngineer,
 			IsOperator: userData.IsOperator,
 		})
-		if errRes != nil {
-			return errRes
-		}
-		if len(res) < 1 {
+		if err == sql.ErrNoRows {
 			return app.ErrNotFound
 		}
-		users := appSetUsers(res)
-		newUser = users[0]
-		return nil
+		return err
 	})
 	return //nolint:nakedret
 }
 
 func (r *repo) UpdateUserPassword(userData app.UpdatePasswordData) (newUser app.UserData, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res []resUser
-		errRes := tx.NamedSelectContext(ctx, &res, sqlUpdateUserPassword, argUpdateUserPassword{
+		err := tx.NamedGetContext(ctx, &newUser, sqlUpdateUserPassword, argUpdateUserPassword{
 			Login:       userData.Login,
 			NewPassword: userData.NewPassword,
 		})
-		if errRes != nil {
-			return errRes
-		}
-		if len(res) < 1 {
+		if err == sql.ErrNoRows {
 			return app.ErrNotFound
 		}
-		users := appSetUsers(res)
-		newUser = users[0]
-		return nil
+		return err
 	})
 	return //nolint:nakedret
 }
