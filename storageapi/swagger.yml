@@ -20,29 +20,33 @@ definitions:
     type: object
     properties:
       lcw_info:
-          type: string
+        type: string
       kasse_status:
-          $ref: '#/definitions/Status'
+        $ref: '#/definitions/Status'
       kasse_info:
-          type: string
+        type: string
       stations:
-          type: array
-          items:
-            $ref: '#/definitions/StationStatus'
+        type: array
+        items:
+          $ref: '#/definitions/StationStatus'
 
   StationStatus:
     type: object
     properties:
       id:
-          type: integer
+        type: integer
       name:
-          type: string
+        type: string
       hash:
-          $ref: '#/definitions/Hash'
+        $ref: '#/definitions/Hash'
       status:
-          $ref: '#/definitions/Status'
+        $ref: '#/definitions/Status'
       info:
-          type: string
+        type: string
+      currentBalance:
+        type: integer
+      currentProgram:
+        type: integer
 
   Status:
     type: string
@@ -52,9 +56,9 @@ definitions:
     type: object
     properties:
       stations:
-          type: array
-          items:
-            $ref: '#/definitions/CollectionReport'
+        type: array
+        items:
+          $ref: '#/definitions/CollectionReport'
 
   CollectionReport:
     type: object
@@ -595,6 +599,10 @@ paths:
             properties:
               hash:
                 $ref: '#/definitions/Hash'
+              currentBalance:
+                type: integer
+              currentProgram:
+                type: integer
       responses:
         200:
           description: OK

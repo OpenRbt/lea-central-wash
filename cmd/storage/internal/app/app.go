@@ -51,7 +51,7 @@ type (
 
 		Set(station StationData) error
 		Get(stationID StationID) (StationData, error)
-		Ping(stationID StationID) StationData
+		Ping(id StationID, balance, program int) StationData
 
 		SaveMoneyReport(report MoneyReport) error
 		SaveRelayReport(report RelayReport) error
@@ -184,10 +184,12 @@ type StatusReport struct {
 }
 
 type StationStatus struct {
-	ID     StationID
-	Info   string
-	Name   string
-	Status Status
+	ID             StationID
+	Info           string
+	Name           string
+	Status         Status
+	CurrentBalance int
+	CurrentProgram int
 }
 
 type SetStation struct {

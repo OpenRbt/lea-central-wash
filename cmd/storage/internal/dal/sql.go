@@ -289,7 +289,6 @@ ORDER BY relay_id
 	INSERT INTO kasse(receipt_item, tax_type, cashier_full_name, cashier_inn)
 	VALUES (:receipt_item, :tax_type, :cashier_full_name, :cashier_inn)
 	`
-
 	sqlSetCardReaderConfig = `
 	INSERT INTO card_reader (station_id, card_reader_type, host, port)  
 	VALUES 	(:station_id, :card_reader_type, :host, :port)

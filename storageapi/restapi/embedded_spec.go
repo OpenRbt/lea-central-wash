@@ -381,6 +381,12 @@ func init() {
                 "hash"
               ],
               "properties": {
+                "currentBalance": {
+                  "type": "integer"
+                },
+                "currentProgram": {
+                  "type": "integer"
+                },
                 "hash": {
                   "$ref": "#/definitions/Hash"
                 }
@@ -1523,6 +1529,12 @@ func init() {
     "StationStatus": {
       "type": "object",
       "properties": {
+        "currentBalance": {
+          "type": "integer"
+        },
+        "currentProgram": {
+          "type": "integer"
+        },
         "hash": {
           "$ref": "#/definitions/Hash"
         },
@@ -2029,6 +2041,12 @@ func init() {
                 "hash"
               ],
               "properties": {
+                "currentBalance": {
+                  "type": "integer"
+                },
+                "currentProgram": {
+                  "type": "integer"
+                },
                 "hash": {
                   "$ref": "#/definitions/Hash"
                 }
@@ -3171,6 +3189,12 @@ func init() {
     "StationStatus": {
       "type": "object",
       "properties": {
+        "currentBalance": {
+          "type": "integer"
+        },
+        "currentProgram": {
+          "type": "integer"
+        },
         "hash": {
           "$ref": "#/definitions/Hash"
         },

@@ -85,11 +85,13 @@ func (svc *service) apiStatusReport(v app.StatusReport) *model.StatusReport {
 
 func (svc *service) apiStationStatus(v app.StationStatus) *model.StationStatus {
 	return &model.StationStatus{
-		Hash:   model.Hash(svc.getHash(v.ID)),
-		ID:     int64(v.ID),
-		Info:   v.Info,
-		Name:   v.Name,
-		Status: apiStatus(v.Status),
+		Hash:           model.Hash(svc.getHash(v.ID)),
+		ID:             int64(v.ID),
+		Info:           v.Info,
+		Name:           v.Name,
+		Status:         apiStatus(v.Status),
+		CurrentBalance: int64(v.CurrentBalance),
+		CurrentProgram: int64(v.CurrentProgram),
 	}
 }
 
