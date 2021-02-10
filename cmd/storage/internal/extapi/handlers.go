@@ -522,9 +522,10 @@ func (svc *service) kasse(params op.KasseParams) op.KasseResponder {
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewKasseOK().WithPayload(apiKasse(res))
+	case app.ErrNotFound:
+		return errKasse(log, err, codeNotFound)
 	default:
-		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewKasseInternalServerError()
+		return errKasse(log, err, codeInternal)
 	}
 
 }
@@ -543,8 +544,7 @@ func (svc *service) setKasse(params op.SetKasseParams) op.SetKasseResponder {
 	case nil:
 		return op.NewSetKasseNoContent()
 	default:
-		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSetKasseInternalServerError()
+		return errSetKasse(log, err, codeInternal)
 	}
 
 }

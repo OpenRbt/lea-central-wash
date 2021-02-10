@@ -7,10 +7,13 @@ package op
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/go-openapi/runtime"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // SetKasseReader is a Reader for the SetKasse structure.
@@ -29,15 +32,15 @@ func (o *SetKasseReader) ReadResponse(response runtime.ClientResponse, consumer 
 		}
 		return result, nil
 
-	case 500:
-		result := NewSetKasseInternalServerError()
+	default:
+		result := NewSetKasseDefault(response.Code())
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
+		if response.Code()/100 == 2 {
+			return result, nil
+		}
 		return nil, result
-
-	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
 	}
 }
 
@@ -62,23 +65,44 @@ func (o *SetKasseNoContent) readResponse(response runtime.ClientResponse, consum
 	return nil
 }
 
-// NewSetKasseInternalServerError creates a SetKasseInternalServerError with default headers values
-func NewSetKasseInternalServerError() *SetKasseInternalServerError {
-	return &SetKasseInternalServerError{}
+// NewSetKasseDefault creates a SetKasseDefault with default headers values
+func NewSetKasseDefault(code int) *SetKasseDefault {
+	return &SetKasseDefault{
+		_statusCode: code,
+	}
 }
 
-/*SetKasseInternalServerError handles this case with default header values.
+/*SetKasseDefault handles this case with default header values.
 
-internal error
+- 409.1600: email is not available
+- 409.1601: account is not available
+- 422.1602: password is too weak
+- 409.1604: code is not available
+
 */
-type SetKasseInternalServerError struct {
+type SetKasseDefault struct {
+	_statusCode int
+
+	Payload *model.Error
 }
 
-func (o *SetKasseInternalServerError) Error() string {
-	return fmt.Sprintf("[POST /set-kasse][%d] setKasseInternalServerError ", 500)
+// Code gets the status code for the set kasse default response
+func (o *SetKasseDefault) Code() int {
+	return o._statusCode
 }
 
-func (o *SetKasseInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *SetKasseDefault) Error() string {
+	return fmt.Sprintf("[POST /set-kasse][%d] setKasse default  %+v", o._statusCode, o.Payload)
+}
+
+func (o *SetKasseDefault) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(model.Error)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }

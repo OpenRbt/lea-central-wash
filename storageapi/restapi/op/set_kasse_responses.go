@@ -7,6 +7,7 @@ package op
 
 import (
 	"net/http"
+	"srp-be/media/mediaapi/model"
 
 	"github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
@@ -38,31 +39,69 @@ func (o *SetKasseNoContent) WriteResponse(rw http.ResponseWriter, producer runti
 
 func (o *SetKasseNoContent) SetKasseResponder() {}
 
-// SetKasseInternalServerErrorCode is the HTTP code returned for type SetKasseInternalServerError
-const SetKasseInternalServerErrorCode int = 500
+/*SetKasseDefault - 409.1600: email is not available
+- 409.1601: account is not available
+- 422.1602: password is too weak
+- 409.1604: code is not available
 
-/*SetKasseInternalServerError internal error
 
-swagger:response setKasseInternalServerError
+swagger:response setKasseDefault
 */
-type SetKasseInternalServerError struct {
+type SetKasseDefault struct {
+	_statusCode int
+
+	/*
+	  In: Body
+	*/
+	Payload *model.Error `json:"body,omitempty"`
 }
 
-// NewSetKasseInternalServerError creates SetKasseInternalServerError with default headers values
-func NewSetKasseInternalServerError() *SetKasseInternalServerError {
+// NewSetKasseDefault creates SetKasseDefault with default headers values
+func NewSetKasseDefault(code int) *SetKasseDefault {
+	if code <= 0 {
+		code = 500
+	}
 
-	return &SetKasseInternalServerError{}
+	return &SetKasseDefault{
+		_statusCode: code,
+	}
+}
+
+// WithStatusCode adds the status to the set kasse default response
+func (o *SetKasseDefault) WithStatusCode(code int) *SetKasseDefault {
+	o._statusCode = code
+	return o
+}
+
+// SetStatusCode sets the status to the set kasse default response
+func (o *SetKasseDefault) SetStatusCode(code int) {
+	o._statusCode = code
+}
+
+// WithPayload adds the payload to the set kasse default response
+func (o *SetKasseDefault) WithPayload(payload *model.Error) *SetKasseDefault {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the set kasse default response
+func (o *SetKasseDefault) SetPayload(payload *model.Error) {
+	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *SetKasseInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *SetKasseDefault) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
-	rw.WriteHeader(500)
+	rw.WriteHeader(o._statusCode)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }
 
-func (o *SetKasseInternalServerError) SetKasseResponder() {}
+func (o *SetKasseDefault) SetKasseResponder() {}
 
 type SetKasseNotImplementedResponder struct {
 	middleware.Responder

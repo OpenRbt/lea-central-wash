@@ -128,11 +128,8 @@ func init() {
               "$ref": "#/definitions/KasseConfig"
             }
           },
-          "404": {
-            "description": "not found"
-          },
-          "500": {
-            "description": "internal error"
+          "default": {
+            "$ref": "#/responses/GenericError"
           }
         }
       }
@@ -617,8 +614,11 @@ func init() {
           "204": {
             "description": "OK"
           },
-          "500": {
-            "description": "internal error"
+          "default": {
+            "description": "- 409.1600: email is not available\n- 409.1601: account is not available\n- 422.1602: password is too weak\n- 409.1604: code is not available\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         }
       }
@@ -961,6 +961,23 @@ func init() {
         }
       }
     },
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "Either same as HTTP Status Code OR \u003e= 600.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
     "Hash": {
       "type": "string",
       "minLength": 1
@@ -1190,6 +1207,14 @@ func init() {
             "$ref": "#/definitions/StationStatus"
           }
         }
+      }
+    }
+  },
+  "responses": {
+    "GenericError": {
+      "description": "Generic error response.",
+      "schema": {
+        "$ref": "#/definitions/Error"
       }
     }
   },
@@ -1317,11 +1342,11 @@ func init() {
               "$ref": "#/definitions/KasseConfig"
             }
           },
-          "404": {
-            "description": "not found"
-          },
-          "500": {
-            "description": "internal error"
+          "default": {
+            "description": "Generic error response.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         }
       }
@@ -1806,8 +1831,11 @@ func init() {
           "204": {
             "description": "OK"
           },
-          "500": {
-            "description": "internal error"
+          "default": {
+            "description": "- 409.1600: email is not available\n- 409.1601: account is not available\n- 422.1602: password is too weak\n- 409.1604: code is not available\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         }
       }
@@ -2150,6 +2178,23 @@ func init() {
         }
       }
     },
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "Either same as HTTP Status Code OR \u003e= 600.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
     "Hash": {
       "type": "string",
       "minLength": 1
@@ -2379,6 +2424,14 @@ func init() {
             "$ref": "#/definitions/StationStatus"
           }
         }
+      }
+    }
+  },
+  "responses": {
+    "GenericError": {
+      "description": "Generic error response.",
+      "schema": {
+        "$ref": "#/definitions/Error"
       }
     }
   },

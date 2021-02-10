@@ -13,6 +13,9 @@ import (
 	"github.com/powerman/structlog"
 )
 
+// Log is a synonym for convenience.
+type Log = *structlog.Logger
+
 var log = structlog.New() //nolint:gochecknoglobals
 
 var errNotFound = errors.New("not found")

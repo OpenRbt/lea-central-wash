@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"strconv"
 
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	errors "github.com/go-openapi/errors"
 	middleware "github.com/go-openapi/runtime/middleware"
 	strfmt "github.com/go-openapi/strfmt"

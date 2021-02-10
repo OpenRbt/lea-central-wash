@@ -32,22 +32,15 @@ func (o *KasseReader) ReadResponse(response runtime.ClientResponse, consumer run
 		}
 		return result, nil
 
-	case 404:
-		result := NewKasseNotFound()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
-
-	case 500:
-		result := NewKasseInternalServerError()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		result := NewKasseDefault(response.Code())
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		if response.Code()/100 == 2 {
+			return result, nil
+		}
+		return nil, result
 	}
 }
 
@@ -80,44 +73,40 @@ func (o *KasseOK) readResponse(response runtime.ClientResponse, consumer runtime
 	return nil
 }
 
-// NewKasseNotFound creates a KasseNotFound with default headers values
-func NewKasseNotFound() *KasseNotFound {
-	return &KasseNotFound{}
+// NewKasseDefault creates a KasseDefault with default headers values
+func NewKasseDefault(code int) *KasseDefault {
+	return &KasseDefault{
+		_statusCode: code,
+	}
 }
 
-/*KasseNotFound handles this case with default header values.
+/*KasseDefault handles this case with default header values.
 
-not found
+Generic error response.
 */
-type KasseNotFound struct {
+type KasseDefault struct {
+	_statusCode int
+
+	Payload *model.Error
 }
 
-func (o *KasseNotFound) Error() string {
-	return fmt.Sprintf("[POST /kasse][%d] kasseNotFound ", 404)
+// Code gets the status code for the kasse default response
+func (o *KasseDefault) Code() int {
+	return o._statusCode
 }
 
-func (o *KasseNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	return nil
+func (o *KasseDefault) Error() string {
+	return fmt.Sprintf("[POST /kasse][%d] kasse default  %+v", o._statusCode, o.Payload)
 }
 
-// NewKasseInternalServerError creates a KasseInternalServerError with default headers values
-func NewKasseInternalServerError() *KasseInternalServerError {
-	return &KasseInternalServerError{}
-}
+func (o *KasseDefault) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-/*KasseInternalServerError handles this case with default header values.
+	o.Payload = new(model.Error)
 
-internal error
-*/
-type KasseInternalServerError struct {
-}
-
-func (o *KasseInternalServerError) Error() string {
-	return fmt.Sprintf("[POST /kasse][%d] kasseInternalServerError ", 500)
-}
-
-func (o *KasseInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }

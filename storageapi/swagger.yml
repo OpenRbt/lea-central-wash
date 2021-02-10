@@ -8,6 +8,12 @@ basePath: /
 schemes:
   - http
 
+responses:
+  GenericError:
+    description: Generic error response.
+    schema:
+      $ref: '#/definitions/Error'
+
 securityDefinitions:
   pinCode:
     type: apiKey
@@ -18,6 +24,18 @@ security:
   - pinCode: []
 
 definitions:
+  Error:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        description: Either same as HTTP Status Code OR >= 600.
+        type: integer
+        format: int32
+      message:
+        type: string
         
   StatusReport:
     type: object
@@ -785,10 +803,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/KasseConfig'
-        404:
-          description: not found
-        500:
-          description: internal error
+        default: {$ref: '#/responses/GenericError'}
   /set-kasse:
     post:
       operationId: "setKasse"
@@ -802,5 +817,11 @@ paths:
       responses:
         204:
           description: OK
-        500:
-          description: internal error
+        default:
+          description: |
+            - 409.1600: email is not available
+            - 409.1601: account is not available
+            - 422.1602: password is too weak
+            - 409.1604: code is not available
+          schema:
+            $ref: '#/definitions/Error'

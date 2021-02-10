@@ -8,7 +8,6 @@ package op
 import (
 	"net/http"
 
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	"github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
 )
@@ -59,57 +58,65 @@ func (o *KasseOK) WriteResponse(rw http.ResponseWriter, producer runtime.Produce
 
 func (o *KasseOK) KasseResponder() {}
 
-// KasseNotFoundCode is the HTTP code returned for type KasseNotFound
-const KasseNotFoundCode int = 404
+/*KasseDefault Generic error response.
 
-/*KasseNotFound not found
-
-swagger:response kasseNotFound
+swagger:response kasseDefault
 */
-type KasseNotFound struct {
+type KasseDefault struct {
+	_statusCode int
+
+	/*
+	  In: Body
+	*/
+	Payload *model.Error `json:"body,omitempty"`
 }
 
-// NewKasseNotFound creates KasseNotFound with default headers values
-func NewKasseNotFound() *KasseNotFound {
+// NewKasseDefault creates KasseDefault with default headers values
+func NewKasseDefault(code int) *KasseDefault {
+	if code <= 0 {
+		code = 500
+	}
 
-	return &KasseNotFound{}
+	return &KasseDefault{
+		_statusCode: code,
+	}
+}
+
+// WithStatusCode adds the status to the kasse default response
+func (o *KasseDefault) WithStatusCode(code int) *KasseDefault {
+	o._statusCode = code
+	return o
+}
+
+// SetStatusCode sets the status to the kasse default response
+func (o *KasseDefault) SetStatusCode(code int) {
+	o._statusCode = code
+}
+
+// WithPayload adds the payload to the kasse default response
+func (o *KasseDefault) WithPayload(payload *model.Error) *KasseDefault {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the kasse default response
+func (o *KasseDefault) SetPayload(payload *model.Error) {
+	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *KasseNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *KasseDefault) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
-	rw.WriteHeader(404)
+	rw.WriteHeader(o._statusCode)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }
 
-func (o *KasseNotFound) KasseResponder() {}
-
-// KasseInternalServerErrorCode is the HTTP code returned for type KasseInternalServerError
-const KasseInternalServerErrorCode int = 500
-
-/*KasseInternalServerError internal error
-
-swagger:response kasseInternalServerError
-*/
-type KasseInternalServerError struct {
-}
-
-// NewKasseInternalServerError creates KasseInternalServerError with default headers values
-func NewKasseInternalServerError() *KasseInternalServerError {
-
-	return &KasseInternalServerError{}
-}
-
-// WriteResponse to the client
-func (o *KasseInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
-
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
-	rw.WriteHeader(500)
-}
-
-func (o *KasseInternalServerError) KasseResponder() {}
+func (o *KasseDefault) KasseResponder() {}
 
 type KasseNotImplementedResponder struct {
 	middleware.Responder
