@@ -109,7 +109,6 @@ func (r *repo) Users() (users []app.UserData, err error) {
 
 func (r *repo) CreateUser(userData app.UserData) (newUser app.UserData, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		// var res []resUser
 		err := tx.NamedGetContext(ctx, &newUser, sqlAddUser, argAddUser{
 			Login:      userData.Login,
 			FirstName:  userData.FirstName,
