@@ -29,9 +29,9 @@ const (
 
 // Errors.
 var (
-	ErrNotFound            = errors.New("not found")
-	ErrAccessDenied        = errors.New("access denied")
-	ErrConstraintViolation = errors.New("constraint violation")
+	ErrNotFound       = errors.New("not found")
+	ErrAccessDenied   = errors.New("access denied")
+	ErrLoginNotUnique = errors.New("login not unique")
 )
 
 type (

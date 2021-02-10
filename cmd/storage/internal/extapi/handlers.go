@@ -586,7 +586,7 @@ func (svc *service) createUser(params op.CreateUserParams, auth *app.Auth) op.Cr
 		return op.NewCreateUserOK().WithPayload(&op.CreateUserOKBody{
 			ID: newInt64(int64(id)),
 		})
-	case app.ErrConstraintViolation:
+	case app.ErrLoginNotUnique:
 		message := "login is already in use"
 		return op.NewCreateUserConflict().WithPayload(&op.CreateUserConflictBody{
 			Code:    newInt64(int64(op.CreateUserConflictCode)),

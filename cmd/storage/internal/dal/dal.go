@@ -120,7 +120,7 @@ func (r *repo) CreateUser(userData app.UserData) (newUser app.UserData, err erro
 			IsOperator: userData.IsOperator,
 		})
 		if pqErrConflictIn(err, constraintUserLogin) {
-			return app.ErrConstraintViolation
+			return app.ErrLoginNotUnique
 		}
 		return err
 	})
