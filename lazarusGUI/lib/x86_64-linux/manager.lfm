@@ -9,7 +9,7 @@ object ManageForm: TManageForm
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '2.0.6.0'
+  LCLVersion = '2.0.10.0'
   object Panel1: TPanel
     Left = 0
     Height = 252
@@ -21,10 +21,10 @@ object ManageForm: TManageForm
     TabOrder = 1
     object editMoney: TLabeledEdit
       Left = 14
-      Height = 67
+      Height = 61
       Top = 40
       Width = 158
-      EditLabel.Height = 31
+      EditLabel.Height = 33
       EditLabel.Width = 158
       EditLabel.Caption = 'Service:'
       EditLabel.ParentColor = False
@@ -68,15 +68,15 @@ object ManageForm: TManageForm
     Height = 139
     Top = 4
     Width = 552
-    ClientHeight = 137
-    ClientWidth = 550
+    ClientHeight = 135
+    ClientWidth = 548
     ParentFont = False
     TabOrder = 2
     object Label1: TLabel
       Left = 11
-      Height = 32
+      Height = 34
       Top = -5
-      Width = 134
+      Width = 133
       Caption = 'Price list:'
       Font.Height = 30
       Font.Style = [fsBold]
@@ -98,8 +98,6 @@ object ManageForm: TManageForm
       ParentFont = False
       RowCount = 2
       TabOrder = 0
-      TitleFont.Height = -16
-      TitleFont.Name = 'Sans'
       ColWidths = (
         82
         75
@@ -152,7 +150,7 @@ object ManageForm: TManageForm
   end
   object cbHash: TComboBox
     Left = 196
-    Height = 39
+    Height = 35
     Top = 336
     Width = 212
     Font.Height = -19
@@ -188,7 +186,7 @@ object ManageForm: TManageForm
   end
   object edName: TEdit
     Left = 196
-    Height = 39
+    Height = 33
     Top = 240
     Width = 244
     Font.Height = -19
@@ -223,7 +221,7 @@ object ManageForm: TManageForm
   end
   object Label2: TLabel
     Left = 196
-    Height = 21
+    Height = 23
     Top = 216
     Width = 137
     Caption = 'Display name:'
@@ -234,7 +232,7 @@ object ManageForm: TManageForm
   end
   object Label3: TLabel
     Left = 200
-    Height = 21
+    Height = 23
     Top = 312
     Width = 139
     Caption = 'Real box code:'
@@ -260,5 +258,14 @@ object ManageForm: TManageForm
     Caption = 'Manage Programs'
     OnClick = btnManageProgramsClick
     TabOrder = 10
+  end
+  object btnCardReaderConfig: TButton
+    Left = 571
+    Height = 64
+    Top = 240
+    Width = 171
+    Caption = 'Card reader config'
+    OnClick = btnCardReaderConfigClick
+    TabOrder = 11
   end
 end

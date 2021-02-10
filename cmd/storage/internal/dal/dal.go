@@ -605,3 +605,42 @@ func (r *repo) SetKasse(kasse app.Kasse) (err error) {
 
 	return
 }
+
+func (r *repo) CardReaderConfig(stationID app.StationID) (cfg *app.CardReaderConfig, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res resGetCardReaderConfig
+		err := tx.NamedGetContext(ctx, &res, sqlGetCardReaderConfig, argGetCardReaderConfig{
+			StationID: stationID,
+		})
+		switch {
+		case err == sql.ErrNoRows:
+			return app.ErrNotFound
+		case err != nil:
+			return err
+		}
+		cfg = &app.CardReaderConfig{
+			StationID:      res.StationID,
+			CardReaderType: res.CardReaderType,
+			Host:           res.Host,
+			Port:           res.Port,
+		}
+		return nil
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) SetCardReaderConfig(cfg app.CardReaderConfig) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlSetCardReaderConfig, argSetCardReaderConfig{
+			StationID:      cfg.StationID,
+			CardReaderType: cfg.CardReaderType,
+			Host:           cfg.Host,
+			Port:           cfg.Port,
+		})
+		if pqErrConflictIn(err, constraintCardReaderStationID) {
+			return app.ErrNotFound
+		}
+		return err
+	})
+	return //nolint:nakedret
+}

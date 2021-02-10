@@ -103,7 +103,7 @@ func (a *app) Set(station StationData) error {
 }
 
 // Ping sets the time of the last ping and returns service money.
-func (a *app) Ping(id StationID) StationData {
+func (a *app) Ping(id StationID, balance, program int) StationData {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 	var station StationData
@@ -116,6 +116,8 @@ func (a *app) Ping(id StationID) StationData {
 	station.LastPing = time.Now()
 	station.ServiceMoney = 0
 	station.OpenStation = false
+	station.CurrentBalance = balance
+	station.CurrentProgram = program
 	a.stations[id] = station
 	return oldStation
 }
@@ -325,9 +327,11 @@ func (a *app) StatusReport() StatusReport {
 			status = StatusOffline
 		}
 		report.Stations = append(report.Stations, StationStatus{
-			ID:     v.ID,
-			Name:   v.Name,
-			Status: status,
+			ID:             v.ID,
+			Name:           v.Name,
+			Status:         status,
+			CurrentBalance: v.CurrentBalance,
+			CurrentProgram: v.CurrentProgram,
 		})
 	}
 	return report
@@ -416,4 +420,11 @@ func (a *app) Kasse() (kasse Kasse, err error) {
 }
 func (a *app) SetKasse(kasse Kasse) (err error) {
 	return a.repo.SetKasse(kasse)
+}
+
+func (a *app) CardReaderConfig(stationID StationID) (*CardReaderConfig, error) {
+	return a.repo.CardReaderConfig(stationID)
+}
+func (a *app) SetCardReaderConfig(cfg CardReaderConfig) error {
+	return a.repo.SetCardReaderConfig(cfg)
 }

@@ -25,17 +25,19 @@ type UpdateUserData struct {
 }
 
 type UpdatePasswordData struct {
-	Login 		string
+	Login       string
 	OldPassword string
 	NewPassword string
 }
 
 type StationData struct {
-	ID           StationID
-	Name         string
-	ServiceMoney int
-	LastPing     time.Time
-	OpenStation  bool
+	ID             StationID
+	Name           string
+	ServiceMoney   int
+	LastPing       time.Time
+	OpenStation    bool
+	CurrentBalance int
+	CurrentProgram int
 }
 
 type MoneyReport struct {
@@ -66,4 +68,11 @@ type RelayStat struct {
 type RelayReport struct {
 	StationID  StationID
 	RelayStats []RelayStat
+}
+
+type CardReaderConfig struct {
+	StationID      StationID
+	CardReaderType string
+	Host           string
+	Port           string
 }

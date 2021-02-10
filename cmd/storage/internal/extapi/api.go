@@ -109,6 +109,10 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.DeleteUserHandler = op.DeleteUserHandlerFunc(svc.deleteUser)
 	api.UpdateUserPasswordHandler = op.UpdateUserPasswordHandlerFunc(svc.updateUserPassword)
 
+	api.CardReaderConfigHandler = op.CardReaderConfigHandlerFunc(svc.cardReaderConfig)
+	api.SetCardReaderConfigHandler = op.SetCardReaderConfigHandlerFunc(svc.setCardReaderConfig)
+	api.CardReaderConfigByHashHandler = op.CardReaderConfigByHashHandlerFunc(svc.cardReaderConfigByHash)
+
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port

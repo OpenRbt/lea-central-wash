@@ -195,3 +195,11 @@ func (t *DB) Kasse() (kasse app.Kasse, err error) {
 func (t *DB) SetKasse(kasse app.Kasse) (err error) {
 	return
 }
+
+func (t *DB) CardReaderConfig(stationID app.StationID) (cfg *app.CardReaderConfig, err error) {
+	return
+}
+
+func (t *DB) SetCardReaderConfig(cfg app.CardReaderConfig) (err error) {
+	return
+}

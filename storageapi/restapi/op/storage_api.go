@@ -43,6 +43,14 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation AddServiceAmount has not yet been implemented")
 			return AddServiceAmountNotImplemented()
 		}),
+		CardReaderConfigHandler: CardReaderConfigHandlerFunc(func(params CardReaderConfigParams) CardReaderConfigResponder {
+			// return middleware.NotImplemented("operation CardReaderConfig has not yet been implemented")
+			return CardReaderConfigNotImplemented()
+		}),
+		CardReaderConfigByHashHandler: CardReaderConfigByHashHandlerFunc(func(params CardReaderConfigByHashParams) CardReaderConfigByHashResponder {
+			// return middleware.NotImplemented("operation CardReaderConfigByHash has not yet been implemented")
+			return CardReaderConfigByHashNotImplemented()
+		}),
 		CreateUserHandler: CreateUserHandlerFunc(func(params CreateUserParams, principal *storageapi.Profile) CreateUserResponder {
 			// return middleware.NotImplemented("operation CreateUser has not yet been implemented")
 			return CreateUserNotImplemented()
@@ -122,6 +130,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		SaveRelayHandler: SaveRelayHandlerFunc(func(params SaveRelayParams) SaveRelayResponder {
 			// return middleware.NotImplemented("operation SaveRelay has not yet been implemented")
 			return SaveRelayNotImplemented()
+		}),
+		SetCardReaderConfigHandler: SetCardReaderConfigHandlerFunc(func(params SetCardReaderConfigParams) SetCardReaderConfigResponder {
+			// return middleware.NotImplemented("operation SetCardReaderConfig has not yet been implemented")
+			return SetCardReaderConfigNotImplemented()
 		}),
 		SetKasseHandler: SetKasseHandlerFunc(func(params SetKasseParams) SetKasseResponder {
 			// return middleware.NotImplemented("operation SetKasse has not yet been implemented")
@@ -219,6 +231,10 @@ type StorageAPI struct {
 
 	// AddServiceAmountHandler sets the operation handler for the add service amount operation
 	AddServiceAmountHandler AddServiceAmountHandler
+	// CardReaderConfigHandler sets the operation handler for the card reader config operation
+	CardReaderConfigHandler CardReaderConfigHandler
+	// CardReaderConfigByHashHandler sets the operation handler for the card reader config by hash operation
+	CardReaderConfigByHashHandler CardReaderConfigByHashHandler
 	// CreateUserHandler sets the operation handler for the create user operation
 	CreateUserHandler CreateUserHandler
 	// DelStationHandler sets the operation handler for the del station operation
@@ -259,6 +275,8 @@ type StorageAPI struct {
 	SaveMoneyHandler SaveMoneyHandler
 	// SaveRelayHandler sets the operation handler for the save relay operation
 	SaveRelayHandler SaveRelayHandler
+	// SetCardReaderConfigHandler sets the operation handler for the set card reader config operation
+	SetCardReaderConfigHandler SetCardReaderConfigHandler
 	// SetKasseHandler sets the operation handler for the set kasse operation
 	SetKasseHandler SetKasseHandler
 	// SetProgramNameHandler sets the operation handler for the set program name operation
@@ -354,6 +372,14 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "AddServiceAmountHandler")
 	}
 
+	if o.CardReaderConfigHandler == nil {
+		unregistered = append(unregistered, "CardReaderConfigHandler")
+	}
+
+	if o.CardReaderConfigByHashHandler == nil {
+		unregistered = append(unregistered, "CardReaderConfigByHashHandler")
+	}
+
 	if o.CreateUserHandler == nil {
 		unregistered = append(unregistered, "CreateUserHandler")
 	}
@@ -432,6 +458,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.SaveRelayHandler == nil {
 		unregistered = append(unregistered, "SaveRelayHandler")
+	}
+
+	if o.SetCardReaderConfigHandler == nil {
+		unregistered = append(unregistered, "SetCardReaderConfigHandler")
 	}
 
 	if o.SetKasseHandler == nil {
@@ -600,6 +630,16 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/card-reader-config"] = NewCardReaderConfig(o.context, o.CardReaderConfigHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/card-reader-config-by-hash"] = NewCardReaderConfigByHash(o.context, o.CardReaderConfigByHashHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/user"] = NewCreateUser(o.context, o.CreateUserHandler)
 
 	if o.handlers["POST"] == nil {
@@ -696,6 +736,11 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/save-relay"] = NewSaveRelay(o.context, o.SaveRelayHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-card-reader-config"] = NewSetCardReaderConfig(o.context, o.SetCardReaderConfigHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

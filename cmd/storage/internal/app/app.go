@@ -51,7 +51,7 @@ type (
 
 		Set(station StationData) error
 		Get(stationID StationID) (StationData, error)
-		Ping(stationID StationID) StationData
+		Ping(id StationID, balance, program int) StationData
 
 		SaveMoneyReport(report MoneyReport) error
 		SaveRelayReport(report RelayReport) error
@@ -82,6 +82,8 @@ type (
 		IsEnabled(user *UserData) bool
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
+		CardReaderConfig(StationID) (*CardReaderConfig, error)
+		SetCardReaderConfig(CardReaderConfig) error
 	}
 
 	// Repo is a DAL interface.
@@ -125,6 +127,8 @@ type (
 
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
+		CardReaderConfig(StationID) (*CardReaderConfig, error)
+		SetCardReaderConfig(CardReaderConfig) error
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -180,10 +184,12 @@ type StatusReport struct {
 }
 
 type StationStatus struct {
-	ID     StationID
-	Info   string
-	Name   string
-	Status Status
+	ID             StationID
+	Info           string
+	Name           string
+	Status         Status
+	CurrentBalance int
+	CurrentProgram int
 }
 
 type SetStation struct {

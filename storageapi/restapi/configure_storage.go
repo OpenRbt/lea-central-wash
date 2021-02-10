@@ -46,6 +46,12 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.AddServiceAmountHandler = op.AddServiceAmountHandlerFunc(func(params op.AddServiceAmountParams) op.AddServiceAmountResponder {
 		return op.AddServiceAmountNotImplemented()
 	})
+	api.CardReaderConfigHandler = op.CardReaderConfigHandlerFunc(func(params op.CardReaderConfigParams) op.CardReaderConfigResponder {
+		return op.CardReaderConfigNotImplemented()
+	})
+	api.CardReaderConfigByHashHandler = op.CardReaderConfigByHashHandlerFunc(func(params op.CardReaderConfigByHashParams) op.CardReaderConfigByHashResponder {
+		return op.CardReaderConfigByHashNotImplemented()
+	})
 	api.CreateUserHandler = op.CreateUserHandlerFunc(func(params op.CreateUserParams, principal *storageapi.Profile) op.CreateUserResponder {
 		return op.CreateUserNotImplemented()
 	})
@@ -105,6 +111,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	})
 	api.SaveRelayHandler = op.SaveRelayHandlerFunc(func(params op.SaveRelayParams) op.SaveRelayResponder {
 		return op.SaveRelayNotImplemented()
+	})
+	api.SetCardReaderConfigHandler = op.SetCardReaderConfigHandlerFunc(func(params op.SetCardReaderConfigParams) op.SetCardReaderConfigResponder {
+		return op.SetCardReaderConfigNotImplemented()
 	})
 	api.SetKasseHandler = op.SetKasseHandlerFunc(func(params op.SetKasseParams) op.SetKasseResponder {
 		return op.SetKasseNotImplemented()

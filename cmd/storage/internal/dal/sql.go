@@ -289,9 +289,36 @@ ORDER BY relay_id
 	INSERT INTO kasse(receipt_item, tax_type, cashier_full_name, cashier_inn)
 	VALUES (:receipt_item, :tax_type, :cashier_full_name, :cashier_inn)
 	`
+	sqlSetCardReaderConfig = `
+	INSERT INTO card_reader (station_id, card_reader_type, host, port)  
+	VALUES 	(:station_id, :card_reader_type, :host, :port)
+	ON CONFLICT (station_id)
+	DO
+	UPDATE SET card_reader_type = :card_reader_type, host = :host, port = :port, mtime = NOW()
+	`
+	sqlGetCardReaderConfig = `
+	SELECT station_id, card_reader_type, host, port
+	FROM card_reader
+	WHERE station_id = :station_id
+	`
 )
 
 type (
+	argSetCardReaderConfig struct {
+		StationID      app.StationID
+		CardReaderType string
+		Host           string
+		Port           string
+	}
+	argGetCardReaderConfig struct {
+		StationID app.StationID
+	}
+	resGetCardReaderConfig struct {
+		StationID      app.StationID
+		CardReaderType string
+		Host           string
+		Port           string
+	}
 	argSetValue struct {
 		StationID app.StationID
 		Key       string
