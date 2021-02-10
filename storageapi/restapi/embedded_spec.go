@@ -68,6 +68,81 @@ func init() {
         }
       }
     },
+    "/card-reader-config": {
+      "post": {
+        "operationId": "cardReaderConfig",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/CardReaderConfig"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/card-reader-config-by-hash": {
+      "post": {
+        "operationId": "cardReaderConfigByHash",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/CardReaderConfig"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/del-station": {
       "post": {
         "operationId": "delStation",
@@ -584,6 +659,38 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-card-reader-config": {
+      "post": {
+        "operationId": "setCardReaderConfig",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CardReaderConfig"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "422": {
+            "description": "validation error",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"
@@ -1210,6 +1317,31 @@ func init() {
     }
   },
   "definitions": {
+    "CardReaderConfig": {
+      "type": "object",
+      "required": [
+        "stationID"
+      ],
+      "properties": {
+        "cardReaderType": {
+          "type": "string",
+          "enum": [
+            "NOT_USED",
+            "VENDOTEK",
+            "PAYMENT_WORLD"
+          ]
+        },
+        "host": {
+          "type": "string"
+        },
+        "port": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "integer"
+        }
+      }
+    },
     "CollectionReport": {
       "type": "object",
       "properties": {
@@ -1584,6 +1716,81 @@ func init() {
         }
       }
     },
+    "/card-reader-config": {
+      "post": {
+        "operationId": "cardReaderConfig",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/CardReaderConfig"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/card-reader-config-by-hash": {
+      "post": {
+        "operationId": "cardReaderConfigByHash",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/CardReaderConfig"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/del-station": {
       "post": {
         "operationId": "delStation",
@@ -2100,6 +2307,38 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-card-reader-config": {
+      "post": {
+        "operationId": "setCardReaderConfig",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CardReaderConfig"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "422": {
+            "description": "validation error",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"
@@ -2726,6 +2965,31 @@ func init() {
     }
   },
   "definitions": {
+    "CardReaderConfig": {
+      "type": "object",
+      "required": [
+        "stationID"
+      ],
+      "properties": {
+        "cardReaderType": {
+          "type": "string",
+          "enum": [
+            "NOT_USED",
+            "VENDOTEK",
+            "PAYMENT_WORLD"
+          ]
+        },
+        "host": {
+          "type": "string"
+        },
+        "port": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "integer"
+        }
+      }
+    },
     "CollectionReport": {
       "type": "object",
       "properties": {

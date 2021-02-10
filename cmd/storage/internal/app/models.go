@@ -25,7 +25,7 @@ type UpdateUserData struct {
 }
 
 type UpdatePasswordData struct {
-	Login 		string
+	Login       string
 	OldPassword string
 	NewPassword string
 }
@@ -66,4 +66,11 @@ type RelayStat struct {
 type RelayReport struct {
 	StationID  StationID
 	RelayStats []RelayStat
+}
+
+type CardReaderConfig struct {
+	StationID      StationID
+	CardReaderType string
+	Host           string
+	Port           string
 }

@@ -82,6 +82,8 @@ type (
 		IsEnabled(user *UserData) bool
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
+		CardReaderConfig(StationID) (*CardReaderConfig, error)
+		SetCardReaderConfig(CardReaderConfig) error
 	}
 
 	// Repo is a DAL interface.
@@ -125,6 +127,8 @@ type (
 
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
+		CardReaderConfig(StationID) (*CardReaderConfig, error)
+		SetCardReaderConfig(CardReaderConfig) error
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {

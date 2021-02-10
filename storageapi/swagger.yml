@@ -202,6 +202,21 @@ definitions:
         maxLength: 12
         pattern: '^[0123456789]{12}$'
 
+  CardReaderConfig:
+    type: object
+    required:
+        - stationID
+    properties:
+      stationID:
+        type: integer
+      cardReaderType:
+        type: string
+        enum: ["NOT_USED","VENDOTEK","PAYMENT_WORLD"]
+      host:
+        type: string
+      port:
+        type: string
+
   UserConfig:
     type: object
     required:
@@ -825,6 +840,74 @@ paths:
       responses:
         204:
           description: OK
+        500:
+          description: internal error
+
+  /card-reader-config:
+    post:
+      operationId: "cardReaderConfig"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - stationID
+            properties:
+              stationID:
+                type: integer
+                minimum: 1
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/CardReaderConfig'
+        404:
+          description: not found
+        500:
+          description: internal error
+  /set-card-reader-config:
+    post:
+      operationId: "setCardReaderConfig"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/CardReaderConfig'
+      responses:
+        204:
+          description: OK
+        404:
+          description: not found
+        422:
+          description: validation error
+          schema:
+            type: string
+        500:
+          description: internal error
+  /card-reader-config-by-hash:
+    post:
+      operationId: "cardReaderConfigByHash"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - hash
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/CardReaderConfig'
+        404:
+          description: not found
         500:
           description: internal error
 

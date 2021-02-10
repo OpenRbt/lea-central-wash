@@ -417,3 +417,10 @@ func (a *app) Kasse() (kasse Kasse, err error) {
 func (a *app) SetKasse(kasse Kasse) (err error) {
 	return a.repo.SetKasse(kasse)
 }
+
+func (a *app) CardReaderConfig(stationID StationID) (*CardReaderConfig, error) {
+	return a.repo.CardReaderConfig(stationID)
+}
+func (a *app) SetCardReaderConfig(cfg CardReaderConfig) error {
+	return a.repo.SetCardReaderConfig(cfg)
+}
