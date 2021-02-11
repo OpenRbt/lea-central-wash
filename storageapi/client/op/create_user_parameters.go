@@ -15,8 +15,6 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 
 	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // NewCreateUserParams creates a new CreateUserParams object
@@ -64,7 +62,7 @@ for the create user operation typically these are written to a http.Request
 type CreateUserParams struct {
 
 	/*Args*/
-	Args *model.UserConfig
+	Args CreateUserBody
 
 	timeout    time.Duration
 	Context    context.Context
@@ -105,13 +103,13 @@ func (o *CreateUserParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithArgs adds the args to the create user params
-func (o *CreateUserParams) WithArgs(args *model.UserConfig) *CreateUserParams {
+func (o *CreateUserParams) WithArgs(args CreateUserBody) *CreateUserParams {
 	o.SetArgs(args)
 	return o
 }
 
 // SetArgs adds the args to the create user params
-func (o *CreateUserParams) SetArgs(args *model.UserConfig) {
+func (o *CreateUserParams) SetArgs(args CreateUserBody) {
 	o.Args = args
 }
 
@@ -123,10 +121,8 @@ func (o *CreateUserParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 	}
 	var res []error
 
-	if o.Args != nil {
-		if err := r.SetBodyParam(o.Args); err != nil {
-			return err
-		}
+	if err := r.SetBodyParam(o.Args); err != nil {
+		return err
 	}
 
 	if len(res) > 0 {

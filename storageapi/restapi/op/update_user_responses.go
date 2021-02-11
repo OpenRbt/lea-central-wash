@@ -84,6 +84,32 @@ func (o *UpdateUserUnauthorized) WriteResponse(rw http.ResponseWriter, producer 
 
 func (o *UpdateUserUnauthorized) UpdateUserResponder() {}
 
+// UpdateUserForbiddenCode is the HTTP code returned for type UpdateUserForbidden
+const UpdateUserForbiddenCode int = 403
+
+/*UpdateUserForbidden Access forbidden
+
+swagger:response updateUserForbidden
+*/
+type UpdateUserForbidden struct {
+}
+
+// NewUpdateUserForbidden creates UpdateUserForbidden with default headers values
+func NewUpdateUserForbidden() *UpdateUserForbidden {
+
+	return &UpdateUserForbidden{}
+}
+
+// WriteResponse to the client
+func (o *UpdateUserForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
+}
+
+func (o *UpdateUserForbidden) UpdateUserResponder() {}
+
 // UpdateUserNotFoundCode is the HTTP code returned for type UpdateUserNotFound
 const UpdateUserNotFoundCode int = 404
 

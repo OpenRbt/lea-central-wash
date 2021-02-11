@@ -8,9 +8,13 @@ package op
 import (
 	"net/http"
 
+	errors "github.com/go-openapi/errors"
 	middleware "github.com/go-openapi/runtime/middleware"
+	strfmt "github.com/go-openapi/strfmt"
+	swag "github.com/go-openapi/swag"
 
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // GetUserHandlerFunc turns a function with the right signature into a get user handler
@@ -70,4 +74,57 @@ func (o *GetUser) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
+}
+
+// GetUserBody get user body
+// swagger:model GetUserBody
+type GetUserBody struct {
+
+	// login
+	// Required: true
+	Login model.Login `json:"login"`
+}
+
+// Validate validates this get user body
+func (o *GetUserBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateLogin(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetUserBody) validateLogin(formats strfmt.Registry) error {
+
+	if err := o.Login.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("args" + "." + "login")
+		}
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetUserBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetUserBody) UnmarshalBinary(b []byte) error {
+	var res GetUserBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
 }

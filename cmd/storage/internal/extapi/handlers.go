@@ -615,36 +615,45 @@ func (svc *service) cardReaderConfigByHash(params op.CardReaderConfigByHashParam
 
 func (svc *service) getUsers(params op.GetUsersParams, auth *app.Auth) op.GetUsersResponder {
 	log.Debug("getUsers", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	if !auth.IsAdmin {
-		return op.NewGetUsersUnauthorized()
-	}
-	users, err := svc.app.Users()
-	if err != nil {
+	users, err := svc.app.Users(auth)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetUsersOK().WithPayload(apiUsersReport(users))
+	case app.ErrAccessDenied:
+		return op.NewGetUsersForbidden()
+	default:
 		return op.NewGetUsersInternalServerError()
 	}
-	return op.NewGetUsersOK().WithPayload(apiUsersReport(users))
 }
 
 func (svc *service) getUser(params op.GetUserParams, auth *app.Auth) op.GetUserResponder {
 	log.Debug("getUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	return op.NewGetUserNoContent()
+	if string(params.Args.Login) != auth.Login {
+		return op.NewGetUserUnauthorized()
+	}
+	return op.NewGetUserOK().WithPayload(apiUserReport(app.UserData{
+		Login:      auth.Login,
+		FirstName:  auth.FirstName,
+		MiddleName: auth.MiddleName,
+		LastName:   auth.LastName,
+		IsAdmin:    auth.IsAdmin,
+		IsOperator: auth.IsOperator,
+		IsEngineer: auth.IsEngineer,
+	}))
 }
 
 func (svc *service) createUser(params op.CreateUserParams, auth *app.Auth) op.CreateUserResponder {
 	log.Debug("createUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	if !auth.IsAdmin {
-		return op.NewCreateUserUnauthorized()
-	}
 	id, err := svc.app.CreateUser(app.UserData{
-		Login:      *params.Args.Login,
-		FirstName:  *params.Args.FirstName,
-		MiddleName: *params.Args.MiddleName,
-		LastName:   *params.Args.LastName,
-		Password:   *params.Args.Password,
-		IsAdmin:    *params.Args.IsAdmin,
-		IsOperator: *params.Args.IsOperator,
-		IsEngineer: *params.Args.IsEngineer,
-	})
+		Login:      string(params.Args.Login),
+		FirstName:  string(*params.Args.FirstName),
+		MiddleName: string(*params.Args.MiddleName),
+		LastName:   string(*params.Args.LastName),
+		Password:   string(params.Args.Password),
+		IsAdmin:    bool(*params.Args.IsAdmin),
+		IsOperator: bool(*params.Args.IsOperator),
+		IsEngineer: bool(*params.Args.IsEngineer),
+	}, auth)
 	switch errors.Cause(err) {
 	case nil:
 		log.Debug("created user", "id", id)
@@ -652,11 +661,13 @@ func (svc *service) createUser(params op.CreateUserParams, auth *app.Auth) op.Cr
 			ID: newInt64(int64(id)),
 		})
 	case app.ErrLoginNotUnique:
-		message := "login is already in use"
+		message := err.Error()
 		return op.NewCreateUserConflict().WithPayload(&op.CreateUserConflictBody{
 			Code:    newInt64(int64(op.CreateUserConflictCode)),
 			Message: &message,
 		})
+	case app.ErrAccessDenied:
+		return op.NewCreateUserForbidden()
 	default:
 		return op.NewCreateUserInternalServerError()
 	}
@@ -665,18 +676,16 @@ func (svc *service) createUser(params op.CreateUserParams, auth *app.Auth) op.Cr
 
 func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.UpdateUserResponder {
 	log.Debug("updateUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	if !auth.IsAdmin {
-		return op.NewUpdateUserUnauthorized()
-	}
+	log.Info("Update User", "isAdmin", params.Args.IsAdmin)
 	id, err := svc.app.UpdateUser(app.UpdateUserData{
-		Login:      params.Args.Login,
-		FirstName:  params.Args.FirstName,
-		MiddleName: params.Args.MiddleName,
-		LastName:   params.Args.LastName,
-		IsAdmin:    params.Args.IsAdmin,
-		IsOperator: params.Args.IsOperator,
-		IsEngineer: params.Args.IsEngineer,
-	})
+		Login:      (*string)(&params.Args.Login),
+		FirstName:  (*string)(params.Args.FirstName),
+		MiddleName: (*string)(params.Args.MiddleName),
+		LastName:   (*string)(params.Args.LastName),
+		IsAdmin:    (*bool)(params.Args.IsAdmin),
+		IsOperator: (*bool)(params.Args.IsOperator),
+		IsEngineer: (*bool)(params.Args.IsEngineer),
+	}, auth)
 	switch errors.Cause(err) {
 	case nil:
 		log.Debug("updated user", "id", id)
@@ -685,6 +694,8 @@ func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.Up
 		})
 	case app.ErrNotFound:
 		return op.NewUpdateUserNotFound()
+	case app.ErrAccessDenied:
+		return op.NewUpdateUserForbidden()
 	default:
 		return op.NewUpdateUserInternalServerError()
 	}
@@ -692,14 +703,11 @@ func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.Up
 
 func (svc *service) updateUserPassword(params op.UpdateUserPasswordParams, auth *app.Auth) op.UpdateUserPasswordResponder {
 	log.Debug("updateUserPassword", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	if !auth.IsAdmin {
-		return op.NewUpdateUserPasswordUnauthorized()
-	}
 	id, err := svc.app.UpdateUserPassword(app.UpdatePasswordData{
-		Login:       *params.Args.Login,
-		OldPassword: *params.Args.OldPassword,
-		NewPassword: *params.Args.NewPassword,
-	})
+		Login:       string(params.Args.Login),
+		OldPassword: string(params.Args.OldPassword),
+		NewPassword: string(params.Args.NewPassword),
+	}, auth)
 	switch errors.Cause(err) {
 	case nil:
 		log.Debug("updated user", "id", id)
@@ -708,6 +716,8 @@ func (svc *service) updateUserPassword(params op.UpdateUserPasswordParams, auth 
 		})
 	case app.ErrNotFound:
 		return op.NewUpdateUserPasswordNotFound()
+	case app.ErrAccessDenied:
+		return op.NewUpdateUserPasswordForbidden()
 	default:
 		return op.NewUpdateUserPasswordInternalServerError()
 	}
@@ -715,12 +725,19 @@ func (svc *service) updateUserPassword(params op.UpdateUserPasswordParams, auth 
 
 func (svc *service) deleteUser(params op.DeleteUserParams, auth *app.Auth) op.DeleteUserResponder {
 	log.Debug("deleteUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	if !auth.IsAdmin {
-		return op.NewDeleteUserUnauthorized()
-	}
-	err := svc.app.DeleteUser(*params.Args.Login)
-	if err != nil {
+	err := svc.app.DeleteUser(string(params.Args.Login), auth)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewDeleteUserNoContent()
+	case app.ErrAccessDenied:
+		return op.NewDeleteUserForbidden()
+	case app.ErrMoneyCollectionFkey:
+		message := err.Error()
+		return op.NewDeleteUserConflict().WithPayload(&op.DeleteUserConflictBody{
+			Code:    newInt64(int64(op.DeleteUserConflictCode)),
+			Message: &message,
+		})
+	default:
 		return op.NewDeleteUserInternalServerError()
 	}
-	return op.NewDeleteUserNoContent()
 }

@@ -7,10 +7,15 @@ package op
 
 import (
 	"fmt"
+	"io"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/swag"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // GetUserReader is a Reader for the GetUser structure.
@@ -22,8 +27,8 @@ type GetUserReader struct {
 func (o *GetUserReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
 
-	case 204:
-		result := NewGetUserNoContent()
+	case 200:
+		result := NewGetUserOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -41,23 +46,31 @@ func (o *GetUserReader) ReadResponse(response runtime.ClientResponse, consumer r
 	}
 }
 
-// NewGetUserNoContent creates a GetUserNoContent with default headers values
-func NewGetUserNoContent() *GetUserNoContent {
-	return &GetUserNoContent{}
+// NewGetUserOK creates a GetUserOK with default headers values
+func NewGetUserOK() *GetUserOK {
+	return &GetUserOK{}
 }
 
-/*GetUserNoContent handles this case with default header values.
+/*GetUserOK handles this case with default header values.
 
 OK
 */
-type GetUserNoContent struct {
+type GetUserOK struct {
+	Payload *model.UserConfig
 }
 
-func (o *GetUserNoContent) Error() string {
-	return fmt.Sprintf("[GET /user][%d] getUserNoContent ", 204)
+func (o *GetUserOK) Error() string {
+	return fmt.Sprintf("[GET /user][%d] getUserOK  %+v", 200, o.Payload)
 }
 
-func (o *GetUserNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *GetUserOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(model.UserConfig)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }
@@ -80,5 +93,59 @@ func (o *GetUserUnauthorized) Error() string {
 
 func (o *GetUserUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	return nil
+}
+
+/*GetUserBody get user body
+swagger:model GetUserBody
+*/
+type GetUserBody struct {
+
+	// login
+	// Required: true
+	Login model.Login `json:"login"`
+}
+
+// Validate validates this get user body
+func (o *GetUserBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateLogin(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetUserBody) validateLogin(formats strfmt.Registry) error {
+
+	if err := o.Login.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("args" + "." + "login")
+		}
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetUserBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetUserBody) UnmarshalBinary(b []byte) error {
+	var res GetUserBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }

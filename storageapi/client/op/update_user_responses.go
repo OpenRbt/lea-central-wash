@@ -15,6 +15,8 @@ import (
 	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // UpdateUserReader is a Reader for the UpdateUser structure.
@@ -35,6 +37,13 @@ func (o *UpdateUserReader) ReadResponse(response runtime.ClientResponse, consume
 
 	case 401:
 		result := NewUpdateUserUnauthorized()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
+	case 403:
+		result := NewUpdateUserForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -109,6 +118,27 @@ func (o *UpdateUserUnauthorized) readResponse(response runtime.ClientResponse, c
 	return nil
 }
 
+// NewUpdateUserForbidden creates a UpdateUserForbidden with default headers values
+func NewUpdateUserForbidden() *UpdateUserForbidden {
+	return &UpdateUserForbidden{}
+}
+
+/*UpdateUserForbidden handles this case with default header values.
+
+Access forbidden
+*/
+type UpdateUserForbidden struct {
+}
+
+func (o *UpdateUserForbidden) Error() string {
+	return fmt.Sprintf("[PUT /user][%d] updateUserForbidden ", 403)
+}
+
+func (o *UpdateUserForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
 // NewUpdateUserNotFound creates a UpdateUserNotFound with default headers values
 func NewUpdateUserNotFound() *UpdateUserNotFound {
 	return &UpdateUserNotFound{}
@@ -157,30 +187,26 @@ swagger:model UpdateUserBody
 type UpdateUserBody struct {
 
 	// first name
-	// Min Length: 1
-	FirstName *string `json:"firstName,omitempty"`
+	FirstName *model.FirstName `json:"firstName,omitempty"`
 
 	// is admin
-	IsAdmin *bool `json:"isAdmin,omitempty"`
+	IsAdmin *model.IsAdmin `json:"isAdmin,omitempty"`
 
 	// is engineer
-	IsEngineer *bool `json:"isEngineer,omitempty"`
+	IsEngineer *model.IsEngineer `json:"isEngineer,omitempty"`
 
 	// is operator
-	IsOperator *bool `json:"isOperator,omitempty"`
+	IsOperator *model.IsOperator `json:"isOperator,omitempty"`
 
 	// last name
-	// Min Length: 1
-	LastName *string `json:"lastName,omitempty"`
+	LastName *model.LastName `json:"lastName,omitempty"`
 
 	// login
 	// Required: true
-	// Min Length: 1
-	Login *string `json:"login"`
+	Login model.Login `json:"login"`
 
 	// middle name
-	// Min Length: 1
-	MiddleName *string `json:"middleName,omitempty"`
+	MiddleName *model.MiddleName `json:"middleName,omitempty"`
 }
 
 // Validate validates this update user body
@@ -215,8 +241,13 @@ func (o *UpdateUserBody) validateFirstName(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if err := validate.MinLength("args"+"."+"firstName", "body", string(*o.FirstName), 1); err != nil {
-		return err
+	if o.FirstName != nil {
+		if err := o.FirstName.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "firstName")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -228,8 +259,13 @@ func (o *UpdateUserBody) validateLastName(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if err := validate.MinLength("args"+"."+"lastName", "body", string(*o.LastName), 1); err != nil {
-		return err
+	if o.LastName != nil {
+		if err := o.LastName.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "lastName")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -237,11 +273,10 @@ func (o *UpdateUserBody) validateLastName(formats strfmt.Registry) error {
 
 func (o *UpdateUserBody) validateLogin(formats strfmt.Registry) error {
 
-	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("args"+"."+"login", "body", string(*o.Login), 1); err != nil {
+	if err := o.Login.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("args" + "." + "login")
+		}
 		return err
 	}
 
@@ -254,8 +289,13 @@ func (o *UpdateUserBody) validateMiddleName(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if err := validate.MinLength("args"+"."+"middleName", "body", string(*o.MiddleName), 1); err != nil {
-		return err
+	if o.MiddleName != nil {
+		if err := o.MiddleName.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "middleName")
+			}
+			return err
+		}
 	}
 
 	return nil

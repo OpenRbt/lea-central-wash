@@ -177,14 +177,21 @@ func apiCardReaderConfig(v *app.CardReaderConfig) (res *model.CardReaderConfig) 
 }
 
 func apiUserReport(v app.UserData) *model.UserConfig {
+	firstName := model.FirstName(v.FirstName)
+	middleName := model.MiddleName(v.MiddleName)
+	lastName := model.LastName(v.LastName)
+	isAdmin := model.IsAdmin(v.IsAdmin)
+	isOperator := model.IsOperator(v.IsOperator)
+	isEngineer := model.IsEngineer(v.IsEngineer)
+
 	return &model.UserConfig{
-		Login:      &v.Login,
-		FirstName:  &v.FirstName,
-		MiddleName: &v.MiddleName,
-		LastName:   &v.LastName,
-		IsAdmin:    &v.IsAdmin,
-		IsOperator: &v.IsOperator,
-		IsEngineer: &v.IsEngineer,
+		Login:      model.Login(v.Login),
+		FirstName:  &firstName,
+		MiddleName: &middleName,
+		LastName:   &lastName,
+		IsAdmin:    &isAdmin,
+		IsOperator: &isOperator,
+		IsEngineer: &isEngineer,
 	}
 }
 

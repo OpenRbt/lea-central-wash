@@ -8,35 +8,56 @@ package op
 import (
 	"net/http"
 
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	"github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
 )
 
-// GetUserNoContentCode is the HTTP code returned for type GetUserNoContent
-const GetUserNoContentCode int = 204
+// GetUserOKCode is the HTTP code returned for type GetUserOK
+const GetUserOKCode int = 200
 
-/*GetUserNoContent OK
+/*GetUserOK OK
 
-swagger:response getUserNoContent
+swagger:response getUserOK
 */
-type GetUserNoContent struct {
+type GetUserOK struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *model.UserConfig `json:"body,omitempty"`
 }
 
-// NewGetUserNoContent creates GetUserNoContent with default headers values
-func NewGetUserNoContent() *GetUserNoContent {
+// NewGetUserOK creates GetUserOK with default headers values
+func NewGetUserOK() *GetUserOK {
 
-	return &GetUserNoContent{}
+	return &GetUserOK{}
+}
+
+// WithPayload adds the payload to the get user o k response
+func (o *GetUserOK) WithPayload(payload *model.UserConfig) *GetUserOK {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the get user o k response
+func (o *GetUserOK) SetPayload(payload *model.UserConfig) {
+	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *GetUserNoContent) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *GetUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
-	rw.WriteHeader(204)
+	rw.WriteHeader(200)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }
 
-func (o *GetUserNoContent) GetUserResponder() {}
+func (o *GetUserOK) GetUserResponder() {}
 
 // GetUserUnauthorizedCode is the HTTP code returned for type GetUserUnauthorized
 const GetUserUnauthorizedCode int = 401

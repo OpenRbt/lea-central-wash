@@ -10,7 +10,6 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // UserConfig user config
@@ -18,43 +17,26 @@ import (
 type UserConfig struct {
 
 	// first name
-	// Required: true
-	// Min Length: 1
-	FirstName *string `json:"firstName"`
+	FirstName *FirstName `json:"firstName,omitempty"`
 
 	// is admin
-	// Required: true
-	IsAdmin *bool `json:"isAdmin"`
+	IsAdmin *IsAdmin `json:"isAdmin,omitempty"`
 
 	// is engineer
-	// Required: true
-	IsEngineer *bool `json:"isEngineer"`
+	IsEngineer *IsEngineer `json:"isEngineer,omitempty"`
 
 	// is operator
-	// Required: true
-	IsOperator *bool `json:"isOperator"`
+	IsOperator *IsOperator `json:"isOperator,omitempty"`
 
 	// last name
-	// Required: true
-	// Min Length: 1
-	LastName *string `json:"lastName"`
+	LastName *LastName `json:"lastName,omitempty"`
 
 	// login
 	// Required: true
-	// Min Length: 1
-	Login *string `json:"login"`
+	Login Login `json:"login"`
 
 	// middle name
-	// Required: true
-	// Min Length: 1
-	MiddleName *string `json:"middleName"`
-
-	// password
-	// Required: true
-	// Max Length: 4
-	// Min Length: 4
-	// Pattern: ^[0123456789]{4}$
-	Password *string `json:"password"`
+	MiddleName *MiddleName `json:"middleName,omitempty"`
 }
 
 // Validate validates this user config
@@ -89,10 +71,6 @@ func (m *UserConfig) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validatePassword(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -101,12 +79,17 @@ func (m *UserConfig) Validate(formats strfmt.Registry) error {
 
 func (m *UserConfig) validateFirstName(formats strfmt.Registry) error {
 
-	if err := validate.Required("firstName", "body", m.FirstName); err != nil {
-		return err
+	if swag.IsZero(m.FirstName) { // not required
+		return nil
 	}
 
-	if err := validate.MinLength("firstName", "body", string(*m.FirstName), 1); err != nil {
-		return err
+	if m.FirstName != nil {
+		if err := m.FirstName.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("firstName")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -114,8 +97,17 @@ func (m *UserConfig) validateFirstName(formats strfmt.Registry) error {
 
 func (m *UserConfig) validateIsAdmin(formats strfmt.Registry) error {
 
-	if err := validate.Required("isAdmin", "body", m.IsAdmin); err != nil {
-		return err
+	if swag.IsZero(m.IsAdmin) { // not required
+		return nil
+	}
+
+	if m.IsAdmin != nil {
+		if err := m.IsAdmin.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("isAdmin")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -123,8 +115,17 @@ func (m *UserConfig) validateIsAdmin(formats strfmt.Registry) error {
 
 func (m *UserConfig) validateIsEngineer(formats strfmt.Registry) error {
 
-	if err := validate.Required("isEngineer", "body", m.IsEngineer); err != nil {
-		return err
+	if swag.IsZero(m.IsEngineer) { // not required
+		return nil
+	}
+
+	if m.IsEngineer != nil {
+		if err := m.IsEngineer.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("isEngineer")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -132,8 +133,17 @@ func (m *UserConfig) validateIsEngineer(formats strfmt.Registry) error {
 
 func (m *UserConfig) validateIsOperator(formats strfmt.Registry) error {
 
-	if err := validate.Required("isOperator", "body", m.IsOperator); err != nil {
-		return err
+	if swag.IsZero(m.IsOperator) { // not required
+		return nil
+	}
+
+	if m.IsOperator != nil {
+		if err := m.IsOperator.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("isOperator")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -141,12 +151,17 @@ func (m *UserConfig) validateIsOperator(formats strfmt.Registry) error {
 
 func (m *UserConfig) validateLastName(formats strfmt.Registry) error {
 
-	if err := validate.Required("lastName", "body", m.LastName); err != nil {
-		return err
+	if swag.IsZero(m.LastName) { // not required
+		return nil
 	}
 
-	if err := validate.MinLength("lastName", "body", string(*m.LastName), 1); err != nil {
-		return err
+	if m.LastName != nil {
+		if err := m.LastName.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("lastName")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -154,11 +169,10 @@ func (m *UserConfig) validateLastName(formats strfmt.Registry) error {
 
 func (m *UserConfig) validateLogin(formats strfmt.Registry) error {
 
-	if err := validate.Required("login", "body", m.Login); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("login", "body", string(*m.Login), 1); err != nil {
+	if err := m.Login.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("login")
+		}
 		return err
 	}
 
@@ -167,33 +181,17 @@ func (m *UserConfig) validateLogin(formats strfmt.Registry) error {
 
 func (m *UserConfig) validateMiddleName(formats strfmt.Registry) error {
 
-	if err := validate.Required("middleName", "body", m.MiddleName); err != nil {
-		return err
+	if swag.IsZero(m.MiddleName) { // not required
+		return nil
 	}
 
-	if err := validate.MinLength("middleName", "body", string(*m.MiddleName), 1); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *UserConfig) validatePassword(formats strfmt.Registry) error {
-
-	if err := validate.Required("password", "body", m.Password); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("password", "body", string(*m.Password), 4); err != nil {
-		return err
-	}
-
-	if err := validate.MaxLength("password", "body", string(*m.Password), 4); err != nil {
-		return err
-	}
-
-	if err := validate.Pattern("password", "body", string(*m.Password), `^[0123456789]{4}$`); err != nil {
-		return err
+	if m.MiddleName != nil {
+		if err := m.MiddleName.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("middleName")
+			}
+			return err
+		}
 	}
 
 	return nil

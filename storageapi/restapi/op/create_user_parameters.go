@@ -9,7 +9,6 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
@@ -35,7 +34,7 @@ type CreateUserParams struct {
 	  Required: true
 	  In: body
 	*/
-	Args *model.UserConfig
+	Args CreateUserBody
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -49,7 +48,7 @@ func (o *CreateUserParams) BindRequest(r *http.Request, route *middleware.Matche
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body model.UserConfig
+		var body CreateUserBody
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
 				res = append(res, errors.Required("args", "body"))
@@ -63,7 +62,7 @@ func (o *CreateUserParams) BindRequest(r *http.Request, route *middleware.Matche
 			}
 
 			if len(res) == 0 {
-				o.Args = &body
+				o.Args = body
 			}
 		}
 	} else {

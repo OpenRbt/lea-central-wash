@@ -15,6 +15,8 @@ import (
 	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // CreateUserReader is a Reader for the CreateUser structure.
@@ -35,6 +37,13 @@ func (o *CreateUserReader) ReadResponse(response runtime.ClientResponse, consume
 
 	case 401:
 		result := NewCreateUserUnauthorized()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
+	case 403:
+		result := NewCreateUserForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -109,6 +118,27 @@ func (o *CreateUserUnauthorized) readResponse(response runtime.ClientResponse, c
 	return nil
 }
 
+// NewCreateUserForbidden creates a CreateUserForbidden with default headers values
+func NewCreateUserForbidden() *CreateUserForbidden {
+	return &CreateUserForbidden{}
+}
+
+/*CreateUserForbidden handles this case with default header values.
+
+Access forbidden
+*/
+type CreateUserForbidden struct {
+}
+
+func (o *CreateUserForbidden) Error() string {
+	return fmt.Sprintf("[POST /user][%d] createUserForbidden ", 403)
+}
+
+func (o *CreateUserForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
 // NewCreateUserConflict creates a CreateUserConflict with default headers values
 func NewCreateUserConflict() *CreateUserConflict {
 	return &CreateUserConflict{}
@@ -156,6 +186,164 @@ func (o *CreateUserInternalServerError) Error() string {
 
 func (o *CreateUserInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	return nil
+}
+
+/*CreateUserBody create user body
+swagger:model CreateUserBody
+*/
+type CreateUserBody struct {
+
+	// first name
+	FirstName *model.FirstName `json:"firstName,omitempty"`
+
+	// is admin
+	IsAdmin *model.IsAdmin `json:"isAdmin,omitempty"`
+
+	// is engineer
+	IsEngineer *model.IsEngineer `json:"isEngineer,omitempty"`
+
+	// is operator
+	IsOperator *model.IsOperator `json:"isOperator,omitempty"`
+
+	// last name
+	LastName *model.LastName `json:"lastName,omitempty"`
+
+	// login
+	// Required: true
+	Login model.Login `json:"login"`
+
+	// middle name
+	MiddleName *model.MiddleName `json:"middleName,omitempty"`
+
+	// password
+	// Required: true
+	Password model.Password `json:"password"`
+}
+
+// Validate validates this create user body
+func (o *CreateUserBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateFirstName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLastName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLogin(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateMiddleName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePassword(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CreateUserBody) validateFirstName(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.FirstName) { // not required
+		return nil
+	}
+
+	if o.FirstName != nil {
+		if err := o.FirstName.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "firstName")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CreateUserBody) validateLastName(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.LastName) { // not required
+		return nil
+	}
+
+	if o.LastName != nil {
+		if err := o.LastName.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "lastName")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CreateUserBody) validateLogin(formats strfmt.Registry) error {
+
+	if err := o.Login.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("args" + "." + "login")
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (o *CreateUserBody) validateMiddleName(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.MiddleName) { // not required
+		return nil
+	}
+
+	if o.MiddleName != nil {
+		if err := o.MiddleName.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "middleName")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CreateUserBody) validatePassword(formats strfmt.Registry) error {
+
+	if err := o.Password.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("args" + "." + "password")
+		}
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CreateUserBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CreateUserBody) UnmarshalBinary(b []byte) error {
+	var res CreateUserBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }
 

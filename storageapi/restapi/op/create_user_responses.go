@@ -84,6 +84,32 @@ func (o *CreateUserUnauthorized) WriteResponse(rw http.ResponseWriter, producer 
 
 func (o *CreateUserUnauthorized) CreateUserResponder() {}
 
+// CreateUserForbiddenCode is the HTTP code returned for type CreateUserForbidden
+const CreateUserForbiddenCode int = 403
+
+/*CreateUserForbidden Access forbidden
+
+swagger:response createUserForbidden
+*/
+type CreateUserForbidden struct {
+}
+
+// NewCreateUserForbidden creates CreateUserForbidden with default headers values
+func NewCreateUserForbidden() *CreateUserForbidden {
+
+	return &CreateUserForbidden{}
+}
+
+// WriteResponse to the client
+func (o *CreateUserForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
+}
+
+func (o *CreateUserForbidden) CreateUserResponder() {}
+
 // CreateUserConflictCode is the HTTP code returned for type CreateUserConflict
 const CreateUserConflictCode int = 409
 

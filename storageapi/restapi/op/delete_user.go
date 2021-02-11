@@ -15,6 +15,7 @@ import (
 	validate "github.com/go-openapi/validate"
 
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // DeleteUserHandlerFunc turns a function with the right signature into a delete user handler
@@ -82,7 +83,7 @@ type DeleteUserBody struct {
 
 	// login
 	// Required: true
-	Login *string `json:"login"`
+	Login model.Login `json:"login"`
 }
 
 // Validate validates this delete user body
@@ -101,7 +102,10 @@ func (o *DeleteUserBody) Validate(formats strfmt.Registry) error {
 
 func (o *DeleteUserBody) validateLogin(formats strfmt.Registry) error {
 
-	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
+	if err := o.Login.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("args" + "." + "login")
+		}
 		return err
 	}
 
@@ -119,6 +123,73 @@ func (o *DeleteUserBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *DeleteUserBody) UnmarshalBinary(b []byte) error {
 	var res DeleteUserBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+// DeleteUserConflictBody delete user conflict body
+// swagger:model DeleteUserConflictBody
+type DeleteUserConflictBody struct {
+
+	// code
+	// Required: true
+	Code *int64 `json:"code"`
+
+	// message
+	// Required: true
+	Message *string `json:"message"`
+}
+
+// Validate validates this delete user conflict body
+func (o *DeleteUserConflictBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateMessage(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeleteUserConflictBody) validateCode(formats strfmt.Registry) error {
+
+	if err := validate.Required("deleteUserConflict"+"."+"code", "body", o.Code); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *DeleteUserConflictBody) validateMessage(formats strfmt.Registry) error {
+
+	if err := validate.Required("deleteUserConflict"+"."+"message", "body", o.Message); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *DeleteUserConflictBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *DeleteUserConflictBody) UnmarshalBinary(b []byte) error {
+	var res DeleteUserConflictBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

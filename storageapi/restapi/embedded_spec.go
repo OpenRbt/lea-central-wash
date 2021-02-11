@@ -1044,9 +1044,31 @@ func init() {
           }
         ],
         "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "login"
+              ],
+              "properties": {
+                "login": {
+                  "$ref": "#/definitions/Login"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
-          "204": {
-            "description": "OK"
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/UserConfig"
+            }
           },
           "401": {
             "description": "PIN is missing or invalid"
@@ -1072,35 +1094,25 @@ func init() {
               ],
               "properties": {
                 "firstName": {
-                  "type": "string",
-                  "minLength": 1,
-                  "x-nullable": true
+                  "$ref": "#/definitions/FirstName"
                 },
                 "isAdmin": {
-                  "type": "boolean",
-                  "x-nullable": true
+                  "$ref": "#/definitions/IsAdmin"
                 },
                 "isEngineer": {
-                  "type": "boolean",
-                  "x-nullable": true
+                  "$ref": "#/definitions/IsEngineer"
                 },
                 "isOperator": {
-                  "type": "boolean",
-                  "x-nullable": true
+                  "$ref": "#/definitions/IsOperator"
                 },
                 "lastName": {
-                  "type": "string",
-                  "minLength": 1,
-                  "x-nullable": true
+                  "$ref": "#/definitions/LastName"
                 },
                 "login": {
-                  "type": "string",
-                  "minLength": 1
+                  "$ref": "#/definitions/Login"
                 },
                 "middleName": {
-                  "type": "string",
-                  "minLength": 1,
-                  "x-nullable": true
+                  "$ref": "#/definitions/MiddleName"
                 }
               }
             }
@@ -1123,6 +1135,9 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "404": {
             "description": "Not found"
@@ -1145,7 +1160,37 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserConfig"
+              "type": "object",
+              "required": [
+                "login",
+                "password"
+              ],
+              "properties": {
+                "firstName": {
+                  "$ref": "#/definitions/FirstName"
+                },
+                "isAdmin": {
+                  "$ref": "#/definitions/IsAdmin"
+                },
+                "isEngineer": {
+                  "$ref": "#/definitions/IsEngineer"
+                },
+                "isOperator": {
+                  "$ref": "#/definitions/IsOperator"
+                },
+                "lastName": {
+                  "$ref": "#/definitions/LastName"
+                },
+                "login": {
+                  "$ref": "#/definitions/Login"
+                },
+                "middleName": {
+                  "$ref": "#/definitions/MiddleName"
+                },
+                "password": {
+                  "$ref": "#/definitions/Password"
+                }
+              }
             }
           }
         ],
@@ -1166,6 +1211,9 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "409": {
             "description": "Conflict",
@@ -1209,7 +1257,7 @@ func init() {
               ],
               "properties": {
                 "login": {
-                  "type": "string"
+                  "$ref": "#/definitions/Login"
                 }
               }
             }
@@ -1221,6 +1269,27 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "500": {
             "description": "internal error"
@@ -1250,20 +1319,13 @@ func init() {
               ],
               "properties": {
                 "login": {
-                  "type": "string",
-                  "minLength": 1
+                  "$ref": "#/definitions/Login"
                 },
                 "newPassword": {
-                  "type": "string",
-                  "maxLength": 4,
-                  "minLength": 4,
-                  "pattern": "^[0123456789]{4}$"
+                  "$ref": "#/definitions/Password"
                 },
                 "oldPassword": {
-                  "type": "string",
-                  "maxLength": 4,
-                  "minLength": 4,
-                  "pattern": "^[0123456789]{4}$"
+                  "$ref": "#/definitions/Password"
                 }
               }
             }
@@ -1286,6 +1348,9 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "404": {
             "description": "not found"
@@ -1314,6 +1379,9 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -1374,9 +1442,26 @@ func init() {
         }
       }
     },
+    "FirstName": {
+      "type": "string",
+      "minLength": 1,
+      "x-nullable": true
+    },
     "Hash": {
       "type": "string",
       "minLength": 1
+    },
+    "IsAdmin": {
+      "type": "boolean",
+      "x-nullable": true
+    },
+    "IsEngineer": {
+      "type": "boolean",
+      "x-nullable": true
+    },
+    "IsOperator": {
+      "type": "boolean",
+      "x-nullable": true
     },
     "KasseConfig": {
       "type": "object",
@@ -1422,6 +1507,20 @@ func init() {
         }
       }
     },
+    "LastName": {
+      "type": "string",
+      "minLength": 1,
+      "x-nullable": true
+    },
+    "Login": {
+      "type": "string",
+      "minLength": 4
+    },
+    "MiddleName": {
+      "type": "string",
+      "minLength": 1,
+      "x-nullable": true
+    },
     "MoneyReport": {
       "type": "object",
       "required": [
@@ -1447,6 +1546,11 @@ func init() {
           "type": "integer"
         }
       }
+    },
+    "Password": {
+      "type": "string",
+      "minLength": 4,
+      "pattern": "^[0123456789]{4}$"
     },
     "ProgramInfo": {
       "type": "object",
@@ -1614,46 +1718,29 @@ func init() {
     "UserConfig": {
       "type": "object",
       "required": [
-        "login",
-        "firstName",
-        "middleName",
-        "lastName",
-        "isAdmin",
-        "isOperator",
-        "isEngineer",
-        "password"
+        "login"
       ],
       "properties": {
         "firstName": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/definitions/FirstName"
         },
         "isAdmin": {
-          "type": "boolean"
+          "$ref": "#/definitions/IsAdmin"
         },
         "isEngineer": {
-          "type": "boolean"
+          "$ref": "#/definitions/IsEngineer"
         },
         "isOperator": {
-          "type": "boolean"
+          "$ref": "#/definitions/IsOperator"
         },
         "lastName": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/definitions/LastName"
         },
         "login": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/definitions/Login"
         },
         "middleName": {
-          "type": "string",
-          "minLength": 1
-        },
-        "password": {
-          "type": "string",
-          "maxLength": 4,
-          "minLength": 4,
-          "pattern": "^[0123456789]{4}$"
+          "$ref": "#/definitions/MiddleName"
         }
       }
     },
@@ -2704,9 +2791,31 @@ func init() {
           }
         ],
         "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "login"
+              ],
+              "properties": {
+                "login": {
+                  "$ref": "#/definitions/Login"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
-          "204": {
-            "description": "OK"
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/UserConfig"
+            }
           },
           "401": {
             "description": "PIN is missing or invalid"
@@ -2732,35 +2841,25 @@ func init() {
               ],
               "properties": {
                 "firstName": {
-                  "type": "string",
-                  "minLength": 1,
-                  "x-nullable": true
+                  "$ref": "#/definitions/FirstName"
                 },
                 "isAdmin": {
-                  "type": "boolean",
-                  "x-nullable": true
+                  "$ref": "#/definitions/IsAdmin"
                 },
                 "isEngineer": {
-                  "type": "boolean",
-                  "x-nullable": true
+                  "$ref": "#/definitions/IsEngineer"
                 },
                 "isOperator": {
-                  "type": "boolean",
-                  "x-nullable": true
+                  "$ref": "#/definitions/IsOperator"
                 },
                 "lastName": {
-                  "type": "string",
-                  "minLength": 1,
-                  "x-nullable": true
+                  "$ref": "#/definitions/LastName"
                 },
                 "login": {
-                  "type": "string",
-                  "minLength": 1
+                  "$ref": "#/definitions/Login"
                 },
                 "middleName": {
-                  "type": "string",
-                  "minLength": 1,
-                  "x-nullable": true
+                  "$ref": "#/definitions/MiddleName"
                 }
               }
             }
@@ -2783,6 +2882,9 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "404": {
             "description": "Not found"
@@ -2805,7 +2907,37 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserConfig"
+              "type": "object",
+              "required": [
+                "login",
+                "password"
+              ],
+              "properties": {
+                "firstName": {
+                  "$ref": "#/definitions/FirstName"
+                },
+                "isAdmin": {
+                  "$ref": "#/definitions/IsAdmin"
+                },
+                "isEngineer": {
+                  "$ref": "#/definitions/IsEngineer"
+                },
+                "isOperator": {
+                  "$ref": "#/definitions/IsOperator"
+                },
+                "lastName": {
+                  "$ref": "#/definitions/LastName"
+                },
+                "login": {
+                  "$ref": "#/definitions/Login"
+                },
+                "middleName": {
+                  "$ref": "#/definitions/MiddleName"
+                },
+                "password": {
+                  "$ref": "#/definitions/Password"
+                }
+              }
             }
           }
         ],
@@ -2826,6 +2958,9 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "409": {
             "description": "Conflict",
@@ -2869,7 +3004,7 @@ func init() {
               ],
               "properties": {
                 "login": {
-                  "type": "string"
+                  "$ref": "#/definitions/Login"
                 }
               }
             }
@@ -2881,6 +3016,27 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "500": {
             "description": "internal error"
@@ -2910,20 +3066,13 @@ func init() {
               ],
               "properties": {
                 "login": {
-                  "type": "string",
-                  "minLength": 1
+                  "$ref": "#/definitions/Login"
                 },
                 "newPassword": {
-                  "type": "string",
-                  "maxLength": 4,
-                  "minLength": 4,
-                  "pattern": "^[0123456789]{4}$"
+                  "$ref": "#/definitions/Password"
                 },
                 "oldPassword": {
-                  "type": "string",
-                  "maxLength": 4,
-                  "minLength": 4,
-                  "pattern": "^[0123456789]{4}$"
+                  "$ref": "#/definitions/Password"
                 }
               }
             }
@@ -2946,6 +3095,9 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "404": {
             "description": "not found"
@@ -2974,6 +3126,9 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -3034,9 +3189,26 @@ func init() {
         }
       }
     },
+    "FirstName": {
+      "type": "string",
+      "minLength": 1,
+      "x-nullable": true
+    },
     "Hash": {
       "type": "string",
       "minLength": 1
+    },
+    "IsAdmin": {
+      "type": "boolean",
+      "x-nullable": true
+    },
+    "IsEngineer": {
+      "type": "boolean",
+      "x-nullable": true
+    },
+    "IsOperator": {
+      "type": "boolean",
+      "x-nullable": true
     },
     "KasseConfig": {
       "type": "object",
@@ -3082,6 +3254,20 @@ func init() {
         }
       }
     },
+    "LastName": {
+      "type": "string",
+      "minLength": 1,
+      "x-nullable": true
+    },
+    "Login": {
+      "type": "string",
+      "minLength": 4
+    },
+    "MiddleName": {
+      "type": "string",
+      "minLength": 1,
+      "x-nullable": true
+    },
     "MoneyReport": {
       "type": "object",
       "required": [
@@ -3107,6 +3293,11 @@ func init() {
           "type": "integer"
         }
       }
+    },
+    "Password": {
+      "type": "string",
+      "minLength": 4,
+      "pattern": "^[0123456789]{4}$"
     },
     "ProgramInfo": {
       "type": "object",
@@ -3274,46 +3465,29 @@ func init() {
     "UserConfig": {
       "type": "object",
       "required": [
-        "login",
-        "firstName",
-        "middleName",
-        "lastName",
-        "isAdmin",
-        "isOperator",
-        "isEngineer",
-        "password"
+        "login"
       ],
       "properties": {
         "firstName": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/definitions/FirstName"
         },
         "isAdmin": {
-          "type": "boolean"
+          "$ref": "#/definitions/IsAdmin"
         },
         "isEngineer": {
-          "type": "boolean"
+          "$ref": "#/definitions/IsEngineer"
         },
         "isOperator": {
-          "type": "boolean"
+          "$ref": "#/definitions/IsOperator"
         },
         "lastName": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/definitions/LastName"
         },
         "login": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/definitions/Login"
         },
         "middleName": {
-          "type": "string",
-          "minLength": 1
-        },
-        "password": {
-          "type": "string",
-          "maxLength": 4,
-          "minLength": 4,
-          "pattern": "^[0123456789]{4}$"
+          "$ref": "#/definitions/MiddleName"
         }
       }
     },

@@ -9,6 +9,7 @@ import (
 const (
 	constraintCardReaderStationID = "card_reader_station_id_fkey"
 	constraintUserLogin           = "users_unique_lower_login_idx"
+	constraintMoneyCollection     = "money_collection_user_id_fkey"
 )
 
 const (

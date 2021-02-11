@@ -84,6 +84,32 @@ func (o *UpdateUserPasswordUnauthorized) WriteResponse(rw http.ResponseWriter, p
 
 func (o *UpdateUserPasswordUnauthorized) UpdateUserPasswordResponder() {}
 
+// UpdateUserPasswordForbiddenCode is the HTTP code returned for type UpdateUserPasswordForbidden
+const UpdateUserPasswordForbiddenCode int = 403
+
+/*UpdateUserPasswordForbidden Access forbidden
+
+swagger:response updateUserPasswordForbidden
+*/
+type UpdateUserPasswordForbidden struct {
+}
+
+// NewUpdateUserPasswordForbidden creates UpdateUserPasswordForbidden with default headers values
+func NewUpdateUserPasswordForbidden() *UpdateUserPasswordForbidden {
+
+	return &UpdateUserPasswordForbidden{}
+}
+
+// WriteResponse to the client
+func (o *UpdateUserPasswordForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
+}
+
+func (o *UpdateUserPasswordForbidden) UpdateUserPasswordResponder() {}
+
 // UpdateUserPasswordNotFoundCode is the HTTP code returned for type UpdateUserPasswordNotFound
 const UpdateUserPasswordNotFoundCode int = 404
 

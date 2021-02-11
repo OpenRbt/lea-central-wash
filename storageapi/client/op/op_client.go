@@ -225,7 +225,7 @@ func (a *Client) GetPing(params *GetPingParams) (*GetPingOK, error) {
 /*
 GetUser get user API
 */
-func (a *Client) GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoWriter) (*GetUserNoContent, error) {
+func (a *Client) GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoWriter) (*GetUserOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetUserParams()
@@ -247,7 +247,7 @@ func (a *Client) GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoW
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetUserNoContent), nil
+	return result.(*GetUserOK), nil
 
 }
 

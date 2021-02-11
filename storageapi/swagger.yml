@@ -221,41 +221,61 @@ definitions:
       port:
         type: string
 
+  Login:
+    type: string
+    minLength: 4
+
+  Password:
+    type: string
+    minLength: 4
+    pattern: '^[0123456789]{4}$'
+
+  FirstName:
+    type: string
+    minLength: 1
+    x-nullable: true
+
+  MiddleName:
+    type: string
+    minLength: 1
+    x-nullable: true
+
+  LastName:
+    type: string
+    minLength: 1
+    x-nullable: true
+
+  IsAdmin:
+    type: boolean
+    x-nullable: true
+
+  IsEngineer:
+    type: boolean
+    x-nullable: true
+
+  IsOperator:
+    type: boolean
+    x-nullable: true
+
   UserConfig:
     type: object
     required:
         - login
-        - firstName
-        - middleName
-        - lastName
-        - isAdmin
-        - isOperator
-        - isEngineer
-        - password
     properties:
       login:
-        type: string
-        minLength: 1
+        $ref: '#/definitions/Login'
       firstName:
-        type: string
-        minLength: 1
+        $ref: '#/definitions/FirstName'
       middleName:
-        type: string
-        minLength: 1
+        $ref: '#/definitions/MiddleName'
       lastName:
-        type: string
-        minLength: 1
+        $ref: '#/definitions/LastName'
       isAdmin:
-        type: boolean
+        $ref: '#/definitions/IsAdmin'
       isOperator:
-        type: boolean
+        $ref: '#/definitions/IsOperator'
       isEngineer:
-        type: boolean
-      password:
-        type: string
-        minLength: 4
-        maxLength: 4
-        pattern: '^[0123456789]{4}$'
+        $ref: '#/definitions/IsEngineer'
 
   UsersReport:
     type: object
@@ -931,7 +951,9 @@ paths:
             type: object
             $ref: '#/definitions/UsersReport'
         401:
-          description: "PIN is missing or invalid"
+          description: PIN is missing or invalid
+        403:
+          description: Access forbidden
         500:
           description: internal error
 
@@ -952,18 +974,11 @@ paths:
               - newPassword
             properties:
               login:
-                type: string
-                minLength: 1
+                $ref: '#/definitions/Login'
               oldPassword:
-                type: string
-                minLength: 4
-                maxLength: 4
-                pattern: '^[0123456789]{4}$'
+                $ref: '#/definitions/Password'
               newPassword:
-                type: string
-                minLength: 4
-                maxLength: 4
-                pattern: '^[0123456789]{4}$'
+                $ref: '#/definitions/Password'
       responses:
         200:
           description: OK
@@ -975,7 +990,9 @@ paths:
               id:
                 type: integer
         401:
-          description: "PIN is missing or invalid"
+          description: PIN is missing or invalid
+        403:
+          description: Access forbidden
         404:
           description: not found
         500:
@@ -986,11 +1003,25 @@ paths:
       operationId: "getUser"
       security:
         - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - login
+            properties:
+              login:
+                $ref: '#/definitions/Login'
       responses:
-        204:
+        200:
           description: OK
+          schema:
+            type: object
+            $ref: '#/definitions/UserConfig'
         401:
-          description: "PIN is missing or invalid"
+          description: PIN is missing or invalid
     post:
       operationId: "createUser"
       security:
@@ -1000,7 +1031,27 @@ paths:
           required: true
           in: body
           schema:
-            $ref: '#/definitions/UserConfig'
+            type: object
+            required:
+              - login
+              - password
+            properties:
+              login:
+                $ref: '#/definitions/Login'
+              firstName:
+                $ref: '#/definitions/FirstName'
+              middleName:
+                $ref: '#/definitions/MiddleName'
+              lastName:
+                $ref: '#/definitions/LastName'
+              isAdmin:
+                $ref: '#/definitions/IsAdmin'
+              isOperator:
+                $ref: '#/definitions/IsOperator'
+              isEngineer:
+                $ref: '#/definitions/IsEngineer'
+              password:
+                $ref: '#/definitions/Password'
       responses:
         200:
           description: OK
@@ -1011,6 +1062,10 @@ paths:
             properties:
               id:
                 type: integer
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbidden
         409:
           description: Conflict
           schema:
@@ -1023,8 +1078,6 @@ paths:
                 type: integer
               message:
                 type: string
-        401:
-          description: PIN is missing or invalid
         500:
           description: internal error
     put:
@@ -1041,29 +1094,19 @@ paths:
               - login
             properties:
               login:
-                type: string
-                minLength: 1
+                $ref: '#/definitions/Login'
               firstName:
-                type: string
-                x-nullable: true
-                minLength: 1
+                $ref: '#/definitions/FirstName'
               middleName:
-                type: string
-                x-nullable: true
-                minLength: 1
+                $ref: '#/definitions/MiddleName'
               lastName:
-                type: string
-                x-nullable: true
-                minLength: 1
+                $ref: '#/definitions/LastName'
               isAdmin:
-                type: boolean
-                x-nullable: true
+                $ref: '#/definitions/IsAdmin'
               isOperator:
-                type: boolean
-                x-nullable: true
+                $ref: '#/definitions/IsOperator'
               isEngineer:
-                type: boolean
-                x-nullable: true
+                $ref: '#/definitions/IsEngineer'
       responses:
         200:
           description: OK
@@ -1074,10 +1117,12 @@ paths:
             properties:
               id:
                 type: integer
-        404:
-          description: Not found
         401:
           description: PIN is missing or invalid
+        403:
+          description: Access forbidden
+        404:
+          description: Not found
         500:
           description: internal error
     delete:
@@ -1094,11 +1139,25 @@ paths:
               - login
             properties:
               login:
-                type: string
+                $ref: '#/definitions/Login'
       responses:
         204:
           description: OK
         401:
           description: PIN is missing or invalid
+        403:
+          description: Access forbidden
+        409:
+          description: Conflict
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
         500:
           description: internal error

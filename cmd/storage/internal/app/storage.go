@@ -208,7 +208,10 @@ func (a *app) IsEnabled(user *UserData) bool {
 	return user.IsAdmin || user.IsEngineer || user.IsOperator
 }
 
-func (a *app) Users() ([]UserData, error) {
+func (a *app) Users(auth *Auth) ([]UserData, error) {
+	if !auth.IsAdmin {
+		return nil, ErrAccessDenied
+	}
 	return a.repo.Users()
 }
 
@@ -220,19 +223,27 @@ func (a *app) User(password string) (*UserData, error) {
 	}
 	for u := range users {
 		user := users[u]
-		if !a.IsEnabled(&user) {
-			continue
-		}
 		errPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 		if errPassword == nil {
 			log.Info("Authenticated", "login", user.Login, "isAdmin", user.IsAdmin)
 			return &user, nil
 		}
 	}
-	return nil, ErrAccessDenied
+	return nil, ErrNotFound
 }
 
-func (a *app) CreateUser(userData UserData) (id int, err error) {
+func (a *app) isPasswordUnique(password string) bool {
+	_, errExists := a.User(password)
+	return errExists == ErrNotFound
+}
+
+func (a *app) CreateUser(userData UserData, auth *Auth) (id int, err error) {
+	if !auth.IsAdmin {
+		return 0, ErrAccessDenied
+	}
+	if !a.isPasswordUnique(userData.Password) {
+		return 0, ErrAccessDenied
+	}
 	password, errPassword := bcrypt.GenerateFromPassword([]byte(userData.Password), bcrypt.DefaultCost)
 	if errPassword != nil {
 		return 0, errPassword
@@ -245,7 +256,10 @@ func (a *app) CreateUser(userData UserData) (id int, err error) {
 	return user.ID, nil
 }
 
-func (a *app) UpdateUser(userData UpdateUserData) (id int, err error) {
+func (a *app) UpdateUser(userData UpdateUserData, auth *Auth) (id int, err error) {
+	if !auth.IsAdmin {
+		return 0, ErrAccessDenied
+	}
 	user, errOldUser := a.repo.User(*userData.Login)
 	if errOldUser != nil {
 		return 0, errOldUser
@@ -275,14 +289,20 @@ func (a *app) UpdateUser(userData UpdateUserData) (id int, err error) {
 	return newUser.ID, err
 }
 
-func (a *app) UpdateUserPassword(userData UpdatePasswordData) (id int, err error) {
+func (a *app) UpdateUserPassword(userData UpdatePasswordData, auth *Auth) (id int, err error) {
+	if !auth.IsAdmin {
+		return 0, ErrAccessDenied
+	}
+	if !a.isPasswordUnique(userData.NewPassword) {
+		return 0, ErrAccessDenied
+	}
 	user, errOldUser := a.repo.User(userData.Login)
 	if errOldUser != nil {
-		return 0, errOldUser
+		return 0, ErrNotFound
 	}
 	errOldPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userData.OldPassword))
 	if errOldPassword != nil {
-		return 0, errOldPassword
+		return 0, ErrNotFound
 	}
 	newPassword, errNewPassword := bcrypt.GenerateFromPassword([]byte(userData.NewPassword), bcrypt.DefaultCost)
 	if errNewPassword != nil {
@@ -290,10 +310,16 @@ func (a *app) UpdateUserPassword(userData UpdatePasswordData) (id int, err error
 	}
 	userData.NewPassword = string(newPassword)
 	newUser, err := a.repo.UpdateUserPassword(userData)
-	return newUser.ID, err
+	if err != nil {
+		return 0, err
+	}
+	return newUser.ID, nil
 }
 
-func (a *app) DeleteUser(login string) error {
+func (a *app) DeleteUser(login string, auth *Auth) error {
+	if !auth.IsAdmin {
+		return ErrAccessDenied
+	}
 	return a.repo.DeleteUser(login)
 }
 

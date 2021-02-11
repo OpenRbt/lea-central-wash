@@ -64,6 +64,78 @@ func (o *DeleteUserUnauthorized) WriteResponse(rw http.ResponseWriter, producer 
 
 func (o *DeleteUserUnauthorized) DeleteUserResponder() {}
 
+// DeleteUserForbiddenCode is the HTTP code returned for type DeleteUserForbidden
+const DeleteUserForbiddenCode int = 403
+
+/*DeleteUserForbidden Access forbidden
+
+swagger:response deleteUserForbidden
+*/
+type DeleteUserForbidden struct {
+}
+
+// NewDeleteUserForbidden creates DeleteUserForbidden with default headers values
+func NewDeleteUserForbidden() *DeleteUserForbidden {
+
+	return &DeleteUserForbidden{}
+}
+
+// WriteResponse to the client
+func (o *DeleteUserForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
+}
+
+func (o *DeleteUserForbidden) DeleteUserResponder() {}
+
+// DeleteUserConflictCode is the HTTP code returned for type DeleteUserConflict
+const DeleteUserConflictCode int = 409
+
+/*DeleteUserConflict Conflict
+
+swagger:response deleteUserConflict
+*/
+type DeleteUserConflict struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *DeleteUserConflictBody `json:"body,omitempty"`
+}
+
+// NewDeleteUserConflict creates DeleteUserConflict with default headers values
+func NewDeleteUserConflict() *DeleteUserConflict {
+
+	return &DeleteUserConflict{}
+}
+
+// WithPayload adds the payload to the delete user conflict response
+func (o *DeleteUserConflict) WithPayload(payload *DeleteUserConflictBody) *DeleteUserConflict {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the delete user conflict response
+func (o *DeleteUserConflict) SetPayload(payload *DeleteUserConflictBody) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *DeleteUserConflict) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(409)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
+func (o *DeleteUserConflict) DeleteUserResponder() {}
+
 // DeleteUserInternalServerErrorCode is the HTTP code returned for type DeleteUserInternalServerError
 const DeleteUserInternalServerErrorCode int = 500
 

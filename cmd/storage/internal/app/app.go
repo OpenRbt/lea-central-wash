@@ -29,9 +29,10 @@ const (
 
 // Errors.
 var (
-	ErrNotFound       = errors.New("not found")
-	ErrAccessDenied   = errors.New("access denied")
-	ErrLoginNotUnique = errors.New("login not unique")
+	ErrNotFound            = errors.New("not found")
+	ErrAccessDenied        = errors.New("access denied")
+	ErrLoginNotUnique      = errors.New("login is already in use")
+	ErrMoneyCollectionFkey = errors.New("violates foreign key constraint on table money_collection")
 )
 
 type (
@@ -72,12 +73,12 @@ type (
 		ProgramRelays(id StationID, programID int) (relays []Relay, err error)
 		SetProgramRelays(id StationID, programID int, relays []Relay) (err error)
 
-		Users() (users []UserData, err error)
+		Users(auth *Auth) (users []UserData, err error)
 		User(password string) (user *UserData, err error)
-		CreateUser(userData UserData) (id int, err error)
-		UpdateUser(userData UpdateUserData) (id int, err error)
-		UpdateUserPassword(userData UpdatePasswordData) (id int, err error)
-		DeleteUser(login string) error
+		CreateUser(userData UserData, auth *Auth) (id int, err error)
+		UpdateUser(userData UpdateUserData, auth *Auth) (id int, err error)
+		UpdateUserPassword(userData UpdatePasswordData, auth *Auth) (id int, err error)
+		DeleteUser(login string, auth *Auth) error
 
 		IsEnabled(user *UserData) bool
 		Kasse() (kasse Kasse, err error)

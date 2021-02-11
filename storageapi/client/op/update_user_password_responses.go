@@ -15,6 +15,8 @@ import (
 	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // UpdateUserPasswordReader is a Reader for the UpdateUserPassword structure.
@@ -35,6 +37,13 @@ func (o *UpdateUserPasswordReader) ReadResponse(response runtime.ClientResponse,
 
 	case 401:
 		result := NewUpdateUserPasswordUnauthorized()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
+	case 403:
+		result := NewUpdateUserPasswordForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -109,6 +118,27 @@ func (o *UpdateUserPasswordUnauthorized) readResponse(response runtime.ClientRes
 	return nil
 }
 
+// NewUpdateUserPasswordForbidden creates a UpdateUserPasswordForbidden with default headers values
+func NewUpdateUserPasswordForbidden() *UpdateUserPasswordForbidden {
+	return &UpdateUserPasswordForbidden{}
+}
+
+/*UpdateUserPasswordForbidden handles this case with default header values.
+
+Access forbidden
+*/
+type UpdateUserPasswordForbidden struct {
+}
+
+func (o *UpdateUserPasswordForbidden) Error() string {
+	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordForbidden ", 403)
+}
+
+func (o *UpdateUserPasswordForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
 // NewUpdateUserPasswordNotFound creates a UpdateUserPasswordNotFound with default headers values
 func NewUpdateUserPasswordNotFound() *UpdateUserPasswordNotFound {
 	return &UpdateUserPasswordNotFound{}
@@ -158,22 +188,15 @@ type UpdateUserPasswordBody struct {
 
 	// login
 	// Required: true
-	// Min Length: 1
-	Login *string `json:"login"`
+	Login model.Login `json:"login"`
 
 	// new password
 	// Required: true
-	// Max Length: 4
-	// Min Length: 4
-	// Pattern: ^[0123456789]{4}$
-	NewPassword *string `json:"newPassword"`
+	NewPassword model.Password `json:"newPassword"`
 
 	// old password
 	// Required: true
-	// Max Length: 4
-	// Min Length: 4
-	// Pattern: ^[0123456789]{4}$
-	OldPassword *string `json:"oldPassword"`
+	OldPassword model.Password `json:"oldPassword"`
 }
 
 // Validate validates this update user password body
@@ -200,11 +223,10 @@ func (o *UpdateUserPasswordBody) Validate(formats strfmt.Registry) error {
 
 func (o *UpdateUserPasswordBody) validateLogin(formats strfmt.Registry) error {
 
-	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("args"+"."+"login", "body", string(*o.Login), 1); err != nil {
+	if err := o.Login.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("args" + "." + "login")
+		}
 		return err
 	}
 
@@ -213,19 +235,10 @@ func (o *UpdateUserPasswordBody) validateLogin(formats strfmt.Registry) error {
 
 func (o *UpdateUserPasswordBody) validateNewPassword(formats strfmt.Registry) error {
 
-	if err := validate.Required("args"+"."+"newPassword", "body", o.NewPassword); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("args"+"."+"newPassword", "body", string(*o.NewPassword), 4); err != nil {
-		return err
-	}
-
-	if err := validate.MaxLength("args"+"."+"newPassword", "body", string(*o.NewPassword), 4); err != nil {
-		return err
-	}
-
-	if err := validate.Pattern("args"+"."+"newPassword", "body", string(*o.NewPassword), `^[0123456789]{4}$`); err != nil {
+	if err := o.NewPassword.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("args" + "." + "newPassword")
+		}
 		return err
 	}
 
@@ -234,19 +247,10 @@ func (o *UpdateUserPasswordBody) validateNewPassword(formats strfmt.Registry) er
 
 func (o *UpdateUserPasswordBody) validateOldPassword(formats strfmt.Registry) error {
 
-	if err := validate.Required("args"+"."+"oldPassword", "body", o.OldPassword); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("args"+"."+"oldPassword", "body", string(*o.OldPassword), 4); err != nil {
-		return err
-	}
-
-	if err := validate.MaxLength("args"+"."+"oldPassword", "body", string(*o.OldPassword), 4); err != nil {
-		return err
-	}
-
-	if err := validate.Pattern("args"+"."+"oldPassword", "body", string(*o.OldPassword), `^[0123456789]{4}$`); err != nil {
+	if err := o.OldPassword.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("args" + "." + "oldPassword")
+		}
 		return err
 	}
 

@@ -15,6 +15,7 @@ import (
 	validate "github.com/go-openapi/validate"
 
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // UpdateUserHandlerFunc turns a function with the right signature into a update user handler
@@ -81,30 +82,26 @@ func (o *UpdateUser) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 type UpdateUserBody struct {
 
 	// first name
-	// Min Length: 1
-	FirstName *string `json:"firstName,omitempty"`
+	FirstName *model.FirstName `json:"firstName,omitempty"`
 
 	// is admin
-	IsAdmin *bool `json:"isAdmin,omitempty"`
+	IsAdmin *model.IsAdmin `json:"isAdmin,omitempty"`
 
 	// is engineer
-	IsEngineer *bool `json:"isEngineer,omitempty"`
+	IsEngineer *model.IsEngineer `json:"isEngineer,omitempty"`
 
 	// is operator
-	IsOperator *bool `json:"isOperator,omitempty"`
+	IsOperator *model.IsOperator `json:"isOperator,omitempty"`
 
 	// last name
-	// Min Length: 1
-	LastName *string `json:"lastName,omitempty"`
+	LastName *model.LastName `json:"lastName,omitempty"`
 
 	// login
 	// Required: true
-	// Min Length: 1
-	Login *string `json:"login"`
+	Login model.Login `json:"login"`
 
 	// middle name
-	// Min Length: 1
-	MiddleName *string `json:"middleName,omitempty"`
+	MiddleName *model.MiddleName `json:"middleName,omitempty"`
 }
 
 // Validate validates this update user body
@@ -139,8 +136,13 @@ func (o *UpdateUserBody) validateFirstName(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if err := validate.MinLength("args"+"."+"firstName", "body", string(*o.FirstName), 1); err != nil {
-		return err
+	if o.FirstName != nil {
+		if err := o.FirstName.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "firstName")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -152,8 +154,13 @@ func (o *UpdateUserBody) validateLastName(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if err := validate.MinLength("args"+"."+"lastName", "body", string(*o.LastName), 1); err != nil {
-		return err
+	if o.LastName != nil {
+		if err := o.LastName.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "lastName")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -161,11 +168,10 @@ func (o *UpdateUserBody) validateLastName(formats strfmt.Registry) error {
 
 func (o *UpdateUserBody) validateLogin(formats strfmt.Registry) error {
 
-	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("args"+"."+"login", "body", string(*o.Login), 1); err != nil {
+	if err := o.Login.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("args" + "." + "login")
+		}
 		return err
 	}
 
@@ -178,8 +184,13 @@ func (o *UpdateUserBody) validateMiddleName(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if err := validate.MinLength("args"+"."+"middleName", "body", string(*o.MiddleName), 1); err != nil {
-		return err
+	if o.MiddleName != nil {
+		if err := o.MiddleName.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "middleName")
+			}
+			return err
+		}
 	}
 
 	return nil

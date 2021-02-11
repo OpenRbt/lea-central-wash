@@ -165,6 +165,9 @@ func (r *repo) DeleteUser(login string) (err error) {
 		_, err := tx.NamedExec(sqlDelUser, argDelUser{
 			Login: login,
 		})
+		if pqErrConflictIn(err, constraintMoneyCollection) {
+			return app.ErrMoneyCollectionFkey
+		}
 		return err
 	})
 	return //nolint:nakedret

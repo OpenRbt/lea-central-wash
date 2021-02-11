@@ -7,6 +7,7 @@ package op
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
@@ -14,6 +15,8 @@ import (
 	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // DeleteUserReader is a Reader for the DeleteUser structure.
@@ -34,6 +37,20 @@ func (o *DeleteUserReader) ReadResponse(response runtime.ClientResponse, consume
 
 	case 401:
 		result := NewDeleteUserUnauthorized()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
+	case 403:
+		result := NewDeleteUserForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
+	case 409:
+		result := NewDeleteUserConflict()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -93,6 +110,56 @@ func (o *DeleteUserUnauthorized) readResponse(response runtime.ClientResponse, c
 	return nil
 }
 
+// NewDeleteUserForbidden creates a DeleteUserForbidden with default headers values
+func NewDeleteUserForbidden() *DeleteUserForbidden {
+	return &DeleteUserForbidden{}
+}
+
+/*DeleteUserForbidden handles this case with default header values.
+
+Access forbidden
+*/
+type DeleteUserForbidden struct {
+}
+
+func (o *DeleteUserForbidden) Error() string {
+	return fmt.Sprintf("[DELETE /user][%d] deleteUserForbidden ", 403)
+}
+
+func (o *DeleteUserForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewDeleteUserConflict creates a DeleteUserConflict with default headers values
+func NewDeleteUserConflict() *DeleteUserConflict {
+	return &DeleteUserConflict{}
+}
+
+/*DeleteUserConflict handles this case with default header values.
+
+Conflict
+*/
+type DeleteUserConflict struct {
+	Payload *DeleteUserConflictBody
+}
+
+func (o *DeleteUserConflict) Error() string {
+	return fmt.Sprintf("[DELETE /user][%d] deleteUserConflict  %+v", 409, o.Payload)
+}
+
+func (o *DeleteUserConflict) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(DeleteUserConflictBody)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
 // NewDeleteUserInternalServerError creates a DeleteUserInternalServerError with default headers values
 func NewDeleteUserInternalServerError() *DeleteUserInternalServerError {
 	return &DeleteUserInternalServerError{}
@@ -121,7 +188,7 @@ type DeleteUserBody struct {
 
 	// login
 	// Required: true
-	Login *string `json:"login"`
+	Login model.Login `json:"login"`
 }
 
 // Validate validates this delete user body
@@ -140,7 +207,10 @@ func (o *DeleteUserBody) Validate(formats strfmt.Registry) error {
 
 func (o *DeleteUserBody) validateLogin(formats strfmt.Registry) error {
 
-	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
+	if err := o.Login.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("args" + "." + "login")
+		}
 		return err
 	}
 
@@ -158,6 +228,74 @@ func (o *DeleteUserBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *DeleteUserBody) UnmarshalBinary(b []byte) error {
 	var res DeleteUserBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*DeleteUserConflictBody delete user conflict body
+swagger:model DeleteUserConflictBody
+*/
+type DeleteUserConflictBody struct {
+
+	// code
+	// Required: true
+	Code *int64 `json:"code"`
+
+	// message
+	// Required: true
+	Message *string `json:"message"`
+}
+
+// Validate validates this delete user conflict body
+func (o *DeleteUserConflictBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateMessage(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeleteUserConflictBody) validateCode(formats strfmt.Registry) error {
+
+	if err := validate.Required("deleteUserConflict"+"."+"code", "body", o.Code); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *DeleteUserConflictBody) validateMessage(formats strfmt.Registry) error {
+
+	if err := validate.Required("deleteUserConflict"+"."+"message", "body", o.Message); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *DeleteUserConflictBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *DeleteUserConflictBody) UnmarshalBinary(b []byte) error {
+	var res DeleteUserConflictBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

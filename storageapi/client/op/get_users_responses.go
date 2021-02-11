@@ -39,6 +39,13 @@ func (o *GetUsersReader) ReadResponse(response runtime.ClientResponse, consumer 
 		}
 		return nil, result
 
+	case 403:
+		result := NewGetUsersForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	case 500:
 		result := NewGetUsersInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -97,6 +104,27 @@ func (o *GetUsersUnauthorized) Error() string {
 }
 
 func (o *GetUsersUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewGetUsersForbidden creates a GetUsersForbidden with default headers values
+func NewGetUsersForbidden() *GetUsersForbidden {
+	return &GetUsersForbidden{}
+}
+
+/*GetUsersForbidden handles this case with default header values.
+
+Access forbidden
+*/
+type GetUsersForbidden struct {
+}
+
+func (o *GetUsersForbidden) Error() string {
+	return fmt.Sprintf("[GET /users][%d] getUsersForbidden ", 403)
+}
+
+func (o *GetUsersForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

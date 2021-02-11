@@ -38,7 +38,9 @@ func (a *check) CheckAuth(token string) (*app.Auth, error) { //nolint:gocyclo
 	if err != nil {
 		return nil, oapierrors.Unauthenticated("invalid credentials")
 	}
-
+	if !a.app.IsEnabled(user) {
+		return nil, oapierrors.Unauthenticated("invalid credentials")
+	}
 	return &app.Auth{
 		ID:         user.ID,
 		Login:      user.Login,
