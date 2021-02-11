@@ -28,8 +28,8 @@ type UpdateUserPasswordReader struct {
 func (o *UpdateUserPasswordReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
 
-	case 200:
-		result := NewUpdateUserPasswordOK()
+	case 201:
+		result := NewUpdateUserPasswordCreated()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -68,26 +68,26 @@ func (o *UpdateUserPasswordReader) ReadResponse(response runtime.ClientResponse,
 	}
 }
 
-// NewUpdateUserPasswordOK creates a UpdateUserPasswordOK with default headers values
-func NewUpdateUserPasswordOK() *UpdateUserPasswordOK {
-	return &UpdateUserPasswordOK{}
+// NewUpdateUserPasswordCreated creates a UpdateUserPasswordCreated with default headers values
+func NewUpdateUserPasswordCreated() *UpdateUserPasswordCreated {
+	return &UpdateUserPasswordCreated{}
 }
 
-/*UpdateUserPasswordOK handles this case with default header values.
+/*UpdateUserPasswordCreated handles this case with default header values.
 
 OK
 */
-type UpdateUserPasswordOK struct {
-	Payload *UpdateUserPasswordOKBody
+type UpdateUserPasswordCreated struct {
+	Payload *UpdateUserPasswordCreatedBody
 }
 
-func (o *UpdateUserPasswordOK) Error() string {
-	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordOK  %+v", 200, o.Payload)
+func (o *UpdateUserPasswordCreated) Error() string {
+	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordCreated  %+v", 201, o.Payload)
 }
 
-func (o *UpdateUserPasswordOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *UpdateUserPasswordCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(UpdateUserPasswordOKBody)
+	o.Payload = new(UpdateUserPasswordCreatedBody)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -275,18 +275,18 @@ func (o *UpdateUserPasswordBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*UpdateUserPasswordOKBody update user password o k body
-swagger:model UpdateUserPasswordOKBody
+/*UpdateUserPasswordCreatedBody update user password created body
+swagger:model UpdateUserPasswordCreatedBody
 */
-type UpdateUserPasswordOKBody struct {
+type UpdateUserPasswordCreatedBody struct {
 
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
 }
 
-// Validate validates this update user password o k body
-func (o *UpdateUserPasswordOKBody) Validate(formats strfmt.Registry) error {
+// Validate validates this update user password created body
+func (o *UpdateUserPasswordCreatedBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateID(formats); err != nil {
@@ -299,9 +299,9 @@ func (o *UpdateUserPasswordOKBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *UpdateUserPasswordOKBody) validateID(formats strfmt.Registry) error {
+func (o *UpdateUserPasswordCreatedBody) validateID(formats strfmt.Registry) error {
 
-	if err := validate.Required("updateUserPasswordOK"+"."+"id", "body", o.ID); err != nil {
+	if err := validate.Required("updateUserPasswordCreated"+"."+"id", "body", o.ID); err != nil {
 		return err
 	}
 
@@ -309,7 +309,7 @@ func (o *UpdateUserPasswordOKBody) validateID(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (o *UpdateUserPasswordOKBody) MarshalBinary() ([]byte, error) {
+func (o *UpdateUserPasswordCreatedBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -317,8 +317,8 @@ func (o *UpdateUserPasswordOKBody) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *UpdateUserPasswordOKBody) UnmarshalBinary(b []byte) error {
-	var res UpdateUserPasswordOKBody
+func (o *UpdateUserPasswordCreatedBody) UnmarshalBinary(b []byte) error {
+	var res UpdateUserPasswordCreatedBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

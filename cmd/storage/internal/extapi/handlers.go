@@ -628,17 +628,14 @@ func (svc *service) getUsers(params op.GetUsersParams, auth *app.Auth) op.GetUse
 
 func (svc *service) getUser(params op.GetUserParams, auth *app.Auth) op.GetUserResponder {
 	log.Debug("getUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	if string(params.Args.Login) != auth.Login {
-		return op.NewGetUserUnauthorized()
-	}
 	return op.NewGetUserOK().WithPayload(apiUserReport(app.UserData{
 		Login:      auth.Login,
-		FirstName:  auth.FirstName,
-		MiddleName: auth.MiddleName,
-		LastName:   auth.LastName,
-		IsAdmin:    auth.IsAdmin,
-		IsOperator: auth.IsOperator,
-		IsEngineer: auth.IsEngineer,
+		FirstName:  &auth.FirstName,
+		MiddleName: &auth.MiddleName,
+		LastName:   &auth.LastName,
+		IsAdmin:    &auth.IsAdmin,
+		IsOperator: &auth.IsOperator,
+		IsEngineer: &auth.IsEngineer,
 	}))
 }
 
@@ -646,18 +643,18 @@ func (svc *service) createUser(params op.CreateUserParams, auth *app.Auth) op.Cr
 	log.Debug("createUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
 	id, err := svc.app.CreateUser(app.UserData{
 		Login:      string(params.Args.Login),
-		FirstName:  string(*params.Args.FirstName),
-		MiddleName: string(*params.Args.MiddleName),
-		LastName:   string(*params.Args.LastName),
 		Password:   string(params.Args.Password),
-		IsAdmin:    bool(*params.Args.IsAdmin),
-		IsOperator: bool(*params.Args.IsOperator),
-		IsEngineer: bool(*params.Args.IsEngineer),
+		FirstName:  (*string)(params.Args.FirstName),
+		MiddleName: (*string)(params.Args.MiddleName),
+		LastName:   (*string)(params.Args.LastName),
+		IsAdmin:    (*bool)(params.Args.IsAdmin),
+		IsEngineer: (*bool)(params.Args.IsEngineer),
+		IsOperator: (*bool)(params.Args.IsOperator),
 	}, auth)
 	switch errors.Cause(err) {
 	case nil:
 		log.Debug("created user", "id", id)
-		return op.NewCreateUserOK().WithPayload(&op.CreateUserOKBody{
+		return op.NewCreateUserCreated().WithPayload(&op.CreateUserCreatedBody{
 			ID: newInt64(int64(id)),
 		})
 	case app.ErrLoginNotUnique:
@@ -676,9 +673,8 @@ func (svc *service) createUser(params op.CreateUserParams, auth *app.Auth) op.Cr
 
 func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.UpdateUserResponder {
 	log.Debug("updateUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	log.Info("Update User", "isAdmin", params.Args.IsAdmin)
 	id, err := svc.app.UpdateUser(app.UpdateUserData{
-		Login:      (*string)(&params.Args.Login),
+		Login:      string(params.Args.Login),
 		FirstName:  (*string)(params.Args.FirstName),
 		MiddleName: (*string)(params.Args.MiddleName),
 		LastName:   (*string)(params.Args.LastName),
@@ -689,7 +685,7 @@ func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.Up
 	switch errors.Cause(err) {
 	case nil:
 		log.Debug("updated user", "id", id)
-		return op.NewUpdateUserOK().WithPayload(&op.UpdateUserOKBody{
+		return op.NewUpdateUserCreated().WithPayload(&op.UpdateUserCreatedBody{
 			ID: newInt64(int64(id)),
 		})
 	case app.ErrNotFound:
@@ -711,7 +707,7 @@ func (svc *service) updateUserPassword(params op.UpdateUserPasswordParams, auth 
 	switch errors.Cause(err) {
 	case nil:
 		log.Debug("updated user", "id", id)
-		return op.NewUpdateUserPasswordOK().WithPayload(&op.UpdateUserPasswordOKBody{
+		return op.NewUpdateUserPasswordCreated().WithPayload(&op.UpdateUserPasswordCreatedBody{
 			ID: newInt64(int64(id)),
 		})
 	case app.ErrNotFound:

@@ -1044,24 +1044,6 @@ func init() {
           }
         ],
         "operationId": "getUser",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": [
-                "login"
-              ],
-              "properties": {
-                "login": {
-                  "$ref": "#/definitions/Login"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1119,7 +1101,7 @@ func init() {
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "OK",
             "schema": {
               "type": "object",
@@ -1195,7 +1177,7 @@ func init() {
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "OK",
             "schema": {
               "type": "object",
@@ -1332,7 +1314,7 @@ func init() {
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "OK",
             "schema": {
               "type": "object",
@@ -2791,24 +2773,6 @@ func init() {
           }
         ],
         "operationId": "getUser",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": [
-                "login"
-              ],
-              "properties": {
-                "login": {
-                  "$ref": "#/definitions/Login"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -2866,7 +2830,7 @@ func init() {
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "OK",
             "schema": {
               "type": "object",
@@ -2942,7 +2906,7 @@ func init() {
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "OK",
             "schema": {
               "type": "object",
@@ -3079,7 +3043,7 @@ func init() {
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "OK",
             "schema": {
               "type": "object",

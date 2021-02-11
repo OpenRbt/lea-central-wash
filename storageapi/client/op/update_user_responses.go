@@ -28,8 +28,8 @@ type UpdateUserReader struct {
 func (o *UpdateUserReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
 
-	case 200:
-		result := NewUpdateUserOK()
+	case 201:
+		result := NewUpdateUserCreated()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -68,26 +68,26 @@ func (o *UpdateUserReader) ReadResponse(response runtime.ClientResponse, consume
 	}
 }
 
-// NewUpdateUserOK creates a UpdateUserOK with default headers values
-func NewUpdateUserOK() *UpdateUserOK {
-	return &UpdateUserOK{}
+// NewUpdateUserCreated creates a UpdateUserCreated with default headers values
+func NewUpdateUserCreated() *UpdateUserCreated {
+	return &UpdateUserCreated{}
 }
 
-/*UpdateUserOK handles this case with default header values.
+/*UpdateUserCreated handles this case with default header values.
 
 OK
 */
-type UpdateUserOK struct {
-	Payload *UpdateUserOKBody
+type UpdateUserCreated struct {
+	Payload *UpdateUserCreatedBody
 }
 
-func (o *UpdateUserOK) Error() string {
-	return fmt.Sprintf("[PUT /user][%d] updateUserOK  %+v", 200, o.Payload)
+func (o *UpdateUserCreated) Error() string {
+	return fmt.Sprintf("[PUT /user][%d] updateUserCreated  %+v", 201, o.Payload)
 }
 
-func (o *UpdateUserOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *UpdateUserCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(UpdateUserOKBody)
+	o.Payload = new(UpdateUserCreatedBody)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -319,18 +319,18 @@ func (o *UpdateUserBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*UpdateUserOKBody update user o k body
-swagger:model UpdateUserOKBody
+/*UpdateUserCreatedBody update user created body
+swagger:model UpdateUserCreatedBody
 */
-type UpdateUserOKBody struct {
+type UpdateUserCreatedBody struct {
 
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
 }
 
-// Validate validates this update user o k body
-func (o *UpdateUserOKBody) Validate(formats strfmt.Registry) error {
+// Validate validates this update user created body
+func (o *UpdateUserCreatedBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateID(formats); err != nil {
@@ -343,9 +343,9 @@ func (o *UpdateUserOKBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *UpdateUserOKBody) validateID(formats strfmt.Registry) error {
+func (o *UpdateUserCreatedBody) validateID(formats strfmt.Registry) error {
 
-	if err := validate.Required("updateUserOK"+"."+"id", "body", o.ID); err != nil {
+	if err := validate.Required("updateUserCreated"+"."+"id", "body", o.ID); err != nil {
 		return err
 	}
 
@@ -353,7 +353,7 @@ func (o *UpdateUserOKBody) validateID(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (o *UpdateUserOKBody) MarshalBinary() ([]byte, error) {
+func (o *UpdateUserCreatedBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -361,8 +361,8 @@ func (o *UpdateUserOKBody) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *UpdateUserOKBody) UnmarshalBinary(b []byte) error {
-	var res UpdateUserOKBody
+func (o *UpdateUserCreatedBody) UnmarshalBinary(b []byte) error {
+	var res UpdateUserCreatedBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

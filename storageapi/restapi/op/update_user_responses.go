@@ -12,42 +12,42 @@ import (
 	middleware "github.com/go-openapi/runtime/middleware"
 )
 
-// UpdateUserOKCode is the HTTP code returned for type UpdateUserOK
-const UpdateUserOKCode int = 200
+// UpdateUserCreatedCode is the HTTP code returned for type UpdateUserCreated
+const UpdateUserCreatedCode int = 201
 
-/*UpdateUserOK OK
+/*UpdateUserCreated OK
 
-swagger:response updateUserOK
+swagger:response updateUserCreated
 */
-type UpdateUserOK struct {
+type UpdateUserCreated struct {
 
 	/*
 	  In: Body
 	*/
-	Payload *UpdateUserOKBody `json:"body,omitempty"`
+	Payload *UpdateUserCreatedBody `json:"body,omitempty"`
 }
 
-// NewUpdateUserOK creates UpdateUserOK with default headers values
-func NewUpdateUserOK() *UpdateUserOK {
+// NewUpdateUserCreated creates UpdateUserCreated with default headers values
+func NewUpdateUserCreated() *UpdateUserCreated {
 
-	return &UpdateUserOK{}
+	return &UpdateUserCreated{}
 }
 
-// WithPayload adds the payload to the update user o k response
-func (o *UpdateUserOK) WithPayload(payload *UpdateUserOKBody) *UpdateUserOK {
+// WithPayload adds the payload to the update user created response
+func (o *UpdateUserCreated) WithPayload(payload *UpdateUserCreatedBody) *UpdateUserCreated {
 	o.Payload = payload
 	return o
 }
 
-// SetPayload sets the payload to the update user o k response
-func (o *UpdateUserOK) SetPayload(payload *UpdateUserOKBody) {
+// SetPayload sets the payload to the update user created response
+func (o *UpdateUserCreated) SetPayload(payload *UpdateUserCreatedBody) {
 	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *UpdateUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *UpdateUserCreated) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(200)
+	rw.WriteHeader(201)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {
@@ -56,7 +56,7 @@ func (o *UpdateUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Pr
 	}
 }
 
-func (o *UpdateUserOK) UpdateUserResponder() {}
+func (o *UpdateUserCreated) UpdateUserResponder() {}
 
 // UpdateUserUnauthorizedCode is the HTTP code returned for type UpdateUserUnauthorized
 const UpdateUserUnauthorizedCode int = 401

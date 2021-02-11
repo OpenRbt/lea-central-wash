@@ -170,17 +170,17 @@ func (o *UpdateUserPasswordBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// UpdateUserPasswordOKBody update user password o k body
-// swagger:model UpdateUserPasswordOKBody
-type UpdateUserPasswordOKBody struct {
+// UpdateUserPasswordCreatedBody update user password created body
+// swagger:model UpdateUserPasswordCreatedBody
+type UpdateUserPasswordCreatedBody struct {
 
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
 }
 
-// Validate validates this update user password o k body
-func (o *UpdateUserPasswordOKBody) Validate(formats strfmt.Registry) error {
+// Validate validates this update user password created body
+func (o *UpdateUserPasswordCreatedBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateID(formats); err != nil {
@@ -193,9 +193,9 @@ func (o *UpdateUserPasswordOKBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *UpdateUserPasswordOKBody) validateID(formats strfmt.Registry) error {
+func (o *UpdateUserPasswordCreatedBody) validateID(formats strfmt.Registry) error {
 
-	if err := validate.Required("updateUserPasswordOK"+"."+"id", "body", o.ID); err != nil {
+	if err := validate.Required("updateUserPasswordCreated"+"."+"id", "body", o.ID); err != nil {
 		return err
 	}
 
@@ -203,7 +203,7 @@ func (o *UpdateUserPasswordOKBody) validateID(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (o *UpdateUserPasswordOKBody) MarshalBinary() ([]byte, error) {
+func (o *UpdateUserPasswordCreatedBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -211,8 +211,8 @@ func (o *UpdateUserPasswordOKBody) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *UpdateUserPasswordOKBody) UnmarshalBinary(b []byte) error {
-	var res UpdateUserPasswordOKBody
+func (o *UpdateUserPasswordCreatedBody) UnmarshalBinary(b []byte) error {
+	var res UpdateUserPasswordCreatedBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

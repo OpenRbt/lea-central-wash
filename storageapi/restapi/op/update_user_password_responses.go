@@ -12,42 +12,42 @@ import (
 	middleware "github.com/go-openapi/runtime/middleware"
 )
 
-// UpdateUserPasswordOKCode is the HTTP code returned for type UpdateUserPasswordOK
-const UpdateUserPasswordOKCode int = 200
+// UpdateUserPasswordCreatedCode is the HTTP code returned for type UpdateUserPasswordCreated
+const UpdateUserPasswordCreatedCode int = 201
 
-/*UpdateUserPasswordOK OK
+/*UpdateUserPasswordCreated OK
 
-swagger:response updateUserPasswordOK
+swagger:response updateUserPasswordCreated
 */
-type UpdateUserPasswordOK struct {
+type UpdateUserPasswordCreated struct {
 
 	/*
 	  In: Body
 	*/
-	Payload *UpdateUserPasswordOKBody `json:"body,omitempty"`
+	Payload *UpdateUserPasswordCreatedBody `json:"body,omitempty"`
 }
 
-// NewUpdateUserPasswordOK creates UpdateUserPasswordOK with default headers values
-func NewUpdateUserPasswordOK() *UpdateUserPasswordOK {
+// NewUpdateUserPasswordCreated creates UpdateUserPasswordCreated with default headers values
+func NewUpdateUserPasswordCreated() *UpdateUserPasswordCreated {
 
-	return &UpdateUserPasswordOK{}
+	return &UpdateUserPasswordCreated{}
 }
 
-// WithPayload adds the payload to the update user password o k response
-func (o *UpdateUserPasswordOK) WithPayload(payload *UpdateUserPasswordOKBody) *UpdateUserPasswordOK {
+// WithPayload adds the payload to the update user password created response
+func (o *UpdateUserPasswordCreated) WithPayload(payload *UpdateUserPasswordCreatedBody) *UpdateUserPasswordCreated {
 	o.Payload = payload
 	return o
 }
 
-// SetPayload sets the payload to the update user password o k response
-func (o *UpdateUserPasswordOK) SetPayload(payload *UpdateUserPasswordOKBody) {
+// SetPayload sets the payload to the update user password created response
+func (o *UpdateUserPasswordCreated) SetPayload(payload *UpdateUserPasswordCreatedBody) {
 	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *UpdateUserPasswordOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *UpdateUserPasswordCreated) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(200)
+	rw.WriteHeader(201)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {
@@ -56,7 +56,7 @@ func (o *UpdateUserPasswordOK) WriteResponse(rw http.ResponseWriter, producer ru
 	}
 }
 
-func (o *UpdateUserPasswordOK) UpdateUserPasswordResponder() {}
+func (o *UpdateUserPasswordCreated) UpdateUserPasswordResponder() {}
 
 // UpdateUserPasswordUnauthorizedCode is the HTTP code returned for type UpdateUserPasswordUnauthorized
 const UpdateUserPasswordUnauthorizedCode int = 401

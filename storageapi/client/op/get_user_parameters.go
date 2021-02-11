@@ -20,7 +20,7 @@ import (
 // NewGetUserParams creates a new GetUserParams object
 // with the default values initialized.
 func NewGetUserParams() *GetUserParams {
-	var ()
+
 	return &GetUserParams{
 
 		timeout: cr.DefaultTimeout,
@@ -30,7 +30,7 @@ func NewGetUserParams() *GetUserParams {
 // NewGetUserParamsWithTimeout creates a new GetUserParams object
 // with the default values initialized, and the ability to set a timeout on a request
 func NewGetUserParamsWithTimeout(timeout time.Duration) *GetUserParams {
-	var ()
+
 	return &GetUserParams{
 
 		timeout: timeout,
@@ -40,7 +40,7 @@ func NewGetUserParamsWithTimeout(timeout time.Duration) *GetUserParams {
 // NewGetUserParamsWithContext creates a new GetUserParams object
 // with the default values initialized, and the ability to set a context for a request
 func NewGetUserParamsWithContext(ctx context.Context) *GetUserParams {
-	var ()
+
 	return &GetUserParams{
 
 		Context: ctx,
@@ -50,7 +50,7 @@ func NewGetUserParamsWithContext(ctx context.Context) *GetUserParams {
 // NewGetUserParamsWithHTTPClient creates a new GetUserParams object
 // with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewGetUserParamsWithHTTPClient(client *http.Client) *GetUserParams {
-	var ()
+
 	return &GetUserParams{
 		HTTPClient: client,
 	}
@@ -60,10 +60,6 @@ func NewGetUserParamsWithHTTPClient(client *http.Client) *GetUserParams {
 for the get user operation typically these are written to a http.Request
 */
 type GetUserParams struct {
-
-	/*Args*/
-	Args GetUserBody
-
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
@@ -102,17 +98,6 @@ func (o *GetUserParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithArgs adds the args to the get user params
-func (o *GetUserParams) WithArgs(args GetUserBody) *GetUserParams {
-	o.SetArgs(args)
-	return o
-}
-
-// SetArgs adds the args to the get user params
-func (o *GetUserParams) SetArgs(args GetUserBody) {
-	o.Args = args
-}
-
 // WriteToRequest writes these params to a swagger request
 func (o *GetUserParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -120,10 +105,6 @@ func (o *GetUserParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regis
 		return err
 	}
 	var res []error
-
-	if err := r.SetBodyParam(o.Args); err != nil {
-		return err
-	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)

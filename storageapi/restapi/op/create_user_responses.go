@@ -12,42 +12,42 @@ import (
 	middleware "github.com/go-openapi/runtime/middleware"
 )
 
-// CreateUserOKCode is the HTTP code returned for type CreateUserOK
-const CreateUserOKCode int = 200
+// CreateUserCreatedCode is the HTTP code returned for type CreateUserCreated
+const CreateUserCreatedCode int = 201
 
-/*CreateUserOK OK
+/*CreateUserCreated OK
 
-swagger:response createUserOK
+swagger:response createUserCreated
 */
-type CreateUserOK struct {
+type CreateUserCreated struct {
 
 	/*
 	  In: Body
 	*/
-	Payload *CreateUserOKBody `json:"body,omitempty"`
+	Payload *CreateUserCreatedBody `json:"body,omitempty"`
 }
 
-// NewCreateUserOK creates CreateUserOK with default headers values
-func NewCreateUserOK() *CreateUserOK {
+// NewCreateUserCreated creates CreateUserCreated with default headers values
+func NewCreateUserCreated() *CreateUserCreated {
 
-	return &CreateUserOK{}
+	return &CreateUserCreated{}
 }
 
-// WithPayload adds the payload to the create user o k response
-func (o *CreateUserOK) WithPayload(payload *CreateUserOKBody) *CreateUserOK {
+// WithPayload adds the payload to the create user created response
+func (o *CreateUserCreated) WithPayload(payload *CreateUserCreatedBody) *CreateUserCreated {
 	o.Payload = payload
 	return o
 }
 
-// SetPayload sets the payload to the create user o k response
-func (o *CreateUserOK) SetPayload(payload *CreateUserOKBody) {
+// SetPayload sets the payload to the create user created response
+func (o *CreateUserCreated) SetPayload(payload *CreateUserCreatedBody) {
 	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *CreateUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *CreateUserCreated) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(200)
+	rw.WriteHeader(201)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {
@@ -56,7 +56,7 @@ func (o *CreateUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Pr
 	}
 }
 
-func (o *CreateUserOK) CreateUserResponder() {}
+func (o *CreateUserCreated) CreateUserResponder() {}
 
 // CreateUserUnauthorizedCode is the HTTP code returned for type CreateUserUnauthorized
 const CreateUserUnauthorizedCode int = 401

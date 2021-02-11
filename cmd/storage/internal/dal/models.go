@@ -12,13 +12,13 @@ func appSetUsers(v []resUser) []app.UserData {
 		res = append(res, app.UserData{
 			ID:         v[i].ID,
 			Login:      v[i].Login,
-			FirstName:  v[i].FirstName,
-			MiddleName: v[i].MiddleName,
-			LastName:   v[i].LastName,
 			Password:   v[i].Password,
-			IsAdmin:    v[i].IsAdmin,
-			IsOperator: v[i].IsOperator,
-			IsEngineer: v[i].IsEngineer,
+			FirstName:  &v[i].FirstName,
+			MiddleName: &v[i].MiddleName,
+			LastName:   &v[i].LastName,
+			IsAdmin:    &v[i].IsAdmin,
+			IsOperator: &v[i].IsOperator,
+			IsEngineer: &v[i].IsEngineer,
 		})
 	}
 	return res

@@ -5,17 +5,17 @@ import "time"
 type UserData struct {
 	ID         int
 	Login      string
-	FirstName  string
-	MiddleName string
-	LastName   string
 	Password   string
-	IsAdmin    bool
-	IsEngineer bool
-	IsOperator bool
+	FirstName  *string
+	MiddleName *string
+	LastName   *string
+	IsAdmin    *bool
+	IsEngineer *bool
+	IsOperator *bool
 }
 
 type UpdateUserData struct {
-	Login      *string
+	Login      string
 	FirstName  *string
 	MiddleName *string
 	LastName   *string

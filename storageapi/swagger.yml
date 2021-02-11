@@ -980,7 +980,7 @@ paths:
               newPassword:
                 $ref: '#/definitions/Password'
       responses:
-        200:
+        201:
           description: OK
           schema:
             type: object
@@ -1003,17 +1003,6 @@ paths:
       operationId: "getUser"
       security:
         - pinCode: []
-      parameters:
-        - name: args
-          required: true
-          in: body
-          schema:
-            type: object
-            required:
-              - login
-            properties:
-              login:
-                $ref: '#/definitions/Login'
       responses:
         200:
           description: OK
@@ -1053,7 +1042,7 @@ paths:
               password:
                 $ref: '#/definitions/Password'
       responses:
-        200:
+        201:
           description: OK
           schema:
             type: object
@@ -1108,7 +1097,7 @@ paths:
               isEngineer:
                 $ref: '#/definitions/IsEngineer'
       responses:
-        200:
+        201:
           description: OK
           schema:
             type: object

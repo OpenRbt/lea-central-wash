@@ -111,7 +111,7 @@ func (a *Client) CardReaderConfigByHash(params *CardReaderConfigByHashParams) (*
 /*
 CreateUser create user API
 */
-func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter) (*CreateUserOK, error) {
+func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter) (*CreateUserCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateUserParams()
@@ -133,7 +133,7 @@ func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAut
 	if err != nil {
 		return nil, err
 	}
-	return result.(*CreateUserOK), nil
+	return result.(*CreateUserCreated), nil
 
 }
 
@@ -985,7 +985,7 @@ func (a *Client) StatusCollection(params *StatusCollectionParams, authInfo runti
 /*
 UpdateUser update user API
 */
-func (a *Client) UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateUserOK, error) {
+func (a *Client) UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateUserCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewUpdateUserParams()
@@ -1007,14 +1007,14 @@ func (a *Client) UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAut
 	if err != nil {
 		return nil, err
 	}
-	return result.(*UpdateUserOK), nil
+	return result.(*UpdateUserCreated), nil
 
 }
 
 /*
 UpdateUserPassword update user password API
 */
-func (a *Client) UpdateUserPassword(params *UpdateUserPasswordParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateUserPasswordOK, error) {
+func (a *Client) UpdateUserPassword(params *UpdateUserPasswordParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateUserPasswordCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewUpdateUserPasswordParams()
@@ -1036,7 +1036,7 @@ func (a *Client) UpdateUserPassword(params *UpdateUserPasswordParams, authInfo r
 	if err != nil {
 		return nil, err
 	}
-	return result.(*UpdateUserPasswordOK), nil
+	return result.(*UpdateUserPasswordCreated), nil
 
 }
 

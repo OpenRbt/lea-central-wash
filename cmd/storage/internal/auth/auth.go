@@ -44,11 +44,11 @@ func (a *check) CheckAuth(token string) (*app.Auth, error) { //nolint:gocyclo
 	return &app.Auth{
 		ID:         user.ID,
 		Login:      user.Login,
-		FirstName:  user.FirstName,
-		MiddleName: user.MiddleName,
-		LastName:   user.LastName,
-		IsAdmin:    user.IsAdmin,
-		IsOperator: user.IsOperator,
-		IsEngineer: user.IsEngineer,
+		FirstName:  *user.FirstName,
+		MiddleName: *user.MiddleName,
+		LastName:   *user.LastName,
+		IsAdmin:    *user.IsAdmin,
+		IsOperator: *user.IsOperator,
+		IsEngineer: *user.IsEngineer,
 	}, nil
 }

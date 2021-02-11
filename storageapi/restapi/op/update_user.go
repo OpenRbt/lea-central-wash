@@ -214,17 +214,17 @@ func (o *UpdateUserBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// UpdateUserOKBody update user o k body
-// swagger:model UpdateUserOKBody
-type UpdateUserOKBody struct {
+// UpdateUserCreatedBody update user created body
+// swagger:model UpdateUserCreatedBody
+type UpdateUserCreatedBody struct {
 
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
 }
 
-// Validate validates this update user o k body
-func (o *UpdateUserOKBody) Validate(formats strfmt.Registry) error {
+// Validate validates this update user created body
+func (o *UpdateUserCreatedBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateID(formats); err != nil {
@@ -237,9 +237,9 @@ func (o *UpdateUserOKBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *UpdateUserOKBody) validateID(formats strfmt.Registry) error {
+func (o *UpdateUserCreatedBody) validateID(formats strfmt.Registry) error {
 
-	if err := validate.Required("updateUserOK"+"."+"id", "body", o.ID); err != nil {
+	if err := validate.Required("updateUserCreated"+"."+"id", "body", o.ID); err != nil {
 		return err
 	}
 
@@ -247,7 +247,7 @@ func (o *UpdateUserOKBody) validateID(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (o *UpdateUserOKBody) MarshalBinary() ([]byte, error) {
+func (o *UpdateUserCreatedBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -255,8 +255,8 @@ func (o *UpdateUserOKBody) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *UpdateUserOKBody) UnmarshalBinary(b []byte) error {
-	var res UpdateUserOKBody
+func (o *UpdateUserCreatedBody) UnmarshalBinary(b []byte) error {
+	var res UpdateUserCreatedBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

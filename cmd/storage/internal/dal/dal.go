@@ -111,13 +111,13 @@ func (r *repo) CreateUser(userData app.UserData) (newUser app.UserData, err erro
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		err := tx.NamedGetContext(ctx, &newUser, sqlAddUser, argAddUser{
 			Login:      userData.Login,
-			FirstName:  userData.FirstName,
-			MiddleName: userData.MiddleName,
-			LastName:   userData.LastName,
 			Password:   userData.Password,
-			IsAdmin:    userData.IsAdmin,
-			IsEngineer: userData.IsEngineer,
-			IsOperator: userData.IsOperator,
+			FirstName:  *userData.FirstName,
+			MiddleName: *userData.MiddleName,
+			LastName:   *userData.LastName,
+			IsAdmin:    *userData.IsAdmin,
+			IsEngineer: *userData.IsEngineer,
+			IsOperator: *userData.IsOperator,
 		})
 		if pqErrConflictIn(err, constraintUserLogin) {
 			return app.ErrLoginNotUnique
@@ -131,12 +131,12 @@ func (r *repo) UpdateUser(userData app.UserData) (newUser app.UserData, err erro
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		err := tx.NamedGetContext(ctx, &newUser, sqlUpdateUser, argUpdateUser{
 			Login:      userData.Login,
-			FirstName:  userData.FirstName,
-			MiddleName: userData.MiddleName,
-			LastName:   userData.LastName,
-			IsAdmin:    userData.IsAdmin,
-			IsEngineer: userData.IsEngineer,
-			IsOperator: userData.IsOperator,
+			FirstName:  *userData.FirstName,
+			MiddleName: *userData.MiddleName,
+			LastName:   *userData.LastName,
+			IsAdmin:    *userData.IsAdmin,
+			IsEngineer: *userData.IsEngineer,
+			IsOperator: *userData.IsOperator,
 		})
 		if err == sql.ErrNoRows {
 			return app.ErrNotFound

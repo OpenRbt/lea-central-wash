@@ -205,7 +205,7 @@ func (a *app) LoadMoneyReport(id StationID) (*MoneyReport, error) {
 }
 
 func (a *app) IsEnabled(user *UserData) bool {
-	return user.IsAdmin || user.IsEngineer || user.IsOperator
+	return *user.IsAdmin || *user.IsEngineer || *user.IsOperator
 }
 
 func (a *app) Users(auth *Auth) ([]UserData, error) {
@@ -225,7 +225,7 @@ func (a *app) User(password string) (*UserData, error) {
 		user := users[u]
 		errPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 		if errPassword == nil {
-			log.Info("Authenticated", "login", user.Login, "isAdmin", user.IsAdmin)
+			log.Info("Authenticated", "login", user.Login, "isAdmin", *user.IsAdmin)
 			return &user, nil
 		}
 	}
@@ -249,6 +249,26 @@ func (a *app) CreateUser(userData UserData, auth *Auth) (id int, err error) {
 		return 0, errPassword
 	}
 	userData.Password = string(password)
+	defaultName := ""
+	defaultPermission := false
+	if userData.FirstName == nil {
+		userData.FirstName = &defaultName
+	}
+	if userData.MiddleName == nil {
+		userData.MiddleName = &defaultName
+	}
+	if userData.LastName == nil {
+		userData.LastName = &defaultName
+	}
+	if userData.IsAdmin == nil {
+		userData.IsAdmin = &defaultPermission
+	}
+	if userData.IsOperator == nil {
+		userData.IsOperator = &defaultPermission
+	}
+	if userData.IsEngineer == nil {
+		userData.IsEngineer = &defaultPermission
+	}
 	user, err := a.repo.CreateUser(userData)
 	if err != nil {
 		return 0, err
@@ -260,27 +280,27 @@ func (a *app) UpdateUser(userData UpdateUserData, auth *Auth) (id int, err error
 	if !auth.IsAdmin {
 		return 0, ErrAccessDenied
 	}
-	user, errOldUser := a.repo.User(*userData.Login)
+	user, errOldUser := a.repo.User(userData.Login)
 	if errOldUser != nil {
 		return 0, errOldUser
 	}
 	if userData.FirstName != nil {
-		user.FirstName = *userData.FirstName
+		user.FirstName = userData.FirstName
 	}
 	if userData.MiddleName != nil {
-		user.MiddleName = *userData.MiddleName
+		user.MiddleName = userData.MiddleName
 	}
 	if userData.LastName != nil {
-		user.LastName = *userData.LastName
+		user.LastName = userData.LastName
 	}
 	if userData.IsAdmin != nil {
-		user.IsAdmin = *userData.IsAdmin
+		user.IsAdmin = userData.IsAdmin
 	}
 	if userData.IsOperator != nil {
-		user.IsOperator = *userData.IsOperator
+		user.IsOperator = userData.IsOperator
 	}
 	if userData.IsEngineer != nil {
-		user.IsEngineer = *userData.IsEngineer
+		user.IsEngineer = userData.IsEngineer
 	}
 	newUser, err := a.repo.UpdateUser(user)
 	if err != nil {
