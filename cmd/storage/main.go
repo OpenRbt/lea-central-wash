@@ -42,12 +42,12 @@ const (
 //nolint:gochecknoglobals
 var (
 	// set by ./build
-	gitVersion  string
-	gitBranch   string
-	gitRevision string
-	buildDate   string
-	dbChange    bool
-	timeCheck   bool
+	gitVersion   string
+	gitBranch    string
+	gitRevision  string
+	buildDate    string
+	useMemDB     bool
+	checkSysTime bool
 
 	cmd = strings.TrimSuffix(path.Base(os.Args[0]), ".test")
 	ver = strings.Join(strings.Fields(strings.Join([]string{gitVersion, gitBranch, gitRevision, buildDate}, " ")), " ")
@@ -83,8 +83,8 @@ func init() { //nolint:gochecknoinits
 	flag.IntVar(&cfg.extapi.Port, "extapi.port", def.ExtAPIPort, "serve external API on `port` (>0)")
 	flag.StringVar(&cfg.extapi.BasePath, "extapi.basepath", def.ExtAPIBasePath, "serve external API on `path`")
 	flag.StringVar(&cfg.kasse.Endpoint, "kasse.endpoint", def.KasseEndpoint, "endpoint online kasse")
-	flag.BoolVar(&dbChange, "d", false, "change database from postgres to memdb")
-	flag.BoolVar(&timeCheck, "t", false, "check time")
+	flag.BoolVar(&useMemDB, "d", false, "change database from postgres to memdb")
+	flag.BoolVar(&checkSysTime, "t", false, "check time")
 
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",
@@ -100,7 +100,9 @@ func main() { //nolint:gocyclo
 	}
 	flag.Parse()
 
-	checkTime(timeCheck)
+	if checkSysTime {
+		waitUntilSysTimeIsCorrect()
+	}
 
 	switch {
 	case cfg.db.Port <= 0:
@@ -137,7 +139,7 @@ func main() { //nolint:gocyclo
 	var db *sqlx.DB
 	var err error
 	count := 0
-	if dbChange {
+	if useMemDB {
 		errc := make(chan error)
 		go connectMemDB(db, errc)
 		if err := <-errc; err != nil {
@@ -269,14 +271,13 @@ func run(db *sqlx.DB, errc chan<- error) {
 	errc <- extsrv.Serve()
 }
 
-func checkTime(chck bool) {
-	if chck {
-		sysDate := (time.Now()).UTC()
-		compDate := time.Date(2021, time.January, 1, 12, 0, 0, 0, time.UTC)
-		for compDate.Sub(sysDate) > 0 {
-			t1 := time.NewTimer(time.Minute)
-			<-t1.C
-			sysDate = (time.Now()).UTC()
-		}
+func waitUntilSysTimeIsCorrect() {
+	sysDate := (time.Now()).UTC()
+	compDate := time.Date(2021, time.January, 1, 12, 0, 0, 0, time.UTC)
+	for compDate.Sub(sysDate) > 0 {
+		log.Info("System time is incorrect; change system time")
+		t1 := time.NewTimer(time.Minute)
+		<-t1.C
+		sysDate = (time.Now()).UTC()
 	}
 }
