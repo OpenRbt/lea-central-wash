@@ -72,6 +72,7 @@ SELECT 	id,
 		is_operator, 
 		is_engineer 
 FROM users
+ORDER BY last_name, first_name, middle_name
 	`
 
 	sqlGetUser = `
