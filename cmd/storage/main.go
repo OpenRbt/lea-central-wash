@@ -275,7 +275,7 @@ func waitUntilSysTimeIsCorrect() {
 	sysDate := (time.Now()).UTC()
 	compDate := time.Date(2021, time.January, 1, 12, 0, 0, 0, time.UTC)
 	for compDate.Sub(sysDate) > 0 {
-		log.Info("System time is incorrect; change system time")
+		log.Info("System time is incorrect; app awaits correction")
 		t1 := time.NewTimer(time.Minute)
 		<-t1.C
 		sysDate = (time.Now()).UTC()
