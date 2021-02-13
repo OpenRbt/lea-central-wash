@@ -109,6 +109,35 @@ func (a *Client) CardReaderConfigByHash(params *CardReaderConfigByHashParams) (*
 }
 
 /*
+CreateUser create user API
+*/
+func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter) (*CreateUserCreated, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewCreateUserParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "createUser",
+		Method:             "POST",
+		PathPattern:        "/user",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &CreateUserReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*CreateUserCreated), nil
+
+}
+
+/*
 DelStation del station API
 */
 func (a *Client) DelStation(params *DelStationParams) (*DelStationNoContent, error) {
@@ -137,6 +166,35 @@ func (a *Client) DelStation(params *DelStationParams) (*DelStationNoContent, err
 }
 
 /*
+DeleteUser delete user API
+*/
+func (a *Client) DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteUserNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewDeleteUserParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "deleteUser",
+		Method:             "DELETE",
+		PathPattern:        "/user",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &DeleteUserReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*DeleteUserNoContent), nil
+
+}
+
+/*
 GetPing get ping API
 */
 func (a *Client) GetPing(params *GetPingParams) (*GetPingOK, error) {
@@ -161,6 +219,64 @@ func (a *Client) GetPing(params *GetPingParams) (*GetPingOK, error) {
 		return nil, err
 	}
 	return result.(*GetPingOK), nil
+
+}
+
+/*
+GetUser get user API
+*/
+func (a *Client) GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoWriter) (*GetUserOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetUserParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getUser",
+		Method:             "GET",
+		PathPattern:        "/user",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetUserReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*GetUserOK), nil
+
+}
+
+/*
+GetUsers get users API
+*/
+func (a *Client) GetUsers(params *GetUsersParams, authInfo runtime.ClientAuthInfoWriter) (*GetUsersOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetUsersParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getUsers",
+		Method:             "GET",
+		PathPattern:        "/users",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetUsersReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*GetUsersOK), nil
 
 }
 
@@ -447,7 +563,7 @@ func (a *Client) Save(params *SaveParams) (*SaveNoContent, error) {
 /*
 SaveCollection save collection API
 */
-func (a *Client) SaveCollection(params *SaveCollectionParams) (*SaveCollectionNoContent, error) {
+func (a *Client) SaveCollection(params *SaveCollectionParams, authInfo runtime.ClientAuthInfoWriter) (*SaveCollectionNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSaveCollectionParams()
@@ -462,6 +578,7 @@ func (a *Client) SaveCollection(params *SaveCollectionParams) (*SaveCollectionNo
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &SaveCollectionReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
@@ -839,7 +956,7 @@ func (a *Client) Status(params *StatusParams) (*StatusOK, error) {
 /*
 StatusCollection status collection API
 */
-func (a *Client) StatusCollection(params *StatusCollectionParams) (*StatusCollectionOK, error) {
+func (a *Client) StatusCollection(params *StatusCollectionParams, authInfo runtime.ClientAuthInfoWriter) (*StatusCollectionOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStatusCollectionParams()
@@ -854,6 +971,7 @@ func (a *Client) StatusCollection(params *StatusCollectionParams) (*StatusCollec
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &StatusCollectionReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
@@ -861,6 +979,64 @@ func (a *Client) StatusCollection(params *StatusCollectionParams) (*StatusCollec
 		return nil, err
 	}
 	return result.(*StatusCollectionOK), nil
+
+}
+
+/*
+UpdateUser update user API
+*/
+func (a *Client) UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateUserCreated, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewUpdateUserParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "updateUser",
+		Method:             "PUT",
+		PathPattern:        "/user",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &UpdateUserReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*UpdateUserCreated), nil
+
+}
+
+/*
+UpdateUserPassword update user password API
+*/
+func (a *Client) UpdateUserPassword(params *UpdateUserPasswordParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateUserPasswordCreated, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewUpdateUserPasswordParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "updateUserPassword",
+		Method:             "POST",
+		PathPattern:        "/user-password",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &UpdateUserPasswordReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*UpdateUserPasswordCreated), nil
 
 }
 

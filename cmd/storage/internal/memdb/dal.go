@@ -96,6 +96,30 @@ func (t *DB) Stations() (stations []app.SetStation, err error) {
 	return nil, nil
 }
 
+func (t *DB) User(login string) (user app.UserData, err error) {
+	return app.UserData{}, nil
+}
+
+func (t *DB) Users() (users []app.UserData, err error) {
+	return nil, nil
+}
+
+func (t *DB) CreateUser(userData app.UserData) (newUser app.UserData, err error) {
+	return app.UserData{}, nil
+}
+
+func (t *DB) UpdateUser(userData app.UserData) (newUser app.UserData, err error) {
+	return app.UserData{}, nil
+}
+
+func (t *DB) UpdateUserPassword(userData app.UpdatePasswordData) (newUser app.UserData, err error) {
+	return app.UserData{}, nil
+}
+
+func (t *DB) DeleteUser(login string) error {
+	return nil
+}
+
 func (t *DB) DelStation(id app.StationID) error {
 	return nil
 }
@@ -132,7 +156,7 @@ func (t *DB) LastCollectionReport(stationID app.StationID) (report app.Collectio
 	return
 }
 
-func (t *DB) SaveCollectionReport(id app.StationID) error {
+func (t *DB) SaveCollectionReport(userID int, stationID app.StationID) error {
 	return nil
 }
 

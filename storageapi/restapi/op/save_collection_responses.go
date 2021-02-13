@@ -38,6 +38,32 @@ func (o *SaveCollectionNoContent) WriteResponse(rw http.ResponseWriter, producer
 
 func (o *SaveCollectionNoContent) SaveCollectionResponder() {}
 
+// SaveCollectionUnauthorizedCode is the HTTP code returned for type SaveCollectionUnauthorized
+const SaveCollectionUnauthorizedCode int = 401
+
+/*SaveCollectionUnauthorized PIN is missing or invalid
+
+swagger:response saveCollectionUnauthorized
+*/
+type SaveCollectionUnauthorized struct {
+}
+
+// NewSaveCollectionUnauthorized creates SaveCollectionUnauthorized with default headers values
+func NewSaveCollectionUnauthorized() *SaveCollectionUnauthorized {
+
+	return &SaveCollectionUnauthorized{}
+}
+
+// WriteResponse to the client
+func (o *SaveCollectionUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(401)
+}
+
+func (o *SaveCollectionUnauthorized) SaveCollectionResponder() {}
+
 // SaveCollectionNotFoundCode is the HTTP code returned for type SaveCollectionNotFound
 const SaveCollectionNotFoundCode int = 404
 

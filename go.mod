@@ -16,11 +16,14 @@ require (
 	github.com/lib/pq v1.7.0
 	github.com/pkg/errors v0.9.1
 	github.com/powerman/check v1.2.1
+
 	github.com/powerman/must v0.1.0
 	github.com/powerman/narada4d v1.7.0
 	github.com/powerman/pqx v0.6.1
 	github.com/powerman/sqlxx v0.2.0
 	github.com/powerman/structlog v0.7.1
 	github.com/pressly/goose v2.6.0+incompatible
+
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381
 )

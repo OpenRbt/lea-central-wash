@@ -8,6 +8,8 @@ import (
 
 const (
 	constraintCardReaderStationID = "card_reader_station_id_fkey"
+	constraintUserLogin           = "users_unique_lower_login_idx"
+	constraintMoneyCollection     = "money_collection_user_id_fkey"
 )
 
 const (
@@ -58,6 +60,88 @@ WHERE id = :id
 	sqlGetStation = `
 SELECT id, name  FROM station where deleted = false ORDER BY id
 	`
+
+	sqlGetUsers = `
+SELECT 	id, 
+		login,
+		first_name, 
+		middle_name, 
+		last_name, 
+		password, 
+		is_admin, 
+		is_operator, 
+		is_engineer 
+FROM users
+ORDER BY last_name, first_name, middle_name
+	`
+
+	sqlGetUser = `
+SELECT 	id, 
+		login,
+		first_name, 
+		middle_name, 
+		last_name, 
+		password, 
+		is_admin, 
+		is_operator, 
+		is_engineer 
+FROM users 
+WHERE login = lower(:login)
+	`
+
+	sqlAddUser = `
+INSERT INTO users(login, first_name, middle_name, last_name, password, is_admin, is_operator, is_engineer)
+VALUES (lower(:login), :first_name, :middle_name, :last_name, :password, :is_admin, :is_operator, :is_engineer)
+RETURNING 	id, 
+			login,
+			first_name, 
+			middle_name, 
+			last_name, 
+			password, 
+			is_admin, 
+			is_operator, 
+			is_engineer 
+	`
+
+	sqlUpdateUser = `
+UPDATE users
+SET first_name = :first_name, 
+	middle_name = :middle_name, 
+	last_name = :last_name, 
+	is_admin = :is_admin, 
+	is_operator = :is_operator, 
+	is_engineer = :is_engineer
+WHERE login = lower(:login)
+RETURNING 	id, 
+			login,
+			first_name, 
+			middle_name, 
+			last_name, 
+			password,
+			is_admin, 
+			is_operator, 
+			is_engineer
+	`
+
+	sqlUpdateUserPassword = `
+UPDATE users
+SET password = :new_password 
+WHERE login = lower(:login)
+RETURNING 	id, 
+			login,
+			first_name, 
+			middle_name, 
+			last_name, 
+			password,
+			is_admin, 
+			is_operator, 
+			is_engineer
+	`
+
+	sqlDelUser = `
+DELETE FROM users WHERE login = lower(:login)
+	`
+
 	sqlLoadHash = `
 SELECT station_id, hash FROM station_hash ORDER BY station_id
 	`
@@ -75,7 +159,7 @@ INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical
 VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :ctime)
 	`
 	sqlAddCollectionReport = `
-	INSERT INTO money_collection (station_id, banknotes, cars_total, coins, electronical, service, last_money_report_id, ctime) 
+	INSERT INTO money_collection (station_id, user_id, banknotes, cars_total, coins, electronical, service, last_money_report_id, ctime) 
 	(
 	SELECT station_id, 
 			   sum(banknotes) as banknotes, 
@@ -264,6 +348,52 @@ type (
 	}
 	argGetStation struct {
 	}
+	argGetUser struct {
+		Login string
+	}
+	argGetUsers struct {
+	}
+	argGetUserRoles struct {
+		ID int
+	}
+	argAddUser struct {
+		Login      string
+		FirstName  string
+		MiddleName string
+		LastName   string
+		Password   string
+		IsAdmin    bool
+		IsEngineer bool
+		IsOperator bool
+	}
+	argUpdateUser struct {
+		Login      string
+		FirstName  string
+		MiddleName string
+		LastName   string
+		Password   string
+		IsAdmin    bool
+		IsEngineer bool
+		IsOperator bool
+	}
+	argUpdateUserPassword struct {
+		Login       string
+		NewPassword string
+	}
+	argDelUser struct {
+		Login string
+	}
+	resUser struct {
+		ID         int
+		Login      string
+		FirstName  string
+		MiddleName string
+		LastName   string
+		Password   string
+		IsAdmin    bool
+		IsOperator bool
+		IsEngineer bool
+	}
 	resGetValue struct {
 		Value string
 	}
@@ -313,6 +443,7 @@ type (
 	}
 	argAddCollectionReport struct {
 		StationID app.StationID
+		UserID    int
 		Ctime     time.Time
 	}
 	argRelayStatReport struct {

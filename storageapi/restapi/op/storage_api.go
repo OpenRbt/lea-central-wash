@@ -18,6 +18,8 @@ import (
 	spec "github.com/go-openapi/spec"
 	strfmt "github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+
+	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
 
 // NewStorageAPI creates a new Storage instance
@@ -49,13 +51,29 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation CardReaderConfigByHash has not yet been implemented")
 			return CardReaderConfigByHashNotImplemented()
 		}),
+		CreateUserHandler: CreateUserHandlerFunc(func(params CreateUserParams, principal *storageapi.Profile) CreateUserResponder {
+			// return middleware.NotImplemented("operation CreateUser has not yet been implemented")
+			return CreateUserNotImplemented()
+		}),
 		DelStationHandler: DelStationHandlerFunc(func(params DelStationParams) DelStationResponder {
 			// return middleware.NotImplemented("operation DelStation has not yet been implemented")
 			return DelStationNotImplemented()
 		}),
+		DeleteUserHandler: DeleteUserHandlerFunc(func(params DeleteUserParams, principal *storageapi.Profile) DeleteUserResponder {
+			// return middleware.NotImplemented("operation DeleteUser has not yet been implemented")
+			return DeleteUserNotImplemented()
+		}),
 		GetPingHandler: GetPingHandlerFunc(func(params GetPingParams) GetPingResponder {
 			// return middleware.NotImplemented("operation GetPing has not yet been implemented")
 			return GetPingNotImplemented()
+		}),
+		GetUserHandler: GetUserHandlerFunc(func(params GetUserParams, principal *storageapi.Profile) GetUserResponder {
+			// return middleware.NotImplemented("operation GetUser has not yet been implemented")
+			return GetUserNotImplemented()
+		}),
+		GetUsersHandler: GetUsersHandlerFunc(func(params GetUsersParams, principal *storageapi.Profile) GetUsersResponder {
+			// return middleware.NotImplemented("operation GetUsers has not yet been implemented")
+			return GetUsersNotImplemented()
 		}),
 		InfoHandler: InfoHandlerFunc(func(params InfoParams) InfoResponder {
 			// return middleware.NotImplemented("operation Info has not yet been implemented")
@@ -97,7 +115,7 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation Save has not yet been implemented")
 			return SaveNotImplemented()
 		}),
-		SaveCollectionHandler: SaveCollectionHandlerFunc(func(params SaveCollectionParams) SaveCollectionResponder {
+		SaveCollectionHandler: SaveCollectionHandlerFunc(func(params SaveCollectionParams, principal *storageapi.Profile) SaveCollectionResponder {
 			// return middleware.NotImplemented("operation SaveCollection has not yet been implemented")
 			return SaveCollectionNotImplemented()
 		}),
@@ -153,10 +171,26 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation Status has not yet been implemented")
 			return StatusNotImplemented()
 		}),
-		StatusCollectionHandler: StatusCollectionHandlerFunc(func(params StatusCollectionParams) StatusCollectionResponder {
+		StatusCollectionHandler: StatusCollectionHandlerFunc(func(params StatusCollectionParams, principal *storageapi.Profile) StatusCollectionResponder {
 			// return middleware.NotImplemented("operation StatusCollection has not yet been implemented")
 			return StatusCollectionNotImplemented()
 		}),
+		UpdateUserHandler: UpdateUserHandlerFunc(func(params UpdateUserParams, principal *storageapi.Profile) UpdateUserResponder {
+			// return middleware.NotImplemented("operation UpdateUser has not yet been implemented")
+			return UpdateUserNotImplemented()
+		}),
+		UpdateUserPasswordHandler: UpdateUserPasswordHandlerFunc(func(params UpdateUserPasswordParams, principal *storageapi.Profile) UpdateUserPasswordResponder {
+			// return middleware.NotImplemented("operation UpdateUserPassword has not yet been implemented")
+			return UpdateUserPasswordNotImplemented()
+		}),
+
+		// Applies when the "Pin" header is set
+		PinCodeAuth: func(token string) (*storageapi.Profile, error) {
+			return nil, errors.NotImplemented("api key auth (pinCode) Pin from header param [Pin] has not yet been implemented")
+		},
+
+		// default authorizer is authorized meaning no requests are blocked
+		APIAuthorizer: security.Authorized(),
 	}
 }
 
@@ -188,16 +222,31 @@ type StorageAPI struct {
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
 
+	// PinCodeAuth registers a function that takes a token and returns a principal
+	// it performs authentication based on an api key Pin provided in the header
+	PinCodeAuth func(string) (*storageapi.Profile, error)
+
+	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
+	APIAuthorizer runtime.Authorizer
+
 	// AddServiceAmountHandler sets the operation handler for the add service amount operation
 	AddServiceAmountHandler AddServiceAmountHandler
 	// CardReaderConfigHandler sets the operation handler for the card reader config operation
 	CardReaderConfigHandler CardReaderConfigHandler
 	// CardReaderConfigByHashHandler sets the operation handler for the card reader config by hash operation
 	CardReaderConfigByHashHandler CardReaderConfigByHashHandler
+	// CreateUserHandler sets the operation handler for the create user operation
+	CreateUserHandler CreateUserHandler
 	// DelStationHandler sets the operation handler for the del station operation
 	DelStationHandler DelStationHandler
+	// DeleteUserHandler sets the operation handler for the delete user operation
+	DeleteUserHandler DeleteUserHandler
 	// GetPingHandler sets the operation handler for the get ping operation
 	GetPingHandler GetPingHandler
+	// GetUserHandler sets the operation handler for the get user operation
+	GetUserHandler GetUserHandler
+	// GetUsersHandler sets the operation handler for the get users operation
+	GetUsersHandler GetUsersHandler
 	// InfoHandler sets the operation handler for the info operation
 	InfoHandler InfoHandler
 	// KasseHandler sets the operation handler for the kasse operation
@@ -248,6 +297,10 @@ type StorageAPI struct {
 	StatusHandler StatusHandler
 	// StatusCollectionHandler sets the operation handler for the status collection operation
 	StatusCollectionHandler StatusCollectionHandler
+	// UpdateUserHandler sets the operation handler for the update user operation
+	UpdateUserHandler UpdateUserHandler
+	// UpdateUserPasswordHandler sets the operation handler for the update user password operation
+	UpdateUserPasswordHandler UpdateUserPasswordHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -311,6 +364,10 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.PinCodeAuth == nil {
+		unregistered = append(unregistered, "PinAuth")
+	}
+
 	if o.AddServiceAmountHandler == nil {
 		unregistered = append(unregistered, "AddServiceAmountHandler")
 	}
@@ -323,12 +380,28 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "CardReaderConfigByHashHandler")
 	}
 
+	if o.CreateUserHandler == nil {
+		unregistered = append(unregistered, "CreateUserHandler")
+	}
+
 	if o.DelStationHandler == nil {
 		unregistered = append(unregistered, "DelStationHandler")
 	}
 
+	if o.DeleteUserHandler == nil {
+		unregistered = append(unregistered, "DeleteUserHandler")
+	}
+
 	if o.GetPingHandler == nil {
 		unregistered = append(unregistered, "GetPingHandler")
+	}
+
+	if o.GetUserHandler == nil {
+		unregistered = append(unregistered, "GetUserHandler")
+	}
+
+	if o.GetUsersHandler == nil {
+		unregistered = append(unregistered, "GetUsersHandler")
 	}
 
 	if o.InfoHandler == nil {
@@ -431,6 +504,14 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "StatusCollectionHandler")
 	}
 
+	if o.UpdateUserHandler == nil {
+		unregistered = append(unregistered, "UpdateUserHandler")
+	}
+
+	if o.UpdateUserPasswordHandler == nil {
+		unregistered = append(unregistered, "UpdateUserPasswordHandler")
+	}
+
 	if len(unregistered) > 0 {
 		return fmt.Errorf("missing registration: %s", strings.Join(unregistered, ", "))
 	}
@@ -446,14 +527,26 @@ func (o *StorageAPI) ServeErrorFor(operationID string) func(http.ResponseWriter,
 // AuthenticatorsFor gets the authenticators for the specified security schemes
 func (o *StorageAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) map[string]runtime.Authenticator {
 
-	return nil
+	result := make(map[string]runtime.Authenticator)
+	for name, scheme := range schemes {
+		switch name {
+
+		case "pinCode":
+
+			result[name] = o.APIKeyAuthenticator(scheme.Name, scheme.In, func(token string) (interface{}, error) {
+				return o.PinCodeAuth(token)
+			})
+
+		}
+	}
+	return result
 
 }
 
 // Authorizer returns the registered authorizer
 func (o *StorageAPI) Authorizer() runtime.Authorizer {
 
-	return nil
+	return o.APIAuthorizer
 
 }
 
@@ -547,12 +640,32 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/user"] = NewCreateUser(o.context, o.CreateUserHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/del-station"] = NewDelStation(o.context, o.DelStationHandler)
+
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/user"] = NewDeleteUser(o.context, o.DeleteUserHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/ping"] = NewGetPing(o.context, o.GetPingHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/user"] = NewGetUser(o.context, o.GetUserHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/users"] = NewGetUsers(o.context, o.GetUsersHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
@@ -678,6 +791,16 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/status-collection"] = NewStatusCollection(o.context, o.StatusCollectionHandler)
+
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/user"] = NewUpdateUser(o.context, o.UpdateUserHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/user-password"] = NewUpdateUserPassword(o.context, o.UpdateUserPasswordHandler)
 
 }
 

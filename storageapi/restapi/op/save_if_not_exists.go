@@ -8,13 +8,12 @@ package op
 import (
 	"net/http"
 
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	errors "github.com/go-openapi/errors"
 	middleware "github.com/go-openapi/runtime/middleware"
 	strfmt "github.com/go-openapi/strfmt"
 	swag "github.com/go-openapi/swag"
 	validate "github.com/go-openapi/validate"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // SaveIfNotExistsHandlerFunc turns a function with the right signature into a save if not exists handler

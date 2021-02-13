@@ -4,6 +4,8 @@ import (
 	"errors"
 	"sync"
 	"time"
+
+	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
 
 const durationStationOffline = time.Second * 10
@@ -13,6 +15,9 @@ const (
 	TestHash      = "TEST"
 	TestStationID = 999
 )
+
+// Auth describes user profile.
+type Auth = storageapi.Profile
 
 // Key aliases
 const (
@@ -24,8 +29,10 @@ const (
 
 // Errors.
 var (
-	ErrNotFound     = errors.New("not found")
-	ErrAccessDenied = errors.New("access denied")
+	ErrNotFound            = errors.New("not found")
+	ErrAccessDenied        = errors.New("access denied")
+	ErrLoginNotUnique      = errors.New("login is already in use")
+	ErrMoneyCollectionFkey = errors.New("violates foreign key constraint on table money_collection")
 )
 
 type (
@@ -59,13 +66,21 @@ type (
 		StationReportCurrentMoney(id StationID) (MoneyReport, RelayReport, error)
 
 		StatusCollection() StatusCollection
-		SaveCollectionReport(StationID) error
+		SaveCollectionReport(auth *Auth, id StationID) error
 
 		Programs(id StationID) (programs []Program, err error)
 		SetProgramName(id StationID, programID int, name string) (err error)
 		ProgramRelays(id StationID, programID int) (relays []Relay, err error)
 		SetProgramRelays(id StationID, programID int, relays []Relay) (err error)
 
+		Users(auth *Auth) (users []UserData, err error)
+		User(password string) (user *UserData, err error)
+		CreateUser(userData UserData, auth *Auth) (id int, err error)
+		UpdateUser(userData UpdateUserData, auth *Auth) (id int, err error)
+		UpdateUserPassword(userData UpdatePasswordData, auth *Auth) (id int, err error)
+		DeleteUser(login string, auth *Auth) error
+
+		IsEnabled(user *UserData) bool
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
 		CardReaderConfig(StationID) (*CardReaderConfig, error)
@@ -88,11 +103,18 @@ type (
 		MoneyReport(stationID StationID, startDate, endDate time.Time) (MoneyReport, error)
 		RelayStatReport(stationID StationID, startDate, endDate time.Time) (RelayReport, error)
 		LastCollectionReport(stationID StationID) (report CollectionReport, err error)
-		SaveCollectionReport(id StationID) (err error)
+		SaveCollectionReport(userID int, stationID StationID) (err error)
 		StationsVariables() ([]StationsVariables, error)
 		AddStation(name string) error
 		AddOpenStationLog(StationID) error
 		CurrentMoney(StationID) (MoneyReport, error)
+
+		User(login string) (user UserData, err error)
+		Users() (users []UserData, err error)
+		CreateUser(userData UserData) (newUser UserData, err error)
+		UpdateUser(userData UserData) (newUser UserData, err error)
+		UpdateUserPassword(userData UpdatePasswordData) (newUser UserData, err error)
+		DeleteUser(login string) error
 
 		// for api
 		LoadHash() ([]StationID, []string, error)

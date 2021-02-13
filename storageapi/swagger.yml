@@ -8,6 +8,12 @@ basePath: /
 schemes:
   - http
 
+securityDefinitions:
+   pinCode:
+     type: apiKey
+     in: header
+     name: Pin
+
 definitions:
         
   StatusReport:
@@ -215,6 +221,70 @@ definitions:
       port:
         type: string
 
+  Login:
+    type: string
+    minLength: 4
+
+  Password:
+    type: string
+    minLength: 4
+    pattern: '^[0123456789]{4,}$'
+
+  FirstName:
+    type: string
+    minLength: 1
+    x-nullable: true
+
+  MiddleName:
+    type: string
+    minLength: 1
+    x-nullable: true
+
+  LastName:
+    type: string
+    minLength: 1
+    x-nullable: true
+
+  IsAdmin:
+    type: boolean
+    x-nullable: true
+
+  IsEngineer:
+    type: boolean
+    x-nullable: true
+
+  IsOperator:
+    type: boolean
+    x-nullable: true
+
+  UserConfig:
+    type: object
+    required:
+        - login
+    properties:
+      login:
+        $ref: '#/definitions/Login'
+      firstName:
+        $ref: '#/definitions/FirstName'
+      middleName:
+        $ref: '#/definitions/MiddleName'
+      lastName:
+        $ref: '#/definitions/LastName'
+      isAdmin:
+        $ref: '#/definitions/IsAdmin'
+      isOperator:
+        $ref: '#/definitions/IsOperator'
+      isEngineer:
+        $ref: '#/definitions/IsEngineer'
+
+  UsersReport:
+    type: object
+    properties:
+      users:
+          type: array
+          items:
+            $ref: '#/definitions/UserConfig'
+
 consumes:
   - application/json
 produces:
@@ -290,6 +360,8 @@ paths:
   /status-collection:
     get:
       operationId: "statusCollection"
+      security:
+        - pinCode: []
       responses:
         200:
           description: OK
@@ -297,6 +369,8 @@ paths:
             $ref: '#/definitions/StatusCollectionReport'
         500:
           description: internal error
+        401:
+          description: PIN is missing or invalid
 
   /add-service-amount:
     post:
@@ -433,6 +507,8 @@ paths:
   /save-collection:
     post:
       operationId: "saveCollection"
+      security:
+        - pinCode: []
       parameters:
         - name: args
           required: true
@@ -451,6 +527,8 @@ paths:
           description: not found
         500:
           description: internal error
+        401:
+          description: PIN is missing or invalid
 
   /load-money:
     post:
@@ -858,5 +936,217 @@ paths:
             $ref: '#/definitions/CardReaderConfig'
         404:
           description: not found
+        500:
+          description: internal error
+
+  /users:
+    get:
+      operationId: "getUsers"
+      security:
+        - pinCode: []
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            $ref: '#/definitions/UsersReport'
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbidden
+        500:
+          description: internal error
+
+  /user-password:
+    post:
+      operationId: "updateUserPassword"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - login
+              - oldPassword
+              - newPassword
+            properties:
+              login:
+                $ref: '#/definitions/Login'
+              oldPassword:
+                $ref: '#/definitions/Password'
+              newPassword:
+                $ref: '#/definitions/Password'
+      responses:
+        201:
+          description: OK
+          schema:
+            type: object
+            required:
+              - id
+            properties:
+              id:
+                type: integer
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbidden
+        404:
+          description: not found
+        500:
+          description: internal error
+
+  /user:
+    get:
+      operationId: "getUser"
+      security:
+        - pinCode: []
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            $ref: '#/definitions/UserConfig'
+        401:
+          description: PIN is missing or invalid
+    post:
+      operationId: "createUser"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - login
+              - password
+            properties:
+              login:
+                $ref: '#/definitions/Login'
+              firstName:
+                $ref: '#/definitions/FirstName'
+              middleName:
+                $ref: '#/definitions/MiddleName'
+              lastName:
+                $ref: '#/definitions/LastName'
+              isAdmin:
+                $ref: '#/definitions/IsAdmin'
+              isOperator:
+                $ref: '#/definitions/IsOperator'
+              isEngineer:
+                $ref: '#/definitions/IsEngineer'
+              password:
+                $ref: '#/definitions/Password'
+      responses:
+        201:
+          description: OK
+          schema:
+            type: object
+            required:
+              - id
+            properties:
+              id:
+                type: integer
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbidden
+        409:
+          description: Conflict
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+        500:
+          description: internal error
+    put:
+      operationId: "updateUser"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - login
+            properties:
+              login:
+                $ref: '#/definitions/Login'
+              firstName:
+                $ref: '#/definitions/FirstName'
+              middleName:
+                $ref: '#/definitions/MiddleName'
+              lastName:
+                $ref: '#/definitions/LastName'
+              isAdmin:
+                $ref: '#/definitions/IsAdmin'
+              isOperator:
+                $ref: '#/definitions/IsOperator'
+              isEngineer:
+                $ref: '#/definitions/IsEngineer'
+      responses:
+        201:
+          description: OK
+          schema:
+            type: object
+            required:
+              - id
+            properties:
+              id:
+                type: integer
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbidden
+        404:
+          description: Not found
+        500:
+          description: internal error
+    delete:
+      operationId: "deleteUser"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - login
+            properties:
+              login:
+                $ref: '#/definitions/Login'
+      responses:
+        204:
+          description: OK
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbidden
+        409:
+          description: Conflict
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
         500:
           description: internal error

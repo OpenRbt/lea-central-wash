@@ -81,6 +81,98 @@ func (r *repo) schemaLock(f func() error) func() error {
 	}
 }
 
+func (r *repo) User(login string) (user app.UserData, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &user, sqlGetUser, argGetUser{
+			Login: login,
+		})
+		if err == sql.ErrNoRows {
+			return app.ErrNotFound
+		}
+		return err
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) Users() (users []app.UserData, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res []resUser
+		err := tx.NamedSelectContext(ctx, &res, sqlGetUsers, argGetUsers{})
+		if err != nil {
+			return err
+		}
+		users = appSetUsers(res)
+		return nil
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) CreateUser(userData app.UserData) (newUser app.UserData, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &newUser, sqlAddUser, argAddUser{
+			Login:      userData.Login,
+			Password:   userData.Password,
+			FirstName:  *userData.FirstName,
+			MiddleName: *userData.MiddleName,
+			LastName:   *userData.LastName,
+			IsAdmin:    *userData.IsAdmin,
+			IsEngineer: *userData.IsEngineer,
+			IsOperator: *userData.IsOperator,
+		})
+		if pqErrConflictIn(err, constraintUserLogin) {
+			return app.ErrLoginNotUnique
+		}
+		return err
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) UpdateUser(userData app.UserData) (newUser app.UserData, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &newUser, sqlUpdateUser, argUpdateUser{
+			Login:      userData.Login,
+			FirstName:  *userData.FirstName,
+			MiddleName: *userData.MiddleName,
+			LastName:   *userData.LastName,
+			IsAdmin:    *userData.IsAdmin,
+			IsEngineer: *userData.IsEngineer,
+			IsOperator: *userData.IsOperator,
+		})
+		if err == sql.ErrNoRows {
+			return app.ErrNotFound
+		}
+		return err
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) UpdateUserPassword(userData app.UpdatePasswordData) (newUser app.UserData, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &newUser, sqlUpdateUserPassword, argUpdateUserPassword{
+			Login:       userData.Login,
+			NewPassword: userData.NewPassword,
+		})
+		if err == sql.ErrNoRows {
+			return app.ErrNotFound
+		}
+		return err
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) DeleteUser(login string) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlDelUser, argDelUser{
+			Login: login,
+		})
+		if pqErrConflictIn(err, constraintMoneyCollection) {
+			return app.ErrMoneyCollectionFkey
+		}
+		return err
+	})
+	return //nolint:nakedret
+}
+
 func (r *repo) Load(stationID app.StationID, key string) (value string, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res resGetValue
@@ -332,11 +424,12 @@ func (r *repo) LastCollectionReport(stationID app.StationID) (report app.Collect
 	return //nolint:nakedret
 }
 
-func (r *repo) SaveCollectionReport(id app.StationID) (err error) {
+func (r *repo) SaveCollectionReport(userID int, id app.StationID) (err error) {
 	fmt.Println("DAL: SaveCollectionReport")
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlAddCollectionReport, argAddCollectionReport{
 			StationID: id,
+			UserID:    userID,
 			Ctime:     time.Now().UTC(),
 		})
 		return err

@@ -9,11 +9,10 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // NewSetKasseParams creates a new SetKasseParams object

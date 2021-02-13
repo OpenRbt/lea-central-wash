@@ -542,6 +542,11 @@ func init() {
     },
     "/save-collection": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "saveCollection",
         "parameters": [
           {
@@ -564,6 +569,9 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
           },
           "404": {
             "description": "not found"
@@ -1006,6 +1014,11 @@ func init() {
     },
     "/status-collection": {
       "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "statusCollection",
         "responses": {
           "200": {
@@ -1013,6 +1026,344 @@ func init() {
             "schema": {
               "$ref": "#/definitions/StatusCollectionReport"
             }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getUser",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/UserConfig"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "login"
+              ],
+              "properties": {
+                "firstName": {
+                  "$ref": "#/definitions/FirstName"
+                },
+                "isAdmin": {
+                  "$ref": "#/definitions/IsAdmin"
+                },
+                "isEngineer": {
+                  "$ref": "#/definitions/IsEngineer"
+                },
+                "isOperator": {
+                  "$ref": "#/definitions/IsOperator"
+                },
+                "lastName": {
+                  "$ref": "#/definitions/LastName"
+                },
+                "login": {
+                  "$ref": "#/definitions/Login"
+                },
+                "middleName": {
+                  "$ref": "#/definitions/MiddleName"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "login",
+                "password"
+              ],
+              "properties": {
+                "firstName": {
+                  "$ref": "#/definitions/FirstName"
+                },
+                "isAdmin": {
+                  "$ref": "#/definitions/IsAdmin"
+                },
+                "isEngineer": {
+                  "$ref": "#/definitions/IsEngineer"
+                },
+                "isOperator": {
+                  "$ref": "#/definitions/IsOperator"
+                },
+                "lastName": {
+                  "$ref": "#/definitions/LastName"
+                },
+                "login": {
+                  "$ref": "#/definitions/Login"
+                },
+                "middleName": {
+                  "$ref": "#/definitions/MiddleName"
+                },
+                "password": {
+                  "$ref": "#/definitions/Password"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "login"
+              ],
+              "properties": {
+                "login": {
+                  "$ref": "#/definitions/Login"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/user-password": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "updateUserPassword",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "login",
+                "oldPassword",
+                "newPassword"
+              ],
+              "properties": {
+                "login": {
+                  "$ref": "#/definitions/Login"
+                },
+                "newPassword": {
+                  "$ref": "#/definitions/Password"
+                },
+                "oldPassword": {
+                  "$ref": "#/definitions/Password"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getUsers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/UsersReport"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -1073,9 +1424,26 @@ func init() {
         }
       }
     },
+    "FirstName": {
+      "type": "string",
+      "minLength": 1,
+      "x-nullable": true
+    },
     "Hash": {
       "type": "string",
       "minLength": 1
+    },
+    "IsAdmin": {
+      "type": "boolean",
+      "x-nullable": true
+    },
+    "IsEngineer": {
+      "type": "boolean",
+      "x-nullable": true
+    },
+    "IsOperator": {
+      "type": "boolean",
+      "x-nullable": true
     },
     "KasseConfig": {
       "type": "object",
@@ -1121,6 +1489,20 @@ func init() {
         }
       }
     },
+    "LastName": {
+      "type": "string",
+      "minLength": 1,
+      "x-nullable": true
+    },
+    "Login": {
+      "type": "string",
+      "minLength": 4
+    },
+    "MiddleName": {
+      "type": "string",
+      "minLength": 1,
+      "x-nullable": true
+    },
     "MoneyReport": {
       "type": "object",
       "required": [
@@ -1146,6 +1528,11 @@ func init() {
           "type": "integer"
         }
       }
+    },
+    "Password": {
+      "type": "string",
+      "minLength": 4,
+      "pattern": "^[0123456789]{4,}$"
     },
     "ProgramInfo": {
       "type": "object",
@@ -1309,6 +1696,53 @@ func init() {
           }
         }
       }
+    },
+    "UserConfig": {
+      "type": "object",
+      "required": [
+        "login"
+      ],
+      "properties": {
+        "firstName": {
+          "$ref": "#/definitions/FirstName"
+        },
+        "isAdmin": {
+          "$ref": "#/definitions/IsAdmin"
+        },
+        "isEngineer": {
+          "$ref": "#/definitions/IsEngineer"
+        },
+        "isOperator": {
+          "$ref": "#/definitions/IsOperator"
+        },
+        "lastName": {
+          "$ref": "#/definitions/LastName"
+        },
+        "login": {
+          "$ref": "#/definitions/Login"
+        },
+        "middleName": {
+          "$ref": "#/definitions/MiddleName"
+        }
+      }
+    },
+    "UsersReport": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserConfig"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "pinCode": {
+      "type": "apiKey",
+      "name": "Pin",
+      "in": "header"
     }
   }
 }`))
@@ -1837,6 +2271,11 @@ func init() {
     },
     "/save-collection": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "saveCollection",
         "parameters": [
           {
@@ -1859,6 +2298,9 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
           },
           "404": {
             "description": "not found"
@@ -2301,6 +2743,11 @@ func init() {
     },
     "/status-collection": {
       "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "statusCollection",
         "responses": {
           "200": {
@@ -2308,6 +2755,344 @@ func init() {
             "schema": {
               "$ref": "#/definitions/StatusCollectionReport"
             }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getUser",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/UserConfig"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "login"
+              ],
+              "properties": {
+                "firstName": {
+                  "$ref": "#/definitions/FirstName"
+                },
+                "isAdmin": {
+                  "$ref": "#/definitions/IsAdmin"
+                },
+                "isEngineer": {
+                  "$ref": "#/definitions/IsEngineer"
+                },
+                "isOperator": {
+                  "$ref": "#/definitions/IsOperator"
+                },
+                "lastName": {
+                  "$ref": "#/definitions/LastName"
+                },
+                "login": {
+                  "$ref": "#/definitions/Login"
+                },
+                "middleName": {
+                  "$ref": "#/definitions/MiddleName"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "login",
+                "password"
+              ],
+              "properties": {
+                "firstName": {
+                  "$ref": "#/definitions/FirstName"
+                },
+                "isAdmin": {
+                  "$ref": "#/definitions/IsAdmin"
+                },
+                "isEngineer": {
+                  "$ref": "#/definitions/IsEngineer"
+                },
+                "isOperator": {
+                  "$ref": "#/definitions/IsOperator"
+                },
+                "lastName": {
+                  "$ref": "#/definitions/LastName"
+                },
+                "login": {
+                  "$ref": "#/definitions/Login"
+                },
+                "middleName": {
+                  "$ref": "#/definitions/MiddleName"
+                },
+                "password": {
+                  "$ref": "#/definitions/Password"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "login"
+              ],
+              "properties": {
+                "login": {
+                  "$ref": "#/definitions/Login"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/user-password": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "updateUserPassword",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "login",
+                "oldPassword",
+                "newPassword"
+              ],
+              "properties": {
+                "login": {
+                  "$ref": "#/definitions/Login"
+                },
+                "newPassword": {
+                  "$ref": "#/definitions/Password"
+                },
+                "oldPassword": {
+                  "$ref": "#/definitions/Password"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getUsers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/UsersReport"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -2368,9 +3153,26 @@ func init() {
         }
       }
     },
+    "FirstName": {
+      "type": "string",
+      "minLength": 1,
+      "x-nullable": true
+    },
     "Hash": {
       "type": "string",
       "minLength": 1
+    },
+    "IsAdmin": {
+      "type": "boolean",
+      "x-nullable": true
+    },
+    "IsEngineer": {
+      "type": "boolean",
+      "x-nullable": true
+    },
+    "IsOperator": {
+      "type": "boolean",
+      "x-nullable": true
     },
     "KasseConfig": {
       "type": "object",
@@ -2416,6 +3218,20 @@ func init() {
         }
       }
     },
+    "LastName": {
+      "type": "string",
+      "minLength": 1,
+      "x-nullable": true
+    },
+    "Login": {
+      "type": "string",
+      "minLength": 4
+    },
+    "MiddleName": {
+      "type": "string",
+      "minLength": 1,
+      "x-nullable": true
+    },
     "MoneyReport": {
       "type": "object",
       "required": [
@@ -2441,6 +3257,11 @@ func init() {
           "type": "integer"
         }
       }
+    },
+    "Password": {
+      "type": "string",
+      "minLength": 4,
+      "pattern": "^[0123456789]{4,}$"
     },
     "ProgramInfo": {
       "type": "object",
@@ -2604,6 +3425,53 @@ func init() {
           }
         }
       }
+    },
+    "UserConfig": {
+      "type": "object",
+      "required": [
+        "login"
+      ],
+      "properties": {
+        "firstName": {
+          "$ref": "#/definitions/FirstName"
+        },
+        "isAdmin": {
+          "$ref": "#/definitions/IsAdmin"
+        },
+        "isEngineer": {
+          "$ref": "#/definitions/IsEngineer"
+        },
+        "isOperator": {
+          "$ref": "#/definitions/IsOperator"
+        },
+        "lastName": {
+          "$ref": "#/definitions/LastName"
+        },
+        "login": {
+          "$ref": "#/definitions/Login"
+        },
+        "middleName": {
+          "$ref": "#/definitions/MiddleName"
+        }
+      }
+    },
+    "UsersReport": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserConfig"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "pinCode": {
+      "type": "apiKey",
+      "name": "Pin",
+      "in": "header"
     }
   }
 }`))

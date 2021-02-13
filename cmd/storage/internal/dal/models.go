@@ -6,6 +6,24 @@ import (
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 )
 
+func appSetUsers(v []resUser) []app.UserData {
+	var res []app.UserData
+	for i := range v {
+		res = append(res, app.UserData{
+			ID:         v[i].ID,
+			Login:      v[i].Login,
+			Password:   v[i].Password,
+			FirstName:  &v[i].FirstName,
+			MiddleName: &v[i].MiddleName,
+			LastName:   &v[i].LastName,
+			IsAdmin:    &v[i].IsAdmin,
+			IsOperator: &v[i].IsOperator,
+			IsEngineer: &v[i].IsEngineer,
+		})
+	}
+	return res
+}
+
 func appSetStation(v []resStation) []app.SetStation {
 	var res []app.SetStation
 	for i := range v {

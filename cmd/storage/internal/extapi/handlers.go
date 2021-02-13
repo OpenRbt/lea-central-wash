@@ -244,10 +244,11 @@ func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 	}
 }
 
-func (svc *service) saveCollection(params op.SaveCollectionParams) op.SaveCollectionResponder {
+func (svc *service) saveCollection(params op.SaveCollectionParams, auth *app.Auth) op.SaveCollectionResponder {
 	log.Info("save collection", "stationID", *params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+	log.Debug("save collection", "login", auth.Login, "isAdmin", auth.IsAdmin)
 
-	err := svc.app.SaveCollectionReport(app.StationID(*params.Args.ID))
+	err := svc.app.SaveCollectionReport(auth, app.StationID(*params.Args.ID))
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewSaveCollectionNoContent()
@@ -290,7 +291,8 @@ func (svc *service) status(params op.StatusParams) op.StatusResponder {
 	return op.NewStatusOK().WithPayload(svc.apiStatusReport(report))
 }
 
-func (svc *service) statusCollection(params op.StatusCollectionParams) op.StatusCollectionResponder {
+func (svc *service) statusCollection(params op.StatusCollectionParams, auth *app.Auth) op.StatusCollectionResponder {
+	log.Debug("status collection", "login", auth.Login, "isAdmin", auth.IsAdmin)
 	collection := svc.app.StatusCollection()
 	return op.NewStatusCollectionOK().WithPayload(apiStatusCollectionReport(collection))
 }
@@ -609,4 +611,129 @@ func (svc *service) cardReaderConfigByHash(params op.CardReaderConfigByHashParam
 		return op.NewCardReaderConfigByHashInternalServerError()
 	}
 
+}
+
+func (svc *service) getUsers(params op.GetUsersParams, auth *app.Auth) op.GetUsersResponder {
+	log.Debug("getUsers", "login", auth.Login, "isAdmin", auth.IsAdmin)
+	users, err := svc.app.Users(auth)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetUsersOK().WithPayload(apiUsersReport(users))
+	case app.ErrAccessDenied:
+		return op.NewGetUsersForbidden()
+	default:
+		return op.NewGetUsersInternalServerError()
+	}
+}
+
+func (svc *service) getUser(params op.GetUserParams, auth *app.Auth) op.GetUserResponder {
+	log.Debug("getUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
+	return op.NewGetUserOK().WithPayload(apiUserReport(app.UserData{
+		Login:      auth.Login,
+		FirstName:  &auth.FirstName,
+		MiddleName: &auth.MiddleName,
+		LastName:   &auth.LastName,
+		IsAdmin:    &auth.IsAdmin,
+		IsOperator: &auth.IsOperator,
+		IsEngineer: &auth.IsEngineer,
+	}))
+}
+
+func (svc *service) createUser(params op.CreateUserParams, auth *app.Auth) op.CreateUserResponder {
+	log.Debug("createUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
+	id, err := svc.app.CreateUser(app.UserData{
+		Login:      string(params.Args.Login),
+		Password:   string(params.Args.Password),
+		FirstName:  (*string)(params.Args.FirstName),
+		MiddleName: (*string)(params.Args.MiddleName),
+		LastName:   (*string)(params.Args.LastName),
+		IsAdmin:    (*bool)(params.Args.IsAdmin),
+		IsEngineer: (*bool)(params.Args.IsEngineer),
+		IsOperator: (*bool)(params.Args.IsOperator),
+	}, auth)
+	switch errors.Cause(err) {
+	case nil:
+		log.Debug("created user", "id", id)
+		return op.NewCreateUserCreated().WithPayload(&op.CreateUserCreatedBody{
+			ID: newInt64(int64(id)),
+		})
+	case app.ErrLoginNotUnique:
+		message := err.Error()
+		return op.NewCreateUserConflict().WithPayload(&op.CreateUserConflictBody{
+			Code:    newInt64(int64(op.CreateUserConflictCode)),
+			Message: &message,
+		})
+	case app.ErrAccessDenied:
+		return op.NewCreateUserForbidden()
+	default:
+		return op.NewCreateUserInternalServerError()
+	}
+
+}
+
+func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.UpdateUserResponder {
+	log.Debug("updateUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
+	id, err := svc.app.UpdateUser(app.UpdateUserData{
+		Login:      string(params.Args.Login),
+		FirstName:  (*string)(params.Args.FirstName),
+		MiddleName: (*string)(params.Args.MiddleName),
+		LastName:   (*string)(params.Args.LastName),
+		IsAdmin:    (*bool)(params.Args.IsAdmin),
+		IsOperator: (*bool)(params.Args.IsOperator),
+		IsEngineer: (*bool)(params.Args.IsEngineer),
+	}, auth)
+	switch errors.Cause(err) {
+	case nil:
+		log.Debug("updated user", "id", id)
+		return op.NewUpdateUserCreated().WithPayload(&op.UpdateUserCreatedBody{
+			ID: newInt64(int64(id)),
+		})
+	case app.ErrNotFound:
+		return op.NewUpdateUserNotFound()
+	case app.ErrAccessDenied:
+		return op.NewUpdateUserForbidden()
+	default:
+		return op.NewUpdateUserInternalServerError()
+	}
+}
+
+func (svc *service) updateUserPassword(params op.UpdateUserPasswordParams, auth *app.Auth) op.UpdateUserPasswordResponder {
+	log.Debug("updateUserPassword", "login", auth.Login, "isAdmin", auth.IsAdmin)
+	id, err := svc.app.UpdateUserPassword(app.UpdatePasswordData{
+		Login:       string(params.Args.Login),
+		OldPassword: string(params.Args.OldPassword),
+		NewPassword: string(params.Args.NewPassword),
+	}, auth)
+	switch errors.Cause(err) {
+	case nil:
+		log.Debug("updated user", "id", id)
+		return op.NewUpdateUserPasswordCreated().WithPayload(&op.UpdateUserPasswordCreatedBody{
+			ID: newInt64(int64(id)),
+		})
+	case app.ErrNotFound:
+		return op.NewUpdateUserPasswordNotFound()
+	case app.ErrAccessDenied:
+		return op.NewUpdateUserPasswordForbidden()
+	default:
+		return op.NewUpdateUserPasswordInternalServerError()
+	}
+}
+
+func (svc *service) deleteUser(params op.DeleteUserParams, auth *app.Auth) op.DeleteUserResponder {
+	log.Debug("deleteUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
+	err := svc.app.DeleteUser(string(params.Args.Login), auth)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewDeleteUserNoContent()
+	case app.ErrAccessDenied:
+		return op.NewDeleteUserForbidden()
+	case app.ErrMoneyCollectionFkey:
+		message := err.Error()
+		return op.NewDeleteUserConflict().WithPayload(&op.DeleteUserConflictBody{
+			Code:    newInt64(int64(op.DeleteUserConflictCode)),
+			Message: &message,
+		})
+	default:
+		return op.NewDeleteUserInternalServerError()
+	}
 }

@@ -9,10 +9,11 @@ import (
 	errors "github.com/go-openapi/errors"
 	runtime "github.com/go-openapi/runtime"
 
+	"github.com/DiaElectronics/lea-central-wash/storageapi"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
 )
 
-//go:generate swagger generate server --target ../../storageapi --name Storage --spec ../swagger.yml --api-package op --model-package model --exclude-main --strict
+//go:generate swagger generate server --target ../../storageapi --name Storage --spec ../swagger.yml --api-package op --model-package model --principal storageapi.Profile --exclude-main --strict
 
 func configureFlags(api *op.StorageAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
@@ -32,6 +33,16 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
+	// Applies when the "Pin" header is set
+	api.PinCodeAuth = func(token string) (*storageapi.Profile, error) {
+		return nil, errors.NotImplemented("api key auth (pinCode) Pin from header param [Pin] has not yet been implemented")
+	}
+
+	// Set your custom authorizer if needed. Default one is security.Authorized()
+	// Expected interface runtime.Authorizer
+	//
+	// Example:
+	// api.APIAuthorizer = security.Authorized()
 	api.AddServiceAmountHandler = op.AddServiceAmountHandlerFunc(func(params op.AddServiceAmountParams) op.AddServiceAmountResponder {
 		return op.AddServiceAmountNotImplemented()
 	})
@@ -41,11 +52,23 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.CardReaderConfigByHashHandler = op.CardReaderConfigByHashHandlerFunc(func(params op.CardReaderConfigByHashParams) op.CardReaderConfigByHashResponder {
 		return op.CardReaderConfigByHashNotImplemented()
 	})
+	api.CreateUserHandler = op.CreateUserHandlerFunc(func(params op.CreateUserParams, principal *storageapi.Profile) op.CreateUserResponder {
+		return op.CreateUserNotImplemented()
+	})
 	api.DelStationHandler = op.DelStationHandlerFunc(func(params op.DelStationParams) op.DelStationResponder {
 		return op.DelStationNotImplemented()
 	})
+	api.DeleteUserHandler = op.DeleteUserHandlerFunc(func(params op.DeleteUserParams, principal *storageapi.Profile) op.DeleteUserResponder {
+		return op.DeleteUserNotImplemented()
+	})
 	api.GetPingHandler = op.GetPingHandlerFunc(func(params op.GetPingParams) op.GetPingResponder {
 		return op.GetPingNotImplemented()
+	})
+	api.GetUserHandler = op.GetUserHandlerFunc(func(params op.GetUserParams, principal *storageapi.Profile) op.GetUserResponder {
+		return op.GetUserNotImplemented()
+	})
+	api.GetUsersHandler = op.GetUsersHandlerFunc(func(params op.GetUsersParams, principal *storageapi.Profile) op.GetUsersResponder {
+		return op.GetUsersNotImplemented()
 	})
 	api.InfoHandler = op.InfoHandlerFunc(func(params op.InfoParams) op.InfoResponder {
 		return op.InfoNotImplemented()
@@ -77,7 +100,7 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.SaveHandler = op.SaveHandlerFunc(func(params op.SaveParams) op.SaveResponder {
 		return op.SaveNotImplemented()
 	})
-	api.SaveCollectionHandler = op.SaveCollectionHandlerFunc(func(params op.SaveCollectionParams) op.SaveCollectionResponder {
+	api.SaveCollectionHandler = op.SaveCollectionHandlerFunc(func(params op.SaveCollectionParams, principal *storageapi.Profile) op.SaveCollectionResponder {
 		return op.SaveCollectionNotImplemented()
 	})
 	api.SaveIfNotExistsHandler = op.SaveIfNotExistsHandlerFunc(func(params op.SaveIfNotExistsParams) op.SaveIfNotExistsResponder {
@@ -119,8 +142,14 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.StatusHandler = op.StatusHandlerFunc(func(params op.StatusParams) op.StatusResponder {
 		return op.StatusNotImplemented()
 	})
-	api.StatusCollectionHandler = op.StatusCollectionHandlerFunc(func(params op.StatusCollectionParams) op.StatusCollectionResponder {
+	api.StatusCollectionHandler = op.StatusCollectionHandlerFunc(func(params op.StatusCollectionParams, principal *storageapi.Profile) op.StatusCollectionResponder {
 		return op.StatusCollectionNotImplemented()
+	})
+	api.UpdateUserHandler = op.UpdateUserHandlerFunc(func(params op.UpdateUserParams, principal *storageapi.Profile) op.UpdateUserResponder {
+		return op.UpdateUserNotImplemented()
+	})
+	api.UpdateUserPasswordHandler = op.UpdateUserPasswordHandlerFunc(func(params op.UpdateUserPasswordParams, principal *storageapi.Profile) op.UpdateUserPasswordResponder {
+		return op.UpdateUserPasswordNotImplemented()
 	})
 
 	api.ServerShutdown = func() {}

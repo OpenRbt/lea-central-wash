@@ -32,6 +32,13 @@ func (o *StatusCollectionReader) ReadResponse(response runtime.ClientResponse, c
 		}
 		return result, nil
 
+	case 401:
+		result := NewStatusCollectionUnauthorized()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	case 500:
 		result := NewStatusCollectionInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -69,6 +76,27 @@ func (o *StatusCollectionOK) readResponse(response runtime.ClientResponse, consu
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
+
+	return nil
+}
+
+// NewStatusCollectionUnauthorized creates a StatusCollectionUnauthorized with default headers values
+func NewStatusCollectionUnauthorized() *StatusCollectionUnauthorized {
+	return &StatusCollectionUnauthorized{}
+}
+
+/*StatusCollectionUnauthorized handles this case with default header values.
+
+PIN is missing or invalid
+*/
+type StatusCollectionUnauthorized struct {
+}
+
+func (o *StatusCollectionUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /status-collection][%d] statusCollectionUnauthorized ", 401)
+}
+
+func (o *StatusCollectionUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

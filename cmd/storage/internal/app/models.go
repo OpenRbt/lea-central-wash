@@ -2,6 +2,34 @@ package app
 
 import "time"
 
+type UserData struct {
+	ID         int
+	Login      string
+	Password   string
+	FirstName  *string
+	MiddleName *string
+	LastName   *string
+	IsAdmin    *bool
+	IsEngineer *bool
+	IsOperator *bool
+}
+
+type UpdateUserData struct {
+	Login      string
+	FirstName  *string
+	MiddleName *string
+	LastName   *string
+	IsAdmin    *bool
+	IsEngineer *bool
+	IsOperator *bool
+}
+
+type UpdatePasswordData struct {
+	Login       string
+	OldPassword string
+	NewPassword string
+}
+
 type StationData struct {
 	ID             StationID
 	Name           string

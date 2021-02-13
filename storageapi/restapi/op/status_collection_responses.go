@@ -8,10 +8,9 @@ package op
 import (
 	"net/http"
 
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	"github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // StatusCollectionOKCode is the HTTP code returned for type StatusCollectionOK
@@ -59,6 +58,32 @@ func (o *StatusCollectionOK) WriteResponse(rw http.ResponseWriter, producer runt
 }
 
 func (o *StatusCollectionOK) StatusCollectionResponder() {}
+
+// StatusCollectionUnauthorizedCode is the HTTP code returned for type StatusCollectionUnauthorized
+const StatusCollectionUnauthorizedCode int = 401
+
+/*StatusCollectionUnauthorized PIN is missing or invalid
+
+swagger:response statusCollectionUnauthorized
+*/
+type StatusCollectionUnauthorized struct {
+}
+
+// NewStatusCollectionUnauthorized creates StatusCollectionUnauthorized with default headers values
+func NewStatusCollectionUnauthorized() *StatusCollectionUnauthorized {
+
+	return &StatusCollectionUnauthorized{}
+}
+
+// WriteResponse to the client
+func (o *StatusCollectionUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(401)
+}
+
+func (o *StatusCollectionUnauthorized) StatusCollectionResponder() {}
 
 // StatusCollectionInternalServerErrorCode is the HTTP code returned for type StatusCollectionInternalServerError
 const StatusCollectionInternalServerErrorCode int = 500
