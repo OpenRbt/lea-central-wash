@@ -87,19 +87,19 @@ begin
   LastNameEdit.Text := _lastName;
   if _isAdmin then
   begin
-    StatusEdit.ItemIndex := UsersForm.ADMIN_ROLE;
+    StatusEdit.ItemIndex := ADMIN_ROLE;
   end
   else if _isEngineer then
   begin
-    StatusEdit.ItemIndex := UsersForm.ENGINEER_ROLE;
+    StatusEdit.ItemIndex := ENGINEER_ROLE;
   end
   else if _isOperator then
   begin
-    StatusEdit.ItemIndex := UsersForm.OPERATOR_ROLE;
+    StatusEdit.ItemIndex := OPERATOR_ROLE;
   end
   else
   begin
-    StatusEdit.ItemIndex := UsersForm.NO_ROLE;
+    StatusEdit.ItemIndex := NO_ROLE;
   end;
 end;
 

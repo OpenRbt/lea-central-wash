@@ -85,8 +85,7 @@ end;
 procedure TUserEditForm.PasswordClick(Sender: TObject);
 begin
   UserEditPasswordForm.Init(_login, _firstName, _middleName, _lastName, _isAdmin, _isEngineer, _isOperator);
-  ModalResult := UserEditPasswordForm.ShowModal;
-  UserEditForm.Close;
+  UserEditPasswordForm.ShowModal;
 end;
 
 procedure TUserEditForm.SaveClick(Sender: TObject);

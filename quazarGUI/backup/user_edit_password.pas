@@ -109,7 +109,6 @@ end;
 
 procedure TUserEditPasswordForm.CancelClick(Sender: TObject);
 begin
-  Inherited;
   ModalResult := 0;
   UserEditPasswordForm.Close;
 end;

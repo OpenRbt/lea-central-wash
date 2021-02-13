@@ -81,7 +81,12 @@ begin
         begin
           raise Exception.Create(IntToStr(ResponseStatusCode));
         end;
+
         ModalResult := 1;
+        if UserEditPasswordForm.OldPasswordEdit.Text = GetPinCode() then
+        begin
+          SetPinCode(UserEditPasswordForm.NewPasswordEdit.Text);
+        end;
 
       except
         case ResponseStatusCode of
@@ -92,8 +97,7 @@ begin
           500: begin ModalResult := 0; ShowMessage('Server Error: 500'); end;
           else
             begin
-              ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
-              sLineBreak + ResponseStatusText);
+              ShowMessage(message);
               ModalResult := 0;
             end;
         end;
@@ -110,7 +114,6 @@ end;
 
 procedure TUserEditPasswordForm.CancelClick(Sender: TObject);
 begin
-  Inherited;
   ModalResult := 0;
   UserEditPasswordForm.Close;
 end;

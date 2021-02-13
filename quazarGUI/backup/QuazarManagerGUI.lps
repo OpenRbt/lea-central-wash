@@ -9,7 +9,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="17"/>
-        <UsageCount Value="63"/>
+        <UsageCount Value="65"/>
       </Unit0>
       <Unit1>
         <Filename Value="login.pas"/>
@@ -18,8 +18,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <TopLine Value="19"/>
-        <CursorPos X="3" Y="29"/>
-        <UsageCount Value="63"/>
+        <CursorPos X="36" Y="49"/>
+        <UsageCount Value="65"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -30,9 +30,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Base"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="66"/>
+        <TopLine Value="54"/>
         <CursorPos X="5" Y="56"/>
-        <UsageCount Value="63"/>
+        <UsageCount Value="65"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -44,9 +44,8 @@
         <EditorIndex Value="7"/>
         <TopLine Value="82"/>
         <CursorPos X="33" Y="103"/>
-        <UsageCount Value="63"/>
+        <UsageCount Value="65"/>
         <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="main.pas"/>
@@ -57,7 +56,7 @@
         <EditorIndex Value="2"/>
         <TopLine Value="61"/>
         <CursorPos X="16" Y="86"/>
-        <UsageCount Value="52"/>
+        <UsageCount Value="54"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -69,7 +68,7 @@
         <EditorIndex Value="3"/>
         <TopLine Value="12"/>
         <CursorPos X="51" Y="50"/>
-        <UsageCount Value="52"/>
+        <UsageCount Value="54"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
@@ -81,7 +80,7 @@
         <EditorIndex Value="4"/>
         <TopLine Value="16"/>
         <CursorPos X="51" Y="51"/>
-        <UsageCount Value="52"/>
+        <UsageCount Value="54"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
@@ -93,7 +92,7 @@
         <EditorIndex Value="5"/>
         <TopLine Value="13"/>
         <CursorPos X="54" Y="51"/>
-        <UsageCount Value="52"/>
+        <UsageCount Value="54"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
@@ -105,7 +104,7 @@
         <EditorIndex Value="6"/>
         <TopLine Value="13"/>
         <CursorPos X="51" Y="51"/>
-        <UsageCount Value="52"/>
+        <UsageCount Value="54"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -117,7 +116,7 @@
         <EditorIndex Value="12"/>
         <TopLine Value="41"/>
         <CursorPos X="57" Y="51"/>
-        <UsageCount Value="52"/>
+        <UsageCount Value="54"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
@@ -127,11 +126,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="8"/>
-        <TopLine Value="59"/>
-        <CursorPos X="29" Y="102"/>
-        <UsageCount Value="37"/>
+        <TopLine Value="80"/>
+        <CursorPos X="33" Y="121"/>
+        <UsageCount Value="39"/>
         <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit10>
       <Unit11>
         <Filename Value="user_add.pas"/>
@@ -142,7 +140,7 @@
         <EditorIndex Value="11"/>
         <TopLine Value="82"/>
         <CursorPos X="43" Y="100"/>
-        <UsageCount Value="35"/>
+        <UsageCount Value="37"/>
         <Loaded Value="True"/>
       </Unit11>
       <Unit12>
@@ -152,121 +150,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="10"/>
-        <TopLine Value="98"/>
-        <CursorPos X="53" Y="129"/>
-        <UsageCount Value="31"/>
+        <TopLine Value="28"/>
+        <CursorPos X="100" Y="99"/>
+        <UsageCount Value="33"/>
         <Loaded Value="True"/>
       </Unit12>
       <Unit13>
-        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/control.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="2890"/>
-        <CursorPos Y="2915"/>
-        <UsageCount Value="10"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/customform.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="659"/>
-        <CursorPos Y="681"/>
-        <UsageCount Value="8"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="../lea-central-wash/lazarusGUI/manager.pas"/>
-        <EditorIndex Value="14"/>
-        <TopLine Value="26"/>
-        <UsageCount Value="26"/>
-        <Loaded Value="True"/>
-      </Unit15>
-      <Unit16>
-        <Filename Value="../lea-central-wash/lazarusGUI/clientapi.pas"/>
-        <UnitName Value="clientAPI"/>
-        <EditorIndex Value="13"/>
-        <TopLine Value="227"/>
-        <CursorPos X="46" Y="265"/>
-        <UsageCount Value="27"/>
-        <Loaded Value="True"/>
-      </Unit16>
-      <Unit17>
-        <Filename Value="/usr/share/fpcsrc/3.0.4/packages/fcl-web/src/base/fphttpclient.pp"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="163"/>
-        <CursorPos X="14" Y="186"/>
-        <UsageCount Value="7"/>
-      </Unit17>
-      <Unit18>
-        <Filename Value="../lea-central-wash/lazarusGUI/collection.pas"/>
-        <EditorIndex Value="15"/>
-        <TopLine Value="73"/>
-        <CursorPos X="23" Y="15"/>
-        <UsageCount Value="27"/>
-        <Loaded Value="True"/>
-      </Unit18>
-      <Unit19>
-        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/wincontrol.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="7410"/>
-        <CursorPos Y="7436"/>
-        <UsageCount Value="7"/>
-      </Unit19>
-      <Unit20>
-        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/screen.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="760"/>
-        <CursorPos Y="788"/>
-        <UsageCount Value="7"/>
-      </Unit20>
-      <Unit21>
-        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/intfbasewinapi.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1667"/>
-        <CursorPos Y="1698"/>
-        <UsageCount Value="7"/>
-      </Unit21>
-      <Unit22>
-        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/monitor.inc"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos Y="21"/>
-        <UsageCount Value="7"/>
-      </Unit22>
-      <Unit23>
-        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/winapi.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="408"/>
-        <CursorPos Y="433"/>
-        <UsageCount Value="7"/>
-      </Unit23>
-      <Unit24>
-        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/interfaces/gtk2/gtk2winapi.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="4974"/>
-        <CursorPos Y="5004"/>
-        <UsageCount Value="7"/>
-      </Unit24>
-      <Unit25>
-        <Filename Value="../lea-central-wash/lazarusGUI/superobject.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="274"/>
-        <UsageCount Value="7"/>
-      </Unit25>
-      <Unit26>
-        <Filename Value="../lea-central-wash/lazarusGUI/source.pas"/>
-        <UnitName Value="Source"/>
-        <EditorIndex Value="16"/>
-        <TopLine Value="352"/>
-        <CursorPos X="23" Y="19"/>
-        <UsageCount Value="26"/>
-        <Loaded Value="True"/>
-      </Unit26>
-      <Unit27>
-        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/grids.pas"/>
-        <UnitName Value="Grids"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="3001"/>
-        <CursorPos Y="3026"/>
-        <UsageCount Value="8"/>
-      </Unit27>
-      <Unit28>
         <Filename Value="user_edit_password.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="UserEditPasswordForm"/>
@@ -274,11 +163,116 @@
         <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="9"/>
-        <TopLine Value="60"/>
-        <CursorPos X="46" Y="96"/>
-        <UsageCount Value="23"/>
+        <TopLine Value="54"/>
+        <CursorPos X="64" Y="76"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/control.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2890"/>
+        <CursorPos Y="2915"/>
+        <UsageCount Value="10"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/customform.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="659"/>
+        <CursorPos Y="681"/>
+        <UsageCount Value="8"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../lea-central-wash/lazarusGUI/manager.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="26"/>
+        <UsageCount Value="27"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="../lea-central-wash/lazarusGUI/clientapi.pas"/>
+        <UnitName Value="clientAPI"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="227"/>
+        <CursorPos X="46" Y="265"/>
+        <UsageCount Value="28"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="/usr/share/fpcsrc/3.0.4/packages/fcl-web/src/base/fphttpclient.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="163"/>
+        <CursorPos X="14" Y="186"/>
+        <UsageCount Value="7"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="../lea-central-wash/lazarusGUI/collection.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="73"/>
+        <CursorPos X="23" Y="15"/>
+        <UsageCount Value="28"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/wincontrol.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="7410"/>
+        <CursorPos Y="7436"/>
+        <UsageCount Value="7"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/screen.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="760"/>
+        <CursorPos Y="788"/>
+        <UsageCount Value="7"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/intfbasewinapi.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1667"/>
+        <CursorPos Y="1698"/>
+        <UsageCount Value="7"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/monitor.inc"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos Y="21"/>
+        <UsageCount Value="7"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/winapi.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="408"/>
+        <CursorPos Y="433"/>
+        <UsageCount Value="7"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/interfaces/gtk2/gtk2winapi.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="4974"/>
+        <CursorPos Y="5004"/>
+        <UsageCount Value="7"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="../lea-central-wash/lazarusGUI/superobject.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="274"/>
+        <UsageCount Value="7"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="../lea-central-wash/lazarusGUI/source.pas"/>
+        <UnitName Value="Source"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="352"/>
+        <CursorPos X="23" Y="19"/>
+        <UsageCount Value="27"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/grids.pas"/>
+        <UnitName Value="Grids"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="3001"/>
+        <CursorPos Y="3026"/>
+        <UsageCount Value="8"/>
       </Unit28>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">

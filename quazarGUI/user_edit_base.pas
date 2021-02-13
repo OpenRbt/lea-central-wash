@@ -27,6 +27,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure Init(login, first, middle, last: string; isAdmin, isEngineer, isOperator: boolean);
 
+    procedure SetPinCode(newCode: string);
     function GetPinCode(): string;
     function GetServerEndpoint(): string;
 
@@ -113,6 +114,11 @@ begin
   _isAdmin := isAdmin;
   _isEngineer := isEngineer;
   _isOperator := isOperator;
+end;
+
+procedure TUserEditBaseForm.SetPinCode(newCode: string);
+begin
+  UsersForm.SetPinCode(newCode);
 end;
 
 function TUserEditBaseForm.GetPinCode(): string;

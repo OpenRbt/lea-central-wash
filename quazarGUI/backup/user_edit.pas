@@ -86,7 +86,6 @@ procedure TUserEditForm.PasswordClick(Sender: TObject);
 begin
   UserEditPasswordForm.Init(_login, _firstName, _middleName, _lastName, _isAdmin, _isEngineer, _isOperator);
   ModalResult := UserEditPasswordForm.ShowModal;
-  UserEditForm.Close;
 end;
 
 procedure TUserEditForm.SaveClick(Sender: TObject);
@@ -114,19 +113,19 @@ begin
         begin
           userJson.Add('lastName', UserEditForm.LastNameEdit.Text);
         end;
-        if UserEditForm.StatusEdit.ItemIndex = UsersForm.ADMIN_ROLE then
+        if UserEditForm.StatusEdit.ItemIndex = ADMIN_ROLE then
         begin
             userJson.Add('isAdmin', true);
             userJson.Add('isEngineer', false);
             userJson.Add('isOperator', false);
         end
-        else if UserEditForm.StatusEdit.ItemIndex = UsersForm.ENGINEER_ROLE then
+        else if UserEditForm.StatusEdit.ItemIndex = ENGINEER_ROLE then
         begin
             userJson.Add('isAdmin', false);
             userJson.Add('isEngineer', true);
             userJson.Add('isOperator', false);
         end
-        else if UserEditForm.StatusEdit.ItemIndex = UsersForm.OPERATOR_ROLE then
+        else if UserEditForm.StatusEdit.ItemIndex = OPERATOR_ROLE then
         begin
             userJson.Add('isAdmin', false);
             userJson.Add('isEngineer', false);
