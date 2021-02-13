@@ -1,0 +1,48 @@
+object LoginForm: TLoginForm
+  Left = 982
+  Height = 90
+  Top = 322
+  Width = 360
+  BorderStyle = bsDialog
+  Caption = 'Login'
+  ClientHeight = 90
+  ClientWidth = 360
+  OnCreate = FormCreate
+  LCLVersion = '2.0.6.0'
+  object PINEdit: TEdit
+    Left = 70
+    Height = 43
+    Top = 20
+    Width = 168
+    Alignment = taCenter
+    AutoSize = False
+    EchoMode = emPassword
+    MaxLength = 4
+    OnChange = PINEditChange
+    ParentShowHint = False
+    PasswordChar = '*'
+    TabOrder = 0
+  end
+  object PINLabel: TLabel
+    Left = 20
+    Height = 30
+    Top = 29
+    Width = 50
+    AutoSize = False
+    Caption = 'PIN: '
+    Font.Height = -21
+    ParentColor = False
+    ParentFont = False
+  end
+  object LognBtn: TButton
+    Left = 250
+    Height = 40
+    Top = 21
+    Width = 95
+    Caption = 'Login'
+    Font.Height = -21
+    OnClick = LognBtnClick
+    ParentFont = False
+    TabOrder = 1
+  end
+end

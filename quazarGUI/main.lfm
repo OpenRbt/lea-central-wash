@@ -1,0 +1,19 @@
+inherited MainForm: TMainForm
+  Left = 387
+  Top = 66
+  OnActivate = FormShow
+  inherited NotAuthorized: TStaticText
+    TabOrder = 9
+  end
+  object Placeholder: TStaticText[9]
+    Left = 500
+    Height = 200
+    Top = 300
+    Width = 410
+    Caption = 'M A I N'
+    Font.Color = clGrayText
+    Font.Height = -128
+    ParentFont = False
+    TabOrder = 8
+  end
+end

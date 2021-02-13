@@ -1,0 +1,29 @@
+inherited UserEditForm: TUserEditForm
+  Height = 280
+  Top = 140
+  ClientHeight = 280
+  inherited Save: TButton
+    OnClick = SaveClick
+  end
+  inherited Cancel: TButton
+    Top = 239
+  end
+  object Password: TButton[10]
+    Left = 96
+    Height = 33
+    Top = 240
+    Width = 104
+    Caption = 'Пароль ...'
+    OnClick = PasswordClick
+    TabOrder = 6
+  end
+  object DeleteBtn: TButton[11]
+    Left = 208
+    Height = 34
+    Top = 200
+    Width = 104
+    Caption = 'Удалить'
+    OnClick = DeleteBtnClick
+    TabOrder = 7
+  end
+end

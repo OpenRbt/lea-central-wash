@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <Version Value="11"/>
+    <BuildModes Active="Default"/>
+    <Units Count="29">
+      <Unit0>
+        <Filename Value="QuazarManagerGUI.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos Y="17"/>
+        <UsageCount Value="63"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="login.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="LoginForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <TopLine Value="19"/>
+        <CursorPos X="3" Y="29"/>
+        <UsageCount Value="63"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="base.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="BaseForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Base"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="66"/>
+        <CursorPos X="5" Y="56"/>
+        <UsageCount Value="63"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="users.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="UsersForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="82"/>
+        <CursorPos X="33" Y="103"/>
+        <UsageCount Value="63"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="main.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MainForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="61"/>
+        <CursorPos X="16" Y="86"/>
+        <UsageCount Value="52"/>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="stations.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="StationsForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="12"/>
+        <CursorPos X="51" Y="50"/>
+        <UsageCount Value="52"/>
+        <Loaded Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="programs.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProgramsForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="16"/>
+        <CursorPos X="51" Y="51"/>
+        <UsageCount Value="52"/>
+        <Loaded Value="True"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="dosatrons.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="DosatronsForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="13"/>
+        <CursorPos X="54" Y="51"/>
+        <UsageCount Value="52"/>
+        <Loaded Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="settings.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SettingsForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="13"/>
+        <CursorPos X="51" Y="51"/>
+        <UsageCount Value="52"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="statistics.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="StatisticsForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="12"/>
+        <TopLine Value="41"/>
+        <CursorPos X="57" Y="51"/>
+        <UsageCount Value="52"/>
+        <Loaded Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="user_edit_base.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="UserEditBaseForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="59"/>
+        <CursorPos X="29" Y="102"/>
+        <UsageCount Value="37"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="user_add.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="UserAddForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="11"/>
+        <TopLine Value="82"/>
+        <CursorPos X="67" Y="116"/>
+        <UsageCount Value="35"/>
+        <Loaded Value="True"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="user_edit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="UserEditForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="10"/>
+        <TopLine Value="98"/>
+        <CursorPos X="53" Y="129"/>
+        <UsageCount Value="31"/>
+        <Loaded Value="True"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/control.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2890"/>
+        <CursorPos Y="2915"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/customform.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="659"/>
+        <CursorPos Y="681"/>
+        <UsageCount Value="8"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../lea-central-wash/lazarusGUI/manager.pas"/>
+        <EditorIndex Value="14"/>
+        <TopLine Value="26"/>
+        <UsageCount Value="26"/>
+        <Loaded Value="True"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../lea-central-wash/lazarusGUI/clientapi.pas"/>
+        <UnitName Value="clientAPI"/>
+        <EditorIndex Value="13"/>
+        <TopLine Value="106"/>
+        <CursorPos X="26" Y="115"/>
+        <UsageCount Value="27"/>
+        <Loaded Value="True"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="/usr/share/fpcsrc/3.0.4/packages/fcl-web/src/base/fphttpclient.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="163"/>
+        <CursorPos X="14" Y="186"/>
+        <UsageCount Value="7"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="../lea-central-wash/lazarusGUI/collection.pas"/>
+        <EditorIndex Value="15"/>
+        <TopLine Value="73"/>
+        <CursorPos X="23" Y="15"/>
+        <UsageCount Value="27"/>
+        <Loaded Value="True"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/wincontrol.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="7410"/>
+        <CursorPos Y="7436"/>
+        <UsageCount Value="7"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/screen.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="760"/>
+        <CursorPos Y="788"/>
+        <UsageCount Value="7"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/intfbasewinapi.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1667"/>
+        <CursorPos Y="1698"/>
+        <UsageCount Value="7"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/monitor.inc"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos Y="21"/>
+        <UsageCount Value="7"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/winapi.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="408"/>
+        <CursorPos Y="433"/>
+        <UsageCount Value="7"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/interfaces/gtk2/gtk2winapi.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="4974"/>
+        <CursorPos Y="5004"/>
+        <UsageCount Value="7"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="../lea-central-wash/lazarusGUI/superobject.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="274"/>
+        <UsageCount Value="7"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="../lea-central-wash/lazarusGUI/source.pas"/>
+        <UnitName Value="Source"/>
+        <EditorIndex Value="16"/>
+        <TopLine Value="352"/>
+        <CursorPos X="23" Y="19"/>
+        <UsageCount Value="26"/>
+        <Loaded Value="True"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="/usr/lib/lazarus/2.0.6/lcl/grids.pas"/>
+        <UnitName Value="Grids"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="3001"/>
+        <CursorPos Y="3026"/>
+        <UsageCount Value="8"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="user_edit_password.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="UserEditPasswordForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="9"/>
+        <TopLine Value="56"/>
+        <CursorPos X="3" Y="41"/>
+        <UsageCount Value="23"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit28>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="user_add.pas"/>
+        <Caret Line="109" TopLine="75"/>
+      </Position1>
+      <Position2>
+        <Filename Value="user_add.pas"/>
+        <Caret Line="116" TopLine="82"/>
+      </Position2>
+      <Position3>
+        <Filename Value="user_add.pas"/>
+        <Caret Line="115" TopLine="82"/>
+      </Position3>
+      <Position4>
+        <Filename Value="user_add.pas"/>
+        <Caret Line="116" TopLine="82"/>
+      </Position4>
+      <Position5>
+        <Filename Value="user_add.pas"/>
+        <Caret Line="115" TopLine="82"/>
+      </Position5>
+      <Position6>
+        <Filename Value="user_add.pas"/>
+        <Caret Line="116" TopLine="82"/>
+      </Position6>
+      <Position7>
+        <Filename Value="user_add.pas"/>
+        <Caret Line="115" TopLine="82"/>
+      </Position7>
+      <Position8>
+        <Filename Value="user_add.pas"/>
+        <Caret Line="84" Column="36" TopLine="77"/>
+      </Position8>
+      <Position9>
+        <Filename Value="user_add.pas"/>
+        <Caret Line="91" Column="29" TopLine="79"/>
+      </Position9>
+      <Position10>
+        <Filename Value="user_add.pas"/>
+        <Caret Line="82" Column="9" TopLine="77"/>
+      </Position10>
+      <Position11>
+        <Filename Value="user_add.pas"/>
+        <Caret Line="81" Column="9" TopLine="67"/>
+      </Position11>
+      <Position12>
+        <Filename Value="users.pas"/>
+        <Caret Line="254" Column="81" TopLine="238"/>
+      </Position12>
+      <Position13>
+        <Filename Value="user_edit_password.pas"/>
+        <Caret Line="12" Column="94"/>
+      </Position13>
+      <Position14>
+        <Filename Value="user_edit_password.pas"/>
+        <Caret Line="34" Column="71"/>
+      </Position14>
+      <Position15>
+        <Filename Value="user_edit_password.pas"/>
+        <Caret Line="46" Column="19"/>
+      </Position15>
+      <Position16>
+        <Filename Value="user_edit.pas"/>
+        <Caret Line="31" Column="60" TopLine="8"/>
+      </Position16>
+      <Position17>
+        <Filename Value="user_edit.pas"/>
+        <Caret Line="87" Column="22" TopLine="51"/>
+      </Position17>
+      <Position18>
+        <Filename Value="user_edit_password.pas"/>
+        <Caret Line="21" Column="54"/>
+      </Position18>
+      <Position19>
+        <Filename Value="user_edit_password.pas"/>
+        <Caret Line="23" Column="52" TopLine="5"/>
+      </Position19>
+      <Position20>
+        <Filename Value="user_edit_password.pas"/>
+        <Caret Line="52" Column="3" TopLine="5"/>
+      </Position20>
+      <Position21>
+        <Filename Value="user_edit_password.pas"/>
+        <Caret Line="100" Column="20" TopLine="71"/>
+      </Position21>
+      <Position22>
+        <Filename Value="user_edit_password.pas"/>
+        <Caret Line="110" Column="6" TopLine="74"/>
+      </Position22>
+      <Position23>
+        <Filename Value="user_edit_password.pas"/>
+        <Caret Line="21" Column="74"/>
+      </Position23>
+      <Position24>
+        <Filename Value="user_edit_password.pas"/>
+        <Caret Line="9" Column="51"/>
+      </Position24>
+      <Position25>
+        <Filename Value="user_edit_password.pas"/>
+        <Caret Line="63" Column="55" TopLine="33"/>
+      </Position25>
+      <Position26>
+        <Filename Value="user_edit_password.pas"/>
+        <Caret Line="94" Column="18" TopLine="70"/>
+      </Position26>
+      <Position27>
+        <Filename Value="user_edit_password.pas"/>
+        <Caret Line="90" Column="73" TopLine="57"/>
+      </Position27>
+      <Position28>
+        <Filename Value="user_add.pas"/>
+        <Caret Line="34" Column="3" TopLine="17"/>
+      </Position28>
+      <Position29>
+        <Filename Value="user_edit.pas"/>
+        <Caret Line="129" Column="53" TopLine="98"/>
+      </Position29>
+      <Position30>
+        <Filename Value="user_edit_base.pas"/>
+        <Caret Line="74" Column="29" TopLine="46"/>
+      </Position30>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="0" ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+</CONFIG>
