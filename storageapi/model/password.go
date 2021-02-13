@@ -24,7 +24,7 @@ func (m Password) Validate(formats strfmt.Registry) error {
 		return err
 	}
 
-	if err := validate.Pattern("", "body", string(m), `^[0123456789]{4}$`); err != nil {
+	if err := validate.Pattern("", "body", string(m), `^[0123456789]{4,}$`); err != nil {
 		return err
 	}
 

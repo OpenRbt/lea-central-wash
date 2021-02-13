@@ -1532,7 +1532,7 @@ func init() {
     "Password": {
       "type": "string",
       "minLength": 4,
-      "pattern": "^[0123456789]{4}$"
+      "pattern": "^[0123456789]{4,}$"
     },
     "ProgramInfo": {
       "type": "object",
@@ -3261,7 +3261,7 @@ func init() {
     "Password": {
       "type": "string",
       "minLength": 4,
-      "pattern": "^[0123456789]{4}$"
+      "pattern": "^[0123456789]{4,}$"
     },
     "ProgramInfo": {
       "type": "object",

@@ -228,7 +228,7 @@ definitions:
   Password:
     type: string
     minLength: 4
-    pattern: '^[0123456789]{4}$'
+    pattern: '^[0123456789]{4,}$'
 
   FirstName:
     type: string
