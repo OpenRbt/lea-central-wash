@@ -1,17 +1,75 @@
 inherited SettingsForm: TSettingsForm
   OnActivate = FormShow
-  inherited NotAuthorized: TStaticText
-    TabOrder = 9
-  end
-  object Placeholder: TStaticText[9]
-    Left = 375
-    Height = 200
-    Top = 300
-    Width = 810
-    Caption = 'S E T T I N G S'
-    Font.Color = clGrayText
-    Font.Height = -128
+  OnCreate = FormCreate
+  object StationsGrid: TStringGrid[9]
+    Left = 288
+    Height = 552
+    Top = 240
+    Width = 982
+    AlternateColor = cl3DLight
+    AutoEdit = False
+    Color = clWhite
+    ColCount = 4
+    Columns = <    
+      item
+        Font.Height = -24
+        MinSize = 0
+        Title.Alignment = taCenter
+        Title.Caption = 'Список постов'
+        Width = 350
+      end    
+      item
+        Font.Height = -24
+        MinSize = 0
+        Title.Alignment = taCenter
+        Title.Caption = 'Адрес'
+        Width = 350
+      end    
+      item
+        Alignment = taCenter
+        Font.Height = -24
+        MinSize = 0
+        Title.Alignment = taCenter
+        Title.Caption = 'Статус'
+        Width = 178
+      end    
+      item
+        ButtonStyle = cbsButtonColumn
+        Font.Height = -43
+        MinSize = 0
+        ReadOnly = True
+        Title.Font.Height = -27
+        Title.Caption = ''
+        Width = 92
+      end>
+    DefaultRowHeight = 50
+    FixedColor = clBackground
+    FixedCols = 0
+    Flat = True
+    Font.Height = -27
+    Font.Style = [fsBold]
+    GridLineWidth = 2
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goAutoAddRows, goSmoothScroll]
     ParentFont = False
-    TabOrder = 8
+    RowCount = 13
+    ScrollBars = ssAutoVertical
+    TabOrder = 9
+    TitleFont.Height = -27
+    TitleFont.Style = [fsBold]
+    TitleStyle = tsStandard
+    OnDrawCell = StationsGridDrawCell
+    OnButtonClick = StationsGridButtonClick
+    ColWidths = (
+      350
+      350
+      178
+      92
+    )
+  end
+  object UpdateTimer: TTimer[10]
+    Enabled = False
+    OnTimer = UpdateCall
+    left = 10
+    top = 10
   end
 end

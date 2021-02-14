@@ -81,7 +81,12 @@ begin
         begin
           raise Exception.Create(IntToStr(ResponseStatusCode));
         end;
+
         ModalResult := 1;
+        if UserEditPasswordForm.OldPasswordEdit.Text = GetPinCode() then
+        begin
+          SetPinCode(UserEditPasswordForm.NewPasswordEdit.Text);
+        end;
 
       except
         case ResponseStatusCode of

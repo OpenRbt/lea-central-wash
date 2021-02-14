@@ -3,13 +3,13 @@
   <ProjectSession>
     <Version Value="11"/>
     <BuildModes Active="Default"/>
-    <Units Count="29">
+    <Units Count="35">
       <Unit0>
         <Filename Value="QuazarManagerGUI.lpr"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="17"/>
-        <UsageCount Value="65"/>
+        <UsageCount Value="87"/>
       </Unit0>
       <Unit1>
         <Filename Value="login.pas"/>
@@ -17,9 +17,8 @@
         <ComponentName Value="LoginForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <TopLine Value="19"/>
-        <CursorPos X="36" Y="49"/>
-        <UsageCount Value="65"/>
+        <CursorPos Y="43"/>
+        <UsageCount Value="87"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -30,9 +29,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Base"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="54"/>
+        <TopLine Value="14"/>
         <CursorPos X="5" Y="56"/>
-        <UsageCount Value="65"/>
+        <UsageCount Value="87"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -41,10 +40,10 @@
         <ComponentName Value="UsersForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="7"/>
-        <TopLine Value="82"/>
-        <CursorPos X="33" Y="103"/>
-        <UsageCount Value="65"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="154"/>
+        <CursorPos X="28" Y="12"/>
+        <UsageCount Value="87"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
@@ -56,7 +55,7 @@
         <EditorIndex Value="2"/>
         <TopLine Value="61"/>
         <CursorPos X="16" Y="86"/>
-        <UsageCount Value="54"/>
+        <UsageCount Value="76"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -68,7 +67,7 @@
         <EditorIndex Value="3"/>
         <TopLine Value="12"/>
         <CursorPos X="51" Y="50"/>
-        <UsageCount Value="54"/>
+        <UsageCount Value="76"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
@@ -80,7 +79,7 @@
         <EditorIndex Value="4"/>
         <TopLine Value="16"/>
         <CursorPos X="51" Y="51"/>
-        <UsageCount Value="54"/>
+        <UsageCount Value="76"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
@@ -92,7 +91,7 @@
         <EditorIndex Value="5"/>
         <TopLine Value="13"/>
         <CursorPos X="54" Y="51"/>
-        <UsageCount Value="54"/>
+        <UsageCount Value="76"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
@@ -101,10 +100,11 @@
         <ComponentName Value="SettingsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="6"/>
-        <TopLine Value="13"/>
-        <CursorPos X="51" Y="51"/>
-        <UsageCount Value="54"/>
+        <TopLine Value="113"/>
+        <CursorPos X="32" Y="122"/>
+        <UsageCount Value="76"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -113,10 +113,10 @@
         <ComponentName Value="StatisticsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="13"/>
         <TopLine Value="41"/>
         <CursorPos X="57" Y="51"/>
-        <UsageCount Value="54"/>
+        <UsageCount Value="76"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
@@ -125,10 +125,10 @@
         <ComponentName Value="UserEditBaseForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="8"/>
-        <TopLine Value="80"/>
-        <CursorPos X="33" Y="121"/>
-        <UsageCount Value="39"/>
+        <EditorIndex Value="9"/>
+        <TopLine Value="49"/>
+        <CursorPos X="3" Y="86"/>
+        <UsageCount Value="61"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
@@ -137,10 +137,10 @@
         <ComponentName Value="UserAddForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="11"/>
-        <TopLine Value="82"/>
+        <EditorIndex Value="12"/>
+        <TopLine Value="91"/>
         <CursorPos X="43" Y="100"/>
-        <UsageCount Value="37"/>
+        <UsageCount Value="59"/>
         <Loaded Value="True"/>
       </Unit11>
       <Unit12>
@@ -149,10 +149,10 @@
         <ComponentName Value="UserEditForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="10"/>
-        <TopLine Value="28"/>
-        <CursorPos X="100" Y="99"/>
-        <UsageCount Value="33"/>
+        <EditorIndex Value="11"/>
+        <TopLine Value="122"/>
+        <CursorPos X="50" Y="128"/>
+        <UsageCount Value="55"/>
         <Loaded Value="True"/>
       </Unit12>
       <Unit13>
@@ -161,240 +161,288 @@
         <ComponentName Value="UserEditPasswordForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="9"/>
-        <TopLine Value="54"/>
-        <CursorPos X="64" Y="76"/>
-        <UsageCount Value="25"/>
+        <EditorIndex Value="10"/>
+        <TopLine Value="57"/>
+        <CursorPos X="46" Y="88"/>
+        <UsageCount Value="47"/>
         <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit13>
       <Unit14>
+        <Filename Value="setting_edit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SettingEditForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="48"/>
+        <CursorPos X="9" Y="70"/>
+        <UsageCount Value="31"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit14>
+      <Unit15>
         <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/control.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="2890"/>
         <CursorPos Y="2915"/>
-        <UsageCount Value="10"/>
-      </Unit14>
-      <Unit15>
+        <UsageCount Value="7"/>
+      </Unit15>
+      <Unit16>
         <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/customform.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="659"/>
         <CursorPos Y="681"/>
-        <UsageCount Value="8"/>
-      </Unit15>
-      <Unit16>
+        <UsageCount Value="5"/>
+      </Unit16>
+      <Unit17>
         <Filename Value="../lea-central-wash/lazarusGUI/manager.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="26"/>
-        <UsageCount Value="27"/>
-      </Unit16>
-      <Unit17>
+        <UsageCount Value="24"/>
+      </Unit17>
+      <Unit18>
         <Filename Value="../lea-central-wash/lazarusGUI/clientapi.pas"/>
         <UnitName Value="clientAPI"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="227"/>
         <CursorPos X="46" Y="265"/>
-        <UsageCount Value="28"/>
-      </Unit17>
-      <Unit18>
+        <UsageCount Value="25"/>
+      </Unit18>
+      <Unit19>
         <Filename Value="/usr/share/fpcsrc/3.0.4/packages/fcl-web/src/base/fphttpclient.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="163"/>
         <CursorPos X="14" Y="186"/>
-        <UsageCount Value="7"/>
-      </Unit18>
-      <Unit19>
+        <UsageCount Value="4"/>
+      </Unit19>
+      <Unit20>
         <Filename Value="../lea-central-wash/lazarusGUI/collection.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="73"/>
         <CursorPos X="23" Y="15"/>
-        <UsageCount Value="28"/>
-      </Unit19>
-      <Unit20>
+        <UsageCount Value="25"/>
+      </Unit20>
+      <Unit21>
         <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/wincontrol.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="7410"/>
         <CursorPos Y="7436"/>
-        <UsageCount Value="7"/>
-      </Unit20>
-      <Unit21>
+        <UsageCount Value="4"/>
+      </Unit21>
+      <Unit22>
         <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/screen.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="760"/>
         <CursorPos Y="788"/>
-        <UsageCount Value="7"/>
-      </Unit21>
-      <Unit22>
+        <UsageCount Value="4"/>
+      </Unit22>
+      <Unit23>
         <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/intfbasewinapi.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1667"/>
         <CursorPos Y="1698"/>
-        <UsageCount Value="7"/>
-      </Unit22>
-      <Unit23>
+        <UsageCount Value="4"/>
+      </Unit23>
+      <Unit24>
         <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/monitor.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="21"/>
-        <UsageCount Value="7"/>
-      </Unit23>
-      <Unit24>
+        <UsageCount Value="4"/>
+      </Unit24>
+      <Unit25>
         <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/winapi.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="408"/>
         <CursorPos Y="433"/>
-        <UsageCount Value="7"/>
-      </Unit24>
-      <Unit25>
+        <UsageCount Value="4"/>
+      </Unit25>
+      <Unit26>
         <Filename Value="/usr/lib/lazarus/2.0.6/lcl/interfaces/gtk2/gtk2winapi.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="4974"/>
         <CursorPos Y="5004"/>
-        <UsageCount Value="7"/>
-      </Unit25>
-      <Unit26>
+        <UsageCount Value="4"/>
+      </Unit26>
+      <Unit27>
         <Filename Value="../lea-central-wash/lazarusGUI/superobject.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="274"/>
-        <UsageCount Value="7"/>
-      </Unit26>
-      <Unit27>
+        <UsageCount Value="4"/>
+      </Unit27>
+      <Unit28>
         <Filename Value="../lea-central-wash/lazarusGUI/source.pas"/>
         <UnitName Value="Source"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="352"/>
         <CursorPos X="23" Y="19"/>
-        <UsageCount Value="27"/>
-      </Unit27>
-      <Unit28>
+        <UsageCount Value="24"/>
+      </Unit28>
+      <Unit29>
         <Filename Value="/usr/lib/lazarus/2.0.6/lcl/grids.pas"/>
         <UnitName Value="Grids"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="3001"/>
-        <CursorPos Y="3026"/>
+        <TopLine Value="9877"/>
+        <CursorPos Y="9902"/>
         <UsageCount Value="8"/>
-      </Unit28>
+      </Unit29>
+      <Unit30>
+        <Filename Value="../lazarusGUI/manager.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="187"/>
+        <CursorPos X="15" Y="37"/>
+        <UsageCount Value="17"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="../lazarusGUI/clientapi.pas"/>
+        <UnitName Value="clientAPI"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="610"/>
+        <UsageCount Value="9"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="../lazarusGUI/managerrelays.pas"/>
+        <UnitName Value="managerRelays"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="351"/>
+        <CursorPos X="3" Y="70"/>
+        <UsageCount Value="7"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="../lazarusGUI/collection.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="91"/>
+        <UsageCount Value="9"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="../lazarusGUI/source.pas"/>
+        <UnitName Value="Source"/>
+        <EditorIndex Value="14"/>
+        <TopLine Value="172"/>
+        <CursorPos X="32" Y="340"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit34>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="user_add.pas"/>
-        <Caret Line="109" TopLine="75"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="80" Column="27" TopLine="40"/>
       </Position1>
       <Position2>
-        <Filename Value="user_add.pas"/>
-        <Caret Line="116" TopLine="82"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="9" Column="65"/>
       </Position2>
       <Position3>
-        <Filename Value="user_add.pas"/>
-        <Caret Line="115" TopLine="82"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="73" Column="36" TopLine="55"/>
       </Position3>
       <Position4>
-        <Filename Value="user_add.pas"/>
-        <Caret Line="116" TopLine="82"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="9" Column="55"/>
       </Position4>
       <Position5>
-        <Filename Value="user_add.pas"/>
-        <Caret Line="115" TopLine="82"/>
+        <Filename Value="../lazarusGUI/source.pas"/>
+        <Caret Line="32" Column="29"/>
       </Position5>
       <Position6>
-        <Filename Value="user_add.pas"/>
-        <Caret Line="116" TopLine="82"/>
+        <Filename Value="../lazarusGUI/source.pas"/>
+        <Caret Line="302" Column="40" TopLine="259"/>
       </Position6>
       <Position7>
-        <Filename Value="user_add.pas"/>
-        <Caret Line="115" TopLine="82"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="80" Column="31" TopLine="54"/>
       </Position7>
       <Position8>
-        <Filename Value="user_add.pas"/>
-        <Caret Line="84" Column="36" TopLine="77"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="81" Column="3" TopLine="57"/>
       </Position8>
       <Position9>
-        <Filename Value="user_add.pas"/>
-        <Caret Line="91" Column="29" TopLine="79"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="113" Column="38" TopLine="72"/>
       </Position9>
       <Position10>
-        <Filename Value="user_add.pas"/>
-        <Caret Line="82" Column="9" TopLine="77"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="80" Column="26" TopLine="74"/>
       </Position10>
       <Position11>
-        <Filename Value="user_add.pas"/>
-        <Caret Line="81" Column="9" TopLine="67"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="86" Column="44" TopLine="61"/>
       </Position11>
       <Position12>
-        <Filename Value="users.pas"/>
-        <Caret Line="254" Column="81" TopLine="238"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="87" Column="44" TopLine="62"/>
       </Position12>
       <Position13>
-        <Filename Value="user_edit_password.pas"/>
-        <Caret Line="12" Column="94"/>
+        <Filename Value="login.pas"/>
+        <Caret Line="47" Column="3"/>
       </Position13>
       <Position14>
-        <Filename Value="user_edit_password.pas"/>
-        <Caret Line="34" Column="71"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="92" TopLine="49"/>
       </Position14>
       <Position15>
-        <Filename Value="user_edit_password.pas"/>
-        <Caret Line="46" Column="19"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="93" TopLine="50"/>
       </Position15>
       <Position16>
-        <Filename Value="user_edit.pas"/>
-        <Caret Line="31" Column="60" TopLine="8"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="120" TopLine="95"/>
       </Position16>
       <Position17>
-        <Filename Value="user_edit.pas"/>
-        <Caret Line="87" Column="22" TopLine="51"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="121" TopLine="95"/>
       </Position17>
       <Position18>
-        <Filename Value="user_edit_password.pas"/>
-        <Caret Line="21" Column="54"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="122" TopLine="95"/>
       </Position18>
       <Position19>
-        <Filename Value="user_edit_password.pas"/>
-        <Caret Line="23" Column="52" TopLine="5"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="123" TopLine="95"/>
       </Position19>
       <Position20>
-        <Filename Value="user_edit_password.pas"/>
-        <Caret Line="52" Column="3" TopLine="5"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="125" TopLine="95"/>
       </Position20>
       <Position21>
-        <Filename Value="user_edit_password.pas"/>
-        <Caret Line="100" Column="20" TopLine="71"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="126" TopLine="95"/>
       </Position21>
       <Position22>
-        <Filename Value="user_edit_password.pas"/>
-        <Caret Line="110" Column="6" TopLine="74"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="127" TopLine="95"/>
       </Position22>
       <Position23>
-        <Filename Value="user_edit_password.pas"/>
-        <Caret Line="21" Column="74"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="128" TopLine="95"/>
       </Position23>
       <Position24>
-        <Filename Value="user_edit_password.pas"/>
-        <Caret Line="9" Column="51"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="129" TopLine="95"/>
       </Position24>
       <Position25>
-        <Filename Value="user_edit_password.pas"/>
-        <Caret Line="63" Column="55" TopLine="33"/>
+        <Filename Value="setting_edit.pas"/>
+        <Caret Line="126" Column="20" TopLine="81"/>
       </Position25>
       <Position26>
-        <Filename Value="user_edit_password.pas"/>
-        <Caret Line="94" Column="18" TopLine="70"/>
+        <Filename Value="settings.pas"/>
+        <Caret Line="73" Column="23" TopLine="47"/>
       </Position26>
       <Position27>
-        <Filename Value="user_edit_password.pas"/>
-        <Caret Line="90" Column="73" TopLine="57"/>
+        <Filename Value="setting_edit.pas"/>
+        <Caret Line="70" Column="71" TopLine="49"/>
       </Position27>
       <Position28>
-        <Filename Value="user_add.pas"/>
-        <Caret Line="34" Column="3" TopLine="17"/>
+        <Filename Value="setting_edit.pas"/>
+        <Caret Line="64" Column="12" TopLine="41"/>
       </Position28>
       <Position29>
-        <Filename Value="user_edit.pas"/>
-        <Caret Line="129" Column="53" TopLine="98"/>
+        <Filename Value="setting_edit.pas"/>
+        <Caret Line="51" Column="6" TopLine="26"/>
       </Position29>
       <Position30>
-        <Filename Value="user_edit_base.pas"/>
-        <Caret Line="74" Column="29" TopLine="46"/>
+        <Filename Value="setting_edit.pas"/>
+        <Caret Line="70" Column="13" TopLine="33"/>
       </Position30>
     </JumpHistory>
     <RunParams>

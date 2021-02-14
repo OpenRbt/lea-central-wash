@@ -15,19 +15,21 @@ type
     LognBtn: TButton;
     PINLabel: TLabel;
     PINEdit: TEdit;
+    procedure UpdateCall(Sender: TObject);
     procedure PINEditChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure LognBtnClick(Sender: TObject);
   private
-    new_val: integer = 0;
-    old_val: integer = 0;
-    str_val: string = '';
+
   public
 
   end;
 
 var
   LoginForm: TLoginForm;
+  new_val: integer = 0;
+  old_val: integer = 0;
+  str_val: string = '';
 
 const
   serverEndpoint : string = 'http://localhost:8020/';
@@ -39,6 +41,11 @@ uses
 {$R *.lfm}
 
 { TLoginForm }
+
+procedure TLoginForm.UpdateCall(Sender: TObject);
+begin
+
+end;
 
 procedure TLoginForm.PINEditChange(Sender: TObject);
 begin
