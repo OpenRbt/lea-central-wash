@@ -1,6 +1,11 @@
 inherited StatisticsForm: TStatisticsForm
   OnActivate = FormShow
+  OnClose = FormClose
   inherited NotAuthorized: TStaticText
+    Left = 500
+    Height = 240
+    Width = 530
+    Caption = 'You are not '#10'authorized!'
     TabOrder = 9
   end
   object Placeholder: TStaticText[9]

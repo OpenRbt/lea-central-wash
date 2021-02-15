@@ -1,7 +1,11 @@
 inherited MainForm: TMainForm
   Left = 387
   Top = 66
-  object Placeholder: TStaticText[8]
+  OnActivate = FormShow
+  inherited NotAuthorized: TStaticText
+    TabOrder = 9
+  end
+  object Placeholder: TStaticText[9]
     Left = 500
     Height = 200
     Top = 300

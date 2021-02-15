@@ -25,7 +25,7 @@ type
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject); virtual;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction); virtual;
 
     procedure MainClick(Sender: TObject); virtual;
     procedure MainMouseEnter(Sender: TObject); virtual;
@@ -113,7 +113,7 @@ end;
 
 procedure TBaseForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  //LoginForm.Show;
+  LoginForm.Show;
 end;
 
 procedure TBaseForm.MainClick(Sender: TObject);

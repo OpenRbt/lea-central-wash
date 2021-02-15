@@ -14,6 +14,7 @@ type
 
   TStatisticsForm = class(TBaseForm)
     Placeholder: TStaticText;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject); override;
     procedure MainClick(Sender: TObject); override;
@@ -46,45 +47,51 @@ begin
 
 end;
 
+procedure TStatisticsForm.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  inherited;
+end;
+
 procedure TStatisticsForm.FormShow(Sender: TObject);
 begin
-  StatisticsForm.Statistics.Font.Color := TBaseForm(Self).GetHoverColor();
+  StatisticsForm.Statistics.Font.Color := StatisticsForm.GetHoverColor();
 end;
 
 procedure TStatisticsForm.MainClick(Sender: TObject);
 begin
   Inherited;
-  StatisticsForm.Hide;
+  StatisticsForm.Close;
 end;
 
 procedure TStatisticsForm.StationsClick(Sender: TObject);
 begin
   Inherited;
-  StatisticsForm.Hide;
+  StatisticsForm.Close;
 end;
 
 procedure TStatisticsForm.ProgramsClick(Sender: TObject);
 begin
   Inherited;
-  StatisticsForm.Hide;
+  StatisticsForm.Close;
 end;
 
 procedure TStatisticsForm.DosatronsClick(Sender: TObject);
 begin
   Inherited;
-  StatisticsForm.Hide;
+  StatisticsForm.Close;
 end;
 
 procedure TStatisticsForm.SettingsClick(Sender: TObject);
 begin
   Inherited;
-  StatisticsForm.Hide;
+  StatisticsForm.Close;
 end;
 
 procedure TStatisticsForm.UsersClick(Sender: TObject);
 begin
   Inherited;
-  StatisticsForm.Hide;
+  StatisticsForm.Close;
 end;
 
 procedure TStatisticsForm.StatisticsClick(Sender: TObject);
@@ -95,7 +102,7 @@ end;
 procedure TStatisticsForm.LogoutClick(Sender: TObject);
 begin
   Inherited;
-  StatisticsForm.Hide;
+  StatisticsForm.Close;
 end;
 
 procedure TStatisticsForm.StatisticsMouseEnter(Sender: TObject);

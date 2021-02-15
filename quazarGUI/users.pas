@@ -27,6 +27,7 @@ type
 
   TUsersForm = class(TBaseForm)
     UsersGrid: TStringGrid;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject); override;
     procedure MainClick(Sender: TObject); override;
@@ -93,6 +94,11 @@ begin;
   roles[ENGINEER_ROLE] := ENGINEER_STRING;
   roles[OPERATOR_ROLE] := OPERATOR_STRING;
   roles[NO_ROLE] := DISABLED_STRING;
+end;
+
+procedure TUsersForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  inherited;
 end;
 
 function TUsersForm.GetRoles() : TRoles;

@@ -14,6 +14,7 @@ type
 
   TMainForm = class(TBaseForm)
     Placeholder: TStaticText;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject); override;
     procedure MainClick(Sender: TObject); override;
@@ -46,6 +47,11 @@ begin
 
 end;
 
+procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  inherited;
+end;
+
 procedure TMainForm.FormShow(Sender: TObject);
 begin
   MainForm.Main.Font.Color := MainForm.GetHoverColor();
@@ -59,25 +65,25 @@ end;
 procedure TMainForm.StationsClick(Sender: TObject);
 begin
   Inherited;
-  MainForm.Hide;
+  MainForm.Close;
 end;
 
 procedure TMainForm.ProgramsClick(Sender: TObject);
 begin
   Inherited;
-  MainForm.Hide;
+  MainForm.Close;
 end;
 
 procedure TMainForm.DosatronsClick(Sender: TObject);
 begin
   Inherited;
-  MainForm.Hide;
+  MainForm.Close;
 end;
 
 procedure TMainForm.SettingsClick(Sender: TObject);
 begin
   Inherited;
-  MainForm.Hide;
+  MainForm.Close;
 end;
 
 procedure TMainForm.UsersClick(Sender: TObject);
@@ -89,13 +95,13 @@ end;
 procedure TMainForm.StatisticsClick(Sender: TObject);
 begin
   Inherited;
-  MainForm.Hide;
+  MainForm.Close;
 end;
 
 procedure TMainForm.LogoutClick(Sender: TObject);
 begin
   Inherited;
-  MainForm.Hide;
+  MainForm.Close;
 end;
 
 procedure TMainForm.MainMouseEnter(Sender: TObject);

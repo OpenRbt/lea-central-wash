@@ -1,5 +1,6 @@
 inherited StationsForm: TStationsForm
   OnActivate = FormShow
+  OnClose = FormClose
   inherited NotAuthorized: TStaticText
     TabOrder = 9
   end

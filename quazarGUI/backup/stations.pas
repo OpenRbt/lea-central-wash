@@ -14,6 +14,7 @@ type
 
   TStationsForm = class(TBaseForm)
     Placeholder: TStaticText;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject); override;
     procedure MainClick(Sender: TObject); override;
@@ -45,15 +46,21 @@ begin
 
 end;
 
+procedure TStationsForm.FormClose(Sender: TObject; var CloseAction: TCloseAction
+  );
+begin
+  inherited;
+end;
+
 procedure TStationsForm.FormShow(Sender: TObject);
 begin
-  StationsForm.Stations.Font.Color := TBaseForm(Self).GetHoverColor();
+  StationsForm.Stations.Font.Color := StationsForm.GetHoverColor();
 end;
 
 procedure TStationsForm.MainClick(Sender: TObject);
 begin
   Inherited;
-  StationsForm.Hide;
+  StationsForm.Close;
 end;
 
 procedure TStationsForm.StationsClick(Sender: TObject);
@@ -64,37 +71,37 @@ end;
 procedure TStationsForm.ProgramsClick(Sender: TObject);
 begin
   Inherited;
-  StationsForm.Hide;
+  StationsForm.Close;
 end;
 
 procedure TStationsForm.DosatronsClick(Sender: TObject);
 begin
   Inherited;
-  StationsForm.Hide;
+  StationsForm.Close;
 end;
 
 procedure TStationsForm.SettingsClick(Sender: TObject);
 begin
   Inherited;
-  StationsForm.Hide;
+  StationsForm.Close;
 end;
 
 procedure TStationsForm.UsersClick(Sender: TObject);
 begin
   Inherited;
-  StationsForm.Hide;
+  StationsForm.Close;
 end;
 
 procedure TStationsForm.StatisticsClick(Sender: TObject);
 begin
   Inherited;
-  StationsForm.Hide;
+  StationsForm.Close;
 end;
 
 procedure TStationsForm.LogoutClick(Sender: TObject);
 begin
   Inherited;
-  StationsForm.Hide;
+  StationsForm.Close;
 end;
 
 procedure TStationsForm.StationsMouseEnter(Sender: TObject);

@@ -2,6 +2,7 @@ inherited MainForm: TMainForm
   Left = 387
   Top = 66
   OnActivate = FormShow
+  OnClose = FormClose
   inherited NotAuthorized: TStaticText
     TabOrder = 9
   end

@@ -2,6 +2,7 @@ inherited UsersForm: TUsersForm
   Left = 609
   Top = 82
   OnActivate = FormShow
+  OnClose = FormClose
   OnCreate = FormCreate
   object UsersGrid: TStringGrid[9]
     Left = 288

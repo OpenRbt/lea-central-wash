@@ -1,5 +1,6 @@
 inherited StatisticsForm: TStatisticsForm
   OnActivate = FormShow
+  OnClose = FormClose
   inherited NotAuthorized: TStaticText
     Left = 500
     Height = 240

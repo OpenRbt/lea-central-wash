@@ -1,5 +1,6 @@
 inherited DosatronsForm: TDosatronsForm
   OnActivate = FormShow
+  OnClose = FormClose
   inherited NotAuthorized: TStaticText
     TabOrder = 9
   end

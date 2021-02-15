@@ -1,14 +1,95 @@
 inherited ProgramsForm: TProgramsForm
-  Top = 94
-  object Placeholder: TStaticText[8]
-    Left = 325
-    Height = 200
-    Top = 300
-    Width = 910
-    Caption = 'P R O G R A M S'
-    Font.Color = clGrayText
-    Font.Height = -128
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = FormShow
+  object ProgramsGrid: TStringGrid[9]
+    Left = 320
+    Height = 498
+    Top = 216
+    Width = 944
+    AlternateColor = cl3DLight
+    ColCount = 8
+    Columns = <    
+      item
+        Font.Height = -32
+        Title.Caption = 'ProgramName'
+        Width = 370
+      end    
+      item
+        Alignment = taRightJustify
+        Font.Height = -24
+        Title.Caption = 'ProgramPriceLabel'
+        Width = 94
+      end    
+      item
+        Alignment = taRightJustify
+        ButtonStyle = cbsButton
+        Font.Height = -32
+        Title.Alignment = taRightJustify
+        Title.Caption = 'DecrementBtn'
+        Width = 40
+      end    
+      item
+        Alignment = taCenter
+        Font.Height = -32
+        Title.Caption = 'ProgramPrice'
+        Width = 80
+      end    
+      item
+        ButtonStyle = cbsButton
+        Font.Height = -32
+        Title.Caption = 'IncrementBtn'
+        Width = 40
+      end    
+      item
+        Font.Height = -24
+        Title.Caption = 'ProgramCurrInfo'
+        Width = 114
+      end    
+      item
+        Alignment = taRightJustify
+        Font.Height = -24
+        Title.Caption = 'ProgramEnabledInfo'
+        Width = 140
+      end    
+      item
+        ButtonStyle = cbsCheckboxColumn
+        Font.Height = -32
+        Title.Caption = 'ProgramEnabled'
+        Width = 68
+      end>
+    FixedCols = 0
+    FixedRows = 0
+    Flat = True
+    Font.Height = 67
+    GridLineWidth = 0
     ParentFont = False
-    TabOrder = 8
+    RowCount = 6
+    ScrollBars = ssNone
+    TabOrder = 9
+    TitleFont.Height = 67
+    OnSelectCell = ProgramsGridSelectCell
+  end
+  object Save: TButton[10]
+    Left = 400
+    Height = 48
+    Top = 740
+    Width = 128
+    Caption = 'Сохранить'
+    Font.Height = -19
+    OnClick = SaveClick
+    ParentFont = False
+    TabOrder = 10
+  end
+  object Cancel: TButton[11]
+    Left = 544
+    Height = 48
+    Top = 740
+    Width = 128
+    Caption = 'Отмена'
+    Font.Height = -19
+    OnClick = CancelClick
+    ParentFont = False
+    TabOrder = 11
   end
 end

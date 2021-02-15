@@ -1,5 +1,6 @@
 inherited SettingsForm: TSettingsForm
   OnActivate = FormShow
+  OnClose = FormClose
   OnCreate = FormCreate
   object StationsGrid: TStringGrid[9]
     Left = 288

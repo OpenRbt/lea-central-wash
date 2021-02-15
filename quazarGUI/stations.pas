@@ -14,6 +14,7 @@ type
 
   TStationsForm = class(TBaseForm)
     Placeholder: TStaticText;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject); override;
     procedure MainClick(Sender: TObject); override;
@@ -43,6 +44,12 @@ implementation
 procedure TStationsForm.FormCreate(Sender: TObject);
 begin
 
+end;
+
+procedure TStationsForm.FormClose(Sender: TObject; var CloseAction: TCloseAction
+  );
+begin
+  inherited;
 end;
 
 procedure TStationsForm.FormShow(Sender: TObject);

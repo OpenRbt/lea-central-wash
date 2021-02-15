@@ -27,6 +27,7 @@ type
 
   TUsersForm = class(TBaseForm)
     UsersGrid: TStringGrid;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject); override;
     procedure MainClick(Sender: TObject); override;
@@ -47,6 +48,7 @@ type
     function GetEngineerRole() : integer;
     function GetOperatorRole() : integer;
     function GetNoRole() : integer;
+
   private
     roles: TRoles;
     ADMIN_ROLE : integer;
@@ -94,9 +96,34 @@ begin;
   roles[NO_ROLE] := DISABLED_STRING;
 end;
 
+procedure TUsersForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  inherited;
+end;
+
 function TUsersForm.GetRoles() : TRoles;
 begin
   Result := roles;
+end;
+
+function TUsersForm.GetAdminRole() : integer;
+begin
+  Result := ADMIN_ROLE;
+end;
+
+function TUsersForm.GetEngineerRole() : integer;
+begin
+  Result := ENGINEER_ROLE;
+end;
+
+function TUsersForm.GetOperatorRole() : integer;
+begin
+  Result := OPERATOR_ROLE;
+end;
+
+function TUsersForm.GetNoRole() : integer;
+begin
+  Result := NO_ROLE;
 end;
 
 procedure TUsersForm.FormShow(Sender: TObject);
@@ -211,31 +238,31 @@ end;
 procedure TUsersForm.MainClick(Sender: TObject);
 begin
   Inherited;
-  UsersForm.Hide;
+  UsersForm.Close;
 end;
 
 procedure TUsersForm.StationsClick(Sender: TObject);
 begin
   Inherited;
-  UsersForm.Hide;
+  UsersForm.Close;
 end;
 
 procedure TUsersForm.ProgramsClick(Sender: TObject);
 begin
   Inherited;
-  UsersForm.Hide;
+  UsersForm.Close;
 end;
 
 procedure TUsersForm.DosatronsClick(Sender: TObject);
 begin
   Inherited;
-  UsersForm.Hide;
+  UsersForm.Close;
 end;
 
 procedure TUsersForm.SettingsClick(Sender: TObject);
 begin
   Inherited;
-  UsersForm.Hide;
+  UsersForm.Close;
 end;
 
 procedure TUsersForm.UsersClick(Sender: TObject);
@@ -246,13 +273,13 @@ end;
 procedure TUsersForm.StatisticsClick(Sender: TObject);
 begin
   Inherited;
-  UsersForm.Hide;
+  UsersForm.Close;
 end;
 
 procedure TUsersForm.LogoutClick(Sender: TObject);
 begin
   Inherited;
-  UsersForm.Hide;
+  UsersForm.Close;
 end;
 
 procedure TUsersForm.UsersGridButtonClick(Sender: TObject; aCol, aRow: Integer);

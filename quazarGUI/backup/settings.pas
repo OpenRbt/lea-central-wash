@@ -28,8 +28,8 @@ type
   TSettingsForm = class(TBaseForm)
     StationsGrid: TStringGrid;
     UpdateTimer: TTimer;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction); override;
     procedure FormCreate(Sender: TObject);
-    procedure FormClose(Sender: TObject);
     procedure FormShow(Sender: TObject); override;
     procedure MainClick(Sender: TObject); override;
     procedure StationsClick(Sender: TObject); override;
@@ -81,8 +81,10 @@ begin
   UpdateTimer.Interval := 1000;
 end;
 
-procedure TSettingsForm.FormClose(Sender: TObject);
+procedure TSettingsForm.FormClose(Sender: TObject; var CloseAction: TCloseAction
+  );
 begin
+  inherited;
   UpdateTimer.Enabled := false;
 end;
 
@@ -137,7 +139,7 @@ begin
         setlength(ResponseStations.currentBalance, stationsJson.Count);
         setlength(ResponseStations.currentProgram, stationsJson.Count);
 
-        setlength(freeHashVals, MAX_NUM_STATIONS);
+        setlength(freeHashVals, stationsJson.Count);
 
         ResponseStations.Count := stationsJson.Count;
 
@@ -250,8 +252,8 @@ begin
         UpdateTimer.Enabled := true;
 
       except
-        SettingsForm.NotAuthorized.Visible:=True;
-        SettingsForm.StationsGrid.Visible:=False;
+        //SettingsForm.NotAuthorized.Visible:=True;
+        //SettingsForm.StationsGrid.Visible:=False;
         case ResponseStatusCode of
           0: ShowMessage('Can`t connect to server');
           401, 403: // do nothing
@@ -281,24 +283,28 @@ procedure TSettingsForm.MainClick(Sender: TObject);
 begin
   Inherited;
   SettingsForm.Close;
+  UpdateTimer.Enabled := false;
 end;
 
 procedure TSettingsForm.StationsClick(Sender: TObject);
 begin
   Inherited;
   SettingsForm.Close;
+  UpdateTimer.Enabled := false;
 end;
 
 procedure TSettingsForm.ProgramsClick(Sender: TObject);
 begin
   Inherited;
   SettingsForm.Close;
+  UpdateTimer.Enabled := false;
 end;
 
 procedure TSettingsForm.DosatronsClick(Sender: TObject);
 begin
   Inherited;
   SettingsForm.Close;
+  UpdateTimer.Enabled := false;
 end;
 
 procedure TSettingsForm.SettingsClick(Sender: TObject);
@@ -318,18 +324,21 @@ procedure TSettingsForm.UsersClick(Sender: TObject);
 begin
   Inherited;
   SettingsForm.Close;
+  UpdateTimer.Enabled := false;
 end;
 
 procedure TSettingsForm.StatisticsClick(Sender: TObject);
 begin
   Inherited;
-  SettingsForm.Hide;
+  SettingsForm.Close;
+  UpdateTimer.Enabled := false;
 end;
 
 procedure TSettingsForm.LogoutClick(Sender: TObject);
 begin
   Inherited;
   SettingsForm.Close;
+  UpdateTimer.Enabled := false;
 end;
 
 procedure TSettingsForm.SettingsMouseEnter(Sender: TObject);
