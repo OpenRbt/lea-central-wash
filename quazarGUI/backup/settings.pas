@@ -72,7 +72,7 @@ const
   ON_LINE     : string = 'online';
 
 implementation
-  uses setting_edit;
+
 {$R *.lfm}
 
 procedure TSettingsForm.FormCreate(Sender: TObject);
@@ -282,28 +282,28 @@ end;
 procedure TSettingsForm.MainClick(Sender: TObject);
 begin
   Inherited;
-  SettingsForm.Close;
+  SettingsForm.Hide;
   UpdateTimer.Enabled := false;
 end;
 
 procedure TSettingsForm.StationsClick(Sender: TObject);
 begin
   Inherited;
-  SettingsForm.Close;
+  SettingsForm.Hide;
   UpdateTimer.Enabled := false;
 end;
 
 procedure TSettingsForm.ProgramsClick(Sender: TObject);
 begin
   Inherited;
-  SettingsForm.Close;
+  SettingsForm.Hide;
   UpdateTimer.Enabled := false;
 end;
 
 procedure TSettingsForm.DosatronsClick(Sender: TObject);
 begin
   Inherited;
-  SettingsForm.Close;
+  SettingsForm.Hide;
   UpdateTimer.Enabled := false;
 end;
 
@@ -323,21 +323,21 @@ end;
 procedure TSettingsForm.UsersClick(Sender: TObject);
 begin
   Inherited;
-  SettingsForm.Close;
+  SettingsForm.Hide;
   UpdateTimer.Enabled := false;
 end;
 
 procedure TSettingsForm.StatisticsClick(Sender: TObject);
 begin
   Inherited;
-  SettingsForm.Close;
+  SettingsForm.Hide;
   UpdateTimer.Enabled := false;
 end;
 
 procedure TSettingsForm.LogoutClick(Sender: TObject);
 begin
   Inherited;
-  SettingsForm.Close;
+  SettingsForm.Hide;
   UpdateTimer.Enabled := false;
 end;
 
