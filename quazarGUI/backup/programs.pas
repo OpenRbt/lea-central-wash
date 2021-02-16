@@ -267,7 +267,7 @@ end;
 procedure TProgramsForm.MainClick(Sender: TObject);
 begin
   Inherited;
-  ProgramsForm.Close;
+  ProgramsForm.Hide;
 end;
 
 procedure TProgramsForm.ProgramsGridSelectCell(Sender: TObject; aCol,
@@ -403,7 +403,7 @@ end;
 procedure TProgramsForm.StationsClick(Sender: TObject);
 begin
   Inherited;
-  ProgramsForm.Close;
+  ProgramsForm.Hide;
 end;
 
 procedure TProgramsForm.ProgramsClick(Sender: TObject);
@@ -414,31 +414,31 @@ end;
 procedure TProgramsForm.DosatronsClick(Sender: TObject);
 begin
   Inherited;
-  ProgramsForm.Close;
+  ProgramsForm.Hide;
 end;
 
 procedure TProgramsForm.SettingsClick(Sender: TObject);
 begin
   Inherited;
-  ProgramsForm.Close;
+  ProgramsForm.Hide;
 end;
 
 procedure TProgramsForm.UsersClick(Sender: TObject);
 begin
   Inherited;
-  ProgramsForm.Close;
+  ProgramsForm.Hide;
 end;
 
 procedure TProgramsForm.StatisticsClick(Sender: TObject);
 begin
   Inherited;
-  ProgramsForm.Close;
+  ProgramsForm.Hide;
 end;
 
 procedure TProgramsForm.LogoutClick(Sender: TObject);
 begin
   Inherited;
-  ProgramsForm.Close;
+  ProgramsForm.Hide;
 end;
 
 procedure TProgramsForm.ProgramsMouseEnter(Sender: TObject);
