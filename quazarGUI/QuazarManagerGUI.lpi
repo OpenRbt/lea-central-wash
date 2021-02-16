@@ -131,7 +131,6 @@
         <Filename Value="setting_edit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SettingEditForm"/>
-        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit14>
     </Units>

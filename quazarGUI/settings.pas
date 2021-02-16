@@ -73,6 +73,7 @@ const
 
 implementation
   uses setting_edit;
+
 {$R *.lfm}
 
 procedure TSettingsForm.FormCreate(Sender: TObject);
