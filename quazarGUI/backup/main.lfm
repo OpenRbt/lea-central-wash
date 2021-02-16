@@ -1,0 +1,646 @@
+inherited MainForm: TMainForm
+  Left = 612
+  Top = 94
+  OnActivate = FormShow
+  OnClose = FormClose
+  object Station1: TPanel[9]
+    Left = 370
+    Height = 180
+    Top = 150
+    Width = 180
+    BorderStyle = bsSingle
+    TabOrder = 9
+  end
+  object Station1Foam: TPanel[10]
+    Left = 370
+    Height = 55
+    Top = 340
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'П'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 10
+  end
+  object Station1Shampoo: TPanel[11]
+    Left = 432
+    Height = 55
+    Top = 340
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'Ш'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 11
+  end
+  object Station1Rinse: TPanel[12]
+    Left = 495
+    Height = 55
+    Top = 340
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'О'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 12
+  end
+  object Station1Wax: TPanel[13]
+    Left = 370
+    Height = 55
+    Top = 405
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'В'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 13
+  end
+  object Station1Dry: TPanel[14]
+    Left = 432
+    Height = 55
+    Top = 405
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'С'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 14
+  end
+  object Station1Pause: TPanel[15]
+    Left = 495
+    Height = 55
+    Top = 405
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = '| |'
+    Font.Height = -19
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 15
+  end
+  object Station5: TPanel[16]
+    Left = 370
+    Height = 180
+    Top = 485
+    Width = 180
+    BorderStyle = bsSingle
+    TabOrder = 16
+  end
+  object Station5Foam: TPanel[17]
+    Left = 370
+    Height = 55
+    Top = 675
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'П'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 17
+  end
+  object Station5Rinse: TPanel[18]
+    Left = 495
+    Height = 55
+    Top = 675
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'О'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 18
+  end
+  object Station5Shampoo: TPanel[19]
+    Left = 432
+    Height = 55
+    Top = 675
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'Ш'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 19
+  end
+  object Station5Wax: TPanel[20]
+    Left = 370
+    Height = 55
+    Top = 740
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'В'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 20
+  end
+  object Station5Dry: TPanel[21]
+    Left = 432
+    Height = 55
+    Top = 740
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'С'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 21
+  end
+  object Station5Pause: TPanel[22]
+    Left = 495
+    Height = 55
+    Top = 740
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = '| |'
+    Font.Height = -19
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 22
+  end
+  object Station2: TPanel[23]
+    Left = 600
+    Height = 180
+    Top = 150
+    Width = 180
+    BorderStyle = bsSingle
+    TabOrder = 23
+  end
+  object Station3: TPanel[24]
+    Left = 830
+    Height = 180
+    Top = 150
+    Width = 180
+    BorderStyle = bsSingle
+    TabOrder = 24
+  end
+  object Station4: TPanel[25]
+    Left = 1060
+    Height = 180
+    Top = 150
+    Width = 180
+    BorderStyle = bsSingle
+    TabOrder = 25
+  end
+  object Station6: TPanel[26]
+    Left = 600
+    Height = 180
+    Top = 485
+    Width = 180
+    BorderStyle = bsSingle
+    TabOrder = 26
+  end
+  object Station7: TPanel[27]
+    Left = 830
+    Height = 180
+    Top = 485
+    Width = 180
+    BorderStyle = bsSingle
+    TabOrder = 27
+  end
+  object Station8: TPanel[28]
+    Left = 1060
+    Height = 180
+    Top = 485
+    Width = 180
+    BorderStyle = bsSingle
+    TabOrder = 28
+  end
+  object Station2Foam: TPanel[29]
+    Left = 600
+    Height = 55
+    Top = 340
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'П'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 29
+  end
+  object Station3Foam: TPanel[30]
+    Left = 830
+    Height = 55
+    Top = 340
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'П'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 30
+  end
+  object Station4Foam: TPanel[31]
+    Left = 1060
+    Height = 55
+    Top = 340
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'П'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 31
+  end
+  object Station6Foam: TPanel[32]
+    Left = 600
+    Height = 55
+    Top = 675
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'П'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 32
+  end
+  object Station7Foam: TPanel[33]
+    Left = 830
+    Height = 55
+    Top = 675
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'П'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 33
+  end
+  object Station8Foam: TPanel[34]
+    Left = 1060
+    Height = 55
+    Top = 675
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'П'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 34
+  end
+  object Station2Shampoo: TPanel[35]
+    Left = 662
+    Height = 55
+    Top = 340
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'Ш'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 35
+  end
+  object Station3Shampoo: TPanel[36]
+    Left = 892
+    Height = 55
+    Top = 340
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'Ш'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 36
+  end
+  object Station1Shampoo1: TPanel[37]
+    Left = 1122
+    Height = 55
+    Top = 340
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'Ш'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 37
+  end
+  object Station6Shampoo: TPanel[38]
+    Left = 662
+    Height = 55
+    Top = 675
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'Ш'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 38
+  end
+  object Station8Shampoo: TPanel[39]
+    Left = 1122
+    Height = 55
+    Top = 675
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'Ш'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 39
+  end
+  object Station7Shampoo: TPanel[40]
+    Left = 892
+    Height = 55
+    Top = 675
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'Ш'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 40
+  end
+  object Station2Rinse: TPanel[41]
+    Left = 725
+    Height = 55
+    Top = 340
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'О'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 41
+  end
+  object Station3Rinse: TPanel[42]
+    Left = 955
+    Height = 55
+    Top = 340
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'О'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 42
+  end
+  object Station4Rinse: TPanel[43]
+    Left = 1185
+    Height = 55
+    Top = 340
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'О'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 43
+  end
+  object Station6Rinse: TPanel[44]
+    Left = 725
+    Height = 55
+    Top = 675
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'О'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 44
+  end
+  object Station7Rinse: TPanel[45]
+    Left = 955
+    Height = 55
+    Top = 675
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'О'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 45
+  end
+  object Station8Rinse: TPanel[46]
+    Left = 1185
+    Height = 55
+    Top = 675
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'О'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 46
+  end
+  object Station2Wax: TPanel[47]
+    Left = 600
+    Height = 55
+    Top = 405
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'В'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 47
+  end
+  object Station3Wax: TPanel[48]
+    Left = 830
+    Height = 55
+    Top = 405
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'В'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 48
+  end
+  object Station4Wax: TPanel[49]
+    Left = 1060
+    Height = 55
+    Top = 405
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'В'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 49
+  end
+  object Station6Wax: TPanel[50]
+    Left = 600
+    Height = 55
+    Top = 740
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'В'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 50
+  end
+  object Station7Wax: TPanel[51]
+    Left = 830
+    Height = 55
+    Top = 740
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'В'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 51
+  end
+  object Station8Wax: TPanel[52]
+    Left = 1060
+    Height = 55
+    Top = 740
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'В'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 52
+  end
+  object Station2Dry: TPanel[53]
+    Left = 662
+    Height = 55
+    Top = 405
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'С'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 53
+  end
+  object Station3Dry: TPanel[54]
+    Left = 892
+    Height = 55
+    Top = 405
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'С'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 54
+  end
+  object Station4Dry: TPanel[55]
+    Left = 1122
+    Height = 55
+    Top = 405
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'С'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 55
+  end
+  object Station6Dry: TPanel[56]
+    Left = 662
+    Height = 55
+    Top = 740
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'С'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 56
+  end
+  object Station7Dry: TPanel[57]
+    Left = 892
+    Height = 55
+    Top = 740
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'С'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 57
+  end
+  object Station8Dry: TPanel[58]
+    Left = 1122
+    Height = 55
+    Top = 740
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = 'С'
+    Font.Height = -24
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 58
+  end
+  object Station2Pause: TPanel[59]
+    Left = 725
+    Height = 55
+    Top = 405
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = '| |'
+    Font.Height = -19
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 59
+  end
+  object Station3Pause: TPanel[60]
+    Left = 955
+    Height = 55
+    Top = 405
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = '| |'
+    Font.Height = -19
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 60
+  end
+  object Station4Pause: TPanel[61]
+    Left = 1185
+    Height = 55
+    Top = 405
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = '| |'
+    Font.Height = -19
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 61
+  end
+  object Station6Pause: TPanel[62]
+    Left = 725
+    Height = 55
+    Top = 740
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = '| |'
+    Font.Height = -19
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 62
+  end
+  object Station7Pause: TPanel[63]
+    Left = 955
+    Height = 55
+    Top = 740
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = '| |'
+    Font.Height = -19
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 63
+  end
+  object Station8Pause: TPanel[64]
+    Left = 1185
+    Height = 55
+    Top = 740
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = '| |'
+    Font.Height = -19
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 64
+  end
+end

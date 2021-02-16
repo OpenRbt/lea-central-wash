@@ -1,0 +1,77 @@
+inherited UsersForm: TUsersForm
+  Left = 609
+  Top = 82
+  OnActivate = FormShow
+  OnClose = FormClose
+  OnCreate = FormCreate
+  object UsersGrid: TStringGrid[9]
+    Left = 288
+    Height = 552
+    Top = 240
+    Width = 982
+    AlternateColor = cl3DLight
+    AutoEdit = False
+    Color = clWhite
+    Columns = <    
+      item
+        Font.Height = -24
+        MinSize = 0
+        Title.Alignment = taCenter
+        Title.Caption = 'Фамилия'
+        Width = 229
+      end    
+      item
+        Font.Height = -24
+        MinSize = 0
+        Title.Alignment = taCenter
+        Title.Caption = 'Имя'
+        Width = 229
+      end    
+      item
+        Font.Height = -24
+        MinSize = 0
+        Title.Alignment = taCenter
+        Title.Caption = 'Отчество'
+        Width = 229
+      end    
+      item
+        Font.Height = -24
+        MinSize = 0
+        Title.Alignment = taCenter
+        Title.Caption = 'Статус'
+        Width = 190
+      end    
+      item
+        ButtonStyle = cbsButtonColumn
+        Font.Height = -43
+        MinSize = 0
+        ReadOnly = True
+        Title.Font.Height = -27
+        Title.Caption = ''
+        Width = 92
+      end>
+    DefaultRowHeight = 50
+    FixedColor = clBackground
+    FixedCols = 0
+    Flat = True
+    Font.Height = -27
+    Font.Style = [fsBold]
+    GridLineWidth = 2
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goAutoAddRows, goSmoothScroll]
+    ParentFont = False
+    RowCount = 4
+    ScrollBars = ssAutoVertical
+    TabOrder = 9
+    TitleFont.Height = -27
+    TitleFont.Style = [fsBold]
+    TitleStyle = tsStandard
+    OnButtonClick = UsersGridButtonClick
+    ColWidths = (
+      229
+      229
+      229
+      190
+      92
+    )
+  end
+end
