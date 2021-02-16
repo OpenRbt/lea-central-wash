@@ -619,4 +619,28 @@ inherited MainForm: TMainForm
     ParentFont = False
     TabOrder = 62
   end
+  object Station7Pause: TPanel[63]
+    Left = 955
+    Height = 55
+    Top = 740
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = '| |'
+    Font.Height = -19
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 63
+  end
+  object Station8Pause: TPanel[64]
+    Left = 1185
+    Height = 55
+    Top = 740
+    Width = 55
+    BorderStyle = bsSingle
+    Caption = '| |'
+    Font.Height = -19
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 64
+  end
 end

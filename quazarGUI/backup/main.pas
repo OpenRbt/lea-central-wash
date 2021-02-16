@@ -34,6 +34,8 @@ type
     Station2: TPanel;
     Station3: TPanel;
     Station4: TPanel;
+    Station8Pause: TPanel;
+    Station7Pause: TPanel;
     Station6Pause: TPanel;
     Station8Dry: TPanel;
     Station7Dry: TPanel;

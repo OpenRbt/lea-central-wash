@@ -1,6 +1,6 @@
 inherited MainForm: TMainForm
   Left = 612
-  Top = 94
+  Top = 154
   OnActivate = FormShow
   OnClose = FormClose
   object Station1: TPanel[9]

@@ -162,6 +162,7 @@ VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, 
 	INSERT INTO money_collection (station_id, user_id, banknotes, cars_total, coins, electronical, service, last_money_report_id, ctime) 
 	(
 	SELECT station_id, 
+			   :user_id,
 			   sum(banknotes) as banknotes, 
 			   sum(cars_total) as cars_total, 
 			   sum(coins) as coins, 
