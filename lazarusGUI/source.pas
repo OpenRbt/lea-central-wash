@@ -29,7 +29,7 @@ type
     rgReportType: TRadioGroup;
     StationsData: TStringGrid;
     MoneyData: TStringGrid;
-    UpdateTimer: TTimer;
+
     procedure btnDayClick(Sender: TObject);
     procedure btnKasseSettingClick(Sender: TObject);
     procedure btnManageClick(Sender: TObject);
