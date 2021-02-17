@@ -29,10 +29,13 @@ const (
 
 // Errors.
 var (
-	ErrNotFound            = errors.New("not found")
-	ErrAccessDenied        = errors.New("access denied")
-	ErrLoginNotUnique      = errors.New("login is already in use")
-	ErrMoneyCollectionFkey = errors.New("violates foreign key constraint on table money_collection")
+	ErrNotFound                 = errors.New("not found")
+	ErrAccessDenied             = errors.New("access denied")
+	ErrLoginNotUnique           = errors.New("login is already in use")
+	ErrMoneyCollectionFkey      = errors.New("violates foreign key constraint on table money_collection")
+	ErrUnknownProgram           = errors.New("unknown program")
+	ErrUnknownStation           = errors.New("unknown station")
+	ErrStationProgramMustUnique = errors.New("programID and buttonID must be unique")
 )
 
 type (
@@ -68,10 +71,10 @@ type (
 		StatusCollection() StatusCollection
 		SaveCollectionReport(auth *Auth, id StationID) error
 
-		Programs(id StationID) (programs []Program, err error)
-		SetProgramName(id StationID, programID int, name string) (err error)
-		ProgramRelays(id StationID, programID int) (relays []Relay, err error)
-		SetProgramRelays(id StationID, programID int, relays []Relay) (err error)
+		Programs(id *int64) ([]Program, error)
+		SetProgram(Program) error
+		StationProgram(StationID) ([]StationProgram, error)
+		SetStationProgram(StationID, []StationProgram) error
 
 		Users(auth *Auth) (users []UserData, err error)
 		User(password string) (user *UserData, err error)
@@ -121,10 +124,10 @@ type (
 		SetHash(StationID, string) error
 		CheckDB() (ok bool, err error)
 
-		Programs(id StationID) (programs []Program, err error)
-		SetProgramName(id StationID, programID int, name string) (err error)
-		ProgramRelays(id StationID, programID int) (relays []Relay, err error)
-		SetProgramRelays(id StationID, programID int, relays []Relay) (err error)
+		Programs(id *int64) ([]Program, error)
+		SetProgram(Program) error
+		StationProgram(StationID) ([]StationProgram, error)
+		SetStationProgram(StationID, []StationProgram) error
 
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
@@ -194,8 +197,9 @@ type StationStatus struct {
 }
 
 type SetStation struct {
-	ID   StationID
-	Name string
+	ID           StationID
+	Name         string
+	PreflightSec int
 }
 
 type StationsVariables struct {
@@ -210,15 +214,24 @@ type KeyPair struct {
 }
 
 type Relay struct {
-	ID        int
-	TimeOn    int
-	TimeOff   int
-	Preflight int
+	ID      int
+	TimeOn  int
+	TimeOff int
 }
 
 type Program struct {
-	ID   int
-	Name string
+	ID               int64
+	ButtonID         int
+	Price            int
+	Name             string
+	PreflightEnabled bool
+	Relays           []Relay
+	PreflightRelays  []Relay
+}
+
+type StationProgram struct {
+	ButtonID  int
+	ProgramID int
 }
 
 type Kasse struct {
@@ -226,4 +239,11 @@ type Kasse struct {
 	TaxType         string
 	CashierFullName string
 	CashierINN      string
+}
+
+type StationConfig struct {
+	ID           StationID
+	Name         string
+	PreflightSec int
+	Programs     []Program
 }

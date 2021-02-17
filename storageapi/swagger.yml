@@ -275,9 +275,12 @@ definitions:
 
   Program:
     type: object
+    required:
+      - id
     properties:
       id:
         type: integer
+        minimum: 1
       name:
         type: string
       price:
@@ -878,6 +881,10 @@ paths:
       responses:
         204:
           description: OK
+        422:
+          description: validation error
+          schema:
+            type: string
         500:
           description: internal error
   

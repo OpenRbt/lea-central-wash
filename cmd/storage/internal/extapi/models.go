@@ -6,7 +6,47 @@ import (
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
 )
+
+func appRelays(m []*model.RelayConfig) []app.Relay {
+	res := []app.Relay{}
+
+	for i := range m {
+		res = append(res, app.Relay{
+			ID:      int(m[i].ID),
+			TimeOn:  int(m[i].Timeon),
+			TimeOff: int(m[i].Timeoff),
+		})
+	}
+	return res
+}
+
+func appPrograms(p *model.Program) app.Program {
+	return app.Program{
+		ID:               *p.ID,
+		Name:             p.Name,
+		Price:            int(p.Price),
+		PreflightEnabled: p.PreflightEnabled,
+		Relays:           appRelays(p.Relays),
+		PreflightRelays:  appRelays(p.PreflightRelays),
+	}
+}
+
+func apiPrograms(p []app.Program) (res []*model.Program) {
+	res = []*model.Program{}
+	for i := range p {
+		res = append(res, &model.Program{
+			ID:               &p[i].ID,
+			Name:             p[i].Name,
+			Price:            int64(p[i].Price),
+			PreflightEnabled: p[i].PreflightEnabled,
+			Relays:           apiRelays(p[i].Relays),
+			PreflightRelays:  apiRelays(p[i].PreflightRelays),
+		})
+	}
+	return res
+}
 
 func apiRelayReport(data *app.RelayReport) *model.RelayReport {
 	var relayStats []*model.RelayStat
@@ -131,25 +171,24 @@ func apiKeyPair(data []app.KeyPair) []*model.KeyPair {
 	return res
 }
 
-func apiPrograms(p []app.Program) (res []*model.ProgramInfo) {
-	res = []*model.ProgramInfo{}
-	for i := range p {
-		res = append(res, &model.ProgramInfo{
-			ID:   int64(p[i].ID),
-			Name: p[i].Name,
+func apiRelays(r []app.Relay) (res []*model.RelayConfig) {
+	res = []*model.RelayConfig{}
+	for i := range r {
+		res = append(res, &model.RelayConfig{
+			ID:      int64(r[i].ID),
+			Timeon:  int64(r[i].TimeOn),
+			Timeoff: int64(r[i].TimeOff),
 		})
 	}
 	return res
 }
 
-func apiRelays(r []app.Relay) (res []*model.RelayConfig) {
-	res = []*model.RelayConfig{}
+func apiButtons(r []app.StationProgram) (res []*op.ButtonsItems0) {
+	res = []*op.ButtonsItems0{}
 	for i := range r {
-		res = append(res, &model.RelayConfig{
-			ID:        int64(r[i].ID),
-			Timeon:    int64(r[i].TimeOn),
-			Timeoff:   int64(r[i].TimeOff),
-			Prfelight: int64(r[i].Preflight),
+		res = append(res, &op.ButtonsItems0{
+			ProgramID: int64(r[i].ProgramID),
+			ButtonID:  int64(r[i].ButtonID),
 		})
 	}
 	return res

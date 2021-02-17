@@ -28,8 +28,9 @@ func appSetStation(v []resStation) []app.SetStation {
 	var res []app.SetStation
 	for i := range v {
 		res = append(res, app.SetStation{
-			ID:   v[i].ID,
-			Name: v[i].Name,
+			ID:           v[i].ID,
+			Name:         v[i].Name,
+			PreflightSec: v[i].PreflightSec,
 		})
 	}
 	return res
@@ -60,8 +61,12 @@ func appStationsVariables(v []resStationsVariables) []app.StationsVariables {
 func appPrograms(p []resPrograms) (res []app.Program) {
 	for i := range p {
 		res = append(res, app.Program{
-			ID:   p[i].ProgramID,
-			Name: p[i].Name,
+			ID:               p[i].ID,
+			Name:             p[i].Name,
+			Price:            p[i].Price,
+			PreflightEnabled: p[i].PreflightEnabled,
+			Relays:           appProgramRelays(p[i].Relays),
+			PreflightRelays:  appProgramRelays(p[i].PreflightRelays),
 		})
 	}
 	return res
@@ -93,5 +98,15 @@ func appKasse(k resKasse) (res app.Kasse) {
 	res.ReceiptItem = k.ReceiptItem
 	res.TaxType = k.TaxType
 
+	return res
+}
+
+func appStationProgram(p []resStationProgram) (res []app.StationProgram) {
+	for i := range p {
+		res = append(res, app.StationProgram{
+			ButtonID:  p[i].ButtonID,
+			ProgramID: p[i].ProgramID,
+		})
+	}
 	return res
 }

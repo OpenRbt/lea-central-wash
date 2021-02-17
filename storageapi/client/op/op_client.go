@@ -477,34 +477,6 @@ func (a *Client) Ping(params *PingParams) (*PingOK, error) {
 }
 
 /*
-ProgramRelays program relays API
-*/
-func (a *Client) ProgramRelays(params *ProgramRelaysParams) (*ProgramRelaysOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewProgramRelaysParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "programRelays",
-		Method:             "POST",
-		PathPattern:        "/program-relays",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &ProgramRelaysReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*ProgramRelaysOK), nil
-
-}
-
-/*
 Programs programs API
 */
 func (a *Client) Programs(params *ProgramsParams) (*ProgramsOK, error) {
@@ -730,58 +702,30 @@ func (a *Client) SetKasse(params *SetKasseParams) (*SetKasseNoContent, error) {
 }
 
 /*
-SetProgramName set program name API
+SetProgram set program API
 */
-func (a *Client) SetProgramName(params *SetProgramNameParams) (*SetProgramNameNoContent, error) {
+func (a *Client) SetProgram(params *SetProgramParams) (*SetProgramNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewSetProgramNameParams()
+		params = NewSetProgramParams()
 	}
 
 	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "setProgramName",
+		ID:                 "setProgram",
 		Method:             "POST",
-		PathPattern:        "/set-program-name",
+		PathPattern:        "/set-program",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http"},
 		Params:             params,
-		Reader:             &SetProgramNameReader{formats: a.formats},
+		Reader:             &SetProgramReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return result.(*SetProgramNameNoContent), nil
-
-}
-
-/*
-SetProgramRelays set program relays API
-*/
-func (a *Client) SetProgramRelays(params *SetProgramRelaysParams) (*SetProgramRelaysNoContent, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewSetProgramRelaysParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "setProgramRelays",
-		Method:             "POST",
-		PathPattern:        "/set-program-relays",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &SetProgramRelaysReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*SetProgramRelaysNoContent), nil
+	return result.(*SetProgramNoContent), nil
 
 }
 
@@ -814,6 +758,62 @@ func (a *Client) SetStation(params *SetStationParams) (*SetStationNoContent, err
 }
 
 /*
+SetStationButton set station button API
+*/
+func (a *Client) SetStationButton(params *SetStationButtonParams) (*SetStationButtonNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetStationButtonParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "setStationButton",
+		Method:             "POST",
+		PathPattern:        "/set-station-button",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetStationButtonReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*SetStationButtonNoContent), nil
+
+}
+
+/*
+StationButton station button API
+*/
+func (a *Client) StationButton(params *StationButtonParams) (*StationButtonOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStationButtonParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "stationButton",
+		Method:             "POST",
+		PathPattern:        "/station-button",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StationButtonReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*StationButtonOK), nil
+
+}
+
+/*
 StationByHash station by hash API
 */
 func (a *Client) StationByHash(params *StationByHashParams) (*StationByHashOK, error) {
@@ -838,6 +838,34 @@ func (a *Client) StationByHash(params *StationByHashParams) (*StationByHashOK, e
 		return nil, err
 	}
 	return result.(*StationByHashOK), nil
+
+}
+
+/*
+StationProgramByHash station program by hash API
+*/
+func (a *Client) StationProgramByHash(params *StationProgramByHashParams) (*StationProgramByHashOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStationProgramByHashParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "stationProgramByHash",
+		Method:             "POST",
+		PathPattern:        "/station-program-by-hash",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StationProgramByHashReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*StationProgramByHashOK), nil
 
 }
 

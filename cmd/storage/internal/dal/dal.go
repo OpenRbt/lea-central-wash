@@ -219,8 +219,9 @@ func (r *repo) SaveIfNotExists(stationID app.StationID, key string, value string
 func (r *repo) SetStation(station app.SetStation) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err = tx.NamedExec(sqlUpdStation, argUpdStation{
-			ID:   station.ID,
-			Name: station.Name,
+			ID:           station.ID,
+			Name:         station.Name,
+			PreflightSec: station.PreflightSec,
 		})
 		return err
 	})
@@ -497,16 +498,12 @@ func (r *repo) CheckDB() (ok bool, err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) Programs(id app.StationID) (programs []app.Program, err error) {
+func (r *repo) Programs(id *int64) (programs []app.Program, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res []resPrograms
 		err = tx.NamedSelectContext(ctx, &res, sqlPrograms, argPrograms{
-			StationID: id,
+			ID: id,
 		})
-
-		if err == sql.ErrNoRows {
-			return nil
-		}
 
 		if err != nil {
 			return err
@@ -519,23 +516,34 @@ func (r *repo) Programs(id app.StationID) (programs []app.Program, err error) {
 	return
 }
 
-func (r *repo) ProgramRelays(id app.StationID, programID int) (relays []app.Relay, err error) {
+func (r *repo) SetProgram(program app.Program) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var jsonRelays string
-		err = tx.NamedGetContext(ctx, &jsonRelays, sqlProgramRelays, argProgramRelays{
-			StationID: id,
-			ProgramID: programID,
+		_, err = tx.NamedExec(sqlSetProgram, argSetProgram{
+			ID:               program.ID,
+			Name:             program.Name,
+			Price:            program.Price,
+			PreflightEnabled: program.PreflightEnabled,
+			Relays:           dalProgramRelays(program.Relays),
+			PreflightRelays:  dalProgramRelays(program.PreflightRelays),
 		})
+		return err
+	})
 
-		if err == sql.ErrNoRows {
-			return nil
-		}
+	return
+}
+
+func (r *repo) StationProgram(id app.StationID) (button []app.StationProgram, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res []resStationProgram
+		err = tx.NamedSelectContext(ctx, &res, sqlStationProgram, argStationProgram{
+			StationID: id,
+		})
 
 		if err != nil {
 			return err
 		}
 
-		relays = appProgramRelays(jsonRelays)
+		button = appStationProgram(res)
 
 		return nil
 	})
@@ -543,33 +551,34 @@ func (r *repo) ProgramRelays(id app.StationID, programID int) (relays []app.Rela
 	return
 }
 
-func (r *repo) SetProgramName(id app.StationID, programID int, name string) (err error) {
-
+func (r *repo) SetStationProgram(id app.StationID, button []app.StationProgram) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err = tx.NamedExec(sqlSetProgramName, argSetProgramName{
+		_, err = tx.NamedExec(sqlStationProgramDel, argStationProgramDel{
 			StationID: id,
-			ProgramID: programID,
-			Name:      name,
 		})
-
-		return err
-	})
-
-	return
-}
-
-func (r *repo) SetProgramRelays(id app.StationID, programID int, relays []app.Relay) (err error) {
-
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		relaysJSON := dalProgramRelays(relays)
-
-		_, err = tx.NamedExec(sqlSetProgramRelays, argSetProgramRelays{
-			StationID: id,
-			ProgramID: programID,
-			Relays:    relaysJSON,
-		})
-
-		return err
+		if err != nil {
+			return err
+		}
+		for i := range button {
+			_, err = tx.NamedExec(sqlStationProgramAdd, argStationProgramAdd{
+				StationID: id,
+				ButtonID:  button[i].ButtonID,
+				ProgramID: button[i].ProgramID,
+			})
+			if pqErrConflictIn(err, constraintStationProgramID) {
+				return app.ErrUnknownProgram
+			}
+			if pqErrConflictIn(err, constraintStationStationID) {
+				return app.ErrUnknownStation
+			}
+			if pqErrConflictIn(err, constraintStationProgramUnique) {
+				return app.ErrStationProgramMustUnique
+			}
+			if err != nil {
+				return err
+			}
+		}
+		return nil
 	})
 
 	return

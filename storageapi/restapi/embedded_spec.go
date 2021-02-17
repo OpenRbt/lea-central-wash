@@ -416,54 +416,6 @@ func init() {
         }
       }
     },
-    "/program-relays": {
-      "post": {
-        "operationId": "programRelays",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": [
-                "programID",
-                "stationID"
-              ],
-              "properties": {
-                "programID": {
-                  "type": "integer",
-                  "minimum": 1
-                },
-                "stationID": {
-                  "type": "integer",
-                  "minimum": 1
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "relays": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/RelayConfig"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "internal error"
-          }
-        }
-      }
-    },
     "/programs": {
       "post": {
         "operationId": "programs",
@@ -474,13 +426,11 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "required": [
-                "stationID"
-              ],
               "properties": {
-                "stationID": {
+                "programID": {
                   "type": "integer",
-                  "minimum": 1
+                  "minimum": 1,
+                  "x-nullable": true
                 }
               }
             }
@@ -492,7 +442,7 @@ func init() {
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/ProgramInfo"
+                "$ref": "#/definitions/Program"
               }
             }
           },
@@ -727,79 +677,16 @@ func init() {
         }
       }
     },
-    "/set-program-name": {
+    "/set-program": {
       "post": {
-        "operationId": "setProgramName",
+        "operationId": "setProgram",
         "parameters": [
           {
             "name": "args",
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "required": [
-                "programID",
-                "name",
-                "stationID"
-              ],
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "programID": {
-                  "type": "integer",
-                  "minimum": 1
-                },
-                "stationID": {
-                  "type": "integer",
-                  "minimum": 1
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "internal error"
-          }
-        }
-      }
-    },
-    "/set-program-relays": {
-      "post": {
-        "operationId": "setProgramRelays",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": [
-                "programID",
-                "program",
-                "stationID"
-              ],
-              "properties": {
-                "programID": {
-                  "type": "integer",
-                  "minimum": 1
-                },
-                "relays": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/RelayConfig"
-                  }
-                },
-                "stationID": {
-                  "type": "integer",
-                  "minimum": 1
-                }
-              }
+              "$ref": "#/definitions/Program"
             }
           }
         ],
@@ -835,6 +722,9 @@ func init() {
                 },
                 "name": {
                   "type": "string"
+                },
+                "preflightSec": {
+                  "type": "integer"
                 }
               }
             }
@@ -852,6 +742,109 @@ func init() {
           },
           "422": {
             "description": "validation error"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-station-button": {
+      "post": {
+        "operationId": "setStationButton",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "buttons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "buttonID": {
+                        "type": "integer"
+                      },
+                      "programID": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "422": {
+            "description": "validation error",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station-button": {
+      "post": {
+        "operationId": "stationButton",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "buttons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "buttonID": {
+                        "type": "integer"
+                      },
+                      "programID": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "internal error"
@@ -885,6 +878,40 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "integer"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station-program-by-hash": {
+      "post": {
+        "operationId": "stationProgramByHash",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationPrograms"
             }
           },
           "500": {
@@ -1048,7 +1075,6 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/UserConfig"
             }
           },
@@ -1355,7 +1381,6 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/UsersReport"
             }
           },
@@ -1534,16 +1559,36 @@ func init() {
       "minLength": 4,
       "pattern": "^[0123456789]{4,}$"
     },
-    "ProgramInfo": {
+    "Program": {
       "type": "object",
+      "required": [
+        "id"
+      ],
       "properties": {
         "id": {
           "type": "integer",
           "minimum": 1
         },
         "name": {
-          "type": "string",
-          "minLength": 1
+          "type": "string"
+        },
+        "preflightEnabled": {
+          "type": "boolean"
+        },
+        "preflightRelays": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RelayConfig"
+          }
+        },
+        "price": {
+          "type": "integer"
+        },
+        "relays": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RelayConfig"
+          }
         }
       }
     },
@@ -1553,9 +1598,6 @@ func init() {
         "id": {
           "type": "integer",
           "minimum": 1
-        },
-        "prfelight": {
-          "type": "integer"
         },
         "timeoff": {
           "type": "integer"
@@ -1594,6 +1636,34 @@ func init() {
           "type": "integer"
         },
         "totalTimeOn": {
+          "type": "integer"
+        }
+      }
+    },
+    "StationPrograms": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "preflightSec": {
+          "type": "integer"
+        },
+        "programs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "buttonID": {
+                "type": "integer"
+              },
+              "program": {
+                "$ref": "#/definitions/Program"
+              }
+            }
+          }
+        },
+        "stationID": {
           "type": "integer"
         }
       }
@@ -2145,54 +2215,6 @@ func init() {
         }
       }
     },
-    "/program-relays": {
-      "post": {
-        "operationId": "programRelays",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": [
-                "programID",
-                "stationID"
-              ],
-              "properties": {
-                "programID": {
-                  "type": "integer",
-                  "minimum": 1
-                },
-                "stationID": {
-                  "type": "integer",
-                  "minimum": 1
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "relays": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/RelayConfig"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "internal error"
-          }
-        }
-      }
-    },
     "/programs": {
       "post": {
         "operationId": "programs",
@@ -2203,13 +2225,11 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "required": [
-                "stationID"
-              ],
               "properties": {
-                "stationID": {
+                "programID": {
                   "type": "integer",
-                  "minimum": 1
+                  "minimum": 1,
+                  "x-nullable": true
                 }
               }
             }
@@ -2221,7 +2241,7 @@ func init() {
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/ProgramInfo"
+                "$ref": "#/definitions/Program"
               }
             }
           },
@@ -2456,79 +2476,16 @@ func init() {
         }
       }
     },
-    "/set-program-name": {
+    "/set-program": {
       "post": {
-        "operationId": "setProgramName",
+        "operationId": "setProgram",
         "parameters": [
           {
             "name": "args",
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "required": [
-                "programID",
-                "name",
-                "stationID"
-              ],
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "programID": {
-                  "type": "integer",
-                  "minimum": 1
-                },
-                "stationID": {
-                  "type": "integer",
-                  "minimum": 1
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "internal error"
-          }
-        }
-      }
-    },
-    "/set-program-relays": {
-      "post": {
-        "operationId": "setProgramRelays",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": [
-                "programID",
-                "program",
-                "stationID"
-              ],
-              "properties": {
-                "programID": {
-                  "type": "integer",
-                  "minimum": 1
-                },
-                "relays": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/RelayConfig"
-                  }
-                },
-                "stationID": {
-                  "type": "integer",
-                  "minimum": 1
-                }
-              }
+              "$ref": "#/definitions/Program"
             }
           }
         ],
@@ -2564,6 +2521,9 @@ func init() {
                 },
                 "name": {
                   "type": "string"
+                },
+                "preflightSec": {
+                  "type": "integer"
                 }
               }
             }
@@ -2581,6 +2541,109 @@ func init() {
           },
           "422": {
             "description": "validation error"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-station-button": {
+      "post": {
+        "operationId": "setStationButton",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "buttons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "buttonID": {
+                        "type": "integer"
+                      },
+                      "programID": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "422": {
+            "description": "validation error",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station-button": {
+      "post": {
+        "operationId": "stationButton",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "buttons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "buttonID": {
+                        "type": "integer"
+                      },
+                      "programID": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "internal error"
@@ -2614,6 +2677,40 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "integer"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station-program-by-hash": {
+      "post": {
+        "operationId": "stationProgramByHash",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationPrograms"
             }
           },
           "500": {
@@ -2777,7 +2874,6 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/UserConfig"
             }
           },
@@ -3084,7 +3180,6 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/UsersReport"
             }
           },
@@ -3263,16 +3358,36 @@ func init() {
       "minLength": 4,
       "pattern": "^[0123456789]{4,}$"
     },
-    "ProgramInfo": {
+    "Program": {
       "type": "object",
+      "required": [
+        "id"
+      ],
       "properties": {
         "id": {
           "type": "integer",
           "minimum": 1
         },
         "name": {
-          "type": "string",
-          "minLength": 1
+          "type": "string"
+        },
+        "preflightEnabled": {
+          "type": "boolean"
+        },
+        "preflightRelays": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RelayConfig"
+          }
+        },
+        "price": {
+          "type": "integer"
+        },
+        "relays": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RelayConfig"
+          }
         }
       }
     },
@@ -3282,9 +3397,6 @@ func init() {
         "id": {
           "type": "integer",
           "minimum": 1
-        },
-        "prfelight": {
-          "type": "integer"
         },
         "timeoff": {
           "type": "integer"
@@ -3323,6 +3435,34 @@ func init() {
           "type": "integer"
         },
         "totalTimeOn": {
+          "type": "integer"
+        }
+      }
+    },
+    "StationPrograms": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "preflightSec": {
+          "type": "integer"
+        },
+        "programs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "buttonID": {
+                "type": "integer"
+              },
+              "program": {
+                "$ref": "#/definitions/Program"
+              }
+            }
+          }
+        },
+        "stationID": {
           "type": "integer"
         }
       }
