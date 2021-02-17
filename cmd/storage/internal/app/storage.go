@@ -460,6 +460,9 @@ func (a *app) StationProgram(id StationID) ([]StationProgram, error) {
 func (a *app) SetStationProgram(id StationID, button []StationProgram) error {
 	return a.repo.SetStationProgram(id, button)
 }
+func (a *app) StationConfig(id StationID) (StationConfig, error) {
+	return a.repo.StationConfig(id)
+}
 
 func (a *app) Kasse() (kasse Kasse, err error) {
 	return a.repo.Kasse()

@@ -110,3 +110,25 @@ func appStationProgram(p []resStationProgram) (res []app.StationProgram) {
 	}
 	return res
 }
+
+func appStationConfig(p []resStationConfig) (res app.StationConfig) {
+	if len(p) == 0 {
+		return
+	}
+	res.ID = p[0].ID
+	res.Name = p[0].Name
+	res.PreflightSec = p[0].PreflightSec
+
+	for i := range p {
+		res.Programs = append(res.Programs, app.Program{
+			ID:               p[i].ProgramID,
+			ButtonID:         p[i].ButtonID,
+			Name:             p[i].ProgramName,
+			Price:            p[i].Price,
+			PreflightEnabled: p[i].PreflightEnabled,
+			Relays:           appProgramRelays(p[i].Relays),
+			PreflightRelays:  appProgramRelays(p[i].PreflightRelays),
+		})
+	}
+	return res
+}

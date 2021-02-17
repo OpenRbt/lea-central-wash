@@ -75,6 +75,7 @@ type (
 		SetProgram(Program) error
 		StationProgram(StationID) ([]StationProgram, error)
 		SetStationProgram(StationID, []StationProgram) error
+		StationConfig(StationID) (StationConfig, error)
 
 		Users(auth *Auth) (users []UserData, err error)
 		User(password string) (user *UserData, err error)
@@ -128,6 +129,7 @@ type (
 		SetProgram(Program) error
 		StationProgram(StationID) ([]StationProgram, error)
 		SetStationProgram(StationID, []StationProgram) error
+		StationConfig(StationID) (StationConfig, error)
 
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)

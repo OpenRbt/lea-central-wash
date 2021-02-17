@@ -36,16 +36,20 @@ func appPrograms(p *model.Program) app.Program {
 func apiPrograms(p []app.Program) (res []*model.Program) {
 	res = []*model.Program{}
 	for i := range p {
-		res = append(res, &model.Program{
-			ID:               &p[i].ID,
-			Name:             p[i].Name,
-			Price:            int64(p[i].Price),
-			PreflightEnabled: p[i].PreflightEnabled,
-			Relays:           apiRelays(p[i].Relays),
-			PreflightRelays:  apiRelays(p[i].PreflightRelays),
-		})
+		res = append(res, apiProgram(p[i]))
 	}
 	return res
+}
+
+func apiProgram(p app.Program) *model.Program {
+	return &model.Program{
+		ID:               &p.ID,
+		Name:             p.Name,
+		Price:            int64(p.Price),
+		PreflightEnabled: p.PreflightEnabled,
+		Relays:           apiRelays(p.Relays),
+		PreflightRelays:  apiRelays(p.PreflightRelays),
+	}
 }
 
 func apiRelayReport(data *app.RelayReport) *model.RelayReport {
@@ -244,4 +248,19 @@ func apiUsersReport(userData []app.UserData) *model.UsersReport {
 	return &model.UsersReport{
 		Users: users,
 	}
+}
+
+func apiStationConfig(p app.StationConfig) (res *model.StationPrograms) {
+	res = &model.StationPrograms{}
+	res.StationID = int64(p.ID)
+	res.Name = p.Name
+	res.PreflightSec = int64(p.PreflightSec)
+
+	for i := range p.Programs {
+		res.Programs = append(res.Programs, &model.StationProgramsProgramsItems0{
+			ButtonID: int64(p.Programs[i].ButtonID),
+			Program:  apiProgram(p.Programs[i]),
+		})
+	}
+	return res
 }

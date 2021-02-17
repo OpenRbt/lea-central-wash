@@ -98,6 +98,7 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.ProgramsHandler = op.ProgramsHandlerFunc(svc.programs)
 	api.SetStationButtonHandler = op.SetStationButtonHandlerFunc(svc.setStationButton)
 	api.StationButtonHandler = op.StationButtonHandlerFunc(svc.stationButton)
+	api.StationProgramByHashHandler = op.StationProgramByHashHandlerFunc(svc.stationProgramByHash)
 
 	api.KasseHandler = op.KasseHandlerFunc(svc.kasse)
 	api.SetKasseHandler = op.SetKasseHandlerFunc(svc.setKasse)

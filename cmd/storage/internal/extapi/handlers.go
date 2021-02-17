@@ -519,6 +519,31 @@ func (svc *service) stationButton(params op.StationButtonParams) op.StationButto
 	}
 }
 
+func (svc *service) stationProgramByHash(params op.StationProgramByHashParams) op.StationProgramByHashResponder {
+	log.Info("StationProgramByHash", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	id, err := svc.getID(string(params.Args.Hash))
+
+	switch errors.Cause(err) {
+	case nil:
+	case errNotFound:
+		log.Info("post by hash: not found", "hash", params.Args.Hash)
+		return op.NewStationProgramByHashOK()
+	default:
+		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationProgramByHashInternalServerError()
+	}
+
+	res, err := svc.app.StationConfig(id)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewStationProgramByHashOK().WithPayload(apiStationConfig((res)))
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationProgramByHashInternalServerError()
+	}
+}
+
 func (svc *service) kasse(params op.KasseParams) op.KasseResponder {
 	res, err := svc.app.Kasse()
 

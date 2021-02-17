@@ -303,6 +303,23 @@ ORDER BY relay_id
 	FROM station_program
 	WHERE station_id = :station_id
 	`
+	sqlStationConfig = `
+select s.id,
+	s.name,
+	s.preflight_sec,
+	b.button_id,
+	b.program_id,
+	p.price,
+	p.name as "program_name",
+	p.preflight_enabled,
+	p.relays,
+	p.preflight_relays
+from station s
+join station_program b on s.id=b.station_id
+join program p on b.program_id=p.id
+WHERE s.id = :id
+order by b.button_id
+	`
 	sqlStationProgramDel = `
 	DELETE FROM station_program
 	WHERE station_id = :station_id
@@ -524,6 +541,21 @@ type (
 		StationID app.StationID
 		ProgramID int
 		ButtonID  int
+	}
+	argStationConfig struct {
+		ID app.StationID
+	}
+	resStationConfig struct {
+		ID               app.StationID
+		Price            int
+		Name             string
+		PreflightSec     int
+		ProgramID        int64
+		ButtonID         int
+		ProgramName      string
+		PreflightEnabled bool
+		Relays           string
+		PreflightRelays  string
 	}
 
 	argSetProgram struct {

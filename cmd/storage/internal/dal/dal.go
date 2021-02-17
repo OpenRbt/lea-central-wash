@@ -584,6 +584,22 @@ func (r *repo) SetStationProgram(id app.StationID, button []app.StationProgram) 
 	return
 }
 
+func (r *repo) StationConfig(id app.StationID) (cfg app.StationConfig, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res []resStationConfig
+		err = tx.NamedSelectContext(ctx, &res, sqlStationConfig, argStationConfig{
+			ID: id,
+		})
+		if err != nil {
+			return err
+		}
+		cfg = appStationConfig(res)
+		return nil
+	})
+
+	return
+}
+
 func (r *repo) Kasse() (kasse app.Kasse, err error) {
 
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {

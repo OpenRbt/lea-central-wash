@@ -188,6 +188,9 @@ func (t *DB) StationProgram(app.StationID) ([]app.StationProgram, error) {
 func (t *DB) SetStationProgram(app.StationID, []app.StationProgram) error {
 	return nil
 }
+func (t *DB) StationConfig(id app.StationID) (cfg app.StationConfig, err error) {
+	return
+}
 
 func (t *DB) Kasse() (kasse app.Kasse, err error) {
 	return
