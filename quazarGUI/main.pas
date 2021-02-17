@@ -110,8 +110,15 @@ type
     procedure MainMouseLeave(Sender: TObject); override;
 
     procedure SetStations();
+    function UpdateStations() : boolean;
+    function GetStationNameByID(id : integer) : string;
+    function GetStationHashByID(id : integer) : string;
+    function GetStationCurrentBalanceByID(id : integer) : integer;
+    function GetStationCurrentProgramByID(id : integer) : integer;
+    function GetStationStatusByID(id : integer) : string;
 
   private
+    _isStandBy : boolean;
 
   public
     PLACEHOLDER : string;
@@ -123,16 +130,58 @@ var
   freeHashID : integer;
 
 const
-  NO_ID : integer = -1;
-  ON_LINE     : string = 'online';
+  NO_ID   : integer = -1;
+  ON_LINE : string = 'online';
+  PLACEHOLDER : string = '';
 
 implementation
+  uses station_balance;
 
 {$R *.lfm}
 
+function TMainForm.GetStationNameByID(id : integer) : string;
+begin
+  if id > 0 then
+  begin
+    Result := ResponseStations.name[id-1];
+  end;
+end;
+
+function TMainForm.GetStationHashByID(id : integer) : string;
+begin
+  if id > 0 then
+  begin
+    Result := ResponseStations.hash[id-1];
+  end;
+end;
+
+function TMainForm.GetStationCurrentBalanceByID(id : integer) : integer;
+begin
+  if id > 0 then
+  begin
+    Result := ResponseStations.currentBalance[id-1];
+  end;
+end;
+
+function TMainForm.GetStationStatusByID(id : integer) : string;
+begin
+  if id > 0 then
+  begin
+    Result := ResponseStations.status[id-1];
+  end;
+end;
+
+function TMainForm.GetStationCurrentProgramByID(id : integer) : integer;
+begin
+  if id > 0 then
+  begin
+    Result := ResponseStations.currentProgram[id-1];
+  end;
+end;
+
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  PLACEHOLDER := '';
+  _isStandBy  := false;
   UpdateTimer.Interval := 1000;
 end;
 
@@ -143,6 +192,15 @@ begin
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
+begin
+  MainForm.Main.Font.Color := MainForm.GetHoverColor();
+  UpdateTimer.Enabled := false;
+  UpdateStations();
+  SetStations();
+  UpdateTimer.Enabled := true;
+end;
+
+function TMainForm.UpdateStations() : boolean;
 var
   RequestAnswer: string;
   stationsJson: TJsonArray;
@@ -152,8 +210,6 @@ var
   id : integer;
 
 begin
-  MainForm.Main.Font.Color := MainForm.GetHoverColor();
-
   with TFPHttpClient.Create(nil) do
   try
      try
@@ -256,19 +312,22 @@ begin
             end;
           end;
         end;
-
-        SetStations();
-        UpdateTimer.Enabled := true;
-
+      Result := true;
+      _isStandBy := false;
       except
-        case ResponseStatusCode of
-          0: ShowMessage('Can`t connect to server');
-          401, 403: // do nothing
-            ;
-          500: ShowMessage('Server Error: 500');
-          else
-            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
-              sLineBreak + ResponseStatusText);
+        Result := false;
+        if not _isStandBy then
+        begin
+          _isStandBy := true;
+          case ResponseStatusCode of
+            0: ShowMessage('Can`t connect to server');
+            401, 403: // do nothing
+              ;
+            500: ShowMessage('Server Error: 500');
+            else
+              ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+                sLineBreak + ResponseStatusText);
+          end;
         end;
         setlength(ResponseStations.id, 0);
         setlength(ResponseStations.name, 0);
@@ -506,7 +565,24 @@ end;
 
 procedure TMainForm.Money1Click(Sender: TObject);
 begin
-
+  if ResponseStations.Count = 0 then
+  begin
+    ShowMessage('Can`t connect to server');
+  end
+  else
+  begin
+    if ResponseStations.status[0] = ON_LINE then
+    begin
+      UpdateTimer.Enabled := false;
+      StationBalanceForm.Init(1);
+      StationBalanceForm.ShowModal;
+      UpdateTimer.Enabled := true;
+    end
+    else
+    begin
+      ShowMessage('Station is offline');
+    end;
+  end;
 end;
 
 procedure TMainForm.Money5Click(Sender: TObject);
@@ -544,7 +620,6 @@ end;
 
 procedure TMainForm.UpdateCall(Sender: TObject);
 begin
-  UpdateTimer.Enabled := false;
   MainForm.FormShow(Sender);
 end;
 
