@@ -11,3 +11,14 @@ cmd/storage/storage
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# Vendor
+vendor/
+
+# quazarGUI
+quazarGUI/backup/
+quazarGUI/lib/
+
+# lazarusGUI
+lazarusGUI/backup/
+lazarusGUI/lib/

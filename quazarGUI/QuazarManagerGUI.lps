@@ -9,7 +9,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="84" Y="11"/>
-        <UsageCount Value="111"/>
+        <UsageCount Value="112"/>
       </Unit0>
       <Unit1>
         <Filename Value="login.pas"/>
@@ -18,7 +18,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <CursorPos Y="43"/>
-        <UsageCount Value="111"/>
+        <UsageCount Value="112"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -29,9 +29,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Base"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="77"/>
+        <TopLine Value="76"/>
         <CursorPos X="82" Y="28"/>
-        <UsageCount Value="111"/>
+        <UsageCount Value="112"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -43,7 +43,7 @@
         <EditorIndex Value="8"/>
         <TopLine Value="201"/>
         <CursorPos X="13" Y="218"/>
-        <UsageCount Value="111"/>
+        <UsageCount Value="112"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
@@ -55,7 +55,7 @@
         <EditorIndex Value="2"/>
         <TopLine Value="104"/>
         <CursorPos X="3" Y="111"/>
-        <UsageCount Value="100"/>
+        <UsageCount Value="101"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -67,7 +67,7 @@
         <EditorIndex Value="4"/>
         <TopLine Value="66"/>
         <CursorPos X="20" Y="104"/>
-        <UsageCount Value="100"/>
+        <UsageCount Value="101"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
@@ -79,7 +79,7 @@
         <EditorIndex Value="5"/>
         <TopLine Value="405"/>
         <CursorPos X="20" Y="441"/>
-        <UsageCount Value="100"/>
+        <UsageCount Value="101"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit6>
@@ -92,7 +92,7 @@
         <EditorIndex Value="6"/>
         <TopLine Value="67"/>
         <CursorPos X="21" Y="105"/>
-        <UsageCount Value="100"/>
+        <UsageCount Value="101"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
@@ -104,7 +104,7 @@
         <EditorIndex Value="7"/>
         <TopLine Value="294"/>
         <CursorPos X="116" Y="313"/>
-        <UsageCount Value="100"/>
+        <UsageCount Value="101"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -116,7 +116,7 @@
         <EditorIndex Value="13"/>
         <TopLine Value="66"/>
         <CursorPos X="22" Y="105"/>
-        <UsageCount Value="100"/>
+        <UsageCount Value="101"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
@@ -128,7 +128,7 @@
         <EditorIndex Value="9"/>
         <TopLine Value="72"/>
         <CursorPos X="3" Y="86"/>
-        <UsageCount Value="85"/>
+        <UsageCount Value="86"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
@@ -140,7 +140,7 @@
         <EditorIndex Value="12"/>
         <TopLine Value="91"/>
         <CursorPos X="43" Y="100"/>
-        <UsageCount Value="83"/>
+        <UsageCount Value="84"/>
         <Loaded Value="True"/>
       </Unit11>
       <Unit12>
@@ -150,9 +150,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="11"/>
-        <TopLine Value="25"/>
+        <TopLine Value="9"/>
         <CursorPos X="51" Y="9"/>
-        <UsageCount Value="79"/>
+        <UsageCount Value="80"/>
         <Loaded Value="True"/>
       </Unit12>
       <Unit13>
@@ -164,7 +164,7 @@
         <EditorIndex Value="10"/>
         <TopLine Value="20"/>
         <CursorPos Y="47"/>
-        <UsageCount Value="71"/>
+        <UsageCount Value="72"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
@@ -175,8 +175,8 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <TopLine Value="43"/>
-        <CursorPos X="21" Y="71"/>
-        <UsageCount Value="22"/>
+        <CursorPos X="61" Y="77"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit14>
