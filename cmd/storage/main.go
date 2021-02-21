@@ -19,6 +19,7 @@ import (
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/extapi"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/flags"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/goose"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/hal"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/memdb"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/migration"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/svckasse"
@@ -217,10 +218,16 @@ func run(db *sqlx.DB, errc chan<- error) {
 
 	weather, errWeatherSvc := svcweather.Instance(providerConfig, nil)
 	if errWeatherSvc != nil {
-		// do something
+		log.Info("Weather IS TURNED OFF")
 	}
 
-	appl := app.New(repo, kasse, weather)
+	hardware, errHardware := hal.NewHardwareAccessLayer()
+	if errHardware != nil {
+		log.Info("HARDWARE IS NOT WORKING")
+	}
+	hardware.Start()
+
+	appl := app.New(repo, kasse, weather, hardware)
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
 	if err != nil {

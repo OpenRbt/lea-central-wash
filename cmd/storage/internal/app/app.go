@@ -139,6 +139,28 @@ type (
 	WeatherSvc interface {
 		CurrentTemperature() (float64, error)
 	}
+	// HardwareAccessLayer describes an interface to access hardware control modules
+	HardwareAccessLayer interface {
+		Start()
+		ControlBoard(key int) (ControlBoard, error)
+	}
+	// ControlBoard represents one board (even virtual) to control relays
+	ControlBoard interface {
+		StopAll() error
+		MyPosition() (int, error)
+		RunConfig(config RelayConfig)
+	}
+	// RelayConfig represents a relay config for something
+	RelayConfig struct {
+		// MotorSpeedPercent  will be passed to ESQ500/600 or another frequency controller to change the motor speed
+		// NOT MORE THAN 150 PERCENT!!!
+		MotorSpeedPercent int
+		// If anything happens with the whole system, the control board will stop all after this time
+		// NOT MORE THAN 3600 SECONDS!!!
+		TimeoutSec int
+		// Timings are settigns for actual relays
+		Timings []Relay
+	}
 )
 
 type app struct {
@@ -147,15 +169,17 @@ type app struct {
 	stationsMutex sync.Mutex
 	kasseSvc      KasseSvc
 	weatherSvc    WeatherSvc
+	hardware      HardwareAccessLayer
 }
 
 // New creates and returns new App.
-func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc) App {
+func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareAccessLayer) App {
 	appl := &app{
 		repo:       repo,
 		stations:   make(map[StationID]StationData),
 		kasseSvc:   kasseSvc,
 		weatherSvc: weatherSvc,
+		hardware:   hardware,
 	}
 	appl.loadStations()
 	return appl
@@ -173,10 +197,12 @@ const (
 	StatusOnline  Status = 2
 )
 
+// StatusCollection is a report about how much money were in a station
 type StatusCollection struct {
 	Stations []CollectionReport
 }
 
+// StatusReport is just a status information
 type StatusReport struct {
 	KasseInfo   string
 	KasseStatus Status
@@ -184,6 +210,7 @@ type StatusReport struct {
 	Stations    []StationStatus
 }
 
+// StationStatus is used to display in the managment software
 type StationStatus struct {
 	ID             StationID
 	Info           string
@@ -193,22 +220,26 @@ type StationStatus struct {
 	CurrentProgram int
 }
 
+// SetStation is a struct to assign a name
 type SetStation struct {
 	ID   StationID
 	Name string
 }
 
+// StationsVariables represents a named variable for a specific Station
 type StationsVariables struct {
 	ID      StationID
 	Name    string
 	KeyPair []KeyPair
 }
 
+// KeyPair is just a Key and its value
 type KeyPair struct {
 	Key   string
 	Value string
 }
 
+// Relay is a config for a relay
 type Relay struct {
 	ID        int
 	TimeOn    int
@@ -216,11 +247,13 @@ type Relay struct {
 	Preflight int
 }
 
+// Program represents a program like Wax or Water or whatever ...
 type Program struct {
 	ID   int
 	Name string
 }
 
+// Kasse is about connected Kasse device
 type Kasse struct {
 	ReceiptItem     string
 	TaxType         string
