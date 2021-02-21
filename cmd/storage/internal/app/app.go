@@ -141,18 +141,24 @@ type (
 	}
 	// HardwareAccessLayer describes an interface to access hardware control modules
 	HardwareAccessLayer interface {
-		ControlBoards() ([]ControlBoard, error)
+		Start()
 		ControlBoard(key int) (ControlBoard, error)
 	}
 	// ControlBoard represents one board (even virtual) to control relays
 	ControlBoard interface {
 		StopAll() error
 		MyPosition() (int, error)
-		RelaysRange() (int, int, error)
-		RunConfig(config RelayConfig, timeoutSeconds int)
+		RunConfig(config RelayConfig)
 	}
 	// RelayConfig represents a relay config for something
 	RelayConfig struct {
+		// MotorSpeedPercent  will be passed to ESQ500/600 or another frequency controller to change the motor speed
+		// NOT MORE THAN 150 PERCENT!!!
+		MotorSpeedPercent int
+		// If anything happens with the whole system, the control board will stop all after this time
+		// NOT MORE THAN 3600 SECONDS!!!
+		TimeoutSec int
+		// Timings are settigns for actual relays
 		Timings []Relay
 	}
 )
@@ -163,15 +169,17 @@ type app struct {
 	stationsMutex sync.Mutex
 	kasseSvc      KasseSvc
 	weatherSvc    WeatherSvc
+	hardware      HardwareAccessLayer
 }
 
 // New creates and returns new App.
-func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc) App {
+func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareAccessLayer) App {
 	appl := &app{
 		repo:       repo,
 		stations:   make(map[StationID]StationData),
 		kasseSvc:   kasseSvc,
 		weatherSvc: weatherSvc,
+		hardware:   hardware,
 	}
 	appl.loadStations()
 	return appl
