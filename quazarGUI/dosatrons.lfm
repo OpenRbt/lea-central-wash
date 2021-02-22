@@ -1,18 +1,78 @@
 inherited DosatronsForm: TDosatronsForm
   OnActivate = FormShow
   OnClose = FormClose
-  inherited NotAuthorized: TStaticText
-    TabOrder = 9
-  end
-  object Placeholder: TStaticText[9]
-    Left = 250
-    Height = 200
-    Top = 300
-    Width = 1010
-    Caption = 'D O S A T R O N S'
-    Font.Color = clGrayText
-    Font.Height = -128
+  object DosatronsGrid: TStringGrid[9]
+    Left = 320
+    Height = 370
+    Top = 216
+    Width = 944
+    AlternateColor = cl3DLight
+    ColCount = 6
+    Columns = <    
+      item
+        Font.Height = -32
+        Title.Caption = 'DosatronName'
+        Width = 370
+      end    
+      item
+        Alignment = taRightJustify
+        ButtonStyle = cbsButton
+        Font.Height = -32
+        Title.Alignment = taRightJustify
+        Title.Caption = 'DecrementBtn'
+        Width = 40
+      end    
+      item
+        Alignment = taCenter
+        Font.Height = -32
+        Title.Caption = 'DosatronPercent'
+        Width = 80
+      end    
+      item
+        ButtonStyle = cbsButton
+        Font.Height = -32
+        Title.Caption = 'IncrementBtn'
+        Width = 40
+      end    
+      item
+        Font.Height = -24
+        Title.Caption = 'DosatronPercentLabel'
+        Width = 212
+      end    
+      item
+        ButtonStyle = cbsButtonColumn
+        Font.Height = -32
+        Title.Caption = 'ProgramEnabled'
+        Width = 200
+      end>
+    FixedCols = 0
+    FixedRows = 0
+    Flat = True
+    Font.Height = 75
     ParentFont = False
-    TabOrder = 8
+    RowCount = 4
+    ScrollBars = ssNone
+    TabOrder = 9
+    TitleFont.Height = 75
+  end
+  object Save: TButton[10]
+    Left = 400
+    Height = 48
+    Top = 620
+    Width = 128
+    Caption = 'Сохранить'
+    Font.Height = -19
+    ParentFont = False
+    TabOrder = 10
+  end
+  object Cancel: TButton[11]
+    Left = 544
+    Height = 48
+    Top = 620
+    Width = 128
+    Caption = 'Отмена'
+    Font.Height = -19
+    ParentFont = False
+    TabOrder = 11
   end
 end

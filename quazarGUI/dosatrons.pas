@@ -6,14 +6,16 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Base;
+  Grids, Base;
 
 type
 
   { TDosatronsForm }
 
   TDosatronsForm = class(TBaseForm)
-    Placeholder: TStaticText;
+    Cancel: TButton;
+    DosatronsGrid: TStringGrid;
+    Save: TButton;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject); override;
@@ -56,6 +58,11 @@ end;
 procedure TDosatronsForm.FormShow(Sender: TObject);
 begin
   DosatronsForm.Dosatrons.Font.Color := DosatronsForm.GetHoverColor();
+  NotAuthorized.Visible:=False;
+  DosatronsGrid.Visible:=True;
+  DosatronsGrid.Enabled:=True;
+  Save.Enabled:=True;
+  Cancel.Enabled:=True;
 end;
 
 procedure TDosatronsForm.MainClick(Sender: TObject);
