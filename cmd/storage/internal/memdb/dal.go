@@ -176,16 +176,19 @@ func (t *DB) CheckDB() (bool, error) {
 	return true, nil
 }
 
-func (t *DB) Programs(id app.StationID) (programs []app.Program, err error) {
-	return
+func (t *DB) Programs(id *int64) ([]app.Program, error) {
+	return nil, nil
 }
-func (t *DB) SetProgramName(id app.StationID, programID int, name string) (err error) {
-	return
+func (t *DB) SetProgram(app.Program) error {
+	return nil
 }
-func (t *DB) ProgramRelays(id app.StationID, programID int) (relays []app.Relay, err error) {
-	return
+func (t *DB) StationProgram(app.StationID) ([]app.StationProgram, error) {
+	return nil, nil
 }
-func (t *DB) SetProgramRelays(id app.StationID, programID int, relays []app.Relay) (err error) {
+func (t *DB) SetStationProgram(app.StationID, []app.StationProgram) error {
+	return nil
+}
+func (t *DB) StationConfig(id app.StationID) (cfg app.StationConfig, err error) {
 	return
 }
 

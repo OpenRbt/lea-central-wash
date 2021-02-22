@@ -6,7 +6,51 @@ import (
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
 )
+
+func appRelays(m []*model.RelayConfig) []app.Relay {
+	res := []app.Relay{}
+
+	for i := range m {
+		res = append(res, app.Relay{
+			ID:      int(m[i].ID),
+			TimeOn:  int(m[i].Timeon),
+			TimeOff: int(m[i].Timeoff),
+		})
+	}
+	return res
+}
+
+func appPrograms(p *model.Program) app.Program {
+	return app.Program{
+		ID:               *p.ID,
+		Name:             p.Name,
+		Price:            int(p.Price),
+		PreflightEnabled: p.PreflightEnabled,
+		Relays:           appRelays(p.Relays),
+		PreflightRelays:  appRelays(p.PreflightRelays),
+	}
+}
+
+func apiPrograms(p []app.Program) (res []*model.Program) {
+	res = []*model.Program{}
+	for i := range p {
+		res = append(res, apiProgram(p[i]))
+	}
+	return res
+}
+
+func apiProgram(p app.Program) *model.Program {
+	return &model.Program{
+		ID:               &p.ID,
+		Name:             p.Name,
+		Price:            int64(p.Price),
+		PreflightEnabled: p.PreflightEnabled,
+		Relays:           apiRelays(p.Relays),
+		PreflightRelays:  apiRelays(p.PreflightRelays),
+	}
+}
 
 func apiRelayReport(data *app.RelayReport) *model.RelayReport {
 	var relayStats []*model.RelayStat
@@ -131,25 +175,24 @@ func apiKeyPair(data []app.KeyPair) []*model.KeyPair {
 	return res
 }
 
-func apiPrograms(p []app.Program) (res []*model.ProgramInfo) {
-	res = []*model.ProgramInfo{}
-	for i := range p {
-		res = append(res, &model.ProgramInfo{
-			ID:   int64(p[i].ID),
-			Name: p[i].Name,
+func apiRelays(r []app.Relay) (res []*model.RelayConfig) {
+	res = []*model.RelayConfig{}
+	for i := range r {
+		res = append(res, &model.RelayConfig{
+			ID:      int64(r[i].ID),
+			Timeon:  int64(r[i].TimeOn),
+			Timeoff: int64(r[i].TimeOff),
 		})
 	}
 	return res
 }
 
-func apiRelays(r []app.Relay) (res []*model.RelayConfig) {
-	res = []*model.RelayConfig{}
+func apiButtons(r []app.StationProgram) (res []*op.ButtonsItems0) {
+	res = []*op.ButtonsItems0{}
 	for i := range r {
-		res = append(res, &model.RelayConfig{
-			ID:        int64(r[i].ID),
-			Timeon:    int64(r[i].TimeOn),
-			Timeoff:   int64(r[i].TimeOff),
-			Prfelight: int64(r[i].Preflight),
+		res = append(res, &op.ButtonsItems0{
+			ProgramID: int64(r[i].ProgramID),
+			ButtonID:  int64(r[i].ButtonID),
 		})
 	}
 	return res
@@ -205,4 +248,19 @@ func apiUsersReport(userData []app.UserData) *model.UsersReport {
 	return &model.UsersReport{
 		Users: users,
 	}
+}
+
+func apiStationConfig(p app.StationConfig) (res *model.StationPrograms) {
+	res = &model.StationPrograms{}
+	res.StationID = int64(p.ID)
+	res.Name = p.Name
+	res.PreflightSec = int64(p.PreflightSec)
+
+	for i := range p.Programs {
+		res.Programs = append(res.Programs, &model.StationProgramsProgramsItems0{
+			ButtonID: int64(p.Programs[i].ButtonID),
+			Program:  apiProgram(p.Programs[i]),
+		})
+	}
+	return res
 }

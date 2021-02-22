@@ -91,9 +91,6 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.PingHandler = op.PingHandlerFunc(func(params op.PingParams) op.PingResponder {
 		return op.PingNotImplemented()
 	})
-	api.ProgramRelaysHandler = op.ProgramRelaysHandlerFunc(func(params op.ProgramRelaysParams) op.ProgramRelaysResponder {
-		return op.ProgramRelaysNotImplemented()
-	})
 	api.ProgramsHandler = op.ProgramsHandlerFunc(func(params op.ProgramsParams) op.ProgramsResponder {
 		return op.ProgramsNotImplemented()
 	})
@@ -118,17 +115,23 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.SetKasseHandler = op.SetKasseHandlerFunc(func(params op.SetKasseParams) op.SetKasseResponder {
 		return op.SetKasseNotImplemented()
 	})
-	api.SetProgramNameHandler = op.SetProgramNameHandlerFunc(func(params op.SetProgramNameParams) op.SetProgramNameResponder {
-		return op.SetProgramNameNotImplemented()
-	})
-	api.SetProgramRelaysHandler = op.SetProgramRelaysHandlerFunc(func(params op.SetProgramRelaysParams) op.SetProgramRelaysResponder {
-		return op.SetProgramRelaysNotImplemented()
+	api.SetProgramHandler = op.SetProgramHandlerFunc(func(params op.SetProgramParams) op.SetProgramResponder {
+		return op.SetProgramNotImplemented()
 	})
 	api.SetStationHandler = op.SetStationHandlerFunc(func(params op.SetStationParams) op.SetStationResponder {
 		return op.SetStationNotImplemented()
 	})
+	api.SetStationButtonHandler = op.SetStationButtonHandlerFunc(func(params op.SetStationButtonParams) op.SetStationButtonResponder {
+		return op.SetStationButtonNotImplemented()
+	})
+	api.StationButtonHandler = op.StationButtonHandlerFunc(func(params op.StationButtonParams) op.StationButtonResponder {
+		return op.StationButtonNotImplemented()
+	})
 	api.StationByHashHandler = op.StationByHashHandlerFunc(func(params op.StationByHashParams) op.StationByHashResponder {
 		return op.StationByHashNotImplemented()
+	})
+	api.StationProgramByHashHandler = op.StationProgramByHashHandlerFunc(func(params op.StationProgramByHashParams) op.StationProgramByHashResponder {
+		return op.StationProgramByHashNotImplemented()
 	})
 	api.StationReportCurrentMoneyHandler = op.StationReportCurrentMoneyHandlerFunc(func(params op.StationReportCurrentMoneyParams) op.StationReportCurrentMoneyResponder {
 		return op.StationReportCurrentMoneyNotImplemented()

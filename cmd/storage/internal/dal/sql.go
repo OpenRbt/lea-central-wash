@@ -7,9 +7,12 @@ import (
 )
 
 const (
-	constraintCardReaderStationID = "card_reader_station_id_fkey"
-	constraintUserLogin           = "users_unique_lower_login_idx"
-	constraintMoneyCollection     = "money_collection_user_id_fkey"
+	constraintCardReaderStationID  = "card_reader_station_id_fkey"
+	constraintUserLogin            = "users_unique_lower_login_idx"
+	constraintMoneyCollection      = "money_collection_user_id_fkey"
+	constraintStationProgramID     = "station_program_program_id_fkey"
+	constraintStationStationID     = "station_program_station_id_fkey"
+	constraintStationProgramUnique = "station_program_pkey"
 )
 
 const (
@@ -54,11 +57,11 @@ VALUES 	(:station_id, :hash)
 	`
 	sqlUpdStation = `
 UPDATE station
-SET name = :name
+SET name = :name, preflight_sec = :preflight_sec
 WHERE id = :id
 	`
 	sqlGetStation = `
-SELECT id, name  FROM station where deleted = false ORDER BY id
+SELECT id, name, preflight_sec  FROM station where deleted = false ORDER BY id
 	`
 
 	sqlGetUsers = `
@@ -253,32 +256,73 @@ ORDER BY relay_id
 	`
 
 	sqlPrograms = `
-	SELECT program_id,
-       name
+	SELECT
+	id,
+	price,
+	name,
+	preflight_enabled,
+	relays,
+	preflight_relays
+    FROM program
+	WHERE ((id = :id) or (CAST(:id as integer) is null)) 
+	ORDER BY id ASC
+	`
+
+	sqlSetProgram = `
+	INSERT INTO program (
+		id,
+		price,
+		name,
+		preflight_enabled,
+		relays,
+		preflight_relays
+		)
+	VALUES (
+		:id,
+		:price,
+		:name,
+		:preflight_enabled,
+		:relays,
+		:preflight_relays
+		) ON CONFLICT (id) DO
+	UPDATE
+	SET
+	price = :price,
+	name = :name,
+	preflight_enabled = :preflight_enabled,
+	relays = :relays,
+	preflight_relays = :preflight_relays
+	`
+
+	sqlStationProgramAdd = `
+	INSERT INTO station_program (station_id, button_id, program_id)
+	VALUES (:station_id, :button_id, :program_id)
+	`
+	sqlStationProgram = `
+	SELECT station_id, button_id, program_id
 	FROM station_program
 	WHERE station_id = :station_id
-	ORDER BY program_id ASC
 	`
-
-	sqlProgramRelays = `
-	SELECT relays
-	FROM station_program
+	sqlStationConfig = `
+select s.id,
+	s.name,
+	s.preflight_sec,
+	b.button_id,
+	b.program_id,
+	p.price,
+	p.name as "program_name",
+	p.preflight_enabled,
+	p.relays,
+	p.preflight_relays
+from station s
+join station_program b on s.id=b.station_id
+join program p on b.program_id=p.id
+WHERE s.id = :id
+order by b.button_id
+	`
+	sqlStationProgramDel = `
+	DELETE FROM station_program
 	WHERE station_id = :station_id
-  	AND program_id = :program_id
-	`
-
-	sqlSetProgramName = `
-	INSERT INTO station_program (station_id, program_id, name)
-	VALUES (:station_id, :program_id, :name) ON CONFLICT (station_id, program_id) DO
-	UPDATE
-	SET name = :name
-	`
-
-	sqlSetProgramRelays = `
-	INSERT INTO station_program (station_id, program_id, relays)
-	VALUES (:station_id, :program_id, :relays) ON CONFLICT (station_id, program_id) DO
-	UPDATE
-	SET relays = :relays
 	`
 
 	sqlKasse = `
@@ -337,8 +381,9 @@ type (
 	argCheckDB struct {
 	}
 	argUpdStation struct {
-		ID   app.StationID
-		Name string
+		ID           app.StationID
+		Name         string
+		PreflightSec int
 	}
 	argStationHash struct {
 		Hash      string
@@ -399,8 +444,9 @@ type (
 		Value string
 	}
 	resStation struct {
-		ID   app.StationID
-		Name string
+		ID           app.StationID
+		Name         string
+		PreflightSec int
 	}
 	argLastMoneyReport struct {
 		StationID app.StationID
@@ -467,35 +513,58 @@ type (
 	}
 
 	argPrograms struct {
-		StationID app.StationID
+		ID *int64
 	}
 
 	resPrograms struct {
-		ProgramID int
-		Name      string
+		ID               int64
+		Price            int
+		Name             string
+		PreflightEnabled bool
+		Relays           string
+		PreflightRelays  string
 	}
 
-	argProgramRelays struct {
+	argStationProgram struct {
+		StationID app.StationID
+	}
+	argStationProgramDel struct {
+		StationID app.StationID
+	}
+	argStationProgramAdd struct {
 		StationID app.StationID
 		ProgramID int
+		ButtonID  int
 	}
 
-	resProgramRelays struct {
+	resStationProgram struct {
 		StationID app.StationID
 		ProgramID int
-		Relays    string
+		ButtonID  int
+	}
+	argStationConfig struct {
+		ID app.StationID
+	}
+	resStationConfig struct {
+		ID               app.StationID
+		Price            int
+		Name             string
+		PreflightSec     int
+		ProgramID        int64
+		ButtonID         int
+		ProgramName      string
+		PreflightEnabled bool
+		Relays           string
+		PreflightRelays  string
 	}
 
-	argSetProgramName struct {
-		StationID app.StationID
-		ProgramID int
-		Name      string
-	}
-
-	argSetProgramRelays struct {
-		StationID app.StationID
-		ProgramID int
-		Relays    string
+	argSetProgram struct {
+		ID               int64
+		Price            int
+		Name             string
+		PreflightEnabled bool
+		Relays           string
+		PreflightRelays  string
 	}
 
 	argKasseGet struct {

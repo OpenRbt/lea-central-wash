@@ -161,16 +161,6 @@ definitions:
         items:
           $ref: '#/definitions/KeyPair'
   
-  ProgramInfo:
-    type: object
-    properties:
-      id:
-        type: integer
-        minimum: 1
-      name:
-        type: string
-        minLength: 1
-
   RelayConfig:
     type: object
     properties:
@@ -181,9 +171,7 @@ definitions:
         type: integer
       timeoff:
         type: integer
-      prfelight:
-        type: integer
-  
+
   KasseConfig:
     type: object
     properties:
@@ -284,6 +272,48 @@ definitions:
           type: array
           items:
             $ref: '#/definitions/UserConfig'
+
+  Program:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: integer
+        minimum: 1
+      name:
+        type: string
+      price:
+        type: integer
+      preflightEnabled:
+        type: boolean
+      relays:
+        type: array
+        items:
+          $ref: '#/definitions/RelayConfig'
+      preflightRelays:
+        type: array
+        items:
+          $ref: '#/definitions/RelayConfig'
+
+  StationPrograms:
+    type: object
+    properties:
+      stationID:
+        type: integer
+      name:
+        type: string
+      preflightSec:
+        type: integer
+      programs:
+        type: array
+        items:
+          type: object
+          properties:
+            buttonID:
+              type: integer
+            program:
+              $ref: '#/definitions/Program'
 
 consumes:
   - application/json
@@ -407,6 +437,8 @@ paths:
               - id
             properties:
               id:
+                type: integer
+              preflightSec:
                 type: integer
               name:
                 type: string
@@ -737,54 +769,39 @@ paths:
           in: body
           schema:
             type: object
-            required:
-              -  stationID
             properties:
-              stationID:
+              programID:
                 type: integer
                 minimum: 1
+                x-nullable: true
       responses:
         200:
           description: OK
           schema:
             type: array
             items:
-              $ref: '#/definitions/ProgramInfo'
+              $ref: '#/definitions/Program'
         500:
           description: internal error
   
-  /set-program-name:
+  /set-program:
     post:
-      operationId: "setProgramName"
+      operationId: "setProgram"
       parameters:
         - name: args
           required: true
           in: body
           schema:
-            type: object
-            required:
-              - programID
-              - name
-              - stationID
-            properties:
-              stationID:
-                type: integer
-                minimum: 1
-              programID:
-                type: integer
-                minimum: 1
-              name:
-                type: string
-                minLength: 1
+            $ref: '#/definitions/Program'
       responses:
         204:
           description: OK
         500:
           description: internal error
   
-  /program-relays:
+  /station-program-by-hash:
     post:
-      operationId: "programRelays"
+      operationId: "stationProgramByHash"
       parameters:
         - name: args
           required: true
@@ -792,13 +809,31 @@ paths:
           schema:
             type: object
             required:
-              - programID
+              - hash
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/StationPrograms'
+        500:
+          description: internal error
+          
+  /station-button:
+    post:
+      operationId: "stationButton"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
               - stationID
             properties:
               stationID:
-                type: integer
-                minimum: 1
-              programID:
                 type: integer
                 minimum: 1
       responses:
@@ -807,16 +842,21 @@ paths:
           schema:
             type: object
             properties:
-              relays:
+              buttons:
                 type: array
                 items:
-                  $ref: '#/definitions/RelayConfig'
+                  type: object
+                  properties:
+                    buttonID:
+                      type: integer
+                    programID:
+                      type: integer
         500:
           description: internal error
-          
-  /set-program-relays:
+
+  /set-station-button:
     post:
-      operationId: "setProgramRelays"
+      operationId: "setStationButton"
       parameters:
         - name: args
           required: true
@@ -824,23 +864,27 @@ paths:
           schema:
             type: object
             required:
-              -  programID
-              -  program
               - stationID
             properties:
               stationID:
                 type: integer
                 minimum: 1
-              programID:
-                type: integer
-                minimum: 1
-              relays:
+              buttons:
                 type: array
                 items:
-                  $ref: '#/definitions/RelayConfig'
+                  type: object
+                  properties:
+                    buttonID:
+                      type: integer
+                    programID:
+                      type: integer
       responses:
         204:
           description: OK
+        422:
+          description: validation error
+          schema:
+            type: string
         500:
           description: internal error
   
@@ -948,7 +992,6 @@ paths:
         200:
           description: OK
           schema:
-            type: object
             $ref: '#/definitions/UsersReport'
         401:
           description: PIN is missing or invalid
@@ -1007,7 +1050,6 @@ paths:
         200:
           description: OK
           schema:
-            type: object
             $ref: '#/definitions/UserConfig'
         401:
           description: PIN is missing or invalid

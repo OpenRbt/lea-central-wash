@@ -57,7 +57,7 @@ func NewProgramsOK() *ProgramsOK {
 OK
 */
 type ProgramsOK struct {
-	Payload []*model.ProgramInfo
+	Payload []*model.Program
 }
 
 func (o *ProgramsOK) Error() string {
@@ -100,17 +100,16 @@ swagger:model ProgramsBody
 */
 type ProgramsBody struct {
 
-	// station ID
-	// Required: true
+	// program ID
 	// Minimum: 1
-	StationID *int64 `json:"stationID"`
+	ProgramID *int64 `json:"programID,omitempty"`
 }
 
 // Validate validates this programs body
 func (o *ProgramsBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateStationID(formats); err != nil {
+	if err := o.validateProgramID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -120,13 +119,13 @@ func (o *ProgramsBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *ProgramsBody) validateStationID(formats strfmt.Registry) error {
+func (o *ProgramsBody) validateProgramID(formats strfmt.Registry) error {
 
-	if err := validate.Required("args"+"."+"stationID", "body", o.StationID); err != nil {
-		return err
+	if swag.IsZero(o.ProgramID) { // not required
+		return nil
 	}
 
-	if err := validate.MinimumInt("args"+"."+"stationID", "body", int64(*o.StationID), 1, false); err != nil {
+	if err := validate.MinimumInt("args"+"."+"programID", "body", int64(*o.ProgramID), 1, false); err != nil {
 		return err
 	}
 

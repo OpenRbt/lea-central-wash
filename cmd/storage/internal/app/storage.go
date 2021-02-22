@@ -448,17 +448,20 @@ func (a *app) StationsVariables() ([]StationsVariables, error) {
 	return a.repo.StationsVariables()
 }
 
-func (a *app) Programs(id StationID) (programs []Program, err error) {
+func (a *app) Programs(id *int64) ([]Program, error) {
 	return a.repo.Programs(id)
 }
-func (a *app) SetProgramName(id StationID, programID int, name string) (err error) {
-	return a.repo.SetProgramName(id, programID, name)
+func (a *app) SetProgram(program Program) error {
+	return a.repo.SetProgram(program)
 }
-func (a *app) ProgramRelays(id StationID, programID int) (relays []Relay, err error) {
-	return a.repo.ProgramRelays(id, programID)
+func (a *app) StationProgram(id StationID) ([]StationProgram, error) {
+	return a.repo.StationProgram(id)
 }
-func (a *app) SetProgramRelays(id StationID, programID int, relays []Relay) (err error) {
-	return a.repo.SetProgramRelays(id, programID, relays)
+func (a *app) SetStationProgram(id StationID, button []StationProgram) error {
+	return a.repo.SetStationProgram(id, button)
+}
+func (a *app) StationConfig(id StationID) (StationConfig, error) {
+	return a.repo.StationConfig(id)
 }
 
 func (a *app) Kasse() (kasse Kasse, err error) {
