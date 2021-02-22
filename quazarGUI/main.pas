@@ -96,7 +96,13 @@ type
     procedure FormShow(Sender: TObject); override;
     procedure MainClick(Sender: TObject); override;
     procedure Money1Click(Sender: TObject);
+    procedure Money2Click(Sender: TObject);
+    procedure Money3Click(Sender: TObject);
+    procedure Money4Click(Sender: TObject);
     procedure Money5Click(Sender: TObject);
+    procedure Money6Click(Sender: TObject);
+    procedure Money7Click(Sender: TObject);
+    procedure Money8Click(Sender: TObject);
     procedure StationsClick(Sender: TObject); override;
     procedure ProgramsClick(Sender: TObject); override;
     procedure DosatronsClick(Sender: TObject); override;
@@ -109,7 +115,8 @@ type
     procedure MainMouseEnter(Sender: TObject); override;
     procedure MainMouseLeave(Sender: TObject); override;
 
-    procedure SetStations();
+    procedure ShowStation(id : integer);
+    procedure ShowStations();
     function UpdateStations() : boolean;
     function GetStationNameByID(id : integer) : string;
     function GetStationHashByID(id : integer) : string;
@@ -196,7 +203,7 @@ begin
   MainForm.Main.Font.Color := MainForm.GetHoverColor();
   UpdateTimer.Enabled := false;
   UpdateStations();
-  SetStations();
+  ShowStations();
   UpdateTimer.Enabled := true;
 end;
 
@@ -344,7 +351,7 @@ begin
     end;
 end;
 
-procedure TMainForm.SetStations();
+procedure TMainForm.ShowStations();
 var
   i : integer;
 begin
@@ -563,7 +570,7 @@ begin
   Inherited;
 end;
 
-procedure TMainForm.Money1Click(Sender: TObject);
+procedure TMainForm.ShowStation(id : integer);
 begin
   if ResponseStations.Count = 0 then
   begin
@@ -574,7 +581,7 @@ begin
     if ResponseStations.status[0] = ON_LINE then
     begin
       UpdateTimer.Enabled := false;
-      StationBalanceForm.Init(1);
+      StationBalanceForm.Init(id);
       StationBalanceForm.ShowModal;
       UpdateTimer.Enabled := true;
     end
@@ -585,9 +592,44 @@ begin
   end;
 end;
 
+procedure TMainForm.Money1Click(Sender: TObject);
+begin
+  ShowStation(1);
+end;
+
+procedure TMainForm.Money2Click(Sender: TObject);
+begin
+  ShowStation(2);
+end;
+
+procedure TMainForm.Money3Click(Sender: TObject);
+begin
+  ShowStation(3);
+end;
+
+procedure TMainForm.Money4Click(Sender: TObject);
+begin
+  ShowStation(4);
+end;
+
 procedure TMainForm.Money5Click(Sender: TObject);
 begin
+  ShowStation(5);
+end;
 
+procedure TMainForm.Money6Click(Sender: TObject);
+begin
+  ShowStation(6);
+end;
+
+procedure TMainForm.Money7Click(Sender: TObject);
+begin
+  ShowStation(7);
+end;
+
+procedure TMainForm.Money8Click(Sender: TObject);
+begin
+  ShowStation(8);
 end;
 
 procedure TMainForm.StationsClick(Sender: TObject);

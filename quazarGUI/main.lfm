@@ -1,6 +1,5 @@
 inherited MainForm: TMainForm
   Left = 612
-  Top = 152
   OnActivate = FormShow
   OnClose = FormClose
   object Station5: TPanel[9]
@@ -222,7 +221,7 @@ inherited MainForm: TMainForm
       Font.Height = -96
       ParentFont = False
       TabOrder = 0
-      OnClick = Money1Click
+      OnClick = Money2Click
     end
     object Foam2: TPanel
       Left = 0
@@ -322,7 +321,7 @@ inherited MainForm: TMainForm
       Font.Height = -96
       ParentFont = False
       TabOrder = 0
-      OnClick = Money1Click
+      OnClick = Money3Click
     end
     object Foam3: TPanel
       Left = 0
@@ -422,7 +421,7 @@ inherited MainForm: TMainForm
       Font.Height = -96
       ParentFont = False
       TabOrder = 0
-      OnClick = Money1Click
+      OnClick = Money4Click
     end
     object Foam4: TPanel
       Left = 0
@@ -522,7 +521,7 @@ inherited MainForm: TMainForm
       Font.Height = -96
       ParentFont = False
       TabOrder = 0
-      OnClick = Money5Click
+      OnClick = Money6Click
     end
     object Foam6: TPanel
       Left = 0
@@ -622,7 +621,7 @@ inherited MainForm: TMainForm
       Font.Height = -96
       ParentFont = False
       TabOrder = 0
-      OnClick = Money5Click
+      OnClick = Money7Click
     end
     object Foam7: TPanel
       Left = 0
@@ -722,7 +721,7 @@ inherited MainForm: TMainForm
       Font.Height = -96
       ParentFont = False
       TabOrder = 0
-      OnClick = Money5Click
+      OnClick = Money8Click
     end
     object Foam8: TPanel
       Left = 0
