@@ -447,47 +447,8 @@ func (svc *service) openStation(params op.OpenStationParams) op.OpenStationRespo
 	}
 }
 
-func (svc *service) setProgramName(params op.SetProgramNameParams) op.SetProgramNameResponder {
-	log.Info("setProgramName", "stationID", *params.Args.StationID, "programID", *params.Args.ProgramID, "name", *params.Args.Name, "ip", params.HTTPRequest.RemoteAddr)
-	var err error
-	err = svc.app.SetProgramName(app.StationID(*params.Args.StationID), int(*params.Args.ProgramID), *params.Args.Name)
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewSetProgramNameNoContent()
-	default:
-		log.PrintErr(err, "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSetProgramNameInternalServerError()
-	}
-}
-
-func (svc *service) setProgramRelays(params op.SetProgramRelaysParams) op.SetProgramRelaysResponder {
-	log.Info("setProgramRelays", "stationID", *params.Args.StationID, "programID", *params.Args.ProgramID, "relays", params.Args.Relays, "ip", params.HTTPRequest.RemoteAddr)
-
-	var err error
-
-	tmp := []app.Relay{}
-
-	for i := range params.Args.Relays {
-		tmp = append(tmp, app.Relay{
-			ID:        int(params.Args.Relays[i].ID),
-			TimeOn:    int(params.Args.Relays[i].Timeon),
-			TimeOff:   int(params.Args.Relays[i].Timeoff),
-			Preflight: int(params.Args.Relays[i].Prfelight),
-		})
-	}
-
-	err = svc.app.SetProgramRelays(app.StationID(*params.Args.StationID), int(*params.Args.ProgramID), tmp)
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewSetProgramRelaysNoContent()
-	default:
-		log.PrintErr(err, "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSetProgramRelaysInternalServerError()
-	}
-}
-
 func (svc *service) programs(params op.ProgramsParams) op.ProgramsResponder {
-	res, err := svc.app.Programs(app.StationID(*params.Args.StationID))
+	res, err := svc.app.Programs(params.Args.ProgramID)
 
 	switch errors.Cause(err) {
 	case nil:
@@ -498,20 +459,88 @@ func (svc *service) programs(params op.ProgramsParams) op.ProgramsResponder {
 	}
 }
 
-func (svc *service) programRelays(params op.ProgramRelaysParams) op.ProgramRelaysResponder {
+func (svc *service) setProgram(params op.SetProgramParams) op.SetProgramResponder {
+	log.Info("setProgram", "programID", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
 	var err error
-	log.Info("programRelays", "stationID", *params.Args.StationID, "programID", *params.Args.ProgramID, "ip", params.HTTPRequest.RemoteAddr)
+	err = svc.app.SetProgram(appPrograms(params.Args))
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSetProgramNoContent()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewSetProgramInternalServerError()
+	}
+}
 
-	res, err := svc.app.ProgramRelays(app.StationID(*params.Args.StationID), int(*params.Args.ProgramID))
+func (svc *service) setStationButton(params op.SetStationButtonParams) op.SetStationButtonResponder {
+	log.Info("setProgramRelays", "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
+
+	var err error
+
+	tmp := []app.StationProgram{}
+
+	for i := range params.Args.Buttons {
+		tmp = append(tmp, app.StationProgram{
+			ProgramID: int(params.Args.Buttons[i].ProgramID),
+			ButtonID:  int(params.Args.Buttons[i].ButtonID),
+		})
+	}
+
+	err = svc.app.SetStationProgram(app.StationID(*params.Args.StationID), tmp)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSetStationButtonNoContent()
+	case app.ErrUnknownProgram:
+		return op.NewSetStationButtonUnprocessableEntity().WithPayload(err.Error())
+	case app.ErrUnknownStation:
+		return op.NewSetStationButtonUnprocessableEntity().WithPayload(err.Error())
+	case app.ErrStationProgramMustUnique:
+		return op.NewSetStationButtonUnprocessableEntity().WithPayload(err.Error())
+	default:
+		log.PrintErr(err, "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewSetStationButtonInternalServerError()
+	}
+}
+
+func (svc *service) stationButton(params op.StationButtonParams) op.StationButtonResponder {
+	var err error
+	log.Info("StationButton", "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
+
+	res, err := svc.app.StationProgram(app.StationID(*params.Args.StationID))
 
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewProgramRelaysOK().WithPayload(&op.ProgramRelaysOKBody{
-			Relays: apiRelays(res),
+		return op.NewStationButtonOK().WithPayload(&op.StationButtonOKBody{
+			Buttons: apiButtons(res),
 		})
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewProgramRelaysInternalServerError()
+		return op.NewStationButtonInternalServerError()
+	}
+}
+
+func (svc *service) stationProgramByHash(params op.StationProgramByHashParams) op.StationProgramByHashResponder {
+	log.Info("StationProgramByHash", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	id, err := svc.getID(string(params.Args.Hash))
+
+	switch errors.Cause(err) {
+	case nil:
+	case errNotFound:
+		log.Info("post by hash: not found", "hash", params.Args.Hash)
+		return op.NewStationProgramByHashOK()
+	default:
+		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationProgramByHashInternalServerError()
+	}
+
+	res, err := svc.app.StationConfig(id)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewStationProgramByHashOK().WithPayload(apiStationConfig((res)))
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationProgramByHashInternalServerError()
 	}
 }
 

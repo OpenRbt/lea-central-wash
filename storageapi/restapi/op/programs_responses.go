@@ -25,7 +25,7 @@ type ProgramsOK struct {
 	/*
 	  In: Body
 	*/
-	Payload []*model.ProgramInfo `json:"body,omitempty"`
+	Payload []*model.Program `json:"body,omitempty"`
 }
 
 // NewProgramsOK creates ProgramsOK with default headers values
@@ -35,13 +35,13 @@ func NewProgramsOK() *ProgramsOK {
 }
 
 // WithPayload adds the payload to the programs o k response
-func (o *ProgramsOK) WithPayload(payload []*model.ProgramInfo) *ProgramsOK {
+func (o *ProgramsOK) WithPayload(payload []*model.Program) *ProgramsOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the programs o k response
-func (o *ProgramsOK) SetPayload(payload []*model.ProgramInfo) {
+func (o *ProgramsOK) SetPayload(payload []*model.Program) {
 	o.Payload = payload
 }
 
@@ -52,7 +52,7 @@ func (o *ProgramsOK) WriteResponse(rw http.ResponseWriter, producer runtime.Prod
 	payload := o.Payload
 	if payload == nil {
 		// return empty array
-		payload = make([]*model.ProgramInfo, 0, 50)
+		payload = make([]*model.Program, 0, 50)
 	}
 
 	if err := producer.Produce(rw, payload); err != nil {

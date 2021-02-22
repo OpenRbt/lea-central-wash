@@ -74,6 +74,9 @@ type SetStationBody struct {
 
 	// name
 	Name string `json:"name,omitempty"`
+
+	// preflight sec
+	PreflightSec int64 `json:"preflightSec,omitempty"`
 }
 
 // Validate validates this set station body

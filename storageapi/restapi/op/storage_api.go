@@ -103,10 +103,6 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation Ping has not yet been implemented")
 			return PingNotImplemented()
 		}),
-		ProgramRelaysHandler: ProgramRelaysHandlerFunc(func(params ProgramRelaysParams) ProgramRelaysResponder {
-			// return middleware.NotImplemented("operation ProgramRelays has not yet been implemented")
-			return ProgramRelaysNotImplemented()
-		}),
 		ProgramsHandler: ProgramsHandlerFunc(func(params ProgramsParams) ProgramsResponder {
 			// return middleware.NotImplemented("operation Programs has not yet been implemented")
 			return ProgramsNotImplemented()
@@ -139,21 +135,29 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation SetKasse has not yet been implemented")
 			return SetKasseNotImplemented()
 		}),
-		SetProgramNameHandler: SetProgramNameHandlerFunc(func(params SetProgramNameParams) SetProgramNameResponder {
-			// return middleware.NotImplemented("operation SetProgramName has not yet been implemented")
-			return SetProgramNameNotImplemented()
-		}),
-		SetProgramRelaysHandler: SetProgramRelaysHandlerFunc(func(params SetProgramRelaysParams) SetProgramRelaysResponder {
-			// return middleware.NotImplemented("operation SetProgramRelays has not yet been implemented")
-			return SetProgramRelaysNotImplemented()
+		SetProgramHandler: SetProgramHandlerFunc(func(params SetProgramParams) SetProgramResponder {
+			// return middleware.NotImplemented("operation SetProgram has not yet been implemented")
+			return SetProgramNotImplemented()
 		}),
 		SetStationHandler: SetStationHandlerFunc(func(params SetStationParams) SetStationResponder {
 			// return middleware.NotImplemented("operation SetStation has not yet been implemented")
 			return SetStationNotImplemented()
 		}),
+		SetStationButtonHandler: SetStationButtonHandlerFunc(func(params SetStationButtonParams) SetStationButtonResponder {
+			// return middleware.NotImplemented("operation SetStationButton has not yet been implemented")
+			return SetStationButtonNotImplemented()
+		}),
+		StationButtonHandler: StationButtonHandlerFunc(func(params StationButtonParams) StationButtonResponder {
+			// return middleware.NotImplemented("operation StationButton has not yet been implemented")
+			return StationButtonNotImplemented()
+		}),
 		StationByHashHandler: StationByHashHandlerFunc(func(params StationByHashParams) StationByHashResponder {
 			// return middleware.NotImplemented("operation StationByHash has not yet been implemented")
 			return StationByHashNotImplemented()
+		}),
+		StationProgramByHashHandler: StationProgramByHashHandlerFunc(func(params StationProgramByHashParams) StationProgramByHashResponder {
+			// return middleware.NotImplemented("operation StationProgramByHash has not yet been implemented")
+			return StationProgramByHashNotImplemented()
 		}),
 		StationReportCurrentMoneyHandler: StationReportCurrentMoneyHandlerFunc(func(params StationReportCurrentMoneyParams) StationReportCurrentMoneyResponder {
 			// return middleware.NotImplemented("operation StationReportCurrentMoney has not yet been implemented")
@@ -261,8 +265,6 @@ type StorageAPI struct {
 	OpenStationHandler OpenStationHandler
 	// PingHandler sets the operation handler for the ping operation
 	PingHandler PingHandler
-	// ProgramRelaysHandler sets the operation handler for the program relays operation
-	ProgramRelaysHandler ProgramRelaysHandler
 	// ProgramsHandler sets the operation handler for the programs operation
 	ProgramsHandler ProgramsHandler
 	// SaveHandler sets the operation handler for the save operation
@@ -279,14 +281,18 @@ type StorageAPI struct {
 	SetCardReaderConfigHandler SetCardReaderConfigHandler
 	// SetKasseHandler sets the operation handler for the set kasse operation
 	SetKasseHandler SetKasseHandler
-	// SetProgramNameHandler sets the operation handler for the set program name operation
-	SetProgramNameHandler SetProgramNameHandler
-	// SetProgramRelaysHandler sets the operation handler for the set program relays operation
-	SetProgramRelaysHandler SetProgramRelaysHandler
+	// SetProgramHandler sets the operation handler for the set program operation
+	SetProgramHandler SetProgramHandler
 	// SetStationHandler sets the operation handler for the set station operation
 	SetStationHandler SetStationHandler
+	// SetStationButtonHandler sets the operation handler for the set station button operation
+	SetStationButtonHandler SetStationButtonHandler
+	// StationButtonHandler sets the operation handler for the station button operation
+	StationButtonHandler StationButtonHandler
 	// StationByHashHandler sets the operation handler for the station by hash operation
 	StationByHashHandler StationByHashHandler
+	// StationProgramByHashHandler sets the operation handler for the station program by hash operation
+	StationProgramByHashHandler StationProgramByHashHandler
 	// StationReportCurrentMoneyHandler sets the operation handler for the station report current money operation
 	StationReportCurrentMoneyHandler StationReportCurrentMoneyHandler
 	// StationReportDatesHandler sets the operation handler for the station report dates operation
@@ -432,10 +438,6 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "PingHandler")
 	}
 
-	if o.ProgramRelaysHandler == nil {
-		unregistered = append(unregistered, "ProgramRelaysHandler")
-	}
-
 	if o.ProgramsHandler == nil {
 		unregistered = append(unregistered, "ProgramsHandler")
 	}
@@ -468,20 +470,28 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "SetKasseHandler")
 	}
 
-	if o.SetProgramNameHandler == nil {
-		unregistered = append(unregistered, "SetProgramNameHandler")
-	}
-
-	if o.SetProgramRelaysHandler == nil {
-		unregistered = append(unregistered, "SetProgramRelaysHandler")
+	if o.SetProgramHandler == nil {
+		unregistered = append(unregistered, "SetProgramHandler")
 	}
 
 	if o.SetStationHandler == nil {
 		unregistered = append(unregistered, "SetStationHandler")
 	}
 
+	if o.SetStationButtonHandler == nil {
+		unregistered = append(unregistered, "SetStationButtonHandler")
+	}
+
+	if o.StationButtonHandler == nil {
+		unregistered = append(unregistered, "StationButtonHandler")
+	}
+
 	if o.StationByHashHandler == nil {
 		unregistered = append(unregistered, "StationByHashHandler")
+	}
+
+	if o.StationProgramByHashHandler == nil {
+		unregistered = append(unregistered, "StationProgramByHashHandler")
 	}
 
 	if o.StationReportCurrentMoneyHandler == nil {
@@ -705,11 +715,6 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/program-relays"] = NewProgramRelays(o.context, o.ProgramRelaysHandler)
-
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
 	o.handlers["POST"]["/programs"] = NewPrograms(o.context, o.ProgramsHandler)
 
 	if o.handlers["POST"] == nil {
@@ -750,12 +755,7 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/set-program-name"] = NewSetProgramName(o.context, o.SetProgramNameHandler)
-
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/set-program-relays"] = NewSetProgramRelays(o.context, o.SetProgramRelaysHandler)
+	o.handlers["POST"]["/set-program"] = NewSetProgram(o.context, o.SetProgramHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -765,7 +765,22 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/set-station-button"] = NewSetStationButton(o.context, o.SetStationButtonHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/station-button"] = NewStationButton(o.context, o.StationButtonHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/station-by-hash"] = NewStationByHash(o.context, o.StationByHashHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/station-program-by-hash"] = NewStationProgramByHash(o.context, o.StationProgramByHashHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

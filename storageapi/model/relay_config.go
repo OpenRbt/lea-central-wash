@@ -21,9 +21,6 @@ type RelayConfig struct {
 	// Minimum: 1
 	ID int64 `json:"id,omitempty"`
 
-	// prfelight
-	Prfelight int64 `json:"prfelight,omitempty"`
-
 	// timeoff
 	Timeoff int64 `json:"timeoff,omitempty"`
 
