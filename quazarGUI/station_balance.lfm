@@ -1,0 +1,312 @@
+object StationBalanceForm: TStationBalanceForm
+  Left = 624
+  Height = 820
+  Top = 164
+  Width = 1280
+  Caption = 'Station Balance'
+  ClientHeight = 820
+  ClientWidth = 1280
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = FormShow
+  LCLVersion = '2.0.6.0'
+  object StationLabel: TLabel
+    Left = 32
+    Height = 59
+    Top = 40
+    Width = 251
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'ПОСТ 3'
+    Font.Height = -48
+    ParentColor = False
+    ParentFont = False
+  end
+  object CurrentAmount: TPanel
+    Left = 56
+    Height = 96
+    Top = 136
+    Width = 210
+    BevelOuter = bvSpace
+    Caption = '000'
+    Font.Height = -96
+    ParentFont = False
+    TabOrder = 0
+  end
+  object IncrementAmount: TPanel
+    Left = 104
+    Height = 75
+    Top = 296
+    Width = 106
+    BevelOuter = bvSpace
+    Caption = '10'
+    Font.Height = -64
+    ParentFont = False
+    TabOrder = 1
+  end
+  object IncBtn: TButton
+    Left = 208
+    Height = 75
+    Top = 296
+    Width = 75
+    Caption = '+'
+    Font.Height = -64
+    OnClick = IncBtnClick
+    ParentFont = False
+    TabOrder = 2
+  end
+  object DecBtn: TButton
+    Left = 32
+    Height = 75
+    Top = 296
+    Width = 75
+    Caption = '-'
+    Font.Height = -64
+    OnClick = DecBtnClick
+    ParentFont = False
+    TabOrder = 3
+  end
+  object CollectionBtn: TButton
+    Left = 32
+    Height = 81
+    Top = 440
+    Width = 251
+    Caption = 'Инкассировать'
+    Font.Height = -29
+    OnClick = CollectionBtnClick
+    ParentFont = False
+    TabOrder = 4
+  end
+  object OpenBtn: TButton
+    Left = 32
+    Height = 81
+    Top = 576
+    Width = 251
+    Caption = 'Открыть дверь'
+    Font.Height = -29
+    OnClick = OpenBtnClick
+    ParentFont = False
+    TabOrder = 5
+  end
+  object BackBtn: TButton
+    Left = 32
+    Height = 81
+    Top = 712
+    Width = 251
+    Caption = 'Назад'
+    Font.Height = -29
+    OnClick = BackBtnClick
+    ParentFont = False
+    TabOrder = 6
+  end
+  object BalanceLabel: TLabel
+    Left = 398
+    Height = 59
+    Top = 40
+    Width = 192
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'Баланс'
+    Font.Height = -48
+    ParentColor = False
+    ParentFont = False
+  end
+  object CurrencyLabel: TLabel
+    Left = 814
+    Height = 59
+    Top = 40
+    Width = 120
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'руб.'
+    Font.Height = -48
+    ParentColor = False
+    ParentFont = False
+  end
+  object BalanceAmountLabel: TLabel
+    Left = 590
+    Height = 75
+    Top = 26
+    Width = 224
+    Alignment = taCenter
+    AutoSize = False
+    Caption = '13560'
+    Font.Height = -64
+    ParentColor = False
+    ParentFont = False
+  end
+  object FoamCheckBox: TCheckBox
+    Left = 1000
+    Height = 41
+    Top = 176
+    Width = 206
+    Alignment = taLeftJustify
+    BidiMode = bdRightToLeft
+    Caption = 'Активный    '
+    Checked = True
+    Font.Height = -32
+    ParentFont = False
+    ParentBidiMode = False
+    State = cbChecked
+    TabOrder = 7
+  end
+  object ShampooCheckBox: TCheckBox
+    Left = 1000
+    Height = 41
+    Top = 288
+    Width = 206
+    Alignment = taLeftJustify
+    BidiMode = bdRightToLeft
+    Caption = 'Активный    '
+    Checked = True
+    Font.Height = -32
+    ParentFont = False
+    ParentBidiMode = False
+    State = cbChecked
+    TabOrder = 8
+  end
+  object RinseCheckBox: TCheckBox
+    Left = 1000
+    Height = 41
+    Top = 400
+    Width = 206
+    Alignment = taLeftJustify
+    BidiMode = bdRightToLeft
+    Caption = 'Активный    '
+    Checked = True
+    Font.Height = -32
+    ParentFont = False
+    ParentBidiMode = False
+    State = cbChecked
+    TabOrder = 9
+  end
+  object WaxCheckBox: TCheckBox
+    Left = 1000
+    Height = 41
+    Top = 512
+    Width = 206
+    Alignment = taLeftJustify
+    BidiMode = bdRightToLeft
+    Caption = 'Активный    '
+    Checked = True
+    Font.Height = -32
+    ParentFont = False
+    ParentBidiMode = False
+    State = cbChecked
+    TabOrder = 10
+  end
+  object DryCheckBox: TCheckBox
+    Left = 1000
+    Height = 41
+    Top = 624
+    Width = 206
+    Alignment = taLeftJustify
+    BidiMode = bdRightToLeft
+    Caption = 'Активный    '
+    Checked = True
+    Font.Height = -32
+    ParentFont = False
+    ParentBidiMode = False
+    State = cbChecked
+    TabOrder = 11
+  end
+  object PauseCheckBox: TCheckBox
+    Left = 1000
+    Height = 41
+    Top = 736
+    Width = 206
+    Alignment = taLeftJustify
+    BidiMode = bdRightToLeft
+    Caption = 'Активный    '
+    Checked = True
+    Font.Height = -32
+    ParentFont = False
+    ParentBidiMode = False
+    State = cbChecked
+    TabOrder = 12
+  end
+  object FoamPanel: TPanel
+    Left = 470
+    Height = 81
+    Top = 151
+    Width = 379
+    BevelColor = clGray
+    BevelInner = bvSpace
+    BevelOuter = bvSpace
+    Caption = 'ПЕНА'
+    Font.Height = -32
+    ParentFont = False
+    TabOrder = 13
+  end
+  object ShampooPanel: TPanel
+    Left = 470
+    Height = 81
+    Top = 264
+    Width = 379
+    BevelColor = clGray
+    BevelInner = bvSpace
+    BevelOuter = bvSpace
+    Caption = 'ВОДА + ШАМПУНЬ'
+    Font.Height = -32
+    ParentFont = False
+    TabOrder = 14
+  end
+  object RinsePanel: TPanel
+    Left = 470
+    Height = 81
+    Top = 376
+    Width = 379
+    BevelColor = clGray
+    BevelInner = bvSpace
+    BevelOuter = bvSpace
+    Caption = 'ОПОЛАСКИВАНИЕ'
+    Font.Height = -32
+    ParentFont = False
+    TabOrder = 15
+  end
+  object WaxPanel: TPanel
+    Left = 470
+    Height = 81
+    Top = 488
+    Width = 379
+    BevelColor = clGray
+    BevelInner = bvSpace
+    BevelOuter = bvSpace
+    Caption = 'ВОСК'
+    Font.Height = -32
+    ParentFont = False
+    TabOrder = 16
+  end
+  object DryPanel: TPanel
+    Left = 470
+    Height = 81
+    Top = 600
+    Width = 379
+    BevelColor = clGray
+    BevelInner = bvSpace
+    BevelOuter = bvSpace
+    Caption = 'СУШКА И БЛЕСК'
+    Font.Height = -32
+    ParentFont = False
+    TabOrder = 17
+  end
+  object PausePanel: TPanel
+    Left = 470
+    Height = 81
+    Top = 712
+    Width = 379
+    BevelColor = clGray
+    BevelInner = bvSpace
+    BevelOuter = bvSpace
+    Caption = 'ПАУЗА'
+    Font.Height = -32
+    ParentFont = False
+    TabOrder = 18
+  end
+  object UpdateTimer: TTimer
+    Enabled = False
+    OnTimer = UpdateCall
+    left = 10
+    top = 10
+  end
+end
