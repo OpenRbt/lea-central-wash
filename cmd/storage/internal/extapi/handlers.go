@@ -323,8 +323,9 @@ func (svc *service) setStation(params op.SetStationParams) op.SetStationResponde
 	}
 	svc.setHash(app.StationID(*params.Args.ID), params.Args.Hash)
 	err := svc.app.SetStation(app.SetStation{
-		ID:   app.StationID(*params.Args.ID),
-		Name: params.Args.Name,
+		ID:           app.StationID(*params.Args.ID),
+		Name:         params.Args.Name,
+		PreflightSec: int(params.Args.PreflightSec),
 	})
 	switch errors.Cause(err) {
 	case nil:

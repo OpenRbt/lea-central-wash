@@ -57,7 +57,7 @@ VALUES 	(:station_id, :hash)
 	`
 	sqlUpdStation = `
 UPDATE station
-SET name = :name, preflight_sec = :PreflightSec
+SET name = :name, preflight_sec = :preflight_sec
 WHERE id = :id
 	`
 	sqlGetStation = `
