@@ -30,9 +30,6 @@ var
   old_val: integer = 0;
   str_val: string = '';
 
-const
-  serverEndpoint : string = 'http://localhost:8020/';
-
 implementation
 
 uses
@@ -73,7 +70,7 @@ begin
       try
         AddHeader('Content-Type', 'application/json');
         AddHeader('Pin', PINEdit.Text);
-        Get(serverEndpoint + 'user');
+        Get(BaseForm.GetServerEndpoint() + 'user');
         successful := True;
 
       except
@@ -94,7 +91,6 @@ begin
     if successful then
     begin
       LoginForm.Hide;
-      BaseForm.SetServerEndpoint(serverEndpoint);
       BaseForm.SetPinCode(PINEdit.Text);
       MainForm.Show;
     end;

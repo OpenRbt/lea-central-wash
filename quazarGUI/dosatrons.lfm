@@ -1,13 +1,15 @@
 inherited DosatronsForm: TDosatronsForm
+  Top = 81
   OnActivate = FormShow
   OnClose = FormClose
+  OnCreate = FormCreate
   object DosatronsGrid: TStringGrid[9]
     Left = 320
     Height = 370
     Top = 216
-    Width = 944
+    Width = 900
     AlternateColor = cl3DLight
-    ColCount = 6
+    ColCount = 7
     Columns = <    
       item
         Font.Height = -32
@@ -23,10 +25,15 @@ inherited DosatronsForm: TDosatronsForm
         Width = 40
       end    
       item
-        Alignment = taCenter
+        Alignment = taRightJustify
         Font.Height = -32
         Title.Caption = 'DosatronPercent'
-        Width = 80
+        Width = 75
+      end    
+      item
+        Font.Height = -24
+        Title.Caption = 'DosatronPercentLabel'
+        Width = 45
       end    
       item
         ButtonStyle = cbsButton
@@ -36,24 +43,26 @@ inherited DosatronsForm: TDosatronsForm
       end    
       item
         Font.Height = -24
-        Title.Caption = 'DosatronPercentLabel'
-        Width = 212
+        Title.Caption = 'DosatronSpacer'
+        Width = 129
       end    
       item
-        ButtonStyle = cbsButtonColumn
-        Font.Height = -32
-        Title.Caption = 'ProgramEnabled'
+        Font.Height = -27
+        Title.Caption = 'DosatronPreflight'
         Width = 200
       end>
     FixedCols = 0
     FixedRows = 0
     Flat = True
     Font.Height = 75
+    GridLineWidth = 0
     ParentFont = False
     RowCount = 4
     ScrollBars = ssNone
     TabOrder = 9
     TitleFont.Height = 75
+    OnDrawCell = DosatronsGridDrawCell
+    OnSelectCell = DosatronsGridSelectCell
   end
   object Save: TButton[10]
     Left = 400
@@ -62,6 +71,7 @@ inherited DosatronsForm: TDosatronsForm
     Width = 128
     Caption = 'Сохранить'
     Font.Height = -19
+    OnClick = SaveClick
     ParentFont = False
     TabOrder = 10
   end
@@ -72,6 +82,7 @@ inherited DosatronsForm: TDosatronsForm
     Width = 128
     Caption = 'Отмена'
     Font.Height = -19
+    OnClick = CancelClick
     ParentFont = False
     TabOrder = 11
   end

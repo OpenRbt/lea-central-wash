@@ -578,7 +578,7 @@ begin
   end
   else
   begin
-    if ResponseStations.status[0] = ON_LINE then
+    if ResponseStations.status[id-1] = ON_LINE then
     begin
       UpdateTimer.Enabled := false;
       StationBalanceForm.Init(id);
