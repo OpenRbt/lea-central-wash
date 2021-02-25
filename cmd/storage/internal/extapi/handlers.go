@@ -578,6 +578,10 @@ func (svc *service) setKasse(params op.SetKasseParams) op.SetKasseResponder {
 
 }
 
+func (svc *service) RunProgram(params op.RunProgramParams) op.RunProgramResponder {
+	return op.RunProgramNotImplemented()
+}
+
 func (svc *service) cardReaderConfig(params op.CardReaderConfigParams) op.CardReaderConfigResponder {
 	log.Info("cardReaderConfig", "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
 	res, err := svc.app.CardReaderConfig(app.StationID(*params.Args.StationID))

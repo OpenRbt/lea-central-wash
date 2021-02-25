@@ -206,3 +206,7 @@ func (t *DB) CardReaderConfig(stationID app.StationID) (cfg *app.CardReaderConfi
 func (t *DB) SetCardReaderConfig(cfg app.CardReaderConfig) (err error) {
 	return
 }
+
+func (t *DB) RunProgram(id *app.StationID, programID *int64) (err error) {
+	return
+}

@@ -672,3 +672,7 @@ func (r *repo) SetCardReaderConfig(cfg app.CardReaderConfig) (err error) {
 	})
 	return //nolint:nakedret
 }
+
+func (r *repo) RunProgram(id *app.StationID, programID *int64) (err error) {
+	return
+}
