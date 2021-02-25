@@ -94,6 +94,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.ProgramsHandler = op.ProgramsHandlerFunc(func(params op.ProgramsParams) op.ProgramsResponder {
 		return op.ProgramsNotImplemented()
 	})
+	api.RunProgramHandler = op.RunProgramHandlerFunc(func(params op.RunProgramParams) op.RunProgramResponder {
+		return op.RunProgramNotImplemented()
+	})
 	api.SaveHandler = op.SaveHandlerFunc(func(params op.SaveParams) op.SaveResponder {
 		return op.SaveNotImplemented()
 	})
