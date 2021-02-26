@@ -477,3 +477,7 @@ func (a *app) CardReaderConfig(stationID StationID) (*CardReaderConfig, error) {
 func (a *app) SetCardReaderConfig(cfg CardReaderConfig) error {
 	return a.repo.SetCardReaderConfig(cfg)
 }
+
+func (a *app) Station(id StationID) (SetStation, error) {
+	return a.repo.Station(id)
+}

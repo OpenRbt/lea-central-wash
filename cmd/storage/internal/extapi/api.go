@@ -79,6 +79,7 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.SaveMoneyHandler = op.SaveMoneyHandlerFunc(svc.saveMoney)
 
 	api.StatusHandler = op.StatusHandlerFunc(svc.status)
+	api.StationHandler = op.StationHandlerFunc(svc.station)
 	api.SetStationHandler = op.SetStationHandlerFunc(svc.setStation)
 	api.DelStationHandler = op.DelStationHandlerFunc(svc.delStation)
 	api.StationReportDatesHandler = op.StationReportDatesHandlerFunc(svc.stationReportDates)

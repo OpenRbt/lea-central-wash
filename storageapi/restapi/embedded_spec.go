@@ -709,24 +709,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "required": [
-                "id"
-              ],
-              "properties": {
-                "hash": {
-                  "type": "string"
-                },
-                "id": {
-                  "type": "integer"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "preflightSec": {
-                  "type": "integer"
-                }
-              }
+              "$ref": "#/definitions/StationConfig"
             }
           }
         ],
@@ -794,6 +777,46 @@ func init() {
             "schema": {
               "type": "string"
             }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station": {
+      "post": {
+        "operationId": "station",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfig"
+            }
+          },
+          "401": {
+            "description": "Access denied. It will happen when you try to change the ID at the station online."
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"
@@ -1569,11 +1592,19 @@ func init() {
           "type": "integer",
           "minimum": 1
         },
+        "motorSpeedPercent": {
+          "type": "integer",
+          "maximum": 100
+        },
         "name": {
           "type": "string"
         },
         "preflightEnabled": {
           "type": "boolean"
+        },
+        "preflightMotorSpeedPercent": {
+          "type": "integer",
+          "maximum": 100
         },
         "preflightRelays": {
           "type": "array",
@@ -1591,6 +1622,13 @@ func init() {
           }
         }
       }
+    },
+    "RelayBoard": {
+      "type": "string",
+      "enum": [
+        "localGPIO",
+        "danBoard"
+      ]
     },
     "RelayConfig": {
       "type": "object",
@@ -1640,6 +1678,29 @@ func init() {
         }
       }
     },
+    "StationConfig": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "hash": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "preflightSec": {
+          "type": "integer"
+        },
+        "relayBoard": {
+          "$ref": "#/definitions/RelayBoard"
+        }
+      }
+    },
     "StationPrograms": {
       "type": "object",
       "properties": {
@@ -1662,6 +1723,9 @@ func init() {
               }
             }
           }
+        },
+        "relayBoard": {
+          "$ref": "#/definitions/RelayBoard"
         },
         "stationID": {
           "type": "integer"
@@ -2508,24 +2572,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "required": [
-                "id"
-              ],
-              "properties": {
-                "hash": {
-                  "type": "string"
-                },
-                "id": {
-                  "type": "integer"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "preflightSec": {
-                  "type": "integer"
-                }
-              }
+              "$ref": "#/definitions/StationConfig"
             }
           }
         ],
@@ -2593,6 +2640,46 @@ func init() {
             "schema": {
               "type": "string"
             }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station": {
+      "post": {
+        "operationId": "station",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfig"
+            }
+          },
+          "401": {
+            "description": "Access denied. It will happen when you try to change the ID at the station online."
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"
@@ -3368,11 +3455,21 @@ func init() {
           "type": "integer",
           "minimum": 1
         },
+        "motorSpeedPercent": {
+          "type": "integer",
+          "maximum": 100,
+          "minimum": 0
+        },
         "name": {
           "type": "string"
         },
         "preflightEnabled": {
           "type": "boolean"
+        },
+        "preflightMotorSpeedPercent": {
+          "type": "integer",
+          "maximum": 100,
+          "minimum": 0
         },
         "preflightRelays": {
           "type": "array",
@@ -3390,6 +3487,13 @@ func init() {
           }
         }
       }
+    },
+    "RelayBoard": {
+      "type": "string",
+      "enum": [
+        "localGPIO",
+        "danBoard"
+      ]
     },
     "RelayConfig": {
       "type": "object",
@@ -3439,6 +3543,29 @@ func init() {
         }
       }
     },
+    "StationConfig": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "hash": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "preflightSec": {
+          "type": "integer"
+        },
+        "relayBoard": {
+          "$ref": "#/definitions/RelayBoard"
+        }
+      }
+    },
     "StationPrograms": {
       "type": "object",
       "properties": {
@@ -3461,6 +3588,9 @@ func init() {
               }
             }
           }
+        },
+        "relayBoard": {
+          "$ref": "#/definitions/RelayBoard"
         },
         "stationID": {
           "type": "integer"
