@@ -27,6 +27,9 @@ type StationPrograms struct {
 	// programs
 	Programs []*StationProgramsProgramsItems0 `json:"programs"`
 
+	// relay board
+	RelayBoard RelayBoard `json:"relayBoard,omitempty"`
+
 	// station ID
 	StationID int64 `json:"stationID,omitempty"`
 }
@@ -36,6 +39,10 @@ func (m *StationPrograms) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validatePrograms(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRelayBoard(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -65,6 +72,22 @@ func (m *StationPrograms) validatePrograms(formats strfmt.Registry) error {
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *StationPrograms) validateRelayBoard(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.RelayBoard) { // not required
+		return nil
+	}
+
+	if err := m.RelayBoard.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("relayBoard")
+		}
+		return err
 	}
 
 	return nil

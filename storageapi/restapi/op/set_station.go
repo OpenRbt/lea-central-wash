@@ -8,11 +8,7 @@ package op
 import (
 	"net/http"
 
-	errors "github.com/go-openapi/errors"
 	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
 )
 
 // SetStationHandlerFunc turns a function with the right signature into a set station handler
@@ -59,63 +55,4 @@ func (o *SetStation) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
-}
-
-// SetStationBody set station body
-// swagger:model SetStationBody
-type SetStationBody struct {
-
-	// hash
-	Hash string `json:"hash,omitempty"`
-
-	// id
-	// Required: true
-	ID *int64 `json:"id"`
-
-	// name
-	Name string `json:"name,omitempty"`
-
-	// preflight sec
-	PreflightSec int64 `json:"preflightSec,omitempty"`
-}
-
-// Validate validates this set station body
-func (o *SetStationBody) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *SetStationBody) validateID(formats strfmt.Registry) error {
-
-	if err := validate.Required("args"+"."+"id", "body", o.ID); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *SetStationBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *SetStationBody) UnmarshalBinary(b []byte) error {
-	var res SetStationBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
 }

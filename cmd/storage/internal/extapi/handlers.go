@@ -317,6 +317,29 @@ func (svc *service) addServiceAmount(params op.AddServiceAmountParams) op.AddSer
 	}
 }
 
+func (svc *service) station(params op.StationParams) op.StationResponder {
+	res, err := svc.app.Station(app.StationID(*params.Args.ID))
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewStationOK().WithPayload(&model.StationConfig{
+			ID:           newInt64(int64(res.ID)),
+			Name:         res.Name,
+			PreflightSec: int64(res.PreflightSec),
+			RelayBoard:   model.RelayBoard(res.RelayBoard),
+			Hash:         svc.getHash(res.ID),
+		})
+	case app.ErrNotFound:
+		log.Info("set station: not found", "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationNotFound()
+	case app.ErrAccessDenied:
+		log.Info("set station: access denied", "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationUnauthorized()
+	default:
+		log.PrintErr(err, "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationInternalServerError()
+	}
+}
+
 func (svc *service) setStation(params op.SetStationParams) op.SetStationResponder {
 	if *params.Args.ID == 0 && params.Args.Name == "" {
 		return op.NewSetStationUnprocessableEntity()
@@ -326,6 +349,7 @@ func (svc *service) setStation(params op.SetStationParams) op.SetStationResponde
 		ID:           app.StationID(*params.Args.ID),
 		Name:         params.Args.Name,
 		PreflightSec: int(params.Args.PreflightSec),
+		RelayBoard:   string(params.Args.RelayBoard),
 	})
 	switch errors.Cause(err) {
 	case nil:
