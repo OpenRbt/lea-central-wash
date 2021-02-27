@@ -11,18 +11,6 @@ uses
 type
   THashes = array of string;
 
-  StationsInfo = packed record
-    Count: integer;
-    id: array of integer;
-    name: array of string;
-    hash: array of string;
-    status: array of string;
-    info: array of string;
-    currentBalance: array of integer;
-    currentProgram: array of integer;
-
-  end;
-
   { TMainForm }
 
   TMainForm = class(TBaseForm)
@@ -117,15 +105,8 @@ type
 
     procedure ShowStation(id : integer);
     procedure ShowStations();
-    function UpdateStations() : boolean;
-    function GetStationNameByID(id : integer) : string;
-    function GetStationHashByID(id : integer) : string;
-    function GetStationCurrentBalanceByID(id : integer) : integer;
-    function GetStationCurrentProgramByID(id : integer) : integer;
-    function GetStationStatusByID(id : integer) : string;
 
   private
-    _isStandBy : boolean;
 
   public
     PLACEHOLDER : string;
@@ -133,62 +114,14 @@ type
 
 var
   MainForm: TMainForm;
-  ResponseStations: StationsInfo;
-  freeHashID : integer;
-
-const
-  NO_ID   : integer = -1;
-  ON_LINE : string = 'online';
-  PLACEHOLDER : string = '';
 
 implementation
   uses station_balance;
 
 {$R *.lfm}
 
-function TMainForm.GetStationNameByID(id : integer) : string;
-begin
-  if id > 0 then
-  begin
-    Result := ResponseStations.name[id-1];
-  end;
-end;
-
-function TMainForm.GetStationHashByID(id : integer) : string;
-begin
-  if id > 0 then
-  begin
-    Result := ResponseStations.hash[id-1];
-  end;
-end;
-
-function TMainForm.GetStationCurrentBalanceByID(id : integer) : integer;
-begin
-  if id > 0 then
-  begin
-    Result := ResponseStations.currentBalance[id-1];
-  end;
-end;
-
-function TMainForm.GetStationStatusByID(id : integer) : string;
-begin
-  if id > 0 then
-  begin
-    Result := ResponseStations.status[id-1];
-  end;
-end;
-
-function TMainForm.GetStationCurrentProgramByID(id : integer) : integer;
-begin
-  if id > 0 then
-  begin
-    Result := ResponseStations.currentProgram[id-1];
-  end;
-end;
-
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  _isStandBy  := false;
   UpdateTimer.Interval := 1000;
 end;
 
@@ -205,150 +138,6 @@ begin
   UpdateStations();
   ShowStations();
   UpdateTimer.Enabled := true;
-end;
-
-function TMainForm.UpdateStations() : boolean;
-var
-  RequestAnswer: string;
-  stationsJson: TJsonArray;
-  i: integer;
-  path: TJSONdata;
-  hasID : boolean;
-  id : integer;
-
-begin
-  with TFPHttpClient.Create(nil) do
-  try
-     try
-        AddHeader('Content-Type', 'application/json');
-        AddHeader('Pin', GetPinCode());
-        RequestAnswer := Get(GetServerEndpoint() + 'status');
-
-        stationsJson := GetJson(RequestAnswer).GetPath('stations') as TJsonArray;
-
-        setlength(ResponseStations.id, stationsJson.Count);
-        setlength(ResponseStations.name, stationsJson.Count);
-        setlength(ResponseStations.hash, stationsJson.Count);
-        setlength(ResponseStations.status, stationsJson.Count);
-        setlength(ResponseStations.info, stationsJson.Count);
-        setlength(ResponseStations.currentBalance, stationsJson.Count);
-        setlength(ResponseStations.currentProgram, stationsJson.Count);
-
-        ResponseStations.Count := stationsJson.Count;
-
-        freeHashID := 0;
-        for i := 0 to stationsJson.Count - 1 do
-        begin
-          with stationsJson.items[i] do
-          begin
-            path := FindPath('id');
-            if path <> nil then
-            begin
-              id := path.AsInteger-1;
-              ResponseStations.id[id] := path.AsInteger;
-              ResponseStations.hash[id] := PLACEHOLDER;
-              ResponseStations.name[id] := PLACEHOLDER;
-              ResponseStations.status[id] := PLACEHOLDER;
-              ResponseStations.info[id] := PLACEHOLDER;
-              ResponseStations.currentBalance[id] := NO_ID;
-              ResponseStations.currentProgram[id] := NO_ID;
-              hasID := true;
-            end
-            else
-            begin
-              ResponseStations.id[stationsJson.Count-1-freeHashID] := NO_ID;
-              hasID := false;
-            end;
-
-            path := FindPath('hash');
-            if path <> nil then
-            begin
-              if hasID then
-              begin
-                ResponseStations.hash[id] := path.AsString;
-              end
-              else
-              begin
-                freeHashID := freeHashID + 1;
-              end;
-            end;
-
-            path := FindPath('name');
-            if path <> nil then
-            begin
-              if ResponseStations.hash[id] <> PLACEHOLDER then
-              begin
-                ResponseStations.name[id] := path.AsString;
-              end;
-            end;
-
-            path := FindPath('status');
-            if path <> nil then
-            begin
-              if ResponseStations.hash[id] <> PLACEHOLDER then
-              begin
-                ResponseStations.status[id] := path.AsString;
-              end;
-            end;
-
-            path := FindPath('info');
-            if path <> nil then
-            begin
-              if hasID then
-              begin
-                ResponseStations.info[id] := path.AsString;
-              end;
-            end;
-
-            path := FindPath('currentBalance');
-            if path <> nil then
-            begin
-              if hasID then
-              begin
-                ResponseStations.currentBalance[id] := path.AsInteger;
-              end;
-            end;
-
-            path := FindPath('currentProgram');
-            if path <> nil then
-            begin
-              if hasID then
-              begin
-                ResponseStations.currentProgram[id] := path.AsInteger;
-              end;
-            end;
-          end;
-        end;
-      Result := true;
-      _isStandBy := false;
-      except
-        Result := false;
-        if not _isStandBy then
-        begin
-          _isStandBy := true;
-          case ResponseStatusCode of
-            0: ShowMessage('Can`t connect to server');
-            401, 403: // do nothing
-              ;
-            500: ShowMessage('Server Error: 500');
-            else
-              ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
-                sLineBreak + ResponseStatusText);
-          end;
-        end;
-        setlength(ResponseStations.id, 0);
-        setlength(ResponseStations.name, 0);
-        setlength(ResponseStations.hash, 0);
-        setlength(ResponseStations.status, 0);
-        setlength(ResponseStations.info, 0);
-        setlength(ResponseStations.currentBalance, 0);
-        setlength(ResponseStations.currentProgram, 0);
-
-        ResponseStations.Count := 0;
-      end;
-    finally
-      Free;
-    end;
 end;
 
 procedure TMainForm.ShowStations();

@@ -18,13 +18,28 @@ type
     end;
 
   ProgramConfig = packed record
-    Count           : integer;
-    ID              : array of integer;
-    Name            : array of string;
-    Price           : array of integer;
-    PreflightEnabled: array of boolean;
-    Relays          : array of array of integer;
-    PreflightRelays : array of array of integer;
+    Count            : integer;
+    ID               : array of integer;
+    Name             : array of string;
+    Price            : array of integer;
+    PreflightEnabled : array of boolean;
+    MotorSpeedPercent: array of integer;
+    PreflightMotorSpeedPercent: array of integer;
+    Relays           : array of array of integer;
+    PreflightRelays  : array of array of integer;
+    end;
+
+  StationsInfo = packed record
+    Count: integer;
+    id    : array of integer;
+    name  : array of string;
+    hash  : array of string;
+    status: array of string;
+    info  : array of string;
+    currentBalance: array of integer;
+    currentProgram: array of integer;
+    preflightSec  : array of integer;
+    relayBoard    : array of string;
     end;
 
   { TBaseForm }
@@ -75,7 +90,7 @@ type
     function GetServerEndpoint(): string;
     function GetHoverColor(): TColor;
 
-    function CheckProgram(id: integer) : boolean;
+    procedure CheckProgram(id: integer);
     procedure SetProgram(id: integer);
     procedure SetRelayTimeOn(relayID, timeON : integer);
     function GetRelayTimeOn(relayID : integer) : integer;
@@ -85,9 +100,21 @@ type
     function GetProgramPrice(id: integer): integer;
     procedure SetProgramPrice(id, price : integer);
 
+    function UpdateStations() : boolean;
+    function GetStationNameByID(id : integer) : string;
+    function GetStationHashByID(id : integer) : string;
+    function GetStationCurrentBalanceByID(id : integer) : integer;
+    function GetStationCurrentProgramByID(id : integer) : integer;
+    function GetStationStatusByID(id : integer) : string;
+    function GetStationPreflightSec(id: integer): integer;
+    procedure UpdateStationPreflightSec(id: integer);
+    procedure SetStationPreflightSec(id, preflightSec: integer);
+    function GetNumStations(): integer;
+
   private
     pinCode: string;
     serverEndpoint: string;
+    _isStandBy : boolean;
   public
 
   end;
@@ -96,10 +123,14 @@ var
   BaseForm      : TBaseForm;
   ProgramsConfig: ProgramConfig;
   RelaysConfig  : RelayConfig;
+  ResponseStations: StationsInfo;
+  freeHashID : integer;
 
 const
   hoverColor: TColor = clFuchsia;
-  NO_ID     : integer = 0;
+  NO_ID   : integer = -1;
+  ON_LINE : string = 'online';
+  PLACEHOLDER : string = '';
 
   NUM_PROGRAMS          : integer = 6;
   NUM_PREFLIGHT_PROGRAMS: integer = 4;
@@ -142,6 +173,8 @@ procedure TBaseForm.FormCreate(Sender: TObject);
 var
   i: integer;
 begin
+  _isStandBy  := false;
+
   RelaysConfig.Count := 9;
   setlength(RelaysConfig.ID,      RelaysConfig.Count);
   setlength(RelaysConfig.TimeON,  RelaysConfig.Count);
@@ -181,6 +214,8 @@ begin
   setlength(ProgramsConfig.PreflightEnabled, ProgramsConfig.Count);
   setlength(ProgramsConfig.Relays,           ProgramsConfig.Count);
   setlength(ProgramsConfig.PreflightRelays,  ProgramsConfig.Count);
+  setlength(ProgramsConfig.MotorSpeedPercent,           ProgramsConfig.Count);
+  setlength(ProgramsConfig.PreflightMotorSpeedPercent,  ProgramsConfig.Count);
 
   ProgramsConfig.ID[FOAM_PROGRAM_ID              - 1] := FOAM_PROGRAM_ID;
   ProgramsConfig.ID[SHAMPOO_PROGRAM_ID           - 1] := SHAMPOO_PROGRAM_ID;
@@ -254,6 +289,28 @@ begin
   setlength(ProgramsConfig.Relays[POLYMER_PREFLIGHT_PROGRAM_ID - 1], 1);
   ProgramsConfig.Relays[POLYMER_PREFLIGHT_PROGRAM_ID - 1][0] := POLYMER_RELAY_ID;
 
+  ProgramsConfig.MotorSpeedPercent[FOAM_PROGRAM_ID              - 1] :=  15;
+  ProgramsConfig.MotorSpeedPercent[SHAMPOO_PROGRAM_ID           - 1] :=  50;
+  ProgramsConfig.MotorSpeedPercent[RINSE_PROGRAM_ID             - 1] := 100;
+  ProgramsConfig.MotorSpeedPercent[WAX_PROGRAM_ID               - 1] :=  50;
+  ProgramsConfig.MotorSpeedPercent[DRY_PROGRAM_ID               - 1] := 100;
+  ProgramsConfig.MotorSpeedPercent[PAUSE_PROGRAM_ID             - 1] :=   0;
+  ProgramsConfig.MotorSpeedPercent[FOAM_PREFLIGHT_PROGRAM_ID    - 1] := 100;
+  ProgramsConfig.MotorSpeedPercent[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1] := 100;
+  ProgramsConfig.MotorSpeedPercent[WAX_PREFLIGHT_PROGRAM_ID     - 1] := 100;
+  ProgramsConfig.MotorSpeedPercent[POLYMER_PREFLIGHT_PROGRAM_ID - 1] := 100;
+
+  ProgramsConfig.PreflightMotorSpeedPercent[FOAM_PROGRAM_ID              - 1] := 100;
+  ProgramsConfig.PreflightMotorSpeedPercent[SHAMPOO_PROGRAM_ID           - 1] := 100;
+  ProgramsConfig.PreflightMotorSpeedPercent[RINSE_PROGRAM_ID             - 1] := 100;
+  ProgramsConfig.PreflightMotorSpeedPercent[WAX_PROGRAM_ID               - 1] := 100;
+  ProgramsConfig.PreflightMotorSpeedPercent[DRY_PROGRAM_ID               - 1] := 100;
+  ProgramsConfig.PreflightMotorSpeedPercent[PAUSE_PROGRAM_ID             - 1] := 100;
+  ProgramsConfig.PreflightMotorSpeedPercent[FOAM_PREFLIGHT_PROGRAM_ID    - 1] := 100;
+  ProgramsConfig.PreflightMotorSpeedPercent[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1] := 100;
+  ProgramsConfig.PreflightMotorSpeedPercent[WAX_PREFLIGHT_PROGRAM_ID     - 1] := 100;
+  ProgramsConfig.PreflightMotorSpeedPercent[POLYMER_PREFLIGHT_PROGRAM_ID - 1] := 100;
+
   serverEndpoint := 'http://localhost:8020/';
 
   for i:=1 to NUM_PROGRAMS+NUM_PREFLIGHT_PROGRAMS do
@@ -261,6 +318,252 @@ begin
     CheckProgram(i);
   end;
 
+end;
+
+function TBaseForm.UpdateStations() : boolean;
+var
+  RequestAnswer: string;
+  stationsJson: TJsonArray;
+  i: integer;
+  path: TJSONdata;
+  hasID : boolean;
+  id : integer;
+
+begin
+  with TFPHttpClient.Create(nil) do
+  try
+     try
+        AddHeader('Content-Type', 'application/json');
+        AddHeader('Pin', GetPinCode());
+        RequestAnswer := Get(GetServerEndpoint() + 'status');
+
+        stationsJson := GetJson(RequestAnswer).GetPath('stations') as TJsonArray;
+
+        setlength(ResponseStations.id, stationsJson.Count);
+        setlength(ResponseStations.name, stationsJson.Count);
+        setlength(ResponseStations.hash, stationsJson.Count);
+        setlength(ResponseStations.status, stationsJson.Count);
+        setlength(ResponseStations.info, stationsJson.Count);
+        setlength(ResponseStations.currentBalance, stationsJson.Count);
+        setlength(ResponseStations.currentProgram, stationsJson.Count);
+        setlength(ResponseStations.preflightSec, stationsJson.Count);
+        setlength(ResponseStations.relayBoard, stationsJson.Count);
+
+        ResponseStations.Count := stationsJson.Count;
+
+        freeHashID := 0;
+        for i := 0 to stationsJson.Count - 1 do
+        begin
+          with stationsJson.items[i] do
+          begin
+            path := FindPath('id');
+            if path <> nil then
+            begin
+              id := path.AsInteger-1;
+              ResponseStations.id[id] := path.AsInteger;
+              ResponseStations.hash[id] := PLACEHOLDER;
+              ResponseStations.name[id] := PLACEHOLDER;
+              ResponseStations.status[id] := PLACEHOLDER;
+              ResponseStations.info[id] := PLACEHOLDER;
+              ResponseStations.currentBalance[id] := NO_ID;
+              ResponseStations.currentProgram[id] := NO_ID;
+              hasID := true;
+            end
+            else
+            begin
+              ResponseStations.id[stationsJson.Count-1-freeHashID] := NO_ID;
+              hasID := false;
+            end;
+
+            path := FindPath('hash');
+            if path <> nil then
+            begin
+              if hasID then
+              begin
+                ResponseStations.hash[id] := path.AsString;
+              end
+              else
+              begin
+                freeHashID := freeHashID + 1;
+              end;
+            end;
+
+            path := FindPath('name');
+            if path <> nil then
+            begin
+              if ResponseStations.hash[id] <> PLACEHOLDER then
+              begin
+                ResponseStations.name[id] := path.AsString;
+              end;
+            end;
+
+            path := FindPath('status');
+            if path <> nil then
+            begin
+              if ResponseStations.hash[id] <> PLACEHOLDER then
+              begin
+                ResponseStations.status[id] := path.AsString;
+              end;
+            end;
+
+            path := FindPath('info');
+            if path <> nil then
+            begin
+              if hasID then
+              begin
+                ResponseStations.info[id] := path.AsString;
+              end;
+            end;
+
+            path := FindPath('currentBalance');
+            if path <> nil then
+            begin
+              if hasID then
+              begin
+                ResponseStations.currentBalance[id] := path.AsInteger;
+              end;
+            end;
+
+            path := FindPath('currentProgram');
+            if path <> nil then
+            begin
+              if hasID then
+              begin
+                ResponseStations.currentProgram[id] := path.AsInteger;
+              end;
+            end;
+          end;
+        end;
+      Result := true;
+      _isStandBy := false;
+      except
+        Result := false;
+        if not _isStandBy then
+        begin
+          _isStandBy := true;
+          case ResponseStatusCode of
+            0: ShowMessage('Can`t connect to server');
+            401, 403: // do nothing
+              ;
+            500: ShowMessage('Server Error: 500');
+            else
+              ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+                sLineBreak + ResponseStatusText);
+          end;
+        end;
+        setlength(ResponseStations.id, 0);
+        setlength(ResponseStations.name, 0);
+        setlength(ResponseStations.hash, 0);
+        setlength(ResponseStations.status, 0);
+        setlength(ResponseStations.info, 0);
+        setlength(ResponseStations.currentBalance, 0);
+        setlength(ResponseStations.currentProgram, 0);
+
+        ResponseStations.Count := 0;
+      end;
+    finally
+      Free;
+    end;
+end;
+
+procedure TBaseForm.UpdateStationPreflightSec(id: integer);
+var
+  RequestAnswer: string;
+  requestJson: TJSONObject;
+  stationJson: TJsonData;
+  path: TJSONdata;
+begin
+  with TFPHttpClient.Create(nil) do
+  try
+     try
+        AddHeader('Content-Type', 'application/json');
+        AddHeader('Pin', GetPinCode());
+
+        requestJson := TJSONObject.Create;
+        requestJson.Add('id', id);
+        RequestBody := TStringStream.Create(requestJson.AsJSON);
+        RequestAnswer := Post(GetServerEndpoint() + 'station');
+
+        stationJson := GetJson(RequestAnswer);
+        path := stationJson.FindPath('preflightSec');
+        if path <> nil then
+        begin
+          ResponseStations.preflightSec[id-1] := path.AsInteger;
+        end
+        else
+        begin
+          ResponseStations.preflightSec[id-1] := 0;
+        end;
+
+        path := stationJson.FindPath('relayBoard');
+        if path <> nil then
+        begin
+          ResponseStations.relayBoard[id-1] := path.AsString;
+        end
+
+      except
+          case ResponseStatusCode of
+            0: ShowMessage('Can`t connect to server');
+            401, 403, 404: // do nothing
+              ;
+            500: ShowMessage('Server Error: 500');
+            else
+              ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+                sLineBreak + ResponseStatusText);
+          end;
+      end;
+    finally
+      Free;
+    end;
+end;
+
+procedure TBaseForm.SetStationPreflightSec(id, preflightSec: integer);
+var
+  settingJson: TJSONObject;
+begin
+  if GetStationHashByID(id) = PLACEHOLDER then
+  begin
+    Exit;
+  end;
+  with TFPHttpClient.Create(nil) do
+  try
+     try
+        AddHeader('Content-Type', 'application/json');
+        AddHeader('Pin', GetPinCode());
+
+        settingJson := TJSONObject.Create;
+
+        settingJson.Add('id', id);
+        settingJson.Add('name', ResponseStations.name[id-1]);
+        settingJson.Add('hash', ResponseStations.hash[id-1]);
+        settingJson.Add('preflightSec', preflightSec);
+        settingJson.Add('relayBoard', ResponseStations.relayBoard[id-1]);
+
+        RequestBody := TStringStream.Create(settingJson.AsJSON);
+        Post(GetServerEndpoint() + '/set-station');
+
+        if ResponseStatusCode <> 204 then
+        begin
+          raise Exception.Create(IntToStr(ResponseStatusCode));
+        end;
+
+        ResponseStations.preflightSec[id-1] := preflightSec;
+
+      except
+        case ResponseStatusCode of
+          0: begin ModalResult := 0; ShowMessage('Can`t connect to server'); end;
+          401: begin ModalResult := 0; ShowMessage('Not authorized'); end;
+          403, 404: begin ModalResult := 0; ShowMessage('Forbidden'); end;
+          500: begin ModalResult := 0; ShowMessage('Server Error: 500'); end;
+          else
+            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+              sLineBreak + ResponseStatusText);
+        end;
+      end;
+
+    finally
+      Free;
+    end;
 end;
 
 procedure TBaseForm.UpdatePrograms();
@@ -294,6 +597,56 @@ begin
   Result := ProgramsConfig.Price[id-1];
 end;
 
+function TBaseForm.GetStationNameByID(id : integer) : string;
+begin
+  if id > 0 then
+  begin
+    Result := ResponseStations.name[id-1];
+  end;
+end;
+
+function TBaseForm.GetStationHashByID(id : integer) : string;
+begin
+  if id > 0 then
+  begin
+    Result := ResponseStations.hash[id-1];
+  end;
+end;
+
+function TBaseForm.GetStationCurrentBalanceByID(id : integer) : integer;
+begin
+  if id > 0 then
+  begin
+    Result := ResponseStations.currentBalance[id-1];
+  end;
+end;
+
+function TBaseForm.GetStationStatusByID(id : integer) : string;
+begin
+  if id > 0 then
+  begin
+    Result := ResponseStations.status[id-1];
+  end;
+end;
+
+function TBaseForm.GetStationCurrentProgramByID(id : integer) : integer;
+begin
+  if id > 0 then
+  begin
+    Result := ResponseStations.currentProgram[id-1];
+  end;
+end;
+
+function TBaseForm.GetStationPreflightSec(id: integer): integer;
+begin
+  Result := ResponseStations.preflightSec[id-1];
+end;
+
+function TBaseForm.GetNumStations(): integer;
+begin
+  Result := ResponseStations.Count;
+end;
+
 procedure TBaseForm.SetProgramPrice(id, price : integer);
 begin
   ProgramsConfig.Price[id-1] := price;
@@ -309,7 +662,7 @@ begin
   end;
 end;
 
-function TBaseForm.CheckProgram(id: integer) : boolean;
+procedure TBaseForm.CheckProgram(id: integer);
 var
   RequestAnswer: string;
   programRequestJson : TJSONObject;
@@ -356,6 +709,16 @@ begin
               if path <> nil then
               begin
                 ProgramsConfig.Price[programID-1] := path.AsInteger;
+              end;
+              path := FindPath('motorSpeedPercent');
+              if path <> nil then
+              begin
+                ProgramsConfig.MotorSpeedPercent[programID-1] := path.AsInteger;
+              end;
+              path := FindPath('preflightMotorSpeedPercent');
+              if path <> nil then
+              begin
+                ProgramsConfig.PreflightMotorSpeedPercent[programID-1] := path.AsInteger;
               end;
               relaysJson := GetPath('relays') as TJsonArray;
               if relaysJson <> nil then
@@ -421,6 +784,8 @@ begin
         programJson.Add('id', id);
         programJson.Add('name', ProgramsConfig.Name[id-1]);
         programJson.Add('price', ProgramsConfig.Price[id-1]);
+        programJson.Add('motorSpeedPercent', ProgramsConfig.MotorSpeedPercent[id-1]);
+        programJson.Add('preflightMotorSpeedPercent', ProgramsConfig.PreflightMotorSpeedPercent[id-1]);
         programJson.Add('relays', relays);
 
         RequestBody := TStringStream.Create(programJson.AsJSON);

@@ -10,16 +10,6 @@ uses
 
 type
 
-  StationsInfo = packed record
-    Count: integer;
-    id: array of integer;
-    name: array of string;
-    hash: array of string;
-    status: array of string;
-    info: array of string;
-    currentBalance: array of integer;
-    currentProgram: array of integer;
-    end;
   { TStationsForm }
 
   TStationsForm = class(TBaseForm)
@@ -40,6 +30,10 @@ type
 
     procedure StationsMouseEnter(Sender: TObject); override;
     procedure StationsMouseLeave(Sender: TObject); override;
+
+    procedure UpdatePreflight();
+    procedure ShowStations();
+
   private
 
   public
@@ -82,13 +76,7 @@ end;
 
 procedure TStationsForm.FormShow(Sender: TObject);
 var
-  RequestAnswer: string;
-  stationsJson: TJsonArray;
   i: integer;
-  path: TJSONdata;
-  hasID : boolean;
-  id : integer;
-
 begin
   StationsForm.Stations.Font.Color := StationsForm.GetHoverColor();
 
@@ -100,109 +88,41 @@ begin
     StationsGrid.Cells[ENABLED_CHECKBOX_COL, i] := '0';
   end;
 
-  with TFPHttpClient.Create(nil) do
-  try
-     try
-        AddHeader('Content-Type', 'application/json');
-        AddHeader('Pin', GetPinCode());
-        RequestAnswer := Get(GetServerEndpoint() + 'status');
+  UpdateStations();
+  UpdatePreflight();
+  ShowStations();
+end;
 
-        stationsJson := GetJson(RequestAnswer).GetPath('stations') as TJsonArray;
-
-        setlength(ResponseStations.id, stationsJson.Count);
-        setlength(ResponseStations.name, stationsJson.Count);
-        setlength(ResponseStations.hash, stationsJson.Count);
-        setlength(ResponseStations.status, stationsJson.Count);
-        setlength(ResponseStations.info, stationsJson.Count);
-        setlength(ResponseStations.currentBalance, stationsJson.Count);
-        setlength(ResponseStations.currentProgram, stationsJson.Count);
-
-        setlength(freeHashVals, stationsJson.Count);
-
-        ResponseStations.Count := stationsJson.Count;
-
-        freeHashID := 0;
-        id := NO_ID;
-        for i := 0 to stationsJson.Count - 1 do
-        begin
-          with stationsJson.items[i] do
-          begin
-            path := FindPath('id');
-            if path <> nil then
-            begin
-              id := path.AsInteger-1;
-              ResponseStations.id[id] := path.AsInteger;
-              hasID := true;
-            end
-            else
-            begin
-              ResponseStations.id[stationsJson.Count-1-freeHashID] := NO_ID;
-              hasID := false;
-            end;
-
-            path := FindPath('hash');
-            if path <> nil then
-            begin
-              if hasID then
-              begin
-                ResponseStations.hash[id] := path.AsString;
-              end
-              else
-              begin
-                freeHashVals[freeHashID] := path.AsString;
-                freeHashID := freeHashID + 1;
-              end;
-            end
-            else
-            begin
-              //if hasID then
-              //begin
-                ResponseStations.hash[id] := PLACEHOLDER;
-              //end;
-            end;
-
-            path := FindPath('name');
-            if path <> nil then
-            begin
-              if ResponseStations.hash[id] <> PLACEHOLDER then
-              begin
-                ResponseStations.name[id] := path.AsString;
-                StationsGrid.Cells[NAME_COL, id] := PADDING + ResponseStations.name[id];
-                StationsGrid.Cells[PREFLIGHT_LABEL_COL, id] := PREFLIGHT_STR;
-                StationsGrid.Cells[PREFLIGHT_DEC, id] := '-';
-                StationsGrid.Cells[PREFLIGHT_VAL_COL, id] := '0';
-                StationsGrid.Cells[PREFLIGHT_INC, id] := '+';
-                StationsGrid.Cells[ENABLED_LABEL_COL, id] := ENABLED_STR;
-                StationsGrid.Cells[ENABLED_CHECKBOX_COL, id] := '1';
-              end;
-            end;
-          end;
-        end;
-
-      except
-        case ResponseStatusCode of
-          0: ShowMessage('Can`t connect to server');
-          401, 403: // do nothing
-            ;
-          500: ShowMessage('Server Error: 500');
-          else
-            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
-              sLineBreak + ResponseStatusText);
-        end;
-        setlength(ResponseStations.id, 0);
-        setlength(ResponseStations.name, 0);
-        setlength(ResponseStations.hash, 0);
-        setlength(ResponseStations.status, 0);
-        setlength(ResponseStations.info, 0);
-        setlength(ResponseStations.currentBalance, 0);
-        setlength(ResponseStations.currentProgram, 0);
-        setlength(freeHashVals, 0);
-
-        ResponseStations.Count := 0;
-      end;
-    finally
-      Free;
+procedure TStationsForm.UpdatePreflight();
+var
+  id : integer;
+begin
+  for id:=1 to GetNumStations() do
+  begin
+    if GetStationHashByID(id) <> PLACEHOLDER then
+    begin
+      UpdateStationPreflightSec(id);
     end;
+  end;
+end;
+
+procedure TStationsForm.ShowStations();
+var
+  id : integer;
+begin
+  for id:=1 to GetNumStations() do
+  begin
+    if GetStationHashByID(id) <> PLACEHOLDER then
+    begin
+      StationsGrid.Cells[NAME_COL, id-1] := PADDING + GetStationNameByID(id);
+      StationsGrid.Cells[PREFLIGHT_LABEL_COL, id-1] := PREFLIGHT_STR;
+      StationsGrid.Cells[PREFLIGHT_DEC, id-1] := '-';
+      StationsGrid.Cells[PREFLIGHT_VAL_COL, id-1] := IntToStr(GetStationPreflightSec(id));
+      StationsGrid.Cells[PREFLIGHT_INC, id-1] := '+';
+      StationsGrid.Cells[ENABLED_LABEL_COL, id-1] := ENABLED_STR;
+      StationsGrid.Cells[ENABLED_CHECKBOX_COL, id-1] := '1';
+    end;
+  end;
 end;
 
 procedure TStationsForm.MainClick(Sender: TObject);
@@ -236,6 +156,9 @@ end;
 
 procedure TStationsForm.StationsGridSelectCell(Sender: TObject; aCol,
   aRow: Integer; var CanSelect: Boolean);
+var
+  id: integer;
+  preflightSec : integer;
 begin
   if (ResponseStations.Count > 0) and (ResponseStations.hash[aRow] = PLACEHOLDER) then
   begin
@@ -256,11 +179,21 @@ begin
   end
   else if (aCol = PREFLIGHT_DEC) then
   begin
-
+    id := aRow+1;
+    preflightSec := GetStationPreflightSec(id);
+    if preflightSec < 1 then
+    begin
+      Exit;
+    end;
+    SetStationPreflightSec(id, preflightSec - 1);
+    StationsGrid.Cells[PREFLIGHT_VAL_COL, aRow] := IntToStr(GetStationPreflightSec(id));
   end
   else if (aCol = PREFLIGHT_INC) then
   begin
-
+    id := aRow+1;
+    preflightSec := GetStationPreflightSec(id);
+    SetStationPreflightSec(id, preflightSec + 1);
+    StationsGrid.Cells[PREFLIGHT_VAL_COL, aRow] := IntToStr(GetStationPreflightSec(id));
   end;
 end;
 
