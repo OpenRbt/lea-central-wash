@@ -31,9 +31,19 @@ func appSetStation(v []resStation) []app.SetStation {
 			ID:           v[i].ID,
 			Name:         v[i].Name,
 			PreflightSec: v[i].PreflightSec,
+			RelayBoard:   v[i].RelayBoard,
 		})
 	}
 	return res
+}
+
+func appStation(v resStation) app.SetStation {
+	return app.SetStation{
+		ID:           v.ID,
+		Name:         v.Name,
+		PreflightSec: v.PreflightSec,
+		RelayBoard:   v.RelayBoard,
+	}
 }
 
 func appStationsVariables(v []resStationsVariables) []app.StationsVariables {
@@ -61,12 +71,14 @@ func appStationsVariables(v []resStationsVariables) []app.StationsVariables {
 func appPrograms(p []resPrograms) (res []app.Program) {
 	for i := range p {
 		res = append(res, app.Program{
-			ID:               p[i].ID,
-			Name:             p[i].Name,
-			Price:            p[i].Price,
-			PreflightEnabled: p[i].PreflightEnabled,
-			Relays:           appProgramRelays(p[i].Relays),
-			PreflightRelays:  appProgramRelays(p[i].PreflightRelays),
+			ID:                         p[i].ID,
+			Name:                       p[i].Name,
+			Price:                      p[i].Price,
+			PreflightEnabled:           p[i].PreflightEnabled,
+			MotorSpeedPercent:          p[i].MotorSpeedPercent,
+			PreflightMotorSpeedPercent: p[i].PreflightMotorSpeedPercent,
+			Relays:                     appProgramRelays(p[i].Relays),
+			PreflightRelays:            appProgramRelays(p[i].PreflightRelays),
 		})
 	}
 	return res
@@ -118,16 +130,19 @@ func appStationConfig(p []resStationConfig) (res app.StationConfig) {
 	res.ID = p[0].ID
 	res.Name = p[0].Name
 	res.PreflightSec = p[0].PreflightSec
+	res.RelayBoard = p[0].RelayBoard
 
 	for i := range p {
 		res.Programs = append(res.Programs, app.Program{
-			ID:               p[i].ProgramID,
-			ButtonID:         p[i].ButtonID,
-			Name:             p[i].ProgramName,
-			Price:            p[i].Price,
-			PreflightEnabled: p[i].PreflightEnabled,
-			Relays:           appProgramRelays(p[i].Relays),
-			PreflightRelays:  appProgramRelays(p[i].PreflightRelays),
+			ID:                         p[i].ProgramID,
+			ButtonID:                   p[i].ButtonID,
+			Name:                       p[i].ProgramName,
+			Price:                      p[i].Price,
+			PreflightEnabled:           p[i].PreflightEnabled,
+			MotorSpeedPercent:          p[i].MotorSpeedPercent,
+			PreflightMotorSpeedPercent: p[i].PreflightMotorSpeedPercent,
+			Relays:                     appProgramRelays(p[i].Relays),
+			PreflightRelays:            appProgramRelays(p[i].PreflightRelays),
 		})
 	}
 	return res

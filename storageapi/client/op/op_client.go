@@ -786,6 +786,34 @@ func (a *Client) SetStationButton(params *SetStationButtonParams) (*SetStationBu
 }
 
 /*
+Station station API
+*/
+func (a *Client) Station(params *StationParams) (*StationOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStationParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "station",
+		Method:             "POST",
+		PathPattern:        "/station",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StationReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*StationOK), nil
+
+}
+
+/*
 StationButton station button API
 */
 func (a *Client) StationButton(params *StationButtonParams) (*StationButtonOK, error) {

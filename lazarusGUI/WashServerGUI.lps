@@ -31,8 +31,10 @@
         <ComponentName Value="ManageForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="9"/>
-        <CursorPos X="58" Y="9"/>
+        <TopLine Value="196"/>
+        <CursorPos X="3" Y="206"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -57,7 +59,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
         <UnitName Value="clientAPI"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
         <TopLine Value="570"/>
         <CursorPos Y="590"/>
@@ -94,121 +95,10 @@
         <LoadedDesigner Value="True"/>
       </Unit6>
       <Unit7>
-        <Filename Value="superobject.pas"/>
-        <EditorIndex Value="8"/>
-        <TopLine Value="914"/>
-        <CursorPos Y="921"/>
-        <UsageCount Value="94"/>
-        <Loaded Value="True"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\objpas\sysutils\datih.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="120"/>
-        <CursorPos X="10" Y="136"/>
-        <UsageCount Value="4"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.2.0\packages\fcl-web\src\base\fphttpclient.pp"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="322"/>
-        <CursorPos X="42" Y="70"/>
-        <UsageCount Value="18"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="..\..\..\..\..\usr\share\lazarus\2.0.10\lcl\include\application.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="2227"/>
-        <CursorPos Y="2239"/>
-        <UsageCount Value="10"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="..\..\..\..\..\usr\share\lazarus\2.0.10\lcl\grids.pas"/>
-        <UnitName Value="Grids"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="3287"/>
-        <CursorPos Y="3300"/>
-        <UsageCount Value="14"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="..\..\..\..\..\usr\lib\lazarus\2.0.6\lcl\stdctrls.pp"/>
-        <UnitName Value="StdCtrls"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="806"/>
-        <CursorPos X="14" Y="830"/>
-        <UsageCount Value="18"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\rtl\inc\objpash.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="194"/>
-        <CursorPos X="23" Y="194"/>
-        <UsageCount Value="3"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\rtl\objpas\sysutils\sysstrh.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="87"/>
-        <CursorPos X="10" Y="108"/>
-        <UsageCount Value="3"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\rtl\objpas\classes\classesh.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="653"/>
-        <CursorPos X="15" Y="673"/>
-        <UsageCount Value="5"/>
-      </Unit15>
-      <Unit16>
-        <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\packages\fcl-web\src\base\fphttpclient.pp"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="271"/>
-        <CursorPos X="14" Y="291"/>
-        <UsageCount Value="14"/>
-      </Unit16>
-      <Unit17>
-        <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\packages\fcl-json\src\fpjson.pp"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="544"/>
-        <CursorPos X="14" Y="563"/>
-        <UsageCount Value="9"/>
-      </Unit17>
-      <Unit18>
-        <Filename Value="..\..\..\..\..\usr\lib\lazarus\2.0.6\lcl\dialogs.pp"/>
-        <UnitName Value="Dialogs"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="703"/>
-        <CursorPos X="22" Y="724"/>
-        <UsageCount Value="9"/>
-      </Unit18>
-      <Unit19>
-        <Filename Value="..\..\..\..\..\..\usr\share\fpcsrc\3.2.0\packages\rtl-objpas\src\inc\dateutil.inc"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="292"/>
-        <CursorPos X="10" Y="304"/>
-        <UsageCount Value="14"/>
-        <Loaded Value="True"/>
-      </Unit19>
-      <Unit20>
-        <Filename Value="..\..\..\..\..\..\usr\share\lazarus\2.0.10\lcl\forms.pp"/>
-        <UnitName Value="Forms"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="645"/>
-        <CursorPos X="15" Y="655"/>
-        <UsageCount Value="10"/>
-      </Unit20>
-      <Unit21>
-        <Filename Value="..\..\..\..\..\..\usr\share\fpcsrc\3.2.0\packages\fcl-json\src\fpjson.pp"/>
-        <EditorIndex Value="5"/>
-        <TopLine Value="131"/>
-        <CursorPos X="14" Y="149"/>
-        <UsageCount Value="11"/>
-        <Loaded Value="True"/>
-      </Unit21>
-      <Unit22>
         <Filename Value="cardreadercfg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CardReaderConfigForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="10"/>
         <TopLine Value="45"/>
@@ -216,6 +106,118 @@
         <UsageCount Value="22"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="superobject.pas"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="914"/>
+        <CursorPos Y="921"/>
+        <UsageCount Value="94"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\objpas\sysutils\datih.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="120"/>
+        <CursorPos X="10" Y="136"/>
+        <UsageCount Value="4"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.2.0\packages\fcl-web\src\base\fphttpclient.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="322"/>
+        <CursorPos X="42" Y="70"/>
+        <UsageCount Value="18"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\..\..\..\..\usr\share\lazarus\2.0.10\lcl\include\application.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2227"/>
+        <CursorPos Y="2239"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\..\..\..\usr\share\lazarus\2.0.10\lcl\grids.pas"/>
+        <UnitName Value="Grids"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="3287"/>
+        <CursorPos Y="3300"/>
+        <UsageCount Value="14"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\..\..\..\..\usr\lib\lazarus\2.0.6\lcl\stdctrls.pp"/>
+        <UnitName Value="StdCtrls"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="806"/>
+        <CursorPos X="14" Y="830"/>
+        <UsageCount Value="18"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\rtl\inc\objpash.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="194"/>
+        <CursorPos X="23" Y="194"/>
+        <UsageCount Value="3"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\rtl\objpas\sysutils\sysstrh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="87"/>
+        <CursorPos X="10" Y="108"/>
+        <UsageCount Value="3"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\rtl\objpas\classes\classesh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="653"/>
+        <CursorPos X="15" Y="673"/>
+        <UsageCount Value="5"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\packages\fcl-web\src\base\fphttpclient.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="271"/>
+        <CursorPos X="14" Y="291"/>
+        <UsageCount Value="14"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="..\..\..\..\..\usr\share\fpcsrc\3.0.4\packages\fcl-json\src\fpjson.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="544"/>
+        <CursorPos X="14" Y="563"/>
+        <UsageCount Value="9"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="..\..\..\..\..\usr\lib\lazarus\2.0.6\lcl\dialogs.pp"/>
+        <UnitName Value="Dialogs"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="703"/>
+        <CursorPos X="22" Y="724"/>
+        <UsageCount Value="9"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="..\..\..\..\..\..\usr\share\fpcsrc\3.2.0\packages\rtl-objpas\src\inc\dateutil.inc"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="292"/>
+        <CursorPos X="10" Y="304"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="..\..\..\..\..\..\usr\share\lazarus\2.0.10\lcl\forms.pp"/>
+        <UnitName Value="Forms"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="645"/>
+        <CursorPos X="15" Y="655"/>
+        <UsageCount Value="10"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="..\..\..\..\..\..\usr\share\fpcsrc\3.2.0\packages\fcl-json\src\fpjson.pp"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="131"/>
+        <CursorPos X="14" Y="149"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
       </Unit22>
       <Unit23>
         <Filename Value="..\..\..\..\..\..\usr\share\fpcsrc\3.2.0\rtl\objpas\sysutils\sysstrh.inc"/>
@@ -229,123 +231,123 @@
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="settingskasse.pas"/>
-        <Caret Line="85" Column="37" TopLine="65"/>
+        <Caret Line="84" Column="37" TopLine="64"/>
       </Position1>
       <Position2>
-        <Filename Value="settingskasse.pas"/>
-        <Caret Line="84" Column="37" TopLine="64"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="468" Column="41" TopLine="463"/>
       </Position2>
       <Position3>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="468" Column="41" TopLine="463"/>
+        <Caret Line="590" Column="32" TopLine="572"/>
       </Position3>
       <Position4>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="590" Column="32" TopLine="572"/>
+        <Caret Line="624" Column="37" TopLine="618"/>
       </Position4>
       <Position5>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="624" Column="37" TopLine="618"/>
+        <Caret Line="627" Column="42" TopLine="619"/>
       </Position5>
       <Position6>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="627" Column="42" TopLine="619"/>
+        <Caret Line="624" Column="18" TopLine="618"/>
       </Position6>
       <Position7>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="624" Column="18" TopLine="618"/>
+        <Caret Line="574" Column="48" TopLine="571"/>
       </Position7>
       <Position8>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="574" Column="48" TopLine="571"/>
-      </Position8>
-      <Position9>
         <Filename Value="manager.pas"/>
         <Caret Line="166" Column="17" TopLine="127"/>
-      </Position9>
-      <Position10>
+      </Position8>
+      <Position9>
         <Filename Value="clientapi.pas"/>
         <Caret Line="33" Column="3" TopLine="29"/>
-      </Position10>
-      <Position11>
+      </Position9>
+      <Position10>
         <Filename Value="cardreadercfg.pas"/>
         <Caret Line="42" Column="13" TopLine="22"/>
+      </Position10>
+      <Position11>
+        <Filename Value="manager.pas"/>
+        <Caret Line="173" Column="17" TopLine="134"/>
       </Position11>
       <Position12>
         <Filename Value="manager.pas"/>
-        <Caret Line="173" Column="17" TopLine="134"/>
+        <Caret Line="162" Column="19" TopLine="143"/>
       </Position12>
       <Position13>
         <Filename Value="manager.pas"/>
-        <Caret Line="162" Column="19" TopLine="143"/>
+        <Caret Line="173" Column="3" TopLine="143"/>
       </Position13>
       <Position14>
-        <Filename Value="manager.pas"/>
-        <Caret Line="173" Column="3" TopLine="143"/>
-      </Position14>
-      <Position15>
         <Filename Value="managerrelays.pas"/>
         <Caret Line="43" Column="23" TopLine="35"/>
-      </Position15>
-      <Position16>
+      </Position14>
+      <Position15>
         <Filename Value="manager.pas"/>
         <Caret Line="163" Column="23" TopLine="142"/>
+      </Position15>
+      <Position16>
+        <Filename Value="cardreadercfg.pas"/>
+        <Caret Line="41" Column="12" TopLine="2"/>
       </Position16>
       <Position17>
         <Filename Value="cardreadercfg.pas"/>
-        <Caret Line="41" Column="12" TopLine="2"/>
+        <Caret Line="82" Column="78" TopLine="62"/>
       </Position17>
       <Position18>
         <Filename Value="cardreadercfg.pas"/>
-        <Caret Line="82" Column="78" TopLine="62"/>
+        <Caret Line="98" Column="3" TopLine="63"/>
       </Position18>
       <Position19>
         <Filename Value="cardreadercfg.pas"/>
-        <Caret Line="98" Column="3" TopLine="63"/>
+        <Caret Line="105" Column="22" TopLine="69"/>
       </Position19>
       <Position20>
         <Filename Value="cardreadercfg.pas"/>
-        <Caret Line="105" Column="22" TopLine="69"/>
+        <Caret Line="27" Column="14" TopLine="12"/>
       </Position20>
       <Position21>
         <Filename Value="cardreadercfg.pas"/>
-        <Caret Line="27" Column="14" TopLine="12"/>
+        <Caret Line="72" Column="14" TopLine="57"/>
       </Position21>
       <Position22>
         <Filename Value="cardreadercfg.pas"/>
-        <Caret Line="72" Column="14" TopLine="57"/>
+        <Caret Line="77" Column="35" TopLine="57"/>
       </Position22>
       <Position23>
-        <Filename Value="cardreadercfg.pas"/>
-        <Caret Line="77" Column="35" TopLine="57"/>
+        <Filename Value="clientapi.pas"/>
+        <Caret Line="590" TopLine="572"/>
       </Position23>
       <Position24>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="590" TopLine="572"/>
+        <Caret Line="591" TopLine="576"/>
       </Position24>
       <Position25>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="591" TopLine="576"/>
+        <Caret Line="592" TopLine="576"/>
       </Position25>
       <Position26>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="592" TopLine="576"/>
+        <Caret Line="593" TopLine="576"/>
       </Position26>
       <Position27>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="593" TopLine="576"/>
+        <Caret Line="594" TopLine="576"/>
       </Position27>
       <Position28>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="594" TopLine="576"/>
+        <Caret Line="617" TopLine="598"/>
       </Position28>
       <Position29>
         <Filename Value="clientapi.pas"/>
-        <Caret Line="617" TopLine="598"/>
+        <Caret Line="619" TopLine="598"/>
       </Position29>
       <Position30>
-        <Filename Value="clientapi.pas"/>
-        <Caret Line="619" TopLine="598"/>
+        <Filename Value="manager.pas"/>
+        <Caret Line="9" Column="58"/>
       </Position30>
     </JumpHistory>
     <RunParams>

@@ -57,11 +57,14 @@ VALUES 	(:station_id, :hash)
 	`
 	sqlUpdStation = `
 UPDATE station
-SET name = :name, preflight_sec = :preflight_sec
+SET name = :name, preflight_sec = :preflight_sec, relay_board = :relay_board
 WHERE id = :id
 	`
+	sqlGetStations = `
+SELECT id, name, preflight_sec, relay_board FROM station where deleted = false ORDER BY id
+	`
 	sqlGetStation = `
-SELECT id, name, preflight_sec  FROM station where deleted = false ORDER BY id
+SELECT id, name, preflight_sec, relay_board FROM station where deleted = false and id = :id ORDER BY id
 	`
 
 	sqlGetUsers = `
@@ -262,7 +265,9 @@ ORDER BY relay_id
 	name,
 	preflight_enabled,
 	relays,
-	preflight_relays
+	preflight_relays,
+	motor_speed_percent,
+	preflight_motor_speed_percent
     FROM program
 	WHERE ((id = :id) or (CAST(:id as integer) is null)) 
 	ORDER BY id ASC
@@ -275,7 +280,9 @@ ORDER BY relay_id
 		name,
 		preflight_enabled,
 		relays,
-		preflight_relays
+		preflight_relays,
+		motor_speed_percent,
+		preflight_motor_speed_percent
 		)
 	VALUES (
 		:id,
@@ -283,7 +290,9 @@ ORDER BY relay_id
 		:name,
 		:preflight_enabled,
 		:relays,
-		:preflight_relays
+		:preflight_relays,
+		:motor_speed_percent,
+		:preflight_motor_speed_percent
 		) ON CONFLICT (id) DO
 	UPDATE
 	SET
@@ -291,7 +300,9 @@ ORDER BY relay_id
 	name = :name,
 	preflight_enabled = :preflight_enabled,
 	relays = :relays,
-	preflight_relays = :preflight_relays
+	preflight_relays = :preflight_relays,
+	motor_speed_percent = :motor_speed_percent,
+	preflight_motor_speed_percent = :preflight_motor_speed_percent
 	`
 
 	sqlStationProgramAdd = `
@@ -307,6 +318,7 @@ ORDER BY relay_id
 select s.id,
 	s.name,
 	s.preflight_sec,
+	s.relay_board,
 	b.button_id,
 	b.program_id,
 	p.price,
@@ -314,6 +326,8 @@ select s.id,
 	p.preflight_enabled,
 	p.relays,
 	p.preflight_relays
+	p.motor_speed_percent,
+	p.preflight_motor_speed_percent,
 from station s
 join station_program b on s.id=b.station_id
 join program p on b.program_id=p.id
@@ -384,6 +398,7 @@ type (
 		ID           app.StationID
 		Name         string
 		PreflightSec int
+		RelayBoard   string
 	}
 	argStationHash struct {
 		Hash      string
@@ -392,7 +407,10 @@ type (
 	argDelStation struct {
 		ID app.StationID
 	}
+	argGetStations struct {
+	}
 	argGetStation struct {
+		ID app.StationID
 	}
 	argGetUser struct {
 		Login string
@@ -447,6 +465,7 @@ type (
 		ID           app.StationID
 		Name         string
 		PreflightSec int
+		RelayBoard   string
 	}
 	argLastMoneyReport struct {
 		StationID app.StationID
@@ -517,12 +536,14 @@ type (
 	}
 
 	resPrograms struct {
-		ID               int64
-		Price            int
-		Name             string
-		PreflightEnabled bool
-		Relays           string
-		PreflightRelays  string
+		ID                         int64
+		Price                      int
+		Name                       string
+		PreflightEnabled           bool
+		Relays                     string
+		PreflightRelays            string
+		MotorSpeedPercent          int64
+		PreflightMotorSpeedPercent int64
 	}
 
 	argStationProgram struct {
@@ -546,25 +567,30 @@ type (
 		ID app.StationID
 	}
 	resStationConfig struct {
-		ID               app.StationID
-		Price            int
-		Name             string
-		PreflightSec     int
-		ProgramID        int64
-		ButtonID         int
-		ProgramName      string
-		PreflightEnabled bool
-		Relays           string
-		PreflightRelays  string
+		ID                         app.StationID
+		Price                      int
+		Name                       string
+		PreflightSec               int
+		ProgramID                  int64
+		ButtonID                   int
+		ProgramName                string
+		PreflightEnabled           bool
+		Relays                     string
+		PreflightRelays            string
+		MotorSpeedPercent          int64
+		PreflightMotorSpeedPercent int64
+		RelayBoard                 string
 	}
 
 	argSetProgram struct {
-		ID               int64
-		Price            int
-		Name             string
-		PreflightEnabled bool
-		Relays           string
-		PreflightRelays  string
+		ID                         int64
+		Price                      int
+		Name                       string
+		PreflightEnabled           bool
+		MotorSpeedPercent          int64
+		PreflightMotorSpeedPercent int64
+		Relays                     string
+		PreflightRelays            string
 	}
 
 	argKasseGet struct {

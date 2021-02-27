@@ -147,6 +147,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation SetStationButton has not yet been implemented")
 			return SetStationButtonNotImplemented()
 		}),
+		StationHandler: StationHandlerFunc(func(params StationParams) StationResponder {
+			// return middleware.NotImplemented("operation Station has not yet been implemented")
+			return StationNotImplemented()
+		}),
 		StationButtonHandler: StationButtonHandlerFunc(func(params StationButtonParams) StationButtonResponder {
 			// return middleware.NotImplemented("operation StationButton has not yet been implemented")
 			return StationButtonNotImplemented()
@@ -287,6 +291,8 @@ type StorageAPI struct {
 	SetStationHandler SetStationHandler
 	// SetStationButtonHandler sets the operation handler for the set station button operation
 	SetStationButtonHandler SetStationButtonHandler
+	// StationHandler sets the operation handler for the station operation
+	StationHandler StationHandler
 	// StationButtonHandler sets the operation handler for the station button operation
 	StationButtonHandler StationButtonHandler
 	// StationByHashHandler sets the operation handler for the station by hash operation
@@ -480,6 +486,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.SetStationButtonHandler == nil {
 		unregistered = append(unregistered, "SetStationButtonHandler")
+	}
+
+	if o.StationHandler == nil {
+		unregistered = append(unregistered, "StationHandler")
 	}
 
 	if o.StationButtonHandler == nil {
@@ -766,6 +776,11 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/set-station-button"] = NewSetStationButton(o.context, o.SetStationButtonHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/station"] = NewStation(o.context, o.StationHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
