@@ -15,6 +15,8 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // NewSetStationParams creates a new SetStationParams object
@@ -62,7 +64,7 @@ for the set station operation typically these are written to a http.Request
 type SetStationParams struct {
 
 	/*Args*/
-	Args SetStationBody
+	Args *model.StationConfig
 
 	timeout    time.Duration
 	Context    context.Context
@@ -103,13 +105,13 @@ func (o *SetStationParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithArgs adds the args to the set station params
-func (o *SetStationParams) WithArgs(args SetStationBody) *SetStationParams {
+func (o *SetStationParams) WithArgs(args *model.StationConfig) *SetStationParams {
 	o.SetArgs(args)
 	return o
 }
 
 // SetArgs adds the args to the set station params
-func (o *SetStationParams) SetArgs(args SetStationBody) {
+func (o *SetStationParams) SetArgs(args *model.StationConfig) {
 	o.Args = args
 }
 
@@ -121,8 +123,10 @@ func (o *SetStationParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 	}
 	var res []error
 
-	if err := r.SetBodyParam(o.Args); err != nil {
-		return err
+	if o.Args != nil {
+		if err := r.SetBodyParam(o.Args); err != nil {
+			return err
+		}
 	}
 
 	if len(res) > 0 {

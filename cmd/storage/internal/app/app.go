@@ -91,6 +91,7 @@ type (
 		SetCardReaderConfig(CardReaderConfig) error
 
 		RunProgram(id *StationID, programID *int64) (err error)
+		Station(StationID) (SetStation, error)
 	}
 
 	// Repo is a DAL interface.
@@ -132,6 +133,7 @@ type (
 		StationProgram(StationID) ([]StationProgram, error)
 		SetStationProgram(StationID, []StationProgram) error
 		StationConfig(StationID) (StationConfig, error)
+		Station(StationID) (SetStation, error)
 
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
@@ -234,6 +236,7 @@ type SetStation struct {
 	ID           StationID
 	Name         string
 	PreflightSec int
+	RelayBoard   string
 }
 
 // StationsVariables represents a named variable for a specific Station
@@ -258,13 +261,15 @@ type Relay struct {
 
 // Program represents a program like Wax or Water or whatever ...
 type Program struct {
-	ID               int64
-	ButtonID         int
-	Price            int
-	Name             string
-	PreflightEnabled bool
-	Relays           []Relay
-	PreflightRelays  []Relay
+	ID                         int64
+	ButtonID                   int
+	Price                      int
+	Name                       string
+	PreflightEnabled           bool
+	MotorSpeedPercent          int64
+	PreflightMotorSpeedPercent int64
+	Relays                     []Relay
+	PreflightRelays            []Relay
 }
 
 type StationProgram struct {
@@ -284,5 +289,6 @@ type StationConfig struct {
 	ID           StationID
 	Name         string
 	PreflightSec int
+	RelayBoard   string
 	Programs     []Program
 }

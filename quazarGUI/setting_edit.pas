@@ -38,6 +38,10 @@ type
 var
   SettingEditForm: TSettingEditForm;
 
+const
+  DEFAULT_PREFLIGHT_SEC : integer = 0;
+  DEFAULT_RELAY_BOARD   : string = 'localGPIO';
+
 implementation
   uses settings;
 
@@ -96,6 +100,8 @@ begin
         settingJson.Add('id', _id);
         settingJson.Add('name', NameEdit.Text);
         settingJson.Add('hash', AddressEdit.items[AddressEdit.ItemIndex]);
+        settingJson.Add('preflightSec', DEFAULT_PREFLIGHT_SEC);
+        settingJson.Add('relayBoard', DEFAULT_RELAY_BOARD);
 
         RequestBody := TStringStream.Create(settingJson.AsJSON);
         Post(SettingsForm.GetServerEndpoint() + '/set-station');

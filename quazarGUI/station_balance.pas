@@ -64,7 +64,7 @@ const
   DEFAULT_SERVICE_INCREMENT : integer = 10;
 
 implementation
-  uses main;
+  uses base;
 {$R *.lfm}
 
 { TStationBalanceForm }
@@ -83,13 +83,13 @@ begin
   try
      try
         AddHeader('Content-Type', 'application/json');
-        AddHeader('Pin', MainForm.GetPinCode());
+        AddHeader('Pin', BaseForm.GetPinCode());
 
         requestJson := TJSONObject.Create;
         requestJson.Add('id', _id);
         RequestBody := TStringStream.Create(requestJson.AsJSON);
 
-        Post(MainForm.GetServerEndpoint() + 'save-collection');
+        Post(BaseForm.GetServerEndpoint() + 'save-collection');
 
         if ResponseStatusCode <> 204 then
         begin
@@ -136,13 +136,13 @@ var
 
 begin
   UpdateTimer.Enabled := false;
-  if MainForm.UpdateStations() then
+  if BaseForm.UpdateStations() then
   begin
-    if MainForm.GetStationStatusByID(_id) = ON_LINE then
+    if BaseForm.GetStationStatusByID(_id) = ON_LINE then
     begin
-      StationLabel.Caption:=MainForm.GetStationNameByID(_id);
+      StationLabel.Caption:=BaseForm.GetStationNameByID(_id);
 
-      currentBalance := MainForm.GetStationCurrentBalanceByID(_id);
+      currentBalance := BaseForm.GetStationCurrentBalanceByID(_id);
       if currentBalance < 0 then
       begin
         currentBalance := 0;
@@ -165,7 +165,7 @@ begin
       WaxPanel.Color:=clDefault;
       DryPanel.Color:=clDefault;
       PausePanel.Color:=clDefault;
-      case MainForm.GetStationCurrentProgramByID(_id) of
+      case BaseForm.GetStationCurrentProgramByID(_id) of
         1: FoamPanel.Color:=clLime;
         2: ShampooPanel.Color:=clLime;
         3: RinsePanel.Color:=clLime;
@@ -194,7 +194,7 @@ var
   requestJson : TJSONObject;
 
 begin
-  hash := MainForm.GetStationHashByID(_id);
+  hash := BaseForm.GetStationHashByID(_id);
   if hash = PLACEHOLDER then
   begin
     Exit;
@@ -203,14 +203,14 @@ begin
   try
      try
         AddHeader('Content-Type', 'application/json');
-        AddHeader('Pin', MainForm.GetPinCode());
+        AddHeader('Pin', BaseForm.GetPinCode());
 
         requestJson := TJSONObject.Create;
-        requestJson.Add('hash', MainForm.GetStationHashByID(_id));
+        requestJson.Add('hash', BaseForm.GetStationHashByID(_id));
         requestJson.Add('amount', DEFAULT_SERVICE_INCREMENT);
         RequestBody := TStringStream.Create(requestJson.AsJSON);
 
-        Post(MainForm.GetServerEndpoint() + 'add-service-amount');
+        Post(BaseForm.GetServerEndpoint() + 'add-service-amount');
 
         if ResponseStatusCode <> 204 then
         begin
@@ -247,13 +247,13 @@ begin
   try
      try
         AddHeader('Content-Type', 'application/json');
-        AddHeader('Pin', MainForm.GetPinCode());
+        AddHeader('Pin', BaseForm.GetPinCode());
 
         requestJson := TJSONObject.Create;
         requestJson.Add('stationID', _id);
         RequestBody := TStringStream.Create(requestJson.AsJSON);
 
-        Post(MainForm.GetServerEndpoint() + 'open-station');
+        Post(BaseForm.GetServerEndpoint() + 'open-station');
 
         if ResponseStatusCode <> 204 then
         begin
@@ -296,13 +296,13 @@ begin
      try
         Result := NO_RESPONSE;
         AddHeader('Content-Type', 'application/json');
-        AddHeader('Pin', MainForm.GetPinCode());
+        AddHeader('Pin', BaseForm.GetPinCode());
 
         requestJson := TJSONObject.Create;
         requestJson.Add('id', _id);
         RequestBody := TStringStream.Create(requestJson.AsJSON);
 
-        RequestAnswer := Post(MainForm.GetServerEndpoint() + 'station-report-current-money');
+        RequestAnswer := Post(BaseForm.GetServerEndpoint() + 'station-report-current-money');
 
         if ResponseStatusCode = 200 then
         begin

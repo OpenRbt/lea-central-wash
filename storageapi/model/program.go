@@ -24,11 +24,21 @@ type Program struct {
 	// Minimum: 1
 	ID *int64 `json:"id"`
 
+	// motor speed percent
+	// Maximum: 100
+	// Minimum: 0
+	MotorSpeedPercent *int64 `json:"motorSpeedPercent,omitempty"`
+
 	// name
 	Name string `json:"name,omitempty"`
 
 	// preflight enabled
 	PreflightEnabled bool `json:"preflightEnabled,omitempty"`
+
+	// preflight motor speed percent
+	// Maximum: 100
+	// Minimum: 0
+	PreflightMotorSpeedPercent *int64 `json:"preflightMotorSpeedPercent,omitempty"`
 
 	// preflight relays
 	PreflightRelays []*RelayConfig `json:"preflightRelays"`
@@ -45,6 +55,14 @@ func (m *Program) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateMotorSpeedPercent(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePreflightMotorSpeedPercent(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -69,6 +87,40 @@ func (m *Program) validateID(formats strfmt.Registry) error {
 	}
 
 	if err := validate.MinimumInt("id", "body", int64(*m.ID), 1, false); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Program) validateMotorSpeedPercent(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.MotorSpeedPercent) { // not required
+		return nil
+	}
+
+	if err := validate.MinimumInt("motorSpeedPercent", "body", int64(*m.MotorSpeedPercent), 0, false); err != nil {
+		return err
+	}
+
+	if err := validate.MaximumInt("motorSpeedPercent", "body", int64(*m.MotorSpeedPercent), 100, false); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Program) validatePreflightMotorSpeedPercent(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.PreflightMotorSpeedPercent) { // not required
+		return nil
+	}
+
+	if err := validate.MinimumInt("preflightMotorSpeedPercent", "body", int64(*m.PreflightMotorSpeedPercent), 0, false); err != nil {
+		return err
+	}
+
+	if err := validate.MaximumInt("preflightMotorSpeedPercent", "body", int64(*m.PreflightMotorSpeedPercent), 100, false); err != nil {
 		return err
 	}
 

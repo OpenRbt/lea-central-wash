@@ -224,6 +224,7 @@ func (r *repo) SetStation(station app.SetStation) (err error) {
 			ID:           station.ID,
 			Name:         station.Name,
 			PreflightSec: station.PreflightSec,
+			RelayBoard:   station.RelayBoard,
 		})
 		return err
 	})
@@ -253,11 +254,29 @@ func (r *repo) DelStation(id app.StationID) (err error) {
 func (r *repo) Stations() (stations []app.SetStation, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res []resStation
-		err := tx.NamedSelectContext(ctx, &res, sqlGetStation, argGetStation{})
+		err := tx.NamedSelectContext(ctx, &res, sqlGetStations, argGetStations{})
 		if err != nil {
 			return err
 		}
 		stations = appSetStation(res)
+		return nil
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) Station(id app.StationID) (station app.SetStation, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res resStation
+		err := tx.NamedGetContext(ctx, &res, sqlGetStation, argGetStation{
+			ID: id,
+		})
+		switch {
+		case err == sql.ErrNoRows:
+			return app.ErrNotFound
+		case err != nil:
+			return err
+		}
+		station = appStation(res)
 		return nil
 	})
 	return //nolint:nakedret
@@ -521,12 +540,14 @@ func (r *repo) Programs(id *int64) (programs []app.Program, err error) {
 func (r *repo) SetProgram(program app.Program) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err = tx.NamedExec(sqlSetProgram, argSetProgram{
-			ID:               program.ID,
-			Name:             program.Name,
-			Price:            program.Price,
-			PreflightEnabled: program.PreflightEnabled,
-			Relays:           dalProgramRelays(program.Relays),
-			PreflightRelays:  dalProgramRelays(program.PreflightRelays),
+			ID:                         program.ID,
+			Name:                       program.Name,
+			Price:                      program.Price,
+			PreflightEnabled:           program.PreflightEnabled,
+			MotorSpeedPercent:          program.MotorSpeedPercent,
+			PreflightMotorSpeedPercent: program.PreflightMotorSpeedPercent,
+			Relays:                     dalProgramRelays(program.Relays),
+			PreflightRelays:            dalProgramRelays(program.PreflightRelays),
 		})
 		return err
 	})

@@ -24,12 +24,14 @@ func appRelays(m []*model.RelayConfig) []app.Relay {
 
 func appPrograms(p *model.Program) app.Program {
 	return app.Program{
-		ID:               *p.ID,
-		Name:             p.Name,
-		Price:            int(p.Price),
-		PreflightEnabled: p.PreflightEnabled,
-		Relays:           appRelays(p.Relays),
-		PreflightRelays:  appRelays(p.PreflightRelays),
+		ID:                         *p.ID,
+		Name:                       p.Name,
+		Price:                      int(p.Price),
+		PreflightEnabled:           p.PreflightEnabled,
+		MotorSpeedPercent:          *p.MotorSpeedPercent,
+		PreflightMotorSpeedPercent: *p.PreflightMotorSpeedPercent,
+		Relays:                     appRelays(p.Relays),
+		PreflightRelays:            appRelays(p.PreflightRelays),
 	}
 }
 
@@ -43,12 +45,14 @@ func apiPrograms(p []app.Program) (res []*model.Program) {
 
 func apiProgram(p app.Program) *model.Program {
 	return &model.Program{
-		ID:               &p.ID,
-		Name:             p.Name,
-		Price:            int64(p.Price),
-		PreflightEnabled: p.PreflightEnabled,
-		Relays:           apiRelays(p.Relays),
-		PreflightRelays:  apiRelays(p.PreflightRelays),
+		ID:                         &p.ID,
+		Name:                       p.Name,
+		Price:                      int64(p.Price),
+		PreflightEnabled:           p.PreflightEnabled,
+		MotorSpeedPercent:          &p.MotorSpeedPercent,
+		PreflightMotorSpeedPercent: &p.PreflightMotorSpeedPercent,
+		Relays:                     apiRelays(p.Relays),
+		PreflightRelays:            apiRelays(p.PreflightRelays),
 	}
 }
 
@@ -255,7 +259,7 @@ func apiStationConfig(p app.StationConfig) (res *model.StationPrograms) {
 	res.StationID = int64(p.ID)
 	res.Name = p.Name
 	res.PreflightSec = int64(p.PreflightSec)
-
+	res.RelayBoard = model.RelayBoard(p.RelayBoard)
 	for i := range p.Programs {
 		res.Programs = append(res.Programs, &model.StationProgramsProgramsItems0{
 			ButtonID: int64(p.Programs[i].ButtonID),

@@ -12,9 +12,10 @@ type
 
   ProgramInfo = packed record
     Count  : integer;
-    Name   : array of string;
+    //Name   : array of string;
     Key    : array of string;
-    Price  : array of integer;
+    ProgramID: array of integer;
+    //Price  : array of integer;
     Enabled: array of boolean;
 
   end;
@@ -77,7 +78,6 @@ const
   WAX         : integer = 3;
   DRY         : integer = 4;
   PAUSE       : integer = 5;
-  NUM_PROGRAMS: integer = 6;
 
   FOAM_KEY    : string = 'price1';
   SHAMPOO_KEY : string = 'price2';
@@ -86,12 +86,6 @@ const
   DRY_KEY     : string = 'price5';
   PAUSE_KEY   : string = 'price6';
 
-  FOAM_STR    : string = 'ПЕНА';
-  SHAMPOO_STR : string = 'ВОДА + ШАМПУНЬ';
-  RINSE_STR   : string = 'ОПОЛАСКИВАНИЕ';
-  WAX_STR     : string = 'ВОСК';
-  DRY_STR     : string = 'СУШКА И БЛЕСК';
-  PAUSE_STR   : string = 'ПАУЗА';
   PRICE_STR   : string = 'Цена';
   CURRENCY_STR: string = 'руб.';
   ENABLED_STR : string = 'Активный';
@@ -105,17 +99,25 @@ implementation
 procedure TProgramsForm.FormCreate(Sender: TObject);
 begin
   ProgramsInfo.Count := NUM_PROGRAMS;
-  setlength(ProgramsInfo.Name,    ProgramsInfo.Count);
+  //setlength(ProgramsInfo.Name,    ProgramsInfo.Count);
   setlength(ProgramsInfo.Key,     ProgramsInfo.Count);
-  setlength(ProgramsInfo.Price,   ProgramsInfo.Count);
+  //setlength(ProgramsInfo.Price,   ProgramsInfo.Count);
   setlength(ProgramsInfo.Enabled, ProgramsInfo.Count);
 
-  ProgramsInfo.Name[FOAM]    := FOAM_STR;
-  ProgramsInfo.Name[SHAMPOO] := SHAMPOO_STR;
-  ProgramsInfo.Name[RINSE]   := RINSE_STR;
-  ProgramsInfo.Name[WAX]     := WAX_STR;
-  ProgramsInfo.Name[DRY]     := DRY_STR;
-  ProgramsInfo.Name[PAUSE]   := PAUSE_STR;
+  //ProgramsInfo.Name[FOAM]    := FOAM_STR;
+  //ProgramsInfo.Name[SHAMPOO] := SHAMPOO_STR;
+  //ProgramsInfo.Name[RINSE]   := RINSE_STR;
+  //ProgramsInfo.Name[WAX]     := WAX_STR;
+  //ProgramsInfo.Name[DRY]     := DRY_STR;
+  //ProgramsInfo.Name[PAUSE]   := PAUSE_STR;
+
+  setlength(ProgramsInfo.ProgramID, ProgramsInfo.Count);
+  ProgramsInfo.ProgramID[FOAM] := FOAM_PROGRAM_ID;
+  ProgramsInfo.ProgramID[SHAMPOO] := SHAMPOO_PROGRAM_ID;
+  ProgramsInfo.ProgramID[RINSE] := RINSE_PROGRAM_ID;
+  ProgramsInfo.ProgramID[WAX] := WAX_PROGRAM_ID;
+  ProgramsInfo.ProgramID[DRY] := DRY_PROGRAM_ID;
+  ProgramsInfo.ProgramID[PAUSE] := PAUSE_PROGRAM_ID;
 
   ProgramsInfo.Key[FOAM]     := FOAM_KEY;
   ProgramsInfo.Key[SHAMPOO]  := SHAMPOO_KEY;
@@ -124,12 +126,12 @@ begin
   ProgramsInfo.Key[DRY]      := DRY_KEY;
   ProgramsInfo.Key[PAUSE]    := PAUSE_KEY;
 
-  ProgramsInfo.Price[FOAM]    := DEFAULT_PRICE;
-  ProgramsInfo.Price[SHAMPOO] := DEFAULT_PRICE;
-  ProgramsInfo.Price[RINSE]   := DEFAULT_PRICE;
-  ProgramsInfo.Price[WAX]     := DEFAULT_PRICE;
-  ProgramsInfo.Price[DRY]     := DEFAULT_PRICE;
-  ProgramsInfo.Price[PAUSE]   := DEFAULT_PRICE;
+  //ProgramsInfo.Price[FOAM]    := DEFAULT_PRICE;
+  //ProgramsInfo.Price[SHAMPOO] := DEFAULT_PRICE;
+  //ProgramsInfo.Price[RINSE]   := DEFAULT_PRICE;
+  //ProgramsInfo.Price[WAX]     := DEFAULT_PRICE;
+  //ProgramsInfo.Price[DRY]     := DEFAULT_PRICE;
+  //ProgramsInfo.Price[PAUSE]   := DEFAULT_PRICE;
 
   ProgramsInfo.Enabled[FOAM]    := DEFAULT_ENABLED;
   ProgramsInfo.Enabled[SHAMPOO] := DEFAULT_ENABLED;
@@ -152,12 +154,7 @@ end;
 
 procedure TProgramsForm.FormShow(Sender: TObject);
 var
-  RequestAnswer: string;
-  programsJson: TJsonArray;
   i: integer;
-  path: TJSONdata;
-  key: string;
-  val: integer;
 
 begin
   Programs.Font.Color := ProgramsForm.GetHoverColor();
@@ -167,101 +164,25 @@ begin
   Save.Enabled:=True;
   Cancel.Enabled:=True;
 
-  with TFPHttpClient.Create(nil) do
-  try
-     try
-        AddHeader('Content-Type', 'application/json');
-        AddHeader('Pin', GetPinCode());
-        RequestAnswer := Post(GetServerEndpoint() + 'stations-variables');
-
-        programsJson := GetJson(RequestAnswer) as TJsonArray;
-
-        if programsJson.Count > 0 then
-        begin
-          with programsJson.items[0] do
-            begin
-              path := FindPath('keyPairs');
-              if path <> nil then
-              begin
-                for i:=0 to path.Count - 1 do
-                begin
-                  with path.Items[i] do
-                  begin
-                    key   := FindPath('key').AsString;
-                    val := FindPath('value').AsInteger;
-                      if key = FOAM_KEY then
-                      begin
-                        ProgramsInfo.Price[FOAM] := val;
-                      end
-                      else if key = SHAMPOO_KEY then
-                      begin
-                        ProgramsInfo.Price[SHAMPOO] := val;
-                      end
-                      else if key = RINSE_KEY then
-                      begin
-                        ProgramsInfo.Price[RINSE] := val;
-                      end
-                      else if key = WAX_KEY then
-                      begin
-                        ProgramsInfo.Price[WAX] := val;
-                      end
-                      else if key = DRY_KEY then
-                      begin
-                        ProgramsInfo.Price[DRY] := val;
-                      end
-                      else if key = PAUSE_KEY then
-                      begin
-                        ProgramsInfo.Price[PAUSE] := val;
-                      end;
-                  end;
-                end;
-              end;
-            end;
-
-          for i:=0 to NUM_PROGRAMS - 1 do
-          begin
-            ProgramsForm.ProgramsGrid.Cells[PROGRAM_NAME_COL, i] := PADDING + ProgramsInfo.Name[i];
-            ProgramsForm.ProgramsGrid.Cells[PROGRAM_PRICE_STR, i] := PRICE_STR;
-            ProgramsForm.ProgramsGrid.Cells[PROGRAM_PRICE_INC, i] := '+';
-            ProgramsForm.ProgramsGrid.Cells[PROGRAM_PRICE_VAL, i] := IntToStr(ProgramsInfo.Price[i]);
-            ProgramsForm.ProgramsGrid.Cells[PROGRAM_PRICE_DEC, i] := '-';
-            ProgramsForm.ProgramsGrid.Cells[PROGRAM_PRICE_CURR, i] := CURRENCY_STR;
-            ProgramsForm.ProgramsGrid.Cells[PROGRAM_ENABLED_STR, i] := ENABLED_STR;
-            if ProgramsInfo.Enabled[i] then
-            begin
-              ProgramsForm.ProgramsGrid.Cells[PROGRAM_ENABLED_CHK, i] := '1';
-            end
-            else
-            begin
-              ProgramsForm.ProgramsGrid.Cells[PROGRAM_ENABLED_CHK, i] := '0';
-            end;
-          end;
-        end
-        else
-        begin
-          ProgramsGrid.Enabled:=false;
-          Save.Enabled:=false;
-          Cancel.Enabled:=false;
-        end;
-
-      except
-        //NotAuthorized.Visible:=True;
-        //ProgramsGrid.Visible:=False;
-        //Save.Visible:=false;
-        //Cancel.Visible:=false;
-        case ResponseStatusCode of
-          0: ShowMessage('Can`t connect to server');
-          401, 403: // do nothing
-            ;
-          500: ShowMessage('Server Error: 500');
-          else
-            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
-              sLineBreak + ResponseStatusText);
-        end;
-      end;
-    finally
-      Free;
+  CheckPrograms();
+  for i:=1 to NUM_PROGRAMS do
+  begin
+    ProgramsForm.ProgramsGrid.Cells[PROGRAM_NAME_COL, i-1] := PADDING + GetProgramName(i);
+    ProgramsForm.ProgramsGrid.Cells[PROGRAM_PRICE_STR, i-1] := PRICE_STR;
+    ProgramsForm.ProgramsGrid.Cells[PROGRAM_PRICE_INC, i-1] := '+';
+    ProgramsForm.ProgramsGrid.Cells[PROGRAM_PRICE_VAL, i-1] := IntToStr(GetProgramPrice(i));
+    ProgramsForm.ProgramsGrid.Cells[PROGRAM_PRICE_DEC, i-1] := '-';
+    ProgramsForm.ProgramsGrid.Cells[PROGRAM_PRICE_CURR, i-1] := CURRENCY_STR;
+    ProgramsForm.ProgramsGrid.Cells[PROGRAM_ENABLED_STR, i-1] := ENABLED_STR;
+    if ProgramsInfo.Enabled[i] then
+    begin
+      ProgramsForm.ProgramsGrid.Cells[PROGRAM_ENABLED_CHK, i-1] := '1';
+    end
+    else
+    begin
+      ProgramsForm.ProgramsGrid.Cells[PROGRAM_ENABLED_CHK, i-1] := '0';
     end;
+  end;
 end;
 
 procedure TProgramsForm.MainClick(Sender: TObject);
@@ -288,13 +209,13 @@ begin
   end
   else if (aCol = PROGRAM_PRICE_DEC) and ProgramsInfo.Enabled[aRow] then
   begin
-    ProgramsInfo.Price[aRow] := ProgramsInfo.Price[aRow] - 1;
-    ProgramsForm.ProgramsGrid.Cells[PROGRAM_PRICE_VAL, aRow] := IntToStr(ProgramsInfo.Price[aRow]);
+    SetProgramPrice(ProgramsInfo.ProgramID[aRow], GetProgramPrice(ProgramsInfo.ProgramID[aRow]) - 1);
+    ProgramsGrid.Cells[PROGRAM_PRICE_VAL, aRow] := IntToStr(GetProgramPrice(ProgramsInfo.ProgramID[aRow]));
   end
   else if (aCol = PROGRAM_PRICE_INC) and ProgramsInfo.Enabled[aRow] then
   begin
-    ProgramsInfo.Price[aRow] := ProgramsInfo.Price[aRow] + 1;
-    ProgramsForm.ProgramsGrid.Cells[PROGRAM_PRICE_VAL, aRow] := IntToStr(ProgramsInfo.Price[aRow]);
+    SetProgramPrice(ProgramsInfo.ProgramID[aRow], GetProgramPrice(ProgramsInfo.ProgramID[aRow]) + 1);
+    ProgramsGrid.Cells[PROGRAM_PRICE_VAL, aRow] := IntToStr(GetProgramPrice(ProgramsInfo.ProgramID[aRow]));
   end;
 end;
 
@@ -344,7 +265,7 @@ begin
     finally
       Free;
     end;
-
+  UpdatePrograms();
   UpdateStations();
   FormShow(Sender);
 end;
@@ -364,12 +285,12 @@ begin
 
      for station:=0 to freeHashID-1 do
      begin
-       for key:=0 to ProgramsInfo.Count-1 do
+       for key:=1 to NUM_PROGRAMS do
        begin
          try
             keyPair := TJSONObject.Create;
-            keyPair.Add('key', ProgramsInfo.Key[key]);
-            keyPair.Add('value', IntToStr(ProgramsInfo.Price[key]));
+            keyPair.Add('key', ProgramsInfo.Key[key-1]);
+            keyPair.Add('value', IntToStr(GetProgramPrice(key)));
             programJson := TJSONObject.Create;
             programJson.Add('hash', stationHashes[station]);
             programJson.Add('keyPair', keyPair);

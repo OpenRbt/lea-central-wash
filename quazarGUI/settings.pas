@@ -69,7 +69,6 @@ const
   EDIT_COL    : integer = 3;
   EDIT_STRING : string = '...';
   PADDING     : string = '  ';
-  ON_LINE     : string = 'online';
 
 implementation
   uses setting_edit;
