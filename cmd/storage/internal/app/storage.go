@@ -485,7 +485,7 @@ func (a *app) RunProgram(id *StationID, programID *int64) (err error) {
 	}
 
 	cfg := RelayConfig{
-		MotorSpeedPercent: 33,
+		MotorSpeedPercent: int(program[0].MotorSpeedPercent),
 		TimeoutSec:        100,
 		Timings:           make([]Relay, 0, 12),
 	}
