@@ -9,7 +9,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="18"/>
-        <UsageCount Value="172"/>
+        <UsageCount Value="173"/>
       </Unit0>
       <Unit1>
         <Filename Value="login.pas"/>
@@ -19,7 +19,7 @@
         <ResourceBaseClass Value="Form"/>
         <TopLine Value="53"/>
         <CursorPos X="110" Y="70"/>
-        <UsageCount Value="172"/>
+        <UsageCount Value="173"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -29,11 +29,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Base"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="558"/>
-        <CursorPos X="34" Y="655"/>
-        <UsageCount Value="172"/>
+        <TopLine Value="371"/>
+        <CursorPos X="16" Y="837"/>
+        <UsageCount Value="173"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit2>
@@ -43,10 +42,10 @@
         <ComponentName Value="UsersForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="9"/>
         <TopLine Value="107"/>
         <CursorPos X="66" Y="206"/>
-        <UsageCount Value="172"/>
+        <UsageCount Value="173"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
@@ -55,10 +54,10 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="167"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="131"/>
         <CursorPos X="23" Y="116"/>
-        <UsageCount Value="161"/>
+        <UsageCount Value="162"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -67,10 +66,10 @@
         <ComponentName Value="StationsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="5"/>
         <TopLine Value="149"/>
         <CursorPos X="44" Y="195"/>
-        <UsageCount Value="161"/>
+        <UsageCount Value="162"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
@@ -79,10 +78,10 @@
         <ComponentName Value="ProgramsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="7"/>
-        <TopLine Value="133"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="106"/>
         <CursorPos X="93" Y="177"/>
-        <UsageCount Value="161"/>
+        <UsageCount Value="162"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit6>
@@ -92,10 +91,10 @@
         <ComponentName Value="DosatronsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="141"/>
         <CursorPos X="35" Y="184"/>
-        <UsageCount Value="161"/>
+        <UsageCount Value="162"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
@@ -104,10 +103,10 @@
         <ComponentName Value="SettingsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="8"/>
         <TopLine Value="37"/>
         <CursorPos X="31" Y="71"/>
-        <UsageCount Value="161"/>
+        <UsageCount Value="162"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -116,10 +115,10 @@
         <ComponentName Value="StatisticsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="15"/>
+        <EditorIndex Value="14"/>
         <TopLine Value="66"/>
         <CursorPos X="22" Y="105"/>
-        <UsageCount Value="161"/>
+        <UsageCount Value="162"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
@@ -128,10 +127,10 @@
         <ComponentName Value="UserEditBaseForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="10"/>
         <TopLine Value="4"/>
         <CursorPos X="3" Y="86"/>
-        <UsageCount Value="146"/>
+        <UsageCount Value="147"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
@@ -140,10 +139,10 @@
         <ComponentName Value="UserAddForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="14"/>
+        <EditorIndex Value="13"/>
         <TopLine Value="92"/>
         <CursorPos X="62" Y="120"/>
-        <UsageCount Value="144"/>
+        <UsageCount Value="145"/>
         <Loaded Value="True"/>
       </Unit11>
       <Unit12>
@@ -152,10 +151,10 @@
         <ComponentName Value="UserEditForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="13"/>
+        <EditorIndex Value="12"/>
         <TopLine Value="88"/>
         <CursorPos X="11" Y="59"/>
-        <UsageCount Value="140"/>
+        <UsageCount Value="141"/>
         <Loaded Value="True"/>
       </Unit12>
       <Unit13>
@@ -164,10 +163,10 @@
         <ComponentName Value="UserEditPasswordForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="11"/>
         <TopLine Value="20"/>
         <CursorPos Y="47"/>
-        <UsageCount Value="132"/>
+        <UsageCount Value="133"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
@@ -176,10 +175,10 @@
         <ComponentName Value="SettingEditForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="4"/>
         <TopLine Value="82"/>
         <CursorPos X="6" Y="135"/>
-        <UsageCount Value="83"/>
+        <UsageCount Value="84"/>
         <Loaded Value="True"/>
       </Unit14>
       <Unit15>
@@ -188,10 +187,11 @@
         <ComponentName Value="StationBalanceForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="274"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="85"/>
         <CursorPos X="39" Y="305"/>
-        <UsageCount Value="72"/>
+        <UsageCount Value="73"/>
         <Loaded Value="True"/>
       </Unit15>
       <Unit16>
@@ -255,7 +255,7 @@
       <Unit24>
         <Filename Value="../lazarusGUI/clientapi.pas"/>
         <UnitName Value="clientAPI"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="15"/>
         <TopLine Value="350"/>
         <CursorPos X="18" Y="374"/>
         <UsageCount Value="16"/>
@@ -267,7 +267,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="351"/>
         <CursorPos X="3" Y="70"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit25>
       <Unit26>
         <Filename Value="../lazarusGUI/collection.pas"/>
@@ -306,7 +306,7 @@
         <UsageCount Value="10"/>
       </Unit30>
     </Units>
-    <JumpHistory Count="20" HistoryIndex="19">
+    <JumpHistory Count="22" HistoryIndex="21">
       <Position1>
         <Filename Value="stations.pas"/>
         <Caret Line="164" TopLine="152"/>
@@ -387,6 +387,14 @@
         <Filename Value="base.pas"/>
         <Caret Line="98" Column="52" TopLine="74"/>
       </Position20>
+      <Position21>
+        <Filename Value="base.pas"/>
+        <Caret Line="831" Column="46" TopLine="808"/>
+      </Position21>
+      <Position22>
+        <Filename Value="base.pas"/>
+        <Caret Line="835" Column="101" TopLine="801"/>
+      </Position22>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
