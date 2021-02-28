@@ -322,3 +322,13 @@ func NewHardwareAccessLayer() (app.HardwareAccessLayer, error) {
 	}
 	return res, nil
 }
+
+// RunProgram
+func (h *HardwareAccessLayer) RunProgram(id int, config app.RelayConfig) (err error) {
+	board, err := h.ControlBoard(id)
+	if err != nil {
+		return err
+	}
+	board.RunConfig(config)
+	return nil
+}

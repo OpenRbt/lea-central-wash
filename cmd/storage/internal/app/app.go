@@ -139,8 +139,6 @@ type (
 		SetKasse(kasse Kasse) (err error)
 		CardReaderConfig(StationID) (*CardReaderConfig, error)
 		SetCardReaderConfig(CardReaderConfig) error
-
-		RunProgram(id *StationID, programID *int64) (err error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -154,6 +152,7 @@ type (
 	HardwareAccessLayer interface {
 		Start()
 		ControlBoard(key int) (ControlBoard, error)
+		RunProgram(id int, config RelayConfig) (err error)
 	}
 	// ControlBoard represents one board (even virtual) to control relays
 	ControlBoard interface {
