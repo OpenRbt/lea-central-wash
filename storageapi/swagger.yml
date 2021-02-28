@@ -1237,3 +1237,29 @@ paths:
                 type: string
         500:
           description: internal error
+  
+  /run-program:
+    post:
+      operationId: "runProgram"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - hash
+              - programID
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+              programID:
+                type: integer
+                minimum: 1
+      responses:
+        204:
+          description: OK
+        404:
+          description: not found
+        500:
+          description: internal error

@@ -90,6 +90,8 @@ type (
 		CardReaderConfig(StationID) (*CardReaderConfig, error)
 		SetCardReaderConfig(CardReaderConfig) error
 		Station(StationID) (SetStation, error)
+
+		RunProgram(id *StationID, programID *int64) (err error)
 	}
 
 	// Repo is a DAL interface.
@@ -137,6 +139,8 @@ type (
 		SetKasse(kasse Kasse) (err error)
 		CardReaderConfig(StationID) (*CardReaderConfig, error)
 		SetCardReaderConfig(CardReaderConfig) error
+
+		RunProgram(id *StationID, programID *int64) (err error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {

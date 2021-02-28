@@ -481,3 +481,7 @@ func (a *app) SetCardReaderConfig(cfg CardReaderConfig) error {
 func (a *app) Station(id StationID) (SetStation, error) {
 	return a.repo.Station(id)
 }
+
+func (a *app) RunProgram(id *StationID, programID *int64) (err error) {
+	return a.repo.RunProgram(id, programID)
+}

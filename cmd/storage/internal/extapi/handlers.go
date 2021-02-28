@@ -602,6 +602,25 @@ func (svc *service) setKasse(params op.SetKasseParams) op.SetKasseResponder {
 
 }
 
+func (svc *service) runProgram(params op.RunProgramParams) op.RunProgramResponder {
+	stationID, err := svc.getID(string(params.Args.Hash))
+	if err != nil {
+		log.Info("runProgram: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewRunProgramNotFound()
+	}
+	err = svc.app.RunProgram(&stationID, params.Args.ProgramID)
+
+	log.Info("runProgram", "programID", params.Args.ProgramID, "stationID", stationID, "ip", params.HTTPRequest.RemoteAddr)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewRunProgramNoContent()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewRunProgramInternalServerError()
+	}
+}
+
 func (svc *service) cardReaderConfig(params op.CardReaderConfigParams) op.CardReaderConfigResponder {
 	log.Info("cardReaderConfig", "stationID", *params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
 	res, err := svc.app.CardReaderConfig(app.StationID(*params.Args.StationID))

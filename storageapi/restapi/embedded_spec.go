@@ -452,6 +452,45 @@ func init() {
         }
       }
     },
+    "/run-program": {
+      "post": {
+        "operationId": "runProgram",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash",
+                "programID"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "programID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/save": {
       "post": {
         "operationId": "save",
@@ -2308,6 +2347,45 @@ func init() {
                 "$ref": "#/definitions/Program"
               }
             }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/run-program": {
+      "post": {
+        "operationId": "runProgram",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash",
+                "programID"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "programID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"

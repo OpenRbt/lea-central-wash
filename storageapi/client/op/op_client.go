@@ -505,6 +505,34 @@ func (a *Client) Programs(params *ProgramsParams) (*ProgramsOK, error) {
 }
 
 /*
+RunProgram run program API
+*/
+func (a *Client) RunProgram(params *RunProgramParams) (*RunProgramNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewRunProgramParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "runProgram",
+		Method:             "POST",
+		PathPattern:        "/run-program",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &RunProgramReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*RunProgramNoContent), nil
+
+}
+
+/*
 Save save API
 */
 func (a *Client) Save(params *SaveParams) (*SaveNoContent, error) {
