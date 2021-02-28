@@ -40,15 +40,22 @@ type
     procedure BackBtnClick(Sender: TObject);
     procedure CollectionBtnClick(Sender: TObject);
     procedure DecBtnClick(Sender: TObject);
+    procedure DryPanelClick(Sender: TObject);
+    procedure FoamPanelClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure IncBtnClick(Sender: TObject);
     procedure Init(id: integer);
     procedure OpenBtnClick(Sender: TObject);
+    procedure PausePanelClick(Sender: TObject);
+    procedure RinsePanelClick(Sender: TObject);
+    procedure ShampooPanelClick(Sender: TObject);
     procedure UpdateCall(Sender: TObject);
 
     function GetCurrentMoney() : integer;
+    procedure SetStationCurrentProgramByID(programID: integer);
+    procedure WaxPanelClick(Sender: TObject);
   private
     _id : integer;
     _isStandBy : boolean;
@@ -115,6 +122,60 @@ end;
 procedure TStationBalanceForm.DecBtnClick(Sender: TObject);
 begin
 
+end;
+
+procedure TStationBalanceForm.SetStationCurrentProgramByID(programID: integer);
+var
+  settingJson: TJSONObject;
+begin
+  if BaseForm.GetStationHashByID(_id) = PLACEHOLDER then
+  begin
+    Exit;
+  end;
+  with TFPHttpClient.Create(nil) do
+  try
+     try
+        AddHeader('Content-Type', 'application/json');
+        AddHeader('Pin', BaseForm.GetPinCode());
+
+        settingJson := TJSONObject.Create;
+
+        settingJson.Add('programID', programID);
+        settingJson.Add('hash', BaseForm.GetStationHashByID(_id));
+
+        RequestBody := TStringStream.Create(settingJson.AsJSON);
+        Post(BaseForm.GetServerEndpoint() + '/run-program');
+
+        if ResponseStatusCode <> 204 then
+        begin
+          raise Exception.Create(IntToStr(ResponseStatusCode));
+        end;
+
+      except
+        case ResponseStatusCode of
+          0: begin ModalResult := 0; ShowMessage('Can`t connect to server'); end;
+          401: begin ModalResult := 0; ShowMessage('Not authorized'); end;
+          403, 404: begin ModalResult := 0; ShowMessage('Forbidden'); end;
+          500: begin ShowMessage('Server Error: 500'); end;
+          else
+            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+              sLineBreak + ResponseStatusText);
+        end;
+      end;
+
+    finally
+      Free;
+    end;
+end;
+
+procedure TStationBalanceForm.DryPanelClick(Sender: TObject);
+begin
+  SetStationCurrentProgramByID(BaseForm.GetDryProgramID());
+end;
+
+procedure TStationBalanceForm.FoamPanelClick(Sender: TObject);
+begin
+  SetStationCurrentProgramByID(BaseForm.GetFoamProgramID());
 end;
 
 procedure TStationBalanceForm.FormClose(Sender: TObject;
@@ -276,6 +337,21 @@ begin
     end;
 end;
 
+procedure TStationBalanceForm.PausePanelClick(Sender: TObject);
+begin
+  SetStationCurrentProgramByID(BaseForm.GetPauseProgramID());
+end;
+
+procedure TStationBalanceForm.RinsePanelClick(Sender: TObject);
+begin
+  SetStationCurrentProgramByID(BaseForm.GetRinseProgramID());
+end;
+
+procedure TStationBalanceForm.ShampooPanelClick(Sender: TObject);
+begin
+  SetStationCurrentProgramByID(BaseForm.GetShampooProgramID());
+end;
+
 procedure TStationBalanceForm.UpdateCall(Sender: TObject);
 begin
   StationBalanceForm.FormShow(Sender);
@@ -345,6 +421,11 @@ begin
     finally
       Free;
     end;
+end;
+
+procedure TStationBalanceForm.WaxPanelClick(Sender: TObject);
+begin
+  SetStationCurrentProgramByID(BaseForm.GetWaxProgramID());
 end;
 
 end.

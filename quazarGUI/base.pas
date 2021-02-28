@@ -99,17 +99,30 @@ type
     function GetProgramName(id: integer): string;
     function GetProgramPrice(id: integer): integer;
     procedure SetProgramPrice(id, price : integer);
+    function GetNumPrograms(): integer;
 
     function UpdateStations() : boolean;
     function GetStationNameByID(id : integer) : string;
     function GetStationHashByID(id : integer) : string;
     function GetStationCurrentBalanceByID(id : integer) : integer;
     function GetStationCurrentProgramByID(id : integer) : integer;
+    //procedure SetStationCurrentProgramByID(stationID, programID: integer);
     function GetStationStatusByID(id : integer) : string;
     function GetStationPreflightSec(id: integer): integer;
     procedure UpdateStationPreflightSec(id: integer);
     procedure SetStationPreflightSec(id, preflightSec: integer);
     function GetNumStations(): integer;
+
+    function GetFoamProgramID(): integer;
+    function GetShampooProgramID(): integer;
+    function GetRinseProgramID(): integer;
+    function GetWaxProgramID(): integer;
+    function GetDryProgramID(): integer;
+    function GetPauseProgramID(): integer;
+    function GetFoamPreflightProgramID(): integer;
+    function GetShampooPreflightProgramID(): integer;
+    function GetWaxPreflightProgramID(): integer;
+    function GetPolymerPreflightProgramID(): integer;
 
   private
     pinCode: string;
@@ -168,6 +181,61 @@ implementation
   uses
     Login, Main, Stations, Programs, Dosatrons, Settings, Users, Statistics;
 {$R *.lfm}
+
+function TBaseForm.GetNumPrograms(): integer;
+begin
+  Result := NUM_PROGRAMS+NUM_PREFLIGHT_PROGRAMS;
+end;
+
+function TBaseForm.GetFoamProgramID(): integer;
+begin
+  Result := FOAM_PROGRAM_ID;
+end;
+
+function TBaseForm.GetShampooProgramID(): integer;
+begin
+  Result := SHAMPOO_PROGRAM_ID;
+end;
+
+function TBaseForm.GetRinseProgramID(): integer;
+begin
+  Result := RINSE_PROGRAM_ID;
+end;
+
+function TBaseForm.GetWaxProgramID(): integer;
+begin
+  Result := WAX_PROGRAM_ID;
+end;
+
+function TBaseForm.GetDryProgramID(): integer;
+begin
+  Result := DRY_PROGRAM_ID;
+end;
+
+function TBaseForm.GetPauseProgramID(): integer;
+begin
+  Result := PAUSE_PROGRAM_ID;
+end;
+
+function TBaseForm.GetFoamPreflightProgramID(): integer;
+begin
+  Result := FOAM_PREFLIGHT_PROGRAM_ID;
+end;
+
+function TBaseForm.GetShampooPreflightProgramID(): integer;
+begin
+  Result := SHAMPOO_PREFLIGHT_PROGRAM_ID;
+end;
+
+function TBaseForm.GetWaxPreflightProgramID(): integer;
+begin
+  Result := WAX_PREFLIGHT_PROGRAM_ID;
+end;
+
+function TBaseForm.GetPolymerPreflightProgramID(): integer;
+begin
+  Result := POLYMER_PREFLIGHT_PROGRAM_ID;
+end;
 
 procedure TBaseForm.FormCreate(Sender: TObject);
 var
