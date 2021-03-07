@@ -69,9 +69,6 @@ type PingBody struct {
 	// current balance
 	CurrentBalance int64 `json:"currentBalance,omitempty"`
 
-	// current program
-	CurrentProgram int64 `json:"currentProgram,omitempty"`
-
 	// hash
 	// Required: true
 	Hash model.Hash `json:"hash"`

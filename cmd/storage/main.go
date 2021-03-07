@@ -221,7 +221,13 @@ func run(db *sqlx.DB, errc chan<- error) {
 		log.Info("Weather IS TURNED OFF")
 	}
 
-	hardware, errHardware := hal.NewHardwareAccessLayer()
+	var hardware app.HardwareAccessLayer
+	var errHardware error
+	if flag.Arg(0) == "testboards" {
+		hardware, errHardware = hal.NewHardwareDebugAccessLayer()
+	} else {
+		hardware, errHardware = hal.NewHardwareAccessLayer()
+	}
 	if errHardware != nil {
 		log.Info("HARDWARE IS NOT WORKING")
 	}
