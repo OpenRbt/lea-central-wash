@@ -1,7 +1,7 @@
 object StationBalanceForm: TStationBalanceForm
   Left = 624
   Height = 820
-  Top = 94
+  Top = 82
   Width = 1280
   Caption = 'Station Balance'
   ClientHeight = 820

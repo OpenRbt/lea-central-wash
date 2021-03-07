@@ -42,7 +42,7 @@ var
 
 const
   DEFAULT_PREFLIGHT_SEC : integer = 0;
-  DEFAULT_RELAY_BOARD   : string = 'localGPIO';
+  DEFAULT_RELAY_BOARD   : string = 'danBoard';
 
 implementation
   uses settings;

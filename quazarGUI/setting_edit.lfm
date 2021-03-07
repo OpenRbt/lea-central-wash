@@ -1,7 +1,7 @@
 object SettingEditForm: TSettingEditForm
   Left = 791
   Height = 150
-  Top = 183
+  Top = 161
   Width = 308
   Caption = 'Edit Station'
   ClientHeight = 150

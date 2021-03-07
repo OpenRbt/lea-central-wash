@@ -1,7 +1,7 @@
 object BaseForm: TBaseForm
   Left = 640
   Height = 820
-  Top = 79
+  Top = 69
   Width = 1280
   BorderStyle = bsDialog
   Caption = 'www.quazar.pro'
