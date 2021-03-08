@@ -384,6 +384,9 @@ func init() {
                 "currentBalance": {
                   "type": "integer"
                 },
+                "currentProgram": {
+                  "type": "integer"
+                },
                 "hash": {
                   "$ref": "#/definitions/Hash"
                 }
@@ -2281,6 +2284,9 @@ func init() {
               ],
               "properties": {
                 "currentBalance": {
+                  "type": "integer"
+                },
+                "currentProgram": {
                   "type": "integer"
                 },
                 "hash": {

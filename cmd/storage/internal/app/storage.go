@@ -103,7 +103,7 @@ func (a *app) Set(station StationData) error {
 }
 
 // Ping sets the time of the last ping and returns service money.
-func (a *app) Ping(id StationID, balance int) StationData {
+func (a *app) Ping(id StationID, balance, program int) StationData {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 	var station StationData
@@ -117,6 +117,7 @@ func (a *app) Ping(id StationID, balance int) StationData {
 	station.ServiceMoney = 0
 	station.OpenStation = false
 	station.CurrentBalance = balance
+	station.CurrentProgram = program
 	a.stations[id] = station
 	return oldStation
 }
@@ -490,17 +491,6 @@ func (a *app) RunProgram(id *StationID, programID *int64) (err error) {
 	}
 
 	cfg.Timings = append(cfg.Timings, program[0].Relays...)
-
-	a.stationsMutex.Lock()
-	defer a.stationsMutex.Unlock()
-	var station StationData
-	if v, ok := a.stations[*id]; ok {
-		station = v
-	} else {
-		station = StationData{}
-	}
-	station.CurrentProgram = int(*programID)
-	a.stations[*id] = station
 
 	return a.hardware.RunProgram(int(*id), cfg)
 }

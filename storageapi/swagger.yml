@@ -698,6 +698,8 @@ paths:
                 $ref: '#/definitions/Hash'
               currentBalance:
                 type: integer
+              currentProgram:
+                type: integer
       responses:
         200:
           description: OK
