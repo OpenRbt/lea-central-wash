@@ -90,7 +90,7 @@ type (
 		CardReaderConfig(StationID) (*CardReaderConfig, error)
 		SetCardReaderConfig(CardReaderConfig) error
 
-		RunProgram(id *StationID, programID *int64) (err error)
+		RunProgram(id *StationID, programID *int64, preflight *bool) (err error)
 		Station(StationID) (SetStation, error)
 	}
 

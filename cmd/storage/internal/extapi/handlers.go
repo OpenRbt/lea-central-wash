@@ -608,9 +608,9 @@ func (svc *service) runProgram(params op.RunProgramParams) op.RunProgramResponde
 		log.Info("runProgram: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewRunProgramNotFound()
 	}
-	err = svc.app.RunProgram(&stationID, params.Args.ProgramID)
+	err = svc.app.RunProgram(&stationID, params.Args.ProgramID, params.Args.Preflight)
 
-	log.Info("runProgram", "programID", params.Args.ProgramID, "stationID", stationID, "ip", params.HTTPRequest.RemoteAddr)
+	log.Info("runProgram", "programID", params.Args.ProgramID, "stationID", stationID, "preflight", params.Args.Preflight, "ip", params.HTTPRequest.RemoteAddr)
 
 	switch errors.Cause(err) {
 	case nil:

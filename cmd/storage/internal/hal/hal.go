@@ -330,7 +330,7 @@ func (h *HardwareAccessLayer) RunProgram(id int, config app.RelayConfig) (err er
 	if err != nil {
 		return err
 	}
-	board.RunConfig(config)
+	go board.RunConfig(config)
 	return nil
 }
 
@@ -379,7 +379,7 @@ func (h *HardwareDebugAccessLayer) RunProgram(id int, config app.RelayConfig) (e
 	if err != nil {
 		return err
 	}
-	board.RunConfig(config)
+	go board.RunConfig(config)
 	return nil
 }
 

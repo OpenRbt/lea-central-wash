@@ -478,19 +478,27 @@ func (a *app) SetCardReaderConfig(cfg CardReaderConfig) error {
 	return a.repo.SetCardReaderConfig(cfg)
 }
 
-func (a *app) RunProgram(id *StationID, programID *int64) (err error) {
+func (a *app) RunProgram(id *StationID, programID *int64, preflight *bool) (err error) {
 	program, err := a.repo.Programs(programID)
 	if err != nil {
 		return err
 	}
-
-	cfg := RelayConfig{
-		MotorSpeedPercent: int(program[0].MotorSpeedPercent),
-		TimeoutSec:        100,
-		Timings:           make([]Relay, 0, 12),
+	cfg := RelayConfig{}
+	if *preflight == true {
+		cfg = RelayConfig{
+			MotorSpeedPercent: int(program[0].PreflightMotorSpeedPercent),
+			TimeoutSec:        100,
+			Timings:           make([]Relay, 0, 12),
+		}
+		cfg.Timings = append(cfg.Timings, program[0].PreflightRelays...)
+	} else {
+		cfg = RelayConfig{
+			MotorSpeedPercent: int(program[0].MotorSpeedPercent),
+			TimeoutSec:        100,
+			Timings:           make([]Relay, 0, 12),
+		}
+		cfg.Timings = append(cfg.Timings, program[0].Relays...)
 	}
-
-	cfg.Timings = append(cfg.Timings, program[0].Relays...)
 
 	return a.hardware.RunProgram(int(*id), cfg)
 }
