@@ -232,7 +232,7 @@ ORDER BY relay_id
 		   sum(service) as service 
 	FROM money_report
 	WHERE id > coalesce(
-		(SELECT last_money_report_id FROM money_collection WHERE station_id = 4
+		(SELECT last_money_report_id FROM money_collection WHERE station_id = :station_id
 		ORDER BY id DESC
 		LIMIT 1)
 		,0)

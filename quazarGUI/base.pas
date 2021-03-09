@@ -123,6 +123,10 @@ type
     function GetShampooPreflightProgramID(): integer;
     function GetWaxPreflightProgramID(): integer;
     function GetPolymerPreflightProgramID(): integer;
+    function GetStopProgramID(): integer;
+    function GetOpenDoorProgramID(): integer;
+
+    procedure SetDosatronPreflight(programID: integer; run: boolean);
 
   private
     pinCode: string;
@@ -146,7 +150,8 @@ const
   PLACEHOLDER : string = '';
 
   NUM_PROGRAMS          : integer = 6;
-  NUM_PREFLIGHT_PROGRAMS: integer = 4;
+  NUM_PREFLIGHT_PROGRAMS: integer = 6;
+  NUM_RELAYS            : integer = 22;
 
   FOAM_RELAY_ID      : integer = 6;
   SHAMPOO_RELAY_ID   : integer = 7;
@@ -156,6 +161,22 @@ const
   HOT_WATER_RELAY_ID : integer = 2;
   OSM_WATER_RELAY_ID : integer = 3;
   LIGHT_RELAY_ID     : integer = 4;
+  OPEN_DOOR_RELAY_ID : integer = 5;
+
+  STOP_FOAM_RELAY_ID      : integer = 10;
+  STOP_SHAMPOO_RELAY_ID   : integer = 11;
+  STOP_WAX_RELAY_ID       : integer = 12;
+  STOP_POLYMER_RELAY_ID   : integer = 13;
+  STOP_COLD_WATER_RELAY_ID: integer = 14;
+  STOP_HOT_WATER_RELAY_ID : integer = 15;
+  STOP_OSM_WATER_RELAY_ID : integer = 16;
+  STOP_LIGHT_RELAY_ID     : integer = 17;
+  STOP_OPEN_DOOR_RELAY_ID : integer = 18;
+
+  PREFLIGHT_FOAM_RELAY_ID: integer = 19;
+  PREFLIGHT_SHAMPOO_RELAY_ID: integer = 20;
+  PREFLIGHT_WAX_RELAY_ID: integer = 21;
+  PREFLIGHT_POLYMER_RELAY_ID: integer = 22;
 
   FOAM_PROGRAM_ID    : integer = 1;
   SHAMPOO_PROGRAM_ID : integer = 2;
@@ -167,6 +188,8 @@ const
   SHAMPOO_PREFLIGHT_PROGRAM_ID: integer =  8;
   WAX_PREFLIGHT_PROGRAM_ID    : integer =  9;
   POLYMER_PREFLIGHT_PROGRAM_ID: integer = 10;
+  STOP_PROGRAM_ID             : integer = 11;
+  OPEN_DOOR_PROGRAM_ID        : integer = 12;
 
   FOAM_STR    : string = 'ПЕНА';
   SHAMPOO_STR : string = 'ВОДА + ШАМПУНЬ';
@@ -237,13 +260,23 @@ begin
   Result := POLYMER_PREFLIGHT_PROGRAM_ID;
 end;
 
+function TBaseForm.GetStopProgramID(): integer;
+begin
+  Result := STOP_PROGRAM_ID;
+end;
+
+function TBaseForm.GetOpenDoorProgramID(): integer;
+begin
+  Result := OPEN_DOOR_PROGRAM_ID;
+end;
+
 procedure TBaseForm.FormCreate(Sender: TObject);
 var
   i: integer;
 begin
   _isStandBy  := false;
 
-  RelaysConfig.Count := 9;
+  RelaysConfig.Count := NUM_RELAYS;
   setlength(RelaysConfig.ID,      RelaysConfig.Count);
   setlength(RelaysConfig.TimeON,  RelaysConfig.Count);
   setlength(RelaysConfig.TimeOFF, RelaysConfig.Count);
@@ -256,6 +289,20 @@ begin
   RelaysConfig.ID[HOT_WATER_RELAY_ID  - 1] := HOT_WATER_RELAY_ID;
   RelaysConfig.ID[OSM_WATER_RELAY_ID  - 1] := OSM_WATER_RELAY_ID;
   RelaysConfig.ID[LIGHT_RELAY_ID      - 1] := LIGHT_RELAY_ID;
+  RelaysConfig.ID[OPEN_DOOR_RELAY_ID  - 1] := OPEN_DOOR_RELAY_ID;
+  RelaysConfig.ID[STOP_FOAM_RELAY_ID       - 1] := FOAM_RELAY_ID;
+  RelaysConfig.ID[STOP_SHAMPOO_RELAY_ID    - 1] := SHAMPOO_RELAY_ID;
+  RelaysConfig.ID[STOP_WAX_RELAY_ID        - 1] := WAX_RELAY_ID;
+  RelaysConfig.ID[STOP_POLYMER_RELAY_ID    - 1] := POLYMER_RELAY_ID;
+  RelaysConfig.ID[STOP_COLD_WATER_RELAY_ID - 1] := COLD_WATER_RELAY_ID;
+  RelaysConfig.ID[STOP_HOT_WATER_RELAY_ID  - 1] := HOT_WATER_RELAY_ID;
+  RelaysConfig.ID[STOP_OSM_WATER_RELAY_ID  - 1] := OSM_WATER_RELAY_ID;
+  RelaysConfig.ID[STOP_LIGHT_RELAY_ID      - 1] := LIGHT_RELAY_ID;
+  RelaysConfig.ID[STOP_OPEN_DOOR_RELAY_ID  - 1] := OPEN_DOOR_RELAY_ID;
+  RelaysConfig.ID[PREFLIGHT_FOAM_RELAY_ID       - 1] := FOAM_RELAY_ID;
+  RelaysConfig.ID[PREFLIGHT_SHAMPOO_RELAY_ID    - 1] := SHAMPOO_RELAY_ID;
+  RelaysConfig.ID[PREFLIGHT_WAX_RELAY_ID        - 1] := WAX_RELAY_ID;
+  RelaysConfig.ID[PREFLIGHT_POLYMER_RELAY_ID    - 1] := POLYMER_RELAY_ID;
 
   RelaysConfig.TimeON[FOAM_RELAY_ID       - 1] := 500;
   RelaysConfig.TimeON[SHAMPOO_RELAY_ID    - 1] := 500;
@@ -265,6 +312,20 @@ begin
   RelaysConfig.TimeON[HOT_WATER_RELAY_ID  - 1] := 1000;
   RelaysConfig.TimeON[OSM_WATER_RELAY_ID  - 1] := 1000;
   RelaysConfig.TimeON[LIGHT_RELAY_ID      - 1] := 1000;
+  RelaysConfig.TimeON[OPEN_DOOR_RELAY_ID  - 1] := 1000;
+  RelaysConfig.TimeON[STOP_FOAM_RELAY_ID       - 1] := 0;
+  RelaysConfig.TimeON[STOP_SHAMPOO_RELAY_ID    - 1] := 0;
+  RelaysConfig.TimeON[STOP_WAX_RELAY_ID        - 1] := 0;
+  RelaysConfig.TimeON[STOP_POLYMER_RELAY_ID    - 1] := 0;
+  RelaysConfig.TimeON[STOP_COLD_WATER_RELAY_ID - 1] := 0;
+  RelaysConfig.TimeON[STOP_HOT_WATER_RELAY_ID  - 1] := 0;
+  RelaysConfig.TimeON[STOP_OSM_WATER_RELAY_ID  - 1] := 0;
+  RelaysConfig.TimeON[STOP_LIGHT_RELAY_ID      - 1] := 0;
+  RelaysConfig.TimeON[STOP_OPEN_DOOR_RELAY_ID  - 1] := 0;
+  RelaysConfig.TimeON[PREFLIGHT_FOAM_RELAY_ID       - 1] := 1000;
+  RelaysConfig.TimeON[PREFLIGHT_SHAMPOO_RELAY_ID    - 1] := 1000;
+  RelaysConfig.TimeON[PREFLIGHT_WAX_RELAY_ID        - 1] := 1000;
+  RelaysConfig.TimeON[PREFLIGHT_POLYMER_RELAY_ID    - 1] := 1000;
 
   RelaysConfig.TimeOFF[FOAM_RELAY_ID       - 1] := TOTAL_TIME - RelaysConfig.TimeON[FOAM_RELAY_ID       - 1];
   RelaysConfig.TimeOFF[SHAMPOO_RELAY_ID    - 1] := TOTAL_TIME - RelaysConfig.TimeON[SHAMPOO_RELAY_ID    - 1];
@@ -274,6 +335,20 @@ begin
   RelaysConfig.TimeOFF[HOT_WATER_RELAY_ID  - 1] := TOTAL_TIME - RelaysConfig.TimeON[HOT_WATER_RELAY_ID  - 1];
   RelaysConfig.TimeOFF[OSM_WATER_RELAY_ID  - 1] := TOTAL_TIME - RelaysConfig.TimeON[OSM_WATER_RELAY_ID  - 1];
   RelaysConfig.TimeOFF[LIGHT_RELAY_ID      - 1] := TOTAL_TIME - RelaysConfig.TimeON[LIGHT_RELAY_ID      - 1];
+  RelaysConfig.TimeOFF[OPEN_DOOR_RELAY_ID  - 1] := TOTAL_TIME - RelaysConfig.TimeON[OPEN_DOOR_RELAY_ID  - 1];
+  RelaysConfig.TimeOFF[STOP_FOAM_RELAY_ID       - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_FOAM_RELAY_ID       - 1];
+  RelaysConfig.TimeOFF[STOP_SHAMPOO_RELAY_ID    - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_SHAMPOO_RELAY_ID    - 1];
+  RelaysConfig.TimeOFF[STOP_WAX_RELAY_ID        - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_WAX_RELAY_ID        - 1];
+  RelaysConfig.TimeOFF[STOP_POLYMER_RELAY_ID    - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_POLYMER_RELAY_ID    - 1];
+  RelaysConfig.TimeOFF[STOP_COLD_WATER_RELAY_ID - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_COLD_WATER_RELAY_ID - 1];
+  RelaysConfig.TimeOFF[STOP_HOT_WATER_RELAY_ID  - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_HOT_WATER_RELAY_ID  - 1];
+  RelaysConfig.TimeOFF[STOP_OSM_WATER_RELAY_ID  - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_OSM_WATER_RELAY_ID  - 1];
+  RelaysConfig.TimeOFF[STOP_LIGHT_RELAY_ID      - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_LIGHT_RELAY_ID      - 1];
+  RelaysConfig.TimeOFF[STOP_OPEN_DOOR_RELAY_ID  - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_OPEN_DOOR_RELAY_ID  - 1];
+  RelaysConfig.TimeOFF[PREFLIGHT_FOAM_RELAY_ID       - 1] := TOTAL_TIME - RelaysConfig.TimeON[PREFLIGHT_FOAM_RELAY_ID       - 1];
+  RelaysConfig.TimeOFF[PREFLIGHT_SHAMPOO_RELAY_ID    - 1] := TOTAL_TIME - RelaysConfig.TimeON[PREFLIGHT_SHAMPOO_RELAY_ID    - 1];
+  RelaysConfig.TimeOFF[PREFLIGHT_WAX_RELAY_ID        - 1] := TOTAL_TIME - RelaysConfig.TimeON[PREFLIGHT_WAX_RELAY_ID        - 1];
+  RelaysConfig.TimeOFF[PREFLIGHT_POLYMER_RELAY_ID    - 1] := TOTAL_TIME - RelaysConfig.TimeON[PREFLIGHT_POLYMER_RELAY_ID    - 1];
 
   ProgramsConfig.Count := NUM_PROGRAMS + NUM_PREFLIGHT_PROGRAMS;
   setlength(ProgramsConfig.ID,               ProgramsConfig.Count);
@@ -295,6 +370,8 @@ begin
   ProgramsConfig.ID[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1] := SHAMPOO_PREFLIGHT_PROGRAM_ID;
   ProgramsConfig.ID[WAX_PREFLIGHT_PROGRAM_ID     - 1] := WAX_PREFLIGHT_PROGRAM_ID;
   ProgramsConfig.ID[POLYMER_PREFLIGHT_PROGRAM_ID - 1] := POLYMER_PREFLIGHT_PROGRAM_ID;
+  ProgramsConfig.ID[STOP_PROGRAM_ID - 1]              := STOP_PROGRAM_ID;
+  ProgramsConfig.ID[OPEN_DOOR_PROGRAM_ID - 1]         := OPEN_DOOR_PROGRAM_ID;
 
   ProgramsConfig.Name[FOAM_PROGRAM_ID              - 1] := FOAM_STR;
   ProgramsConfig.Name[SHAMPOO_PROGRAM_ID           - 1] := SHAMPOO_STR;
@@ -306,6 +383,8 @@ begin
   ProgramsConfig.Name[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1] := SHAMPOO_STR + ' ПРОКАЧКА';
   ProgramsConfig.Name[WAX_PREFLIGHT_PROGRAM_ID     - 1] := WAX_STR + ' ПРОКАЧКА';
   ProgramsConfig.Name[POLYMER_PREFLIGHT_PROGRAM_ID - 1] := 'ПОЛИМЕР ПРОКАЧКА';
+  ProgramsConfig.Name[STOP_PROGRAM_ID - 1]              := 'СТОП';
+  ProgramsConfig.Name[OPEN_DOOR_PROGRAM_ID - 1]         := 'OPEN';
 
   ProgramsConfig.Price[FOAM_PROGRAM_ID              - 1] := 15;
   ProgramsConfig.Price[SHAMPOO_PROGRAM_ID           - 1] := 15;
@@ -317,6 +396,8 @@ begin
   ProgramsConfig.Price[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1] :=  0;
   ProgramsConfig.Price[WAX_PREFLIGHT_PROGRAM_ID     - 1] :=  0;
   ProgramsConfig.Price[POLYMER_PREFLIGHT_PROGRAM_ID - 1] :=  0;
+  ProgramsConfig.Price[STOP_PROGRAM_ID - 1]              :=  0;
+  ProgramsConfig.Price[OPEN_DOOR_PROGRAM_ID - 1]         :=  0;
 
   setlength(ProgramsConfig.Relays[FOAM_PROGRAM_ID - 1], 3);
   ProgramsConfig.Relays[FOAM_PROGRAM_ID - 1][0] := HOT_WATER_RELAY_ID;
@@ -346,16 +427,29 @@ begin
   ProgramsConfig.Relays[PAUSE_PROGRAM_ID - 1][0] := LIGHT_RELAY_ID;
 
   setlength(ProgramsConfig.Relays[FOAM_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.Relays[FOAM_PREFLIGHT_PROGRAM_ID - 1][0] := FOAM_RELAY_ID;
+  ProgramsConfig.Relays[FOAM_PREFLIGHT_PROGRAM_ID - 1][0] := PREFLIGHT_FOAM_RELAY_ID;
 
   setlength(ProgramsConfig.Relays[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.Relays[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1][0] := SHAMPOO_RELAY_ID;
+  ProgramsConfig.Relays[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1][0] := PREFLIGHT_SHAMPOO_RELAY_ID;
 
   setlength(ProgramsConfig.Relays[WAX_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.Relays[WAX_PREFLIGHT_PROGRAM_ID - 1][0] := WAX_RELAY_ID;
+  ProgramsConfig.Relays[WAX_PREFLIGHT_PROGRAM_ID - 1][0] := PREFLIGHT_WAX_RELAY_ID;
 
   setlength(ProgramsConfig.Relays[POLYMER_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.Relays[POLYMER_PREFLIGHT_PROGRAM_ID - 1][0] := POLYMER_RELAY_ID;
+  ProgramsConfig.Relays[POLYMER_PREFLIGHT_PROGRAM_ID - 1][0] := PREFLIGHT_POLYMER_RELAY_ID;
+
+  setlength(ProgramsConfig.Relays[STOP_PROGRAM_ID - 1], 8);
+  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][0] := STOP_FOAM_RELAY_ID;
+  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][1] := STOP_SHAMPOO_RELAY_ID;
+  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][2] := STOP_WAX_RELAY_ID;
+  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][3] := STOP_POLYMER_RELAY_ID;
+  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][4] := STOP_HOT_WATER_RELAY_ID;
+  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][5] := STOP_COLD_WATER_RELAY_ID;
+  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][6] := STOP_OSM_WATER_RELAY_ID;
+  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][7] := STOP_LIGHT_RELAY_ID;
+
+  setlength(ProgramsConfig.Relays[OPEN_DOOR_PROGRAM_ID - 1], 1);
+  ProgramsConfig.Relays[OPEN_DOOR_PROGRAM_ID - 1][0] := OPEN_DOOR_RELAY_ID;
 
   setlength(ProgramsConfig.PreflightRelays[FOAM_PROGRAM_ID - 1], 3);
   ProgramsConfig.PreflightRelays[FOAM_PROGRAM_ID - 1][0] := HOT_WATER_RELAY_ID;
@@ -406,17 +500,21 @@ begin
   ProgramsConfig.MotorSpeedPercent[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1] := 100;
   ProgramsConfig.MotorSpeedPercent[WAX_PREFLIGHT_PROGRAM_ID     - 1] := 100;
   ProgramsConfig.MotorSpeedPercent[POLYMER_PREFLIGHT_PROGRAM_ID - 1] := 100;
+  ProgramsConfig.MotorSpeedPercent[STOP_PROGRAM_ID - 1]              :=   0;
+  ProgramsConfig.MotorSpeedPercent[OPEN_DOOR_PROGRAM_ID - 1]         :=   0;
 
   ProgramsConfig.PreflightMotorSpeedPercent[FOAM_PROGRAM_ID              - 1] := 100;
   ProgramsConfig.PreflightMotorSpeedPercent[SHAMPOO_PROGRAM_ID           - 1] := 100;
   ProgramsConfig.PreflightMotorSpeedPercent[RINSE_PROGRAM_ID             - 1] := 100;
   ProgramsConfig.PreflightMotorSpeedPercent[WAX_PROGRAM_ID               - 1] := 100;
   ProgramsConfig.PreflightMotorSpeedPercent[DRY_PROGRAM_ID               - 1] := 100;
-  ProgramsConfig.PreflightMotorSpeedPercent[PAUSE_PROGRAM_ID             - 1] := 100;
+  ProgramsConfig.PreflightMotorSpeedPercent[PAUSE_PROGRAM_ID             - 1] :=   0;
   ProgramsConfig.PreflightMotorSpeedPercent[FOAM_PREFLIGHT_PROGRAM_ID    - 1] := 100;
   ProgramsConfig.PreflightMotorSpeedPercent[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1] := 100;
   ProgramsConfig.PreflightMotorSpeedPercent[WAX_PREFLIGHT_PROGRAM_ID     - 1] := 100;
   ProgramsConfig.PreflightMotorSpeedPercent[POLYMER_PREFLIGHT_PROGRAM_ID - 1] := 100;
+  ProgramsConfig.PreflightMotorSpeedPercent[STOP_PROGRAM_ID - 1]              :=   0;
+  ProgramsConfig.PreflightMotorSpeedPercent[OPEN_DOOR_PROGRAM_ID - 1]         :=   0;
 
   serverEndpoint := 'http://localhost:8020/';
 
@@ -425,6 +523,57 @@ begin
     CheckProgram(i);
   end;
 
+end;
+
+procedure TBaseForm.SetDosatronPreflight(programID: integer; run: boolean);
+var
+  settingJson: TJSONObject;
+begin
+  if BaseForm.GetStationHashByID(1) = PLACEHOLDER then
+  begin
+    Exit;
+  end;
+  with TFPHttpClient.Create(nil) do
+  try
+     try
+        AddHeader('Content-Type', 'application/json');
+        AddHeader('Pin', BaseForm.GetPinCode());
+
+        settingJson := TJSONObject.Create;
+
+        if run then
+        begin
+          settingJson.Add('programID', programID);
+        end
+        else
+        begin
+          settingJson.Add('programID', STOP_PROGRAM_ID);
+        end;
+        settingJson.Add('hash', BaseForm.GetStationHashByID(1));
+
+        RequestBody := TStringStream.Create(settingJson.AsJSON);
+        Post(BaseForm.GetServerEndpoint() + '/run-program');
+
+        if ResponseStatusCode <> 204 then
+        begin
+          raise Exception.Create(IntToStr(ResponseStatusCode));
+        end;
+
+      except
+        case ResponseStatusCode of
+          0: begin ModalResult := 0; ShowMessage('Can`t connect to server'); end;
+          401: begin ModalResult := 0; ShowMessage('Not authorized'); end;
+          403, 404: begin ModalResult := 0; ShowMessage('Forbidden'); end;
+          500: begin ShowMessage('Server Error: 500'); end;
+          else
+            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+              sLineBreak + ResponseStatusText);
+        end;
+      end;
+
+    finally
+      Free;
+    end;
 end;
 
 function TBaseForm.UpdateStations() : boolean;
