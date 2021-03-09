@@ -464,11 +464,15 @@ func init() {
               "type": "object",
               "required": [
                 "hash",
-                "programID"
+                "programID",
+                "preflight"
               ],
               "properties": {
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "preflight": {
+                  "type": "boolean"
                 },
                 "programID": {
                   "type": "integer",
@@ -2366,11 +2370,15 @@ func init() {
               "type": "object",
               "required": [
                 "hash",
-                "programID"
+                "programID",
+                "preflight"
               ],
               "properties": {
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "preflight": {
+                  "type": "boolean"
                 },
                 "programID": {
                   "type": "integer",

@@ -70,6 +70,10 @@ type RunProgramBody struct {
 	// Required: true
 	Hash model.Hash `json:"hash"`
 
+	// preflight
+	// Required: true
+	Preflight *bool `json:"preflight"`
+
 	// program ID
 	// Required: true
 	// Minimum: 1
@@ -81,6 +85,10 @@ func (o *RunProgramBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateHash(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePreflight(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -100,6 +108,15 @@ func (o *RunProgramBody) validateHash(formats strfmt.Registry) error {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("args" + "." + "hash")
 		}
+		return err
+	}
+
+	return nil
+}
+
+func (o *RunProgramBody) validatePreflight(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"preflight", "body", o.Preflight); err != nil {
 		return err
 	}
 
