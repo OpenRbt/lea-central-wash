@@ -14,6 +14,7 @@ type
     Count    : integer;
     Name     : array of string;
     RelayID  : array of integer;
+    ProgramID: array of integer;
     Preflight: array of boolean;
 
   end;
@@ -91,6 +92,12 @@ begin
   DosatronParams.RelayID[2] := WAX_RELAY_ID;
   DosatronParams.RelayID[3] := POLYMER_RELAY_ID;
 
+  setlength(DosatronParams.ProgramID, DosatronParams.Count);
+  DosatronParams.ProgramID[0] := FOAM_PREFLIGHT_PROGRAM_ID;
+  DosatronParams.ProgramID[1] := SHAMPOO_PREFLIGHT_PROGRAM_ID;
+  DosatronParams.ProgramID[2] := WAX_PREFLIGHT_PROGRAM_ID;
+  DosatronParams.ProgramID[3] := POLYMER_PREFLIGHT_PROGRAM_ID;
+
   setlength(DosatronParams.Preflight, DosatronParams.Count);
   DosatronParams.Preflight[0] := false;
   DosatronParams.Preflight[1] := false;
@@ -134,6 +141,7 @@ begin
   if (aCol = DOSATRON_PREFLIGHT_COL) then
   begin
     DosatronParams.Preflight[aRow] := not DosatronParams.Preflight[aRow];
+    SetDosatronPreflight(DosatronParams.ProgramID[aRow], DosatronParams.Preflight[aRow]);
   end
   else if (aCol = DOSATRON_DEC) then
   begin

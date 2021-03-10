@@ -142,6 +142,7 @@ begin
 
         settingJson.Add('programID', programID);
         settingJson.Add('hash', BaseForm.GetStationHashByID(_id));
+        settingJson.Add('preflight', false);
 
         RequestBody := TStringStream.Create(settingJson.AsJSON);
         Post(BaseForm.GetServerEndpoint() + '/run-program');
@@ -169,13 +170,37 @@ begin
 end;
 
 procedure TStationBalanceForm.DryPanelClick(Sender: TObject);
+var
+  currentProgram: integer;
+  clickedProgram: integer;
 begin
-  SetStationCurrentProgramByID(BaseForm.GetDryProgramID());
+  currentProgram := BaseForm.GetStationCurrentProgramByID(_id);
+  clickedProgram := BaseForm.GetDryProgramID();
+  if currentProgram = clickedProgram then
+  begin
+    SetStationCurrentProgramByID(BaseForm.GetStopProgramID());
+  end
+  else
+  begin
+    SetStationCurrentProgramByID(clickedProgram);
+  end;
 end;
 
 procedure TStationBalanceForm.FoamPanelClick(Sender: TObject);
+var
+  currentProgram: integer;
+  clickedProgram: integer;
 begin
-  SetStationCurrentProgramByID(BaseForm.GetFoamProgramID());
+  currentProgram := BaseForm.GetStationCurrentProgramByID(_id);
+  clickedProgram := BaseForm.GetFoamProgramID();
+  if currentProgram = clickedProgram then
+  begin
+    SetStationCurrentProgramByID(BaseForm.GetStopProgramID());
+  end
+  else
+  begin
+    SetStationCurrentProgramByID(clickedProgram);
+  end;
 end;
 
 procedure TStationBalanceForm.FormClose(Sender: TObject;
@@ -300,56 +325,59 @@ begin
 end;
 
 procedure TStationBalanceForm.OpenBtnClick(Sender: TObject);
-var
-  requestJson : TJSONObject;
-
 begin
-  with TFPHttpClient.Create(nil) do
-  try
-     try
-        AddHeader('Content-Type', 'application/json');
-        AddHeader('Pin', BaseForm.GetPinCode());
-
-        requestJson := TJSONObject.Create;
-        requestJson.Add('stationID', _id);
-        RequestBody := TStringStream.Create(requestJson.AsJSON);
-
-        Post(BaseForm.GetServerEndpoint() + 'open-station');
-
-        if ResponseStatusCode <> 204 then
-        begin
-          raise Exception.Create(IntToStr(ResponseStatusCode));
-        end;
-
-      except
-          case ResponseStatusCode of
-            0: ShowMessage('Can`t connect to server');
-            401, 403: // do nothing
-              ;
-            500: ShowMessage('Server Error: 500');
-            else
-              ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
-                sLineBreak + ResponseStatusText);
-          end;
-      end;
-    finally
-      Free;
-    end;
+  SetStationCurrentProgramByID(BaseForm.GetOpenDoorProgramID());
 end;
 
 procedure TStationBalanceForm.PausePanelClick(Sender: TObject);
+var
+  currentProgram: integer;
+  clickedProgram: integer;
 begin
-  SetStationCurrentProgramByID(BaseForm.GetPauseProgramID());
+  currentProgram := BaseForm.GetStationCurrentProgramByID(_id);
+  clickedProgram := BaseForm.GetPauseProgramID();
+  if currentProgram = clickedProgram then
+  begin
+    SetStationCurrentProgramByID(BaseForm.GetStopProgramID());
+  end
+  else
+  begin
+    SetStationCurrentProgramByID(clickedProgram);
+  end;
 end;
 
 procedure TStationBalanceForm.RinsePanelClick(Sender: TObject);
+var
+  currentProgram: integer;
+  clickedProgram: integer;
 begin
-  SetStationCurrentProgramByID(BaseForm.GetRinseProgramID());
+  currentProgram := BaseForm.GetStationCurrentProgramByID(_id);
+  clickedProgram := BaseForm.GetRinseProgramID();
+  if currentProgram = clickedProgram then
+  begin
+    SetStationCurrentProgramByID(BaseForm.GetStopProgramID());
+  end
+  else
+  begin
+    SetStationCurrentProgramByID(clickedProgram);
+  end;
 end;
 
 procedure TStationBalanceForm.ShampooPanelClick(Sender: TObject);
+var
+  currentProgram: integer;
+  clickedProgram: integer;
 begin
-  SetStationCurrentProgramByID(BaseForm.GetShampooProgramID());
+  currentProgram := BaseForm.GetStationCurrentProgramByID(_id);
+  clickedProgram := BaseForm.GetShampooProgramID();
+  if currentProgram = clickedProgram then
+  begin
+    SetStationCurrentProgramByID(BaseForm.GetStopProgramID());
+  end
+  else
+  begin
+    SetStationCurrentProgramByID(clickedProgram);
+  end;
 end;
 
 procedure TStationBalanceForm.UpdateCall(Sender: TObject);
@@ -424,8 +452,20 @@ begin
 end;
 
 procedure TStationBalanceForm.WaxPanelClick(Sender: TObject);
+var
+  currentProgram: integer;
+  clickedProgram: integer;
 begin
-  SetStationCurrentProgramByID(BaseForm.GetWaxProgramID());
+  currentProgram := BaseForm.GetStationCurrentProgramByID(_id);
+  clickedProgram := BaseForm.GetWaxProgramID();
+  if currentProgram = clickedProgram then
+  begin
+    SetStationCurrentProgramByID(BaseForm.GetStopProgramID());
+  end
+  else
+  begin
+    SetStationCurrentProgramByID(clickedProgram);
+  end;
 end;
 
 end.
