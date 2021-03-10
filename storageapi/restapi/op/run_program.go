@@ -76,7 +76,6 @@ type RunProgramBody struct {
 
 	// program ID
 	// Required: true
-	// Minimum: 1
 	ProgramID *int64 `json:"programID"`
 }
 
@@ -126,10 +125,6 @@ func (o *RunProgramBody) validatePreflight(formats strfmt.Registry) error {
 func (o *RunProgramBody) validateProgramID(formats strfmt.Registry) error {
 
 	if err := validate.Required("args"+"."+"programID", "body", o.ProgramID); err != nil {
-		return err
-	}
-
-	if err := validate.MinimumInt("args"+"."+"programID", "body", int64(*o.ProgramID), 1, false); err != nil {
 		return err
 	}
 

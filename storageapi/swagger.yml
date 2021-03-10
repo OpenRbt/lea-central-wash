@@ -1256,7 +1256,6 @@ paths:
                 $ref: '#/definitions/Hash'
               programID:
                 type: integer
-                minimum: 1
               preflight:
                 type: boolean
       responses:
@@ -1264,6 +1263,8 @@ paths:
           description: OK
         404:
           description: not found
+          schema:
+            type: string
         500:
           description: internal error
 

@@ -606,15 +606,18 @@ func (svc *service) runProgram(params op.RunProgramParams) op.RunProgramResponde
 	stationID, err := svc.getID(string(params.Args.Hash))
 	if err != nil {
 		log.Info("runProgram: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewRunProgramNotFound()
+		return op.NewRunProgramNotFound().WithPayload("station not found")
 	}
-	err = svc.app.RunProgram(&stationID, params.Args.ProgramID, params.Args.Preflight)
+	err = svc.app.RunProgram(stationID, *params.Args.ProgramID, *params.Args.Preflight)
 
-	log.Info("runProgram", "programID", params.Args.ProgramID, "stationID", stationID, "preflight", params.Args.Preflight, "ip", params.HTTPRequest.RemoteAddr)
+	log.Info("runProgram", "programID", *params.Args.ProgramID, "stationID", stationID, "preflight", *params.Args.Preflight, "ip", params.HTTPRequest.RemoteAddr)
 
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewRunProgramNoContent()
+	case app.ErrNotFound:
+		log.PrintErr(err, "hash", params.Args.Hash, "stationID", stationID, "programID", *params.Args.ProgramID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewRunProgramNotFound().WithPayload("program or relay board not found")
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewRunProgramInternalServerError()

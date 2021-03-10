@@ -46,6 +46,11 @@ const RunProgramNotFoundCode int = 404
 swagger:response runProgramNotFound
 */
 type RunProgramNotFound struct {
+
+	/*
+	  In: Body
+	*/
+	Payload string `json:"body,omitempty"`
 }
 
 // NewRunProgramNotFound creates RunProgramNotFound with default headers values
@@ -54,12 +59,25 @@ func NewRunProgramNotFound() *RunProgramNotFound {
 	return &RunProgramNotFound{}
 }
 
+// WithPayload adds the payload to the run program not found response
+func (o *RunProgramNotFound) WithPayload(payload string) *RunProgramNotFound {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the run program not found response
+func (o *RunProgramNotFound) SetPayload(payload string) {
+	o.Payload = payload
+}
+
 // WriteResponse to the client
 func (o *RunProgramNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
 	rw.WriteHeader(404)
+	payload := o.Payload
+	if err := producer.Produce(rw, payload); err != nil {
+		panic(err) // let the recovery middleware deal with this
+	}
 }
 
 func (o *RunProgramNotFound) RunProgramResponder() {}

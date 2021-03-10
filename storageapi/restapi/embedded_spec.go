@@ -475,8 +475,7 @@ func init() {
                   "type": "boolean"
                 },
                 "programID": {
-                  "type": "integer",
-                  "minimum": 1
+                  "type": "integer"
                 }
               }
             }
@@ -487,7 +486,10 @@ func init() {
             "description": "OK"
           },
           "404": {
-            "description": "not found"
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"
@@ -2381,8 +2383,7 @@ func init() {
                   "type": "boolean"
                 },
                 "programID": {
-                  "type": "integer",
-                  "minimum": 1
+                  "type": "integer"
                 }
               }
             }
@@ -2393,7 +2394,10 @@ func init() {
             "description": "OK"
           },
           "404": {
-            "description": "not found"
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"

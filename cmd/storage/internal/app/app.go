@@ -25,6 +25,7 @@ const (
 	MeteoInfo          = "meteoinfo"
 	OpenWeather        = "openWeather"
 	Ipify              = "ipify"
+	relayTimeoutSec    = 5
 )
 
 // Errors.
@@ -90,7 +91,7 @@ type (
 		CardReaderConfig(StationID) (*CardReaderConfig, error)
 		SetCardReaderConfig(CardReaderConfig) error
 
-		RunProgram(id *StationID, programID *int64, preflight *bool) (err error)
+		RunProgram(id StationID, programID int64, preflight bool) (err error)
 		Station(StationID) (SetStation, error)
 	}
 
