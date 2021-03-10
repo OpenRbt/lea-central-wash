@@ -99,17 +99,30 @@ type
     function GetProgramName(id: integer): string;
     function GetProgramPrice(id: integer): integer;
     procedure SetProgramPrice(id, price : integer);
+    function GetNumPrograms(): integer;
 
     function UpdateStations() : boolean;
     function GetStationNameByID(id : integer) : string;
     function GetStationHashByID(id : integer) : string;
     function GetStationCurrentBalanceByID(id : integer) : integer;
     function GetStationCurrentProgramByID(id : integer) : integer;
+    //procedure SetStationCurrentProgramByID(stationID, programID: integer);
     function GetStationStatusByID(id : integer) : string;
     function GetStationPreflightSec(id: integer): integer;
     procedure UpdateStationPreflightSec(id: integer);
     procedure SetStationPreflightSec(id, preflightSec: integer);
     function GetNumStations(): integer;
+
+    function GetFoamProgramID(): integer;
+    function GetShampooProgramID(): integer;
+    function GetRinseProgramID(): integer;
+    function GetWaxProgramID(): integer;
+    function GetDryProgramID(): integer;
+    function GetPauseProgramID(): integer;
+    function GetFoamPreflightProgramID(): integer;
+    function GetShampooPreflightProgramID(): integer;
+    function GetWaxPreflightProgramID(): integer;
+    function GetPolymerPreflightProgramID(): integer;
 
   private
     pinCode: string;
@@ -168,6 +181,61 @@ implementation
   uses
     Login, Main, Stations, Programs, Dosatrons, Settings, Users, Statistics;
 {$R *.lfm}
+
+function TBaseForm.GetNumPrograms(): integer;
+begin
+  Result := NUM_PROGRAMS+NUM_PREFLIGHT_PROGRAMS;
+end;
+
+function TBaseForm.GetFoamProgramID(): integer;
+begin
+  Result := FOAM_PROGRAM_ID;
+end;
+
+function TBaseForm.GetShampooProgramID(): integer;
+begin
+  Result := SHAMPOO_PROGRAM_ID;
+end;
+
+function TBaseForm.GetRinseProgramID(): integer;
+begin
+  Result := RINSE_PROGRAM_ID;
+end;
+
+function TBaseForm.GetWaxProgramID(): integer;
+begin
+  Result := WAX_PROGRAM_ID;
+end;
+
+function TBaseForm.GetDryProgramID(): integer;
+begin
+  Result := DRY_PROGRAM_ID;
+end;
+
+function TBaseForm.GetPauseProgramID(): integer;
+begin
+  Result := PAUSE_PROGRAM_ID;
+end;
+
+function TBaseForm.GetFoamPreflightProgramID(): integer;
+begin
+  Result := FOAM_PREFLIGHT_PROGRAM_ID;
+end;
+
+function TBaseForm.GetShampooPreflightProgramID(): integer;
+begin
+  Result := SHAMPOO_PREFLIGHT_PROGRAM_ID;
+end;
+
+function TBaseForm.GetWaxPreflightProgramID(): integer;
+begin
+  Result := WAX_PREFLIGHT_PROGRAM_ID;
+end;
+
+function TBaseForm.GetPolymerPreflightProgramID(): integer;
+begin
+  Result := POLYMER_PREFLIGHT_PROGRAM_ID;
+end;
 
 procedure TBaseForm.FormCreate(Sender: TObject);
 var
@@ -288,6 +356,45 @@ begin
 
   setlength(ProgramsConfig.Relays[POLYMER_PREFLIGHT_PROGRAM_ID - 1], 1);
   ProgramsConfig.Relays[POLYMER_PREFLIGHT_PROGRAM_ID - 1][0] := POLYMER_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[FOAM_PROGRAM_ID - 1], 3);
+  ProgramsConfig.PreflightRelays[FOAM_PROGRAM_ID - 1][0] := HOT_WATER_RELAY_ID;
+  ProgramsConfig.PreflightRelays[FOAM_PROGRAM_ID - 1][1] := FOAM_RELAY_ID;
+  ProgramsConfig.PreflightRelays[FOAM_PROGRAM_ID - 1][2] := LIGHT_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[SHAMPOO_PROGRAM_ID - 1], 3);
+  ProgramsConfig.PreflightRelays[SHAMPOO_PROGRAM_ID - 1][0] := HOT_WATER_RELAY_ID;
+  ProgramsConfig.PreflightRelays[SHAMPOO_PROGRAM_ID - 1][1] := SHAMPOO_RELAY_ID;
+  ProgramsConfig.PreflightRelays[SHAMPOO_PROGRAM_ID - 1][2] := LIGHT_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[RINSE_PROGRAM_ID - 1], 2);
+  ProgramsConfig.PreflightRelays[RINSE_PROGRAM_ID - 1][0] := COLD_WATER_RELAY_ID;
+  ProgramsConfig.PreflightRelays[RINSE_PROGRAM_ID - 1][1] := LIGHT_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[WAX_PROGRAM_ID - 1], 3);
+  ProgramsConfig.PreflightRelays[WAX_PROGRAM_ID - 1][0] := HOT_WATER_RELAY_ID;
+  ProgramsConfig.PreflightRelays[WAX_PROGRAM_ID - 1][1] := WAX_RELAY_ID;
+  ProgramsConfig.PreflightRelays[WAX_PROGRAM_ID - 1][2] := LIGHT_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[DRY_PROGRAM_ID - 1], 3);
+  ProgramsConfig.PreflightRelays[DRY_PROGRAM_ID - 1][0] := OSM_WATER_RELAY_ID;
+  ProgramsConfig.PreflightRelays[DRY_PROGRAM_ID - 1][1] := POLYMER_RELAY_ID;
+  ProgramsConfig.PreflightRelays[DRY_PROGRAM_ID - 1][2] := LIGHT_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[PAUSE_PROGRAM_ID - 1], 1);
+  ProgramsConfig.PreflightRelays[PAUSE_PROGRAM_ID - 1][0] := LIGHT_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[FOAM_PREFLIGHT_PROGRAM_ID - 1], 1);
+  ProgramsConfig.PreflightRelays[FOAM_PREFLIGHT_PROGRAM_ID - 1][0] := FOAM_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1], 1);
+  ProgramsConfig.PreflightRelays[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1][0] := SHAMPOO_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[WAX_PREFLIGHT_PROGRAM_ID - 1], 1);
+  ProgramsConfig.PreflightRelays[WAX_PREFLIGHT_PROGRAM_ID - 1][0] := WAX_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[POLYMER_PREFLIGHT_PROGRAM_ID - 1], 1);
+  ProgramsConfig.PreflightRelays[POLYMER_PREFLIGHT_PROGRAM_ID - 1][0] := POLYMER_RELAY_ID;
 
   ProgramsConfig.MotorSpeedPercent[FOAM_PROGRAM_ID              - 1] :=  15;
   ProgramsConfig.MotorSpeedPercent[SHAMPOO_PROGRAM_ID           - 1] :=  50;
@@ -760,6 +867,7 @@ var
   RequestAnswer: string;
   programJson : TJSONObject;
   relays:  TJsonArray;
+  preflightRelays:  TJsonArray;
   relay : TJSONObject;
   i: integer;
 
@@ -770,6 +878,13 @@ begin
         AddHeader('Content-Type', 'application/json');
         AddHeader('Pin', GetPinCode());
 
+        programJson := TJSONObject.Create;
+        programJson.Add('id', id);
+        programJson.Add('name', ProgramsConfig.Name[id-1]);
+        programJson.Add('price', ProgramsConfig.Price[id-1]);
+        programJson.Add('motorSpeedPercent', ProgramsConfig.MotorSpeedPercent[id-1]);
+        programJson.Add('preflightMotorSpeedPercent', ProgramsConfig.PreflightMotorSpeedPercent[id-1]);
+
         relays := TJsonArray.Create;
         for i:=0 to Length(ProgramsConfig.Relays[id-1])-1 do
         begin
@@ -779,14 +894,18 @@ begin
           relay.Add('timeoff', RelaysConfig.TimeOFF[ProgramsConfig.Relays[id-1][i]-1]);
           relays.Add(relay);
         end;
-
-        programJson := TJSONObject.Create;
-        programJson.Add('id', id);
-        programJson.Add('name', ProgramsConfig.Name[id-1]);
-        programJson.Add('price', ProgramsConfig.Price[id-1]);
-        programJson.Add('motorSpeedPercent', ProgramsConfig.MotorSpeedPercent[id-1]);
-        programJson.Add('preflightMotorSpeedPercent', ProgramsConfig.PreflightMotorSpeedPercent[id-1]);
         programJson.Add('relays', relays);
+
+        preflightRelays := TJsonArray.Create;
+        for i:=0 to Length(ProgramsConfig.PreflightRelays[id-1])-1 do
+        begin
+          relay := TJSONObject.Create;
+          relay.Add('id',      RelaysConfig.ID[ProgramsConfig.PreflightRelays[id-1][i]-1]);
+          relay.Add('timeon',  RelaysConfig.TimeON[ProgramsConfig.PreflightRelays[id-1][i]-1]);
+          relay.Add('timeoff', RelaysConfig.TimeOFF[ProgramsConfig.PreflightRelays[id-1][i]-1]);
+          preflightRelays.Add(relay);
+        end;
+        programJson.Add('preflightRelays', preflightRelays);
 
         RequestBody := TStringStream.Create(programJson.AsJSON);
         RequestAnswer := Post(GetServerEndpoint() + 'set-program');

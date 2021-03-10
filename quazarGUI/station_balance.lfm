@@ -1,7 +1,7 @@
 object StationBalanceForm: TStationBalanceForm
   Left = 624
   Height = 820
-  Top = 164
+  Top = 82
   Width = 1280
   Caption = 'Station Balance'
   ClientHeight = 820
@@ -237,6 +237,7 @@ object StationBalanceForm: TStationBalanceForm
     Font.Height = -32
     ParentFont = False
     TabOrder = 13
+    OnClick = FoamPanelClick
   end
   object ShampooPanel: TPanel
     Left = 470
@@ -250,6 +251,7 @@ object StationBalanceForm: TStationBalanceForm
     Font.Height = -32
     ParentFont = False
     TabOrder = 14
+    OnClick = ShampooPanelClick
   end
   object RinsePanel: TPanel
     Left = 470
@@ -263,6 +265,7 @@ object StationBalanceForm: TStationBalanceForm
     Font.Height = -32
     ParentFont = False
     TabOrder = 15
+    OnClick = RinsePanelClick
   end
   object WaxPanel: TPanel
     Left = 470
@@ -276,6 +279,7 @@ object StationBalanceForm: TStationBalanceForm
     Font.Height = -32
     ParentFont = False
     TabOrder = 16
+    OnClick = WaxPanelClick
   end
   object DryPanel: TPanel
     Left = 470
@@ -289,6 +293,7 @@ object StationBalanceForm: TStationBalanceForm
     Font.Height = -32
     ParentFont = False
     TabOrder = 17
+    OnClick = DryPanelClick
   end
   object PausePanel: TPanel
     Left = 470
@@ -302,6 +307,7 @@ object StationBalanceForm: TStationBalanceForm
     Font.Height = -32
     ParentFont = False
     TabOrder = 18
+    OnClick = PausePanelClick
   end
   object UpdateTimer: TTimer
     Enabled = False

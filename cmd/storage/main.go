@@ -55,13 +55,14 @@ var (
 	ver = strings.Join(strings.Fields(strings.Join([]string{gitVersion, gitBranch, gitRevision, buildDate}, " ")), " ")
 	log = structlog.New()
 	cfg struct {
-		version  bool
-		logLevel string
-		db       pqx.Config
-		goose    string
-		gooseDir string
-		extapi   extapi.Config
-		kasse    svckasse.Config
+		version    bool
+		logLevel   string
+		db         pqx.Config
+		goose      string
+		gooseDir   string
+		extapi     extapi.Config
+		kasse      svckasse.Config
+		testBoards bool
 	}
 )
 
@@ -87,6 +88,7 @@ func init() { //nolint:gochecknoinits
 	flag.StringVar(&cfg.kasse.Endpoint, "kasse.endpoint", def.KasseEndpoint, "endpoint online kasse")
 	flag.BoolVar(&useMemDB, "d", false, "change database from postgres to memdb")
 	flag.BoolVar(&checkSysTime, "t", false, "check time")
+	flag.BoolVar(&cfg.testBoards, "testboards", false, "test relay board")
 
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",
@@ -221,7 +223,13 @@ func run(db *sqlx.DB, errc chan<- error) {
 		log.Info("Weather IS TURNED OFF")
 	}
 
-	hardware, errHardware := hal.NewHardwareAccessLayer()
+	var hardware app.HardwareAccessLayer
+	var errHardware error
+	if cfg.testBoards {
+		hardware, errHardware = hal.NewHardwareDebugAccessLayer()
+	} else {
+		hardware, errHardware = hal.NewHardwareAccessLayer()
+	}
 	if errHardware != nil {
 		log.Info("HARDWARE IS NOT WORKING")
 	}

@@ -9,7 +9,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="18"/>
-        <UsageCount Value="172"/>
+        <UsageCount Value="185"/>
       </Unit0>
       <Unit1>
         <Filename Value="login.pas"/>
@@ -19,7 +19,7 @@
         <ResourceBaseClass Value="Form"/>
         <TopLine Value="53"/>
         <CursorPos X="110" Y="70"/>
-        <UsageCount Value="172"/>
+        <UsageCount Value="185"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -29,11 +29,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Base"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="558"/>
-        <CursorPos X="34" Y="655"/>
-        <UsageCount Value="172"/>
+        <TopLine Value="579"/>
+        <CursorPos X="48" Y="739"/>
+        <UsageCount Value="185"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit2>
@@ -43,10 +42,10 @@
         <ComponentName Value="UsersForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="9"/>
         <TopLine Value="107"/>
         <CursorPos X="66" Y="206"/>
-        <UsageCount Value="172"/>
+        <UsageCount Value="185"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
@@ -55,10 +54,10 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="167"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="131"/>
         <CursorPos X="23" Y="116"/>
-        <UsageCount Value="161"/>
+        <UsageCount Value="174"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -67,10 +66,10 @@
         <ComponentName Value="StationsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="5"/>
         <TopLine Value="149"/>
         <CursorPos X="44" Y="195"/>
-        <UsageCount Value="161"/>
+        <UsageCount Value="174"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
@@ -79,10 +78,10 @@
         <ComponentName Value="ProgramsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="7"/>
-        <TopLine Value="133"/>
-        <CursorPos X="93" Y="177"/>
-        <UsageCount Value="161"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="104"/>
+        <CursorPos X="3" Y="104"/>
+        <UsageCount Value="174"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit6>
@@ -92,10 +91,10 @@
         <ComponentName Value="DosatronsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="141"/>
         <CursorPos X="35" Y="184"/>
-        <UsageCount Value="161"/>
+        <UsageCount Value="174"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
@@ -104,10 +103,10 @@
         <ComponentName Value="SettingsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="9"/>
-        <TopLine Value="37"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="148"/>
         <CursorPos X="31" Y="71"/>
-        <UsageCount Value="161"/>
+        <UsageCount Value="174"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -116,10 +115,10 @@
         <ComponentName Value="StatisticsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="15"/>
+        <EditorIndex Value="14"/>
         <TopLine Value="66"/>
         <CursorPos X="22" Y="105"/>
-        <UsageCount Value="161"/>
+        <UsageCount Value="174"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
@@ -128,10 +127,10 @@
         <ComponentName Value="UserEditBaseForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="10"/>
         <TopLine Value="4"/>
         <CursorPos X="3" Y="86"/>
-        <UsageCount Value="146"/>
+        <UsageCount Value="159"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
@@ -140,10 +139,10 @@
         <ComponentName Value="UserAddForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="14"/>
+        <EditorIndex Value="13"/>
         <TopLine Value="92"/>
         <CursorPos X="62" Y="120"/>
-        <UsageCount Value="144"/>
+        <UsageCount Value="157"/>
         <Loaded Value="True"/>
       </Unit11>
       <Unit12>
@@ -152,10 +151,10 @@
         <ComponentName Value="UserEditForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="13"/>
+        <EditorIndex Value="12"/>
         <TopLine Value="88"/>
         <CursorPos X="11" Y="59"/>
-        <UsageCount Value="140"/>
+        <UsageCount Value="153"/>
         <Loaded Value="True"/>
       </Unit12>
       <Unit13>
@@ -164,10 +163,10 @@
         <ComponentName Value="UserEditPasswordForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="11"/>
         <TopLine Value="20"/>
         <CursorPos Y="47"/>
-        <UsageCount Value="132"/>
+        <UsageCount Value="145"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
@@ -176,11 +175,13 @@
         <ComponentName Value="SettingEditForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="5"/>
-        <TopLine Value="82"/>
-        <CursorPos X="6" Y="135"/>
-        <UsageCount Value="83"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="35"/>
+        <CursorPos X="45" Y="45"/>
+        <UsageCount Value="96"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit14>
       <Unit15>
         <Filename Value="station_balance.pas"/>
@@ -188,31 +189,32 @@
         <ComponentName Value="StationBalanceForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="274"/>
-        <CursorPos X="39" Y="305"/>
-        <UsageCount Value="72"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="190"/>
+        <CursorPos X="70" Y="155"/>
+        <UsageCount Value="85"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit15>
       <Unit16>
         <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/control.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="4538"/>
         <CursorPos Y="4559"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit16>
       <Unit17>
         <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/customform.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="3147"/>
         <CursorPos Y="3172"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit17>
       <Unit18>
         <Filename Value="../lea-central-wash/lazarusGUI/manager.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="26"/>
-        <UsageCount Value="17"/>
+        <UsageCount Value="16"/>
       </Unit18>
       <Unit19>
         <Filename Value="../lea-central-wash/lazarusGUI/clientapi.pas"/>
@@ -220,14 +222,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="227"/>
         <CursorPos X="46" Y="265"/>
-        <UsageCount Value="18"/>
+        <UsageCount Value="17"/>
       </Unit19>
       <Unit20>
         <Filename Value="../lea-central-wash/lazarusGUI/collection.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="73"/>
         <CursorPos X="23" Y="15"/>
-        <UsageCount Value="18"/>
+        <UsageCount Value="17"/>
       </Unit20>
       <Unit21>
         <Filename Value="../lea-central-wash/lazarusGUI/source.pas"/>
@@ -235,7 +237,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="352"/>
         <CursorPos X="23" Y="19"/>
-        <UsageCount Value="17"/>
+        <UsageCount Value="16"/>
       </Unit21>
       <Unit22>
         <Filename Value="/usr/lib/lazarus/2.0.6/lcl/grids.pas"/>
@@ -243,22 +245,22 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="4817"/>
         <CursorPos Y="4844"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit22>
       <Unit23>
         <Filename Value="../lazarusGUI/manager.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="187"/>
         <CursorPos X="15" Y="37"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit23>
       <Unit24>
         <Filename Value="../lazarusGUI/clientapi.pas"/>
         <UnitName Value="clientAPI"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="15"/>
         <TopLine Value="350"/>
         <CursorPos X="18" Y="374"/>
-        <UsageCount Value="16"/>
+        <UsageCount Value="22"/>
         <Loaded Value="True"/>
       </Unit24>
       <Unit25>
@@ -267,13 +269,13 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="351"/>
         <CursorPos X="3" Y="70"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="9"/>
       </Unit25>
       <Unit26>
         <Filename Value="../lazarusGUI/collection.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="91"/>
-        <UsageCount Value="2"/>
+        <UsageCount Value="1"/>
       </Unit26>
       <Unit27>
         <Filename Value="../lazarusGUI/source.pas"/>
@@ -281,7 +283,7 @@
         <EditorIndex Value="16"/>
         <TopLine Value="212"/>
         <CursorPos X="135" Y="200"/>
-        <UsageCount Value="56"/>
+        <UsageCount Value="62"/>
         <Loaded Value="True"/>
       </Unit27>
       <Unit28>
@@ -290,103 +292,143 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="7"/>
         <CursorPos Y="50"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="4"/>
       </Unit28>
       <Unit29>
         <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/wincontrol.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="7877"/>
         <CursorPos Y="7902"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit29>
       <Unit30>
         <Filename Value="/usr/lib/lazarus/2.0.6/lcl/include/scrollingwincontrol.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="24"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit30>
     </Units>
-    <JumpHistory Count="20" HistoryIndex="19">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="stations.pas"/>
-        <Caret Line="164" TopLine="152"/>
+        <Filename Value="base.pas"/>
+        <Caret Line="642" TopLine="617"/>
       </Position1>
       <Position2>
-        <Filename Value="stations.pas"/>
-        <Caret Line="177" TopLine="152"/>
+        <Filename Value="base.pas"/>
+        <Caret Line="643" TopLine="617"/>
       </Position2>
       <Position3>
-        <Filename Value="stations.pas"/>
-        <Caret Line="182" TopLine="152"/>
+        <Filename Value="base.pas"/>
+        <Caret Line="539" Column="53" TopLine="515"/>
       </Position3>
       <Position4>
-        <Filename Value="stations.pas"/>
-        <Caret Line="187" TopLine="152"/>
+        <Filename Value="base.pas"/>
+        <Caret Line="95" Column="59" TopLine="68"/>
       </Position4>
       <Position5>
-        <Filename Value="stations.pas"/>
-        <Caret Line="160" TopLine="152"/>
+        <Filename Value="dosatrons.pas"/>
+        <Caret Line="166" Column="3"/>
       </Position5>
       <Position6>
-        <Filename Value="stations.pas"/>
-        <Caret Line="164" TopLine="152"/>
+        <Filename Value="dosatrons.pas"/>
+        <Caret Line="36" Column="56" TopLine="18"/>
       </Position6>
       <Position7>
-        <Filename Value="stations.pas"/>
-        <Caret Line="177" TopLine="152"/>
+        <Filename Value="base.pas"/>
+        <Caret Line="663" Column="12" TopLine="653"/>
       </Position7>
       <Position8>
-        <Filename Value="stations.pas"/>
-        <Caret Line="182" TopLine="152"/>
+        <Filename Value="base.pas"/>
+        <Caret Line="98" Column="52" TopLine="74"/>
       </Position8>
       <Position9>
-        <Filename Value="stations.pas"/>
-        <Caret Line="184" TopLine="152"/>
+        <Filename Value="base.pas"/>
+        <Caret Line="831" Column="46" TopLine="808"/>
       </Position9>
       <Position10>
         <Filename Value="base.pas"/>
-        <Caret Line="642" TopLine="617"/>
+        <Caret Line="835" Column="101" TopLine="801"/>
       </Position10>
       <Position11>
         <Filename Value="base.pas"/>
-        <Caret Line="643" TopLine="617"/>
+        <Caret Line="824" Column="68" TopLine="793"/>
       </Position11>
       <Position12>
-        <Filename Value="stations.pas"/>
-        <Caret Line="185" TopLine="152"/>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="317" Column="71" TopLine="275"/>
       </Position12>
       <Position13>
-        <Filename Value="base.pas"/>
-        <Caret Line="642" TopLine="617"/>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="124" Column="3" TopLine="122"/>
       </Position13>
       <Position14>
-        <Filename Value="base.pas"/>
-        <Caret Line="643" TopLine="617"/>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="294" Column="3" TopLine="292"/>
       </Position14>
       <Position15>
-        <Filename Value="base.pas"/>
-        <Caret Line="539" Column="53" TopLine="515"/>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="290" Column="3" TopLine="288"/>
       </Position15>
       <Position16>
-        <Filename Value="base.pas"/>
-        <Caret Line="95" Column="59" TopLine="68"/>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="377" Column="3" TopLine="339"/>
       </Position16>
       <Position17>
-        <Filename Value="dosatrons.pas"/>
-        <Caret Line="166" Column="3"/>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="128" Column="3" TopLine="126"/>
       </Position17>
       <Position18>
-        <Filename Value="dosatrons.pas"/>
-        <Caret Line="36" Column="56" TopLine="18"/>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="297" Column="3" TopLine="187"/>
       </Position18>
       <Position19>
-        <Filename Value="base.pas"/>
-        <Caret Line="663" Column="12" TopLine="653"/>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="132" Column="25" TopLine="113"/>
       </Position19>
       <Position20>
-        <Filename Value="base.pas"/>
-        <Caret Line="98" Column="52" TopLine="74"/>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="318" Column="29" TopLine="315"/>
       </Position20>
+      <Position21>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="314" Column="27" TopLine="310"/>
+      </Position21>
+      <Position22>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="406" Column="25" TopLine="366"/>
+      </Position22>
+      <Position23>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="128" Column="3" TopLine="126"/>
+      </Position23>
+      <Position24>
+        <Filename Value="base.pas"/>
+        <Caret Line="111" Column="65" TopLine="89"/>
+      </Position24>
+      <Position25>
+        <Filename Value="base.pas"/>
+        <Caret Line="586" Column="23" TopLine="569"/>
+      </Position25>
+      <Position26>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="173" Column="55" TopLine="151"/>
+      </Position26>
+      <Position27>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="147" Column="23" TopLine="110"/>
+      </Position27>
+      <Position28>
+        <Filename Value="setting_edit.pas"/>
+        <Caret Line="149" Column="67" TopLine="91"/>
+      </Position28>
+      <Position29>
+        <Filename Value="base.pas"/>
+        <Caret Line="187" Column="48" TopLine="157"/>
+      </Position29>
+      <Position30>
+        <Filename Value="base.pas"/>
+        <Caret Line="108" Column="69" TopLine="84"/>
+      </Position30>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

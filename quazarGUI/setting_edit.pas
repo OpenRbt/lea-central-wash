@@ -25,6 +25,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure SaveBtnClick(Sender: TObject);
 
+    procedure SetStationButtons();
+
     procedure Init(stationID : integer; stationName, hash : string);
   private
     _id : integer;
@@ -40,7 +42,7 @@ var
 
 const
   DEFAULT_PREFLIGHT_SEC : integer = 0;
-  DEFAULT_RELAY_BOARD   : string = 'localGPIO';
+  DEFAULT_RELAY_BOARD   : string = 'danBoard';
 
 implementation
   uses settings;
@@ -128,10 +130,69 @@ begin
     finally
       Free;
     end;
+  SetStationButtons();
   if ModalResult = 1 then
   begin
     SettingEditForm.Close;
   end;
+end;
+
+procedure TSettingEditForm.SetStationButtons();
+var
+  settingJson: TJSONObject;
+  buttons    :  TJsonArray;
+  button     : TJSONObject;
+  i: integer;
+begin
+  if _hash = SettingsForm.PLACEHOLDER then
+  begin
+    Exit;
+  end;
+  with TFPHttpClient.Create(nil) do
+  try
+     try
+        AddHeader('Content-Type', 'application/json');
+        AddHeader('Pin', SettingsForm.GetPinCode());
+
+        settingJson := TJSONObject.Create;
+
+        settingJson.Add('stationID', _id);
+
+        buttons := TJsonArray.Create;
+        for i:=1 to SettingsForm.GetNumPrograms() do
+        begin
+          button := TJSONObject.Create;
+          button.Add('buttonID', i);
+          button.Add('programID', i);
+          buttons.Add(button);
+        end;
+        settingJson.Add('buttons', buttons);
+
+        RequestBody := TStringStream.Create(settingJson.AsJSON);
+        Post(SettingsForm.GetServerEndpoint() + '/set-station-button');
+
+        if ResponseStatusCode <> 204 then
+        begin
+          raise Exception.Create(IntToStr(ResponseStatusCode));
+        end;
+
+        ModalResult := 1;
+
+      except
+        case ResponseStatusCode of
+          0: begin ModalResult := 0; ShowMessage('Can`t connect to server'); end;
+          401: begin ModalResult := 0; ShowMessage('Not authorized'); end;
+          403, 404: begin ModalResult := 0; ShowMessage('Forbidden'); end;
+          500: begin ModalResult := 0; ShowMessage('Server Error: 500'); end;
+          else
+            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+              sLineBreak + ResponseStatusText);
+        end;
+      end;
+
+    finally
+      Free;
+    end;
 end;
 
 procedure TSettingEditForm.Init(stationID : integer; stationName, hash : string);

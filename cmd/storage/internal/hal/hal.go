@@ -322,3 +322,98 @@ func NewHardwareAccessLayer() (app.HardwareAccessLayer, error) {
 	}
 	return res, nil
 }
+
+// RunProgram
+func (h *HardwareAccessLayer) RunProgram(id int, config app.RelayConfig) (err error) {
+	log.Printf("Program config: stationID=%d, motor speed=%d", id, config.MotorSpeedPercent)
+	board, err := h.ControlBoard(id)
+	if err != nil {
+		return err
+	}
+	go board.RunConfig(config)
+	return nil
+}
+
+// HardwareDebugAccessLayer is the whole layer to communicate with boards
+type HardwareDebugAccessLayer struct {
+	portsMu sync.Mutex
+	ports   map[string]*Rev2DebugBoard
+}
+
+// Rev2DebugBoard describes Revision 2 openrbt.com board
+type Rev2DebugBoard struct {
+	stationNumber int
+	errorCount    int
+	Commands      chan app.RelayConfig
+}
+
+// NewRev2DebugBoard is a constructor
+func NewRev2DebugBoard(stationNumber int) *Rev2DebugBoard {
+	return &Rev2DebugBoard{
+		stationNumber: stationNumber,
+		errorCount:    0,
+		Commands:      make(chan app.RelayConfig),
+	}
+}
+
+// NewHardwareDebugAccessLayer is just a constructor
+func NewHardwareDebugAccessLayer() (app.HardwareAccessLayer, error) {
+	res := &HardwareDebugAccessLayer{
+		ports: make(map[string]*Rev2DebugBoard),
+	}
+	return res, nil
+}
+
+// Start just starts everything
+func (h *HardwareDebugAccessLayer) Start() {
+	h.portsMu.Lock()
+	h.ports["testboard1"] = NewRev2DebugBoard(1)
+	h.ports["testboard2"] = NewRev2DebugBoard(2)
+	h.ports["testboard3"] = NewRev2DebugBoard(3)
+	h.ports["testboard4"] = NewRev2DebugBoard(4)
+	h.ports["testboard5"] = NewRev2DebugBoard(5)
+	h.ports["testboard6"] = NewRev2DebugBoard(6)
+	h.portsMu.Unlock()
+}
+
+// RunProgram
+func (h *HardwareDebugAccessLayer) RunProgram(id int, config app.RelayConfig) (err error) {
+	log.Printf("Program config: stationID=%d, motor speed=%d", id, config.MotorSpeedPercent)
+	board, err := h.ControlBoard(id)
+	if err != nil {
+		return err
+	}
+	go board.RunConfig(config)
+	return nil
+}
+
+// ControlBoard returns required control board by its key
+func (h *HardwareDebugAccessLayer) ControlBoard(wantedPosition int) (app.ControlBoard, error) {
+	// h.portsMu.Lock()
+	for key := range h.ports {
+		if h.ports[key].stationNumber == wantedPosition {
+			return h.ports[key], nil
+		}
+	}
+	// defer h.portsMu.Unlock()
+	return nil, app.ErrNotFound
+}
+
+// RunConfig just runs a config
+func (r *Rev2DebugBoard) RunConfig(config app.RelayConfig) {
+	log.Printf("Running at motor speed=%d, timeout=%d", config.MotorSpeedPercent, config.TimeoutSec)
+	for i := 0; i < len(config.Timings); i++ {
+		log.Printf("Relay ID=%d, timeon=%d, timeoff=%d", config.Timings[i].ID, config.Timings[i].TimeOn, config.Timings[i].TimeOff)
+	}
+}
+
+// MyPosition returns current post position
+func (r *Rev2DebugBoard) MyPosition() (int, error) {
+	return r.stationNumber, nil
+}
+
+// StopAll just stops all relays
+func (r *Rev2DebugBoard) StopAll() error {
+	// Please add here RunCommand with all zero relays
+	return errors.New("not implemented")
+}

@@ -107,6 +107,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation Programs has not yet been implemented")
 			return ProgramsNotImplemented()
 		}),
+		RunProgramHandler: RunProgramHandlerFunc(func(params RunProgramParams) RunProgramResponder {
+			// return middleware.NotImplemented("operation RunProgram has not yet been implemented")
+			return RunProgramNotImplemented()
+		}),
 		SaveHandler: SaveHandlerFunc(func(params SaveParams) SaveResponder {
 			// return middleware.NotImplemented("operation Save has not yet been implemented")
 			return SaveNotImplemented()
@@ -271,6 +275,8 @@ type StorageAPI struct {
 	PingHandler PingHandler
 	// ProgramsHandler sets the operation handler for the programs operation
 	ProgramsHandler ProgramsHandler
+	// RunProgramHandler sets the operation handler for the run program operation
+	RunProgramHandler RunProgramHandler
 	// SaveHandler sets the operation handler for the save operation
 	SaveHandler SaveHandler
 	// SaveCollectionHandler sets the operation handler for the save collection operation
@@ -446,6 +452,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.ProgramsHandler == nil {
 		unregistered = append(unregistered, "ProgramsHandler")
+	}
+
+	if o.RunProgramHandler == nil {
+		unregistered = append(unregistered, "RunProgramHandler")
 	}
 
 	if o.SaveHandler == nil {
@@ -726,6 +736,11 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/programs"] = NewPrograms(o.context, o.ProgramsHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/run-program"] = NewRunProgram(o.context, o.RunProgramHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

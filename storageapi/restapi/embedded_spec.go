@@ -452,6 +452,51 @@ func init() {
         }
       }
     },
+    "/run-program": {
+      "post": {
+        "operationId": "runProgram",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash",
+                "programID",
+                "preflight"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "preflight": {
+                  "type": "boolean"
+                },
+                "programID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/save": {
       "post": {
         "operationId": "save",
@@ -2307,6 +2352,51 @@ func init() {
               "items": {
                 "$ref": "#/definitions/Program"
               }
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/run-program": {
+      "post": {
+        "operationId": "runProgram",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash",
+                "programID",
+                "preflight"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "preflight": {
+                  "type": "boolean"
+                },
+                "programID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
             }
           },
           "500": {
