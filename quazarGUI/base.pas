@@ -529,6 +529,45 @@ begin
   setlength(ProgramsConfig.PreflightRelays[POLYMER_PREFLIGHT_PROGRAM_ID - 1], 1);
   ProgramsConfig.PreflightRelays[POLYMER_PREFLIGHT_PROGRAM_ID - 1][0] := POLYMER_RELAY_ID;
 
+  setlength(ProgramsConfig.PreflightRelays[FOAM_PROGRAM_ID - 1], 3);
+  ProgramsConfig.PreflightRelays[FOAM_PROGRAM_ID - 1][0] := HOT_WATER_RELAY_ID;
+  ProgramsConfig.PreflightRelays[FOAM_PROGRAM_ID - 1][1] := FOAM_RELAY_ID;
+  ProgramsConfig.PreflightRelays[FOAM_PROGRAM_ID - 1][2] := LIGHT_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[SHAMPOO_PROGRAM_ID - 1], 3);
+  ProgramsConfig.PreflightRelays[SHAMPOO_PROGRAM_ID - 1][0] := HOT_WATER_RELAY_ID;
+  ProgramsConfig.PreflightRelays[SHAMPOO_PROGRAM_ID - 1][1] := SHAMPOO_RELAY_ID;
+  ProgramsConfig.PreflightRelays[SHAMPOO_PROGRAM_ID - 1][2] := LIGHT_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[RINSE_PROGRAM_ID - 1], 2);
+  ProgramsConfig.PreflightRelays[RINSE_PROGRAM_ID - 1][0] := COLD_WATER_RELAY_ID;
+  ProgramsConfig.PreflightRelays[RINSE_PROGRAM_ID - 1][1] := LIGHT_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[WAX_PROGRAM_ID - 1], 3);
+  ProgramsConfig.PreflightRelays[WAX_PROGRAM_ID - 1][0] := HOT_WATER_RELAY_ID;
+  ProgramsConfig.PreflightRelays[WAX_PROGRAM_ID - 1][1] := WAX_RELAY_ID;
+  ProgramsConfig.PreflightRelays[WAX_PROGRAM_ID - 1][2] := LIGHT_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[DRY_PROGRAM_ID - 1], 3);
+  ProgramsConfig.PreflightRelays[DRY_PROGRAM_ID - 1][0] := OSM_WATER_RELAY_ID;
+  ProgramsConfig.PreflightRelays[DRY_PROGRAM_ID - 1][1] := POLYMER_RELAY_ID;
+  ProgramsConfig.PreflightRelays[DRY_PROGRAM_ID - 1][2] := LIGHT_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[PAUSE_PROGRAM_ID - 1], 1);
+  ProgramsConfig.PreflightRelays[PAUSE_PROGRAM_ID - 1][0] := LIGHT_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[FOAM_PREFLIGHT_PROGRAM_ID - 1], 1);
+  ProgramsConfig.PreflightRelays[FOAM_PREFLIGHT_PROGRAM_ID - 1][0] := FOAM_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1], 1);
+  ProgramsConfig.PreflightRelays[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1][0] := SHAMPOO_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[WAX_PREFLIGHT_PROGRAM_ID - 1], 1);
+  ProgramsConfig.PreflightRelays[WAX_PREFLIGHT_PROGRAM_ID - 1][0] := WAX_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[POLYMER_PREFLIGHT_PROGRAM_ID - 1], 1);
+  ProgramsConfig.PreflightRelays[POLYMER_PREFLIGHT_PROGRAM_ID - 1][0] := POLYMER_RELAY_ID;
+
   ProgramsConfig.MotorSpeedPercent[FOAM_PROGRAM_ID              - 1] :=  15;
   ProgramsConfig.MotorSpeedPercent[SHAMPOO_PROGRAM_ID           - 1] :=  50;
   ProgramsConfig.MotorSpeedPercent[RINSE_PROGRAM_ID             - 1] := 100;

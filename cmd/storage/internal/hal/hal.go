@@ -330,7 +330,7 @@ func (h *HardwareAccessLayer) RunProgram(id int, config app.RelayConfig) (err er
 	if err != nil {
 		return err
 	}
-	board.RunConfig(config)
+	go board.RunConfig(config)
 	return nil
 }
 
@@ -366,9 +366,13 @@ func NewHardwareDebugAccessLayer() (app.HardwareAccessLayer, error) {
 
 // Start just starts everything
 func (h *HardwareDebugAccessLayer) Start() {
-	board := NewRev2DebugBoard(1)
 	h.portsMu.Lock()
-	h.ports["testboard"] = board
+	h.ports["testboard1"] = NewRev2DebugBoard(1)
+	h.ports["testboard2"] = NewRev2DebugBoard(2)
+	h.ports["testboard3"] = NewRev2DebugBoard(3)
+	h.ports["testboard4"] = NewRev2DebugBoard(4)
+	h.ports["testboard5"] = NewRev2DebugBoard(5)
+	h.ports["testboard6"] = NewRev2DebugBoard(6)
 	h.portsMu.Unlock()
 }
 
@@ -379,7 +383,7 @@ func (h *HardwareDebugAccessLayer) RunProgram(id int, config app.RelayConfig) (e
 	if err != nil {
 		return err
 	}
-	board.RunConfig(config)
+	go board.RunConfig(config)
 	return nil
 }
 
@@ -397,9 +401,9 @@ func (h *HardwareDebugAccessLayer) ControlBoard(wantedPosition int) (app.Control
 
 // RunConfig just runs a config
 func (r *Rev2DebugBoard) RunConfig(config app.RelayConfig) {
-	log.Printf("Running at motor speed=%d", config.MotorSpeedPercent)
+	log.Printf("Running at motor speed=%d, timeout=%d", config.MotorSpeedPercent, config.TimeoutSec)
 	for i := 0; i < len(config.Timings); i++ {
-		log.Printf("Relay ID=%d, timeon=%d", config.Timings[i].ID, config.Timings[i].TimeOn)
+		log.Printf("Relay ID=%d, timeon=%d, timeoff=%d", config.Timings[i].ID, config.Timings[i].TimeOn, config.Timings[i].TimeOff)
 	}
 }
 

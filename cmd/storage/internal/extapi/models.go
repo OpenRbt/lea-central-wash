@@ -23,13 +23,21 @@ func appRelays(m []*model.RelayConfig) []app.Relay {
 }
 
 func appPrograms(p *model.Program) app.Program {
+	motorSpeedPercent := int64(0)
+	preflightMotorSpeedPercent := int64(0)
+	if p.MotorSpeedPercent != nil {
+		motorSpeedPercent = *p.MotorSpeedPercent
+	}
+	if p.PreflightMotorSpeedPercent != nil {
+		preflightMotorSpeedPercent = *p.PreflightMotorSpeedPercent
+	}
 	return app.Program{
 		ID:                         *p.ID,
 		Name:                       p.Name,
 		Price:                      int(p.Price),
 		PreflightEnabled:           p.PreflightEnabled,
-		MotorSpeedPercent:          *p.MotorSpeedPercent,
-		PreflightMotorSpeedPercent: *p.PreflightMotorSpeedPercent,
+		MotorSpeedPercent:          motorSpeedPercent,
+		PreflightMotorSpeedPercent: preflightMotorSpeedPercent,
 		Relays:                     appRelays(p.Relays),
 		PreflightRelays:            appRelays(p.PreflightRelays),
 	}

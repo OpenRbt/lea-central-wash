@@ -478,23 +478,6 @@ func (a *app) SetCardReaderConfig(cfg CardReaderConfig) error {
 	return a.repo.SetCardReaderConfig(cfg)
 }
 
-func (a *app) RunProgram(id *StationID, programID *int64) (err error) {
-	program, err := a.repo.Programs(programID)
-	if err != nil {
-		return err
-	}
-
-	cfg := RelayConfig{
-		MotorSpeedPercent: int(program[0].MotorSpeedPercent),
-		TimeoutSec:        100,
-		Timings:           make([]Relay, 0, 12),
-	}
-
-	cfg.Timings = append(cfg.Timings, program[0].Relays...)
-
-	return a.hardware.RunProgram(int(*id), cfg)
-}
-
 func (a *app) Station(id StationID) (SetStation, error) {
 	return a.repo.Station(id)
 }

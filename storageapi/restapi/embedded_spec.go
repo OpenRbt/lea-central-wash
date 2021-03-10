@@ -464,15 +464,18 @@ func init() {
               "type": "object",
               "required": [
                 "hash",
-                "programID"
+                "programID",
+                "preflight"
               ],
               "properties": {
                 "hash": {
                   "$ref": "#/definitions/Hash"
                 },
+                "preflight": {
+                  "type": "boolean"
+                },
                 "programID": {
-                  "type": "integer",
-                  "minimum": 1
+                  "type": "integer"
                 }
               }
             }
@@ -483,7 +486,10 @@ func init() {
             "description": "OK"
           },
           "404": {
-            "description": "not found"
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"
@@ -2366,15 +2372,18 @@ func init() {
               "type": "object",
               "required": [
                 "hash",
-                "programID"
+                "programID",
+                "preflight"
               ],
               "properties": {
                 "hash": {
                   "$ref": "#/definitions/Hash"
                 },
+                "preflight": {
+                  "type": "boolean"
+                },
                 "programID": {
-                  "type": "integer",
-                  "minimum": 1
+                  "type": "integer"
                 }
               }
             }
@@ -2385,7 +2394,10 @@ func init() {
             "description": "OK"
           },
           "404": {
-            "description": "not found"
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"

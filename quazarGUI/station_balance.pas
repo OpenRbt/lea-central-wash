@@ -379,6 +379,21 @@ begin
   end;
 end;
 
+procedure TStationBalanceForm.PausePanelClick(Sender: TObject);
+begin
+  SetStationCurrentProgramByID(BaseForm.GetPauseProgramID());
+end;
+
+procedure TStationBalanceForm.RinsePanelClick(Sender: TObject);
+begin
+  SetStationCurrentProgramByID(BaseForm.GetRinseProgramID());
+end;
+
+procedure TStationBalanceForm.ShampooPanelClick(Sender: TObject);
+begin
+  SetStationCurrentProgramByID(BaseForm.GetShampooProgramID());
+end;
+
 procedure TStationBalanceForm.UpdateCall(Sender: TObject);
 begin
   StationBalanceForm.FormShow(Sender);

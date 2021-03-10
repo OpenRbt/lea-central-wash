@@ -70,9 +70,12 @@ type RunProgramBody struct {
 	// Required: true
 	Hash model.Hash `json:"hash"`
 
+	// preflight
+	// Required: true
+	Preflight *bool `json:"preflight"`
+
 	// program ID
 	// Required: true
-	// Minimum: 1
 	ProgramID *int64 `json:"programID"`
 }
 
@@ -81,6 +84,10 @@ func (o *RunProgramBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateHash(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePreflight(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -106,13 +113,18 @@ func (o *RunProgramBody) validateHash(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *RunProgramBody) validateProgramID(formats strfmt.Registry) error {
+func (o *RunProgramBody) validatePreflight(formats strfmt.Registry) error {
 
-	if err := validate.Required("args"+"."+"programID", "body", o.ProgramID); err != nil {
+	if err := validate.Required("args"+"."+"preflight", "body", o.Preflight); err != nil {
 		return err
 	}
 
-	if err := validate.MinimumInt("args"+"."+"programID", "body", int64(*o.ProgramID), 1, false); err != nil {
+	return nil
+}
+
+func (o *RunProgramBody) validateProgramID(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"programID", "body", o.ProgramID); err != nil {
 		return err
 	}
 
