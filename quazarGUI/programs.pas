@@ -12,10 +12,8 @@ type
 
   ProgramInfo = packed record
     Count  : integer;
-    //Name   : array of string;
     Key    : array of string;
     ProgramID: array of integer;
-    //Price  : array of integer;
     Enabled: array of boolean;
 
   end;
@@ -99,19 +97,11 @@ implementation
 procedure TProgramsForm.FormCreate(Sender: TObject);
 begin
   ProgramsInfo.Count := NUM_PROGRAMS;
-  //setlength(ProgramsInfo.Name,    ProgramsInfo.Count);
+
   setlength(ProgramsInfo.Key,     ProgramsInfo.Count);
-  //setlength(ProgramsInfo.Price,   ProgramsInfo.Count);
   setlength(ProgramsInfo.Enabled, ProgramsInfo.Count);
-
-  //ProgramsInfo.Name[FOAM]    := FOAM_STR;
-  //ProgramsInfo.Name[SHAMPOO] := SHAMPOO_STR;
-  //ProgramsInfo.Name[RINSE]   := RINSE_STR;
-  //ProgramsInfo.Name[WAX]     := WAX_STR;
-  //ProgramsInfo.Name[DRY]     := DRY_STR;
-  //ProgramsInfo.Name[PAUSE]   := PAUSE_STR;
-
   setlength(ProgramsInfo.ProgramID, ProgramsInfo.Count);
+
   ProgramsInfo.ProgramID[FOAM] := FOAM_PROGRAM_ID;
   ProgramsInfo.ProgramID[SHAMPOO] := SHAMPOO_PROGRAM_ID;
   ProgramsInfo.ProgramID[RINSE] := RINSE_PROGRAM_ID;
@@ -125,13 +115,6 @@ begin
   ProgramsInfo.Key[WAX]      := WAX_KEY;
   ProgramsInfo.Key[DRY]      := DRY_KEY;
   ProgramsInfo.Key[PAUSE]    := PAUSE_KEY;
-
-  //ProgramsInfo.Price[FOAM]    := DEFAULT_PRICE;
-  //ProgramsInfo.Price[SHAMPOO] := DEFAULT_PRICE;
-  //ProgramsInfo.Price[RINSE]   := DEFAULT_PRICE;
-  //ProgramsInfo.Price[WAX]     := DEFAULT_PRICE;
-  //ProgramsInfo.Price[DRY]     := DEFAULT_PRICE;
-  //ProgramsInfo.Price[PAUSE]   := DEFAULT_PRICE;
 
   ProgramsInfo.Enabled[FOAM]    := DEFAULT_ENABLED;
   ProgramsInfo.Enabled[SHAMPOO] := DEFAULT_ENABLED;

@@ -232,7 +232,7 @@ ORDER BY relay_id
 		   sum(service) as service 
 	FROM money_report
 	WHERE id > coalesce(
-		(SELECT last_money_report_id FROM money_collection WHERE station_id = 4
+		(SELECT last_money_report_id FROM money_collection WHERE station_id = :station_id
 		ORDER BY id DESC
 		LIMIT 1)
 		,0)
@@ -325,9 +325,9 @@ select s.id,
 	p.name as "program_name",
 	p.preflight_enabled,
 	p.relays,
-	p.preflight_relays
+	p.preflight_relays,
 	p.motor_speed_percent,
-	p.preflight_motor_speed_percent,
+	p.preflight_motor_speed_percent
 from station s
 join station_program b on s.id=b.station_id
 join program p on b.program_id=p.id
