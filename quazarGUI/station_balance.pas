@@ -142,6 +142,7 @@ begin
 
         settingJson.Add('programID', programID);
         settingJson.Add('hash', BaseForm.GetStationHashByID(_id));
+        settingJson.Add('preflight', false);
 
         RequestBody := TStringStream.Create(settingJson.AsJSON);
         Post(BaseForm.GetServerEndpoint() + '/run-program');
@@ -377,21 +378,6 @@ begin
   begin
     SetStationCurrentProgramByID(clickedProgram);
   end;
-end;
-
-procedure TStationBalanceForm.PausePanelClick(Sender: TObject);
-begin
-  SetStationCurrentProgramByID(BaseForm.GetPauseProgramID());
-end;
-
-procedure TStationBalanceForm.RinsePanelClick(Sender: TObject);
-begin
-  SetStationCurrentProgramByID(BaseForm.GetRinseProgramID());
-end;
-
-procedure TStationBalanceForm.ShampooPanelClick(Sender: TObject);
-begin
-  SetStationCurrentProgramByID(BaseForm.GetShampooProgramID());
 end;
 
 procedure TStationBalanceForm.UpdateCall(Sender: TObject);
