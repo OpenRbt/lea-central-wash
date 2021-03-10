@@ -22,10 +22,10 @@ func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err err
 
 		if preflight {
 			cfg.MotorSpeedPercent = int(program[0].PreflightMotorSpeedPercent)
-			cfg.Timings = append(cfg.Timings, program[0].PreflightRelays...)
+			cfg.Timings = program[0].PreflightRelays
 		} else {
 			cfg.MotorSpeedPercent = int(program[0].MotorSpeedPercent)
-			cfg.Timings = append(cfg.Timings, program[0].Relays...)
+			cfg.Timings = program[0].Relays
 		}
 	}
 	return a.hardware.RunProgram(int(id), cfg)
