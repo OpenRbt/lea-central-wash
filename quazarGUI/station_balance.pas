@@ -178,7 +178,7 @@ begin
   clickedProgram := BaseForm.GetDryProgramID();
   if currentProgram = clickedProgram then
   begin
-    SetStationCurrentProgramByID(BaseForm.GetStopProgramID());
+
   end
   else
   begin
@@ -195,7 +195,7 @@ begin
   clickedProgram := BaseForm.GetFoamProgramID();
   if currentProgram = clickedProgram then
   begin
-    SetStationCurrentProgramByID(BaseForm.GetStopProgramID());
+
   end
   else
   begin
@@ -338,7 +338,7 @@ begin
   clickedProgram := BaseForm.GetPauseProgramID();
   if currentProgram = clickedProgram then
   begin
-    SetStationCurrentProgramByID(BaseForm.GetStopProgramID());
+
   end
   else
   begin
@@ -355,7 +355,7 @@ begin
   clickedProgram := BaseForm.GetRinseProgramID();
   if currentProgram = clickedProgram then
   begin
-    SetStationCurrentProgramByID(BaseForm.GetStopProgramID());
+
   end
   else
   begin
@@ -372,7 +372,7 @@ begin
   clickedProgram := BaseForm.GetShampooProgramID();
   if currentProgram = clickedProgram then
   begin
-    SetStationCurrentProgramByID(BaseForm.GetStopProgramID());
+
   end
   else
   begin
@@ -460,7 +460,7 @@ begin
   clickedProgram := BaseForm.GetWaxProgramID();
   if currentProgram = clickedProgram then
   begin
-    SetStationCurrentProgramByID(BaseForm.GetStopProgramID());
+
   end
   else
   begin

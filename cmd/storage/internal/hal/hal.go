@@ -383,19 +383,19 @@ func (h *HardwareDebugAccessLayer) RunProgram(id int, config app.RelayConfig) (e
 	if err != nil {
 		return err
 	}
-	go board.RunConfig(config)
+	board.RunConfig(config)
 	return nil
 }
 
 // ControlBoard returns required control board by its key
 func (h *HardwareDebugAccessLayer) ControlBoard(wantedPosition int) (app.ControlBoard, error) {
-	// h.portsMu.Lock()
+	h.portsMu.Lock()
+	defer h.portsMu.Unlock()
 	for key := range h.ports {
 		if h.ports[key].stationNumber == wantedPosition {
 			return h.ports[key], nil
 		}
 	}
-	// defer h.portsMu.Unlock()
 	return nil, app.ErrNotFound
 }
 
