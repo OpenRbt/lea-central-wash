@@ -281,12 +281,12 @@ func (r *Rev2Board) RunConfig(config app.RelayConfig) {
 // ControlBoard returns required control board by its key
 func (h *HardwareAccessLayer) ControlBoard(wantedPosition int) (app.ControlBoard, error) {
 	h.portsMu.Lock()
+	defer h.portsMu.Unlock()
 	for key := range h.ports {
 		if h.ports[key].stationNumber == wantedPosition {
 			return h.ports[key], nil
 		}
 	}
-	defer h.portsMu.Unlock()
 	return nil, app.ErrNotFound
 }
 
@@ -330,7 +330,7 @@ func (h *HardwareAccessLayer) RunProgram(id int, config app.RelayConfig) (err er
 	if err != nil {
 		return err
 	}
-	go board.RunConfig(config)
+	board.RunConfig(config)
 	return nil
 }
 
