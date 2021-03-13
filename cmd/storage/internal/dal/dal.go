@@ -693,3 +693,26 @@ func (r *repo) SetCardReaderConfig(cfg app.CardReaderConfig) (err error) {
 	})
 	return //nolint:nakedret
 }
+
+func (r *repo) AddUpdateConfig(note string) (id int, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &id, sqlUpdateConfigAdd, argUpdateConfigAdd{
+			Note:  note,
+			Ctime: time.Now().UTC(),
+		})
+		return err
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) LastUpdateConfig() (id int, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &id, sqlLastUpdateConfigGet, argLastUpdateConfigGet{})
+		if err == sql.ErrNoRows {
+			id = 0
+			return nil
+		}
+		return err
+	})
+	return //nolint:nakedret
+}

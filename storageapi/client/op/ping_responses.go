@@ -134,6 +134,9 @@ swagger:model PingOKBody
 */
 type PingOKBody struct {
 
+	// last update
+	LastUpdate int64 `json:"lastUpdate,omitempty"`
+
 	// open station
 	// Required: true
 	OpenStation *bool `json:"openStation"`

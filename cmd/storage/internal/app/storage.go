@@ -119,6 +119,7 @@ func (a *app) Ping(id StationID, balance, program int) StationData {
 	station.CurrentBalance = balance
 	station.CurrentProgram = program
 	a.stations[id] = station
+	oldStation.LastUpdate = a.lastUpdate
 	return oldStation
 }
 
@@ -132,6 +133,7 @@ func (a *app) Get(id StationID) (StationData, error) {
 	if !exist {
 		return StationData{}, ErrNotFound
 	}
+	value.LastUpdate = a.lastUpdate
 	return value, nil
 }
 
@@ -408,7 +410,8 @@ func (a *app) SetStation(station SetStation) error {
 		return err
 	}
 	a.loadStations()
-	return nil
+	err = a.updateConfig("SetStation")
+	return err
 }
 
 func (a *app) DelStation(id StationID) error {
@@ -452,16 +455,33 @@ func (a *app) Programs(id *int64) ([]Program, error) {
 	return a.repo.Programs(id)
 }
 func (a *app) SetProgram(program Program) error {
-	return a.repo.SetProgram(program)
+	err := a.repo.SetProgram(program)
+	if err != nil {
+		return err
+	}
+	err = a.updateConfig("SetProgram")
+	return err
 }
 func (a *app) StationProgram(id StationID) ([]StationProgram, error) {
 	return a.repo.StationProgram(id)
 }
 func (a *app) SetStationProgram(id StationID, button []StationProgram) error {
-	return a.repo.SetStationProgram(id, button)
+	err := a.repo.SetStationProgram(id, button)
+	if err != nil {
+		return err
+	}
+	err = a.updateConfig("SetStationProgram")
+	return err
 }
 func (a *app) StationConfig(id StationID) (StationConfig, error) {
-	return a.repo.StationConfig(id)
+	res, err := a.repo.StationConfig(id)
+	if err != nil {
+		return res, err
+	}
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+	res.LastUpdate = a.lastUpdate
+	return res, nil
 }
 
 func (a *app) Kasse() (kasse Kasse, err error) {
@@ -480,4 +500,15 @@ func (a *app) SetCardReaderConfig(cfg CardReaderConfig) error {
 
 func (a *app) Station(id StationID) (SetStation, error) {
 	return a.repo.Station(id)
+}
+
+func (a *app) updateConfig(note string) error {
+	id, err := a.repo.AddUpdateConfig(note)
+	if err != nil {
+		return err
+	}
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+	a.lastUpdate = id
+	return nil
 }

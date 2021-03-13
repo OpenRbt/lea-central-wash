@@ -273,6 +273,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
 		ServiceAmount: newInt64(int64(station.ServiceMoney)),
 		OpenStation:   &station.OpenStation,
+		LastUpdate:    int64(station.LastUpdate),
 	})
 }
 

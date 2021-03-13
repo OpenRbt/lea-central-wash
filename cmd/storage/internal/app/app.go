@@ -140,6 +140,8 @@ type (
 		SetKasse(kasse Kasse) (err error)
 		CardReaderConfig(StationID) (*CardReaderConfig, error)
 		SetCardReaderConfig(CardReaderConfig) error
+		AddUpdateConfig(note string) (int, error)
+		LastUpdateConfig() (int, error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -181,6 +183,7 @@ type app struct {
 	kasseSvc      KasseSvc
 	weatherSvc    WeatherSvc
 	hardware      HardwareAccessLayer
+	lastUpdate    int
 }
 
 // New creates and returns new App.
@@ -193,6 +196,14 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 		hardware:   hardware,
 	}
 	appl.loadStations()
+	id, err := appl.repo.LastUpdateConfig()
+	if err != nil {
+		log.PrintErr(err)
+		id = 1
+	}
+	appl.stationsMutex.Lock()
+	appl.lastUpdate = id
+	appl.stationsMutex.Unlock()
 	return appl
 }
 
@@ -290,5 +301,6 @@ type StationConfig struct {
 	Name         string
 	PreflightSec int
 	RelayBoard   string
+	LastUpdate   int
 	Programs     []Program
 }

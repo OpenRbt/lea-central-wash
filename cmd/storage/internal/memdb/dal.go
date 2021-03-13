@@ -214,3 +214,11 @@ func (t *DB) RunProgram(id *app.StationID, programID *int64) (err error) {
 func (t *DB) Station(id app.StationID) (station app.SetStation, err error) {
 	return
 }
+
+func (t *DB) AddUpdateConfig(note string) (id int, err error) {
+	return
+}
+
+func (t *DB) LastUpdateConfig() (id int, err error) {
+	return
+}
