@@ -54,11 +54,12 @@ type
     procedure UpdateCall(Sender: TObject);
 
     function GetCurrentMoney() : integer;
-    procedure SetStationCurrentProgramByID(programID: integer);
+    procedure RunProgram();
     procedure WaxPanelClick(Sender: TObject);
   private
     _id : integer;
     _isStandBy : boolean;
+    _currProgram : integer;
   public
 
   end;
@@ -69,6 +70,7 @@ var
 const
   NO_RESPONSE : integer = -1;
   DEFAULT_SERVICE_INCREMENT : integer = 10;
+  REMOTE : integer = -1;
 
 implementation
   uses base;
@@ -124,82 +126,41 @@ begin
 
 end;
 
-procedure TStationBalanceForm.SetStationCurrentProgramByID(programID: integer);
-var
-  settingJson: TJSONObject;
+procedure TStationBalanceForm.RunProgram();
 begin
-  if BaseForm.GetStationHashByID(_id) = PLACEHOLDER then
+  if _currProgram <> REMOTE then
   begin
-    Exit;
+    BaseForm.SetStationCurrentProgramByID(_currProgram, _id, false);
   end;
-  with TFPHttpClient.Create(nil) do
-  try
-     try
-        AddHeader('Content-Type', 'application/json');
-        AddHeader('Pin', BaseForm.GetPinCode());
-
-        settingJson := TJSONObject.Create;
-
-        settingJson.Add('programID', programID);
-        settingJson.Add('hash', BaseForm.GetStationHashByID(_id));
-        settingJson.Add('preflight', false);
-
-        RequestBody := TStringStream.Create(settingJson.AsJSON);
-        Post(BaseForm.GetServerEndpoint() + '/run-program');
-
-        if ResponseStatusCode <> 204 then
-        begin
-          raise Exception.Create(IntToStr(ResponseStatusCode));
-        end;
-
-      except
-        case ResponseStatusCode of
-          0: begin ModalResult := 0; ShowMessage('Can`t connect to server'); end;
-          401: begin ModalResult := 0; ShowMessage('Not authorized'); end;
-          403, 404: begin ModalResult := 0; ShowMessage('Forbidden'); end;
-          500: begin ShowMessage('Server Error: 500'); end;
-          else
-            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
-              sLineBreak + ResponseStatusText);
-        end;
-      end;
-
-    finally
-      Free;
-    end;
 end;
 
 procedure TStationBalanceForm.DryPanelClick(Sender: TObject);
 var
-  currentProgram: integer;
   clickedProgram: integer;
 begin
-  currentProgram := BaseForm.GetStationCurrentProgramByID(_id);
   clickedProgram := BaseForm.GetDryProgramID();
-  if currentProgram = clickedProgram then
+  if _currProgram = clickedProgram then
   begin
-
+    _currProgram := REMOTE;
   end
   else
   begin
-    SetStationCurrentProgramByID(clickedProgram);
+    _currProgram := clickedProgram;
   end;
 end;
 
 procedure TStationBalanceForm.FoamPanelClick(Sender: TObject);
 var
-  currentProgram: integer;
   clickedProgram: integer;
 begin
-  currentProgram := BaseForm.GetStationCurrentProgramByID(_id);
   clickedProgram := BaseForm.GetFoamProgramID();
-  if currentProgram = clickedProgram then
+  if _currProgram = clickedProgram then
   begin
-
+    _currProgram := REMOTE;
   end
   else
   begin
-    SetStationCurrentProgramByID(clickedProgram);
+    _currProgram := clickedProgram;
   end;
 end;
 
@@ -219,7 +180,7 @@ procedure TStationBalanceForm.FormShow(Sender: TObject);
 var
   currentMoney : integer;
   currentBalance : integer;
-
+  currentProgram : integer;
 begin
   UpdateTimer.Enabled := false;
   if BaseForm.UpdateStations() then
@@ -251,7 +212,17 @@ begin
       WaxPanel.Color:=clDefault;
       DryPanel.Color:=clDefault;
       PausePanel.Color:=clDefault;
-      case BaseForm.GetStationCurrentProgramByID(_id) of
+
+      if _currProgram = REMOTE then
+      begin
+        currentProgram := BaseForm.GetStationCurrentProgramByID(_id);
+      end
+      else
+      begin
+        currentProgram := _currProgram;
+      end;
+
+      case currentProgram of
         1: FoamPanel.Color:=clLime;
         2: ShampooPanel.Color:=clLime;
         3: RinsePanel.Color:=clLime;
@@ -322,66 +293,62 @@ end;
 procedure TStationBalanceForm.Init(id: integer);
 begin
   _id := id;
+  _currProgram := REMOTE;
 end;
 
 procedure TStationBalanceForm.OpenBtnClick(Sender: TObject);
 begin
-  SetStationCurrentProgramByID(BaseForm.GetOpenDoorProgramID());
+  _currProgram := BaseForm.GetOpenDoorProgramID();
 end;
 
 procedure TStationBalanceForm.PausePanelClick(Sender: TObject);
 var
-  currentProgram: integer;
   clickedProgram: integer;
 begin
-  currentProgram := BaseForm.GetStationCurrentProgramByID(_id);
   clickedProgram := BaseForm.GetPauseProgramID();
-  if currentProgram = clickedProgram then
+  if _currProgram = clickedProgram then
   begin
-
+    _currProgram := REMOTE;
   end
   else
   begin
-    SetStationCurrentProgramByID(clickedProgram);
+    _currProgram := clickedProgram;
   end;
 end;
 
 procedure TStationBalanceForm.RinsePanelClick(Sender: TObject);
 var
-  currentProgram: integer;
   clickedProgram: integer;
 begin
-  currentProgram := BaseForm.GetStationCurrentProgramByID(_id);
   clickedProgram := BaseForm.GetRinseProgramID();
-  if currentProgram = clickedProgram then
+  if _currProgram = clickedProgram then
   begin
-
+    _currProgram := REMOTE;
   end
   else
   begin
-    SetStationCurrentProgramByID(clickedProgram);
+    _currProgram := clickedProgram;
   end;
 end;
 
 procedure TStationBalanceForm.ShampooPanelClick(Sender: TObject);
 var
-  currentProgram: integer;
   clickedProgram: integer;
 begin
-  currentProgram := BaseForm.GetStationCurrentProgramByID(_id);
   clickedProgram := BaseForm.GetShampooProgramID();
-  if currentProgram = clickedProgram then
+  if _currProgram = clickedProgram then
   begin
-
+    _currProgram := REMOTE;
   end
   else
   begin
-    SetStationCurrentProgramByID(clickedProgram);
+    _currProgram := clickedProgram;
   end;
 end;
 
 procedure TStationBalanceForm.UpdateCall(Sender: TObject);
 begin
+  RunProgram();
   StationBalanceForm.FormShow(Sender);
 end;
 
@@ -453,18 +420,16 @@ end;
 
 procedure TStationBalanceForm.WaxPanelClick(Sender: TObject);
 var
-  currentProgram: integer;
   clickedProgram: integer;
 begin
-  currentProgram := BaseForm.GetStationCurrentProgramByID(_id);
   clickedProgram := BaseForm.GetWaxProgramID();
-  if currentProgram = clickedProgram then
+  if _currProgram = clickedProgram then
   begin
-
+    _currProgram := REMOTE;
   end
   else
   begin
-    SetStationCurrentProgramByID(clickedProgram);
+    _currProgram := clickedProgram;
   end;
 end;
 

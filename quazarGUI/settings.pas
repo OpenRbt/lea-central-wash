@@ -11,18 +11,6 @@ uses
 type
   THashes = array of string;
 
-  StationsInfo = packed record
-    Count: integer;
-    id: array of integer;
-    name: array of string;
-    hash: array of string;
-    status: array of string;
-    info: array of string;
-    currentBalance: array of integer;
-    currentProgram: array of integer;
-
-  end;
-
   { TSettingsForm }
 
   TSettingsForm = class(TBaseForm)
@@ -46,7 +34,6 @@ type
     procedure StationsGridDrawCell(Sender: TObject; aCol, aRow: integer;
   aRect: TRect; aState: TGridDrawState);
     procedure UpdateCall(Sender: TObject);
-    function GetFreeHashes() : THashes;
 
   private
 
@@ -56,9 +43,6 @@ type
 
 var
   SettingsForm: TSettingsForm;
-  ResponseStations: StationsInfo;
-  freeHashVals : array of string;
-  freeHashID : integer;
 
 const
   MAX_NUM_STATIONS : integer = 12;
@@ -94,189 +78,28 @@ begin
   SettingsForm.FormShow(Sender);
 end;
 
-function TSettingsForm.GetFreeHashes() : THashes;
-var
-  hashes : THashes;
-  i : integer;
-begin
-  setlength(hashes, freeHashID);
-  for i := 0 to freeHashID-1 do
-  begin
-    hashes[i] := freeHashVals[i];
-  end;
-  Result := hashes;
-end;
-
 procedure TSettingsForm.FormShow(Sender: TObject);
 var
-  RequestAnswer: string;
-  stationsJson: TJsonArray;
   i: integer;
-  path: TJSONdata;
-  hasID : boolean;
-  id : integer;
-  //successful: boolean = True;
-
 begin
   SettingsForm.Settings.Font.Color := GetHoverColor();
   SettingsForm.NotAuthorized.Visible:=False;
   SettingsForm.StationsGrid.Visible:=True;
 
-  with TFPHttpClient.Create(nil) do
-  try
-     try
-        AddHeader('Content-Type', 'application/json');
-        AddHeader('Pin', GetPinCode());
-        RequestAnswer := Get(GetServerEndpoint() + 'status');
-
-        stationsJson := GetJson(RequestAnswer).GetPath('stations') as TJsonArray;
-
-        setlength(ResponseStations.id, stationsJson.Count);
-        setlength(ResponseStations.name, stationsJson.Count);
-        setlength(ResponseStations.hash, stationsJson.Count);
-        setlength(ResponseStations.status, stationsJson.Count);
-        setlength(ResponseStations.info, stationsJson.Count);
-        setlength(ResponseStations.currentBalance, stationsJson.Count);
-        setlength(ResponseStations.currentProgram, stationsJson.Count);
-
-        setlength(freeHashVals, stationsJson.Count);
-
-        ResponseStations.Count := stationsJson.Count;
-
-        freeHashID := 0;
-        for i := 0 to stationsJson.Count - 1 do
-        begin
-          with stationsJson.items[i] do
-          begin
-            path := FindPath('id');
-            if path <> nil then
-            begin
-              id := path.AsInteger-1;
-              ResponseStations.id[id] := path.AsInteger;
-              hasID := true;
-            end
-            else
-            begin
-              ResponseStations.id[stationsJson.Count-1-freeHashID] := NO_ID;
-              hasID := false;
-            end;
-
-            path := FindPath('hash');
-            if path <> nil then
-            begin
-              if hasID then
-              begin
-                ResponseStations.hash[id] := path.AsString;
-              end
-              else
-              begin
-                freeHashVals[freeHashID] := path.AsString;
-                freeHashID := freeHashID + 1;
-              end;
-            end
-            else
-            begin
-              //if hasID then
-              //begin
-                ResponseStations.hash[id] := PLACEHOLDER;
-              //end;
-            end;
-
-            path := FindPath('name');
-            if path <> nil then
-            begin
-              if ResponseStations.hash[id] <> PLACEHOLDER then
-              begin
-                ResponseStations.name[id] := path.AsString;
-              end
-              else
-              begin
-                ResponseStations.name[id] := PLACEHOLDER;
-              end;
-            end;
-
-            path := FindPath('status');
-            if path <> nil then
-            begin
-              if ResponseStations.hash[id] <> PLACEHOLDER then
-              begin
-                ResponseStations.status[id] := path.AsString;
-              end
-              else
-              begin
-                ResponseStations.status[id] := PLACEHOLDER;
-              end;
-            end;
-
-            path := FindPath('info');
-            if path <> nil then
-            begin
-              if hasID then
-              begin
-                ResponseStations.info[id] := path.AsString;
-              end;
-            end;
-
-            path := FindPath('currentBalance');
-            if path <> nil then
-            begin
-              if hasID then
-              begin
-                ResponseStations.currentBalance[id] := path.AsInteger;
-              end;
-            end;
-
-            path := FindPath('currentProgram');
-            if path <> nil then
-            begin
-              if hasID then
-              begin
-                ResponseStations.currentProgram[id] := path.AsInteger;
-              end;
-            end;
-          end;
-        end;
-
-        SettingsForm.StationsGrid.RowCount := SettingsForm.StationsGrid.FixedRows + ResponseStations.Count - freeHashID;
-        SettingsForm.StationsGrid.Rows[SettingsForm.StationsGrid.FixedRows].Clear;
-        for i := 0 to stationsJson.Count - 1 do
-        begin
-          if ResponseStations.id[i] <> NO_ID then
-          begin
-            SettingsForm.StationsGrid.Cells[ADDRESS_COL, ResponseStations.id[i]] := PADDING + ResponseStations.hash[i];
-            SettingsForm.StationsGrid.Cells[NAME_COL, ResponseStations.id[i]] := PADDING + ResponseStations.name[i];
-            SettingsForm.StationsGrid.Cells[STATUS_COL, ResponseStations.id[i]] := ResponseStations.status[i];
-            SettingsForm.StationsGrid.Cells[EDIT_COL, ResponseStations.id[i]] := EDIT_STRING;
-          end;
-        end;
-        UpdateTimer.Enabled := true;
-
-      except
-        //SettingsForm.NotAuthorized.Visible:=True;
-        //SettingsForm.StationsGrid.Visible:=False;
-        case ResponseStatusCode of
-          0: ShowMessage('Can`t connect to server');
-          401, 403: // do nothing
-            ;
-          500: ShowMessage('Server Error: 500');
-          else
-            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
-              sLineBreak + ResponseStatusText);
-        end;
-        setlength(ResponseStations.id, 0);
-        setlength(ResponseStations.name, 0);
-        setlength(ResponseStations.hash, 0);
-        setlength(ResponseStations.status, 0);
-        setlength(ResponseStations.info, 0);
-        setlength(ResponseStations.currentBalance, 0);
-        setlength(ResponseStations.currentProgram, 0);
-        setlength(freeHashVals, 0);
-
-        ResponseStations.Count := 0;
-      end;
-    finally
-      Free;
-    end;
+  UpdateStations();
+  SettingsForm.StationsGrid.RowCount := SettingsForm.StationsGrid.FixedRows + GetNumStations();// - freeHashID;
+  SettingsForm.StationsGrid.Rows[SettingsForm.StationsGrid.FixedRows].Clear;
+  for i := 1 to GetNumStations() do
+  begin
+    //if GetStationHashByID(i) <> PLACEHOLDER then
+    //begin
+      SettingsForm.StationsGrid.Cells[ADDRESS_COL, i] := PADDING + GetStationHashByID(i);
+      SettingsForm.StationsGrid.Cells[NAME_COL,    i] := PADDING + GetStationNameByID(i);
+      SettingsForm.StationsGrid.Cells[STATUS_COL,  i] := GetStationStatusByID(i);
+      SettingsForm.StationsGrid.Cells[EDIT_COL,    i] := EDIT_STRING;
+    //end;
+  end;
+  UpdateTimer.Enabled := true;
 end;
 
 procedure TSettingsForm.MainClick(Sender: TObject);

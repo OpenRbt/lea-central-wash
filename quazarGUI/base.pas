@@ -9,6 +9,7 @@ uses
   StdCtrls, fphttpclient, Fpjson, jsonparser;
 
 type
+  THashes = array of string;
 
   RelayConfig = packed record
     Count           : integer;
@@ -111,6 +112,7 @@ type
     procedure UpdateStationPreflightSec(id: integer);
     procedure SetStationPreflightSec(id, preflightSec: integer);
     function GetNumStations(): integer;
+    function GetFreeHashes() : THashes;
 
     function GetFoamProgramID(): integer;
     function GetShampooProgramID(): integer;
@@ -124,6 +126,7 @@ type
     function GetPolymerPreflightProgramID(): integer;
     function GetOpenDoorProgramID(): integer;
 
+    procedure SetStationCurrentProgramByID(programID, stationID: integer; isPreflight: boolean);
     procedure SetDosatronPreflight(programID: integer; run: boolean);
 
   private
@@ -139,6 +142,7 @@ var
   ProgramsConfig: ProgramConfig;
   RelaysConfig  : RelayConfig;
   ResponseStations: StationsInfo;
+  freeHashVals : array of string;
   freeHashID : integer;
 
 const
@@ -250,6 +254,19 @@ end;
 function TBaseForm.GetOpenDoorProgramID(): integer;
 begin
   Result := OPEN_DOOR_PROGRAM_ID;
+end;
+
+function TBaseForm.GetFreeHashes() : THashes;
+var
+  hashes : THashes;
+  i : integer;
+begin
+  setlength(hashes, freeHashID);
+  for i := 0 to freeHashID-1 do
+  begin
+    hashes[i] := freeHashVals[i];
+  end;
+  Result := hashes;
 end;
 
 procedure TBaseForm.FormCreate(Sender: TObject);
@@ -465,6 +482,51 @@ begin
 
 end;
 
+procedure TBaseForm.SetStationCurrentProgramByID(programID, stationID: integer; isPreflight: boolean);
+var
+  settingJson: TJSONObject;
+begin
+  if GetStationHashByID(stationID) = PLACEHOLDER then
+  begin
+    Exit;
+  end;
+  with TFPHttpClient.Create(nil) do
+  try
+     try
+        AddHeader('Content-Type', 'application/json');
+        AddHeader('Pin', BaseForm.GetPinCode());
+
+        settingJson := TJSONObject.Create;
+
+        settingJson.Add('programID', programID);
+        settingJson.Add('hash', BaseForm.GetStationHashByID(stationID));
+        settingJson.Add('preflight', isPreflight);
+
+        RequestBody := TStringStream.Create(settingJson.AsJSON);
+        Post(BaseForm.GetServerEndpoint() + '/run-program');
+
+        if ResponseStatusCode <> 204 then
+        begin
+          raise Exception.Create(IntToStr(ResponseStatusCode));
+        end;
+
+      except
+        case ResponseStatusCode of
+          0: ShowMessage('Can`t connect to server');
+          401: ShowMessage('Not authorized');
+          403, 404: ShowMessage('Forbidden');
+          500: ShowMessage('Server Error: 500');
+          else
+            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
+              sLineBreak + ResponseStatusText);
+        end;
+      end;
+
+    finally
+      Free;
+    end;
+end;
+
 procedure TBaseForm.SetDosatronPreflight(programID: integer; run: boolean);
 var
   settingJson: TJSONObject;
@@ -546,6 +608,8 @@ begin
         setlength(ResponseStations.preflightSec, stationsJson.Count);
         setlength(ResponseStations.relayBoard, stationsJson.Count);
 
+        setlength(freeHashVals, stationsJson.Count);
+
         ResponseStations.Count := stationsJson.Count;
 
         freeHashID := 0;
@@ -581,6 +645,7 @@ begin
               end
               else
               begin
+                freeHashVals[freeHashID] := path.AsString;
                 freeHashID := freeHashID + 1;
               end;
             end;
