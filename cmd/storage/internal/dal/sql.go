@@ -362,9 +362,26 @@ order by b.button_id
 	FROM card_reader
 	WHERE station_id = :station_id
 	`
+	sqlUpdateConfigAdd = `
+	INSERT INTO update_config (ctime, note)  
+	VALUES 	(:ctime, :note)
+	RETURNING 	id
+	`
+	sqlLastUpdateConfigGet = `
+	SELECT max(id) as id from update_config
+	`
 )
 
 type (
+	argUpdateConfigAdd struct {
+		Ctime time.Time
+		Note  string
+	}
+	argLastUpdateConfigGet struct {
+	}
+	resLastUpdateConfigGet struct {
+		ID int
+	}
 	argSetCardReaderConfig struct {
 		StationID      app.StationID
 		CardReaderType string

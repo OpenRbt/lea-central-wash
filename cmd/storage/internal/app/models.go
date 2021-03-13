@@ -42,6 +42,7 @@ type StationData struct {
 	OpenStation    bool
 	CurrentBalance int
 	CurrentProgram int
+	LastUpdate     int
 }
 
 // MoneyReport is just to represent money in a station. All known kinds of money
