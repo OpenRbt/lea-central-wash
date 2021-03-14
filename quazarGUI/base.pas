@@ -127,7 +127,6 @@ type
     function GetOpenDoorProgramID(): integer;
 
     procedure SetStationCurrentProgramByID(programID, stationID: integer; isPreflight: boolean);
-    procedure SetDosatronPreflight(programID: integer; run: boolean);
 
   private
     pinCode: string;
@@ -516,58 +515,6 @@ begin
           401: ShowMessage('Not authorized');
           403, 404: ShowMessage('Forbidden');
           500: ShowMessage('Server Error: 500');
-          else
-            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
-              sLineBreak + ResponseStatusText);
-        end;
-      end;
-
-    finally
-      Free;
-    end;
-end;
-
-procedure TBaseForm.SetDosatronPreflight(programID: integer; run: boolean);
-var
-  settingJson: TJSONObject;
-begin
-  if BaseForm.GetStationHashByID(1) = PLACEHOLDER then
-  begin
-    Exit;
-  end;
-  with TFPHttpClient.Create(nil) do
-  try
-     try
-        AddHeader('Content-Type', 'application/json');
-        AddHeader('Pin', BaseForm.GetPinCode());
-
-        settingJson := TJSONObject.Create;
-
-        if run then
-        begin
-          settingJson.Add('programID', programID);
-        end
-        else
-        begin
-
-        end;
-        settingJson.Add('hash', BaseForm.GetStationHashByID(1));
-        settingJson.Add('preflight', true);
-
-        RequestBody := TStringStream.Create(settingJson.AsJSON);
-        Post(BaseForm.GetServerEndpoint() + '/run-program');
-
-        if ResponseStatusCode <> 204 then
-        begin
-          raise Exception.Create(IntToStr(ResponseStatusCode));
-        end;
-
-      except
-        case ResponseStatusCode of
-          0: begin ModalResult := 0; ShowMessage('Can`t connect to server'); end;
-          401: begin ModalResult := 0; ShowMessage('Not authorized'); end;
-          403, 404: begin ModalResult := 0; ShowMessage('Forbidden'); end;
-          500: begin ShowMessage('Server Error: 500'); end;
           else
             ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
               sLineBreak + ResponseStatusText);

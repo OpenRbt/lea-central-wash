@@ -25,6 +25,7 @@ type
     Cancel: TButton;
     DosatronsGrid: TStringGrid;
     Save: TButton;
+    UpdateTimer: TTimer;
     procedure CancelClick(Sender: TObject);
     procedure DosatronsGridDrawCell(Sender: TObject; aCol, aRow: Integer;
       aRect: TRect; aState: TGridDrawState);
@@ -39,6 +40,7 @@ type
     procedure ProgramsClick(Sender: TObject); override;
     procedure DosatronsClick(Sender: TObject); override;
     procedure SettingsClick(Sender: TObject); override;
+    procedure UpdateCall(Sender: TObject);
     procedure UsersClick(Sender: TObject); override;
     procedure StatisticsClick(Sender: TObject); override;
     procedure LogoutClick(Sender: TObject); override;
@@ -47,8 +49,10 @@ type
     procedure DosatronsMouseLeave(Sender: TObject); override;
 
     procedure ShowDosatrons();
+    procedure RunProgram();
 
   private
+    _currProgram: integer;
 
   public
 
@@ -72,6 +76,8 @@ const
 
   PREFLIGHT_STR : string = 'ПРОКАЧКА';
   PADDING     : string = '  ';
+
+  STATION_ID : integer = 1;
 
 implementation
 
@@ -103,6 +109,11 @@ begin
   DosatronParams.Preflight[1] := false;
   DosatronParams.Preflight[2] := false;
   DosatronParams.Preflight[3] := false;
+
+  _currProgram := NO_ID;
+
+  UpdateTimer.Interval := 1000;
+  UpdateTimer.Enabled  := false;
 end;
 
 procedure TDosatronsForm.FormClose(Sender: TObject;
@@ -137,11 +148,31 @@ end;
 
 procedure TDosatronsForm.DosatronsGridSelectCell(Sender: TObject; aCol,
   aRow: Integer; var CanSelect: Boolean);
+var
+  clickedProgram: integer;
+  i: integer;
 begin
   if (aCol = DOSATRON_PREFLIGHT_COL) then
   begin
+    for i := 0 to DosatronsGrid.RowCount - 1 do
+    begin
+      if i <> aRow then
+      begin
+        DosatronParams.Preflight[i] := false;
+      end;
+    end;
     DosatronParams.Preflight[aRow] := not DosatronParams.Preflight[aRow];
-    SetDosatronPreflight(DosatronParams.ProgramID[aRow], DosatronParams.Preflight[aRow]);
+    clickedProgram := DosatronParams.ProgramID[aRow];
+    if clickedProgram = _currProgram then
+    begin
+      _currProgram := NO_ID;
+      UpdateTimer.Enabled := false;
+    end
+    else
+    begin
+      _currProgram := clickedProgram;
+      UpdateTimer.Enabled := true;
+    end;
   end
   else if (aCol = DOSATRON_DEC) then
   begin
@@ -216,6 +247,16 @@ procedure TDosatronsForm.SettingsClick(Sender: TObject);
 begin
   Inherited;
   DosatronsForm.Hide;
+end;
+
+procedure TDosatronsForm.RunProgram();
+begin
+  SetStationCurrentProgramByID(_currProgram, STATION_ID, true);
+end;
+
+procedure TDosatronsForm.UpdateCall(Sender: TObject);
+begin
+  RunProgram();
 end;
 
 procedure TDosatronsForm.UsersClick(Sender: TObject);

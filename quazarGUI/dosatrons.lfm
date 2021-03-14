@@ -86,4 +86,10 @@ inherited DosatronsForm: TDosatronsForm
     ParentFont = False
     TabOrder = 11
   end
+  object UpdateTimer: TTimer[12]
+    Enabled = False
+    OnTimer = UpdateCall
+    left = 10
+    top = 10
+  end
 end
