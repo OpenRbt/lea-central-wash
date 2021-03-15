@@ -118,6 +118,7 @@ func (a *app) Ping(id StationID, balance, program int) StationData {
 	station.OpenStation = false
 	station.CurrentBalance = balance
 	station.CurrentProgram = program
+	station.ButtonID = 0
 	a.stations[id] = station
 	oldStation.LastUpdate = a.lastUpdate
 	return oldStation
