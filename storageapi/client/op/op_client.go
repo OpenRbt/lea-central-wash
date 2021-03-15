@@ -477,6 +477,34 @@ func (a *Client) Ping(params *PingParams) (*PingOK, error) {
 }
 
 /*
+PressButton press button API
+*/
+func (a *Client) PressButton(params *PressButtonParams) (*PressButtonNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewPressButtonParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "pressButton",
+		Method:             "POST",
+		PathPattern:        "/press-button",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &PressButtonReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*PressButtonNoContent), nil
+
+}
+
+/*
 Programs programs API
 */
 func (a *Client) Programs(params *ProgramsParams) (*ProgramsOK, error) {

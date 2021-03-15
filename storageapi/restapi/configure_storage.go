@@ -91,6 +91,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.PingHandler = op.PingHandlerFunc(func(params op.PingParams) op.PingResponder {
 		return op.PingNotImplemented()
 	})
+	api.PressButtonHandler = op.PressButtonHandlerFunc(func(params op.PressButtonParams) op.PressButtonResponder {
+		return op.PressButtonNotImplemented()
+	})
 	api.ProgramsHandler = op.ProgramsHandlerFunc(func(params op.ProgramsParams) op.ProgramsResponder {
 		return op.ProgramsNotImplemented()
 	})

@@ -404,6 +404,9 @@ func init() {
                 "openStation"
               ],
               "properties": {
+                "ButtonID": {
+                  "type": "integer"
+                },
                 "lastUpdate": {
                   "type": "integer"
                 },
@@ -415,6 +418,47 @@ func init() {
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/press-button": {
+      "post": {
+        "operationId": "pressButton",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash",
+                "buttonID"
+              ],
+              "properties": {
+                "buttonID": {
+                  "type": "integer"
+                },
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "internal error"
           }
         }
       }
@@ -2318,6 +2362,9 @@ func init() {
                 "openStation"
               ],
               "properties": {
+                "ButtonID": {
+                  "type": "integer"
+                },
                 "lastUpdate": {
                   "type": "integer"
                 },
@@ -2329,6 +2376,47 @@ func init() {
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/press-button": {
+      "post": {
+        "operationId": "pressButton",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash",
+                "buttonID"
+              ],
+              "properties": {
+                "buttonID": {
+                  "type": "integer"
+                },
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "internal error"
           }
         }
       }

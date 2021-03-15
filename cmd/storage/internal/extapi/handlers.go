@@ -273,6 +273,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
 		ServiceAmount: newInt64(int64(station.ServiceMoney)),
 		OpenStation:   &station.OpenStation,
+		ButtonID:      int64(station.ButtonID),
 		LastUpdate:    int64(station.LastUpdate),
 	})
 }
@@ -622,6 +623,28 @@ func (svc *service) runProgram(params op.RunProgramParams) op.RunProgramResponde
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewRunProgramInternalServerError()
+	}
+}
+
+func (svc *service) pressButton(params op.PressButtonParams) op.PressButtonResponder {
+	stationID, err := svc.getID(string(params.Args.Hash))
+	if err != nil {
+		log.Info("pressButton: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewPressButtonNotFound().WithPayload("station not found")
+	}
+	err = svc.app.PressButton(stationID, *params.Args.ButtonID)
+
+	log.Info("pressButton", "buttonID", *params.Args.ButtonID, "stationID", stationID, "ip", params.HTTPRequest.RemoteAddr)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewPressButtonNoContent()
+	case app.ErrNotFound:
+		log.PrintErr(err, "hash", params.Args.Hash, "stationID", stationID, "buttonID", *params.Args.ButtonID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewPressButtonNotFound().WithPayload("button not found")
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewPressButtonInternalServerError()
 	}
 }
 

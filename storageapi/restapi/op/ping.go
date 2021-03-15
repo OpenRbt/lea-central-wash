@@ -125,6 +125,9 @@ func (o *PingBody) UnmarshalBinary(b []byte) error {
 // swagger:model PingOKBody
 type PingOKBody struct {
 
+	// button ID
+	ButtonID int64 `json:"ButtonID,omitempty"`
+
 	// last update
 	LastUpdate int64 `json:"lastUpdate,omitempty"`
 

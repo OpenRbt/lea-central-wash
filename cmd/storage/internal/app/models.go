@@ -42,6 +42,7 @@ type StationData struct {
 	OpenStation    bool
 	CurrentBalance int
 	CurrentProgram int
+	ButtonID       int
 	LastUpdate     int
 }
 
