@@ -92,6 +92,8 @@ type (
 		SetCardReaderConfig(CardReaderConfig) error
 
 		RunProgram(id StationID, programID int64, preflight bool) (err error)
+		PressButton(id StationID, buttonID int64) (err error)
+
 		Station(StationID) (SetStation, error)
 	}
 

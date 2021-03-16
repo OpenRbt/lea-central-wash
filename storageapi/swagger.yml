@@ -717,6 +717,8 @@ paths:
                 type: boolean
               lastUpdate:
                 type: integer
+              ButtonID:
+                type: integer
                 
     get:
       operationId: "getPing"
@@ -1263,6 +1265,33 @@ paths:
                 type: integer
               preflight:
                 type: boolean
+      responses:
+        204:
+          description: OK
+        404:
+          description: not found
+          schema:
+            type: string
+        500:
+          description: internal error
+
+  /press-button:
+    post:
+      operationId: "pressButton"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - hash
+              - buttonID
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+              buttonID:
+                type: integer
       responses:
         204:
           description: OK

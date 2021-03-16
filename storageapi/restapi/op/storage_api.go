@@ -103,6 +103,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation Ping has not yet been implemented")
 			return PingNotImplemented()
 		}),
+		PressButtonHandler: PressButtonHandlerFunc(func(params PressButtonParams) PressButtonResponder {
+			// return middleware.NotImplemented("operation PressButton has not yet been implemented")
+			return PressButtonNotImplemented()
+		}),
 		ProgramsHandler: ProgramsHandlerFunc(func(params ProgramsParams) ProgramsResponder {
 			// return middleware.NotImplemented("operation Programs has not yet been implemented")
 			return ProgramsNotImplemented()
@@ -273,6 +277,8 @@ type StorageAPI struct {
 	OpenStationHandler OpenStationHandler
 	// PingHandler sets the operation handler for the ping operation
 	PingHandler PingHandler
+	// PressButtonHandler sets the operation handler for the press button operation
+	PressButtonHandler PressButtonHandler
 	// ProgramsHandler sets the operation handler for the programs operation
 	ProgramsHandler ProgramsHandler
 	// RunProgramHandler sets the operation handler for the run program operation
@@ -448,6 +454,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.PingHandler == nil {
 		unregistered = append(unregistered, "PingHandler")
+	}
+
+	if o.PressButtonHandler == nil {
+		unregistered = append(unregistered, "PressButtonHandler")
 	}
 
 	if o.ProgramsHandler == nil {
@@ -731,6 +741,11 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/ping"] = NewPing(o.context, o.PingHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/press-button"] = NewPressButton(o.context, o.PressButtonHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
