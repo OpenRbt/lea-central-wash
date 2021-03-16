@@ -639,9 +639,6 @@ func (svc *service) pressButton(params op.PressButtonParams) op.PressButtonRespo
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewPressButtonNoContent()
-	case app.ErrNotFound:
-		log.PrintErr(err, "hash", params.Args.Hash, "stationID", stationID, "buttonID", *params.Args.ButtonID, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewPressButtonNotFound().WithPayload("button not found")
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewPressButtonInternalServerError()

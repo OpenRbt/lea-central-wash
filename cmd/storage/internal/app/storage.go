@@ -125,24 +125,11 @@ func (a *app) Ping(id StationID, balance, program int) StationData {
 }
 
 func (a *app) PressButton(id StationID, buttonID int64) (err error) {
-	if buttonID > 0 {
-		programs, err := a.repo.StationProgram(id)
-		if err != nil {
-			return err
-		}
-		if len(programs) < 1 {
-			return ErrNotFound
-		}
-		for i := range programs {
-			if programs[i].ButtonID == int(buttonID) {
-				a.stationsMutex.Lock()
-				defer a.stationsMutex.Unlock()
-				station := a.stations[id]
-				station.ButtonID = int(buttonID)
-				a.stations[id] = station
-			}
-		}
-	}
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+	station := a.stations[id]
+	station.ButtonID = int(buttonID)
+	a.stations[id] = station
 	return nil
 }
 
