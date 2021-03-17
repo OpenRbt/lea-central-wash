@@ -497,12 +497,14 @@ begin
 
         settingJson := TJSONObject.Create;
 
-        settingJson.Add('programID', programID);
+        //settingJson.Add('programID', programID);
+        settingJson.Add('buttonID', programID);
         settingJson.Add('hash', BaseForm.GetStationHashByID(stationID));
-        settingJson.Add('preflight', isPreflight);
+        //settingJson.Add('preflight', isPreflight);
 
         RequestBody := TStringStream.Create(settingJson.AsJSON);
-        Post(BaseForm.GetServerEndpoint() + '/run-program');
+        //Post(BaseForm.GetServerEndpoint() + '/run-program');
+        Post(BaseForm.GetServerEndpoint() + '/press-button');
 
         if ResponseStatusCode <> 204 then
         begin
