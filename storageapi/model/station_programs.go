@@ -18,6 +18,9 @@ import (
 // swagger:model StationPrograms
 type StationPrograms struct {
 
+	// last update
+	LastUpdate int64 `json:"lastUpdate,omitempty"`
+
 	// name
 	Name string `json:"name,omitempty"`
 

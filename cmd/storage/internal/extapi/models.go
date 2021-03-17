@@ -267,6 +267,7 @@ func apiStationConfig(p app.StationConfig) (res *model.StationPrograms) {
 	res.StationID = int64(p.ID)
 	res.Name = p.Name
 	res.PreflightSec = int64(p.PreflightSec)
+	res.LastUpdate = int64(p.LastUpdate)
 	res.RelayBoard = model.RelayBoard(p.RelayBoard)
 	for i := range p.Programs {
 		res.Programs = append(res.Programs, &model.StationProgramsProgramsItems0{

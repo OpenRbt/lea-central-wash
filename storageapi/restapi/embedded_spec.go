@@ -404,6 +404,9 @@ func init() {
                 "openStation"
               ],
               "properties": {
+                "lastUpdate": {
+                  "type": "integer"
+                },
                 "openStation": {
                   "type": "boolean"
                 },
@@ -1749,6 +1752,9 @@ func init() {
     "StationPrograms": {
       "type": "object",
       "properties": {
+        "lastUpdate": {
+          "type": "integer"
+        },
         "name": {
           "type": "string"
         },
@@ -2312,6 +2318,9 @@ func init() {
                 "openStation"
               ],
               "properties": {
+                "lastUpdate": {
+                  "type": "integer"
+                },
                 "openStation": {
                   "type": "boolean"
                 },
@@ -3659,6 +3668,9 @@ func init() {
     "StationPrograms": {
       "type": "object",
       "properties": {
+        "lastUpdate": {
+          "type": "integer"
+        },
         "name": {
           "type": "string"
         },
