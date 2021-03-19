@@ -167,11 +167,13 @@ begin
     begin
       _currProgram := NO_ID;
       UpdateTimer.Enabled := false;
+      RunProgram();
     end
     else
     begin
       _currProgram := clickedProgram;
-      UpdateTimer.Enabled := true;
+      UpdateTimer.Enabled := false;//true;
+      RunProgram();
     end;
   end
   else if (aCol = DOSATRON_DEC) then
