@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ExtCtrls,
-  StdCtrls, fphttpclient, Fpjson, jsonparser;
+  StdCtrls, myfphttpclient, Fpjson, jsonparser, Process;
 
 type
   THashes = array of string;
@@ -127,6 +127,8 @@ type
     function GetOpenDoorProgramID(): integer;
 
     procedure SetStationCurrentProgramByID(programID, stationID: integer; isPreflight: boolean);
+
+    function GetIpAddrList(): string;
 
   private
     pinCode: string;
@@ -472,13 +474,121 @@ begin
   ProgramsConfig.PreflightMotorSpeedPercent[POLYMER_PREFLIGHT_PROGRAM_ID - 1] :=   0;
   ProgramsConfig.PreflightMotorSpeedPercent[OPEN_DOOR_PROGRAM_ID - 1]         :=   0;
 
-  serverEndpoint := 'http://localhost:8020/';
+  //serverEndpoint := 'http://localhost:8020/';
+  //serverEndpoint := 'http://192.168.1.102:8020/';
+  serverEndpoint := GetIpAddrList();
 
   for i:=1 to NUM_PROGRAMS+NUM_PREFLIGHT_PROGRAMS do
   begin
     CheckProgram(i);
   end;
 
+end;
+
+function TBaseForm.GetIpAddrList(): string;
+var
+  AProcess: TProcess;
+  s, addr: string;
+  sl: TStringList;
+  i, n, j: integer;
+  successful: boolean;
+begin
+  successful := false;
+  Result:='';
+  sl:=TStringList.Create();
+  {$IFDEF WINDOWS}
+  AProcess:=TProcess.Create(nil);
+  AProcess.Executable := 'ipconfig.exe';
+  AProcess.Options := AProcess.Options + [poUsePipes, poNoConsole];
+  try
+    AProcess.Execute();
+    Sleep(500); // poWaitOnExit don't work as expected
+    sl.LoadFromStream(AProcess.Output);
+  finally
+    AProcess.Free();
+  end;
+
+  with TFPHttpClient.Create(nil) do
+    try
+      //AddHeader('Content-Type', 'application/json');
+      for i:=0 to sl.Count-1 do
+        begin
+          if (Pos('IPv4', sl[i])=0) and (Pos('IP-', sl[i])=0) and (Pos('IP Address', sl[i])=0) then Continue;
+          s:=sl[i];
+          s:=Trim(Copy(s, Pos(':', s)+1, 999));
+          if Pos(':', s)>0 then Continue; // IPv6
+          n := LastDelimiter('.', s);
+          s := Copy(s, 1, n);
+          for j:=1 to 255 do
+          begin
+            try
+              addr := 'http://' + s + IntToStr(j) + ':8020/';
+              writeln('Trying ' + addr);
+              Get(addr + 'ping');
+              successful := True;
+            except
+
+            end;
+            if successful then
+            begin
+              writeln('FOUND SERVER ON ' + addr);
+              Result:= addr;
+              Exit;
+            end;
+          end;
+        end;
+
+    finally
+      Free
+    end;
+  {$ENDIF}
+  {$IFDEF UNIX}
+  AProcess:=TProcess.Create(nil);
+  AProcess.Executable := '/sbin/ifconfig';
+  AProcess.Options := AProcess.Options + [poUsePipes, poWaitOnExit];
+  try
+    AProcess.Execute();
+    sl.LoadFromStream(AProcess.Output);
+  finally
+    AProcess.Free();
+  end;
+
+  with TFPHttpClient.Create(nil) do
+    try
+      //AddHeader('Content-Type', 'application/json');
+      for i:=0 to sl.Count-1 do
+        begin
+          n:=Pos('inet ', sl[i]);
+          if n=0 then Continue;
+          s:=sl[i];
+          s:=Copy(s, n+Length('inet '), 999);
+          s := Trim(Copy(s, 1, Pos(' ', s)));
+          n := LastDelimiter('.', s);
+          s := Copy(s, 1, n);
+          for j:=1 to 255 do
+          begin
+            try
+              addr := 'http://' + s + IntToStr(j) + ':8020/';
+              writeln('Trying ' + addr);
+              Get(addr + 'ping');
+              successful := True;
+            except
+
+            end;
+            if successful then
+            begin
+              writeln('FOUND SERVER ON ' + addr);
+              Result:= addr;
+              Exit;
+            end;
+          end;
+        end;
+
+    finally
+      Free
+    end;
+  {$ENDIF}
+  sl.Free();
 end;
 
 procedure TBaseForm.SetStationCurrentProgramByID(programID, stationID: integer; isPreflight: boolean);
