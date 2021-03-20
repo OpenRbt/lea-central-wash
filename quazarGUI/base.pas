@@ -474,8 +474,6 @@ begin
   ProgramsConfig.PreflightMotorSpeedPercent[POLYMER_PREFLIGHT_PROGRAM_ID - 1] :=   0;
   ProgramsConfig.PreflightMotorSpeedPercent[OPEN_DOOR_PROGRAM_ID - 1]         :=   0;
 
-  //serverEndpoint := 'http://localhost:8020/';
-  //serverEndpoint := 'http://192.168.1.102:8020/';
   serverEndpoint := GetIpAddrList();
 
   for i:=1 to NUM_PROGRAMS+NUM_PREFLIGHT_PROGRAMS do
@@ -607,13 +605,10 @@ begin
 
         settingJson := TJSONObject.Create;
 
-        //settingJson.Add('programID', programID);
         settingJson.Add('buttonID', programID);
         settingJson.Add('hash', BaseForm.GetStationHashByID(stationID));
-        //settingJson.Add('preflight', isPreflight);
 
         RequestBody := TStringStream.Create(settingJson.AsJSON);
-        //Post(BaseForm.GetServerEndpoint() + '/run-program');
         Post(BaseForm.GetServerEndpoint() + '/press-button');
 
         if ResponseStatusCode <> 204 then

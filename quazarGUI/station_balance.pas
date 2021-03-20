@@ -139,14 +139,7 @@ var
   clickedProgram: integer;
 begin
   clickedProgram := BaseForm.GetDryProgramID();
-  //if _currProgram = clickedProgram then
-  //begin
-  //  _currProgram := REMOTE;
-  //end
-  //else
-  //begin
-    _currProgram := clickedProgram;
-  //end;
+  _currProgram := clickedProgram;
   RunProgram();
 end;
 
@@ -155,14 +148,7 @@ var
   clickedProgram: integer;
 begin
   clickedProgram := BaseForm.GetFoamProgramID();
-  //if _currProgram = clickedProgram then
-  //begin
-  //  _currProgram := REMOTE;
-  //end
-  //else
-  //begin
-    _currProgram := clickedProgram;
-  //end;
+  _currProgram := clickedProgram;
   RunProgram();
 end;
 
@@ -215,14 +201,7 @@ begin
       DryPanel.Color:=clDefault;
       PausePanel.Color:=clDefault;
 
-      if _currProgram = REMOTE then
-      begin
-        currentProgram := BaseForm.GetStationCurrentProgramByID(_id);
-      end
-      else
-      begin
-        currentProgram := _currProgram;
-      end;
+      currentProgram := BaseForm.GetStationCurrentProgramByID(_id);
 
       case currentProgram of
         1: FoamPanel.Color:=clLime;
@@ -309,14 +288,7 @@ var
   clickedProgram: integer;
 begin
   clickedProgram := BaseForm.GetPauseProgramID();
-  //if _currProgram = clickedProgram then
-  //begin
-  //  _currProgram := REMOTE;
-  //end
-  //else
-  //begin
-    _currProgram := clickedProgram;
-  //end;
+  _currProgram := clickedProgram;
   RunProgram();
 end;
 
@@ -325,14 +297,7 @@ var
   clickedProgram: integer;
 begin
   clickedProgram := BaseForm.GetRinseProgramID();
-  //if _currProgram = clickedProgram then
-  //begin
-  //  _currProgram := REMOTE;
-  //end
-  //else
-  //begin
-    _currProgram := clickedProgram;
-  //end;
+  _currProgram := clickedProgram;
   RunProgram();
 end;
 
@@ -341,20 +306,12 @@ var
   clickedProgram: integer;
 begin
   clickedProgram := BaseForm.GetShampooProgramID();
-  //if _currProgram = clickedProgram then
-  //begin
-  //  _currProgram := REMOTE;
-  //end
-  //else
-  //begin
-    _currProgram := clickedProgram;
-  //end;
+  _currProgram := clickedProgram;
   RunProgram();
 end;
 
 procedure TStationBalanceForm.UpdateCall(Sender: TObject);
 begin
-  //RunProgram();
   StationBalanceForm.FormShow(Sender);
 end;
 
@@ -429,14 +386,7 @@ var
   clickedProgram: integer;
 begin
   clickedProgram := BaseForm.GetWaxProgramID();
-  //if _currProgram = clickedProgram then
-  //begin
-  //  _currProgram := REMOTE;
-  //end
-  //else
-  //begin
-    _currProgram := clickedProgram;
-  //end;
+  _currProgram := clickedProgram;
   RunProgram();
 end;
 

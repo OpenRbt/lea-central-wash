@@ -29,10 +29,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Base"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="530"/>
-        <CursorPos Y="551"/>
+        <TopLine Value="464"/>
+        <CursorPos Y="476"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -58,7 +57,7 @@
         <EditorIndex Value="4"/>
         <TopLine Value="339"/>
         <CursorPos X="151" Y="351"/>
-        <UsageCount Value="192"/>
+        <UsageCount Value="193"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -70,7 +69,7 @@
         <EditorIndex Value="7"/>
         <TopLine Value="63"/>
         <CursorPos X="3" Y="91"/>
-        <UsageCount Value="192"/>
+        <UsageCount Value="193"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
@@ -82,7 +81,7 @@
         <EditorIndex Value="9"/>
         <TopLine Value="187"/>
         <CursorPos X="86" Y="196"/>
-        <UsageCount Value="192"/>
+        <UsageCount Value="193"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit6>
@@ -95,7 +94,7 @@
         <EditorIndex Value="3"/>
         <TopLine Value="161"/>
         <CursorPos X="73" Y="171"/>
-        <UsageCount Value="192"/>
+        <UsageCount Value="193"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit7>
@@ -108,7 +107,7 @@
         <EditorIndex Value="8"/>
         <TopLine Value="18"/>
         <CursorPos X="112" Y="20"/>
-        <UsageCount Value="192"/>
+        <UsageCount Value="193"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -120,7 +119,7 @@
         <EditorIndex Value="15"/>
         <TopLine Value="66"/>
         <CursorPos X="22" Y="105"/>
-        <UsageCount Value="192"/>
+        <UsageCount Value="193"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
@@ -132,7 +131,7 @@
         <EditorIndex Value="11"/>
         <TopLine Value="4"/>
         <CursorPos X="3" Y="86"/>
-        <UsageCount Value="177"/>
+        <UsageCount Value="178"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
@@ -144,7 +143,7 @@
         <EditorIndex Value="14"/>
         <TopLine Value="92"/>
         <CursorPos X="62" Y="120"/>
-        <UsageCount Value="175"/>
+        <UsageCount Value="176"/>
         <Loaded Value="True"/>
       </Unit11>
       <Unit12>
@@ -156,7 +155,7 @@
         <EditorIndex Value="13"/>
         <TopLine Value="88"/>
         <CursorPos X="11" Y="59"/>
-        <UsageCount Value="171"/>
+        <UsageCount Value="172"/>
         <Loaded Value="True"/>
       </Unit12>
       <Unit13>
@@ -168,7 +167,7 @@
         <EditorIndex Value="12"/>
         <TopLine Value="20"/>
         <CursorPos Y="47"/>
-        <UsageCount Value="163"/>
+        <UsageCount Value="164"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
@@ -180,7 +179,7 @@
         <EditorIndex Value="6"/>
         <TopLine Value="110"/>
         <CursorPos X="68" Y="119"/>
-        <UsageCount Value="114"/>
+        <UsageCount Value="115"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit14>
@@ -191,9 +190,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="394"/>
-        <CursorPos X="13" Y="439"/>
-        <UsageCount Value="103"/>
+        <CursorPos Y="389"/>
+        <UsageCount Value="104"/>
         <Loaded Value="True"/>
       </Unit15>
       <Unit16>
@@ -260,7 +258,7 @@
         <EditorIndex Value="16"/>
         <TopLine Value="350"/>
         <CursorPos X="18" Y="374"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="33"/>
         <Loaded Value="True"/>
       </Unit24>
       <Unit25>
@@ -277,7 +275,7 @@
         <EditorIndex Value="17"/>
         <TopLine Value="212"/>
         <CursorPos X="135" Y="200"/>
-        <UsageCount Value="72"/>
+        <UsageCount Value="73"/>
         <Loaded Value="True"/>
       </Unit26>
       <Unit27>
@@ -311,125 +309,98 @@
       <Unit31>
         <Filename Value="myfphttpclient.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="1223"/>
-        <CursorPos X="49" Y="1251"/>
-        <UsageCount Value="22"/>
+        <TopLine Value="1241"/>
+        <CursorPos X="17" Y="1264"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit31>
     </Units>
-    <JumpHistory Count="28" HistoryIndex="27">
+    <JumpHistory Count="21" HistoryIndex="20">
       <Position1>
-        <Filename Value="station_balance.pas"/>
-        <Caret Line="440" Column="16" TopLine="388"/>
+        <Filename Value="base.pas"/>
+        <Caret Line="39" Column="45"/>
       </Position1>
       <Position2>
-        <Filename Value="dosatrons.pas"/>
-        <Caret Line="43" Column="25" TopLine="22"/>
+        <Filename Value="base.pas"/>
+        <Caret Line="545" Column="35" TopLine="520"/>
       </Position2>
       <Position3>
         <Filename Value="base.pas"/>
-        <Caret Line="14" Column="101"/>
+        <Caret Line="540" Column="46" TopLine="516"/>
       </Position3>
       <Position4>
         <Filename Value="base.pas"/>
-        <Caret Line="149" Column="3" TopLine="169"/>
+        <Caret Line="542" Column="30" TopLine="519"/>
       </Position4>
       <Position5>
         <Filename Value="base.pas"/>
-        <Caret Line="486" Column="44" TopLine="473"/>
+        <Caret Line="557" Column="28" TopLine="525"/>
       </Position5>
       <Position6>
         <Filename Value="base.pas"/>
-        <Caret Line="131" Column="14" TopLine="98"/>
+        <Caret Line="533" Column="29" TopLine="522"/>
       </Position6>
       <Position7>
         <Filename Value="base.pas"/>
-        <Caret Line="490" Column="13" TopLine="465"/>
+        <Caret Line="548" Column="19" TopLine="508"/>
       </Position7>
       <Position8>
         <Filename Value="base.pas"/>
-        <Caret Line="39" Column="45"/>
+        <Caret Line="535" Column="30" TopLine="532"/>
       </Position8>
       <Position9>
         <Filename Value="base.pas"/>
-        <Caret Line="545" Column="35" TopLine="520"/>
+        <Caret Line="1281" TopLine="1231"/>
       </Position9>
       <Position10>
         <Filename Value="base.pas"/>
-        <Caret Line="540" Column="46" TopLine="516"/>
       </Position10>
       <Position11>
         <Filename Value="base.pas"/>
-        <Caret Line="542" Column="30" TopLine="519"/>
+        <Caret Line="9" Column="15"/>
       </Position11>
       <Position12>
         <Filename Value="base.pas"/>
-        <Caret Line="557" Column="28" TopLine="525"/>
+        <Caret Line="551" TopLine="530"/>
       </Position12>
       <Position13>
-        <Filename Value="base.pas"/>
-        <Caret Line="533" Column="29" TopLine="522"/>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="439" Column="13" TopLine="286"/>
       </Position13>
       <Position14>
-        <Filename Value="base.pas"/>
-        <Caret Line="548" Column="19" TopLine="508"/>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="54" Column="46" TopLine="30"/>
       </Position14>
       <Position15>
-        <Filename Value="base.pas"/>
-        <Caret Line="535" Column="30" TopLine="532"/>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="70" Column="40" TopLine="297"/>
       </Position15>
       <Position16>
-        <Filename Value="base.pas"/>
-        <Caret Line="1281" TopLine="1231"/>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="57" Column="15" TopLine="33"/>
       </Position16>
       <Position17>
-        <Filename Value="myfphttpclient.pas"/>
-        <Caret Line="2117" TopLine="2067"/>
+        <Filename Value="base.pas"/>
+        <Caret Line="543" Column="9" TopLine="516"/>
       </Position17>
       <Position18>
-        <Filename Value="myfphttpclient.pas"/>
-        <Caret TopLine="16"/>
+        <Filename Value="base.pas"/>
+        <Caret Line="129" Column="15" TopLine="104"/>
       </Position18>
       <Position19>
-        <Filename Value="myfphttpclient.pas"/>
-        <Caret Line="80" Column="27" TopLine="37"/>
+        <Filename Value="base.pas"/>
+        <Caret Line="598" Column="3" TopLine="594"/>
       </Position19>
       <Position20>
-        <Filename Value="myfphttpclient.pas"/>
-        <Caret Line="106" Column="49" TopLine="63"/>
+        <Filename Value="base.pas"/>
+        <Caret Line="108" Column="14" TopLine="84"/>
       </Position20>
       <Position21>
         <Filename Value="myfphttpclient.pas"/>
-        <Caret Line="273" Column="34" TopLine="553"/>
+        <Caret Line="1253" Column="62" TopLine="1223"/>
       </Position21>
-      <Position22>
-        <Filename Value="myfphttpclient.pas"/>
-        <Caret Line="328" Column="62" TopLine="294"/>
-      </Position22>
-      <Position23>
-        <Filename Value="myfphttpclient.pas"/>
-        <Caret Line="329" Column="39" TopLine="294"/>
-      </Position23>
-      <Position24>
-        <Filename Value="myfphttpclient.pas"/>
-        <Caret Line="486" Column="67" TopLine="443"/>
-      </Position24>
-      <Position25>
-        <Filename Value="myfphttpclient.pas"/>
-        <Caret Line="491" Column="62" TopLine="445"/>
-      </Position25>
-      <Position26>
-        <Filename Value="myfphttpclient.pas"/>
-        <Caret Line="601" Column="22" TopLine="552"/>
-      </Position26>
-      <Position27>
-        <Filename Value="base.pas"/>
-      </Position27>
-      <Position28>
-        <Filename Value="base.pas"/>
-        <Caret Line="9" Column="15"/>
-      </Position28>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

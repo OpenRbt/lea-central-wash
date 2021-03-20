@@ -1261,7 +1261,7 @@ constructor TFPCustomHTTPClient.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   // Infinite timeout on most platforms
-  FIOTimeout:=500;
+  FIOTimeout:=250;
   FRequestHeaders:=TStringList.Create;
   FRequestHeaders.NameValueSeparator:=':';
   FResponseHeaders:=TStringList.Create;
