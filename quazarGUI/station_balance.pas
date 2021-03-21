@@ -70,7 +70,6 @@ var
 const
   NO_RESPONSE : integer = -1;
   DEFAULT_SERVICE_INCREMENT : integer = 10;
-  REMOTE : integer = -1;
 
 implementation
   uses base;
@@ -128,27 +127,43 @@ end;
 
 procedure TStationBalanceForm.RunProgram();
 begin
-  if _currProgram <> REMOTE then
+  if BaseForm.GetStationCurrentBalanceByID(_id) < 1 then
   begin
+    if _currProgram <> BaseForm.GetOpenDoorProgramID() then
+    begin
+      Exit;
+    end;
+  end;
+  BaseForm.SetStationCurrentProgramByID(_currProgram, _id, false);
+  if _currProgram = BaseForm.GetOpenDoorProgramID() then
+  begin
+    sleep(5000);
+    _currProgram := NO_ID;
     BaseForm.SetStationCurrentProgramByID(_currProgram, _id, false);
   end;
 end;
 
 procedure TStationBalanceForm.DryPanelClick(Sender: TObject);
-var
-  clickedProgram: integer;
 begin
-  clickedProgram := BaseForm.GetDryProgramID();
-  _currProgram := clickedProgram;
+  if _currProgram = NO_ID then
+  begin
+    _currProgram := 1;
+    RunProgram();
+    sleep(2000);
+  end;
+  _currProgram := BaseForm.GetDryProgramID();
   RunProgram();
 end;
 
 procedure TStationBalanceForm.FoamPanelClick(Sender: TObject);
-var
-  clickedProgram: integer;
 begin
-  clickedProgram := BaseForm.GetFoamProgramID();
-  _currProgram := clickedProgram;
+  if _currProgram = NO_ID then
+  begin
+    _currProgram := 1;
+    RunProgram();
+    sleep(2000);
+  end;
+  _currProgram := BaseForm.GetFoamProgramID();
   RunProgram();
 end;
 
@@ -274,7 +289,7 @@ end;
 procedure TStationBalanceForm.Init(id: integer);
 begin
   _id := id;
-  _currProgram := REMOTE;
+  _currProgram := NO_ID;
 end;
 
 procedure TStationBalanceForm.OpenBtnClick(Sender: TObject);
@@ -284,29 +299,32 @@ begin
 end;
 
 procedure TStationBalanceForm.PausePanelClick(Sender: TObject);
-var
-  clickedProgram: integer;
 begin
-  clickedProgram := BaseForm.GetPauseProgramID();
-  _currProgram := clickedProgram;
+  _currProgram := BaseForm.GetPauseProgramID();
   RunProgram();
 end;
 
 procedure TStationBalanceForm.RinsePanelClick(Sender: TObject);
-var
-  clickedProgram: integer;
 begin
-  clickedProgram := BaseForm.GetRinseProgramID();
-  _currProgram := clickedProgram;
+  if _currProgram = NO_ID then
+  begin
+    _currProgram := 1;
+    RunProgram();
+    sleep(2000);
+  end;
+  _currProgram := BaseForm.GetRinseProgramID();
   RunProgram();
 end;
 
 procedure TStationBalanceForm.ShampooPanelClick(Sender: TObject);
-var
-  clickedProgram: integer;
 begin
-  clickedProgram := BaseForm.GetShampooProgramID();
-  _currProgram := clickedProgram;
+  if _currProgram = NO_ID then
+  begin
+    _currProgram := 1;
+    RunProgram();
+    sleep(2000);
+  end;
+  _currProgram := BaseForm.GetShampooProgramID();
   RunProgram();
 end;
 
@@ -382,11 +400,14 @@ begin
 end;
 
 procedure TStationBalanceForm.WaxPanelClick(Sender: TObject);
-var
-  clickedProgram: integer;
 begin
-  clickedProgram := BaseForm.GetWaxProgramID();
-  _currProgram := clickedProgram;
+  if _currProgram = NO_ID then
+  begin
+    _currProgram := 1;
+    RunProgram();
+    sleep(2000);
+  end;
+  _currProgram := BaseForm.GetWaxProgramID();
   RunProgram();
 end;
 

@@ -1,5 +1,5 @@
 inherited DosatronsForm: TDosatronsForm
-  Top = 81
+  Top = 80
   OnActivate = FormShow
   OnClose = FormClose
   OnCreate = FormCreate

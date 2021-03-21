@@ -77,7 +77,7 @@ const
   PREFLIGHT_STR : string = 'ПРОКАЧКА';
   PADDING     : string = '  ';
 
-  STATION_ID : integer = 1;
+  STATION_ID : integer = 2;
 
 implementation
 
@@ -253,7 +253,7 @@ end;
 
 procedure TDosatronsForm.RunProgram();
 begin
-  SetStationCurrentProgramByID(_currProgram, STATION_ID, true);
+  SetStationCurrentProgramByID(_currProgram, STATION_ID, false);
 end;
 
 procedure TDosatronsForm.UpdateCall(Sender: TObject);
