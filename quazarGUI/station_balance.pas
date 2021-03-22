@@ -145,24 +145,24 @@ end;
 
 procedure TStationBalanceForm.DryPanelClick(Sender: TObject);
 begin
-  if _currProgram = NO_ID then
-  begin
-    _currProgram := 1;
-    RunProgram();
-    sleep(2000);
-  end;
+  //if _currProgram = NO_ID then
+  //begin
+  //  _currProgram := 1;
+  //  RunProgram();
+  //  sleep(2000);
+  //end;
   _currProgram := BaseForm.GetDryProgramID();
   RunProgram();
 end;
 
 procedure TStationBalanceForm.FoamPanelClick(Sender: TObject);
 begin
-  if _currProgram = NO_ID then
-  begin
-    _currProgram := 1;
-    RunProgram();
-    sleep(2000);
-  end;
+  //if _currProgram = NO_ID then
+  //begin
+  //  _currProgram := 1;
+  //  RunProgram();
+  //  sleep(2000);
+  //end;
   _currProgram := BaseForm.GetFoamProgramID();
   RunProgram();
 end;
@@ -306,24 +306,24 @@ end;
 
 procedure TStationBalanceForm.RinsePanelClick(Sender: TObject);
 begin
-  if _currProgram = NO_ID then
-  begin
-    _currProgram := 1;
-    RunProgram();
-    sleep(2000);
-  end;
+  //if _currProgram = NO_ID then
+  //begin
+  //  _currProgram := 1;
+  //  RunProgram();
+  //  sleep(2000);
+  //end;
   _currProgram := BaseForm.GetRinseProgramID();
   RunProgram();
 end;
 
 procedure TStationBalanceForm.ShampooPanelClick(Sender: TObject);
 begin
-  if _currProgram = NO_ID then
-  begin
-    _currProgram := 1;
-    RunProgram();
-    sleep(2000);
-  end;
+  //if _currProgram = NO_ID then
+  //begin
+  //  _currProgram := 1;
+  //  RunProgram();
+  //  sleep(2000);
+  //end;
   _currProgram := BaseForm.GetShampooProgramID();
   RunProgram();
 end;
@@ -401,12 +401,12 @@ end;
 
 procedure TStationBalanceForm.WaxPanelClick(Sender: TObject);
 begin
-  if _currProgram = NO_ID then
-  begin
-    _currProgram := 1;
-    RunProgram();
-    sleep(2000);
-  end;
+  //if _currProgram = NO_ID then
+  //begin
+  //  _currProgram := 1;
+  //  RunProgram();
+  //  sleep(2000);
+  //end;
   _currProgram := BaseForm.GetWaxProgramID();
   RunProgram();
 end;
