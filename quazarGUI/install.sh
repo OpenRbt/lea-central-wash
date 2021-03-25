@@ -14,8 +14,8 @@ sudo echo "@/home/pi/run.sh" >> /etc/xdg/lxsession/LXDE-pi/autostart
 echo "sleep 30" >> /home/pi/run.sh
 echo "flock /home/pi/lock.once /home/pi/runonce.sh" >> /home/pi/run.sh
 echo "sudo systemctl restart lea-central-wash.service" >> /home/pi/runonce.sh
-echo "cd /home/pi/lea-central-wash/lazarusGUI" >> /home/pi/runonce.sh
-echo "./WashServerGUI" >> /home/pi/runonce.sh
+echo "cd /home/pi/lea-central-wash/quazarGUI" >> /home/pi/runonce.sh
+echo "./QuazarManagerGUI" >> /home/pi/runonce.sh
 
 cd /home/pi
 sudo chmod 777 /home/pi/run.sh
