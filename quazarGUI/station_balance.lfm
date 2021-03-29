@@ -1,11 +1,11 @@
 object StationBalanceForm: TStationBalanceForm
   Left = 624
   Height = 820
-  Top = 81
-  Width = 1280
+  Top = 80
+  Width = 1000
   Caption = 'Station Balance'
   ClientHeight = 820
-  ClientWidth = 1280
+  ClientWidth = 1000
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
@@ -135,96 +135,6 @@ object StationBalanceForm: TStationBalanceForm
     ParentColor = False
     ParentFont = False
   end
-  object FoamCheckBox: TCheckBox
-    Left = 1000
-    Height = 41
-    Top = 176
-    Width = 206
-    Alignment = taLeftJustify
-    BidiMode = bdRightToLeft
-    Caption = 'Активный    '
-    Checked = True
-    Font.Height = -32
-    ParentFont = False
-    ParentBidiMode = False
-    State = cbChecked
-    TabOrder = 7
-  end
-  object ShampooCheckBox: TCheckBox
-    Left = 1000
-    Height = 41
-    Top = 288
-    Width = 206
-    Alignment = taLeftJustify
-    BidiMode = bdRightToLeft
-    Caption = 'Активный    '
-    Checked = True
-    Font.Height = -32
-    ParentFont = False
-    ParentBidiMode = False
-    State = cbChecked
-    TabOrder = 8
-  end
-  object RinseCheckBox: TCheckBox
-    Left = 1000
-    Height = 41
-    Top = 400
-    Width = 206
-    Alignment = taLeftJustify
-    BidiMode = bdRightToLeft
-    Caption = 'Активный    '
-    Checked = True
-    Font.Height = -32
-    ParentFont = False
-    ParentBidiMode = False
-    State = cbChecked
-    TabOrder = 9
-  end
-  object WaxCheckBox: TCheckBox
-    Left = 1000
-    Height = 41
-    Top = 512
-    Width = 206
-    Alignment = taLeftJustify
-    BidiMode = bdRightToLeft
-    Caption = 'Активный    '
-    Checked = True
-    Font.Height = -32
-    ParentFont = False
-    ParentBidiMode = False
-    State = cbChecked
-    TabOrder = 10
-  end
-  object DryCheckBox: TCheckBox
-    Left = 1000
-    Height = 41
-    Top = 624
-    Width = 206
-    Alignment = taLeftJustify
-    BidiMode = bdRightToLeft
-    Caption = 'Активный    '
-    Checked = True
-    Font.Height = -32
-    ParentFont = False
-    ParentBidiMode = False
-    State = cbChecked
-    TabOrder = 11
-  end
-  object PauseCheckBox: TCheckBox
-    Left = 1000
-    Height = 41
-    Top = 736
-    Width = 206
-    Alignment = taLeftJustify
-    BidiMode = bdRightToLeft
-    Caption = 'Активный    '
-    Checked = True
-    Font.Height = -32
-    ParentFont = False
-    ParentBidiMode = False
-    State = cbChecked
-    TabOrder = 12
-  end
   object FoamPanel: TPanel
     Left = 470
     Height = 81
@@ -236,7 +146,7 @@ object StationBalanceForm: TStationBalanceForm
     Caption = 'ПЕНА'
     Font.Height = -32
     ParentFont = False
-    TabOrder = 13
+    TabOrder = 7
     OnClick = FoamPanelClick
   end
   object ShampooPanel: TPanel
@@ -250,7 +160,7 @@ object StationBalanceForm: TStationBalanceForm
     Caption = 'ВОДА + ШАМПУНЬ'
     Font.Height = -32
     ParentFont = False
-    TabOrder = 14
+    TabOrder = 8
     OnClick = ShampooPanelClick
   end
   object RinsePanel: TPanel
@@ -264,7 +174,7 @@ object StationBalanceForm: TStationBalanceForm
     Caption = 'ОПОЛАСКИВАНИЕ'
     Font.Height = -32
     ParentFont = False
-    TabOrder = 15
+    TabOrder = 9
     OnClick = RinsePanelClick
   end
   object WaxPanel: TPanel
@@ -278,7 +188,7 @@ object StationBalanceForm: TStationBalanceForm
     Caption = 'ВОСК'
     Font.Height = -32
     ParentFont = False
-    TabOrder = 16
+    TabOrder = 10
     OnClick = WaxPanelClick
   end
   object DryPanel: TPanel
@@ -292,7 +202,7 @@ object StationBalanceForm: TStationBalanceForm
     Caption = 'СУШКА И БЛЕСК'
     Font.Height = -32
     ParentFont = False
-    TabOrder = 17
+    TabOrder = 11
     OnClick = DryPanelClick
   end
   object PausePanel: TPanel
@@ -306,7 +216,7 @@ object StationBalanceForm: TStationBalanceForm
     Caption = 'ПАУЗА'
     Font.Height = -32
     ParentFont = False
-    TabOrder = 18
+    TabOrder = 12
     OnClick = PausePanelClick
   end
   object UpdateTimer: TTimer

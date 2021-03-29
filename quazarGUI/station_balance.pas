@@ -14,22 +14,16 @@ type
 
   TStationBalanceForm = class(TForm)
     BalanceAmountLabel: TLabel;
-    FoamCheckBox: TCheckBox;
     CurrencyLabel: TLabel;
     CollectionBtn: TButton;
     BackBtn: TButton;
-    DryCheckBox: TCheckBox;
     FoamPanel: TPanel;
     DryPanel: TPanel;
     PausePanel: TPanel;
     WaxPanel: TPanel;
     RinsePanel: TPanel;
     ShampooPanel: TPanel;
-    PauseCheckBox: TCheckBox;
     UpdateTimer: TTimer;
-    WaxCheckBox: TCheckBox;
-    RinseCheckBox: TCheckBox;
-    ShampooCheckBox: TCheckBox;
     OpenBtn: TButton;
     IncBtn: TButton;
     CurrentAmount: TPanel;
@@ -145,24 +139,12 @@ end;
 
 procedure TStationBalanceForm.DryPanelClick(Sender: TObject);
 begin
-  //if _currProgram = NO_ID then
-  //begin
-  //  _currProgram := 1;
-  //  RunProgram();
-  //  sleep(2000);
-  //end;
   _currProgram := BaseForm.GetDryProgramID();
   RunProgram();
 end;
 
 procedure TStationBalanceForm.FoamPanelClick(Sender: TObject);
 begin
-  //if _currProgram = NO_ID then
-  //begin
-  //  _currProgram := 1;
-  //  RunProgram();
-  //  sleep(2000);
-  //end;
   _currProgram := BaseForm.GetFoamProgramID();
   RunProgram();
 end;
@@ -306,24 +288,12 @@ end;
 
 procedure TStationBalanceForm.RinsePanelClick(Sender: TObject);
 begin
-  //if _currProgram = NO_ID then
-  //begin
-  //  _currProgram := 1;
-  //  RunProgram();
-  //  sleep(2000);
-  //end;
   _currProgram := BaseForm.GetRinseProgramID();
   RunProgram();
 end;
 
 procedure TStationBalanceForm.ShampooPanelClick(Sender: TObject);
 begin
-  //if _currProgram = NO_ID then
-  //begin
-  //  _currProgram := 1;
-  //  RunProgram();
-  //  sleep(2000);
-  //end;
   _currProgram := BaseForm.GetShampooProgramID();
   RunProgram();
 end;
@@ -401,12 +371,6 @@ end;
 
 procedure TStationBalanceForm.WaxPanelClick(Sender: TObject);
 begin
-  //if _currProgram = NO_ID then
-  //begin
-  //  _currProgram := 1;
-  //  RunProgram();
-  //  sleep(2000);
-  //end;
   _currProgram := BaseForm.GetWaxProgramID();
   RunProgram();
 end;

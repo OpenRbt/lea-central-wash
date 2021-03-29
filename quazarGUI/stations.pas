@@ -52,11 +52,11 @@ const
   PREFLIGHT_DEC       : integer = 2;
   PREFLIGHT_VAL_COL   : integer = 3;
   PREFLIGHT_INC       : integer = 4;
-  ENABLED_LABEL_COL   : integer = 5;
-  ENABLED_CHECKBOX_COL: integer = 6;
+  //ENABLED_LABEL_COL   : integer = 5;
+  //ENABLED_CHECKBOX_COL: integer = 6;
 
   PREFLIGHT_STR: string = 'ПРОКАЧКА';
-  ENABLED_STR  : string = 'Активный';
+  //ENABLED_STR  : string = 'Активный';
   PADDING      : string = '  ';
 
 implementation
@@ -83,10 +83,10 @@ begin
   NotAuthorized.Visible:=False;
   StationsGrid.Visible:=True;
 
-  for i:=0 to StationsGrid.RowCount-1 do
-  begin
-    StationsGrid.Cells[ENABLED_CHECKBOX_COL, i] := '0';
-  end;
+  //for i:=0 to StationsGrid.RowCount-1 do
+  //begin
+  //  StationsGrid.Cells[ENABLED_CHECKBOX_COL, i] := '0';
+  //end;
 
   UpdateStations();
   UpdatePreflight();
@@ -119,8 +119,8 @@ begin
       StationsGrid.Cells[PREFLIGHT_DEC, id-1] := '-';
       StationsGrid.Cells[PREFLIGHT_VAL_COL, id-1] := IntToStr(GetStationPreflightSec(id));
       StationsGrid.Cells[PREFLIGHT_INC, id-1] := '+';
-      StationsGrid.Cells[ENABLED_LABEL_COL, id-1] := ENABLED_STR;
-      StationsGrid.Cells[ENABLED_CHECKBOX_COL, id-1] := '1';
+      //StationsGrid.Cells[ENABLED_LABEL_COL, id-1] := ENABLED_STR;
+      //StationsGrid.Cells[ENABLED_CHECKBOX_COL, id-1] := '1';
     end;
   end;
 end;
@@ -164,20 +164,20 @@ begin
   begin
     Exit;
   end;
-  if (aCol = ENABLED_CHECKBOX_COL) or (aCol = ENABLED_LABEL_COL) then
-  begin
-    if StationsGrid.Cells[ENABLED_CHECKBOX_COL, aRow] = '0' then
-    begin
-      //ProgramsInfo.Enabled[aRow] := true;
-      StationsGrid.Cells[ENABLED_CHECKBOX_COL, aRow] := '1';
-    end
-    else
-    begin
-      //ProgramsInfo.Enabled[aRow] := false;
-      StationsGrid.Cells[ENABLED_CHECKBOX_COL, aRow] := '0';
-    end;
-  end
-  else if (aCol = PREFLIGHT_DEC) then
+  //if (aCol = ENABLED_CHECKBOX_COL) or (aCol = ENABLED_LABEL_COL) then
+  //begin
+  //  if StationsGrid.Cells[ENABLED_CHECKBOX_COL, aRow] = '0' then
+  //  begin
+  //    //ProgramsInfo.Enabled[aRow] := true;
+  //    StationsGrid.Cells[ENABLED_CHECKBOX_COL, aRow] := '1';
+  //  end
+  //  else
+  //  begin
+  //    //ProgramsInfo.Enabled[aRow] := false;
+  //    StationsGrid.Cells[ENABLED_CHECKBOX_COL, aRow] := '0';
+  //  end;
+  //end
+  if (aCol = PREFLIGHT_DEC) then
   begin
     id := aRow+1;
     preflightSec := GetStationPreflightSec(id);

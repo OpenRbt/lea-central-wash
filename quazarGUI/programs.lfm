@@ -4,12 +4,12 @@ inherited ProgramsForm: TProgramsForm
   OnCreate = FormCreate
   OnShow = FormShow
   object ProgramsGrid: TStringGrid[9]
-    Left = 320
+    Left = 400
     Height = 498
     Top = 216
-    Width = 944
+    Width = 720
     AlternateColor = cl3DLight
-    ColCount = 8
+    ColCount = 6
     Columns = <    
       item
         Font.Height = -32
@@ -46,18 +46,6 @@ inherited ProgramsForm: TProgramsForm
         Font.Height = -24
         Title.Caption = 'ProgramCurrInfo'
         Width = 114
-      end    
-      item
-        Alignment = taRightJustify
-        Font.Height = -24
-        Title.Caption = 'ProgramEnabledInfo'
-        Width = 140
-      end    
-      item
-        ButtonStyle = cbsCheckboxColumn
-        Font.Height = -32
-        Title.Caption = 'ProgramEnabled'
-        Width = 68
       end>
     FixedCols = 0
     FixedRows = 0
@@ -72,7 +60,7 @@ inherited ProgramsForm: TProgramsForm
     OnSelectCell = ProgramsGridSelectCell
   end
   object Save: TButton[10]
-    Left = 400
+    Left = 630
     Height = 48
     Top = 740
     Width = 128
@@ -83,7 +71,7 @@ inherited ProgramsForm: TProgramsForm
     TabOrder = 10
   end
   object Cancel: TButton[11]
-    Left = 544
+    Left = 780
     Height = 48
     Top = 740
     Width = 128

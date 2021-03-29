@@ -397,16 +397,16 @@ begin
   ProgramsConfig.Relays[PAUSE_PROGRAM_ID - 1][0] := LIGHT_RELAY_ID;
 
   setlength(ProgramsConfig.Relays[FOAM_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.Relays[FOAM_PREFLIGHT_PROGRAM_ID - 1][0] := FOAM_RELAY_ID;
+  ProgramsConfig.Relays[FOAM_PREFLIGHT_PROGRAM_ID - 1][0] := PREFLIGHT_FOAM_RELAY_ID;
 
   setlength(ProgramsConfig.Relays[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.Relays[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1][0] := SHAMPOO_RELAY_ID;
+  ProgramsConfig.Relays[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1][0] := PREFLIGHT_SHAMPOO_RELAY_ID;
 
   setlength(ProgramsConfig.Relays[WAX_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.Relays[WAX_PREFLIGHT_PROGRAM_ID - 1][0] := WAX_RELAY_ID;
+  ProgramsConfig.Relays[WAX_PREFLIGHT_PROGRAM_ID - 1][0] := PREFLIGHT_WAX_RELAY_ID;
 
   setlength(ProgramsConfig.Relays[POLYMER_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.Relays[POLYMER_PREFLIGHT_PROGRAM_ID - 1][0] := POLYMER_RELAY_ID;
+  ProgramsConfig.Relays[POLYMER_PREFLIGHT_PROGRAM_ID - 1][0] := PREFLIGHT_POLYMER_RELAY_ID;
 
   setlength(ProgramsConfig.Relays[OPEN_DOOR_PROGRAM_ID - 1], 1);
   ProgramsConfig.Relays[OPEN_DOOR_PROGRAM_ID - 1][0] := OPEN_DOOR_RELAY_ID;
@@ -449,6 +449,9 @@ begin
 
   setlength(ProgramsConfig.PreflightRelays[POLYMER_PREFLIGHT_PROGRAM_ID - 1], 1);
   ProgramsConfig.PreflightRelays[POLYMER_PREFLIGHT_PROGRAM_ID - 1][0] := PREFLIGHT_POLYMER_RELAY_ID;
+
+  setlength(ProgramsConfig.PreflightRelays[OPEN_DOOR_PROGRAM_ID - 1], 1);
+  ProgramsConfig.PreflightRelays[OPEN_DOOR_PROGRAM_ID - 1][0] := OPEN_DOOR_RELAY_ID;
 
   ProgramsConfig.MotorSpeedPercent[FOAM_PROGRAM_ID              - 1] :=  15;
   ProgramsConfig.MotorSpeedPercent[SHAMPOO_PROGRAM_ID           - 1] :=  50;

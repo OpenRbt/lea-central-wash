@@ -4,12 +4,11 @@ inherited StationsForm: TStationsForm
   OnClose = FormClose
   OnCreate = FormCreate
   object StationsGrid: TStringGrid[9]
-    Left = 320
+    Left = 450
     Height = 666
     Top = 128
-    Width = 944
+    Width = 627
     AlternateColor = cl3DLight
-    ColCount = 7
     Columns = <    
       item
         Font.Height = -32
@@ -40,18 +39,6 @@ inherited StationsForm: TStationsForm
         Font.Height = -32
         Title.Caption = 'IncrementBtn'
         Width = 40
-      end    
-      item
-        Alignment = taRightJustify
-        Font.Height = -24
-        Title.Caption = 'StationEnabledInfo'
-        Width = 250
-      end    
-      item
-        ButtonStyle = cbsCheckboxColumn
-        Font.Height = -32
-        Title.Caption = 'StationEnabled'
-        Width = 68
       end>
     FixedCols = 0
     FixedRows = 0
