@@ -1093,6 +1093,7 @@ begin
         programJson.Add('price', ProgramsConfig.Price[id-1]);
         programJson.Add('motorSpeedPercent', ProgramsConfig.MotorSpeedPercent[id-1]);
         programJson.Add('preflightMotorSpeedPercent', ProgramsConfig.PreflightMotorSpeedPercent[id-1]);
+        programJson.Add('preflightEnabled', true);
 
         relays := TJsonArray.Create;
         for i:=0 to Length(ProgramsConfig.Relays[id-1])-1 do

@@ -1,5 +1,5 @@
 inherited ProgramsForm: TProgramsForm
-  Top = 67
+  Top = 58
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
