@@ -56,13 +56,13 @@ inherited StationsForm: TStationsForm
     FixedCols = 0
     FixedRows = 0
     Flat = True
-    Font.Height = 67
+    Font.Height = 57
     GridLineWidth = 0
     ParentFont = False
     RowCount = 8
     ScrollBars = ssNone
     TabOrder = 9
-    TitleFont.Height = 67
+    TitleFont.Height = 57
     OnSelectCell = StationsGridSelectCell
   end
 end

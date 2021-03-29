@@ -62,13 +62,13 @@ inherited ProgramsForm: TProgramsForm
     FixedCols = 0
     FixedRows = 0
     Flat = True
-    Font.Height = 67
+    Font.Height = 57
     GridLineWidth = 0
     ParentFont = False
     RowCount = 6
     ScrollBars = ssNone
     TabOrder = 9
-    TitleFont.Height = 67
+    TitleFont.Height = 57
     OnSelectCell = ProgramsGridSelectCell
   end
   object Save: TButton[10]

@@ -1,5 +1,5 @@
 object BaseForm: TBaseForm
-  Left = 640
+  Left = 542
   Height = 820
   Top = 67
   Width = 1280
@@ -10,7 +10,7 @@ object BaseForm: TBaseForm
   Color = clBackground
   OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '2.0.6.0'
+  LCLVersion = '2.0.0.4'
   object Main: TPanel
     Left = 20
     Height = 100

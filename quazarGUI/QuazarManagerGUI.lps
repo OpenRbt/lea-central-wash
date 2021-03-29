@@ -31,11 +31,10 @@
         <UnitName Value="Base"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="1072"/>
-        <CursorPos X="51" Y="1096"/>
+        <TopLine Value="592"/>
+        <CursorPos X="43" Y="606"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="users.pas"/>
@@ -67,11 +66,13 @@
         <ComponentName Value="StationsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="6"/>
-        <TopLine Value="63"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="65"/>
         <CursorPos X="3" Y="91"/>
         <UsageCount Value="195"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="programs.pas"/>
@@ -84,7 +85,6 @@
         <CursorPos X="143" Y="195"/>
         <UsageCount Value="195"/>
         <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="dosatrons.pas"/>
@@ -92,12 +92,11 @@
         <ComponentName Value="DosatronsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="76"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="97"/>
         <CursorPos X="76" Y="97"/>
         <UsageCount Value="195"/>
         <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit7>
       <Unit8>
         <Filename Value="settings.pas"/>
@@ -182,7 +181,6 @@
         <CursorPos X="68" Y="119"/>
         <UsageCount Value="117"/>
         <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit14>
       <Unit15>
         <Filename Value="station_balance.pas"/>
@@ -190,9 +188,9 @@
         <ComponentName Value="StationBalanceForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="152"/>
-        <CursorPos X="29" Y="152"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="247"/>
+        <CursorPos X="13" Y="272"/>
         <UsageCount Value="106"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -431,8 +429,8 @@
         <Caret Line="130" TopLine="96"/>
       </Position28>
       <Position29>
-        <Filename Value="base.pas"/>
-        <Caret Line="596" Column="3" TopLine="571"/>
+        <Filename Value="station_balance.pas"/>
+        <Caret Line="130" TopLine="96"/>
       </Position29>
     </JumpHistory>
     <RunParams>
