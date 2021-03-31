@@ -46,7 +46,6 @@ var
 
 const
   MAX_NUM_STATIONS : integer = 12;
-  NO_ID       : integer = 0;
   NAME_COL    : integer = 0;
   ADDRESS_COL : integer = 1;
   STATUS_COL  : integer = 2;

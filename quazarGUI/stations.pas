@@ -83,11 +83,6 @@ begin
   NotAuthorized.Visible:=False;
   StationsGrid.Visible:=True;
 
-  //for i:=0 to StationsGrid.RowCount-1 do
-  //begin
-  //  StationsGrid.Cells[ENABLED_CHECKBOX_COL, i] := '0';
-  //end;
-
   UpdateStations();
   UpdatePreflight();
   ShowStations();
@@ -99,10 +94,7 @@ var
 begin
   for id:=1 to GetNumStations() do
   begin
-    if GetStationHashByID(id) <> PLACEHOLDER then
-    begin
-      UpdateStationPreflightSec(id);
-    end;
+    UpdateStationPreflightSec(id);
   end;
 end;
 
@@ -119,8 +111,6 @@ begin
       StationsGrid.Cells[PREFLIGHT_DEC, id-1] := '-';
       StationsGrid.Cells[PREFLIGHT_VAL_COL, id-1] := IntToStr(GetStationPreflightSec(id));
       StationsGrid.Cells[PREFLIGHT_INC, id-1] := '+';
-      //StationsGrid.Cells[ENABLED_LABEL_COL, id-1] := ENABLED_STR;
-      //StationsGrid.Cells[ENABLED_CHECKBOX_COL, id-1] := '1';
     end;
   end;
 end;
@@ -164,19 +154,6 @@ begin
   begin
     Exit;
   end;
-  //if (aCol = ENABLED_CHECKBOX_COL) or (aCol = ENABLED_LABEL_COL) then
-  //begin
-  //  if StationsGrid.Cells[ENABLED_CHECKBOX_COL, aRow] = '0' then
-  //  begin
-  //    //ProgramsInfo.Enabled[aRow] := true;
-  //    StationsGrid.Cells[ENABLED_CHECKBOX_COL, aRow] := '1';
-  //  end
-  //  else
-  //  begin
-  //    //ProgramsInfo.Enabled[aRow] := false;
-  //    StationsGrid.Cells[ENABLED_CHECKBOX_COL, aRow] := '0';
-  //  end;
-  //end
   if (aCol = PREFLIGHT_DEC) then
   begin
     id := aRow+1;
@@ -192,6 +169,10 @@ begin
   begin
     id := aRow+1;
     preflightSec := GetStationPreflightSec(id);
+    if preflightSec = NO_ID then
+    begin
+      Exit;
+    end;
     SetStationPreflightSec(id, preflightSec + 1);
     StationsGrid.Cells[PREFLIGHT_VAL_COL, aRow] := IntToStr(GetStationPreflightSec(id));
   end;

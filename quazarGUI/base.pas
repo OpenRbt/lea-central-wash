@@ -811,7 +811,7 @@ begin
         end
         else
         begin
-          ResponseStations.preflightSec[id-1] := 0;
+          ResponseStations.preflightSec[id-1] := NO_ID;
         end;
 
         path := stationJson.FindPath('relayBoard');
@@ -889,7 +889,7 @@ procedure TBaseForm.UpdatePrograms();
 var
   i: integer;
 begin
-  for i:=1 to NUM_PROGRAMS+NUM_PREFLIGHT_PROGRAMS do
+  for i:=1 to NUM_PROGRAMS do
   begin
     SetProgram(i);
   end;
@@ -986,7 +986,7 @@ var
   RequestAnswer: string;
   programRequestJson : TJSONObject;
   programsJson: TJsonArray;
-  i: integer;
+  i, j: integer;
   path: TJSONdata;
   programID: integer;
   relaysJson: TJsonArray;
@@ -1018,7 +1018,10 @@ begin
             with programsJson.Items[i] do
             begin
               programID := FindPath('id').AsInteger;
-
+              if programID > NUM_PROGRAMS then
+              begin
+                continue;
+              end;
               path := FindPath('name');
               if path <> nil then
               begin
@@ -1042,15 +1045,18 @@ begin
               relaysJson := GetPath('relays') as TJsonArray;
               if relaysJson <> nil then
               begin
-                with relaysJson.items[i] do
+                for j:=0 to relaysJson.Count-1 do
                 begin
-                  relayID := FindPath('id').AsInteger;
-
-                  path := FindPath('timeon');
-                  if path <> nil then
+                  with relaysJson.items[j] do
                   begin
-                    RelaysConfig.TimeON[relayID-1] := path.AsInteger;
-                    RelaysConfig.TimeOFF[relayID-1] := TOTAL_TIME - RelaysConfig.TimeON[relayID-1];
+                    relayID := FindPath('id').AsInteger;
+
+                    path := FindPath('timeon');
+                    if path <> nil then
+                    begin
+                      RelaysConfig.TimeON[relayID-1] := path.AsInteger;
+                      RelaysConfig.TimeOFF[relayID-1] := TOTAL_TIME - RelaysConfig.TimeON[relayID-1];
+                    end;
                   end;
                 end;
               end;
