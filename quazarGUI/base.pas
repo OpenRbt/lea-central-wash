@@ -6,9 +6,10 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ExtCtrls,
-  StdCtrls, fphttpclient, Fpjson, jsonparser;
+  StdCtrls, myfphttpclient, Fpjson, jsonparser, Process;
 
 type
+  THashes = array of string;
 
   RelayConfig = packed record
     Count           : integer;
@@ -101,17 +102,20 @@ type
     procedure SetProgramPrice(id, price : integer);
     function GetNumPrograms(): integer;
 
+    function GetMotorSpeed(id: integer): integer;
+    procedure SetMotorSpeed(id, speed : integer);
+
     function UpdateStations() : boolean;
     function GetStationNameByID(id : integer) : string;
     function GetStationHashByID(id : integer) : string;
     function GetStationCurrentBalanceByID(id : integer) : integer;
     function GetStationCurrentProgramByID(id : integer) : integer;
-    //procedure SetStationCurrentProgramByID(stationID, programID: integer);
     function GetStationStatusByID(id : integer) : string;
     function GetStationPreflightSec(id: integer): integer;
     procedure UpdateStationPreflightSec(id: integer);
     procedure SetStationPreflightSec(id, preflightSec: integer);
     function GetNumStations(): integer;
+    function GetFreeHashes() : THashes;
 
     function GetFoamProgramID(): integer;
     function GetShampooProgramID(): integer;
@@ -123,10 +127,11 @@ type
     function GetShampooPreflightProgramID(): integer;
     function GetWaxPreflightProgramID(): integer;
     function GetPolymerPreflightProgramID(): integer;
-    function GetStopProgramID(): integer;
     function GetOpenDoorProgramID(): integer;
 
-    procedure SetDosatronPreflight(programID: integer; run: boolean);
+    procedure SetStationCurrentProgramByID(programID, stationID: integer; isPreflight: boolean);
+
+    function GetIpAddrList(): string;
 
   private
     pinCode: string;
@@ -141,6 +146,7 @@ var
   ProgramsConfig: ProgramConfig;
   RelaysConfig  : RelayConfig;
   ResponseStations: StationsInfo;
+  freeHashVals : array of string;
   freeHashID : integer;
 
 const
@@ -150,8 +156,8 @@ const
   PLACEHOLDER : string = '';
 
   NUM_PROGRAMS          : integer = 6;
-  NUM_PREFLIGHT_PROGRAMS: integer = 6;
-  NUM_RELAYS            : integer = 22;
+  NUM_PREFLIGHT_PROGRAMS: integer = 5;
+  NUM_RELAYS            : integer = 13;
 
   FOAM_RELAY_ID      : integer = 6;
   SHAMPOO_RELAY_ID   : integer = 7;
@@ -163,20 +169,10 @@ const
   LIGHT_RELAY_ID     : integer = 4;
   OPEN_DOOR_RELAY_ID : integer = 5;
 
-  STOP_FOAM_RELAY_ID      : integer = 10;
-  STOP_SHAMPOO_RELAY_ID   : integer = 11;
-  STOP_WAX_RELAY_ID       : integer = 12;
-  STOP_POLYMER_RELAY_ID   : integer = 13;
-  STOP_COLD_WATER_RELAY_ID: integer = 14;
-  STOP_HOT_WATER_RELAY_ID : integer = 15;
-  STOP_OSM_WATER_RELAY_ID : integer = 16;
-  STOP_LIGHT_RELAY_ID     : integer = 17;
-  STOP_OPEN_DOOR_RELAY_ID : integer = 18;
-
-  PREFLIGHT_FOAM_RELAY_ID: integer = 19;
-  PREFLIGHT_SHAMPOO_RELAY_ID: integer = 20;
-  PREFLIGHT_WAX_RELAY_ID: integer = 21;
-  PREFLIGHT_POLYMER_RELAY_ID: integer = 22;
+  PREFLIGHT_FOAM_RELAY_ID: integer    = 10;
+  PREFLIGHT_SHAMPOO_RELAY_ID: integer = 11;
+  PREFLIGHT_WAX_RELAY_ID: integer     = 12;
+  PREFLIGHT_POLYMER_RELAY_ID: integer = 13;
 
   FOAM_PROGRAM_ID    : integer = 1;
   SHAMPOO_PROGRAM_ID : integer = 2;
@@ -188,8 +184,7 @@ const
   SHAMPOO_PREFLIGHT_PROGRAM_ID: integer =  8;
   WAX_PREFLIGHT_PROGRAM_ID    : integer =  9;
   POLYMER_PREFLIGHT_PROGRAM_ID: integer = 10;
-  STOP_PROGRAM_ID             : integer = 11;
-  OPEN_DOOR_PROGRAM_ID        : integer = 12;
+  OPEN_DOOR_PROGRAM_ID        : integer = 11;
 
   FOAM_STR    : string = 'ПЕНА';
   SHAMPOO_STR : string = 'ВОДА + ШАМПУНЬ';
@@ -260,14 +255,22 @@ begin
   Result := POLYMER_PREFLIGHT_PROGRAM_ID;
 end;
 
-function TBaseForm.GetStopProgramID(): integer;
-begin
-  Result := STOP_PROGRAM_ID;
-end;
-
 function TBaseForm.GetOpenDoorProgramID(): integer;
 begin
   Result := OPEN_DOOR_PROGRAM_ID;
+end;
+
+function TBaseForm.GetFreeHashes() : THashes;
+var
+  hashes : THashes;
+  i : integer;
+begin
+  setlength(hashes, freeHashID);
+  for i := 0 to freeHashID-1 do
+  begin
+    hashes[i] := freeHashVals[i];
+  end;
+  Result := hashes;
 end;
 
 procedure TBaseForm.FormCreate(Sender: TObject);
@@ -290,15 +293,6 @@ begin
   RelaysConfig.ID[OSM_WATER_RELAY_ID  - 1] := OSM_WATER_RELAY_ID;
   RelaysConfig.ID[LIGHT_RELAY_ID      - 1] := LIGHT_RELAY_ID;
   RelaysConfig.ID[OPEN_DOOR_RELAY_ID  - 1] := OPEN_DOOR_RELAY_ID;
-  RelaysConfig.ID[STOP_FOAM_RELAY_ID       - 1] := FOAM_RELAY_ID;
-  RelaysConfig.ID[STOP_SHAMPOO_RELAY_ID    - 1] := SHAMPOO_RELAY_ID;
-  RelaysConfig.ID[STOP_WAX_RELAY_ID        - 1] := WAX_RELAY_ID;
-  RelaysConfig.ID[STOP_POLYMER_RELAY_ID    - 1] := POLYMER_RELAY_ID;
-  RelaysConfig.ID[STOP_COLD_WATER_RELAY_ID - 1] := COLD_WATER_RELAY_ID;
-  RelaysConfig.ID[STOP_HOT_WATER_RELAY_ID  - 1] := HOT_WATER_RELAY_ID;
-  RelaysConfig.ID[STOP_OSM_WATER_RELAY_ID  - 1] := OSM_WATER_RELAY_ID;
-  RelaysConfig.ID[STOP_LIGHT_RELAY_ID      - 1] := LIGHT_RELAY_ID;
-  RelaysConfig.ID[STOP_OPEN_DOOR_RELAY_ID  - 1] := OPEN_DOOR_RELAY_ID;
   RelaysConfig.ID[PREFLIGHT_FOAM_RELAY_ID       - 1] := FOAM_RELAY_ID;
   RelaysConfig.ID[PREFLIGHT_SHAMPOO_RELAY_ID    - 1] := SHAMPOO_RELAY_ID;
   RelaysConfig.ID[PREFLIGHT_WAX_RELAY_ID        - 1] := WAX_RELAY_ID;
@@ -313,15 +307,6 @@ begin
   RelaysConfig.TimeON[OSM_WATER_RELAY_ID  - 1] := 1000;
   RelaysConfig.TimeON[LIGHT_RELAY_ID      - 1] := 1000;
   RelaysConfig.TimeON[OPEN_DOOR_RELAY_ID  - 1] := 1000;
-  RelaysConfig.TimeON[STOP_FOAM_RELAY_ID       - 1] := 0;
-  RelaysConfig.TimeON[STOP_SHAMPOO_RELAY_ID    - 1] := 0;
-  RelaysConfig.TimeON[STOP_WAX_RELAY_ID        - 1] := 0;
-  RelaysConfig.TimeON[STOP_POLYMER_RELAY_ID    - 1] := 0;
-  RelaysConfig.TimeON[STOP_COLD_WATER_RELAY_ID - 1] := 0;
-  RelaysConfig.TimeON[STOP_HOT_WATER_RELAY_ID  - 1] := 0;
-  RelaysConfig.TimeON[STOP_OSM_WATER_RELAY_ID  - 1] := 0;
-  RelaysConfig.TimeON[STOP_LIGHT_RELAY_ID      - 1] := 0;
-  RelaysConfig.TimeON[STOP_OPEN_DOOR_RELAY_ID  - 1] := 0;
   RelaysConfig.TimeON[PREFLIGHT_FOAM_RELAY_ID       - 1] := 1000;
   RelaysConfig.TimeON[PREFLIGHT_SHAMPOO_RELAY_ID    - 1] := 1000;
   RelaysConfig.TimeON[PREFLIGHT_WAX_RELAY_ID        - 1] := 1000;
@@ -336,15 +321,6 @@ begin
   RelaysConfig.TimeOFF[OSM_WATER_RELAY_ID  - 1] := TOTAL_TIME - RelaysConfig.TimeON[OSM_WATER_RELAY_ID  - 1];
   RelaysConfig.TimeOFF[LIGHT_RELAY_ID      - 1] := TOTAL_TIME - RelaysConfig.TimeON[LIGHT_RELAY_ID      - 1];
   RelaysConfig.TimeOFF[OPEN_DOOR_RELAY_ID  - 1] := TOTAL_TIME - RelaysConfig.TimeON[OPEN_DOOR_RELAY_ID  - 1];
-  RelaysConfig.TimeOFF[STOP_FOAM_RELAY_ID       - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_FOAM_RELAY_ID       - 1];
-  RelaysConfig.TimeOFF[STOP_SHAMPOO_RELAY_ID    - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_SHAMPOO_RELAY_ID    - 1];
-  RelaysConfig.TimeOFF[STOP_WAX_RELAY_ID        - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_WAX_RELAY_ID        - 1];
-  RelaysConfig.TimeOFF[STOP_POLYMER_RELAY_ID    - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_POLYMER_RELAY_ID    - 1];
-  RelaysConfig.TimeOFF[STOP_COLD_WATER_RELAY_ID - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_COLD_WATER_RELAY_ID - 1];
-  RelaysConfig.TimeOFF[STOP_HOT_WATER_RELAY_ID  - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_HOT_WATER_RELAY_ID  - 1];
-  RelaysConfig.TimeOFF[STOP_OSM_WATER_RELAY_ID  - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_OSM_WATER_RELAY_ID  - 1];
-  RelaysConfig.TimeOFF[STOP_LIGHT_RELAY_ID      - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_LIGHT_RELAY_ID      - 1];
-  RelaysConfig.TimeOFF[STOP_OPEN_DOOR_RELAY_ID  - 1] := TOTAL_TIME - RelaysConfig.TimeON[STOP_OPEN_DOOR_RELAY_ID  - 1];
   RelaysConfig.TimeOFF[PREFLIGHT_FOAM_RELAY_ID       - 1] := TOTAL_TIME - RelaysConfig.TimeON[PREFLIGHT_FOAM_RELAY_ID       - 1];
   RelaysConfig.TimeOFF[PREFLIGHT_SHAMPOO_RELAY_ID    - 1] := TOTAL_TIME - RelaysConfig.TimeON[PREFLIGHT_SHAMPOO_RELAY_ID    - 1];
   RelaysConfig.TimeOFF[PREFLIGHT_WAX_RELAY_ID        - 1] := TOTAL_TIME - RelaysConfig.TimeON[PREFLIGHT_WAX_RELAY_ID        - 1];
@@ -370,7 +346,6 @@ begin
   ProgramsConfig.ID[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1] := SHAMPOO_PREFLIGHT_PROGRAM_ID;
   ProgramsConfig.ID[WAX_PREFLIGHT_PROGRAM_ID     - 1] := WAX_PREFLIGHT_PROGRAM_ID;
   ProgramsConfig.ID[POLYMER_PREFLIGHT_PROGRAM_ID - 1] := POLYMER_PREFLIGHT_PROGRAM_ID;
-  ProgramsConfig.ID[STOP_PROGRAM_ID - 1]              := STOP_PROGRAM_ID;
   ProgramsConfig.ID[OPEN_DOOR_PROGRAM_ID - 1]         := OPEN_DOOR_PROGRAM_ID;
 
   ProgramsConfig.Name[FOAM_PROGRAM_ID              - 1] := FOAM_STR;
@@ -383,7 +358,6 @@ begin
   ProgramsConfig.Name[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1] := SHAMPOO_STR + ' ПРОКАЧКА';
   ProgramsConfig.Name[WAX_PREFLIGHT_PROGRAM_ID     - 1] := WAX_STR + ' ПРОКАЧКА';
   ProgramsConfig.Name[POLYMER_PREFLIGHT_PROGRAM_ID - 1] := 'ПОЛИМЕР ПРОКАЧКА';
-  ProgramsConfig.Name[STOP_PROGRAM_ID - 1]              := 'СТОП';
   ProgramsConfig.Name[OPEN_DOOR_PROGRAM_ID - 1]         := 'OPEN';
 
   ProgramsConfig.Price[FOAM_PROGRAM_ID              - 1] := 15;
@@ -396,7 +370,6 @@ begin
   ProgramsConfig.Price[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1] :=  0;
   ProgramsConfig.Price[WAX_PREFLIGHT_PROGRAM_ID     - 1] :=  0;
   ProgramsConfig.Price[POLYMER_PREFLIGHT_PROGRAM_ID - 1] :=  0;
-  ProgramsConfig.Price[STOP_PROGRAM_ID - 1]              :=  0;
   ProgramsConfig.Price[OPEN_DOOR_PROGRAM_ID - 1]         :=  0;
 
   setlength(ProgramsConfig.Relays[FOAM_PROGRAM_ID - 1], 3);
@@ -438,16 +411,6 @@ begin
   setlength(ProgramsConfig.Relays[POLYMER_PREFLIGHT_PROGRAM_ID - 1], 1);
   ProgramsConfig.Relays[POLYMER_PREFLIGHT_PROGRAM_ID - 1][0] := PREFLIGHT_POLYMER_RELAY_ID;
 
-  setlength(ProgramsConfig.Relays[STOP_PROGRAM_ID - 1], 8);
-  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][0] := STOP_FOAM_RELAY_ID;
-  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][1] := STOP_SHAMPOO_RELAY_ID;
-  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][2] := STOP_WAX_RELAY_ID;
-  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][3] := STOP_POLYMER_RELAY_ID;
-  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][4] := STOP_HOT_WATER_RELAY_ID;
-  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][5] := STOP_COLD_WATER_RELAY_ID;
-  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][6] := STOP_OSM_WATER_RELAY_ID;
-  ProgramsConfig.Relays[STOP_PROGRAM_ID - 1][7] := STOP_LIGHT_RELAY_ID;
-
   setlength(ProgramsConfig.Relays[OPEN_DOOR_PROGRAM_ID - 1], 1);
   ProgramsConfig.Relays[OPEN_DOOR_PROGRAM_ID - 1][0] := OPEN_DOOR_RELAY_ID;
 
@@ -479,55 +442,19 @@ begin
   ProgramsConfig.PreflightRelays[PAUSE_PROGRAM_ID - 1][0] := LIGHT_RELAY_ID;
 
   setlength(ProgramsConfig.PreflightRelays[FOAM_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.PreflightRelays[FOAM_PREFLIGHT_PROGRAM_ID - 1][0] := FOAM_RELAY_ID;
+  ProgramsConfig.PreflightRelays[FOAM_PREFLIGHT_PROGRAM_ID - 1][0] := PREFLIGHT_FOAM_RELAY_ID;
 
   setlength(ProgramsConfig.PreflightRelays[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.PreflightRelays[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1][0] := SHAMPOO_RELAY_ID;
+  ProgramsConfig.PreflightRelays[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1][0] := PREFLIGHT_SHAMPOO_RELAY_ID;
 
   setlength(ProgramsConfig.PreflightRelays[WAX_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.PreflightRelays[WAX_PREFLIGHT_PROGRAM_ID - 1][0] := WAX_RELAY_ID;
+  ProgramsConfig.PreflightRelays[WAX_PREFLIGHT_PROGRAM_ID - 1][0] := PREFLIGHT_WAX_RELAY_ID;
 
   setlength(ProgramsConfig.PreflightRelays[POLYMER_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.PreflightRelays[POLYMER_PREFLIGHT_PROGRAM_ID - 1][0] := POLYMER_RELAY_ID;
+  ProgramsConfig.PreflightRelays[POLYMER_PREFLIGHT_PROGRAM_ID - 1][0] := PREFLIGHT_POLYMER_RELAY_ID;
 
-  setlength(ProgramsConfig.PreflightRelays[FOAM_PROGRAM_ID - 1], 3);
-  ProgramsConfig.PreflightRelays[FOAM_PROGRAM_ID - 1][0] := HOT_WATER_RELAY_ID;
-  ProgramsConfig.PreflightRelays[FOAM_PROGRAM_ID - 1][1] := FOAM_RELAY_ID;
-  ProgramsConfig.PreflightRelays[FOAM_PROGRAM_ID - 1][2] := LIGHT_RELAY_ID;
-
-  setlength(ProgramsConfig.PreflightRelays[SHAMPOO_PROGRAM_ID - 1], 3);
-  ProgramsConfig.PreflightRelays[SHAMPOO_PROGRAM_ID - 1][0] := HOT_WATER_RELAY_ID;
-  ProgramsConfig.PreflightRelays[SHAMPOO_PROGRAM_ID - 1][1] := SHAMPOO_RELAY_ID;
-  ProgramsConfig.PreflightRelays[SHAMPOO_PROGRAM_ID - 1][2] := LIGHT_RELAY_ID;
-
-  setlength(ProgramsConfig.PreflightRelays[RINSE_PROGRAM_ID - 1], 2);
-  ProgramsConfig.PreflightRelays[RINSE_PROGRAM_ID - 1][0] := COLD_WATER_RELAY_ID;
-  ProgramsConfig.PreflightRelays[RINSE_PROGRAM_ID - 1][1] := LIGHT_RELAY_ID;
-
-  setlength(ProgramsConfig.PreflightRelays[WAX_PROGRAM_ID - 1], 3);
-  ProgramsConfig.PreflightRelays[WAX_PROGRAM_ID - 1][0] := HOT_WATER_RELAY_ID;
-  ProgramsConfig.PreflightRelays[WAX_PROGRAM_ID - 1][1] := WAX_RELAY_ID;
-  ProgramsConfig.PreflightRelays[WAX_PROGRAM_ID - 1][2] := LIGHT_RELAY_ID;
-
-  setlength(ProgramsConfig.PreflightRelays[DRY_PROGRAM_ID - 1], 3);
-  ProgramsConfig.PreflightRelays[DRY_PROGRAM_ID - 1][0] := OSM_WATER_RELAY_ID;
-  ProgramsConfig.PreflightRelays[DRY_PROGRAM_ID - 1][1] := POLYMER_RELAY_ID;
-  ProgramsConfig.PreflightRelays[DRY_PROGRAM_ID - 1][2] := LIGHT_RELAY_ID;
-
-  setlength(ProgramsConfig.PreflightRelays[PAUSE_PROGRAM_ID - 1], 1);
-  ProgramsConfig.PreflightRelays[PAUSE_PROGRAM_ID - 1][0] := LIGHT_RELAY_ID;
-
-  setlength(ProgramsConfig.PreflightRelays[FOAM_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.PreflightRelays[FOAM_PREFLIGHT_PROGRAM_ID - 1][0] := FOAM_RELAY_ID;
-
-  setlength(ProgramsConfig.PreflightRelays[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.PreflightRelays[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1][0] := SHAMPOO_RELAY_ID;
-
-  setlength(ProgramsConfig.PreflightRelays[WAX_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.PreflightRelays[WAX_PREFLIGHT_PROGRAM_ID - 1][0] := WAX_RELAY_ID;
-
-  setlength(ProgramsConfig.PreflightRelays[POLYMER_PREFLIGHT_PROGRAM_ID - 1], 1);
-  ProgramsConfig.PreflightRelays[POLYMER_PREFLIGHT_PROGRAM_ID - 1][0] := POLYMER_RELAY_ID;
+  setlength(ProgramsConfig.PreflightRelays[OPEN_DOOR_PROGRAM_ID - 1], 1);
+  ProgramsConfig.PreflightRelays[OPEN_DOOR_PROGRAM_ID - 1][0] := OPEN_DOOR_RELAY_ID;
 
   ProgramsConfig.MotorSpeedPercent[FOAM_PROGRAM_ID              - 1] :=  15;
   ProgramsConfig.MotorSpeedPercent[SHAMPOO_PROGRAM_ID           - 1] :=  50;
@@ -535,11 +462,10 @@ begin
   ProgramsConfig.MotorSpeedPercent[WAX_PROGRAM_ID               - 1] :=  50;
   ProgramsConfig.MotorSpeedPercent[DRY_PROGRAM_ID               - 1] := 100;
   ProgramsConfig.MotorSpeedPercent[PAUSE_PROGRAM_ID             - 1] :=   0;
-  ProgramsConfig.MotorSpeedPercent[FOAM_PREFLIGHT_PROGRAM_ID    - 1] := 100;
-  ProgramsConfig.MotorSpeedPercent[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1] := 100;
-  ProgramsConfig.MotorSpeedPercent[WAX_PREFLIGHT_PROGRAM_ID     - 1] := 100;
-  ProgramsConfig.MotorSpeedPercent[POLYMER_PREFLIGHT_PROGRAM_ID - 1] := 100;
-  ProgramsConfig.MotorSpeedPercent[STOP_PROGRAM_ID - 1]              :=   0;
+  ProgramsConfig.MotorSpeedPercent[FOAM_PREFLIGHT_PROGRAM_ID    - 1] :=   0;
+  ProgramsConfig.MotorSpeedPercent[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1] :=   0;
+  ProgramsConfig.MotorSpeedPercent[WAX_PREFLIGHT_PROGRAM_ID     - 1] :=   0;
+  ProgramsConfig.MotorSpeedPercent[POLYMER_PREFLIGHT_PROGRAM_ID - 1] :=   0;
   ProgramsConfig.MotorSpeedPercent[OPEN_DOOR_PROGRAM_ID - 1]         :=   0;
 
   ProgramsConfig.PreflightMotorSpeedPercent[FOAM_PROGRAM_ID              - 1] := 100;
@@ -548,14 +474,13 @@ begin
   ProgramsConfig.PreflightMotorSpeedPercent[WAX_PROGRAM_ID               - 1] := 100;
   ProgramsConfig.PreflightMotorSpeedPercent[DRY_PROGRAM_ID               - 1] := 100;
   ProgramsConfig.PreflightMotorSpeedPercent[PAUSE_PROGRAM_ID             - 1] :=   0;
-  ProgramsConfig.PreflightMotorSpeedPercent[FOAM_PREFLIGHT_PROGRAM_ID    - 1] := 100;
-  ProgramsConfig.PreflightMotorSpeedPercent[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1] := 100;
-  ProgramsConfig.PreflightMotorSpeedPercent[WAX_PREFLIGHT_PROGRAM_ID     - 1] := 100;
-  ProgramsConfig.PreflightMotorSpeedPercent[POLYMER_PREFLIGHT_PROGRAM_ID - 1] := 100;
-  ProgramsConfig.PreflightMotorSpeedPercent[STOP_PROGRAM_ID - 1]              :=   0;
+  ProgramsConfig.PreflightMotorSpeedPercent[FOAM_PREFLIGHT_PROGRAM_ID    - 1] :=   0;
+  ProgramsConfig.PreflightMotorSpeedPercent[SHAMPOO_PREFLIGHT_PROGRAM_ID - 1] :=   0;
+  ProgramsConfig.PreflightMotorSpeedPercent[WAX_PREFLIGHT_PROGRAM_ID     - 1] :=   0;
+  ProgramsConfig.PreflightMotorSpeedPercent[POLYMER_PREFLIGHT_PROGRAM_ID - 1] :=   0;
   ProgramsConfig.PreflightMotorSpeedPercent[OPEN_DOOR_PROGRAM_ID - 1]         :=   0;
 
-  serverEndpoint := 'http://localhost:8020/';
+  serverEndpoint := GetIpAddrList();
 
   for i:=1 to NUM_PROGRAMS+NUM_PREFLIGHT_PROGRAMS do
   begin
@@ -564,11 +489,117 @@ begin
 
 end;
 
-procedure TBaseForm.SetDosatronPreflight(programID: integer; run: boolean);
+function TBaseForm.GetIpAddrList(): string;
+var
+  AProcess: TProcess;
+  s, addr: string;
+  sl: TStringList;
+  i, n, j: integer;
+  successful: boolean;
+begin
+  successful := false;
+  Result:='';
+  sl:=TStringList.Create();
+  {$IFDEF WINDOWS}
+  AProcess:=TProcess.Create(nil);
+  AProcess.Executable := 'ipconfig.exe';
+  AProcess.Options := AProcess.Options + [poUsePipes, poNoConsole];
+  try
+    AProcess.Execute();
+    Sleep(500); // poWaitOnExit don't work as expected
+    sl.LoadFromStream(AProcess.Output);
+  finally
+    AProcess.Free();
+  end;
+
+  with TFPHttpClient.Create(nil) do
+    try
+      //AddHeader('Content-Type', 'application/json');
+      for i:=0 to sl.Count-1 do
+        begin
+          if (Pos('IPv4', sl[i])=0) and (Pos('IP-', sl[i])=0) and (Pos('IP Address', sl[i])=0) then Continue;
+          s:=sl[i];
+          s:=Trim(Copy(s, Pos(':', s)+1, 999));
+          if Pos(':', s)>0 then Continue; // IPv6
+          n := LastDelimiter('.', s);
+          s := Copy(s, 1, n);
+          for j:=1 to 255 do
+          begin
+            try
+              addr := 'http://' + s + IntToStr(j) + ':8020/';
+              writeln('Trying ' + addr);
+              Get(addr + 'ping');
+              successful := True;
+            except
+
+            end;
+            if successful then
+            begin
+              writeln('FOUND SERVER ON ' + addr);
+              Result:= addr;
+              Exit;
+            end;
+          end;
+        end;
+
+    finally
+      Free
+    end;
+  {$ENDIF}
+  {$IFDEF UNIX}
+  AProcess:=TProcess.Create(nil);
+  AProcess.Executable := '/sbin/ifconfig';
+  AProcess.Options := AProcess.Options + [poUsePipes, poWaitOnExit];
+  try
+    AProcess.Execute();
+    sl.LoadFromStream(AProcess.Output);
+  finally
+    AProcess.Free();
+  end;
+
+  with TFPHttpClient.Create(nil) do
+    try
+      //AddHeader('Content-Type', 'application/json');
+      for i:=0 to sl.Count-1 do
+        begin
+          n:=Pos('inet ', sl[i]);
+          if n=0 then Continue;
+          s:=sl[i];
+          s:=Copy(s, n+Length('inet '), 999);
+          s := Trim(Copy(s, 1, Pos(' ', s)));
+          n := LastDelimiter('.', s);
+          s := Copy(s, 1, n);
+          for j:=1 to 255 do
+          begin
+            try
+              addr := 'http://' + s + IntToStr(j) + ':8020/';
+              writeln('Trying ' + addr);
+              Get(addr + 'ping');
+              successful := True;
+            except
+
+            end;
+            if successful then
+            begin
+              writeln('FOUND SERVER ON ' + addr);
+              Result:= addr;
+              Exit;
+            end;
+          end;
+        end;
+
+    finally
+      Free
+    end;
+  {$ENDIF}
+  sl.Free();
+end;
+
+procedure TBaseForm.SetStationCurrentProgramByID(programID, stationID: integer; isPreflight: boolean);
 var
   settingJson: TJSONObject;
 begin
-  if BaseForm.GetStationHashByID(1) = PLACEHOLDER then
+  if GetStationHashByID(stationID) = PLACEHOLDER then
   begin
     Exit;
   end;
@@ -580,19 +611,11 @@ begin
 
         settingJson := TJSONObject.Create;
 
-        if run then
-        begin
-          settingJson.Add('programID', programID);
-        end
-        else
-        begin
-          settingJson.Add('programID', STOP_PROGRAM_ID);
-        end;
-        settingJson.Add('hash', BaseForm.GetStationHashByID(1));
-        settingJson.Add('preflight', false);
+        settingJson.Add('buttonID', programID);
+        settingJson.Add('hash', BaseForm.GetStationHashByID(stationID));
 
         RequestBody := TStringStream.Create(settingJson.AsJSON);
-        Post(BaseForm.GetServerEndpoint() + '/run-program');
+        Post(BaseForm.GetServerEndpoint() + '/press-button');
 
         if ResponseStatusCode <> 204 then
         begin
@@ -601,10 +624,10 @@ begin
 
       except
         case ResponseStatusCode of
-          0: begin ModalResult := 0; ShowMessage('Can`t connect to server'); end;
-          401: begin ModalResult := 0; ShowMessage('Not authorized'); end;
-          403, 404: begin ModalResult := 0; ShowMessage('Forbidden'); end;
-          500: begin ShowMessage('Server Error: 500'); end;
+          0: ShowMessage('Can`t connect to server');
+          401: ShowMessage('Not authorized');
+          403, 404: ShowMessage('Forbidden');
+          500: ShowMessage('Server Error: 500');
           else
             ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
               sLineBreak + ResponseStatusText);
@@ -645,6 +668,8 @@ begin
         setlength(ResponseStations.preflightSec, stationsJson.Count);
         setlength(ResponseStations.relayBoard, stationsJson.Count);
 
+        setlength(freeHashVals, stationsJson.Count);
+
         ResponseStations.Count := stationsJson.Count;
 
         freeHashID := 0;
@@ -680,6 +705,7 @@ begin
               end
               else
               begin
+                freeHashVals[freeHashID] := path.AsString;
                 freeHashID := freeHashID + 1;
               end;
             end;
@@ -788,14 +814,21 @@ begin
         end
         else
         begin
-          ResponseStations.preflightSec[id-1] := 0;
+          if ResponseStations.hash[id-1] = PLACEHOLDER then
+          begin
+            ResponseStations.preflightSec[id-1] := NO_ID;
+          end
+          else
+          begin
+            ResponseStations.preflightSec[id-1] := 0;
+          end;
         end;
 
         path := stationJson.FindPath('relayBoard');
         if path <> nil then
         begin
           ResponseStations.relayBoard[id-1] := path.AsString;
-        end
+        end;
 
       except
           case ResponseStatusCode of
@@ -866,10 +899,15 @@ procedure TBaseForm.UpdatePrograms();
 var
   i: integer;
 begin
-  for i:=1 to NUM_PROGRAMS+NUM_PREFLIGHT_PROGRAMS do
+  for i:=1 to NUM_PROGRAMS do
   begin
     SetProgram(i);
   end;
+end;
+
+function TBaseForm.GetMotorSpeed(id: integer): integer;
+begin
+  Result := ProgramsConfig.MotorSpeedPercent[id-1];
 end;
 
 procedure TBaseForm.SetRelayTimeOn(relayID, timeON : integer);
@@ -948,6 +986,11 @@ begin
   ProgramsConfig.Price[id-1] := price;
 end;
 
+procedure TBaseForm.SetMotorSpeed(id, speed : integer);
+begin
+  ProgramsConfig.MotorSpeedPercent[id-1] := speed;
+end;
+
 procedure TBaseForm.CheckPrograms();
 var
   i: integer;
@@ -963,7 +1006,7 @@ var
   RequestAnswer: string;
   programRequestJson : TJSONObject;
   programsJson: TJsonArray;
-  i: integer;
+  i, j: integer;
   path: TJSONdata;
   programID: integer;
   relaysJson: TJsonArray;
@@ -995,7 +1038,10 @@ begin
             with programsJson.Items[i] do
             begin
               programID := FindPath('id').AsInteger;
-
+              if programID > NUM_PROGRAMS then
+              begin
+                continue;
+              end;
               path := FindPath('name');
               if path <> nil then
               begin
@@ -1019,15 +1065,18 @@ begin
               relaysJson := GetPath('relays') as TJsonArray;
               if relaysJson <> nil then
               begin
-                with relaysJson.items[i] do
+                for j:=0 to relaysJson.Count-1 do
                 begin
-                  relayID := FindPath('id').AsInteger;
-
-                  path := FindPath('timeon');
-                  if path <> nil then
+                  with relaysJson.items[j] do
                   begin
-                    RelaysConfig.TimeON[relayID-1] := path.AsInteger;
-                    RelaysConfig.TimeOFF[relayID-1] := TOTAL_TIME - RelaysConfig.TimeON[relayID-1];
+                    relayID := FindPath('id').AsInteger;
+
+                    path := FindPath('timeon');
+                    if path <> nil then
+                    begin
+                      RelaysConfig.TimeON[relayID-1] := path.AsInteger;
+                      RelaysConfig.TimeOFF[relayID-1] := TOTAL_TIME - RelaysConfig.TimeON[relayID-1];
+                    end;
                   end;
                 end;
               end;
@@ -1073,6 +1122,14 @@ begin
         programJson.Add('price', ProgramsConfig.Price[id-1]);
         programJson.Add('motorSpeedPercent', ProgramsConfig.MotorSpeedPercent[id-1]);
         programJson.Add('preflightMotorSpeedPercent', ProgramsConfig.PreflightMotorSpeedPercent[id-1]);
+        if id > 6 then
+        begin
+          programJson.Add('preflightEnabled', false);
+        end
+        else
+        begin
+          programJson.Add('preflightEnabled', true);
+        end;
 
         relays := TJsonArray.Create;
         for i:=0 to Length(ProgramsConfig.Relays[id-1])-1 do

@@ -1,5 +1,5 @@
 inherited DosatronsForm: TDosatronsForm
-  Top = 81
+  Top = 70
   OnActivate = FormShow
   OnClose = FormClose
   OnCreate = FormCreate
@@ -54,13 +54,13 @@ inherited DosatronsForm: TDosatronsForm
     FixedCols = 0
     FixedRows = 0
     Flat = True
-    Font.Height = 75
+    Font.Height = 65
     GridLineWidth = 0
     ParentFont = False
     RowCount = 4
     ScrollBars = ssNone
     TabOrder = 9
-    TitleFont.Height = 75
+    TitleFont.Height = 65
     OnDrawCell = DosatronsGridDrawCell
     OnSelectCell = DosatronsGridSelectCell
   end
@@ -85,5 +85,11 @@ inherited DosatronsForm: TDosatronsForm
     OnClick = CancelClick
     ParentFont = False
     TabOrder = 11
+  end
+  object UpdateTimer: TTimer[12]
+    Enabled = False
+    OnTimer = UpdateCall
+    left = 10
+    top = 10
   end
 end
