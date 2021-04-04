@@ -18,6 +18,7 @@ object LoginForm: TLoginForm
     AutoSize = False
     EchoMode = emPassword
     OnChange = PINEditChange
+    OnKeyPress = PINEditKeyPress
     ParentShowHint = False
     PasswordChar = '*'
     TabOrder = 0

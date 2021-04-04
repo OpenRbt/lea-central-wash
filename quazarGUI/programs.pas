@@ -13,7 +13,6 @@ type
   ProgramInfo = packed record
     Count  : integer;
     ProgramID: array of integer;
-
   end;
 
   { TProgramsForm }
@@ -50,18 +49,21 @@ type
 var
   ProgramsForm: TProgramsForm;
   ProgramsInfo: ProgramInfo;
-  stationHashes : array of string;
-  freeHashID : integer;
 
 const
-  PROGRAM_NAME_COL    : integer = 0;
-  PROGRAM_PRICE_STR   : integer = 1;
-  PROGRAM_PRICE_DEC   : integer = 2;
-  PROGRAM_PRICE_VAL   : integer = 3;
-  PROGRAM_PRICE_INC   : integer = 4;
-  PROGRAM_PRICE_CURR  : integer = 5;
-  PROGRAM_ENABLED_STR : integer = 6;
-  PROGRAM_ENABLED_CHK : integer = 7;
+  MOTOR_SPEED_CHANGE: integer = 5;
+
+  PROGRAM_NAME_COL  : integer = 0;
+  PROGRAM_PRICE_STR : integer = 1;
+  PROGRAM_PRICE_DEC : integer = 2;
+  PROGRAM_PRICE_VAL : integer = 3;
+  PROGRAM_PRICE_INC : integer = 4;
+  PROGRAM_PRICE_CURR: integer = 5;
+  PROGRAM_MOTOR_STR : integer = 6;
+  PROGRAM_MOTOR_DEC : integer = 7;
+  PROGRAM_MOTOR_VAL : integer = 8;
+  PROGRAM_MOTOR_VAL_PERC : integer = 9;
+  PROGRAM_MOTOR_INC : integer = 10;
 
   FOAM        : integer = 0;
   SHAMPOO     : integer = 1;
@@ -72,7 +74,7 @@ const
 
   PRICE_STR   : string = 'Цена';
   CURRENCY_STR: string = 'руб.';
-  ENABLED_STR : string = 'Активный';
+  MOTOR_STR : string = 'Мотор';
 
   PADDING     : string = '  ';
 
@@ -126,6 +128,11 @@ begin
     ProgramsForm.ProgramsGrid.Cells[PROGRAM_PRICE_VAL, i-1] := IntToStr(GetProgramPrice(i));
     ProgramsForm.ProgramsGrid.Cells[PROGRAM_PRICE_DEC, i-1] := '-';
     ProgramsForm.ProgramsGrid.Cells[PROGRAM_PRICE_CURR, i-1] := CURRENCY_STR;
+    ProgramsForm.ProgramsGrid.Cells[PROGRAM_MOTOR_STR, i-1] := MOTOR_STR;
+    ProgramsForm.ProgramsGrid.Cells[PROGRAM_MOTOR_INC, i-1] := '+';
+    ProgramsForm.ProgramsGrid.Cells[PROGRAM_MOTOR_VAL, i-1] := IntToStr(GetMotorSpeed(i));
+    ProgramsForm.ProgramsGrid.Cells[PROGRAM_MOTOR_VAL_PERC, i-1] := '%';
+    ProgramsForm.ProgramsGrid.Cells[PROGRAM_MOTOR_DEC, i-1] := '-';
   end;
 end;
 
@@ -138,7 +145,7 @@ end;
 procedure TProgramsForm.ProgramsGridSelectCell(Sender: TObject; aCol,
   aRow: Integer; var CanSelect: Boolean);
 begin
-  if (aCol = PROGRAM_PRICE_DEC) and (GetProgramPrice(ProgramsInfo.ProgramID[aRow]) > 1) then
+  if (aCol = PROGRAM_PRICE_DEC) and (GetProgramPrice(ProgramsInfo.ProgramID[aRow]) >= 1) then
   begin
     SetProgramPrice(ProgramsInfo.ProgramID[aRow], GetProgramPrice(ProgramsInfo.ProgramID[aRow]) - 1);
     ProgramsGrid.Cells[PROGRAM_PRICE_VAL, aRow] := IntToStr(GetProgramPrice(ProgramsInfo.ProgramID[aRow]));
@@ -147,55 +154,21 @@ begin
   begin
     SetProgramPrice(ProgramsInfo.ProgramID[aRow], GetProgramPrice(ProgramsInfo.ProgramID[aRow]) + 1);
     ProgramsGrid.Cells[PROGRAM_PRICE_VAL, aRow] := IntToStr(GetProgramPrice(ProgramsInfo.ProgramID[aRow]));
+  end
+  else if (aCol = PROGRAM_MOTOR_DEC) and (GetMotorSpeed(ProgramsInfo.ProgramID[aRow]) >= MOTOR_SPEED_CHANGE) then
+  begin
+    SetMotorSpeed(ProgramsInfo.ProgramID[aRow], GetMotorSpeed(ProgramsInfo.ProgramID[aRow]) - MOTOR_SPEED_CHANGE);
+    ProgramsGrid.Cells[PROGRAM_MOTOR_VAL, aRow] := IntToStr(GetMotorSpeed(ProgramsInfo.ProgramID[aRow]));
+  end
+  else if (aCol = PROGRAM_MOTOR_INC) and (GetMotorSpeed(ProgramsInfo.ProgramID[aRow]) < 100) then
+  begin
+    SetMotorSpeed(ProgramsInfo.ProgramID[aRow], GetMotorSpeed(ProgramsInfo.ProgramID[aRow]) + MOTOR_SPEED_CHANGE);
+    ProgramsGrid.Cells[PROGRAM_MOTOR_VAL, aRow] := IntToStr(GetMotorSpeed(ProgramsInfo.ProgramID[aRow]));
   end;
 end;
 
 procedure TProgramsForm.SaveClick(Sender: TObject);
-var
-  RequestAnswer: string;
-  stationsJson: TJsonArray;
-  i: integer;
-  path: TJSONdata;
-
 begin
-  with TFPHttpClient.Create(nil) do
-  try
-     try
-        AddHeader('Content-Type', 'application/json');
-        AddHeader('Pin', GetPinCode());
-        RequestAnswer := Get(GetServerEndpoint() + 'status');
-
-        stationsJson := GetJson(RequestAnswer).GetPath('stations') as TJsonArray;
-        setlength(stationHashes, stationsJson.Count);
-        freeHashID := 0;
-
-        for i := 0 to stationsJson.Count - 1 do
-        begin
-          with stationsJson.items[i] do
-          begin
-            path := FindPath('hash');
-            if path <> nil then
-            begin
-                stationHashes[freeHashID] := path.AsString;
-                freeHashID := freeHashID + 1;
-            end;
-          end;
-        end;
-
-      except
-        case ResponseStatusCode of
-          0: ShowMessage('Can`t connect to server');
-          401, 403: // do nothing
-            ;
-          500: ShowMessage('Server Error: 500');
-          else
-            ShowMessage('Unexpected Error: ' + IntToStr(ResponseStatusCode) +
-              sLineBreak + ResponseStatusText);
-        end;
-      end;
-    finally
-      Free;
-    end;
   UpdatePrograms();
   FormShow(Sender);
 end;

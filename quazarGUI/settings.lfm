@@ -10,21 +10,29 @@ inherited SettingsForm: TSettingsForm
     AlternateColor = cl3DLight
     AutoEdit = False
     Color = clWhite
-    ColCount = 4
     Columns = <    
+      item
+        Alignment = taRightJustify
+        Font.Height = -27
+        Title.Alignment = taCenter
+        Title.Font.Height = -27
+        Title.Font.Style = [fsBold]
+        Title.Caption = 'ID'
+        Width = 50
+      end    
       item
         Font.Height = -24
         MinSize = 0
         Title.Alignment = taCenter
         Title.Caption = 'Список постов'
-        Width = 350
+        Width = 322
       end    
       item
         Font.Height = -24
         MinSize = 0
         Title.Alignment = taCenter
         Title.Caption = 'Адрес'
-        Width = 350
+        Width = 322
       end    
       item
         Alignment = taCenter
@@ -61,8 +69,9 @@ inherited SettingsForm: TSettingsForm
     OnDrawCell = StationsGridDrawCell
     OnButtonClick = StationsGridButtonClick
     ColWidths = (
-      350
-      350
+      50
+      322
+      322
       178
       92
     )

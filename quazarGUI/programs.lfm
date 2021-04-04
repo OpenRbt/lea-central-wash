@@ -4,12 +4,12 @@ inherited ProgramsForm: TProgramsForm
   OnCreate = FormCreate
   OnShow = FormShow
   object ProgramsGrid: TStringGrid[9]
-    Left = 400
+    Left = 300
     Height = 498
     Top = 216
-    Width = 720
+    Width = 950
     AlternateColor = cl3DLight
-    ColCount = 6
+    ColCount = 11
     Columns = <    
       item
         Font.Height = -32
@@ -20,7 +20,7 @@ inherited ProgramsForm: TProgramsForm
         Alignment = taRightJustify
         Font.Height = -24
         Title.Caption = 'ProgramPriceLabel'
-        Width = 94
+        Width = 65
       end    
       item
         Alignment = taRightJustify
@@ -34,7 +34,7 @@ inherited ProgramsForm: TProgramsForm
         Alignment = taCenter
         Font.Height = -32
         Title.Caption = 'ProgramPrice'
-        Width = 80
+        Width = 60
       end    
       item
         ButtonStyle = cbsButton
@@ -46,6 +46,35 @@ inherited ProgramsForm: TProgramsForm
         Font.Height = -24
         Title.Caption = 'ProgramCurrInfo'
         Width = 114
+      end    
+      item
+        Font.Height = -24
+        Title.Caption = 'MotorSpeedLabel'
+        Width = 85
+      end    
+      item
+        Alignment = taRightJustify
+        ButtonStyle = cbsButton
+        Font.Height = -32
+        Title.Caption = 'MotorSpeedDecBtn'
+        Width = 35
+      end    
+      item
+        Alignment = taCenter
+        Font.Height = -29
+        Title.Caption = 'MotorSpeed'
+        Width = 65
+      end    
+      item
+        Font.Height = -24
+        Title.Caption = 'MotorSpeedPercLabel'
+        Width = 35
+      end    
+      item
+        ButtonStyle = cbsButton
+        Font.Height = -32
+        Title.Caption = 'MotorSpeedIncBtn'
+        Width = 40
       end>
     FixedCols = 0
     FixedRows = 0

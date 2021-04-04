@@ -18,6 +18,7 @@ type
     procedure PINEditChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure LognBtnClick(Sender: TObject);
+    procedure PINEditKeyPress(Sender: TObject; var Key: char);
   private
 
   public
@@ -97,6 +98,13 @@ begin
 
     PINEdit.Text := '';
     str_val := '';
+end;
+
+procedure TLoginForm.PINEditKeyPress(Sender: TObject; var Key: char);
+begin
+  if Key = #13 then begin
+    LognBtnClick(Sender);
+  end;
 end;
 
 end.

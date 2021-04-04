@@ -102,6 +102,9 @@ type
     procedure SetProgramPrice(id, price : integer);
     function GetNumPrograms(): integer;
 
+    function GetMotorSpeed(id: integer): integer;
+    procedure SetMotorSpeed(id, speed : integer);
+
     function UpdateStations() : boolean;
     function GetStationNameByID(id : integer) : string;
     function GetStationHashByID(id : integer) : string;
@@ -811,14 +814,21 @@ begin
         end
         else
         begin
-          ResponseStations.preflightSec[id-1] := NO_ID;
+          if ResponseStations.hash[id-1] = PLACEHOLDER then
+          begin
+            ResponseStations.preflightSec[id-1] := NO_ID;
+          end
+          else
+          begin
+            ResponseStations.preflightSec[id-1] := 0;
+          end;
         end;
 
         path := stationJson.FindPath('relayBoard');
         if path <> nil then
         begin
           ResponseStations.relayBoard[id-1] := path.AsString;
-        end
+        end;
 
       except
           case ResponseStatusCode of
@@ -895,6 +905,11 @@ begin
   end;
 end;
 
+function TBaseForm.GetMotorSpeed(id: integer): integer;
+begin
+  Result := ProgramsConfig.MotorSpeedPercent[id-1];
+end;
+
 procedure TBaseForm.SetRelayTimeOn(relayID, timeON : integer);
 begin
   RelaysConfig.TimeON[relayID-1] := timeON;
@@ -969,6 +984,11 @@ end;
 procedure TBaseForm.SetProgramPrice(id, price : integer);
 begin
   ProgramsConfig.Price[id-1] := price;
+end;
+
+procedure TBaseForm.SetMotorSpeed(id, speed : integer);
+begin
+  ProgramsConfig.MotorSpeedPercent[id-1] := speed;
 end;
 
 procedure TBaseForm.CheckPrograms();

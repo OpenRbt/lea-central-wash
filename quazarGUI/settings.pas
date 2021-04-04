@@ -46,10 +46,11 @@ var
 
 const
   MAX_NUM_STATIONS : integer = 12;
-  NAME_COL    : integer = 0;
-  ADDRESS_COL : integer = 1;
-  STATUS_COL  : integer = 2;
-  EDIT_COL    : integer = 3;
+  ID_COL      : integer = 0;
+  NAME_COL    : integer = 1;
+  ADDRESS_COL : integer = 2;
+  STATUS_COL  : integer = 3;
+  EDIT_COL    : integer = 4;
   EDIT_STRING : string = '...';
   PADDING     : string = '  ';
 
@@ -86,17 +87,15 @@ begin
   SettingsForm.StationsGrid.Visible:=True;
 
   UpdateStations();
-  SettingsForm.StationsGrid.RowCount := SettingsForm.StationsGrid.FixedRows + GetNumStations();// - freeHashID;
+  SettingsForm.StationsGrid.RowCount := SettingsForm.StationsGrid.FixedRows + GetNumStations();
   SettingsForm.StationsGrid.Rows[SettingsForm.StationsGrid.FixedRows].Clear;
   for i := 1 to GetNumStations() do
   begin
-    //if GetStationHashByID(i) <> PLACEHOLDER then
-    //begin
+      SettingsForm.StationsGrid.Cells[ID_COL,      i] := IntToStr(i) + ' ';
       SettingsForm.StationsGrid.Cells[ADDRESS_COL, i] := PADDING + GetStationHashByID(i);
       SettingsForm.StationsGrid.Cells[NAME_COL,    i] := PADDING + GetStationNameByID(i);
       SettingsForm.StationsGrid.Cells[STATUS_COL,  i] := GetStationStatusByID(i);
       SettingsForm.StationsGrid.Cells[EDIT_COL,    i] := EDIT_STRING;
-    //end;
   end;
   UpdateTimer.Enabled := true;
 end;
