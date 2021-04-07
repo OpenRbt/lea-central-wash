@@ -5,7 +5,7 @@ inherited DosatronsForm: TDosatronsForm
   OnCreate = FormCreate
   object DosatronsGrid: TStringGrid[9]
     Left = 320
-    Height = 370
+    Height = 378
     Top = 216
     Width = 900
     AlternateColor = cl3DLight

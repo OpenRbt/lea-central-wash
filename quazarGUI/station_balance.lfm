@@ -9,7 +9,7 @@ object StationBalanceForm: TStationBalanceForm
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '2.0.6.0'
+  LCLVersion = '2.0.0.4'
   object StationLabel: TLabel
     Left = 32
     Height = 59
@@ -29,7 +29,9 @@ object StationBalanceForm: TStationBalanceForm
     Width = 210
     BevelOuter = bvSpace
     Caption = '000'
+    Color = clNone
     Font.Height = -96
+    ParentColor = False
     ParentFont = False
     TabOrder = 0
   end
@@ -40,7 +42,9 @@ object StationBalanceForm: TStationBalanceForm
     Width = 106
     BevelOuter = bvSpace
     Caption = '10'
+    Color = clNone
     Font.Height = -64
+    ParentColor = False
     ParentFont = False
     TabOrder = 1
   end
@@ -113,7 +117,7 @@ object StationBalanceForm: TStationBalanceForm
   end
   object CurrencyLabel: TLabel
     Left = 814
-    Height = 59
+    Height = 65
     Top = 40
     Width = 120
     Alignment = taCenter
