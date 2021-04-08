@@ -80,7 +80,9 @@ begin
     AddressEdit.Items.Add(hashes[i]);
   end;
   AddressEdit.Items.Add(_hash);
+  AddressEdit.Items.Add('000000000001');
   AddressEdit.ItemIndex := AddressEdit.Items.IndexOf(_hash);
+
 end;
 
 procedure TSettingEditForm.SaveBtnClick(Sender: TObject);
