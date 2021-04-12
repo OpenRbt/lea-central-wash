@@ -119,12 +119,15 @@ func (r *Rev2Board) workingLoop() {
 }
 
 func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
+	fmt.Println("runCommmand " + r.osPath + " 1")
 	var cmdBuf strings.Builder
 	cmdBuf.Grow(192)
+	fmt.Println("runCommmand " + r.osPath + " 2")
 	finalRelays := make(map[int]app.Relay, 12)
 	for _, relayItem := range cmd.Timings {
 		finalRelays[relayItem.ID] = relayItem
 	}
+	fmt.Println("runCommmand " + r.osPath + " 3")
 	cmdBuf.WriteString("RUN A-|")
 	if cmd.TimeoutSec > 0 {
 		cmdBuf.WriteString("T")
@@ -136,6 +139,7 @@ func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
 		cmdBuf.WriteString(strconv.Itoa(cmd.MotorSpeedPercent))
 		cmdBuf.WriteString("|")
 	}
+	fmt.Println("runCommmand " + r.osPath + " 4")
 	// 'A-' means to turn off not mentioned relays
 	for i := 1; i <= 11; i++ {
 		if relay, ok := finalRelays[i]; ok {
@@ -154,20 +158,25 @@ func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
 			// let's not write anything while we have 'A-' option turned on
 		}
 	}
+	fmt.Println("runCommmand " + r.osPath + " 5")
 	cmdBuf.WriteString(";")
 	finalCmd := cmdBuf.String()
+	fmt.Println("runCommmand " + r.osPath + " 6")
 	fmt.Println("-----------------")
+	fmt.Println(time.Now())
 	fmt.Println(finalCmd)
 	_, err := r.openPort.Write([]byte(finalCmd))
 	if err != nil {
 		return err
 	}
+	fmt.Println("runCommmand " + r.osPath + " 7")
 
 	buf := make([]byte, 32)
 	N, err := r.openPort.Read(buf)
 	if err != nil {
 		return err
 	}
+	fmt.Println("runCommmand " + r.osPath + " 8")
 	if N < 2 {
 		return ErrWrongAnswer
 	}
