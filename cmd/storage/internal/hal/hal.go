@@ -133,7 +133,7 @@ func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
 	}
 	if cmd.MotorSpeedPercent >= 0 {
 		cmdBuf.WriteString("M")
-		cmdBuf.WriteString(strconv.Itoa(cmd.MotorSpeedPercent))
+		cmdBuf.WriteString(strconv.Itoa(int(cmd.MotorSpeedPercent / 2)))
 		cmdBuf.WriteString("|")
 	}
 	// 'A-' means to turn off not mentioned relays
