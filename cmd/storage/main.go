@@ -96,7 +96,7 @@ func init() { //nolint:gochecknoinits
 }
 
 func main() { //nolint:gocyclo
-
+	time.Sleep(10 * time.Second)
 	flag.Usage = func() {
 		fmt.Printf("Usage of %s:\n", cmd)
 		flag.PrintDefaults()

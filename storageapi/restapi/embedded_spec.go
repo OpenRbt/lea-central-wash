@@ -251,6 +251,52 @@ func init() {
         }
       }
     },
+    "/load-from-station": {
+      "post": {
+        "operationId": "loadFromStation",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash",
+                "stationID",
+                "key"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "key": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/load-money": {
       "post": {
         "operationId": "loadMoney",
@@ -2188,6 +2234,52 @@ func init() {
                 "key": {
                   "type": "string",
                   "minLength": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/load-from-station": {
+      "post": {
+        "operationId": "loadFromStation",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "hash",
+                "stationID",
+                "key"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "key": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "stationID": {
+                  "type": "integer"
                 }
               }
             }
