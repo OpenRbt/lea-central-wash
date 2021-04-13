@@ -100,6 +100,21 @@ func (svc *service) load(params op.LoadParams) op.LoadResponder {
 	}
 }
 
+func (svc *service) loadFromStation(params op.LoadFromStationParams) op.LoadFromStationResponder {
+	log.Info("loadFromStation", "hash", params.Args.Hash, "stationID", params.Args.StationID, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
+	value, err := svc.app.LoadFromStation(app.StationID(*params.Args.StationID), *params.Args.Key)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewLoadFromStationOK().WithPayload(string(value))
+	case app.ErrNotFound:
+		log.Info("loadFromStation: not found",  "hash", params.Args.Hash, "stationID", params.Args.StationID, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewLoadFromStationNotFound()
+	default:
+		log.PrintErr(err, "hash", params.Args.Hash,  "stationID", params.Args.StationID, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewLoadFromStationInternalServerError()
+	}
+}
+
 func (svc *service) save(params op.SaveParams) op.SaveResponder {
 	log.Info("save", "hash", params.Args.Hash, "key", *params.Args.KeyPair.Key, "ip", params.HTTPRequest.RemoteAddr)
 	stationID, err := svc.getID(string(params.Args.Hash))

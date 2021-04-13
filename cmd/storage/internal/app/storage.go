@@ -39,6 +39,10 @@ func (a *app) Load(id StationID, key string) (string, error) {
 	}
 }
 
+func (a *app) LoadFromStation(stationID StationID, key string) (string, error){
+	return a.repo.LoadFromStation(stationID, key)
+}
+
 func (a *app) Info() string {
 	return a.repo.Info()
 }

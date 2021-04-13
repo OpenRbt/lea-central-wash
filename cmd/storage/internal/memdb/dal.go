@@ -41,6 +41,16 @@ func (t *DB) Load(stationID app.StationID, key string) (string, error) {
 	return t.keypair[i].Value, nil
 }
 
+func (t *DB) LoadFromStation(stationID app.StationID, key string) (string, error) {
+	t.mutex.Lock()
+	defer t.mutex.Unlock()
+
+	i := t.findKey(stationID, key)
+	if i < 0 {
+		return "", app.ErrNotFound
+	}
+	return t.keypair[i].Value, nil
+}
 func (t *DB) Save(stationID app.StationID, key string, value string) (err error) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()

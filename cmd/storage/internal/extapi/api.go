@@ -67,6 +67,7 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 
 	api.PinCodeAuth = authAccess.CheckAuth
 	api.LoadHandler = op.LoadHandlerFunc(svc.load)
+	api.LoadFromStationHandler = op.LoadFromStationHandlerFunc(svc.loadFromStation)
 	api.PingHandler = op.PingHandlerFunc(svc.ping)
 	api.GetPingHandler = op.GetPingHandlerFunc(svc.getPing)
 	api.SaveHandler = op.SaveHandlerFunc(svc.save)
