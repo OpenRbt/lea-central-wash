@@ -87,6 +87,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation Load has not yet been implemented")
 			return LoadNotImplemented()
 		}),
+		LoadFromStationHandler: LoadFromStationHandlerFunc(func(params LoadFromStationParams) LoadFromStationResponder {
+			// return middleware.NotImplemented("operation LoadFromStation has not yet been implemented")
+			return LoadFromStationNotImplemented()
+		}),
 		LoadMoneyHandler: LoadMoneyHandlerFunc(func(params LoadMoneyParams) LoadMoneyResponder {
 			// return middleware.NotImplemented("operation LoadMoney has not yet been implemented")
 			return LoadMoneyNotImplemented()
@@ -269,6 +273,8 @@ type StorageAPI struct {
 	KasseHandler KasseHandler
 	// LoadHandler sets the operation handler for the load operation
 	LoadHandler LoadHandler
+	// LoadFromStationHandler sets the operation handler for the load from station operation
+	LoadFromStationHandler LoadFromStationHandler
 	// LoadMoneyHandler sets the operation handler for the load money operation
 	LoadMoneyHandler LoadMoneyHandler
 	// LoadRelayHandler sets the operation handler for the load relay operation
@@ -438,6 +444,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.LoadHandler == nil {
 		unregistered = append(unregistered, "LoadHandler")
+	}
+
+	if o.LoadFromStationHandler == nil {
+		unregistered = append(unregistered, "LoadFromStationHandler")
 	}
 
 	if o.LoadMoneyHandler == nil {
@@ -721,6 +731,11 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/load"] = NewLoad(o.context, o.LoadHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/load-from-station"] = NewLoadFromStation(o.context, o.LoadFromStationHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

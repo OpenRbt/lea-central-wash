@@ -79,6 +79,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.LoadHandler = op.LoadHandlerFunc(func(params op.LoadParams) op.LoadResponder {
 		return op.LoadNotImplemented()
 	})
+	api.LoadFromStationHandler = op.LoadFromStationHandlerFunc(func(params op.LoadFromStationParams) op.LoadFromStationResponder {
+		return op.LoadFromStationNotImplemented()
+	})
 	api.LoadMoneyHandler = op.LoadMoneyHandlerFunc(func(params op.LoadMoneyParams) op.LoadMoneyResponder {
 		return op.LoadMoneyNotImplemented()
 	})

@@ -684,6 +684,36 @@ paths:
           description: not found
         500:
           description: internal error
+  /load-from-station:
+    post:
+      operationId: "loadFromStation"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - hash
+              - stationID
+              - key
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+              stationID:
+                type: integer
+              key:
+                type: string
+                minLength: 1
+      responses:
+        200:
+          description: OK
+          schema:
+            type: string
+        404:
+          description: not found
+        500:
+          description: internal error
   /ping:
     post:
       operationId: "ping"
