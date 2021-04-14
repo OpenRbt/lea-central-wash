@@ -46,7 +46,6 @@ type (
 		Save(stationID StationID, key string, value string) error
 		SaveIfNotExists(stationID StationID, key string, value string) error
 		Load(stationID StationID, key string) (string, error)
-		LoadFromStation(stationID StationID, key string) (string, error)
 		StationsVariables() ([]StationsVariables, error)
 
 		// DBMS info method
@@ -103,7 +102,6 @@ type (
 		Save(stationID StationID, key string, value string) error
 		SaveIfNotExists(stationID StationID, key string, value string) error
 		Load(stationID StationID, key string) (string, error)
-		LoadFromStation(stationID StationID, key string) (string, error)
 		Info() string
 		SetStation(station SetStation) error
 		Stations() (stations []SetStation, err error)

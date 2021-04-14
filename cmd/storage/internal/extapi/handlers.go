@@ -102,15 +102,15 @@ func (svc *service) load(params op.LoadParams) op.LoadResponder {
 
 func (svc *service) loadFromStation(params op.LoadFromStationParams) op.LoadFromStationResponder {
 	log.Info("loadFromStation", "hash", params.Args.Hash, "stationID", params.Args.StationID, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
-	value, err := svc.app.LoadFromStation(app.StationID(*params.Args.StationID), *params.Args.Key)
+	value, err := svc.app.Load(app.StationID(*params.Args.StationID), *params.Args.Key)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewLoadFromStationOK().WithPayload(string(value))
 	case app.ErrNotFound:
-		log.Info("loadFromStation: not found",  "hash", params.Args.Hash, "stationID", params.Args.StationID, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
+		log.Info("loadFromStation: not found", "hash", params.Args.Hash, "stationID", params.Args.StationID, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewLoadFromStationNotFound()
 	default:
-		log.PrintErr(err, "hash", params.Args.Hash,  "stationID", params.Args.StationID, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
+		log.PrintErr(err, "hash", params.Args.Hash, "stationID", params.Args.StationID, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewLoadFromStationInternalServerError()
 	}
 }
