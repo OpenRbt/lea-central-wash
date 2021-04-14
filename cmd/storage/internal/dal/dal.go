@@ -192,25 +192,6 @@ func (r *repo) Load(stationID app.StationID, key string) (value string, err erro
 	return //nolint:nakedret
 }
 
-func (r *repo) LoadFromStation(stationID app.StationID, key string) (value string,err error)  {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res resGetValue
-		err := tx.NamedGetContext(ctx, &res, sqlGetValue, argGetValue{
-			StationID: stationID,
-			Key:       key,
-		})
-		switch {
-		case err == sql.ErrNoRows:
-			return app.ErrNotFound
-		case err != nil:
-			return err
-		}
-		value = res.Value
-		return nil
-	})
-	return //nolint:nakedret
-}
-
 func (r *repo) Save(stationID app.StationID, key string, value string) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlSetValue, argSetValue{
