@@ -21,23 +21,24 @@ type Config struct {
 }
 
 type client struct {
+	*http.Client
 	cfg Config
 }
 
 // New creates and returns new KasseSvc.
 func New(cfg Config) app.KasseSvc {
 	return &client{
-		cfg: cfg,
+		newClient(),
+		cfg,
 	}
 }
 
 func (c *client) Info() (string, error) {
-	client := newClient()
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/info", c.cfg.Endpoint), nil)
 	if err != nil {
 		return "", err
 	}
-	resp, err := client.Do(req)
+	resp, err := c.Do(req)
 	if err != nil {
 		return "", err
 	}
