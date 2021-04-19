@@ -96,7 +96,6 @@ func init() { //nolint:gochecknoinits
 }
 
 func main() { //nolint:gocyclo
-
 	flag.Usage = func() {
 		fmt.Printf("Usage of %s:\n", cmd)
 		flag.PrintDefaults()

@@ -365,6 +365,34 @@ func (a *Client) Load(params *LoadParams) (*LoadOK, error) {
 }
 
 /*
+LoadFromStation load from station API
+*/
+func (a *Client) LoadFromStation(params *LoadFromStationParams) (*LoadFromStationOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewLoadFromStationParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "loadFromStation",
+		Method:             "POST",
+		PathPattern:        "/load-from-station",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &LoadFromStationReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*LoadFromStationOK), nil
+
+}
+
+/*
 LoadMoney load money API
 */
 func (a *Client) LoadMoney(params *LoadMoneyParams) (*LoadMoneyOK, error) {
