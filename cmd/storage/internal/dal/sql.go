@@ -196,26 +196,34 @@ ORDER BY id DESC
 LIMIT 1
 	`
 	sqlCollectionReportsByDate = `
-	SELECT station_id, 
-		   banknotes, 
-		   cars_total, 
-		   coins, 
-		   electronical, 
-		   service,
-		   ctime,
-	FROM money_collection
-	WHERE :start_date < ctime AND ctime <= :end_date AND station_id = :station_id
+	SELECT 
+		mc.station_id, 
+		mc.banknotes, 
+		mc.cars_total, 
+		mc.coins, 
+		mc.electronical, 
+		mc.service,
+		mc.ctime,
+		u.login  "user"
+	FROM money_collection mc
+	INNER JOIN users u ON u.id = mc.user_id
+	WHERE :start_date < mc.ctime AND mc.ctime <= :end_date AND  mc.station_id = :station_id
+	ORDER BY mc.ctime
 	`
 	sqlCollectionReports = `
-	SELECT station_id, 
-		   banknotes, 
-		   cars_total, 
-		   coins, 
-		   electronical, 
-		   service,
-		   ctime,
-	FROM money_collection
-	WHERE station_id = :station_id
+	SELECT 
+		mc.station_id, 
+		mc.banknotes, 
+		mc.cars_total, 
+		mc.coins, 
+		mc.electronical, 
+		mc.service,
+		mc.ctime,
+		u.login "user"
+	FROM money_collection mc
+	INNER JOIN users u ON u.id = mc.user_id
+	WHERE mc.station_id = :station_id
+	ORDER BY mc.ctime
 	`
 	sqlAddRelayReport = `
 INSERT INTO relay_report (station_id)  
@@ -511,6 +519,14 @@ type (
 	}
 	argLastCollectionReport struct {
 		StationID app.StationID
+	}
+	argCollectionReports struct {
+		StationID app.StationID
+	}
+	argCollectionReportsByDate struct {
+		StationID app.StationID
+		StartDate time.Time
+		EndDate   time.Time
 	}
 	argLastRelayReport struct {
 		StationID app.StationID

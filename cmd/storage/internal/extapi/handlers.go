@@ -440,6 +440,24 @@ func (svc *service) stationReportCurrentMoney(params op.StationReportCurrentMone
 	}
 }
 
+func (svc *service) stationCollectionReportDates(params op.StationCollectionReportDatesParams, auth *app.Auth) op.StationCollectionReportDatesResponder{
+	log.Info("station  collection reports by dates", "id", params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
+
+	reports, err := svc.app.CollectionReports(app.StationID(params.Args.StationID), time.Unix(*params.Args.StartDate, 0), time.Unix(*params.Args.EndDate, 0))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewStationCollectionReportDatesOK().WithPayload(&op.StationCollectionReportDatesOKBody{
+			CollectionReports: apiCollectionReportWithUser(reports),
+		})
+	case app.ErrNotFound:
+		log.Info("station report: not found", "id", params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationCollectionReportDatesNotFound()
+	default:
+		log.PrintErr(err, "id", params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationCollectionReportDatesInternalServerError()
+	}
+}
 func newInt64(v int64) *int64 {
 	return &v
 }

@@ -456,7 +456,11 @@ func (a *app) StationReportCurrentMoney(id StationID) (MoneyReport, RelayReport,
 
 	return report, stat, err
 }
-
+func (a *app) CollectionReports(id StationID, startDate, endDate time.Time) (reports []CollectionReportWithUser, err error){
+	reports, err = a.repo.CollectionReports(id, startDate, endDate)
+	
+	return reports, err
+}
 func (a *app) StationsVariables() ([]StationsVariables, error) {
 	return a.repo.StationsVariables()
 }
