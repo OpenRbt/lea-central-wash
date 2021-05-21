@@ -195,6 +195,28 @@ SELECT station_id, banknotes, cars_total, coins, electronical, service, ctime FR
 ORDER BY id DESC
 LIMIT 1
 	`
+	sqlCollectionReportsByDate = `
+	SELECT station_id, 
+		   banknotes, 
+		   cars_total, 
+		   coins, 
+		   electronical, 
+		   service,
+		   ctime,
+	FROM money_collection
+	WHERE :start_date < ctime AND ctime <= :end_date AND station_id = :station_id
+	`
+	sqlCollectionReports = `
+	SELECT station_id, 
+		   banknotes, 
+		   cars_total, 
+		   coins, 
+		   electronical, 
+		   service,
+		   ctime,
+	FROM money_collection
+	WHERE station_id = :station_id
+	`
 	sqlAddRelayReport = `
 INSERT INTO relay_report (station_id)  
 VALUES 	(:station_id) RETURNING id
