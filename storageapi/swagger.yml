@@ -1352,6 +1352,8 @@ paths:
           description: internal error
   /station-collection-report-dates:
     post:
+      security:
+        - pinCode: []
       operationId: "stationCollectionReportDates"
       parameters:
         - name: args
