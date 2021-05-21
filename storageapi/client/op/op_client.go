@@ -954,6 +954,35 @@ func (a *Client) StationByHash(params *StationByHashParams) (*StationByHashOK, e
 }
 
 /*
+StationCollectionReportDates station collection report dates API
+*/
+func (a *Client) StationCollectionReportDates(params *StationCollectionReportDatesParams, authInfo runtime.ClientAuthInfoWriter) (*StationCollectionReportDatesOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStationCollectionReportDatesParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "stationCollectionReportDates",
+		Method:             "POST",
+		PathPattern:        "/station-collection-report-dates",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StationCollectionReportDatesReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*StationCollectionReportDatesOK), nil
+
+}
+
+/*
 StationProgramByHash station program by hash API
 */
 func (a *Client) StationProgramByHash(params *StationProgramByHashParams) (*StationProgramByHashOK, error) {

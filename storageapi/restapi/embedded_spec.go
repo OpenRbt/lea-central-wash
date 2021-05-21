@@ -1047,6 +1047,71 @@ func init() {
         }
       }
     },
+    "/station-collection-report-dates": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "stationCollectionReportDates",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationId",
+                "startDate",
+                "endDate"
+              ],
+              "properties": {
+                "endDate": {
+                  "description": "Unix time",
+                  "type": "integer",
+                  "x-nullable": true
+                },
+                "startDate": {
+                  "description": "Unix time",
+                  "type": "integer",
+                  "x-nullable": true
+                },
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "collectionReports"
+              ],
+              "properties": {
+                "collectionReports": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/CollectionReportWithUser"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/station-program-by-hash": {
       "post": {
         "operationId": "stationProgramByHash",
@@ -1607,6 +1672,35 @@ func init() {
         },
         "service": {
           "type": "integer"
+        }
+      }
+    },
+    "CollectionReportWithUser": {
+      "type": "object",
+      "properties": {
+        "banknotes": {
+          "type": "integer"
+        },
+        "carsTotal": {
+          "type": "integer"
+        },
+        "coins": {
+          "type": "integer"
+        },
+        "ctime": {
+          "type": "integer"
+        },
+        "electronical": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "service": {
+          "type": "integer"
+        },
+        "user": {
+          "type": "string"
         }
       }
     },
@@ -3051,6 +3145,71 @@ func init() {
         }
       }
     },
+    "/station-collection-report-dates": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "stationCollectionReportDates",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationId",
+                "startDate",
+                "endDate"
+              ],
+              "properties": {
+                "endDate": {
+                  "description": "Unix time",
+                  "type": "integer",
+                  "x-nullable": true
+                },
+                "startDate": {
+                  "description": "Unix time",
+                  "type": "integer",
+                  "x-nullable": true
+                },
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "collectionReports"
+              ],
+              "properties": {
+                "collectionReports": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/CollectionReportWithUser"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/station-program-by-hash": {
       "post": {
         "operationId": "stationProgramByHash",
@@ -3611,6 +3770,35 @@ func init() {
         },
         "service": {
           "type": "integer"
+        }
+      }
+    },
+    "CollectionReportWithUser": {
+      "type": "object",
+      "properties": {
+        "banknotes": {
+          "type": "integer"
+        },
+        "carsTotal": {
+          "type": "integer"
+        },
+        "coins": {
+          "type": "integer"
+        },
+        "ctime": {
+          "type": "integer"
+        },
+        "electronical": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "service": {
+          "type": "integer"
+        },
+        "user": {
+          "type": "string"
         }
       }
     },
