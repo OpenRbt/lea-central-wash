@@ -83,12 +83,10 @@ func (o *StationCollectionReportDates) ServeHTTP(rw http.ResponseWriter, r *http
 type StationCollectionReportDatesBody struct {
 
 	// Unix time
-	// Required: true
-	EndDate *int64 `json:"endDate"`
+	EndDate *int64 `json:"endDate,omitempty"`
 
 	// Unix time
-	// Required: true
-	StartDate *int64 `json:"startDate"`
+	StartDate *int64 `json:"startDate,omitempty"`
 
 	// station ID
 	StationID int64 `json:"stationID,omitempty"`
@@ -96,37 +94,6 @@ type StationCollectionReportDatesBody struct {
 
 // Validate validates this station collection report dates body
 func (o *StationCollectionReportDatesBody) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateEndDate(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateStartDate(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *StationCollectionReportDatesBody) validateEndDate(formats strfmt.Registry) error {
-
-	if err := validate.Required("args"+"."+"endDate", "body", o.EndDate); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *StationCollectionReportDatesBody) validateStartDate(formats strfmt.Registry) error {
-
-	if err := validate.Required("args"+"."+"startDate", "body", o.StartDate); err != nil {
-		return err
-	}
-
 	return nil
 }
 

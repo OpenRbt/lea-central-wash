@@ -36,6 +36,20 @@ func (o *StationCollectionReportDatesReader) ReadResponse(response runtime.Clien
 		}
 		return result, nil
 
+	case 401:
+		result := NewStationCollectionReportDatesUnauthorized()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
+	case 403:
+		result := NewStationCollectionReportDatesForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	case 404:
 		result := NewStationCollectionReportDatesNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -80,6 +94,48 @@ func (o *StationCollectionReportDatesOK) readResponse(response runtime.ClientRes
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
+
+	return nil
+}
+
+// NewStationCollectionReportDatesUnauthorized creates a StationCollectionReportDatesUnauthorized with default headers values
+func NewStationCollectionReportDatesUnauthorized() *StationCollectionReportDatesUnauthorized {
+	return &StationCollectionReportDatesUnauthorized{}
+}
+
+/*StationCollectionReportDatesUnauthorized handles this case with default header values.
+
+PIN is missing or invalid
+*/
+type StationCollectionReportDatesUnauthorized struct {
+}
+
+func (o *StationCollectionReportDatesUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesUnauthorized ", 401)
+}
+
+func (o *StationCollectionReportDatesUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewStationCollectionReportDatesForbidden creates a StationCollectionReportDatesForbidden with default headers values
+func NewStationCollectionReportDatesForbidden() *StationCollectionReportDatesForbidden {
+	return &StationCollectionReportDatesForbidden{}
+}
+
+/*StationCollectionReportDatesForbidden handles this case with default header values.
+
+Access forbiddenn
+*/
+type StationCollectionReportDatesForbidden struct {
+}
+
+func (o *StationCollectionReportDatesForbidden) Error() string {
+	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesForbidden ", 403)
+}
+
+func (o *StationCollectionReportDatesForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }
@@ -132,12 +188,10 @@ swagger:model StationCollectionReportDatesBody
 type StationCollectionReportDatesBody struct {
 
 	// Unix time
-	// Required: true
-	EndDate *int64 `json:"endDate"`
+	EndDate *int64 `json:"endDate,omitempty"`
 
 	// Unix time
-	// Required: true
-	StartDate *int64 `json:"startDate"`
+	StartDate *int64 `json:"startDate,omitempty"`
 
 	// station ID
 	StationID int64 `json:"stationID,omitempty"`
@@ -145,37 +199,6 @@ type StationCollectionReportDatesBody struct {
 
 // Validate validates this station collection report dates body
 func (o *StationCollectionReportDatesBody) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateEndDate(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateStartDate(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *StationCollectionReportDatesBody) validateEndDate(formats strfmt.Registry) error {
-
-	if err := validate.Required("args"+"."+"endDate", "body", o.EndDate); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *StationCollectionReportDatesBody) validateStartDate(formats strfmt.Registry) error {
-
-	if err := validate.Required("args"+"."+"startDate", "body", o.StartDate); err != nil {
-		return err
-	}
-
 	return nil
 }
 

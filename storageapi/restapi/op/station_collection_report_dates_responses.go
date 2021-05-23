@@ -58,6 +58,58 @@ func (o *StationCollectionReportDatesOK) WriteResponse(rw http.ResponseWriter, p
 
 func (o *StationCollectionReportDatesOK) StationCollectionReportDatesResponder() {}
 
+// StationCollectionReportDatesUnauthorizedCode is the HTTP code returned for type StationCollectionReportDatesUnauthorized
+const StationCollectionReportDatesUnauthorizedCode int = 401
+
+/*StationCollectionReportDatesUnauthorized PIN is missing or invalid
+
+swagger:response stationCollectionReportDatesUnauthorized
+*/
+type StationCollectionReportDatesUnauthorized struct {
+}
+
+// NewStationCollectionReportDatesUnauthorized creates StationCollectionReportDatesUnauthorized with default headers values
+func NewStationCollectionReportDatesUnauthorized() *StationCollectionReportDatesUnauthorized {
+
+	return &StationCollectionReportDatesUnauthorized{}
+}
+
+// WriteResponse to the client
+func (o *StationCollectionReportDatesUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(401)
+}
+
+func (o *StationCollectionReportDatesUnauthorized) StationCollectionReportDatesResponder() {}
+
+// StationCollectionReportDatesForbiddenCode is the HTTP code returned for type StationCollectionReportDatesForbidden
+const StationCollectionReportDatesForbiddenCode int = 403
+
+/*StationCollectionReportDatesForbidden Access forbiddenn
+
+swagger:response stationCollectionReportDatesForbidden
+*/
+type StationCollectionReportDatesForbidden struct {
+}
+
+// NewStationCollectionReportDatesForbidden creates StationCollectionReportDatesForbidden with default headers values
+func NewStationCollectionReportDatesForbidden() *StationCollectionReportDatesForbidden {
+
+	return &StationCollectionReportDatesForbidden{}
+}
+
+// WriteResponse to the client
+func (o *StationCollectionReportDatesForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
+}
+
+func (o *StationCollectionReportDatesForbidden) StationCollectionReportDatesResponder() {}
+
 // StationCollectionReportDatesNotFoundCode is the HTTP code returned for type StationCollectionReportDatesNotFound
 const StationCollectionReportDatesNotFoundCode int = 404
 

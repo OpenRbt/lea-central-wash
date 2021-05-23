@@ -1063,9 +1063,7 @@ func init() {
             "schema": {
               "type": "object",
               "required": [
-                "stationId",
-                "startDate",
-                "endDate"
+                "stationId"
               ],
               "properties": {
                 "endDate": {
@@ -1102,6 +1100,12 @@ func init() {
                 }
               }
             }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
           },
           "404": {
             "description": "not found"
@@ -3161,9 +3165,7 @@ func init() {
             "schema": {
               "type": "object",
               "required": [
-                "stationId",
-                "startDate",
-                "endDate"
+                "stationId"
               ],
               "properties": {
                 "endDate": {
@@ -3200,6 +3202,12 @@ func init() {
                 }
               }
             }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
           },
           "404": {
             "description": "not found"
