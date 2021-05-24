@@ -68,7 +68,7 @@ type (
 		DelStation(id StationID) error
 		StationReportDates(id StationID, startDate, endDate time.Time) (MoneyReport, RelayReport, error)
 		StationReportCurrentMoney(id StationID) (MoneyReport, RelayReport, error)
-		CollectionReports(id StationID, startDate, endDate time.Time) (reports []CollectionReportWithUser, err error)
+		CollectionReports(id StationID, startDate, endDate *time.Time) (reports []CollectionReportWithUser, err error)
 
 		StatusCollection() StatusCollection
 		SaveCollectionReport(auth *Auth, id StationID) error
@@ -115,7 +115,7 @@ type (
 		RelayStatReport(stationID StationID, startDate, endDate time.Time) (RelayReport, error)
 		LastCollectionReport(stationID StationID) (report CollectionReport, err error)
 		SaveCollectionReport(userID int, stationID StationID) (err error)
-		CollectionReports(id StationID, startDate, endDate time.Time) (reports []CollectionReportWithUser, err error)
+		CollectionReports(id StationID, startDate, endDate *time.Time) (reports []CollectionReportWithUser, err error)
 		StationsVariables() ([]StationsVariables, error)
 		AddStation(name string) error
 		AddOpenStationLog(StationID) error

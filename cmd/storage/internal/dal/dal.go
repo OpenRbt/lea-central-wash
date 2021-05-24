@@ -443,36 +443,22 @@ func (r *repo) LastCollectionReport(stationID app.StationID) (report app.Collect
 	})
 	return //nolint:nakedret
 }
-func (r *repo) CollectionReports(id app.StationID, startDate, endDate time.Time) (reports []app.CollectionReportWithUser, err error){
-	if time.Time.IsZero(startDate) || time.Time.IsZero(endDate) {
-		err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-			err := tx.NamedSelectContext(ctx, &reports, sqlCollectionReports, argCollectionReports{
-				StationID: id,
-			})	
-			switch {
-			case err == sql.ErrNoRows:
-				return app.ErrNotFound
-			case err != nil:
-				return err
-			}
-			return nil
-		})
-	} else {
-		err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-			err := tx.NamedSelectContext(ctx, &reports, sqlCollectionReportsByDate, argCollectionReportsByDate{
-				StationID: id,
-				StartDate: startDate,
-				EndDate: endDate,
-			})	
-			switch {
-			case err == sql.ErrNoRows:
-				return app.ErrNotFound
-			case err != nil:
-				return err
-			}
-			return nil
-		})
-	}
+func (r *repo) CollectionReports(id app.StationID, startDate, endDate *time.Time) (reports []app.CollectionReportWithUser, err error){
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedSelectContext(ctx, &reports, sqlCollectionReportsByDate, argCollectionReportsByDate{
+			StationID: id,
+			StartDate: *startDate,
+			EndDate: *endDate,
+		})	
+		switch {
+		case err == sql.ErrNoRows:
+			return app.ErrNotFound
+		case err != nil:
+			return err
+		}
+		return nil
+	})
+	
 	return //nolint:nakedret
 }
 func (r *repo) SaveCollectionReport(userID int, id app.StationID) (err error) {

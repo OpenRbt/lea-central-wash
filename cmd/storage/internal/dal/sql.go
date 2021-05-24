@@ -204,25 +204,10 @@ LIMIT 1
 		mc.electronical, 
 		mc.service,
 		mc.ctime,
-		u.login  "user"
+		COALESCE(u.login, '')  "user"
 	FROM money_collection mc
-	INNER JOIN users u ON u.id = mc.user_id
-	WHERE :start_date < mc.ctime AND mc.ctime <= :end_date AND  mc.station_id = :station_id
-	ORDER BY mc.ctime
-	`
-	sqlCollectionReports = `
-	SELECT 
-		mc.station_id, 
-		mc.banknotes, 
-		mc.cars_total, 
-		mc.coins, 
-		mc.electronical, 
-		mc.service,
-		mc.ctime,
-		u.login "user"
-	FROM money_collection mc
-	INNER JOIN users u ON u.id = mc.user_id
-	WHERE mc.station_id = :station_id
+	LEFT JOIN users u ON u.id = mc.user_id
+	WHERE (:start_date < mc.ctime or :start_date = to_timestamp(0)) AND (mc.ctime <= :end_date or :end_date = to_timestamp(0)) AND  mc.station_id = :station_id
 	ORDER BY mc.ctime
 	`
 	sqlAddRelayReport = `
