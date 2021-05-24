@@ -870,6 +870,34 @@ func (a *Client) SetStationButton(params *SetStationButtonParams) (*SetStationBu
 }
 
 /*
+SetWorkingMode set working mode API
+*/
+func (a *Client) SetWorkingMode(params *SetWorkingModeParams) (*SetWorkingModeNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetWorkingModeParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "setWorkingMode",
+		Method:             "POST",
+		PathPattern:        "/set-working-mode",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetWorkingModeReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*SetWorkingModeNoContent), nil
+
+}
+
+/*
 Station station API
 */
 func (a *Client) Station(params *StationParams) (*StationOK, error) {

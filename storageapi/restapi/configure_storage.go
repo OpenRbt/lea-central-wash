@@ -133,6 +133,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.SetStationButtonHandler = op.SetStationButtonHandlerFunc(func(params op.SetStationButtonParams) op.SetStationButtonResponder {
 		return op.SetStationButtonNotImplemented()
 	})
+	api.SetWorkingModeHandler = op.SetWorkingModeHandlerFunc(func(params op.SetWorkingModeParams) op.SetWorkingModeResponder {
+		return op.SetWorkingModeNotImplemented()
+	})
 	api.StationHandler = op.StationHandlerFunc(func(params op.StationParams) op.StationResponder {
 		return op.StationNotImplemented()
 	})

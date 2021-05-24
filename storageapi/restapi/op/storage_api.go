@@ -159,6 +159,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation SetStationButton has not yet been implemented")
 			return SetStationButtonNotImplemented()
 		}),
+		SetWorkingModeHandler: SetWorkingModeHandlerFunc(func(params SetWorkingModeParams) SetWorkingModeResponder {
+			// return middleware.NotImplemented("operation SetWorkingMode has not yet been implemented")
+			return SetWorkingModeNotImplemented()
+		}),
 		StationHandler: StationHandlerFunc(func(params StationParams) StationResponder {
 			// return middleware.NotImplemented("operation Station has not yet been implemented")
 			return StationNotImplemented()
@@ -309,6 +313,8 @@ type StorageAPI struct {
 	SetStationHandler SetStationHandler
 	// SetStationButtonHandler sets the operation handler for the set station button operation
 	SetStationButtonHandler SetStationButtonHandler
+	// SetWorkingModeHandler sets the operation handler for the set working mode operation
+	SetWorkingModeHandler SetWorkingModeHandler
 	// StationHandler sets the operation handler for the station operation
 	StationHandler StationHandler
 	// StationButtonHandler sets the operation handler for the station button operation
@@ -516,6 +522,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.SetStationButtonHandler == nil {
 		unregistered = append(unregistered, "SetStationButtonHandler")
+	}
+
+	if o.SetWorkingModeHandler == nil {
+		unregistered = append(unregistered, "SetWorkingModeHandler")
 	}
 
 	if o.StationHandler == nil {
@@ -821,6 +831,11 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/set-station-button"] = NewSetStationButton(o.context, o.SetStationButtonHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-working-mode"] = NewSetWorkingMode(o.context, o.SetWorkingModeHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

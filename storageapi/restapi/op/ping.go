@@ -6,6 +6,7 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
@@ -75,6 +76,9 @@ type PingBody struct {
 	// hash
 	// Required: true
 	Hash model.Hash `json:"hash"`
+
+	// service mode finished
+	ServiceModeFinished bool `json:"serviceModeFinished,omitempty"`
 }
 
 // Validate validates this ping body
@@ -138,6 +142,11 @@ type PingOKBody struct {
 	// service amount
 	// Required: true
 	ServiceAmount *int64 `json:"serviceAmount"`
+
+	// working mode
+	// Required: true
+	// Enum: [REGULAR SERVICE]
+	WorkingMode *string `json:"workingMode"`
 }
 
 // Validate validates this ping o k body
@@ -149,6 +158,10 @@ func (o *PingOKBody) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := o.validateServiceAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateWorkingMode(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -170,6 +183,49 @@ func (o *PingOKBody) validateOpenStation(formats strfmt.Registry) error {
 func (o *PingOKBody) validateServiceAmount(formats strfmt.Registry) error {
 
 	if err := validate.Required("pingOK"+"."+"serviceAmount", "body", o.ServiceAmount); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var pingOKBodyTypeWorkingModePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["REGULAR","SERVICE"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		pingOKBodyTypeWorkingModePropEnum = append(pingOKBodyTypeWorkingModePropEnum, v)
+	}
+}
+
+const (
+
+	// PingOKBodyWorkingModeREGULAR captures enum value "REGULAR"
+	PingOKBodyWorkingModeREGULAR string = "REGULAR"
+
+	// PingOKBodyWorkingModeSERVICE captures enum value "SERVICE"
+	PingOKBodyWorkingModeSERVICE string = "SERVICE"
+)
+
+// prop value enum
+func (o *PingOKBody) validateWorkingModeEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, pingOKBodyTypeWorkingModePropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (o *PingOKBody) validateWorkingMode(formats strfmt.Registry) error {
+
+	if err := validate.Required("pingOK"+"."+"workingMode", "body", o.WorkingMode); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := o.validateWorkingModeEnum("pingOK"+"."+"workingMode", "body", *o.WorkingMode); err != nil {
 		return err
 	}
 

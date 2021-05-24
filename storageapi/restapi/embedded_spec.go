@@ -435,6 +435,9 @@ func init() {
                 },
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "serviceModeFinished": {
+                  "type": "boolean"
                 }
               }
             }
@@ -447,7 +450,8 @@ func init() {
               "type": "object",
               "required": [
                 "serviceAmount",
-                "openStation"
+                "openStation",
+                "workingMode"
               ],
               "properties": {
                 "ButtonID": {
@@ -461,6 +465,13 @@ func init() {
                 },
                 "serviceAmount": {
                   "type": "integer"
+                },
+                "workingMode": {
+                  "type": "string",
+                  "enum": [
+                    "REGULAR",
+                    "SERVICE"
+                  ]
                 }
               }
             }
@@ -915,6 +926,44 @@ func init() {
             "schema": {
               "type": "string"
             }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-working-mode": {
+      "post": {
+        "operationId": "setWorkingMode",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID",
+                "serviceMode"
+              ],
+              "properties": {
+                "serviceMode": {
+                  "type": "boolean"
+                },
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"
@@ -2439,6 +2488,9 @@ func init() {
                 },
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "serviceModeFinished": {
+                  "type": "boolean"
                 }
               }
             }
@@ -2451,7 +2503,8 @@ func init() {
               "type": "object",
               "required": [
                 "serviceAmount",
-                "openStation"
+                "openStation",
+                "workingMode"
               ],
               "properties": {
                 "ButtonID": {
@@ -2465,6 +2518,13 @@ func init() {
                 },
                 "serviceAmount": {
                   "type": "integer"
+                },
+                "workingMode": {
+                  "type": "string",
+                  "enum": [
+                    "REGULAR",
+                    "SERVICE"
+                  ]
                 }
               }
             }
@@ -2919,6 +2979,44 @@ func init() {
             "schema": {
               "type": "string"
             }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-working-mode": {
+      "post": {
+        "operationId": "setWorkingMode",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID",
+                "serviceMode"
+              ],
+              "properties": {
+                "serviceMode": {
+                  "type": "boolean"
+                },
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"
