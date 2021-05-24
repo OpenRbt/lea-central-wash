@@ -732,6 +732,8 @@ paths:
                 type: integer
               currentProgram:
                 type: integer
+              serviceModeFinished:
+                type: boolean
       responses:
         200:
           description: OK
@@ -740,7 +742,7 @@ paths:
             required:
               - serviceAmount
               - openStation
-              - serviceMode
+              - workingMode
             properties:
               serviceAmount:
                 type: integer
@@ -750,8 +752,9 @@ paths:
                 type: integer
               ButtonID:
                 type: integer
-              serviceMode:
-                type: boolean
+              workingMode:
+                type: string
+                enum: ["REGULAR", "SERVICE"]
     get:
       operationId: "getPing"
       responses:
