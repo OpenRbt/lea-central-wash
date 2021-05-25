@@ -622,6 +622,17 @@ type (
 		RelayBoard                 string
 	}
 
+	resCollectionReportByDate struct {
+		StationID    app.StationID
+		Banknotes    int
+		CarsTotal    int
+		Coins        int
+		Electronical int
+		Service      int
+		Ctime        time.Time
+		User		 string
+	}
+	
 	argSetProgram struct {
 		ID                         int64
 		Price                      int

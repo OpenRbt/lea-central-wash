@@ -445,13 +445,14 @@ func (r *repo) LastCollectionReport(stationID app.StationID) (report app.Collect
 }
 func (r *repo) CollectionReports(id app.StationID, startDate, endDate *time.Time) (reports []app.CollectionReportWithUser, err error){
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		err := tx.NamedSelectContext(ctx, &reports, sqlCollectionReportsByDate, argCollectionReportsByDate{
+		var res []resCollectionReportByDate
+		err := tx.NamedSelectContext(ctx, &res, sqlCollectionReportsByDate, argCollectionReportsByDate{
 			StationID: id,
 			StartDate: startDate,
 			EndDate: endDate,
-		})	
-		switch {
-		case err != nil:
+		})
+		reports = appCollectionReportsByDate(res)
+		if err != nil {
 			return err
 		}
 		return nil
