@@ -148,7 +148,7 @@ func appStationConfig(p []resStationConfig) (res app.StationConfig) {
 	return res
 }
 
-func appCollectionReportsByDate(r []resCollectionReportByDate) (res []app.CollectionReportWithUser){
+func appCollectionReportsByDate(r []resCollectionReportByDate) (res []app.CollectionReportWithUser) {
 	for i := range r {
 		res = append(res, app.CollectionReportWithUser{
 			StationID:    r[i].StationID,
@@ -158,7 +158,7 @@ func appCollectionReportsByDate(r []resCollectionReportByDate) (res []app.Collec
 			Electronical: r[i].Electronical,
 			Service:      r[i].Service,
 			Ctime:        r[i].Ctime,
-			User:		  r[i].User,
+			User:         r[i].User,
 		})
 	}
 	return res

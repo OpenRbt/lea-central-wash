@@ -630,9 +630,9 @@ type (
 		Electronical int
 		Service      int
 		Ctime        time.Time
-		User		 string
+		User         string
 	}
-	
+
 	argSetProgram struct {
 		ID                         int64
 		Price                      int

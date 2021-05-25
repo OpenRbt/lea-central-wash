@@ -76,7 +76,7 @@ type CollectionReportWithUser struct {
 	Electronical int
 	Service      int
 	Ctime        time.Time
-	User		 string
+	User         string
 }
 
 // RelayStat is not used now, but generally shows how much do they work

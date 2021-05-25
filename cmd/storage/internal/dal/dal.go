@@ -443,13 +443,13 @@ func (r *repo) LastCollectionReport(stationID app.StationID) (report app.Collect
 	})
 	return //nolint:nakedret
 }
-func (r *repo) CollectionReports(id app.StationID, startDate, endDate *time.Time) (reports []app.CollectionReportWithUser, err error){
+func (r *repo) CollectionReports(id app.StationID, startDate, endDate *time.Time) (reports []app.CollectionReportWithUser, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res []resCollectionReportByDate
 		err := tx.NamedSelectContext(ctx, &res, sqlCollectionReportsByDate, argCollectionReportsByDate{
 			StationID: id,
 			StartDate: startDate,
-			EndDate: endDate,
+			EndDate:   endDate,
 		})
 		reports = appCollectionReportsByDate(res)
 		if err != nil {
@@ -457,7 +457,7 @@ func (r *repo) CollectionReports(id app.StationID, startDate, endDate *time.Time
 		}
 		return nil
 	})
-	
+
 	return //nolint:nakedret
 }
 func (r *repo) SaveCollectionReport(userID int, id app.StationID) (err error) {
