@@ -89,6 +89,7 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 
 	api.StatusCollectionHandler = op.StatusCollectionHandlerFunc(svc.statusCollection)
 	api.SaveCollectionHandler = op.SaveCollectionHandlerFunc(svc.saveCollection)
+	api.StationCollectionReportDatesHandler = op.StationCollectionReportDatesHandlerFunc(svc.stationCollectionReportDates)
 
 	api.StationByHashHandler = op.StationByHashHandlerFunc(svc.stationByHash)
 	api.SaveIfNotExistsHandler = op.SaveIfNotExistsHandlerFunc(svc.saveIfNotExists)

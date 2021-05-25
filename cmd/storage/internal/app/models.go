@@ -67,6 +67,18 @@ type CollectionReport struct {
 	Ctime        time.Time
 }
 
+// CollectionReportWithUser is how much was collected from a station + when with username who committed it
+type CollectionReportWithUser struct {
+	StationID    StationID
+	Banknotes    int
+	CarsTotal    int
+	Coins        int
+	Electronical int
+	Service      int
+	Ctime        time.Time
+	User         string
+}
+
 // RelayStat is not used now, but generally shows how much do they work
 type RelayStat struct {
 	RelayID       int

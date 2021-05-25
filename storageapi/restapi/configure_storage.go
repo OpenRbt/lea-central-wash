@@ -142,6 +142,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	api.StationByHashHandler = op.StationByHashHandlerFunc(func(params op.StationByHashParams) op.StationByHashResponder {
 		return op.StationByHashNotImplemented()
 	})
+	api.StationCollectionReportDatesHandler = op.StationCollectionReportDatesHandlerFunc(func(params op.StationCollectionReportDatesParams, principal *storageapi.Profile) op.StationCollectionReportDatesResponder {
+		return op.StationCollectionReportDatesNotImplemented()
+	})
 	api.StationProgramByHashHandler = op.StationProgramByHashHandlerFunc(func(params op.StationProgramByHashParams) op.StationProgramByHashResponder {
 		return op.StationProgramByHashNotImplemented()
 	})

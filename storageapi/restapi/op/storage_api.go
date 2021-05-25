@@ -171,6 +171,10 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 			// return middleware.NotImplemented("operation StationByHash has not yet been implemented")
 			return StationByHashNotImplemented()
 		}),
+		StationCollectionReportDatesHandler: StationCollectionReportDatesHandlerFunc(func(params StationCollectionReportDatesParams, principal *storageapi.Profile) StationCollectionReportDatesResponder {
+			// return middleware.NotImplemented("operation StationCollectionReportDates has not yet been implemented")
+			return StationCollectionReportDatesNotImplemented()
+		}),
 		StationProgramByHashHandler: StationProgramByHashHandlerFunc(func(params StationProgramByHashParams) StationProgramByHashResponder {
 			// return middleware.NotImplemented("operation StationProgramByHash has not yet been implemented")
 			return StationProgramByHashNotImplemented()
@@ -315,6 +319,8 @@ type StorageAPI struct {
 	StationButtonHandler StationButtonHandler
 	// StationByHashHandler sets the operation handler for the station by hash operation
 	StationByHashHandler StationByHashHandler
+	// StationCollectionReportDatesHandler sets the operation handler for the station collection report dates operation
+	StationCollectionReportDatesHandler StationCollectionReportDatesHandler
 	// StationProgramByHashHandler sets the operation handler for the station program by hash operation
 	StationProgramByHashHandler StationProgramByHashHandler
 	// StationReportCurrentMoneyHandler sets the operation handler for the station report current money operation
@@ -528,6 +534,10 @@ func (o *StorageAPI) Validate() error {
 
 	if o.StationByHashHandler == nil {
 		unregistered = append(unregistered, "StationByHashHandler")
+	}
+
+	if o.StationCollectionReportDatesHandler == nil {
+		unregistered = append(unregistered, "StationCollectionReportDatesHandler")
 	}
 
 	if o.StationProgramByHashHandler == nil {
@@ -836,6 +846,11 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/station-by-hash"] = NewStationByHash(o.context, o.StationByHashHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/station-collection-report-dates"] = NewStationCollectionReportDates(o.context, o.StationCollectionReportDatesHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

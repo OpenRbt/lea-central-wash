@@ -277,3 +277,20 @@ func apiStationConfig(p app.StationConfig) (res *model.StationPrograms) {
 	}
 	return res
 }
+
+func apiCollectionReportWithUser(reports []app.CollectionReportWithUser) (res []*model.CollectionReportWithUser) {
+	res = []*model.CollectionReportWithUser{}
+	for i := range reports {
+		res = append(res, &model.CollectionReportWithUser{
+			ID:           int64(reports[i].StationID),
+			Banknotes:    int64(reports[i].Banknotes),
+			CarsTotal:    int64(reports[i].CarsTotal),
+			Coins:        int64(reports[i].Coins),
+			Electronical: int64(reports[i].Electronical),
+			Service:      int64(reports[i].Service),
+			Ctime:        reports[i].Ctime.Unix(),
+			User:         reports[i].User,
+		})
+	}
+	return res
+}

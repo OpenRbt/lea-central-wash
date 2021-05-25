@@ -195,6 +195,21 @@ SELECT station_id, banknotes, cars_total, coins, electronical, service, ctime FR
 ORDER BY id DESC
 LIMIT 1
 	`
+	sqlCollectionReportsByDate = `
+	SELECT 
+		mc.station_id, 
+		mc.banknotes, 
+		mc.cars_total, 
+		mc.coins, 
+		mc.electronical, 
+		mc.service,
+		mc.ctime,
+		COALESCE(u.login, '')  "user"
+	FROM money_collection mc
+	LEFT JOIN users u ON u.id = mc.user_id
+	WHERE (:start_date < mc.ctime or CAST(:start_date AS TIMESTAMP) is null) AND (mc.ctime <= :end_date or CAST(:end_date AS TIMESTAMP) is null) AND  mc.station_id = :station_id
+	ORDER BY mc.ctime
+	`
 	sqlAddRelayReport = `
 INSERT INTO relay_report (station_id)  
 VALUES 	(:station_id) RETURNING id
@@ -490,6 +505,14 @@ type (
 	argLastCollectionReport struct {
 		StationID app.StationID
 	}
+	argCollectionReports struct {
+		StationID app.StationID
+	}
+	argCollectionReportsByDate struct {
+		StationID app.StationID
+		StartDate *time.Time
+		EndDate   *time.Time
+	}
 	argLastRelayReport struct {
 		StationID app.StationID
 	}
@@ -597,6 +620,17 @@ type (
 		MotorSpeedPercent          int64
 		PreflightMotorSpeedPercent int64
 		RelayBoard                 string
+	}
+
+	resCollectionReportByDate struct {
+		StationID    app.StationID
+		Banknotes    int
+		CarsTotal    int
+		Coins        int
+		Electronical int
+		Service      int
+		Ctime        time.Time
+		User         string
 	}
 
 	argSetProgram struct {
