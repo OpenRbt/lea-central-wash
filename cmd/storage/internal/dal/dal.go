@@ -447,12 +447,10 @@ func (r *repo) CollectionReports(id app.StationID, startDate, endDate *time.Time
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		err := tx.NamedSelectContext(ctx, &reports, sqlCollectionReportsByDate, argCollectionReportsByDate{
 			StationID: id,
-			StartDate: *startDate,
-			EndDate: *endDate,
+			StartDate: startDate,
+			EndDate: endDate,
 		})	
 		switch {
-		case err == sql.ErrNoRows:
-			return app.ErrNotFound
 		case err != nil:
 			return err
 		}

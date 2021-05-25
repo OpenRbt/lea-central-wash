@@ -207,7 +207,7 @@ LIMIT 1
 		COALESCE(u.login, '')  "user"
 	FROM money_collection mc
 	LEFT JOIN users u ON u.id = mc.user_id
-	WHERE (:start_date < mc.ctime or :start_date = to_timestamp(0)) AND (mc.ctime <= :end_date or :end_date = to_timestamp(0)) AND  mc.station_id = :station_id
+	WHERE (:start_date < mc.ctime or CAST(:start_date AS TIMESTAMP) is null) AND (mc.ctime <= :end_date or CAST(:end_date AS TIMESTAMP) is null) AND  mc.station_id = :station_id
 	ORDER BY mc.ctime
 	`
 	sqlAddRelayReport = `
@@ -510,8 +510,8 @@ type (
 	}
 	argCollectionReportsByDate struct {
 		StationID app.StationID
-		StartDate time.Time
-		EndDate   time.Time
+		StartDate *time.Time
+		EndDate   *time.Time
 	}
 	argLastRelayReport struct {
 		StationID app.StationID

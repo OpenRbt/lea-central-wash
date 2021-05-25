@@ -443,15 +443,17 @@ func (svc *service) stationReportCurrentMoney(params op.StationReportCurrentMone
 func (svc *service) stationCollectionReportDates(params op.StationCollectionReportDatesParams, auth *app.Auth) op.StationCollectionReportDatesResponder{
 	log.Info("station  collection reports by dates", "id", params.Args.StationID, "startDate", params.Args.StartDate, "endDate", params.Args.EndDate, "ip", params.HTTPRequest.RemoteAddr)
 	
-	startDate := time.Unix(0,0)
+	var startDate *time.Time
 	if params.Args.StartDate != nil {
-		startDate = time.Unix(*params.Args.StartDate, 0)
+		CreateDateStart := time.Unix(*params.Args.StartDate, 0)
+		startDate = &CreateDateStart
 	} 
-	endDate := time.Unix(0,0)
+	var endDate *time.Time
 	if params.Args.EndDate != nil {
-		endDate = time.Unix(*params.Args.EndDate, 0)
+		CreateDateEnd := time.Unix(*params.Args.EndDate, 0)
+		endDate = &CreateDateEnd
 	}
-	reports, err := svc.app.CollectionReports(app.StationID(params.Args.StationID), &startDate, &endDate)
+	reports, err := svc.app.CollectionReports(app.StationID(params.Args.StationID), startDate, endDate)
 
 	switch errors.Cause(err) {
 	case nil:

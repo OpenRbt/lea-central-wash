@@ -279,6 +279,7 @@ func apiStationConfig(p app.StationConfig) (res *model.StationPrograms) {
 }
 
 func apiCollectionReportWithUser(reports  []app.CollectionReportWithUser) (res []*model.CollectionReportWithUser){
+	res = []*model.CollectionReportWithUser{}
 	for i := range reports {
 		res  = append(res, &model.CollectionReportWithUser{
 			ID:           int64(reports[i].StationID),
