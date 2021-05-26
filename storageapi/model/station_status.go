@@ -34,6 +34,9 @@ type StationStatus struct {
 	// name
 	Name string `json:"name,omitempty"`
 
+	// ip
+	IP string `json:"ip,omitempty"`
+
 	// status
 	Status Status `json:"status,omitempty"`
 }
