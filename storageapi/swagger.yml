@@ -7,8 +7,8 @@ info:
 basePath: /
 schemes:
   - http
-// name
-	Name string `json:"name,omitempty"`
+
+securityDefinitions:
    pinCode:
      type: apiKey
      in: header
