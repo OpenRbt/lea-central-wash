@@ -1,7 +1,7 @@
 package extapi
 
 import (
-	"strings"
+	"net"
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
@@ -275,7 +275,11 @@ func (svc *service) saveCollection(params op.SaveCollectionParams, auth *app.Aut
 }
 
 func (svc *service) ping(params op.PingParams) op.PingResponder {
-	stationIP := strings.Split(params.HTTPRequest.RemoteAddr, ":")[0]
+	stationIP, _, err := net.SplitHostPort(params.HTTPRequest.RemoteAddr)
+	if err != nil {
+		log.Info("post ping: wrong address", "address", params.HTTPRequest.RemoteAddr)
+		stationIP = ""
+	}
 	log.Info("post ping", "hash", params.Args.Hash, "ip", stationIP)
 	stationID, err := svc.getIDAndAddHash(string(params.Args.Hash))
 	if err != nil {
