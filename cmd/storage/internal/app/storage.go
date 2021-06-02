@@ -78,6 +78,7 @@ func (a *app) loadStations() error {
 		stations[res[i].ID] = StationData{
 			ID:   res[i].ID,
 			Name: res[i].Name,
+			ServiceMode: res[i].ServiceMode,
 		}
 	}
 
@@ -103,11 +104,17 @@ func (a *app) Set(station StationData) error {
 }
 
 // Ping sets the time of the last ping and returns service money.
-func (a *app) Ping(id StationID, balance, program int) StationData {
+func (a *app) Ping(id StationID, balance, program int, serviceModeFinished bool) StationData {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 	var station StationData
 	if v, ok := a.stations[id]; ok {
+		if v.ServiceMode && serviceModeFinished {
+			err := a.repo.UpdateWorkingMode(id, v.Name, false)
+			if err == nil {
+				v.ServiceMode = false
+			}
+		}
 		station = v
 	} else {
 		station = StationData{}
@@ -521,4 +528,18 @@ func (a *app) updateConfig(note string) error {
 	defer a.stationsMutex.Unlock()
 	a.lastUpdate = id
 	return nil
+}
+
+func (a *app) SetWorkingMode(id StationID, serviceMode bool)(err error){
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+	if v, ok := a.stations[id]; ok {
+		err = a.repo.UpdateWorkingMode(id, v.Name,  v.ServiceMode)
+		if err != nil{
+			return err
+		}
+		v.ServiceMode = serviceMode
+		a.stations[id] = v
+	} 
+	return
 }

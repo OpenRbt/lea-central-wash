@@ -223,6 +223,7 @@ func (r *repo) SetStation(station app.SetStation) (err error) {
 			Name:         station.Name,
 			PreflightSec: station.PreflightSec,
 			RelayBoard:   station.RelayBoard,
+			ServiceMode:  station.ServiceMode,
 		})
 		return err
 	})
@@ -715,4 +716,16 @@ func (r *repo) LastUpdateConfig() (id int, err error) {
 		return err
 	})
 	return //nolint:nakedret
+}
+
+func (r* repo) UpdateWorkingMode(stationID app.StationID, stationName string, serviceMode bool)(err error){
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlUpdateWorkingMode, argUpdateWorkingMode{
+			StationID: stationID,
+			StationName: stationName,
+			ServiceMode: serviceMode,
+		})
+		return err
+	})
+	return
 }

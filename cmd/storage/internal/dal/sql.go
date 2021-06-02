@@ -57,11 +57,11 @@ VALUES 	(:station_id, :hash)
 	`
 	sqlUpdStation = `
 UPDATE station
-SET name = :name, preflight_sec = :preflight_sec, relay_board = :relay_board
+SET name = :name, preflight_sec = :preflight_sec, relay_board = :relay_board, service_mode = :service_mode
 WHERE id = :id
 	`
 	sqlGetStations = `
-SELECT id, name, preflight_sec, relay_board FROM station where deleted = false ORDER BY id
+SELECT id, name, preflight_sec, relay_board, service_mode FROM station where deleted = false ORDER BY id
 	`
 	sqlGetStation = `
 SELECT id, name, preflight_sec, relay_board FROM station where deleted = false and id = :id ORDER BY id
@@ -370,6 +370,17 @@ order by b.button_id
 	sqlLastUpdateConfigGet = `
 	SELECT max(id) as id from update_config
 	`
+	sqlUpdateWorkingMode = `
+	INSERT INTO public.station(
+		id, name, service_mode)
+		VALUES (:station_id, :station_name, :service_mode)
+	ON CONFLICT (id)
+	DO UPDATE
+	SET
+	id = :station_id,
+	name = :station_name,
+	service_mode = :service_mode
+	`
 )
 
 type (
@@ -416,6 +427,7 @@ type (
 		Name         string
 		PreflightSec int
 		RelayBoard   string
+		ServiceMode  bool
 	}
 	argStationHash struct {
 		Hash      string
@@ -483,6 +495,7 @@ type (
 		Name         string
 		PreflightSec int
 		RelayBoard   string
+		ServiceMode  bool
 	}
 	argLastMoneyReport struct {
 		StationID app.StationID
@@ -633,5 +646,10 @@ type (
 		Electronical int
 		Service      int
 		Ctime        time.Time
+	}
+	argUpdateWorkingMode struct {
+		StationID    app.StationID
+		StationName  string
+		ServiceMode  bool
 	}
 )

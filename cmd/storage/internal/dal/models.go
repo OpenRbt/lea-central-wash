@@ -32,6 +32,7 @@ func appSetStation(v []resStation) []app.SetStation {
 			Name:         v[i].Name,
 			PreflightSec: v[i].PreflightSec,
 			RelayBoard:   v[i].RelayBoard,
+			ServiceMode:  v[i].ServiceMode,
 		})
 	}
 	return res
@@ -43,6 +44,7 @@ func appStation(v resStation) app.SetStation {
 		Name:         v.Name,
 		PreflightSec: v.PreflightSec,
 		RelayBoard:   v.RelayBoard,
+		ServiceMode:  v.ServiceMode,
 	}
 }
 

@@ -44,6 +44,7 @@ type StationData struct {
 	CurrentProgram int
 	ButtonID       int
 	LastUpdate     int
+	ServiceMode    bool
 }
 
 // MoneyReport is just to represent money in a station. All known kinds of money

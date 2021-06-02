@@ -283,14 +283,32 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		})
 	}
 
-	station := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram))
-
+	serviceModeFinished := params.Args.ServiceModeFinished
+	
+	station := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), serviceModeFinished)
+	WorkingMode:= "REGULAR"
+	if station.ServiceMode{
+		WorkingMode = "SERVICE"
+	}
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
 		ServiceAmount: newInt64(int64(station.ServiceMoney)),
 		OpenStation:   &station.OpenStation,
 		ButtonID:      int64(station.ButtonID),
 		LastUpdate:    int64(station.LastUpdate),
+		WorkingMode:   &WorkingMode,
 	})
+}
+
+func (svc *service) setWorkingMode(params op.SetWorkingModeParams) op.SetWorkingModeResponder{
+	log.Info("setWorkingMode", "stationID", *params.Args.StationID, "serviceMode", *params.Args.ServiceMode)
+
+	err := svc.app.SetWorkingMode(app.StationID(*params.Args.StationID), *params.Args.ServiceMode)
+
+	if err != nil{
+		return op.NewSetWorkingModeInternalServerError()
+	} else {
+		return op.NewSetWorkingModeNoContent()
+	}
 }
 
 func (svc *service) getPing(params op.GetPingParams) op.GetPingResponder {

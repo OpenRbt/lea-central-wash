@@ -119,6 +119,8 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.RunProgramHandler = op.RunProgramHandlerFunc(svc.runProgram)
 	api.PressButtonHandler = op.PressButtonHandlerFunc(svc.pressButton)
 
+	api.SetWorkingModeHandler = op.SetWorkingModeHandlerFunc(svc.setWorkingMode)
+
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port

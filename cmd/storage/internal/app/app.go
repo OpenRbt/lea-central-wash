@@ -56,7 +56,7 @@ type (
 
 		Set(station StationData) error
 		Get(stationID StationID) (StationData, error)
-		Ping(id StationID, balance, program int) StationData
+		Ping(id StationID, balance, program int, serviceModeFinished bool) StationData
 
 		SaveMoneyReport(report MoneyReport) error
 		SaveRelayReport(report RelayReport) error
@@ -95,6 +95,7 @@ type (
 		PressButton(id StationID, buttonID int64) (err error)
 
 		Station(StationID) (SetStation, error)
+		SetWorkingMode(id StationID, serviceMode bool)(err error)
 	}
 
 	// Repo is a DAL interface.
@@ -118,7 +119,7 @@ type (
 		AddStation(name string) error
 		AddOpenStationLog(StationID) error
 		CurrentMoney(StationID) (MoneyReport, error)
-
+		UpdateWorkingMode(stationID StationID, stationName string, serviceMode bool)(err error)
 		User(login string) (user UserData, err error)
 		Users() (users []UserData, err error)
 		CreateUser(userData UserData) (newUser UserData, err error)
@@ -250,6 +251,7 @@ type SetStation struct {
 	Name         string
 	PreflightSec int
 	RelayBoard   string
+	ServiceMode  bool
 }
 
 // StationsVariables represents a named variable for a specific Station
