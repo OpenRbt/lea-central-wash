@@ -2003,6 +2003,9 @@ func init() {
         "info": {
           "type": "string"
         },
+        "ip": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -4105,6 +4108,9 @@ func init() {
           "type": "integer"
         },
         "info": {
+          "type": "string"
+        },
+        "ip": {
           "type": "string"
         },
         "name": {

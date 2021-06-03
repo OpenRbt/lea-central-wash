@@ -47,6 +47,8 @@ definitions:
         type: integer
       currentProgram:
         type: integer
+      ip:
+        type: string  
 
   Status:
     type: string

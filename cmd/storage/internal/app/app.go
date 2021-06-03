@@ -56,7 +56,7 @@ type (
 
 		Set(station StationData) error
 		Get(stationID StationID) (StationData, error)
-		Ping(id StationID, balance, program int) StationData
+		Ping(id StationID, balance, program int, stationIP string) StationData
 
 		SaveMoneyReport(report MoneyReport) error
 		SaveRelayReport(report RelayReport) error
@@ -244,6 +244,7 @@ type StationStatus struct {
 	Status         Status
 	CurrentBalance int
 	CurrentProgram int
+	IP             string
 }
 
 // SetStation is a struct to assign a name
