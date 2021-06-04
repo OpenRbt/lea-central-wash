@@ -103,7 +103,7 @@ func (a *app) Set(station StationData) error {
 }
 
 // Ping sets the time of the last ping and returns service money.
-func (a *app) Ping(id StationID, balance, program int) StationData {
+func (a *app) Ping(id StationID, balance, program int, stationIP string) StationData {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 	var station StationData
@@ -119,6 +119,7 @@ func (a *app) Ping(id StationID, balance, program int) StationData {
 	station.CurrentBalance = balance
 	station.CurrentProgram = program
 	station.ButtonID = 0
+	station.IP = stationIP
 	a.stations[id] = station
 	oldStation.LastUpdate = a.lastUpdate
 	return oldStation
@@ -390,6 +391,7 @@ func (a *app) StatusReport() StatusReport {
 			Status:         status,
 			CurrentBalance: v.CurrentBalance,
 			CurrentProgram: v.CurrentProgram,
+			IP:             v.IP,
 		})
 	}
 	return report
@@ -456,7 +458,11 @@ func (a *app) StationReportCurrentMoney(id StationID) (MoneyReport, RelayReport,
 
 	return report, stat, err
 }
+func (a *app) CollectionReports(id StationID, startDate, endDate *time.Time) (reports []CollectionReportWithUser, err error) {
+	reports, err = a.repo.CollectionReports(id, startDate, endDate)
 
+	return reports, err
+}
 func (a *app) StationsVariables() ([]StationsVariables, error) {
 	return a.repo.StationsVariables()
 }

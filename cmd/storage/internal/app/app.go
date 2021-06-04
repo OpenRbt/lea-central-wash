@@ -56,7 +56,7 @@ type (
 
 		Set(station StationData) error
 		Get(stationID StationID) (StationData, error)
-		Ping(id StationID, balance, program int) StationData
+		Ping(id StationID, balance, program int, stationIP string) StationData
 
 		SaveMoneyReport(report MoneyReport) error
 		SaveRelayReport(report RelayReport) error
@@ -68,6 +68,7 @@ type (
 		DelStation(id StationID) error
 		StationReportDates(id StationID, startDate, endDate time.Time) (MoneyReport, RelayReport, error)
 		StationReportCurrentMoney(id StationID) (MoneyReport, RelayReport, error)
+		CollectionReports(id StationID, startDate, endDate *time.Time) (reports []CollectionReportWithUser, err error)
 
 		StatusCollection() StatusCollection
 		SaveCollectionReport(auth *Auth, id StationID) error
@@ -114,6 +115,7 @@ type (
 		RelayStatReport(stationID StationID, startDate, endDate time.Time) (RelayReport, error)
 		LastCollectionReport(stationID StationID) (report CollectionReport, err error)
 		SaveCollectionReport(userID int, stationID StationID) (err error)
+		CollectionReports(id StationID, startDate, endDate *time.Time) (reports []CollectionReportWithUser, err error)
 		StationsVariables() ([]StationsVariables, error)
 		AddStation(name string) error
 		AddOpenStationLog(StationID) error
@@ -242,6 +244,7 @@ type StationStatus struct {
 	Status         Status
 	CurrentBalance int
 	CurrentProgram int
+	IP             string
 }
 
 // SetStation is a struct to assign a name

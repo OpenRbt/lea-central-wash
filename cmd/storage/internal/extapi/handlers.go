@@ -1,6 +1,7 @@
 package extapi
 
 import (
+	"net"
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
@@ -274,16 +275,21 @@ func (svc *service) saveCollection(params op.SaveCollectionParams, auth *app.Aut
 }
 
 func (svc *service) ping(params op.PingParams) op.PingResponder {
-	log.Info("post ping", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	stationIP, _, err := net.SplitHostPort(params.HTTPRequest.RemoteAddr)
+	if err != nil {
+		log.Info("post ping: wrong address", "address", params.HTTPRequest.RemoteAddr)
+		stationIP = ""
+	}
+	log.Info("post ping", "hash", params.Args.Hash, "ip", stationIP)
 	stationID, err := svc.getIDAndAddHash(string(params.Args.Hash))
 	if err != nil {
-		log.Info("post ping: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		log.Info("post ping: not found", "hash", params.Args.Hash, "ip", stationIP)
 		return op.NewPingOK().WithPayload(&op.PingOKBody{
 			ServiceAmount: newInt64(int64(0)),
 		})
 	}
 
-	station := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram))
+	station := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP)
 
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
 		ServiceAmount: newInt64(int64(station.ServiceMoney)),
@@ -440,6 +446,34 @@ func (svc *service) stationReportCurrentMoney(params op.StationReportCurrentMone
 	}
 }
 
+func (svc *service) stationCollectionReportDates(params op.StationCollectionReportDatesParams, auth *app.Auth) op.StationCollectionReportDatesResponder {
+	log.Info("station  collection reports by dates", "id", params.Args.StationID, "startDate", params.Args.StartDate, "endDate", params.Args.EndDate, "ip", params.HTTPRequest.RemoteAddr)
+
+	var startDate *time.Time
+	if params.Args.StartDate != nil {
+		CreateDateStart := time.Unix(*params.Args.StartDate, 0)
+		startDate = &CreateDateStart
+	}
+	var endDate *time.Time
+	if params.Args.EndDate != nil {
+		CreateDateEnd := time.Unix(*params.Args.EndDate, 0)
+		endDate = &CreateDateEnd
+	}
+	reports, err := svc.app.CollectionReports(app.StationID(params.Args.StationID), startDate, endDate)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewStationCollectionReportDatesOK().WithPayload(&op.StationCollectionReportDatesOKBody{
+			CollectionReports: apiCollectionReportWithUser(reports),
+		})
+	case app.ErrNotFound:
+		log.Info("station report: not found", "id", params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationCollectionReportDatesNotFound()
+	default:
+		log.PrintErr(err, "id", params.Args.StationID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationCollectionReportDatesInternalServerError()
+	}
+}
 func newInt64(v int64) *int64 {
 	return &v
 }

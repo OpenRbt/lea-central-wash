@@ -47,6 +47,8 @@ definitions:
         type: integer
       currentProgram:
         type: integer
+      ip:
+        type: string  
 
   Status:
     type: string
@@ -81,7 +83,26 @@ definitions:
         type: integer
       ctime:
         type: integer
-    
+  
+  CollectionReportWithUser:
+    type: object
+    properties:
+      id:
+        type: integer
+      carsTotal:
+        type: integer
+      coins:
+        type: integer
+      banknotes:
+        type: integer
+      electronical:
+        type: integer
+      service:
+        type: integer
+      ctime:
+        type: integer
+      user:
+        type: string
   MoneyReport:
     type: object
     required:
@@ -1331,4 +1352,47 @@ paths:
             type: string
         500:
           description: internal error
-
+  /station-collection-report-dates:
+    post:
+      security:
+        - pinCode: []
+      operationId: "stationCollectionReportDates"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - stationId
+            properties:
+              stationID:
+                type: integer
+              startDate:
+                description: Unix time
+                type: integer
+                x-nullable: true
+              endDate:
+                description: Unix time
+                type: integer
+                x-nullable: true
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            required:
+              - collectionReports
+            properties:
+              collectionReports:
+                type: array
+                items:
+                  $ref: '#/definitions/CollectionReportWithUser'
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbiddenn
+        404:
+          description: not found
+        500:
+          description: internal error

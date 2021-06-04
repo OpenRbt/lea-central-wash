@@ -44,6 +44,7 @@ type StationData struct {
 	CurrentProgram int
 	ButtonID       int
 	LastUpdate     int
+	IP             string
 }
 
 // MoneyReport is just to represent money in a station. All known kinds of money
@@ -65,6 +66,18 @@ type CollectionReport struct {
 	Electronical int
 	Service      int
 	Ctime        time.Time
+}
+
+// CollectionReportWithUser is how much was collected from a station + when with username who committed it
+type CollectionReportWithUser struct {
+	StationID    StationID
+	Banknotes    int
+	CarsTotal    int
+	Coins        int
+	Electronical int
+	Service      int
+	Ctime        time.Time
+	User         string
 }
 
 // RelayStat is not used now, but generally shows how much do they work

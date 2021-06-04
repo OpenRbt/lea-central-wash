@@ -148,6 +148,7 @@ func (svc *service) apiStationStatus(v app.StationStatus) *model.StationStatus {
 		Status:         apiStatus(v.Status),
 		CurrentBalance: int64(v.CurrentBalance),
 		CurrentProgram: int64(v.CurrentProgram),
+		IP:             v.IP,
 	}
 }
 
@@ -273,6 +274,23 @@ func apiStationConfig(p app.StationConfig) (res *model.StationPrograms) {
 		res.Programs = append(res.Programs, &model.StationProgramsProgramsItems0{
 			ButtonID: int64(p.Programs[i].ButtonID),
 			Program:  apiProgram(p.Programs[i]),
+		})
+	}
+	return res
+}
+
+func apiCollectionReportWithUser(reports []app.CollectionReportWithUser) (res []*model.CollectionReportWithUser) {
+	res = []*model.CollectionReportWithUser{}
+	for i := range reports {
+		res = append(res, &model.CollectionReportWithUser{
+			ID:           int64(reports[i].StationID),
+			Banknotes:    int64(reports[i].Banknotes),
+			CarsTotal:    int64(reports[i].CarsTotal),
+			Coins:        int64(reports[i].Coins),
+			Electronical: int64(reports[i].Electronical),
+			Service:      int64(reports[i].Service),
+			Ctime:        reports[i].Ctime.Unix(),
+			User:         reports[i].User,
 		})
 	}
 	return res

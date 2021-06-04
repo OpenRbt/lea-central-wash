@@ -1047,6 +1047,75 @@ func init() {
         }
       }
     },
+    "/station-collection-report-dates": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "stationCollectionReportDates",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationId"
+              ],
+              "properties": {
+                "endDate": {
+                  "description": "Unix time",
+                  "type": "integer",
+                  "x-nullable": true
+                },
+                "startDate": {
+                  "description": "Unix time",
+                  "type": "integer",
+                  "x-nullable": true
+                },
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "collectionReports"
+              ],
+              "properties": {
+                "collectionReports": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/CollectionReportWithUser"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/station-program-by-hash": {
       "post": {
         "operationId": "stationProgramByHash",
@@ -1610,6 +1679,35 @@ func init() {
         }
       }
     },
+    "CollectionReportWithUser": {
+      "type": "object",
+      "properties": {
+        "banknotes": {
+          "type": "integer"
+        },
+        "carsTotal": {
+          "type": "integer"
+        },
+        "coins": {
+          "type": "integer"
+        },
+        "ctime": {
+          "type": "integer"
+        },
+        "electronical": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "service": {
+          "type": "integer"
+        },
+        "user": {
+          "type": "string"
+        }
+      }
+    },
     "FirstName": {
       "type": "string",
       "minLength": 1,
@@ -1903,6 +2001,9 @@ func init() {
           "type": "integer"
         },
         "info": {
+          "type": "string"
+        },
+        "ip": {
           "type": "string"
         },
         "name": {
@@ -3051,6 +3152,75 @@ func init() {
         }
       }
     },
+    "/station-collection-report-dates": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "stationCollectionReportDates",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationId"
+              ],
+              "properties": {
+                "endDate": {
+                  "description": "Unix time",
+                  "type": "integer",
+                  "x-nullable": true
+                },
+                "startDate": {
+                  "description": "Unix time",
+                  "type": "integer",
+                  "x-nullable": true
+                },
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "collectionReports"
+              ],
+              "properties": {
+                "collectionReports": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/CollectionReportWithUser"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/station-program-by-hash": {
       "post": {
         "operationId": "stationProgramByHash",
@@ -3614,6 +3784,35 @@ func init() {
         }
       }
     },
+    "CollectionReportWithUser": {
+      "type": "object",
+      "properties": {
+        "banknotes": {
+          "type": "integer"
+        },
+        "carsTotal": {
+          "type": "integer"
+        },
+        "coins": {
+          "type": "integer"
+        },
+        "ctime": {
+          "type": "integer"
+        },
+        "electronical": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "service": {
+          "type": "integer"
+        },
+        "user": {
+          "type": "string"
+        }
+      }
+    },
     "FirstName": {
       "type": "string",
       "minLength": 1,
@@ -3909,6 +4108,9 @@ func init() {
           "type": "integer"
         },
         "info": {
+          "type": "string"
+        },
+        "ip": {
           "type": "string"
         },
         "name": {
