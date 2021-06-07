@@ -6,16 +6,18 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-
-	strfmt "github.com/go-openapi/strfmt"
 )
 
 // StationButtonReader is a Reader for the StationButton structure.
@@ -26,23 +28,20 @@ type StationButtonReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *StationButtonReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewStationButtonOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 500:
 		result := NewStationButtonInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -51,7 +50,7 @@ func NewStationButtonOK() *StationButtonOK {
 	return &StationButtonOK{}
 }
 
-/*StationButtonOK handles this case with default header values.
+/* StationButtonOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -61,6 +60,9 @@ type StationButtonOK struct {
 
 func (o *StationButtonOK) Error() string {
 	return fmt.Sprintf("[POST /station-button][%d] stationButtonOK  %+v", 200, o.Payload)
+}
+func (o *StationButtonOK) GetPayload() *StationButtonOKBody {
+	return o.Payload
 }
 
 func (o *StationButtonOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -80,7 +82,7 @@ func NewStationButtonInternalServerError() *StationButtonInternalServerError {
 	return &StationButtonInternalServerError{}
 }
 
-/*StationButtonInternalServerError handles this case with default header values.
+/* StationButtonInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -107,6 +109,26 @@ type StationButtonBody struct {
 	StationID *int64 `json:"stationID"`
 }
 
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationButtonBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// station ID
+		// Required: true
+		// Minimum: 1
+		StationID *int64 `json:"stationID"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.StationID = props.StationID
+	return nil
+}
+
 // Validate validates this station button body
 func (o *StationButtonBody) Validate(formats strfmt.Registry) error {
 	var res []error
@@ -127,10 +149,15 @@ func (o *StationButtonBody) validateStationID(formats strfmt.Registry) error {
 		return err
 	}
 
-	if err := validate.MinimumInt("args"+"."+"stationID", "body", int64(*o.StationID), 1, false); err != nil {
+	if err := validate.MinimumInt("args"+"."+"stationID", "body", *o.StationID, 1, false); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this station button body based on context it is used
+func (o *StationButtonBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -158,7 +185,25 @@ swagger:model StationButtonOKBody
 type StationButtonOKBody struct {
 
 	// buttons
-	Buttons []*ButtonsItems0 `json:"buttons"`
+	Buttons []*StationButtonOKBodyButtonsItems0 `json:"buttons"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationButtonOKBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// buttons
+		Buttons []*StationButtonOKBodyButtonsItems0 `json:"buttons"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Buttons = props.Buttons
+	return nil
 }
 
 // Validate validates this station button o k body
@@ -176,7 +221,6 @@ func (o *StationButtonOKBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *StationButtonOKBody) validateButtons(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Buttons) { // not required
 		return nil
 	}
@@ -200,6 +244,38 @@ func (o *StationButtonOKBody) validateButtons(formats strfmt.Registry) error {
 	return nil
 }
 
+// ContextValidate validate this station button o k body based on the context it is used
+func (o *StationButtonOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateButtons(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *StationButtonOKBody) contextValidateButtons(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Buttons); i++ {
+
+		if o.Buttons[i] != nil {
+			if err := o.Buttons[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("stationButtonOK" + "." + "buttons" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *StationButtonOKBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -211,6 +287,68 @@ func (o *StationButtonOKBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *StationButtonOKBody) UnmarshalBinary(b []byte) error {
 	var res StationButtonOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*StationButtonOKBodyButtonsItems0 station button o k body buttons items0
+swagger:model StationButtonOKBodyButtonsItems0
+*/
+type StationButtonOKBodyButtonsItems0 struct {
+
+	// button ID
+	ButtonID int64 `json:"buttonID,omitempty"`
+
+	// program ID
+	ProgramID int64 `json:"programID,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationButtonOKBodyButtonsItems0) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// button ID
+		ButtonID int64 `json:"buttonID,omitempty"`
+
+		// program ID
+		ProgramID int64 `json:"programID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ButtonID = props.ButtonID
+	o.ProgramID = props.ProgramID
+	return nil
+}
+
+// Validate validates this station button o k body buttons items0
+func (o *StationButtonOKBodyButtonsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this station button o k body buttons items0 based on context it is used
+func (o *StationButtonOKBodyButtonsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *StationButtonOKBodyButtonsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *StationButtonOKBodyButtonsItems0) UnmarshalBinary(b []byte) error {
+	var res StationButtonOKBodyButtonsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

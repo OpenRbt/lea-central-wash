@@ -6,12 +6,10 @@ package client
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"github.com/DiaElectronics/lea-central-wash/storageapi/client/op"
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
-
-	"github.com/DiaElectronics/lea-central-wash/storageapi/client/op"
+	"github.com/go-openapi/strfmt"
 )
 
 // Default storage HTTP client.
@@ -56,9 +54,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Storage {
 
 	cli := new(Storage)
 	cli.Transport = transport
-
 	cli.Op = op.New(transport, formats)
-
 	return cli
 }
 
@@ -103,7 +99,7 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // Storage is a client for storage
 type Storage struct {
-	Op *op.Client
+	Op op.ClientService
 
 	Transport runtime.ClientTransport
 }
@@ -111,7 +107,5 @@ type Storage struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *Storage) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
-
 	c.Op.SetTransport(transport)
-
 }

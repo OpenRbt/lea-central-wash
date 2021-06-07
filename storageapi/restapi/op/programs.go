@@ -6,13 +6,16 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"net/http"
 
-	errors "github.com/go-openapi/errors"
-	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // ProgramsHandlerFunc turns a function with the right signature into a programs handler
@@ -33,7 +36,7 @@ func NewPrograms(ctx *middleware.Context, handler ProgramsHandler) *Programs {
 	return &Programs{Context: ctx, Handler: handler}
 }
 
-/*Programs swagger:route POST /programs programs
+/* Programs swagger:route POST /programs programs
 
 Programs programs API
 
@@ -46,28 +49,46 @@ type Programs struct {
 func (o *Programs) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewProgramsParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
 
 // ProgramsBody programs body
+//
 // swagger:model ProgramsBody
 type ProgramsBody struct {
 
 	// program ID
 	// Minimum: 1
 	ProgramID *int64 `json:"programID,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *ProgramsBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// program ID
+		// Minimum: 1
+		ProgramID *int64 `json:"programID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ProgramID = props.ProgramID
+	return nil
 }
 
 // Validate validates this programs body
@@ -85,15 +106,19 @@ func (o *ProgramsBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *ProgramsBody) validateProgramID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ProgramID) { // not required
 		return nil
 	}
 
-	if err := validate.MinimumInt("args"+"."+"programID", "body", int64(*o.ProgramID), 1, false); err != nil {
+	if err := validate.MinimumInt("args"+"."+"programID", "body", *o.ProgramID, 1, false); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this programs body based on context it is used
+func (o *ProgramsBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

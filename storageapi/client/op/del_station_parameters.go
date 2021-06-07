@@ -13,60 +13,73 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
-// NewDelStationParams creates a new DelStationParams object
-// with the default values initialized.
+// NewDelStationParams creates a new DelStationParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewDelStationParams() *DelStationParams {
-	var ()
 	return &DelStationParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewDelStationParamsWithTimeout creates a new DelStationParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewDelStationParamsWithTimeout(timeout time.Duration) *DelStationParams {
-	var ()
 	return &DelStationParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewDelStationParamsWithContext creates a new DelStationParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewDelStationParamsWithContext(ctx context.Context) *DelStationParams {
-	var ()
 	return &DelStationParams{
-
 		Context: ctx,
 	}
 }
 
 // NewDelStationParamsWithHTTPClient creates a new DelStationParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewDelStationParamsWithHTTPClient(client *http.Client) *DelStationParams {
-	var ()
 	return &DelStationParams{
 		HTTPClient: client,
 	}
 }
 
-/*DelStationParams contains all the parameters to send to the API endpoint
-for the del station operation typically these are written to a http.Request
+/* DelStationParams contains all the parameters to send to the API endpoint
+   for the del station operation.
+
+   Typically these are written to a http.Request.
 */
 type DelStationParams struct {
 
-	/*Args*/
+	// Args.
 	Args DelStationBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the del station params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DelStationParams) WithDefaults() *DelStationParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the del station params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DelStationParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the del station params
@@ -120,7 +133,6 @@ func (o *DelStationParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.Args); err != nil {
 		return err
 	}

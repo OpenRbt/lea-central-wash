@@ -13,60 +13,73 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
-// NewStationParams creates a new StationParams object
-// with the default values initialized.
+// NewStationParams creates a new StationParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewStationParams() *StationParams {
-	var ()
 	return &StationParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewStationParamsWithTimeout creates a new StationParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewStationParamsWithTimeout(timeout time.Duration) *StationParams {
-	var ()
 	return &StationParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewStationParamsWithContext creates a new StationParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewStationParamsWithContext(ctx context.Context) *StationParams {
-	var ()
 	return &StationParams{
-
 		Context: ctx,
 	}
 }
 
 // NewStationParamsWithHTTPClient creates a new StationParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewStationParamsWithHTTPClient(client *http.Client) *StationParams {
-	var ()
 	return &StationParams{
 		HTTPClient: client,
 	}
 }
 
-/*StationParams contains all the parameters to send to the API endpoint
-for the station operation typically these are written to a http.Request
+/* StationParams contains all the parameters to send to the API endpoint
+   for the station operation.
+
+   Typically these are written to a http.Request.
 */
 type StationParams struct {
 
-	/*Args*/
+	// Args.
 	Args StationBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the station params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *StationParams) WithDefaults() *StationParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the station params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *StationParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the station params
@@ -120,7 +133,6 @@ func (o *StationParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regis
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.Args); err != nil {
 		return err
 	}

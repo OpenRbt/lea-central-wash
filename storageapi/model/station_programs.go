@@ -6,15 +6,18 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StationPrograms station programs
+//
 // swagger:model StationPrograms
 type StationPrograms struct {
 
@@ -37,6 +40,44 @@ type StationPrograms struct {
 	StationID int64 `json:"stationID,omitempty"`
 }
 
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *StationPrograms) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// last update
+		LastUpdate int64 `json:"lastUpdate,omitempty"`
+
+		// name
+		Name string `json:"name,omitempty"`
+
+		// preflight sec
+		PreflightSec int64 `json:"preflightSec,omitempty"`
+
+		// programs
+		Programs []*StationProgramsProgramsItems0 `json:"programs"`
+
+		// relay board
+		RelayBoard RelayBoard `json:"relayBoard,omitempty"`
+
+		// station ID
+		StationID int64 `json:"stationID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.LastUpdate = props.LastUpdate
+	m.Name = props.Name
+	m.PreflightSec = props.PreflightSec
+	m.Programs = props.Programs
+	m.RelayBoard = props.RelayBoard
+	m.StationID = props.StationID
+	return nil
+}
+
 // Validate validates this station programs
 func (m *StationPrograms) Validate(formats strfmt.Registry) error {
 	var res []error
@@ -56,7 +97,6 @@ func (m *StationPrograms) Validate(formats strfmt.Registry) error {
 }
 
 func (m *StationPrograms) validatePrograms(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Programs) { // not required
 		return nil
 	}
@@ -81,12 +121,59 @@ func (m *StationPrograms) validatePrograms(formats strfmt.Registry) error {
 }
 
 func (m *StationPrograms) validateRelayBoard(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.RelayBoard) { // not required
 		return nil
 	}
 
 	if err := m.RelayBoard.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("relayBoard")
+		}
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this station programs based on the context it is used
+func (m *StationPrograms) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidatePrograms(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRelayBoard(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *StationPrograms) contextValidatePrograms(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Programs); i++ {
+
+		if m.Programs[i] != nil {
+			if err := m.Programs[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("programs" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *StationPrograms) contextValidateRelayBoard(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.RelayBoard.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("relayBoard")
 		}
@@ -115,6 +202,7 @@ func (m *StationPrograms) UnmarshalBinary(b []byte) error {
 }
 
 // StationProgramsProgramsItems0 station programs programs items0
+//
 // swagger:model StationProgramsProgramsItems0
 type StationProgramsProgramsItems0 struct {
 
@@ -123,6 +211,28 @@ type StationProgramsProgramsItems0 struct {
 
 	// program
 	Program *Program `json:"program,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *StationProgramsProgramsItems0) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// button ID
+		ButtonID int64 `json:"buttonID,omitempty"`
+
+		// program
+		Program *Program `json:"program,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.ButtonID = props.ButtonID
+	m.Program = props.Program
+	return nil
 }
 
 // Validate validates this station programs programs items0
@@ -140,13 +250,40 @@ func (m *StationProgramsProgramsItems0) Validate(formats strfmt.Registry) error 
 }
 
 func (m *StationProgramsProgramsItems0) validateProgram(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Program) { // not required
 		return nil
 	}
 
 	if m.Program != nil {
 		if err := m.Program.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("program")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this station programs programs items0 based on the context it is used
+func (m *StationProgramsProgramsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateProgram(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *StationProgramsProgramsItems0) contextValidateProgram(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Program != nil {
+		if err := m.Program.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("program")
 			}

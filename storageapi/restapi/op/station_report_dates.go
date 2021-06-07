@@ -6,13 +6,16 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"net/http"
 
-	errors "github.com/go-openapi/errors"
-	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // StationReportDatesHandlerFunc turns a function with the right signature into a station report dates handler
@@ -33,7 +36,7 @@ func NewStationReportDates(ctx *middleware.Context, handler StationReportDatesHa
 	return &StationReportDates{Context: ctx, Handler: handler}
 }
 
-/*StationReportDates swagger:route POST /station-report-dates stationReportDates
+/* StationReportDates swagger:route POST /station-report-dates stationReportDates
 
 StationReportDates station report dates API
 
@@ -46,22 +49,21 @@ type StationReportDates struct {
 func (o *StationReportDates) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewStationReportDatesParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
 
 // StationReportDatesBody station report dates body
+//
 // swagger:model StationReportDatesBody
 type StationReportDatesBody struct {
 
@@ -76,6 +78,35 @@ type StationReportDatesBody struct {
 	// Unix time
 	// Required: true
 	StartDate *int64 `json:"startDate"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationReportDatesBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// Unix time
+		// Required: true
+		EndDate *int64 `json:"endDate"`
+
+		// id
+		// Required: true
+		ID *int64 `json:"id"`
+
+		// Unix time
+		// Required: true
+		StartDate *int64 `json:"startDate"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.EndDate = props.EndDate
+	o.ID = props.ID
+	o.StartDate = props.StartDate
+	return nil
 }
 
 // Validate validates this station report dates body
@@ -124,6 +155,11 @@ func (o *StationReportDatesBody) validateStartDate(formats strfmt.Registry) erro
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this station report dates body based on context it is used
+func (o *StationReportDatesBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

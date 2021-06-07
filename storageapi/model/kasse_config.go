@@ -6,16 +6,18 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
 	"encoding/json"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // KasseConfig kasse config
+//
 // swagger:model KasseConfig
 type KasseConfig struct {
 
@@ -36,6 +38,42 @@ type KasseConfig struct {
 	// tax
 	// Enum: [TAX_VAT110 TAX_VAT0 TAX_NO TAX_VAT120]
 	Tax string `json:"tax,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *KasseConfig) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// cashier
+		// Min Length: 1
+		Cashier string `json:"cashier,omitempty"`
+
+		// cashier i n n
+		// Max Length: 12
+		// Min Length: 12
+		// Pattern: ^[0123456789]{12}$
+		CashierINN string `json:"cashierINN,omitempty"`
+
+		// receipt item name
+		// Min Length: 1
+		ReceiptItemName string `json:"receiptItemName,omitempty"`
+
+		// tax
+		// Enum: [TAX_VAT110 TAX_VAT0 TAX_NO TAX_VAT120]
+		Tax string `json:"tax,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.Cashier = props.Cashier
+	m.CashierINN = props.CashierINN
+	m.ReceiptItemName = props.ReceiptItemName
+	m.Tax = props.Tax
+	return nil
 }
 
 // Validate validates this kasse config
@@ -65,12 +103,11 @@ func (m *KasseConfig) Validate(formats strfmt.Registry) error {
 }
 
 func (m *KasseConfig) validateCashier(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Cashier) { // not required
 		return nil
 	}
 
-	if err := validate.MinLength("cashier", "body", string(m.Cashier), 1); err != nil {
+	if err := validate.MinLength("cashier", "body", m.Cashier, 1); err != nil {
 		return err
 	}
 
@@ -78,20 +115,19 @@ func (m *KasseConfig) validateCashier(formats strfmt.Registry) error {
 }
 
 func (m *KasseConfig) validateCashierINN(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.CashierINN) { // not required
 		return nil
 	}
 
-	if err := validate.MinLength("cashierINN", "body", string(m.CashierINN), 12); err != nil {
+	if err := validate.MinLength("cashierINN", "body", m.CashierINN, 12); err != nil {
 		return err
 	}
 
-	if err := validate.MaxLength("cashierINN", "body", string(m.CashierINN), 12); err != nil {
+	if err := validate.MaxLength("cashierINN", "body", m.CashierINN, 12); err != nil {
 		return err
 	}
 
-	if err := validate.Pattern("cashierINN", "body", string(m.CashierINN), `^[0123456789]{12}$`); err != nil {
+	if err := validate.Pattern("cashierINN", "body", m.CashierINN, `^[0123456789]{12}$`); err != nil {
 		return err
 	}
 
@@ -99,12 +135,11 @@ func (m *KasseConfig) validateCashierINN(formats strfmt.Registry) error {
 }
 
 func (m *KasseConfig) validateReceiptItemName(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.ReceiptItemName) { // not required
 		return nil
 	}
 
-	if err := validate.MinLength("receiptItemName", "body", string(m.ReceiptItemName), 1); err != nil {
+	if err := validate.MinLength("receiptItemName", "body", m.ReceiptItemName, 1); err != nil {
 		return err
 	}
 
@@ -140,14 +175,13 @@ const (
 
 // prop value enum
 func (m *KasseConfig) validateTaxEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, kasseConfigTypeTaxPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, kasseConfigTypeTaxPropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (m *KasseConfig) validateTax(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Tax) { // not required
 		return nil
 	}
@@ -157,6 +191,11 @@ func (m *KasseConfig) validateTax(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this kasse config based on context it is used
+func (m *KasseConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

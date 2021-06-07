@@ -6,15 +6,18 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StationsVariables stations variables
+//
 // swagger:model StationsVariables
 type StationsVariables struct {
 
@@ -29,6 +32,36 @@ type StationsVariables struct {
 
 	// name
 	Name string `json:"name,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *StationsVariables) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		Hash *string `json:"hash,omitempty"`
+
+		// id
+		ID int64 `json:"id,omitempty"`
+
+		// key pairs
+		KeyPairs []*KeyPair `json:"keyPairs"`
+
+		// name
+		Name string `json:"name,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.Hash = props.Hash
+	m.ID = props.ID
+	m.KeyPairs = props.KeyPairs
+	m.Name = props.Name
+	return nil
 }
 
 // Validate validates this stations variables
@@ -46,7 +79,6 @@ func (m *StationsVariables) Validate(formats strfmt.Registry) error {
 }
 
 func (m *StationsVariables) validateKeyPairs(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.KeyPairs) { // not required
 		return nil
 	}
@@ -58,6 +90,38 @@ func (m *StationsVariables) validateKeyPairs(formats strfmt.Registry) error {
 
 		if m.KeyPairs[i] != nil {
 			if err := m.KeyPairs[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("keyPairs" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this stations variables based on the context it is used
+func (m *StationsVariables) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateKeyPairs(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *StationsVariables) contextValidateKeyPairs(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.KeyPairs); i++ {
+
+		if m.KeyPairs[i] != nil {
+			if err := m.KeyPairs[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("keyPairs" + "." + strconv.Itoa(i))
 				}

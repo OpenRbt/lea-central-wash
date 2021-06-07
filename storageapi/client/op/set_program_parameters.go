@@ -13,62 +13,75 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
-// NewSetProgramParams creates a new SetProgramParams object
-// with the default values initialized.
+// NewSetProgramParams creates a new SetProgramParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewSetProgramParams() *SetProgramParams {
-	var ()
 	return &SetProgramParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewSetProgramParamsWithTimeout creates a new SetProgramParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewSetProgramParamsWithTimeout(timeout time.Duration) *SetProgramParams {
-	var ()
 	return &SetProgramParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewSetProgramParamsWithContext creates a new SetProgramParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewSetProgramParamsWithContext(ctx context.Context) *SetProgramParams {
-	var ()
 	return &SetProgramParams{
-
 		Context: ctx,
 	}
 }
 
 // NewSetProgramParamsWithHTTPClient creates a new SetProgramParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewSetProgramParamsWithHTTPClient(client *http.Client) *SetProgramParams {
-	var ()
 	return &SetProgramParams{
 		HTTPClient: client,
 	}
 }
 
-/*SetProgramParams contains all the parameters to send to the API endpoint
-for the set program operation typically these are written to a http.Request
+/* SetProgramParams contains all the parameters to send to the API endpoint
+   for the set program operation.
+
+   Typically these are written to a http.Request.
 */
 type SetProgramParams struct {
 
-	/*Args*/
+	// Args.
 	Args *model.Program
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the set program params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *SetProgramParams) WithDefaults() *SetProgramParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the set program params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *SetProgramParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the set program params
@@ -122,7 +135,6 @@ func (o *SetProgramParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 		return err
 	}
 	var res []error
-
 	if o.Args != nil {
 		if err := r.SetBodyParam(o.Args); err != nil {
 			return err

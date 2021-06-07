@@ -6,14 +6,18 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"net/http"
 
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
+
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
-	errors "github.com/go-openapi/errors"
-	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
 )
 
 // PingHandlerFunc turns a function with the right signature into a ping handler
@@ -34,7 +38,7 @@ func NewPing(ctx *middleware.Context, handler PingHandler) *Ping {
 	return &Ping{Context: ctx, Handler: handler}
 }
 
-/*Ping swagger:route POST /ping ping
+/* Ping swagger:route POST /ping ping
 
 Ping ping API
 
@@ -47,22 +51,21 @@ type Ping struct {
 func (o *Ping) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewPingParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
 
 // PingBody ping body
+//
 // swagger:model PingBody
 type PingBody struct {
 
@@ -74,7 +77,34 @@ type PingBody struct {
 
 	// hash
 	// Required: true
-	Hash model.Hash `json:"hash"`
+	Hash *model.Hash `json:"hash"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *PingBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// current balance
+		CurrentBalance int64 `json:"currentBalance,omitempty"`
+
+		// current program
+		CurrentProgram int64 `json:"currentProgram,omitempty"`
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.CurrentBalance = props.CurrentBalance
+	o.CurrentProgram = props.CurrentProgram
+	o.Hash = props.Hash
+	return nil
 }
 
 // Validate validates this ping body
@@ -93,11 +123,49 @@ func (o *PingBody) Validate(formats strfmt.Registry) error {
 
 func (o *PingBody) validateHash(formats strfmt.Registry) error {
 
-	if err := o.Hash.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "hash")
-		}
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
+		return err
+	}
+
+	if o.Hash != nil {
+		if err := o.Hash.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this ping body based on the context it is used
+func (o *PingBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateHash(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *PingBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Hash != nil {
+		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -122,6 +190,7 @@ func (o *PingBody) UnmarshalBinary(b []byte) error {
 }
 
 // PingOKBody ping o k body
+//
 // swagger:model PingOKBody
 type PingOKBody struct {
 
@@ -138,6 +207,38 @@ type PingOKBody struct {
 	// service amount
 	// Required: true
 	ServiceAmount *int64 `json:"serviceAmount"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *PingOKBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// button ID
+		ButtonID int64 `json:"ButtonID,omitempty"`
+
+		// last update
+		LastUpdate int64 `json:"lastUpdate,omitempty"`
+
+		// open station
+		// Required: true
+		OpenStation *bool `json:"openStation"`
+
+		// service amount
+		// Required: true
+		ServiceAmount *int64 `json:"serviceAmount"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ButtonID = props.ButtonID
+	o.LastUpdate = props.LastUpdate
+	o.OpenStation = props.OpenStation
+	o.ServiceAmount = props.ServiceAmount
+	return nil
 }
 
 // Validate validates this ping o k body
@@ -173,6 +274,11 @@ func (o *PingOKBody) validateServiceAmount(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this ping o k body based on context it is used
+func (o *PingOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

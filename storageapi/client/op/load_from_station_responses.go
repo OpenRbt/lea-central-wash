@@ -6,17 +6,19 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // LoadFromStationReader is a Reader for the LoadFromStation structure.
@@ -27,30 +29,26 @@ type LoadFromStationReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *LoadFromStationReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewLoadFromStationOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 404:
 		result := NewLoadFromStationNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewLoadFromStationInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -59,7 +57,7 @@ func NewLoadFromStationOK() *LoadFromStationOK {
 	return &LoadFromStationOK{}
 }
 
-/*LoadFromStationOK handles this case with default header values.
+/* LoadFromStationOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -69,6 +67,9 @@ type LoadFromStationOK struct {
 
 func (o *LoadFromStationOK) Error() string {
 	return fmt.Sprintf("[POST /load-from-station][%d] loadFromStationOK  %+v", 200, o.Payload)
+}
+func (o *LoadFromStationOK) GetPayload() string {
+	return o.Payload
 }
 
 func (o *LoadFromStationOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -86,7 +87,7 @@ func NewLoadFromStationNotFound() *LoadFromStationNotFound {
 	return &LoadFromStationNotFound{}
 }
 
-/*LoadFromStationNotFound handles this case with default header values.
+/* LoadFromStationNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -107,7 +108,7 @@ func NewLoadFromStationInternalServerError() *LoadFromStationInternalServerError
 	return &LoadFromStationInternalServerError{}
 }
 
-/*LoadFromStationInternalServerError handles this case with default header values.
+/* LoadFromStationInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -130,7 +131,7 @@ type LoadFromStationBody struct {
 
 	// hash
 	// Required: true
-	Hash model.Hash `json:"hash"`
+	Hash *model.Hash `json:"hash"`
 
 	// key
 	// Required: true
@@ -140,6 +141,36 @@ type LoadFromStationBody struct {
 	// station ID
 	// Required: true
 	StationID *int64 `json:"stationID"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *LoadFromStationBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+
+		// key
+		// Required: true
+		// Min Length: 1
+		Key *string `json:"key"`
+
+		// station ID
+		// Required: true
+		StationID *int64 `json:"stationID"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Hash = props.Hash
+	o.Key = props.Key
+	o.StationID = props.StationID
+	return nil
 }
 
 // Validate validates this load from station body
@@ -166,11 +197,21 @@ func (o *LoadFromStationBody) Validate(formats strfmt.Registry) error {
 
 func (o *LoadFromStationBody) validateHash(formats strfmt.Registry) error {
 
-	if err := o.Hash.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "hash")
-		}
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
+		return err
+	}
+
+	if o.Hash != nil {
+		if err := o.Hash.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -182,7 +223,7 @@ func (o *LoadFromStationBody) validateKey(formats strfmt.Registry) error {
 		return err
 	}
 
-	if err := validate.MinLength("args"+"."+"key", "body", string(*o.Key), 1); err != nil {
+	if err := validate.MinLength("args"+"."+"key", "body", *o.Key, 1); err != nil {
 		return err
 	}
 
@@ -193,6 +234,34 @@ func (o *LoadFromStationBody) validateStationID(formats strfmt.Registry) error {
 
 	if err := validate.Required("args"+"."+"stationID", "body", o.StationID); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this load from station body based on the context it is used
+func (o *LoadFromStationBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateHash(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *LoadFromStationBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Hash != nil {
+		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
 	}
 
 	return nil

@@ -6,14 +6,18 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"bytes"
+	"context"
+	"encoding/json"
 
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // StationConfig station config
+//
 // swagger:model StationConfig
 type StationConfig struct {
 
@@ -32,6 +36,41 @@ type StationConfig struct {
 
 	// relay board
 	RelayBoard RelayBoard `json:"relayBoard,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *StationConfig) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		Hash string `json:"hash,omitempty"`
+
+		// id
+		// Required: true
+		ID *int64 `json:"id"`
+
+		// name
+		Name string `json:"name,omitempty"`
+
+		// preflight sec
+		PreflightSec int64 `json:"preflightSec,omitempty"`
+
+		// relay board
+		RelayBoard RelayBoard `json:"relayBoard,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.Hash = props.Hash
+	m.ID = props.ID
+	m.Name = props.Name
+	m.PreflightSec = props.PreflightSec
+	m.RelayBoard = props.RelayBoard
+	return nil
 }
 
 // Validate validates this station config
@@ -62,12 +101,37 @@ func (m *StationConfig) validateID(formats strfmt.Registry) error {
 }
 
 func (m *StationConfig) validateRelayBoard(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.RelayBoard) { // not required
 		return nil
 	}
 
 	if err := m.RelayBoard.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("relayBoard")
+		}
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this station config based on the context it is used
+func (m *StationConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateRelayBoard(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *StationConfig) contextValidateRelayBoard(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.RelayBoard.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("relayBoard")
 		}

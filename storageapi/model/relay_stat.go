@@ -6,14 +6,18 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"bytes"
+	"context"
+	"encoding/json"
 
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // RelayStat relay stat
+//
 // swagger:model RelayStat
 type RelayStat struct {
 
@@ -27,6 +31,34 @@ type RelayStat struct {
 
 	// total time on
 	TotalTimeOn int64 `json:"totalTimeOn,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *RelayStat) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// relay ID
+		// Maximum: 6
+		// Minimum: 1
+		RelayID int64 `json:"relayID,omitempty"`
+
+		// switched count
+		SwitchedCount int64 `json:"switchedCount,omitempty"`
+
+		// total time on
+		TotalTimeOn int64 `json:"totalTimeOn,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.RelayID = props.RelayID
+	m.SwitchedCount = props.SwitchedCount
+	m.TotalTimeOn = props.TotalTimeOn
+	return nil
 }
 
 // Validate validates this relay stat
@@ -44,19 +76,23 @@ func (m *RelayStat) Validate(formats strfmt.Registry) error {
 }
 
 func (m *RelayStat) validateRelayID(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.RelayID) { // not required
 		return nil
 	}
 
-	if err := validate.MinimumInt("relayID", "body", int64(m.RelayID), 1, false); err != nil {
+	if err := validate.MinimumInt("relayID", "body", m.RelayID, 1, false); err != nil {
 		return err
 	}
 
-	if err := validate.MaximumInt("relayID", "body", int64(m.RelayID), 6, false); err != nil {
+	if err := validate.MaximumInt("relayID", "body", m.RelayID, 6, false); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this relay stat based on context it is used
+func (m *RelayStat) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

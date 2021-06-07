@@ -13,60 +13,73 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
-// NewLoadMoneyParams creates a new LoadMoneyParams object
-// with the default values initialized.
+// NewLoadMoneyParams creates a new LoadMoneyParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewLoadMoneyParams() *LoadMoneyParams {
-	var ()
 	return &LoadMoneyParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewLoadMoneyParamsWithTimeout creates a new LoadMoneyParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewLoadMoneyParamsWithTimeout(timeout time.Duration) *LoadMoneyParams {
-	var ()
 	return &LoadMoneyParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewLoadMoneyParamsWithContext creates a new LoadMoneyParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewLoadMoneyParamsWithContext(ctx context.Context) *LoadMoneyParams {
-	var ()
 	return &LoadMoneyParams{
-
 		Context: ctx,
 	}
 }
 
 // NewLoadMoneyParamsWithHTTPClient creates a new LoadMoneyParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewLoadMoneyParamsWithHTTPClient(client *http.Client) *LoadMoneyParams {
-	var ()
 	return &LoadMoneyParams{
 		HTTPClient: client,
 	}
 }
 
-/*LoadMoneyParams contains all the parameters to send to the API endpoint
-for the load money operation typically these are written to a http.Request
+/* LoadMoneyParams contains all the parameters to send to the API endpoint
+   for the load money operation.
+
+   Typically these are written to a http.Request.
 */
 type LoadMoneyParams struct {
 
-	/*Args*/
+	// Args.
 	Args LoadMoneyBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the load money params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *LoadMoneyParams) WithDefaults() *LoadMoneyParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the load money params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *LoadMoneyParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the load money params
@@ -120,7 +133,6 @@ func (o *LoadMoneyParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Reg
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.Args); err != nil {
 		return err
 	}

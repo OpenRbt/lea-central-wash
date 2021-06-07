@@ -6,16 +6,19 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // Program program
+//
 // swagger:model Program
 type Program struct {
 
@@ -48,6 +51,58 @@ type Program struct {
 
 	// relays
 	Relays []*RelayConfig `json:"relays"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *Program) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// id
+		// Required: true
+		// Minimum: 1
+		ID *int64 `json:"id"`
+
+		// motor speed percent
+		// Maximum: 100
+		// Minimum: 0
+		MotorSpeedPercent *int64 `json:"motorSpeedPercent,omitempty"`
+
+		// name
+		Name string `json:"name,omitempty"`
+
+		// preflight enabled
+		PreflightEnabled bool `json:"preflightEnabled,omitempty"`
+
+		// preflight motor speed percent
+		// Maximum: 100
+		// Minimum: 0
+		PreflightMotorSpeedPercent *int64 `json:"preflightMotorSpeedPercent,omitempty"`
+
+		// preflight relays
+		PreflightRelays []*RelayConfig `json:"preflightRelays"`
+
+		// price
+		Price int64 `json:"price,omitempty"`
+
+		// relays
+		Relays []*RelayConfig `json:"relays"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.ID = props.ID
+	m.MotorSpeedPercent = props.MotorSpeedPercent
+	m.Name = props.Name
+	m.PreflightEnabled = props.PreflightEnabled
+	m.PreflightMotorSpeedPercent = props.PreflightMotorSpeedPercent
+	m.PreflightRelays = props.PreflightRelays
+	m.Price = props.Price
+	m.Relays = props.Relays
+	return nil
 }
 
 // Validate validates this program
@@ -86,7 +141,7 @@ func (m *Program) validateID(formats strfmt.Registry) error {
 		return err
 	}
 
-	if err := validate.MinimumInt("id", "body", int64(*m.ID), 1, false); err != nil {
+	if err := validate.MinimumInt("id", "body", *m.ID, 1, false); err != nil {
 		return err
 	}
 
@@ -94,16 +149,15 @@ func (m *Program) validateID(formats strfmt.Registry) error {
 }
 
 func (m *Program) validateMotorSpeedPercent(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.MotorSpeedPercent) { // not required
 		return nil
 	}
 
-	if err := validate.MinimumInt("motorSpeedPercent", "body", int64(*m.MotorSpeedPercent), 0, false); err != nil {
+	if err := validate.MinimumInt("motorSpeedPercent", "body", *m.MotorSpeedPercent, 0, false); err != nil {
 		return err
 	}
 
-	if err := validate.MaximumInt("motorSpeedPercent", "body", int64(*m.MotorSpeedPercent), 100, false); err != nil {
+	if err := validate.MaximumInt("motorSpeedPercent", "body", *m.MotorSpeedPercent, 100, false); err != nil {
 		return err
 	}
 
@@ -111,16 +165,15 @@ func (m *Program) validateMotorSpeedPercent(formats strfmt.Registry) error {
 }
 
 func (m *Program) validatePreflightMotorSpeedPercent(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.PreflightMotorSpeedPercent) { // not required
 		return nil
 	}
 
-	if err := validate.MinimumInt("preflightMotorSpeedPercent", "body", int64(*m.PreflightMotorSpeedPercent), 0, false); err != nil {
+	if err := validate.MinimumInt("preflightMotorSpeedPercent", "body", *m.PreflightMotorSpeedPercent, 0, false); err != nil {
 		return err
 	}
 
-	if err := validate.MaximumInt("preflightMotorSpeedPercent", "body", int64(*m.PreflightMotorSpeedPercent), 100, false); err != nil {
+	if err := validate.MaximumInt("preflightMotorSpeedPercent", "body", *m.PreflightMotorSpeedPercent, 100, false); err != nil {
 		return err
 	}
 
@@ -128,7 +181,6 @@ func (m *Program) validatePreflightMotorSpeedPercent(formats strfmt.Registry) er
 }
 
 func (m *Program) validatePreflightRelays(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.PreflightRelays) { // not required
 		return nil
 	}
@@ -153,7 +205,6 @@ func (m *Program) validatePreflightRelays(formats strfmt.Registry) error {
 }
 
 func (m *Program) validateRelays(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Relays) { // not required
 		return nil
 	}
@@ -165,6 +216,60 @@ func (m *Program) validateRelays(formats strfmt.Registry) error {
 
 		if m.Relays[i] != nil {
 			if err := m.Relays[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("relays" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this program based on the context it is used
+func (m *Program) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidatePreflightRelays(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRelays(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *Program) contextValidatePreflightRelays(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.PreflightRelays); i++ {
+
+		if m.PreflightRelays[i] != nil {
+			if err := m.PreflightRelays[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("preflightRelays" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *Program) contextValidateRelays(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Relays); i++ {
+
+		if m.Relays[i] != nil {
+			if err := m.Relays[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relays" + "." + strconv.Itoa(i))
 				}

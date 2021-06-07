@@ -6,17 +6,19 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // UpdateUserReader is a Reader for the UpdateUser structure.
@@ -27,44 +29,38 @@ type UpdateUserReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *UpdateUserReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 201:
 		result := NewUpdateUserCreated()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewUpdateUserUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewUpdateUserForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewUpdateUserNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewUpdateUserInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -73,7 +69,7 @@ func NewUpdateUserCreated() *UpdateUserCreated {
 	return &UpdateUserCreated{}
 }
 
-/*UpdateUserCreated handles this case with default header values.
+/* UpdateUserCreated describes a response with status code 201, with default header values.
 
 OK
 */
@@ -83,6 +79,9 @@ type UpdateUserCreated struct {
 
 func (o *UpdateUserCreated) Error() string {
 	return fmt.Sprintf("[PUT /user][%d] updateUserCreated  %+v", 201, o.Payload)
+}
+func (o *UpdateUserCreated) GetPayload() *UpdateUserCreatedBody {
+	return o.Payload
 }
 
 func (o *UpdateUserCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -102,7 +101,7 @@ func NewUpdateUserUnauthorized() *UpdateUserUnauthorized {
 	return &UpdateUserUnauthorized{}
 }
 
-/*UpdateUserUnauthorized handles this case with default header values.
+/* UpdateUserUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -123,7 +122,7 @@ func NewUpdateUserForbidden() *UpdateUserForbidden {
 	return &UpdateUserForbidden{}
 }
 
-/*UpdateUserForbidden handles this case with default header values.
+/* UpdateUserForbidden describes a response with status code 403, with default header values.
 
 Access forbidden
 */
@@ -144,7 +143,7 @@ func NewUpdateUserNotFound() *UpdateUserNotFound {
 	return &UpdateUserNotFound{}
 }
 
-/*UpdateUserNotFound handles this case with default header values.
+/* UpdateUserNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -165,7 +164,7 @@ func NewUpdateUserInternalServerError() *UpdateUserInternalServerError {
 	return &UpdateUserInternalServerError{}
 }
 
-/*UpdateUserInternalServerError handles this case with default header values.
+/* UpdateUserInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -203,10 +202,53 @@ type UpdateUserBody struct {
 
 	// login
 	// Required: true
-	Login model.Login `json:"login"`
+	Login *model.Login `json:"login"`
 
 	// middle name
 	MiddleName *model.MiddleName `json:"middleName,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *UpdateUserBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// first name
+		FirstName *model.FirstName `json:"firstName,omitempty"`
+
+		// is admin
+		IsAdmin *model.IsAdmin `json:"isAdmin,omitempty"`
+
+		// is engineer
+		IsEngineer *model.IsEngineer `json:"isEngineer,omitempty"`
+
+		// is operator
+		IsOperator *model.IsOperator `json:"isOperator,omitempty"`
+
+		// last name
+		LastName *model.LastName `json:"lastName,omitempty"`
+
+		// login
+		// Required: true
+		Login *model.Login `json:"login"`
+
+		// middle name
+		MiddleName *model.MiddleName `json:"middleName,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.FirstName = props.FirstName
+	o.IsAdmin = props.IsAdmin
+	o.IsEngineer = props.IsEngineer
+	o.IsOperator = props.IsOperator
+	o.LastName = props.LastName
+	o.Login = props.Login
+	o.MiddleName = props.MiddleName
+	return nil
 }
 
 // Validate validates this update user body
@@ -236,7 +278,6 @@ func (o *UpdateUserBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *UpdateUserBody) validateFirstName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FirstName) { // not required
 		return nil
 	}
@@ -254,7 +295,6 @@ func (o *UpdateUserBody) validateFirstName(formats strfmt.Registry) error {
 }
 
 func (o *UpdateUserBody) validateLastName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.LastName) { // not required
 		return nil
 	}
@@ -273,24 +313,169 @@ func (o *UpdateUserBody) validateLastName(formats strfmt.Registry) error {
 
 func (o *UpdateUserBody) validateLogin(formats strfmt.Registry) error {
 
-	if err := o.Login.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "login")
-		}
+	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
+		return err
+	}
+
+	if o.Login != nil {
+		if err := o.Login.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "login")
+			}
+			return err
+		}
 	}
 
 	return nil
 }
 
 func (o *UpdateUserBody) validateMiddleName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MiddleName) { // not required
 		return nil
 	}
 
 	if o.MiddleName != nil {
 		if err := o.MiddleName.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "middleName")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this update user body based on the context it is used
+func (o *UpdateUserBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateFirstName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateIsAdmin(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateIsEngineer(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateIsOperator(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateLastName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateLogin(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateMiddleName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *UpdateUserBody) contextValidateFirstName(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.FirstName != nil {
+		if err := o.FirstName.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "firstName")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserBody) contextValidateIsAdmin(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.IsAdmin != nil {
+		if err := o.IsAdmin.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "isAdmin")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserBody) contextValidateIsEngineer(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.IsEngineer != nil {
+		if err := o.IsEngineer.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "isEngineer")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserBody) contextValidateIsOperator(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.IsOperator != nil {
+		if err := o.IsOperator.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "isOperator")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserBody) contextValidateLastName(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.LastName != nil {
+		if err := o.LastName.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "lastName")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserBody) contextValidateLogin(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Login != nil {
+		if err := o.Login.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "login")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserBody) contextValidateMiddleName(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.MiddleName != nil {
+		if err := o.MiddleName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "middleName")
 			}
@@ -329,6 +514,25 @@ type UpdateUserCreatedBody struct {
 	ID *int64 `json:"id"`
 }
 
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *UpdateUserCreatedBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// id
+		// Required: true
+		ID *int64 `json:"id"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ID = props.ID
+	return nil
+}
+
 // Validate validates this update user created body
 func (o *UpdateUserCreatedBody) Validate(formats strfmt.Registry) error {
 	var res []error
@@ -349,6 +553,11 @@ func (o *UpdateUserCreatedBody) validateID(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this update user created body based on context it is used
+func (o *UpdateUserCreatedBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

@@ -6,14 +6,16 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-
-	strfmt "github.com/go-openapi/strfmt"
 )
 
 // OpenStationReader is a Reader for the OpenStation structure.
@@ -24,30 +26,26 @@ type OpenStationReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *OpenStationReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 204:
 		result := NewOpenStationNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 404:
 		result := NewOpenStationNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewOpenStationInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -56,7 +54,7 @@ func NewOpenStationNoContent() *OpenStationNoContent {
 	return &OpenStationNoContent{}
 }
 
-/*OpenStationNoContent handles this case with default header values.
+/* OpenStationNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -77,7 +75,7 @@ func NewOpenStationNotFound() *OpenStationNotFound {
 	return &OpenStationNotFound{}
 }
 
-/*OpenStationNotFound handles this case with default header values.
+/* OpenStationNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -98,7 +96,7 @@ func NewOpenStationInternalServerError() *OpenStationInternalServerError {
 	return &OpenStationInternalServerError{}
 }
 
-/*OpenStationInternalServerError handles this case with default header values.
+/* OpenStationInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -124,6 +122,25 @@ type OpenStationBody struct {
 	StationID *int64 `json:"stationID"`
 }
 
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *OpenStationBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// station ID
+		// Required: true
+		StationID *int64 `json:"stationID"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.StationID = props.StationID
+	return nil
+}
+
 // Validate validates this open station body
 func (o *OpenStationBody) Validate(formats strfmt.Registry) error {
 	var res []error
@@ -144,6 +161,11 @@ func (o *OpenStationBody) validateStationID(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this open station body based on context it is used
+func (o *OpenStationBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

@@ -6,16 +6,18 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
 	"encoding/json"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // CardReaderConfig card reader config
+//
 // swagger:model CardReaderConfig
 type CardReaderConfig struct {
 
@@ -32,6 +34,38 @@ type CardReaderConfig struct {
 	// station ID
 	// Required: true
 	StationID *int64 `json:"stationID"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *CardReaderConfig) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// card reader type
+		// Enum: [NOT_USED VENDOTEK PAYMENT_WORLD]
+		CardReaderType string `json:"cardReaderType,omitempty"`
+
+		// host
+		Host string `json:"host,omitempty"`
+
+		// port
+		Port string `json:"port,omitempty"`
+
+		// station ID
+		// Required: true
+		StationID *int64 `json:"stationID"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.CardReaderType = props.CardReaderType
+	m.Host = props.Host
+	m.Port = props.Port
+	m.StationID = props.StationID
+	return nil
 }
 
 // Validate validates this card reader config
@@ -78,14 +112,13 @@ const (
 
 // prop value enum
 func (m *CardReaderConfig) validateCardReaderTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, cardReaderConfigTypeCardReaderTypePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, cardReaderConfigTypeCardReaderTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (m *CardReaderConfig) validateCardReaderType(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.CardReaderType) { // not required
 		return nil
 	}
@@ -104,6 +137,11 @@ func (m *CardReaderConfig) validateStationID(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this card reader config based on context it is used
+func (m *CardReaderConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

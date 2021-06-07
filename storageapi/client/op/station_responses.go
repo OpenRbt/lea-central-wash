@@ -6,17 +6,19 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // StationReader is a Reader for the Station structure.
@@ -27,37 +29,32 @@ type StationReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *StationReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewStationOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewStationUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewStationNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewStationInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -66,7 +63,7 @@ func NewStationOK() *StationOK {
 	return &StationOK{}
 }
 
-/*StationOK handles this case with default header values.
+/* StationOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -76,6 +73,9 @@ type StationOK struct {
 
 func (o *StationOK) Error() string {
 	return fmt.Sprintf("[POST /station][%d] stationOK  %+v", 200, o.Payload)
+}
+func (o *StationOK) GetPayload() *model.StationConfig {
+	return o.Payload
 }
 
 func (o *StationOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -95,7 +95,7 @@ func NewStationUnauthorized() *StationUnauthorized {
 	return &StationUnauthorized{}
 }
 
-/*StationUnauthorized handles this case with default header values.
+/* StationUnauthorized describes a response with status code 401, with default header values.
 
 Access denied. It will happen when you try to change the ID at the station online.
 */
@@ -116,7 +116,7 @@ func NewStationNotFound() *StationNotFound {
 	return &StationNotFound{}
 }
 
-/*StationNotFound handles this case with default header values.
+/* StationNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -137,7 +137,7 @@ func NewStationInternalServerError() *StationInternalServerError {
 	return &StationInternalServerError{}
 }
 
-/*StationInternalServerError handles this case with default header values.
+/* StationInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -163,6 +163,25 @@ type StationBody struct {
 	ID *int64 `json:"id"`
 }
 
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// id
+		// Required: true
+		ID *int64 `json:"id"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ID = props.ID
+	return nil
+}
+
 // Validate validates this station body
 func (o *StationBody) Validate(formats strfmt.Registry) error {
 	var res []error
@@ -183,6 +202,11 @@ func (o *StationBody) validateID(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this station body based on context it is used
+func (o *StationBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

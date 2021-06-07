@@ -13,60 +13,73 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
-// NewLoadFromStationParams creates a new LoadFromStationParams object
-// with the default values initialized.
+// NewLoadFromStationParams creates a new LoadFromStationParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewLoadFromStationParams() *LoadFromStationParams {
-	var ()
 	return &LoadFromStationParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewLoadFromStationParamsWithTimeout creates a new LoadFromStationParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewLoadFromStationParamsWithTimeout(timeout time.Duration) *LoadFromStationParams {
-	var ()
 	return &LoadFromStationParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewLoadFromStationParamsWithContext creates a new LoadFromStationParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewLoadFromStationParamsWithContext(ctx context.Context) *LoadFromStationParams {
-	var ()
 	return &LoadFromStationParams{
-
 		Context: ctx,
 	}
 }
 
 // NewLoadFromStationParamsWithHTTPClient creates a new LoadFromStationParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewLoadFromStationParamsWithHTTPClient(client *http.Client) *LoadFromStationParams {
-	var ()
 	return &LoadFromStationParams{
 		HTTPClient: client,
 	}
 }
 
-/*LoadFromStationParams contains all the parameters to send to the API endpoint
-for the load from station operation typically these are written to a http.Request
+/* LoadFromStationParams contains all the parameters to send to the API endpoint
+   for the load from station operation.
+
+   Typically these are written to a http.Request.
 */
 type LoadFromStationParams struct {
 
-	/*Args*/
+	// Args.
 	Args LoadFromStationBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the load from station params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *LoadFromStationParams) WithDefaults() *LoadFromStationParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the load from station params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *LoadFromStationParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the load from station params
@@ -120,7 +133,6 @@ func (o *LoadFromStationParams) WriteToRequest(r runtime.ClientRequest, reg strf
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.Args); err != nil {
 		return err
 	}

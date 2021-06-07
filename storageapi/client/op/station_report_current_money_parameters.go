@@ -13,60 +13,73 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
-// NewStationReportCurrentMoneyParams creates a new StationReportCurrentMoneyParams object
-// with the default values initialized.
+// NewStationReportCurrentMoneyParams creates a new StationReportCurrentMoneyParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewStationReportCurrentMoneyParams() *StationReportCurrentMoneyParams {
-	var ()
 	return &StationReportCurrentMoneyParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewStationReportCurrentMoneyParamsWithTimeout creates a new StationReportCurrentMoneyParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewStationReportCurrentMoneyParamsWithTimeout(timeout time.Duration) *StationReportCurrentMoneyParams {
-	var ()
 	return &StationReportCurrentMoneyParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewStationReportCurrentMoneyParamsWithContext creates a new StationReportCurrentMoneyParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewStationReportCurrentMoneyParamsWithContext(ctx context.Context) *StationReportCurrentMoneyParams {
-	var ()
 	return &StationReportCurrentMoneyParams{
-
 		Context: ctx,
 	}
 }
 
 // NewStationReportCurrentMoneyParamsWithHTTPClient creates a new StationReportCurrentMoneyParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewStationReportCurrentMoneyParamsWithHTTPClient(client *http.Client) *StationReportCurrentMoneyParams {
-	var ()
 	return &StationReportCurrentMoneyParams{
 		HTTPClient: client,
 	}
 }
 
-/*StationReportCurrentMoneyParams contains all the parameters to send to the API endpoint
-for the station report current money operation typically these are written to a http.Request
+/* StationReportCurrentMoneyParams contains all the parameters to send to the API endpoint
+   for the station report current money operation.
+
+   Typically these are written to a http.Request.
 */
 type StationReportCurrentMoneyParams struct {
 
-	/*Args*/
+	// Args.
 	Args StationReportCurrentMoneyBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the station report current money params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *StationReportCurrentMoneyParams) WithDefaults() *StationReportCurrentMoneyParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the station report current money params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *StationReportCurrentMoneyParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the station report current money params
@@ -120,7 +133,6 @@ func (o *StationReportCurrentMoneyParams) WriteToRequest(r runtime.ClientRequest
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.Args); err != nil {
 		return err
 	}

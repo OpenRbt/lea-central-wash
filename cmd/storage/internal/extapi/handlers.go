@@ -82,8 +82,8 @@ func (svc *service) setHash(id app.StationID, hash string) error {
 }
 
 func (svc *service) load(params op.LoadParams) op.LoadResponder {
-	log.Info("load", "hash", params.Args.Hash, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
-	stationID, err := svc.getID(string(params.Args.Hash))
+	log.Info("load", "hash", *params.Args.Hash, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
+	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("load: not found", "hash", params.Args.Hash, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewLoadNotFound()
@@ -117,8 +117,8 @@ func (svc *service) loadFromStation(params op.LoadFromStationParams) op.LoadFrom
 }
 
 func (svc *service) save(params op.SaveParams) op.SaveResponder {
-	log.Info("save", "hash", params.Args.Hash, "key", *params.Args.KeyPair.Key, "ip", params.HTTPRequest.RemoteAddr)
-	stationID, err := svc.getID(string(params.Args.Hash))
+	log.Info("save", "hash", *params.Args.Hash, "key", *params.Args.KeyPair.Key, "ip", params.HTTPRequest.RemoteAddr)
+	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("save: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewSaveNotFound()
@@ -138,8 +138,8 @@ func (svc *service) save(params op.SaveParams) op.SaveResponder {
 }
 
 func (svc *service) saveIfNotExists(params op.SaveIfNotExistsParams) op.SaveIfNotExistsResponder {
-	log.Info("saveIfNotExists", "hash", params.Args.Hash, "key", *params.Args.KeyPair.Key, "ip", params.HTTPRequest.RemoteAddr)
-	stationID, err := svc.getID(string(params.Args.Hash))
+	log.Info("saveIfNotExists", "hash", *params.Args.Hash, "key", *params.Args.KeyPair.Key, "ip", params.HTTPRequest.RemoteAddr)
+	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("save if not exists: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewSaveIfNotExistsNotFound()
@@ -159,8 +159,8 @@ func (svc *service) saveIfNotExists(params op.SaveIfNotExistsParams) op.SaveIfNo
 }
 
 func (svc *service) loadRelay(params op.LoadRelayParams) op.LoadRelayResponder {
-	log.Info("load relay", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-	stationID, err := svc.getID(string(params.Args.Hash))
+	log.Info("load relay", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("load relay: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewLoadRelayNotFound()
@@ -181,11 +181,11 @@ func (svc *service) loadRelay(params op.LoadRelayParams) op.LoadRelayResponder {
 }
 
 func (svc *service) saveRelay(params op.SaveRelayParams) op.SaveRelayResponder {
-	log.Info("save relay", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	log.Info("save relay", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 
 	var toSave app.RelayReport
 	var err error
-	toSave.StationID, err = svc.getID(string(params.Args.Hash))
+	toSave.StationID, err = svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("save relay: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewSaveRelayNotFound()
@@ -212,8 +212,8 @@ func (svc *service) saveRelay(params op.SaveRelayParams) op.SaveRelayResponder {
 }
 
 func (svc *service) loadMoney(params op.LoadMoneyParams) op.LoadMoneyResponder {
-	log.Info("load money", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-	stationID, err := svc.getID(string(params.Args.Hash))
+	log.Info("load money", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("load money: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewLoadMoneyNotFound()
@@ -234,8 +234,8 @@ func (svc *service) loadMoney(params op.LoadMoneyParams) op.LoadMoneyResponder {
 }
 
 func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
-	log.Info("save money", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-	stationID, err := svc.getID(string(params.Args.Hash))
+	log.Info("save money", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("save money: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewSaveMoneyNotFound()
@@ -280,8 +280,9 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		log.Info("post ping: wrong address", "address", params.HTTPRequest.RemoteAddr)
 		stationIP = ""
 	}
-	log.Info("post ping", "hash", params.Args.Hash, "ip", stationIP)
-	stationID, err := svc.getIDAndAddHash(string(params.Args.Hash))
+	log.Info("post ping", "time", time.Now(), "hash", *params.Args.Hash, "ip", stationIP)
+	time.Sleep(time.Second * 3)
+	stationID, err := svc.getIDAndAddHash(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("post ping: not found", "hash", params.Args.Hash, "ip", stationIP)
 		return op.NewPingOK().WithPayload(&op.PingOKBody{
@@ -479,9 +480,9 @@ func newInt64(v int64) *int64 {
 }
 
 func (svc *service) stationByHash(params op.StationByHashParams) op.StationByHashResponder {
-	log.Info("post by hash", "hash", params.Args.Hash)
+	log.Info("post by hash", "hash", *params.Args.Hash)
 
-	id, err := svc.getID(string(params.Args.Hash))
+	id, err := svc.getID(string(*params.Args.Hash))
 
 	switch errors.Cause(err) {
 	case nil:
@@ -596,8 +597,8 @@ func (svc *service) stationButton(params op.StationButtonParams) op.StationButto
 }
 
 func (svc *service) stationProgramByHash(params op.StationProgramByHashParams) op.StationProgramByHashResponder {
-	log.Info("StationProgramByHash", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-	id, err := svc.getID(string(params.Args.Hash))
+	log.Info("StationProgramByHash", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	id, err := svc.getID(string(*params.Args.Hash))
 
 	switch errors.Cause(err) {
 	case nil:
@@ -654,9 +655,9 @@ func (svc *service) setKasse(params op.SetKasseParams) op.SetKasseResponder {
 }
 
 func (svc *service) runProgram(params op.RunProgramParams) op.RunProgramResponder {
-	stationID, err := svc.getID(string(params.Args.Hash))
+	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
-		log.Info("runProgram: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		log.Info("runProgram: not found", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewRunProgramNotFound().WithPayload("station not found")
 	}
 	err = svc.app.RunProgram(stationID, *params.Args.ProgramID, *params.Args.Preflight)
@@ -676,9 +677,9 @@ func (svc *service) runProgram(params op.RunProgramParams) op.RunProgramResponde
 }
 
 func (svc *service) pressButton(params op.PressButtonParams) op.PressButtonResponder {
-	stationID, err := svc.getID(string(params.Args.Hash))
+	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
-		log.Info("pressButton: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		log.Info("pressButton: not found", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewPressButtonNotFound().WithPayload("station not found")
 	}
 	err = svc.app.PressButton(stationID, *params.Args.ButtonID)
@@ -733,8 +734,8 @@ func (svc *service) setCardReaderConfig(params op.SetCardReaderConfigParams) op.
 }
 
 func (svc *service) cardReaderConfigByHash(params op.CardReaderConfigByHashParams) op.CardReaderConfigByHashResponder {
-	log.Info("cardReaderConfig", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-	id, err := svc.getID(string(params.Args.Hash))
+	log.Info("cardReaderConfig", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	id, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		return op.NewCardReaderConfigByHashOK().WithPayload(&model.CardReaderConfig{
 			StationID:      newInt64(int64(id)),
@@ -788,8 +789,8 @@ func (svc *service) getUser(params op.GetUserParams, auth *app.Auth) op.GetUserR
 func (svc *service) createUser(params op.CreateUserParams, auth *app.Auth) op.CreateUserResponder {
 	log.Debug("createUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
 	id, err := svc.app.CreateUser(app.UserData{
-		Login:      string(params.Args.Login),
-		Password:   string(params.Args.Password),
+		Login:      string(*params.Args.Login),
+		Password:   string(*params.Args.Password),
 		FirstName:  (*string)(params.Args.FirstName),
 		MiddleName: (*string)(params.Args.MiddleName),
 		LastName:   (*string)(params.Args.LastName),
@@ -820,7 +821,7 @@ func (svc *service) createUser(params op.CreateUserParams, auth *app.Auth) op.Cr
 func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.UpdateUserResponder {
 	log.Debug("updateUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
 	id, err := svc.app.UpdateUser(app.UpdateUserData{
-		Login:      string(params.Args.Login),
+		Login:      string(*params.Args.Login),
 		FirstName:  (*string)(params.Args.FirstName),
 		MiddleName: (*string)(params.Args.MiddleName),
 		LastName:   (*string)(params.Args.LastName),
@@ -846,9 +847,9 @@ func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.Up
 func (svc *service) updateUserPassword(params op.UpdateUserPasswordParams, auth *app.Auth) op.UpdateUserPasswordResponder {
 	log.Debug("updateUserPassword", "login", auth.Login, "isAdmin", auth.IsAdmin)
 	id, err := svc.app.UpdateUserPassword(app.UpdatePasswordData{
-		Login:       string(params.Args.Login),
-		OldPassword: string(params.Args.OldPassword),
-		NewPassword: string(params.Args.NewPassword),
+		Login:       string(*params.Args.Login),
+		OldPassword: string(*params.Args.OldPassword),
+		NewPassword: string(*params.Args.NewPassword),
 	}, auth)
 	switch errors.Cause(err) {
 	case nil:
@@ -867,7 +868,7 @@ func (svc *service) updateUserPassword(params op.UpdateUserPasswordParams, auth 
 
 func (svc *service) deleteUser(params op.DeleteUserParams, auth *app.Auth) op.DeleteUserResponder {
 	log.Debug("deleteUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	err := svc.app.DeleteUser(string(params.Args.Login), auth)
+	err := svc.app.DeleteUser(string(*params.Args.Login), auth)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewDeleteUserNoContent()

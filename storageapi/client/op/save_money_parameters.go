@@ -13,62 +13,75 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
-// NewSaveMoneyParams creates a new SaveMoneyParams object
-// with the default values initialized.
+// NewSaveMoneyParams creates a new SaveMoneyParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewSaveMoneyParams() *SaveMoneyParams {
-	var ()
 	return &SaveMoneyParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewSaveMoneyParamsWithTimeout creates a new SaveMoneyParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewSaveMoneyParamsWithTimeout(timeout time.Duration) *SaveMoneyParams {
-	var ()
 	return &SaveMoneyParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewSaveMoneyParamsWithContext creates a new SaveMoneyParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewSaveMoneyParamsWithContext(ctx context.Context) *SaveMoneyParams {
-	var ()
 	return &SaveMoneyParams{
-
 		Context: ctx,
 	}
 }
 
 // NewSaveMoneyParamsWithHTTPClient creates a new SaveMoneyParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewSaveMoneyParamsWithHTTPClient(client *http.Client) *SaveMoneyParams {
-	var ()
 	return &SaveMoneyParams{
 		HTTPClient: client,
 	}
 }
 
-/*SaveMoneyParams contains all the parameters to send to the API endpoint
-for the save money operation typically these are written to a http.Request
+/* SaveMoneyParams contains all the parameters to send to the API endpoint
+   for the save money operation.
+
+   Typically these are written to a http.Request.
 */
 type SaveMoneyParams struct {
 
-	/*Args*/
+	// Args.
 	Args *model.MoneyReport
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the save money params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *SaveMoneyParams) WithDefaults() *SaveMoneyParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the save money params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *SaveMoneyParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the save money params
@@ -122,7 +135,6 @@ func (o *SaveMoneyParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Reg
 		return err
 	}
 	var res []error
-
 	if o.Args != nil {
 		if err := r.SetBodyParam(o.Args); err != nil {
 			return err

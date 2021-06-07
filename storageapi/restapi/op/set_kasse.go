@@ -8,7 +8,7 @@ package op
 import (
 	"net/http"
 
-	middleware "github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/runtime/middleware"
 )
 
 // SetKasseHandlerFunc turns a function with the right signature into a set kasse handler
@@ -29,7 +29,7 @@ func NewSetKasse(ctx *middleware.Context, handler SetKasseHandler) *SetKasse {
 	return &SetKasse{Context: ctx, Handler: handler}
 }
 
-/*SetKasse swagger:route POST /set-kasse setKasse
+/* SetKasse swagger:route POST /set-kasse setKasse
 
 SetKasse set kasse API
 
@@ -42,17 +42,15 @@ type SetKasse struct {
 func (o *SetKasse) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewSetKasseParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

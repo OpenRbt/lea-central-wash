@@ -6,17 +6,19 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // UpdateUserPasswordReader is a Reader for the UpdateUserPassword structure.
@@ -27,44 +29,38 @@ type UpdateUserPasswordReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *UpdateUserPasswordReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 201:
 		result := NewUpdateUserPasswordCreated()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewUpdateUserPasswordUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewUpdateUserPasswordForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewUpdateUserPasswordNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewUpdateUserPasswordInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -73,7 +69,7 @@ func NewUpdateUserPasswordCreated() *UpdateUserPasswordCreated {
 	return &UpdateUserPasswordCreated{}
 }
 
-/*UpdateUserPasswordCreated handles this case with default header values.
+/* UpdateUserPasswordCreated describes a response with status code 201, with default header values.
 
 OK
 */
@@ -83,6 +79,9 @@ type UpdateUserPasswordCreated struct {
 
 func (o *UpdateUserPasswordCreated) Error() string {
 	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordCreated  %+v", 201, o.Payload)
+}
+func (o *UpdateUserPasswordCreated) GetPayload() *UpdateUserPasswordCreatedBody {
+	return o.Payload
 }
 
 func (o *UpdateUserPasswordCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -102,7 +101,7 @@ func NewUpdateUserPasswordUnauthorized() *UpdateUserPasswordUnauthorized {
 	return &UpdateUserPasswordUnauthorized{}
 }
 
-/*UpdateUserPasswordUnauthorized handles this case with default header values.
+/* UpdateUserPasswordUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -123,7 +122,7 @@ func NewUpdateUserPasswordForbidden() *UpdateUserPasswordForbidden {
 	return &UpdateUserPasswordForbidden{}
 }
 
-/*UpdateUserPasswordForbidden handles this case with default header values.
+/* UpdateUserPasswordForbidden describes a response with status code 403, with default header values.
 
 Access forbidden
 */
@@ -144,7 +143,7 @@ func NewUpdateUserPasswordNotFound() *UpdateUserPasswordNotFound {
 	return &UpdateUserPasswordNotFound{}
 }
 
-/*UpdateUserPasswordNotFound handles this case with default header values.
+/* UpdateUserPasswordNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -165,7 +164,7 @@ func NewUpdateUserPasswordInternalServerError() *UpdateUserPasswordInternalServe
 	return &UpdateUserPasswordInternalServerError{}
 }
 
-/*UpdateUserPasswordInternalServerError handles this case with default header values.
+/* UpdateUserPasswordInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -188,15 +187,44 @@ type UpdateUserPasswordBody struct {
 
 	// login
 	// Required: true
-	Login model.Login `json:"login"`
+	Login *model.Login `json:"login"`
 
 	// new password
 	// Required: true
-	NewPassword model.Password `json:"newPassword"`
+	NewPassword *model.Password `json:"newPassword"`
 
 	// old password
 	// Required: true
-	OldPassword model.Password `json:"oldPassword"`
+	OldPassword *model.Password `json:"oldPassword"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *UpdateUserPasswordBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// login
+		// Required: true
+		Login *model.Login `json:"login"`
+
+		// new password
+		// Required: true
+		NewPassword *model.Password `json:"newPassword"`
+
+		// old password
+		// Required: true
+		OldPassword *model.Password `json:"oldPassword"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Login = props.Login
+	o.NewPassword = props.NewPassword
+	o.OldPassword = props.OldPassword
+	return nil
 }
 
 // Validate validates this update user password body
@@ -223,11 +251,21 @@ func (o *UpdateUserPasswordBody) Validate(formats strfmt.Registry) error {
 
 func (o *UpdateUserPasswordBody) validateLogin(formats strfmt.Registry) error {
 
-	if err := o.Login.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "login")
-		}
+	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
+		return err
+	}
+
+	if o.Login != nil {
+		if err := o.Login.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "login")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -235,11 +273,21 @@ func (o *UpdateUserPasswordBody) validateLogin(formats strfmt.Registry) error {
 
 func (o *UpdateUserPasswordBody) validateNewPassword(formats strfmt.Registry) error {
 
-	if err := o.NewPassword.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "newPassword")
-		}
+	if err := validate.Required("args"+"."+"newPassword", "body", o.NewPassword); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"newPassword", "body", o.NewPassword); err != nil {
+		return err
+	}
+
+	if o.NewPassword != nil {
+		if err := o.NewPassword.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "newPassword")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -247,11 +295,85 @@ func (o *UpdateUserPasswordBody) validateNewPassword(formats strfmt.Registry) er
 
 func (o *UpdateUserPasswordBody) validateOldPassword(formats strfmt.Registry) error {
 
-	if err := o.OldPassword.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "oldPassword")
-		}
+	if err := validate.Required("args"+"."+"oldPassword", "body", o.OldPassword); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"oldPassword", "body", o.OldPassword); err != nil {
+		return err
+	}
+
+	if o.OldPassword != nil {
+		if err := o.OldPassword.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "oldPassword")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this update user password body based on the context it is used
+func (o *UpdateUserPasswordBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLogin(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateNewPassword(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateOldPassword(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *UpdateUserPasswordBody) contextValidateLogin(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Login != nil {
+		if err := o.Login.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "login")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserPasswordBody) contextValidateNewPassword(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.NewPassword != nil {
+		if err := o.NewPassword.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "newPassword")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserPasswordBody) contextValidateOldPassword(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.OldPassword != nil {
+		if err := o.OldPassword.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "oldPassword")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -285,6 +407,25 @@ type UpdateUserPasswordCreatedBody struct {
 	ID *int64 `json:"id"`
 }
 
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *UpdateUserPasswordCreatedBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// id
+		// Required: true
+		ID *int64 `json:"id"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ID = props.ID
+	return nil
+}
+
 // Validate validates this update user password created body
 func (o *UpdateUserPasswordCreatedBody) Validate(formats strfmt.Registry) error {
 	var res []error
@@ -305,6 +446,11 @@ func (o *UpdateUserPasswordCreatedBody) validateID(formats strfmt.Registry) erro
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this update user password created body based on context it is used
+func (o *UpdateUserPasswordCreatedBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

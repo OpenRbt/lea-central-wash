@@ -13,60 +13,73 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
-// NewCardReaderConfigByHashParams creates a new CardReaderConfigByHashParams object
-// with the default values initialized.
+// NewCardReaderConfigByHashParams creates a new CardReaderConfigByHashParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewCardReaderConfigByHashParams() *CardReaderConfigByHashParams {
-	var ()
 	return &CardReaderConfigByHashParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewCardReaderConfigByHashParamsWithTimeout creates a new CardReaderConfigByHashParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewCardReaderConfigByHashParamsWithTimeout(timeout time.Duration) *CardReaderConfigByHashParams {
-	var ()
 	return &CardReaderConfigByHashParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewCardReaderConfigByHashParamsWithContext creates a new CardReaderConfigByHashParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewCardReaderConfigByHashParamsWithContext(ctx context.Context) *CardReaderConfigByHashParams {
-	var ()
 	return &CardReaderConfigByHashParams{
-
 		Context: ctx,
 	}
 }
 
 // NewCardReaderConfigByHashParamsWithHTTPClient creates a new CardReaderConfigByHashParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewCardReaderConfigByHashParamsWithHTTPClient(client *http.Client) *CardReaderConfigByHashParams {
-	var ()
 	return &CardReaderConfigByHashParams{
 		HTTPClient: client,
 	}
 }
 
-/*CardReaderConfigByHashParams contains all the parameters to send to the API endpoint
-for the card reader config by hash operation typically these are written to a http.Request
+/* CardReaderConfigByHashParams contains all the parameters to send to the API endpoint
+   for the card reader config by hash operation.
+
+   Typically these are written to a http.Request.
 */
 type CardReaderConfigByHashParams struct {
 
-	/*Args*/
+	// Args.
 	Args CardReaderConfigByHashBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the card reader config by hash params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CardReaderConfigByHashParams) WithDefaults() *CardReaderConfigByHashParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the card reader config by hash params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CardReaderConfigByHashParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the card reader config by hash params
@@ -120,7 +133,6 @@ func (o *CardReaderConfigByHashParams) WriteToRequest(r runtime.ClientRequest, r
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.Args); err != nil {
 		return err
 	}

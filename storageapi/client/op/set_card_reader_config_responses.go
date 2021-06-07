@@ -10,8 +10,7 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // SetCardReaderConfigReader is a Reader for the SetCardReaderConfig structure.
@@ -22,37 +21,32 @@ type SetCardReaderConfigReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *SetCardReaderConfigReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 204:
 		result := NewSetCardReaderConfigNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 404:
 		result := NewSetCardReaderConfigNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 422:
 		result := NewSetCardReaderConfigUnprocessableEntity()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewSetCardReaderConfigInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -61,7 +55,7 @@ func NewSetCardReaderConfigNoContent() *SetCardReaderConfigNoContent {
 	return &SetCardReaderConfigNoContent{}
 }
 
-/*SetCardReaderConfigNoContent handles this case with default header values.
+/* SetCardReaderConfigNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -82,7 +76,7 @@ func NewSetCardReaderConfigNotFound() *SetCardReaderConfigNotFound {
 	return &SetCardReaderConfigNotFound{}
 }
 
-/*SetCardReaderConfigNotFound handles this case with default header values.
+/* SetCardReaderConfigNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -103,7 +97,7 @@ func NewSetCardReaderConfigUnprocessableEntity() *SetCardReaderConfigUnprocessab
 	return &SetCardReaderConfigUnprocessableEntity{}
 }
 
-/*SetCardReaderConfigUnprocessableEntity handles this case with default header values.
+/* SetCardReaderConfigUnprocessableEntity describes a response with status code 422, with default header values.
 
 validation error
 */
@@ -113,6 +107,9 @@ type SetCardReaderConfigUnprocessableEntity struct {
 
 func (o *SetCardReaderConfigUnprocessableEntity) Error() string {
 	return fmt.Sprintf("[POST /set-card-reader-config][%d] setCardReaderConfigUnprocessableEntity  %+v", 422, o.Payload)
+}
+func (o *SetCardReaderConfigUnprocessableEntity) GetPayload() string {
+	return o.Payload
 }
 
 func (o *SetCardReaderConfigUnprocessableEntity) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -130,7 +127,7 @@ func NewSetCardReaderConfigInternalServerError() *SetCardReaderConfigInternalSer
 	return &SetCardReaderConfigInternalServerError{}
 }
 
-/*SetCardReaderConfigInternalServerError handles this case with default header values.
+/* SetCardReaderConfigInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

@@ -13,7 +13,8 @@ import (
 )
 
 // NewKasseParams creates a new KasseParams object
-// no default values defined in spec.
+//
+// There are no default values defined in the spec.
 func NewKasseParams() KasseParams {
 
 	return KasseParams{}

@@ -6,15 +6,18 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StationReport station report
+//
 // swagger:model StationReport
 type StationReport struct {
 
@@ -23,6 +26,28 @@ type StationReport struct {
 
 	// relay stats
 	RelayStats []*RelayStat `json:"relayStats"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *StationReport) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// money report
+		MoneyReport *MoneyReport `json:"moneyReport,omitempty"`
+
+		// relay stats
+		RelayStats []*RelayStat `json:"relayStats"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.MoneyReport = props.MoneyReport
+	m.RelayStats = props.RelayStats
+	return nil
 }
 
 // Validate validates this station report
@@ -44,7 +69,6 @@ func (m *StationReport) Validate(formats strfmt.Registry) error {
 }
 
 func (m *StationReport) validateMoneyReport(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.MoneyReport) { // not required
 		return nil
 	}
@@ -62,7 +86,6 @@ func (m *StationReport) validateMoneyReport(formats strfmt.Registry) error {
 }
 
 func (m *StationReport) validateRelayStats(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.RelayStats) { // not required
 		return nil
 	}
@@ -74,6 +97,56 @@ func (m *StationReport) validateRelayStats(formats strfmt.Registry) error {
 
 		if m.RelayStats[i] != nil {
 			if err := m.RelayStats[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("relayStats" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this station report based on the context it is used
+func (m *StationReport) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateMoneyReport(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRelayStats(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *StationReport) contextValidateMoneyReport(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.MoneyReport != nil {
+		if err := m.MoneyReport.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("moneyReport")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *StationReport) contextValidateRelayStats(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.RelayStats); i++ {
+
+		if m.RelayStats[i] != nil {
+			if err := m.RelayStats[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relayStats" + "." + strconv.Itoa(i))
 				}

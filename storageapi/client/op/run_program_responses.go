@@ -6,17 +6,19 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // RunProgramReader is a Reader for the RunProgram structure.
@@ -27,30 +29,26 @@ type RunProgramReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *RunProgramReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 204:
 		result := NewRunProgramNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 404:
 		result := NewRunProgramNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewRunProgramInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -59,7 +57,7 @@ func NewRunProgramNoContent() *RunProgramNoContent {
 	return &RunProgramNoContent{}
 }
 
-/*RunProgramNoContent handles this case with default header values.
+/* RunProgramNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -80,7 +78,7 @@ func NewRunProgramNotFound() *RunProgramNotFound {
 	return &RunProgramNotFound{}
 }
 
-/*RunProgramNotFound handles this case with default header values.
+/* RunProgramNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -90,6 +88,9 @@ type RunProgramNotFound struct {
 
 func (o *RunProgramNotFound) Error() string {
 	return fmt.Sprintf("[POST /run-program][%d] runProgramNotFound  %+v", 404, o.Payload)
+}
+func (o *RunProgramNotFound) GetPayload() string {
+	return o.Payload
 }
 
 func (o *RunProgramNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -107,7 +108,7 @@ func NewRunProgramInternalServerError() *RunProgramInternalServerError {
 	return &RunProgramInternalServerError{}
 }
 
-/*RunProgramInternalServerError handles this case with default header values.
+/* RunProgramInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -130,7 +131,7 @@ type RunProgramBody struct {
 
 	// hash
 	// Required: true
-	Hash model.Hash `json:"hash"`
+	Hash *model.Hash `json:"hash"`
 
 	// preflight
 	// Required: true
@@ -139,6 +140,35 @@ type RunProgramBody struct {
 	// program ID
 	// Required: true
 	ProgramID *int64 `json:"programID"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *RunProgramBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+
+		// preflight
+		// Required: true
+		Preflight *bool `json:"preflight"`
+
+		// program ID
+		// Required: true
+		ProgramID *int64 `json:"programID"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Hash = props.Hash
+	o.Preflight = props.Preflight
+	o.ProgramID = props.ProgramID
+	return nil
 }
 
 // Validate validates this run program body
@@ -165,11 +195,21 @@ func (o *RunProgramBody) Validate(formats strfmt.Registry) error {
 
 func (o *RunProgramBody) validateHash(formats strfmt.Registry) error {
 
-	if err := o.Hash.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "hash")
-		}
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
+		return err
+	}
+
+	if o.Hash != nil {
+		if err := o.Hash.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -188,6 +228,34 @@ func (o *RunProgramBody) validateProgramID(formats strfmt.Registry) error {
 
 	if err := validate.Required("args"+"."+"programID", "body", o.ProgramID); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this run program body based on the context it is used
+func (o *RunProgramBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateHash(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *RunProgramBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Hash != nil {
+		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
 	}
 
 	return nil

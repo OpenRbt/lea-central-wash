@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // GetUsersReader is a Reader for the GetUsers structure.
@@ -24,37 +23,32 @@ type GetUsersReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetUsersReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetUsersOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewGetUsersUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewGetUsersForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewGetUsersInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -63,7 +57,7 @@ func NewGetUsersOK() *GetUsersOK {
 	return &GetUsersOK{}
 }
 
-/*GetUsersOK handles this case with default header values.
+/* GetUsersOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -73,6 +67,9 @@ type GetUsersOK struct {
 
 func (o *GetUsersOK) Error() string {
 	return fmt.Sprintf("[GET /users][%d] getUsersOK  %+v", 200, o.Payload)
+}
+func (o *GetUsersOK) GetPayload() *model.UsersReport {
+	return o.Payload
 }
 
 func (o *GetUsersOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -92,7 +89,7 @@ func NewGetUsersUnauthorized() *GetUsersUnauthorized {
 	return &GetUsersUnauthorized{}
 }
 
-/*GetUsersUnauthorized handles this case with default header values.
+/* GetUsersUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -113,7 +110,7 @@ func NewGetUsersForbidden() *GetUsersForbidden {
 	return &GetUsersForbidden{}
 }
 
-/*GetUsersForbidden handles this case with default header values.
+/* GetUsersForbidden describes a response with status code 403, with default header values.
 
 Access forbidden
 */
@@ -134,7 +131,7 @@ func NewGetUsersInternalServerError() *GetUsersInternalServerError {
 	return &GetUsersInternalServerError{}
 }
 
-/*GetUsersInternalServerError handles this case with default header values.
+/* GetUsersInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

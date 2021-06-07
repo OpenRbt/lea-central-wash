@@ -6,20 +6,41 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StatusCollectionReport status collection report
+//
 // swagger:model StatusCollectionReport
 type StatusCollectionReport struct {
 
 	// stations
 	Stations []*CollectionReport `json:"stations"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *StatusCollectionReport) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// stations
+		Stations []*CollectionReport `json:"stations"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.Stations = props.Stations
+	return nil
 }
 
 // Validate validates this status collection report
@@ -37,7 +58,6 @@ func (m *StatusCollectionReport) Validate(formats strfmt.Registry) error {
 }
 
 func (m *StatusCollectionReport) validateStations(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Stations) { // not required
 		return nil
 	}
@@ -49,6 +69,38 @@ func (m *StatusCollectionReport) validateStations(formats strfmt.Registry) error
 
 		if m.Stations[i] != nil {
 			if err := m.Stations[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("stations" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this status collection report based on the context it is used
+func (m *StatusCollectionReport) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateStations(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *StatusCollectionReport) contextValidateStations(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Stations); i++ {
+
+		if m.Stations[i] != nil {
+			if err := m.Stations[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stations" + "." + strconv.Itoa(i))
 				}

@@ -6,17 +6,23 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"encoding/json"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // RelayBoard relay board
+//
 // swagger:model RelayBoard
 type RelayBoard string
+
+func NewRelayBoard(value RelayBoard) *RelayBoard {
+	v := value
+	return &v
+}
 
 const (
 
@@ -41,7 +47,7 @@ func init() {
 }
 
 func (m RelayBoard) validateRelayBoardEnum(path, location string, value RelayBoard) error {
-	if err := validate.Enum(path, location, value, relayBoardEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, relayBoardEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -59,5 +65,10 @@ func (m RelayBoard) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+// ContextValidate validates this relay board based on context it is used
+func (m RelayBoard) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }

@@ -9,8 +9,7 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // SetKasseReader is a Reader for the SetKasse structure.
@@ -21,23 +20,20 @@ type SetKasseReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *SetKasseReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 204:
 		result := NewSetKasseNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 500:
 		result := NewSetKasseInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -46,7 +42,7 @@ func NewSetKasseNoContent() *SetKasseNoContent {
 	return &SetKasseNoContent{}
 }
 
-/*SetKasseNoContent handles this case with default header values.
+/* SetKasseNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -67,7 +63,7 @@ func NewSetKasseInternalServerError() *SetKasseInternalServerError {
 	return &SetKasseInternalServerError{}
 }
 
-/*SetKasseInternalServerError handles this case with default header values.
+/* SetKasseInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

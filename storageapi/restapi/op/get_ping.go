@@ -8,7 +8,7 @@ package op
 import (
 	"net/http"
 
-	middleware "github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/runtime/middleware"
 )
 
 // GetPingHandlerFunc turns a function with the right signature into a get ping handler
@@ -29,7 +29,7 @@ func NewGetPing(ctx *middleware.Context, handler GetPingHandler) *GetPing {
 	return &GetPing{Context: ctx, Handler: handler}
 }
 
-/*GetPing swagger:route GET /ping getPing
+/* GetPing swagger:route GET /ping getPing
 
 GetPing get ping API
 
@@ -42,17 +42,15 @@ type GetPing struct {
 func (o *GetPing) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewGetPingParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

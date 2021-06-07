@@ -8,7 +8,7 @@ package op
 import (
 	"net/http"
 
-	middleware "github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/runtime/middleware"
 )
 
 // StationsVariablesHandlerFunc turns a function with the right signature into a stations variables handler
@@ -29,7 +29,7 @@ func NewStationsVariables(ctx *middleware.Context, handler StationsVariablesHand
 	return &StationsVariables{Context: ctx, Handler: handler}
 }
 
-/*StationsVariables swagger:route POST /stations-variables stationsVariables
+/* StationsVariables swagger:route POST /stations-variables stationsVariables
 
 StationsVariables stations variables API
 
@@ -42,17 +42,15 @@ type StationsVariables struct {
 func (o *StationsVariables) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewStationsVariablesParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

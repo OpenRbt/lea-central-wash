@@ -9,7 +9,7 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime"
-	middleware "github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/runtime/middleware"
 )
 
 // SaveMoneyNoContentCode is the HTTP code returned for type SaveMoneyNoContent

@@ -6,13 +6,15 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"context"
 
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // Password password
+//
 // swagger:model Password
 type Password string
 
@@ -31,5 +33,10 @@ func (m Password) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+// ContextValidate validates this password based on context it is used
+func (m Password) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }

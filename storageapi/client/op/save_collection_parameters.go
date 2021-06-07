@@ -13,60 +13,73 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
-// NewSaveCollectionParams creates a new SaveCollectionParams object
-// with the default values initialized.
+// NewSaveCollectionParams creates a new SaveCollectionParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewSaveCollectionParams() *SaveCollectionParams {
-	var ()
 	return &SaveCollectionParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewSaveCollectionParamsWithTimeout creates a new SaveCollectionParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewSaveCollectionParamsWithTimeout(timeout time.Duration) *SaveCollectionParams {
-	var ()
 	return &SaveCollectionParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewSaveCollectionParamsWithContext creates a new SaveCollectionParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewSaveCollectionParamsWithContext(ctx context.Context) *SaveCollectionParams {
-	var ()
 	return &SaveCollectionParams{
-
 		Context: ctx,
 	}
 }
 
 // NewSaveCollectionParamsWithHTTPClient creates a new SaveCollectionParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewSaveCollectionParamsWithHTTPClient(client *http.Client) *SaveCollectionParams {
-	var ()
 	return &SaveCollectionParams{
 		HTTPClient: client,
 	}
 }
 
-/*SaveCollectionParams contains all the parameters to send to the API endpoint
-for the save collection operation typically these are written to a http.Request
+/* SaveCollectionParams contains all the parameters to send to the API endpoint
+   for the save collection operation.
+
+   Typically these are written to a http.Request.
 */
 type SaveCollectionParams struct {
 
-	/*Args*/
+	// Args.
 	Args SaveCollectionBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the save collection params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *SaveCollectionParams) WithDefaults() *SaveCollectionParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the save collection params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *SaveCollectionParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the save collection params
@@ -120,7 +133,6 @@ func (o *SaveCollectionParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.Args); err != nil {
 		return err
 	}

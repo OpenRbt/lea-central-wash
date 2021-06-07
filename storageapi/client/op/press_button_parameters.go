@@ -13,60 +13,73 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
-// NewPressButtonParams creates a new PressButtonParams object
-// with the default values initialized.
+// NewPressButtonParams creates a new PressButtonParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewPressButtonParams() *PressButtonParams {
-	var ()
 	return &PressButtonParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewPressButtonParamsWithTimeout creates a new PressButtonParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewPressButtonParamsWithTimeout(timeout time.Duration) *PressButtonParams {
-	var ()
 	return &PressButtonParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewPressButtonParamsWithContext creates a new PressButtonParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewPressButtonParamsWithContext(ctx context.Context) *PressButtonParams {
-	var ()
 	return &PressButtonParams{
-
 		Context: ctx,
 	}
 }
 
 // NewPressButtonParamsWithHTTPClient creates a new PressButtonParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewPressButtonParamsWithHTTPClient(client *http.Client) *PressButtonParams {
-	var ()
 	return &PressButtonParams{
 		HTTPClient: client,
 	}
 }
 
-/*PressButtonParams contains all the parameters to send to the API endpoint
-for the press button operation typically these are written to a http.Request
+/* PressButtonParams contains all the parameters to send to the API endpoint
+   for the press button operation.
+
+   Typically these are written to a http.Request.
 */
 type PressButtonParams struct {
 
-	/*Args*/
+	// Args.
 	Args PressButtonBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the press button params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *PressButtonParams) WithDefaults() *PressButtonParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the press button params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *PressButtonParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the press button params
@@ -120,7 +133,6 @@ func (o *PressButtonParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.R
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.Args); err != nil {
 		return err
 	}

@@ -13,60 +13,73 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
-// NewAddServiceAmountParams creates a new AddServiceAmountParams object
-// with the default values initialized.
+// NewAddServiceAmountParams creates a new AddServiceAmountParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewAddServiceAmountParams() *AddServiceAmountParams {
-	var ()
 	return &AddServiceAmountParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewAddServiceAmountParamsWithTimeout creates a new AddServiceAmountParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewAddServiceAmountParamsWithTimeout(timeout time.Duration) *AddServiceAmountParams {
-	var ()
 	return &AddServiceAmountParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewAddServiceAmountParamsWithContext creates a new AddServiceAmountParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewAddServiceAmountParamsWithContext(ctx context.Context) *AddServiceAmountParams {
-	var ()
 	return &AddServiceAmountParams{
-
 		Context: ctx,
 	}
 }
 
 // NewAddServiceAmountParamsWithHTTPClient creates a new AddServiceAmountParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewAddServiceAmountParamsWithHTTPClient(client *http.Client) *AddServiceAmountParams {
-	var ()
 	return &AddServiceAmountParams{
 		HTTPClient: client,
 	}
 }
 
-/*AddServiceAmountParams contains all the parameters to send to the API endpoint
-for the add service amount operation typically these are written to a http.Request
+/* AddServiceAmountParams contains all the parameters to send to the API endpoint
+   for the add service amount operation.
+
+   Typically these are written to a http.Request.
 */
 type AddServiceAmountParams struct {
 
-	/*Args*/
+	// Args.
 	Args AddServiceAmountBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the add service amount params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *AddServiceAmountParams) WithDefaults() *AddServiceAmountParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the add service amount params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *AddServiceAmountParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the add service amount params
@@ -120,7 +133,6 @@ func (o *AddServiceAmountParams) WriteToRequest(r runtime.ClientRequest, reg str
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.Args); err != nil {
 		return err
 	}

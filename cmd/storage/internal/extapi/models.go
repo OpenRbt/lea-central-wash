@@ -200,10 +200,10 @@ func apiRelays(r []app.Relay) (res []*model.RelayConfig) {
 	return res
 }
 
-func apiButtons(r []app.StationProgram) (res []*op.ButtonsItems0) {
-	res = []*op.ButtonsItems0{}
+func apiButtons(r []app.StationProgram) (res []*op.StationButtonOKBodyButtonsItems0) {
+	res = []*op.StationButtonOKBodyButtonsItems0{}
 	for i := range r {
-		res = append(res, &op.ButtonsItems0{
+		res = append(res, &op.StationButtonOKBodyButtonsItems0{
 			ProgramID: int64(r[i].ProgramID),
 			ButtonID:  int64(r[i].ButtonID),
 		})
@@ -241,7 +241,7 @@ func apiUserReport(v app.UserData) *model.UserConfig {
 	isEngineer := model.IsEngineer(*v.IsEngineer)
 
 	return &model.UserConfig{
-		Login:      model.Login(v.Login),
+		Login:      (*model.Login)(&v.Login),
 		FirstName:  &firstName,
 		MiddleName: &middleName,
 		LastName:   &lastName,
