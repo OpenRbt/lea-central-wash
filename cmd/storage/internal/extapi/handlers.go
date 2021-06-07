@@ -281,7 +281,6 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		stationIP = ""
 	}
 	log.Info("post ping", "time", time.Now(), "hash", *params.Args.Hash, "ip", stationIP)
-	time.Sleep(time.Second * 3)
 	stationID, err := svc.getIDAndAddHash(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("post ping: not found", "hash", params.Args.Hash, "ip", stationIP)
