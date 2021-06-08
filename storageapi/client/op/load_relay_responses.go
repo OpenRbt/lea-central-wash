@@ -6,16 +6,19 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // LoadRelayReader is a Reader for the LoadRelay structure.
@@ -26,30 +29,26 @@ type LoadRelayReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *LoadRelayReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewLoadRelayOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 404:
 		result := NewLoadRelayNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewLoadRelayInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -58,7 +57,7 @@ func NewLoadRelayOK() *LoadRelayOK {
 	return &LoadRelayOK{}
 }
 
-/*LoadRelayOK handles this case with default header values.
+/* LoadRelayOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -68,6 +67,9 @@ type LoadRelayOK struct {
 
 func (o *LoadRelayOK) Error() string {
 	return fmt.Sprintf("[POST /load-relay][%d] loadRelayOK  %+v", 200, o.Payload)
+}
+func (o *LoadRelayOK) GetPayload() *model.RelayReport {
+	return o.Payload
 }
 
 func (o *LoadRelayOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -87,7 +89,7 @@ func NewLoadRelayNotFound() *LoadRelayNotFound {
 	return &LoadRelayNotFound{}
 }
 
-/*LoadRelayNotFound handles this case with default header values.
+/* LoadRelayNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -108,7 +110,7 @@ func NewLoadRelayInternalServerError() *LoadRelayInternalServerError {
 	return &LoadRelayInternalServerError{}
 }
 
-/*LoadRelayInternalServerError handles this case with default header values.
+/* LoadRelayInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -131,7 +133,26 @@ type LoadRelayBody struct {
 
 	// hash
 	// Required: true
-	Hash model.Hash `json:"hash"`
+	Hash *model.Hash `json:"hash"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *LoadRelayBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Hash = props.Hash
+	return nil
 }
 
 // Validate validates this load relay body
@@ -150,11 +171,49 @@ func (o *LoadRelayBody) Validate(formats strfmt.Registry) error {
 
 func (o *LoadRelayBody) validateHash(formats strfmt.Registry) error {
 
-	if err := o.Hash.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "hash")
-		}
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
+		return err
+	}
+
+	if o.Hash != nil {
+		if err := o.Hash.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this load relay body based on the context it is used
+func (o *LoadRelayBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateHash(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *LoadRelayBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Hash != nil {
+		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
 	}
 
 	return nil

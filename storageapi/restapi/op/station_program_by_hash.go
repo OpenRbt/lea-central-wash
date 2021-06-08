@@ -6,13 +6,18 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"net/http"
 
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
+
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
-	errors "github.com/go-openapi/errors"
-	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
 )
 
 // StationProgramByHashHandlerFunc turns a function with the right signature into a station program by hash handler
@@ -33,7 +38,7 @@ func NewStationProgramByHash(ctx *middleware.Context, handler StationProgramByHa
 	return &StationProgramByHash{Context: ctx, Handler: handler}
 }
 
-/*StationProgramByHash swagger:route POST /station-program-by-hash stationProgramByHash
+/* StationProgramByHash swagger:route POST /station-program-by-hash stationProgramByHash
 
 StationProgramByHash station program by hash API
 
@@ -46,28 +51,46 @@ type StationProgramByHash struct {
 func (o *StationProgramByHash) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewStationProgramByHashParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
 
 // StationProgramByHashBody station program by hash body
+//
 // swagger:model StationProgramByHashBody
 type StationProgramByHashBody struct {
 
 	// hash
 	// Required: true
-	Hash model.Hash `json:"hash"`
+	Hash *model.Hash `json:"hash"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationProgramByHashBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Hash = props.Hash
+	return nil
 }
 
 // Validate validates this station program by hash body
@@ -86,11 +109,49 @@ func (o *StationProgramByHashBody) Validate(formats strfmt.Registry) error {
 
 func (o *StationProgramByHashBody) validateHash(formats strfmt.Registry) error {
 
-	if err := o.Hash.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "hash")
-		}
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
+		return err
+	}
+
+	if o.Hash != nil {
+		if err := o.Hash.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this station program by hash body based on the context it is used
+func (o *StationProgramByHashBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateHash(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *StationProgramByHashBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Hash != nil {
+		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
 	}
 
 	return nil

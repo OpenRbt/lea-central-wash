@@ -6,17 +6,23 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"encoding/json"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // Status status
+//
 // swagger:model Status
 type Status string
+
+func NewStatus(value Status) *Status {
+	v := value
+	return &v
+}
 
 const (
 
@@ -41,7 +47,7 @@ func init() {
 }
 
 func (m Status) validateStatusEnum(path, location string, value Status) error {
-	if err := validate.Enum(path, location, value, statusEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, statusEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -59,5 +65,10 @@ func (m Status) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+// ContextValidate validates this status based on context it is used
+func (m Status) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }

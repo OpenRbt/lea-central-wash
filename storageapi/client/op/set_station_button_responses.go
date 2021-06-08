@@ -6,16 +6,18 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-
-	strfmt "github.com/go-openapi/strfmt"
 )
 
 // SetStationButtonReader is a Reader for the SetStationButton structure.
@@ -26,30 +28,26 @@ type SetStationButtonReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *SetStationButtonReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 204:
 		result := NewSetStationButtonNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 422:
 		result := NewSetStationButtonUnprocessableEntity()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewSetStationButtonInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -58,7 +56,7 @@ func NewSetStationButtonNoContent() *SetStationButtonNoContent {
 	return &SetStationButtonNoContent{}
 }
 
-/*SetStationButtonNoContent handles this case with default header values.
+/* SetStationButtonNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -79,7 +77,7 @@ func NewSetStationButtonUnprocessableEntity() *SetStationButtonUnprocessableEnti
 	return &SetStationButtonUnprocessableEntity{}
 }
 
-/*SetStationButtonUnprocessableEntity handles this case with default header values.
+/* SetStationButtonUnprocessableEntity describes a response with status code 422, with default header values.
 
 validation error
 */
@@ -89,6 +87,9 @@ type SetStationButtonUnprocessableEntity struct {
 
 func (o *SetStationButtonUnprocessableEntity) Error() string {
 	return fmt.Sprintf("[POST /set-station-button][%d] setStationButtonUnprocessableEntity  %+v", 422, o.Payload)
+}
+func (o *SetStationButtonUnprocessableEntity) GetPayload() string {
+	return o.Payload
 }
 
 func (o *SetStationButtonUnprocessableEntity) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -106,7 +107,7 @@ func NewSetStationButtonInternalServerError() *SetStationButtonInternalServerErr
 	return &SetStationButtonInternalServerError{}
 }
 
-/*SetStationButtonInternalServerError handles this case with default header values.
+/* SetStationButtonInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -122,53 +123,42 @@ func (o *SetStationButtonInternalServerError) readResponse(response runtime.Clie
 	return nil
 }
 
-/*ButtonsItems0 buttons items0
-swagger:model ButtonsItems0
-*/
-type ButtonsItems0 struct {
-
-	// button ID
-	ButtonID int64 `json:"buttonID,omitempty"`
-
-	// program ID
-	ProgramID int64 `json:"programID,omitempty"`
-}
-
-// Validate validates this buttons items0
-func (o *ButtonsItems0) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *ButtonsItems0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *ButtonsItems0) UnmarshalBinary(b []byte) error {
-	var res ButtonsItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
 /*SetStationButtonBody set station button body
 swagger:model SetStationButtonBody
 */
 type SetStationButtonBody struct {
 
 	// buttons
-	Buttons []*ButtonsItems0 `json:"buttons"`
+	Buttons []*SetStationButtonParamsBodyButtonsItems0 `json:"buttons"`
 
 	// station ID
 	// Required: true
 	// Minimum: 1
 	StationID *int64 `json:"stationID"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *SetStationButtonBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// buttons
+		Buttons []*SetStationButtonParamsBodyButtonsItems0 `json:"buttons"`
+
+		// station ID
+		// Required: true
+		// Minimum: 1
+		StationID *int64 `json:"stationID"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Buttons = props.Buttons
+	o.StationID = props.StationID
+	return nil
 }
 
 // Validate validates this set station button body
@@ -190,7 +180,6 @@ func (o *SetStationButtonBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *SetStationButtonBody) validateButtons(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Buttons) { // not required
 		return nil
 	}
@@ -220,8 +209,40 @@ func (o *SetStationButtonBody) validateStationID(formats strfmt.Registry) error 
 		return err
 	}
 
-	if err := validate.MinimumInt("args"+"."+"stationID", "body", int64(*o.StationID), 1, false); err != nil {
+	if err := validate.MinimumInt("args"+"."+"stationID", "body", *o.StationID, 1, false); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this set station button body based on the context it is used
+func (o *SetStationButtonBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateButtons(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *SetStationButtonBody) contextValidateButtons(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Buttons); i++ {
+
+		if o.Buttons[i] != nil {
+			if err := o.Buttons[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("args" + "." + "buttons" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
@@ -238,6 +259,68 @@ func (o *SetStationButtonBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *SetStationButtonBody) UnmarshalBinary(b []byte) error {
 	var res SetStationButtonBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*SetStationButtonParamsBodyButtonsItems0 set station button params body buttons items0
+swagger:model SetStationButtonParamsBodyButtonsItems0
+*/
+type SetStationButtonParamsBodyButtonsItems0 struct {
+
+	// button ID
+	ButtonID int64 `json:"buttonID,omitempty"`
+
+	// program ID
+	ProgramID int64 `json:"programID,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *SetStationButtonParamsBodyButtonsItems0) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// button ID
+		ButtonID int64 `json:"buttonID,omitempty"`
+
+		// program ID
+		ProgramID int64 `json:"programID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ButtonID = props.ButtonID
+	o.ProgramID = props.ProgramID
+	return nil
+}
+
+// Validate validates this set station button params body buttons items0
+func (o *SetStationButtonParamsBodyButtonsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this set station button params body buttons items0 based on context it is used
+func (o *SetStationButtonParamsBodyButtonsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *SetStationButtonParamsBodyButtonsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *SetStationButtonParamsBodyButtonsItems0) UnmarshalBinary(b []byte) error {
+	var res SetStationButtonParamsBodyButtonsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

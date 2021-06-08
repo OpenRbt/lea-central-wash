@@ -6,13 +6,16 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"net/http"
 
-	errors "github.com/go-openapi/errors"
-	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
@@ -36,7 +39,7 @@ func NewUpdateUserPassword(ctx *middleware.Context, handler UpdateUserPasswordHa
 	return &UpdateUserPassword{Context: ctx, Handler: handler}
 }
 
-/*UpdateUserPassword swagger:route POST /user-password updateUserPassword
+/* UpdateUserPassword swagger:route POST /user-password updateUserPassword
 
 UpdateUserPassword update user password API
 
@@ -49,17 +52,16 @@ type UpdateUserPassword struct {
 func (o *UpdateUserPassword) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewUpdateUserPasswordParams()
-
 	uprinc, aCtx, err := o.Context.Authorize(r, route)
 	if err != nil {
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 	if aCtx != nil {
-		r = aCtx
+		*r = *aCtx
 	}
 	var principal *storageapi.Profile
 	if uprinc != nil {
@@ -72,26 +74,55 @@ func (o *UpdateUserPassword) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 	}
 
 	res := o.Handler.Handle(Params, principal) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
 
 // UpdateUserPasswordBody update user password body
+//
 // swagger:model UpdateUserPasswordBody
 type UpdateUserPasswordBody struct {
 
 	// login
 	// Required: true
-	Login model.Login `json:"login"`
+	Login *model.Login `json:"login"`
 
 	// new password
 	// Required: true
-	NewPassword model.Password `json:"newPassword"`
+	NewPassword *model.Password `json:"newPassword"`
 
 	// old password
 	// Required: true
-	OldPassword model.Password `json:"oldPassword"`
+	OldPassword *model.Password `json:"oldPassword"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *UpdateUserPasswordBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// login
+		// Required: true
+		Login *model.Login `json:"login"`
+
+		// new password
+		// Required: true
+		NewPassword *model.Password `json:"newPassword"`
+
+		// old password
+		// Required: true
+		OldPassword *model.Password `json:"oldPassword"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Login = props.Login
+	o.NewPassword = props.NewPassword
+	o.OldPassword = props.OldPassword
+	return nil
 }
 
 // Validate validates this update user password body
@@ -118,11 +149,21 @@ func (o *UpdateUserPasswordBody) Validate(formats strfmt.Registry) error {
 
 func (o *UpdateUserPasswordBody) validateLogin(formats strfmt.Registry) error {
 
-	if err := o.Login.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "login")
-		}
+	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
+		return err
+	}
+
+	if o.Login != nil {
+		if err := o.Login.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "login")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -130,11 +171,21 @@ func (o *UpdateUserPasswordBody) validateLogin(formats strfmt.Registry) error {
 
 func (o *UpdateUserPasswordBody) validateNewPassword(formats strfmt.Registry) error {
 
-	if err := o.NewPassword.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "newPassword")
-		}
+	if err := validate.Required("args"+"."+"newPassword", "body", o.NewPassword); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"newPassword", "body", o.NewPassword); err != nil {
+		return err
+	}
+
+	if o.NewPassword != nil {
+		if err := o.NewPassword.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "newPassword")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -142,11 +193,85 @@ func (o *UpdateUserPasswordBody) validateNewPassword(formats strfmt.Registry) er
 
 func (o *UpdateUserPasswordBody) validateOldPassword(formats strfmt.Registry) error {
 
-	if err := o.OldPassword.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "oldPassword")
-		}
+	if err := validate.Required("args"+"."+"oldPassword", "body", o.OldPassword); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"oldPassword", "body", o.OldPassword); err != nil {
+		return err
+	}
+
+	if o.OldPassword != nil {
+		if err := o.OldPassword.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "oldPassword")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this update user password body based on the context it is used
+func (o *UpdateUserPasswordBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLogin(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateNewPassword(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateOldPassword(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *UpdateUserPasswordBody) contextValidateLogin(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Login != nil {
+		if err := o.Login.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "login")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserPasswordBody) contextValidateNewPassword(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.NewPassword != nil {
+		if err := o.NewPassword.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "newPassword")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserPasswordBody) contextValidateOldPassword(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.OldPassword != nil {
+		if err := o.OldPassword.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "oldPassword")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -171,12 +296,32 @@ func (o *UpdateUserPasswordBody) UnmarshalBinary(b []byte) error {
 }
 
 // UpdateUserPasswordCreatedBody update user password created body
+//
 // swagger:model UpdateUserPasswordCreatedBody
 type UpdateUserPasswordCreatedBody struct {
 
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *UpdateUserPasswordCreatedBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// id
+		// Required: true
+		ID *int64 `json:"id"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ID = props.ID
+	return nil
 }
 
 // Validate validates this update user password created body
@@ -199,6 +344,11 @@ func (o *UpdateUserPasswordCreatedBody) validateID(formats strfmt.Registry) erro
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this update user password created body based on context it is used
+func (o *UpdateUserPasswordCreatedBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

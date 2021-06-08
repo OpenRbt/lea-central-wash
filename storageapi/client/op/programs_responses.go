@@ -6,17 +6,19 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // ProgramsReader is a Reader for the Programs structure.
@@ -27,23 +29,20 @@ type ProgramsReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *ProgramsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewProgramsOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 500:
 		result := NewProgramsInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -52,7 +51,7 @@ func NewProgramsOK() *ProgramsOK {
 	return &ProgramsOK{}
 }
 
-/*ProgramsOK handles this case with default header values.
+/* ProgramsOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -62,6 +61,9 @@ type ProgramsOK struct {
 
 func (o *ProgramsOK) Error() string {
 	return fmt.Sprintf("[POST /programs][%d] programsOK  %+v", 200, o.Payload)
+}
+func (o *ProgramsOK) GetPayload() []*model.Program {
+	return o.Payload
 }
 
 func (o *ProgramsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -79,7 +81,7 @@ func NewProgramsInternalServerError() *ProgramsInternalServerError {
 	return &ProgramsInternalServerError{}
 }
 
-/*ProgramsInternalServerError handles this case with default header values.
+/* ProgramsInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -105,6 +107,25 @@ type ProgramsBody struct {
 	ProgramID *int64 `json:"programID,omitempty"`
 }
 
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *ProgramsBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// program ID
+		// Minimum: 1
+		ProgramID *int64 `json:"programID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ProgramID = props.ProgramID
+	return nil
+}
+
 // Validate validates this programs body
 func (o *ProgramsBody) Validate(formats strfmt.Registry) error {
 	var res []error
@@ -120,15 +141,19 @@ func (o *ProgramsBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *ProgramsBody) validateProgramID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ProgramID) { // not required
 		return nil
 	}
 
-	if err := validate.MinimumInt("args"+"."+"programID", "body", int64(*o.ProgramID), 1, false); err != nil {
+	if err := validate.MinimumInt("args"+"."+"programID", "body", *o.ProgramID, 1, false); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this programs body based on context it is used
+func (o *ProgramsBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

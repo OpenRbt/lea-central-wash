@@ -8,7 +8,7 @@ package op
 import (
 	"net/http"
 
-	middleware "github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/runtime/middleware"
 )
 
 // SaveMoneyHandlerFunc turns a function with the right signature into a save money handler
@@ -29,7 +29,7 @@ func NewSaveMoney(ctx *middleware.Context, handler SaveMoneyHandler) *SaveMoney 
 	return &SaveMoney{Context: ctx, Handler: handler}
 }
 
-/*SaveMoney swagger:route POST /save-money saveMoney
+/* SaveMoney swagger:route POST /save-money saveMoney
 
 SaveMoney save money API
 
@@ -42,17 +42,15 @@ type SaveMoney struct {
 func (o *SaveMoney) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewSaveMoneyParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

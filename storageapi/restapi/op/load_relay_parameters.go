@@ -6,16 +6,19 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"io"
 	"net/http"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/validate"
 )
 
 // NewLoadRelayParams creates a new LoadRelayParams object
-// no default values defined in spec.
+//
+// There are no default values defined in the spec.
 func NewLoadRelayParams() LoadRelayParams {
 
 	return LoadRelayParams{}
@@ -51,7 +54,7 @@ func (o *LoadRelayParams) BindRequest(r *http.Request, route *middleware.Matched
 		var body LoadRelayBody
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
-				res = append(res, errors.Required("args", "body"))
+				res = append(res, errors.Required("args", "body", ""))
 			} else {
 				res = append(res, errors.NewParseError("args", "body", "", err))
 			}
@@ -61,12 +64,17 @@ func (o *LoadRelayParams) BindRequest(r *http.Request, route *middleware.Matched
 				res = append(res, err)
 			}
 
+			ctx := validate.WithOperationRequest(context.Background())
+			if err := body.ContextValidate(ctx, route.Formats); err != nil {
+				res = append(res, err)
+			}
+
 			if len(res) == 0 {
 				o.Args = body
 			}
 		}
 	} else {
-		res = append(res, errors.Required("args", "body"))
+		res = append(res, errors.Required("args", "body", ""))
 	}
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)

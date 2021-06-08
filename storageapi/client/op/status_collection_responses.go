@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // StatusCollectionReader is a Reader for the StatusCollection structure.
@@ -24,30 +23,26 @@ type StatusCollectionReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *StatusCollectionReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewStatusCollectionOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewStatusCollectionUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewStatusCollectionInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -56,7 +51,7 @@ func NewStatusCollectionOK() *StatusCollectionOK {
 	return &StatusCollectionOK{}
 }
 
-/*StatusCollectionOK handles this case with default header values.
+/* StatusCollectionOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -66,6 +61,9 @@ type StatusCollectionOK struct {
 
 func (o *StatusCollectionOK) Error() string {
 	return fmt.Sprintf("[GET /status-collection][%d] statusCollectionOK  %+v", 200, o.Payload)
+}
+func (o *StatusCollectionOK) GetPayload() *model.StatusCollectionReport {
+	return o.Payload
 }
 
 func (o *StatusCollectionOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -85,7 +83,7 @@ func NewStatusCollectionUnauthorized() *StatusCollectionUnauthorized {
 	return &StatusCollectionUnauthorized{}
 }
 
-/*StatusCollectionUnauthorized handles this case with default header values.
+/* StatusCollectionUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -106,7 +104,7 @@ func NewStatusCollectionInternalServerError() *StatusCollectionInternalServerErr
 	return &StatusCollectionInternalServerError{}
 }
 
-/*StatusCollectionInternalServerError handles this case with default header values.
+/* StatusCollectionInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

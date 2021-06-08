@@ -9,8 +9,7 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // SetStationReader is a Reader for the SetStation structure.
@@ -21,44 +20,38 @@ type SetStationReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *SetStationReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 204:
 		result := NewSetStationNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewSetStationUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewSetStationNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 422:
 		result := NewSetStationUnprocessableEntity()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewSetStationInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -67,7 +60,7 @@ func NewSetStationNoContent() *SetStationNoContent {
 	return &SetStationNoContent{}
 }
 
-/*SetStationNoContent handles this case with default header values.
+/* SetStationNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -88,7 +81,7 @@ func NewSetStationUnauthorized() *SetStationUnauthorized {
 	return &SetStationUnauthorized{}
 }
 
-/*SetStationUnauthorized handles this case with default header values.
+/* SetStationUnauthorized describes a response with status code 401, with default header values.
 
 Access denied. It will happen when you try to change the ID at the station online.
 */
@@ -109,7 +102,7 @@ func NewSetStationNotFound() *SetStationNotFound {
 	return &SetStationNotFound{}
 }
 
-/*SetStationNotFound handles this case with default header values.
+/* SetStationNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -130,7 +123,7 @@ func NewSetStationUnprocessableEntity() *SetStationUnprocessableEntity {
 	return &SetStationUnprocessableEntity{}
 }
 
-/*SetStationUnprocessableEntity handles this case with default header values.
+/* SetStationUnprocessableEntity describes a response with status code 422, with default header values.
 
 validation error
 */
@@ -151,7 +144,7 @@ func NewSetStationInternalServerError() *SetStationInternalServerError {
 	return &SetStationInternalServerError{}
 }
 
-/*SetStationInternalServerError handles this case with default header values.
+/* SetStationInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

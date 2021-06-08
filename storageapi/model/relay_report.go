@@ -6,24 +6,51 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // RelayReport relay report
+//
 // swagger:model RelayReport
 type RelayReport struct {
 
 	// hash
 	// Required: true
-	Hash Hash `json:"hash"`
+	Hash *Hash `json:"hash"`
 
 	// relay stats
 	RelayStats []*RelayStat `json:"relayStats"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *RelayReport) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *Hash `json:"hash"`
+
+		// relay stats
+		RelayStats []*RelayStat `json:"relayStats"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.Hash = props.Hash
+	m.RelayStats = props.RelayStats
+	return nil
 }
 
 // Validate validates this relay report
@@ -46,18 +73,27 @@ func (m *RelayReport) Validate(formats strfmt.Registry) error {
 
 func (m *RelayReport) validateHash(formats strfmt.Registry) error {
 
-	if err := m.Hash.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("hash")
-		}
+	if err := validate.Required("hash", "body", m.Hash); err != nil {
 		return err
+	}
+
+	if err := validate.Required("hash", "body", m.Hash); err != nil {
+		return err
+	}
+
+	if m.Hash != nil {
+		if err := m.Hash.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("hash")
+			}
+			return err
+		}
 	}
 
 	return nil
 }
 
 func (m *RelayReport) validateRelayStats(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.RelayStats) { // not required
 		return nil
 	}
@@ -69,6 +105,56 @@ func (m *RelayReport) validateRelayStats(formats strfmt.Registry) error {
 
 		if m.RelayStats[i] != nil {
 			if err := m.RelayStats[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("relayStats" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this relay report based on the context it is used
+func (m *RelayReport) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateHash(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRelayStats(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *RelayReport) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Hash != nil {
+		if err := m.Hash.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("hash")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *RelayReport) contextValidateRelayStats(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.RelayStats); i++ {
+
+		if m.RelayStats[i] != nil {
+			if err := m.RelayStats[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relayStats" + "." + strconv.Itoa(i))
 				}

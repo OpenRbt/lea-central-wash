@@ -6,16 +6,18 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // SaveIfNotExistsReader is a Reader for the SaveIfNotExists structure.
@@ -26,30 +28,26 @@ type SaveIfNotExistsReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *SaveIfNotExistsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 204:
 		result := NewSaveIfNotExistsNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 404:
 		result := NewSaveIfNotExistsNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewSaveIfNotExistsInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -58,7 +56,7 @@ func NewSaveIfNotExistsNoContent() *SaveIfNotExistsNoContent {
 	return &SaveIfNotExistsNoContent{}
 }
 
-/*SaveIfNotExistsNoContent handles this case with default header values.
+/* SaveIfNotExistsNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -79,7 +77,7 @@ func NewSaveIfNotExistsNotFound() *SaveIfNotExistsNotFound {
 	return &SaveIfNotExistsNotFound{}
 }
 
-/*SaveIfNotExistsNotFound handles this case with default header values.
+/* SaveIfNotExistsNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -100,7 +98,7 @@ func NewSaveIfNotExistsInternalServerError() *SaveIfNotExistsInternalServerError
 	return &SaveIfNotExistsInternalServerError{}
 }
 
-/*SaveIfNotExistsInternalServerError handles this case with default header values.
+/* SaveIfNotExistsInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -123,11 +121,35 @@ type SaveIfNotExistsBody struct {
 
 	// hash
 	// Required: true
-	Hash model.Hash `json:"hash"`
+	Hash *model.Hash `json:"hash"`
 
 	// key pair
 	// Required: true
 	KeyPair *model.KeyPair `json:"keyPair"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *SaveIfNotExistsBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+
+		// key pair
+		// Required: true
+		KeyPair *model.KeyPair `json:"keyPair"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Hash = props.Hash
+	o.KeyPair = props.KeyPair
+	return nil
 }
 
 // Validate validates this save if not exists body
@@ -150,11 +172,21 @@ func (o *SaveIfNotExistsBody) Validate(formats strfmt.Registry) error {
 
 func (o *SaveIfNotExistsBody) validateHash(formats strfmt.Registry) error {
 
-	if err := o.Hash.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "hash")
-		}
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
+		return err
+	}
+
+	if o.Hash != nil {
+		if err := o.Hash.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -168,6 +200,52 @@ func (o *SaveIfNotExistsBody) validateKeyPair(formats strfmt.Registry) error {
 
 	if o.KeyPair != nil {
 		if err := o.KeyPair.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "keyPair")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this save if not exists body based on the context it is used
+func (o *SaveIfNotExistsBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateHash(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateKeyPair(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *SaveIfNotExistsBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Hash != nil {
+		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *SaveIfNotExistsBody) contextValidateKeyPair(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.KeyPair != nil {
+		if err := o.KeyPair.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "keyPair")
 			}

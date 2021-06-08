@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // GetUserReader is a Reader for the GetUser structure.
@@ -24,23 +23,20 @@ type GetUserReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetUserReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetUserOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewGetUserUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -49,7 +45,7 @@ func NewGetUserOK() *GetUserOK {
 	return &GetUserOK{}
 }
 
-/*GetUserOK handles this case with default header values.
+/* GetUserOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -59,6 +55,9 @@ type GetUserOK struct {
 
 func (o *GetUserOK) Error() string {
 	return fmt.Sprintf("[GET /user][%d] getUserOK  %+v", 200, o.Payload)
+}
+func (o *GetUserOK) GetPayload() *model.UserConfig {
+	return o.Payload
 }
 
 func (o *GetUserOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -78,7 +77,7 @@ func NewGetUserUnauthorized() *GetUserUnauthorized {
 	return &GetUserUnauthorized{}
 }
 
-/*GetUserUnauthorized handles this case with default header values.
+/* GetUserUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */

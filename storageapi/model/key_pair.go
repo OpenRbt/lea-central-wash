@@ -6,14 +6,18 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"bytes"
+	"context"
+	"encoding/json"
 
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // KeyPair key pair
+//
 // swagger:model KeyPair
 type KeyPair struct {
 
@@ -25,6 +29,31 @@ type KeyPair struct {
 	// value
 	// Required: true
 	Value *string `json:"value"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *KeyPair) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// key
+		// Required: true
+		// Min Length: 1
+		Key *string `json:"key"`
+
+		// value
+		// Required: true
+		Value *string `json:"value"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.Key = props.Key
+	m.Value = props.Value
+	return nil
 }
 
 // Validate validates this key pair
@@ -51,7 +80,7 @@ func (m *KeyPair) validateKey(formats strfmt.Registry) error {
 		return err
 	}
 
-	if err := validate.MinLength("key", "body", string(*m.Key), 1); err != nil {
+	if err := validate.MinLength("key", "body", *m.Key, 1); err != nil {
 		return err
 	}
 
@@ -64,6 +93,11 @@ func (m *KeyPair) validateValue(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this key pair based on context it is used
+func (m *KeyPair) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

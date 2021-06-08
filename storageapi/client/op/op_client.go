@@ -6,13 +6,14 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"github.com/go-openapi/runtime"
+	"fmt"
 
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new op API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -24,16 +25,107 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
+// ClientService is the interface for Client methods
+type ClientService interface {
+	AddServiceAmount(params *AddServiceAmountParams, opts ...ClientOption) (*AddServiceAmountNoContent, error)
+
+	CardReaderConfig(params *CardReaderConfigParams, opts ...ClientOption) (*CardReaderConfigOK, error)
+
+	CardReaderConfigByHash(params *CardReaderConfigByHashParams, opts ...ClientOption) (*CardReaderConfigByHashOK, error)
+
+	CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateUserCreated, error)
+
+	DelStation(params *DelStationParams, opts ...ClientOption) (*DelStationNoContent, error)
+
+	DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteUserNoContent, error)
+
+	GetPing(params *GetPingParams, opts ...ClientOption) (*GetPingOK, error)
+
+	GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetUserOK, error)
+
+	GetUsers(params *GetUsersParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetUsersOK, error)
+
+	Info(params *InfoParams, opts ...ClientOption) (*InfoOK, error)
+
+	Kasse(params *KasseParams, opts ...ClientOption) (*KasseOK, error)
+
+	Load(params *LoadParams, opts ...ClientOption) (*LoadOK, error)
+
+	LoadFromStation(params *LoadFromStationParams, opts ...ClientOption) (*LoadFromStationOK, error)
+
+	LoadMoney(params *LoadMoneyParams, opts ...ClientOption) (*LoadMoneyOK, error)
+
+	LoadRelay(params *LoadRelayParams, opts ...ClientOption) (*LoadRelayOK, error)
+
+	OpenStation(params *OpenStationParams, opts ...ClientOption) (*OpenStationNoContent, error)
+
+	Ping(params *PingParams, opts ...ClientOption) (*PingOK, error)
+
+	PressButton(params *PressButtonParams, opts ...ClientOption) (*PressButtonNoContent, error)
+
+	Programs(params *ProgramsParams, opts ...ClientOption) (*ProgramsOK, error)
+
+	RunProgram(params *RunProgramParams, opts ...ClientOption) (*RunProgramNoContent, error)
+
+	Save(params *SaveParams, opts ...ClientOption) (*SaveNoContent, error)
+
+	SaveCollection(params *SaveCollectionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SaveCollectionNoContent, error)
+
+	SaveIfNotExists(params *SaveIfNotExistsParams, opts ...ClientOption) (*SaveIfNotExistsNoContent, error)
+
+	SaveMoney(params *SaveMoneyParams, opts ...ClientOption) (*SaveMoneyNoContent, error)
+
+	SaveRelay(params *SaveRelayParams, opts ...ClientOption) (*SaveRelayNoContent, error)
+
+	SetCardReaderConfig(params *SetCardReaderConfigParams, opts ...ClientOption) (*SetCardReaderConfigNoContent, error)
+
+	SetKasse(params *SetKasseParams, opts ...ClientOption) (*SetKasseNoContent, error)
+
+	SetProgram(params *SetProgramParams, opts ...ClientOption) (*SetProgramNoContent, error)
+
+	SetStation(params *SetStationParams, opts ...ClientOption) (*SetStationNoContent, error)
+
+	SetStationButton(params *SetStationButtonParams, opts ...ClientOption) (*SetStationButtonNoContent, error)
+
+	Station(params *StationParams, opts ...ClientOption) (*StationOK, error)
+
+	StationButton(params *StationButtonParams, opts ...ClientOption) (*StationButtonOK, error)
+
+	StationByHash(params *StationByHashParams, opts ...ClientOption) (*StationByHashOK, error)
+
+	StationCollectionReportDates(params *StationCollectionReportDatesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationCollectionReportDatesOK, error)
+
+	StationProgramByHash(params *StationProgramByHashParams, opts ...ClientOption) (*StationProgramByHashOK, error)
+
+	StationReportCurrentMoney(params *StationReportCurrentMoneyParams, opts ...ClientOption) (*StationReportCurrentMoneyOK, error)
+
+	StationReportDates(params *StationReportDatesParams, opts ...ClientOption) (*StationReportDatesOK, error)
+
+	StationsVariables(params *StationsVariablesParams, opts ...ClientOption) (*StationsVariablesOK, error)
+
+	Status(params *StatusParams, opts ...ClientOption) (*StatusOK, error)
+
+	StatusCollection(params *StatusCollectionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StatusCollectionOK, error)
+
+	UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateUserCreated, error)
+
+	UpdateUserPassword(params *UpdateUserPasswordParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateUserPasswordCreated, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
 /*
-AddServiceAmount add service amount API
+  AddServiceAmount add service amount API
 */
-func (a *Client) AddServiceAmount(params *AddServiceAmountParams) (*AddServiceAmountNoContent, error) {
+func (a *Client) AddServiceAmount(params *AddServiceAmountParams, opts ...ClientOption) (*AddServiceAmountNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewAddServiceAmountParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "addServiceAmount",
 		Method:             "POST",
 		PathPattern:        "/add-service-amount",
@@ -44,24 +136,34 @@ func (a *Client) AddServiceAmount(params *AddServiceAmountParams) (*AddServiceAm
 		Reader:             &AddServiceAmountReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*AddServiceAmountNoContent), nil
-
+	success, ok := result.(*AddServiceAmountNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for addServiceAmount: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-CardReaderConfig card reader config API
+  CardReaderConfig card reader config API
 */
-func (a *Client) CardReaderConfig(params *CardReaderConfigParams) (*CardReaderConfigOK, error) {
+func (a *Client) CardReaderConfig(params *CardReaderConfigParams, opts ...ClientOption) (*CardReaderConfigOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCardReaderConfigParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "cardReaderConfig",
 		Method:             "POST",
 		PathPattern:        "/card-reader-config",
@@ -72,24 +174,34 @@ func (a *Client) CardReaderConfig(params *CardReaderConfigParams) (*CardReaderCo
 		Reader:             &CardReaderConfigReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*CardReaderConfigOK), nil
-
+	success, ok := result.(*CardReaderConfigOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for cardReaderConfig: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-CardReaderConfigByHash card reader config by hash API
+  CardReaderConfigByHash card reader config by hash API
 */
-func (a *Client) CardReaderConfigByHash(params *CardReaderConfigByHashParams) (*CardReaderConfigByHashOK, error) {
+func (a *Client) CardReaderConfigByHash(params *CardReaderConfigByHashParams, opts ...ClientOption) (*CardReaderConfigByHashOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCardReaderConfigByHashParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "cardReaderConfigByHash",
 		Method:             "POST",
 		PathPattern:        "/card-reader-config-by-hash",
@@ -100,24 +212,34 @@ func (a *Client) CardReaderConfigByHash(params *CardReaderConfigByHashParams) (*
 		Reader:             &CardReaderConfigByHashReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*CardReaderConfigByHashOK), nil
-
+	success, ok := result.(*CardReaderConfigByHashOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for cardReaderConfigByHash: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-CreateUser create user API
+  CreateUser create user API
 */
-func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter) (*CreateUserCreated, error) {
+func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateUserCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateUserParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "createUser",
 		Method:             "POST",
 		PathPattern:        "/user",
@@ -129,24 +251,34 @@ func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAut
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*CreateUserCreated), nil
-
+	success, ok := result.(*CreateUserCreated)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for createUser: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-DelStation del station API
+  DelStation del station API
 */
-func (a *Client) DelStation(params *DelStationParams) (*DelStationNoContent, error) {
+func (a *Client) DelStation(params *DelStationParams, opts ...ClientOption) (*DelStationNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDelStationParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "delStation",
 		Method:             "POST",
 		PathPattern:        "/del-station",
@@ -157,24 +289,34 @@ func (a *Client) DelStation(params *DelStationParams) (*DelStationNoContent, err
 		Reader:             &DelStationReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DelStationNoContent), nil
-
+	success, ok := result.(*DelStationNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for delStation: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-DeleteUser delete user API
+  DeleteUser delete user API
 */
-func (a *Client) DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteUserNoContent, error) {
+func (a *Client) DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteUserNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeleteUserParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "deleteUser",
 		Method:             "DELETE",
 		PathPattern:        "/user",
@@ -186,24 +328,34 @@ func (a *Client) DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAut
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DeleteUserNoContent), nil
-
+	success, ok := result.(*DeleteUserNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for deleteUser: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-GetPing get ping API
+  GetPing get ping API
 */
-func (a *Client) GetPing(params *GetPingParams) (*GetPingOK, error) {
+func (a *Client) GetPing(params *GetPingParams, opts ...ClientOption) (*GetPingOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetPingParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getPing",
 		Method:             "GET",
 		PathPattern:        "/ping",
@@ -214,24 +366,34 @@ func (a *Client) GetPing(params *GetPingParams) (*GetPingOK, error) {
 		Reader:             &GetPingReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetPingOK), nil
-
+	success, ok := result.(*GetPingOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getPing: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-GetUser get user API
+  GetUser get user API
 */
-func (a *Client) GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoWriter) (*GetUserOK, error) {
+func (a *Client) GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetUserOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetUserParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getUser",
 		Method:             "GET",
 		PathPattern:        "/user",
@@ -243,24 +405,34 @@ func (a *Client) GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoW
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetUserOK), nil
-
+	success, ok := result.(*GetUserOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getUser: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-GetUsers get users API
+  GetUsers get users API
 */
-func (a *Client) GetUsers(params *GetUsersParams, authInfo runtime.ClientAuthInfoWriter) (*GetUsersOK, error) {
+func (a *Client) GetUsers(params *GetUsersParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetUsersOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetUsersParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getUsers",
 		Method:             "GET",
 		PathPattern:        "/users",
@@ -272,24 +444,34 @@ func (a *Client) GetUsers(params *GetUsersParams, authInfo runtime.ClientAuthInf
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetUsersOK), nil
-
+	success, ok := result.(*GetUsersOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getUsers: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-Info info API
+  Info info API
 */
-func (a *Client) Info(params *InfoParams) (*InfoOK, error) {
+func (a *Client) Info(params *InfoParams, opts ...ClientOption) (*InfoOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewInfoParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "info",
 		Method:             "GET",
 		PathPattern:        "/info",
@@ -300,24 +482,34 @@ func (a *Client) Info(params *InfoParams) (*InfoOK, error) {
 		Reader:             &InfoReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*InfoOK), nil
-
+	success, ok := result.(*InfoOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for info: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-Kasse kasse API
+  Kasse kasse API
 */
-func (a *Client) Kasse(params *KasseParams) (*KasseOK, error) {
+func (a *Client) Kasse(params *KasseParams, opts ...ClientOption) (*KasseOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewKasseParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "kasse",
 		Method:             "POST",
 		PathPattern:        "/kasse",
@@ -328,24 +520,34 @@ func (a *Client) Kasse(params *KasseParams) (*KasseOK, error) {
 		Reader:             &KasseReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*KasseOK), nil
-
+	success, ok := result.(*KasseOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for kasse: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-Load load API
+  Load load API
 */
-func (a *Client) Load(params *LoadParams) (*LoadOK, error) {
+func (a *Client) Load(params *LoadParams, opts ...ClientOption) (*LoadOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewLoadParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "load",
 		Method:             "POST",
 		PathPattern:        "/load",
@@ -356,24 +558,34 @@ func (a *Client) Load(params *LoadParams) (*LoadOK, error) {
 		Reader:             &LoadReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*LoadOK), nil
-
+	success, ok := result.(*LoadOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for load: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-LoadFromStation load from station API
+  LoadFromStation load from station API
 */
-func (a *Client) LoadFromStation(params *LoadFromStationParams) (*LoadFromStationOK, error) {
+func (a *Client) LoadFromStation(params *LoadFromStationParams, opts ...ClientOption) (*LoadFromStationOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewLoadFromStationParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "loadFromStation",
 		Method:             "POST",
 		PathPattern:        "/load-from-station",
@@ -384,24 +596,34 @@ func (a *Client) LoadFromStation(params *LoadFromStationParams) (*LoadFromStatio
 		Reader:             &LoadFromStationReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*LoadFromStationOK), nil
-
+	success, ok := result.(*LoadFromStationOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for loadFromStation: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-LoadMoney load money API
+  LoadMoney load money API
 */
-func (a *Client) LoadMoney(params *LoadMoneyParams) (*LoadMoneyOK, error) {
+func (a *Client) LoadMoney(params *LoadMoneyParams, opts ...ClientOption) (*LoadMoneyOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewLoadMoneyParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "loadMoney",
 		Method:             "POST",
 		PathPattern:        "/load-money",
@@ -412,24 +634,34 @@ func (a *Client) LoadMoney(params *LoadMoneyParams) (*LoadMoneyOK, error) {
 		Reader:             &LoadMoneyReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*LoadMoneyOK), nil
-
+	success, ok := result.(*LoadMoneyOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for loadMoney: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-LoadRelay load relay API
+  LoadRelay load relay API
 */
-func (a *Client) LoadRelay(params *LoadRelayParams) (*LoadRelayOK, error) {
+func (a *Client) LoadRelay(params *LoadRelayParams, opts ...ClientOption) (*LoadRelayOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewLoadRelayParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "loadRelay",
 		Method:             "POST",
 		PathPattern:        "/load-relay",
@@ -440,24 +672,34 @@ func (a *Client) LoadRelay(params *LoadRelayParams) (*LoadRelayOK, error) {
 		Reader:             &LoadRelayReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*LoadRelayOK), nil
-
+	success, ok := result.(*LoadRelayOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for loadRelay: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-OpenStation open station API
+  OpenStation open station API
 */
-func (a *Client) OpenStation(params *OpenStationParams) (*OpenStationNoContent, error) {
+func (a *Client) OpenStation(params *OpenStationParams, opts ...ClientOption) (*OpenStationNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewOpenStationParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "openStation",
 		Method:             "POST",
 		PathPattern:        "/open-station",
@@ -468,24 +710,34 @@ func (a *Client) OpenStation(params *OpenStationParams) (*OpenStationNoContent, 
 		Reader:             &OpenStationReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*OpenStationNoContent), nil
-
+	success, ok := result.(*OpenStationNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for openStation: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-Ping ping API
+  Ping ping API
 */
-func (a *Client) Ping(params *PingParams) (*PingOK, error) {
+func (a *Client) Ping(params *PingParams, opts ...ClientOption) (*PingOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewPingParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "ping",
 		Method:             "POST",
 		PathPattern:        "/ping",
@@ -496,24 +748,34 @@ func (a *Client) Ping(params *PingParams) (*PingOK, error) {
 		Reader:             &PingReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*PingOK), nil
-
+	success, ok := result.(*PingOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for ping: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-PressButton press button API
+  PressButton press button API
 */
-func (a *Client) PressButton(params *PressButtonParams) (*PressButtonNoContent, error) {
+func (a *Client) PressButton(params *PressButtonParams, opts ...ClientOption) (*PressButtonNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewPressButtonParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "pressButton",
 		Method:             "POST",
 		PathPattern:        "/press-button",
@@ -524,24 +786,34 @@ func (a *Client) PressButton(params *PressButtonParams) (*PressButtonNoContent, 
 		Reader:             &PressButtonReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*PressButtonNoContent), nil
-
+	success, ok := result.(*PressButtonNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for pressButton: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-Programs programs API
+  Programs programs API
 */
-func (a *Client) Programs(params *ProgramsParams) (*ProgramsOK, error) {
+func (a *Client) Programs(params *ProgramsParams, opts ...ClientOption) (*ProgramsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewProgramsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "programs",
 		Method:             "POST",
 		PathPattern:        "/programs",
@@ -552,24 +824,34 @@ func (a *Client) Programs(params *ProgramsParams) (*ProgramsOK, error) {
 		Reader:             &ProgramsReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*ProgramsOK), nil
-
+	success, ok := result.(*ProgramsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for programs: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-RunProgram run program API
+  RunProgram run program API
 */
-func (a *Client) RunProgram(params *RunProgramParams) (*RunProgramNoContent, error) {
+func (a *Client) RunProgram(params *RunProgramParams, opts ...ClientOption) (*RunProgramNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewRunProgramParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "runProgram",
 		Method:             "POST",
 		PathPattern:        "/run-program",
@@ -580,24 +862,34 @@ func (a *Client) RunProgram(params *RunProgramParams) (*RunProgramNoContent, err
 		Reader:             &RunProgramReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*RunProgramNoContent), nil
-
+	success, ok := result.(*RunProgramNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for runProgram: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-Save save API
+  Save save API
 */
-func (a *Client) Save(params *SaveParams) (*SaveNoContent, error) {
+func (a *Client) Save(params *SaveParams, opts ...ClientOption) (*SaveNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSaveParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "save",
 		Method:             "POST",
 		PathPattern:        "/save",
@@ -608,24 +900,34 @@ func (a *Client) Save(params *SaveParams) (*SaveNoContent, error) {
 		Reader:             &SaveReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*SaveNoContent), nil
-
+	success, ok := result.(*SaveNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for save: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-SaveCollection save collection API
+  SaveCollection save collection API
 */
-func (a *Client) SaveCollection(params *SaveCollectionParams, authInfo runtime.ClientAuthInfoWriter) (*SaveCollectionNoContent, error) {
+func (a *Client) SaveCollection(params *SaveCollectionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SaveCollectionNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSaveCollectionParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "saveCollection",
 		Method:             "POST",
 		PathPattern:        "/save-collection",
@@ -637,24 +939,34 @@ func (a *Client) SaveCollection(params *SaveCollectionParams, authInfo runtime.C
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*SaveCollectionNoContent), nil
-
+	success, ok := result.(*SaveCollectionNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for saveCollection: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-SaveIfNotExists save if not exists API
+  SaveIfNotExists save if not exists API
 */
-func (a *Client) SaveIfNotExists(params *SaveIfNotExistsParams) (*SaveIfNotExistsNoContent, error) {
+func (a *Client) SaveIfNotExists(params *SaveIfNotExistsParams, opts ...ClientOption) (*SaveIfNotExistsNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSaveIfNotExistsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "saveIfNotExists",
 		Method:             "POST",
 		PathPattern:        "/save-if-not-exists",
@@ -665,24 +977,34 @@ func (a *Client) SaveIfNotExists(params *SaveIfNotExistsParams) (*SaveIfNotExist
 		Reader:             &SaveIfNotExistsReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*SaveIfNotExistsNoContent), nil
-
+	success, ok := result.(*SaveIfNotExistsNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for saveIfNotExists: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-SaveMoney save money API
+  SaveMoney save money API
 */
-func (a *Client) SaveMoney(params *SaveMoneyParams) (*SaveMoneyNoContent, error) {
+func (a *Client) SaveMoney(params *SaveMoneyParams, opts ...ClientOption) (*SaveMoneyNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSaveMoneyParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "saveMoney",
 		Method:             "POST",
 		PathPattern:        "/save-money",
@@ -693,24 +1015,34 @@ func (a *Client) SaveMoney(params *SaveMoneyParams) (*SaveMoneyNoContent, error)
 		Reader:             &SaveMoneyReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*SaveMoneyNoContent), nil
-
+	success, ok := result.(*SaveMoneyNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for saveMoney: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-SaveRelay save relay API
+  SaveRelay save relay API
 */
-func (a *Client) SaveRelay(params *SaveRelayParams) (*SaveRelayNoContent, error) {
+func (a *Client) SaveRelay(params *SaveRelayParams, opts ...ClientOption) (*SaveRelayNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSaveRelayParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "saveRelay",
 		Method:             "POST",
 		PathPattern:        "/save-relay",
@@ -721,24 +1053,34 @@ func (a *Client) SaveRelay(params *SaveRelayParams) (*SaveRelayNoContent, error)
 		Reader:             &SaveRelayReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*SaveRelayNoContent), nil
-
+	success, ok := result.(*SaveRelayNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for saveRelay: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-SetCardReaderConfig set card reader config API
+  SetCardReaderConfig set card reader config API
 */
-func (a *Client) SetCardReaderConfig(params *SetCardReaderConfigParams) (*SetCardReaderConfigNoContent, error) {
+func (a *Client) SetCardReaderConfig(params *SetCardReaderConfigParams, opts ...ClientOption) (*SetCardReaderConfigNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSetCardReaderConfigParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "setCardReaderConfig",
 		Method:             "POST",
 		PathPattern:        "/set-card-reader-config",
@@ -749,24 +1091,34 @@ func (a *Client) SetCardReaderConfig(params *SetCardReaderConfigParams) (*SetCar
 		Reader:             &SetCardReaderConfigReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*SetCardReaderConfigNoContent), nil
-
+	success, ok := result.(*SetCardReaderConfigNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setCardReaderConfig: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-SetKasse set kasse API
+  SetKasse set kasse API
 */
-func (a *Client) SetKasse(params *SetKasseParams) (*SetKasseNoContent, error) {
+func (a *Client) SetKasse(params *SetKasseParams, opts ...ClientOption) (*SetKasseNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSetKasseParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "setKasse",
 		Method:             "POST",
 		PathPattern:        "/set-kasse",
@@ -777,24 +1129,34 @@ func (a *Client) SetKasse(params *SetKasseParams) (*SetKasseNoContent, error) {
 		Reader:             &SetKasseReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*SetKasseNoContent), nil
-
+	success, ok := result.(*SetKasseNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setKasse: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-SetProgram set program API
+  SetProgram set program API
 */
-func (a *Client) SetProgram(params *SetProgramParams) (*SetProgramNoContent, error) {
+func (a *Client) SetProgram(params *SetProgramParams, opts ...ClientOption) (*SetProgramNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSetProgramParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "setProgram",
 		Method:             "POST",
 		PathPattern:        "/set-program",
@@ -805,24 +1167,34 @@ func (a *Client) SetProgram(params *SetProgramParams) (*SetProgramNoContent, err
 		Reader:             &SetProgramReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*SetProgramNoContent), nil
-
+	success, ok := result.(*SetProgramNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setProgram: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-SetStation set station API
+  SetStation set station API
 */
-func (a *Client) SetStation(params *SetStationParams) (*SetStationNoContent, error) {
+func (a *Client) SetStation(params *SetStationParams, opts ...ClientOption) (*SetStationNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSetStationParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "setStation",
 		Method:             "POST",
 		PathPattern:        "/set-station",
@@ -833,24 +1205,34 @@ func (a *Client) SetStation(params *SetStationParams) (*SetStationNoContent, err
 		Reader:             &SetStationReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*SetStationNoContent), nil
-
+	success, ok := result.(*SetStationNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setStation: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-SetStationButton set station button API
+  SetStationButton set station button API
 */
-func (a *Client) SetStationButton(params *SetStationButtonParams) (*SetStationButtonNoContent, error) {
+func (a *Client) SetStationButton(params *SetStationButtonParams, opts ...ClientOption) (*SetStationButtonNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSetStationButtonParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "setStationButton",
 		Method:             "POST",
 		PathPattern:        "/set-station-button",
@@ -861,24 +1243,34 @@ func (a *Client) SetStationButton(params *SetStationButtonParams) (*SetStationBu
 		Reader:             &SetStationButtonReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*SetStationButtonNoContent), nil
-
+	success, ok := result.(*SetStationButtonNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setStationButton: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-Station station API
+  Station station API
 */
-func (a *Client) Station(params *StationParams) (*StationOK, error) {
+func (a *Client) Station(params *StationParams, opts ...ClientOption) (*StationOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "station",
 		Method:             "POST",
 		PathPattern:        "/station",
@@ -889,24 +1281,34 @@ func (a *Client) Station(params *StationParams) (*StationOK, error) {
 		Reader:             &StationReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*StationOK), nil
-
+	success, ok := result.(*StationOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for station: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-StationButton station button API
+  StationButton station button API
 */
-func (a *Client) StationButton(params *StationButtonParams) (*StationButtonOK, error) {
+func (a *Client) StationButton(params *StationButtonParams, opts ...ClientOption) (*StationButtonOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationButtonParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "stationButton",
 		Method:             "POST",
 		PathPattern:        "/station-button",
@@ -917,24 +1319,34 @@ func (a *Client) StationButton(params *StationButtonParams) (*StationButtonOK, e
 		Reader:             &StationButtonReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*StationButtonOK), nil
-
+	success, ok := result.(*StationButtonOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for stationButton: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-StationByHash station by hash API
+  StationByHash station by hash API
 */
-func (a *Client) StationByHash(params *StationByHashParams) (*StationByHashOK, error) {
+func (a *Client) StationByHash(params *StationByHashParams, opts ...ClientOption) (*StationByHashOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationByHashParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "stationByHash",
 		Method:             "POST",
 		PathPattern:        "/station-by-hash",
@@ -945,24 +1357,34 @@ func (a *Client) StationByHash(params *StationByHashParams) (*StationByHashOK, e
 		Reader:             &StationByHashReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*StationByHashOK), nil
-
+	success, ok := result.(*StationByHashOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for stationByHash: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-StationCollectionReportDates station collection report dates API
+  StationCollectionReportDates station collection report dates API
 */
-func (a *Client) StationCollectionReportDates(params *StationCollectionReportDatesParams, authInfo runtime.ClientAuthInfoWriter) (*StationCollectionReportDatesOK, error) {
+func (a *Client) StationCollectionReportDates(params *StationCollectionReportDatesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationCollectionReportDatesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationCollectionReportDatesParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "stationCollectionReportDates",
 		Method:             "POST",
 		PathPattern:        "/station-collection-report-dates",
@@ -974,24 +1396,34 @@ func (a *Client) StationCollectionReportDates(params *StationCollectionReportDat
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*StationCollectionReportDatesOK), nil
-
+	success, ok := result.(*StationCollectionReportDatesOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for stationCollectionReportDates: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-StationProgramByHash station program by hash API
+  StationProgramByHash station program by hash API
 */
-func (a *Client) StationProgramByHash(params *StationProgramByHashParams) (*StationProgramByHashOK, error) {
+func (a *Client) StationProgramByHash(params *StationProgramByHashParams, opts ...ClientOption) (*StationProgramByHashOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationProgramByHashParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "stationProgramByHash",
 		Method:             "POST",
 		PathPattern:        "/station-program-by-hash",
@@ -1002,24 +1434,34 @@ func (a *Client) StationProgramByHash(params *StationProgramByHashParams) (*Stat
 		Reader:             &StationProgramByHashReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*StationProgramByHashOK), nil
-
+	success, ok := result.(*StationProgramByHashOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for stationProgramByHash: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-StationReportCurrentMoney station report current money API
+  StationReportCurrentMoney station report current money API
 */
-func (a *Client) StationReportCurrentMoney(params *StationReportCurrentMoneyParams) (*StationReportCurrentMoneyOK, error) {
+func (a *Client) StationReportCurrentMoney(params *StationReportCurrentMoneyParams, opts ...ClientOption) (*StationReportCurrentMoneyOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationReportCurrentMoneyParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "stationReportCurrentMoney",
 		Method:             "POST",
 		PathPattern:        "/station-report-current-money",
@@ -1030,24 +1472,34 @@ func (a *Client) StationReportCurrentMoney(params *StationReportCurrentMoneyPara
 		Reader:             &StationReportCurrentMoneyReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*StationReportCurrentMoneyOK), nil
-
+	success, ok := result.(*StationReportCurrentMoneyOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for stationReportCurrentMoney: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-StationReportDates station report dates API
+  StationReportDates station report dates API
 */
-func (a *Client) StationReportDates(params *StationReportDatesParams) (*StationReportDatesOK, error) {
+func (a *Client) StationReportDates(params *StationReportDatesParams, opts ...ClientOption) (*StationReportDatesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationReportDatesParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "stationReportDates",
 		Method:             "POST",
 		PathPattern:        "/station-report-dates",
@@ -1058,24 +1510,34 @@ func (a *Client) StationReportDates(params *StationReportDatesParams) (*StationR
 		Reader:             &StationReportDatesReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*StationReportDatesOK), nil
-
+	success, ok := result.(*StationReportDatesOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for stationReportDates: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-StationsVariables stations variables API
+  StationsVariables stations variables API
 */
-func (a *Client) StationsVariables(params *StationsVariablesParams) (*StationsVariablesOK, error) {
+func (a *Client) StationsVariables(params *StationsVariablesParams, opts ...ClientOption) (*StationsVariablesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationsVariablesParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "stationsVariables",
 		Method:             "POST",
 		PathPattern:        "/stations-variables",
@@ -1086,24 +1548,34 @@ func (a *Client) StationsVariables(params *StationsVariablesParams) (*StationsVa
 		Reader:             &StationsVariablesReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*StationsVariablesOK), nil
-
+	success, ok := result.(*StationsVariablesOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for stationsVariables: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-Status status API
+  Status status API
 */
-func (a *Client) Status(params *StatusParams) (*StatusOK, error) {
+func (a *Client) Status(params *StatusParams, opts ...ClientOption) (*StatusOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStatusParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "status",
 		Method:             "GET",
 		PathPattern:        "/status",
@@ -1114,24 +1586,34 @@ func (a *Client) Status(params *StatusParams) (*StatusOK, error) {
 		Reader:             &StatusReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*StatusOK), nil
-
+	success, ok := result.(*StatusOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for status: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-StatusCollection status collection API
+  StatusCollection status collection API
 */
-func (a *Client) StatusCollection(params *StatusCollectionParams, authInfo runtime.ClientAuthInfoWriter) (*StatusCollectionOK, error) {
+func (a *Client) StatusCollection(params *StatusCollectionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StatusCollectionOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStatusCollectionParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "statusCollection",
 		Method:             "GET",
 		PathPattern:        "/status-collection",
@@ -1143,24 +1625,34 @@ func (a *Client) StatusCollection(params *StatusCollectionParams, authInfo runti
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*StatusCollectionOK), nil
-
+	success, ok := result.(*StatusCollectionOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for statusCollection: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-UpdateUser update user API
+  UpdateUser update user API
 */
-func (a *Client) UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateUserCreated, error) {
+func (a *Client) UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateUserCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewUpdateUserParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "updateUser",
 		Method:             "PUT",
 		PathPattern:        "/user",
@@ -1172,24 +1664,34 @@ func (a *Client) UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAut
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*UpdateUserCreated), nil
-
+	success, ok := result.(*UpdateUserCreated)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for updateUser: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-UpdateUserPassword update user password API
+  UpdateUserPassword update user password API
 */
-func (a *Client) UpdateUserPassword(params *UpdateUserPasswordParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateUserPasswordCreated, error) {
+func (a *Client) UpdateUserPassword(params *UpdateUserPasswordParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateUserPasswordCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewUpdateUserPasswordParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "updateUserPassword",
 		Method:             "POST",
 		PathPattern:        "/user-password",
@@ -1201,12 +1703,23 @@ func (a *Client) UpdateUserPassword(params *UpdateUserPasswordParams, authInfo r
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*UpdateUserPasswordCreated), nil
-
+	success, ok := result.(*UpdateUserPasswordCreated)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for updateUserPassword: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 // SetTransport changes the transport on the client

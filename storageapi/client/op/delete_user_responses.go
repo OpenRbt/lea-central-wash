@@ -6,17 +6,19 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // DeleteUserReader is a Reader for the DeleteUser structure.
@@ -27,44 +29,38 @@ type DeleteUserReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *DeleteUserReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 204:
 		result := NewDeleteUserNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewDeleteUserUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewDeleteUserForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 409:
 		result := NewDeleteUserConflict()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewDeleteUserInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -73,7 +69,7 @@ func NewDeleteUserNoContent() *DeleteUserNoContent {
 	return &DeleteUserNoContent{}
 }
 
-/*DeleteUserNoContent handles this case with default header values.
+/* DeleteUserNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -94,7 +90,7 @@ func NewDeleteUserUnauthorized() *DeleteUserUnauthorized {
 	return &DeleteUserUnauthorized{}
 }
 
-/*DeleteUserUnauthorized handles this case with default header values.
+/* DeleteUserUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -115,7 +111,7 @@ func NewDeleteUserForbidden() *DeleteUserForbidden {
 	return &DeleteUserForbidden{}
 }
 
-/*DeleteUserForbidden handles this case with default header values.
+/* DeleteUserForbidden describes a response with status code 403, with default header values.
 
 Access forbidden
 */
@@ -136,7 +132,7 @@ func NewDeleteUserConflict() *DeleteUserConflict {
 	return &DeleteUserConflict{}
 }
 
-/*DeleteUserConflict handles this case with default header values.
+/* DeleteUserConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
@@ -146,6 +142,9 @@ type DeleteUserConflict struct {
 
 func (o *DeleteUserConflict) Error() string {
 	return fmt.Sprintf("[DELETE /user][%d] deleteUserConflict  %+v", 409, o.Payload)
+}
+func (o *DeleteUserConflict) GetPayload() *DeleteUserConflictBody {
+	return o.Payload
 }
 
 func (o *DeleteUserConflict) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -165,7 +164,7 @@ func NewDeleteUserInternalServerError() *DeleteUserInternalServerError {
 	return &DeleteUserInternalServerError{}
 }
 
-/*DeleteUserInternalServerError handles this case with default header values.
+/* DeleteUserInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -188,7 +187,26 @@ type DeleteUserBody struct {
 
 	// login
 	// Required: true
-	Login model.Login `json:"login"`
+	Login *model.Login `json:"login"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *DeleteUserBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// login
+		// Required: true
+		Login *model.Login `json:"login"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Login = props.Login
+	return nil
 }
 
 // Validate validates this delete user body
@@ -207,11 +225,49 @@ func (o *DeleteUserBody) Validate(formats strfmt.Registry) error {
 
 func (o *DeleteUserBody) validateLogin(formats strfmt.Registry) error {
 
-	if err := o.Login.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "login")
-		}
+	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
+		return err
+	}
+
+	if o.Login != nil {
+		if err := o.Login.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "login")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this delete user body based on the context it is used
+func (o *DeleteUserBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLogin(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeleteUserBody) contextValidateLogin(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Login != nil {
+		if err := o.Login.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "login")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -249,6 +305,30 @@ type DeleteUserConflictBody struct {
 	Message *string `json:"message"`
 }
 
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *DeleteUserConflictBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// code
+		// Required: true
+		Code *int64 `json:"code"`
+
+		// message
+		// Required: true
+		Message *string `json:"message"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Code = props.Code
+	o.Message = props.Message
+	return nil
+}
+
 // Validate validates this delete user conflict body
 func (o *DeleteUserConflictBody) Validate(formats strfmt.Registry) error {
 	var res []error
@@ -282,6 +362,11 @@ func (o *DeleteUserConflictBody) validateMessage(formats strfmt.Registry) error 
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this delete user conflict body based on context it is used
+func (o *DeleteUserConflictBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

@@ -6,17 +6,19 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // PressButtonReader is a Reader for the PressButton structure.
@@ -27,30 +29,26 @@ type PressButtonReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *PressButtonReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 204:
 		result := NewPressButtonNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 404:
 		result := NewPressButtonNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewPressButtonInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -59,7 +57,7 @@ func NewPressButtonNoContent() *PressButtonNoContent {
 	return &PressButtonNoContent{}
 }
 
-/*PressButtonNoContent handles this case with default header values.
+/* PressButtonNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -80,7 +78,7 @@ func NewPressButtonNotFound() *PressButtonNotFound {
 	return &PressButtonNotFound{}
 }
 
-/*PressButtonNotFound handles this case with default header values.
+/* PressButtonNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -90,6 +88,9 @@ type PressButtonNotFound struct {
 
 func (o *PressButtonNotFound) Error() string {
 	return fmt.Sprintf("[POST /press-button][%d] pressButtonNotFound  %+v", 404, o.Payload)
+}
+func (o *PressButtonNotFound) GetPayload() string {
+	return o.Payload
 }
 
 func (o *PressButtonNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -107,7 +108,7 @@ func NewPressButtonInternalServerError() *PressButtonInternalServerError {
 	return &PressButtonInternalServerError{}
 }
 
-/*PressButtonInternalServerError handles this case with default header values.
+/* PressButtonInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -134,7 +135,31 @@ type PressButtonBody struct {
 
 	// hash
 	// Required: true
-	Hash model.Hash `json:"hash"`
+	Hash *model.Hash `json:"hash"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *PressButtonBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// button ID
+		// Required: true
+		ButtonID *int64 `json:"buttonID"`
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ButtonID = props.ButtonID
+	o.Hash = props.Hash
+	return nil
 }
 
 // Validate validates this press button body
@@ -166,11 +191,49 @@ func (o *PressButtonBody) validateButtonID(formats strfmt.Registry) error {
 
 func (o *PressButtonBody) validateHash(formats strfmt.Registry) error {
 
-	if err := o.Hash.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "hash")
-		}
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
+		return err
+	}
+
+	if o.Hash != nil {
+		if err := o.Hash.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this press button body based on the context it is used
+func (o *PressButtonBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateHash(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *PressButtonBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Hash != nil {
+		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
 	}
 
 	return nil

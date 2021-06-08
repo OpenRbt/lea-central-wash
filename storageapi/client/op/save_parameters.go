@@ -13,60 +13,73 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
-// NewSaveParams creates a new SaveParams object
-// with the default values initialized.
+// NewSaveParams creates a new SaveParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewSaveParams() *SaveParams {
-	var ()
 	return &SaveParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewSaveParamsWithTimeout creates a new SaveParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewSaveParamsWithTimeout(timeout time.Duration) *SaveParams {
-	var ()
 	return &SaveParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewSaveParamsWithContext creates a new SaveParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewSaveParamsWithContext(ctx context.Context) *SaveParams {
-	var ()
 	return &SaveParams{
-
 		Context: ctx,
 	}
 }
 
 // NewSaveParamsWithHTTPClient creates a new SaveParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewSaveParamsWithHTTPClient(client *http.Client) *SaveParams {
-	var ()
 	return &SaveParams{
 		HTTPClient: client,
 	}
 }
 
-/*SaveParams contains all the parameters to send to the API endpoint
-for the save operation typically these are written to a http.Request
+/* SaveParams contains all the parameters to send to the API endpoint
+   for the save operation.
+
+   Typically these are written to a http.Request.
 */
 type SaveParams struct {
 
-	/*Args*/
+	// Args.
 	Args SaveBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the save params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *SaveParams) WithDefaults() *SaveParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the save params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *SaveParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the save params
@@ -120,7 +133,6 @@ func (o *SaveParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.Args); err != nil {
 		return err
 	}

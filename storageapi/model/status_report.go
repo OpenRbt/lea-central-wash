@@ -6,15 +6,18 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StatusReport status report
+//
 // swagger:model StatusReport
 type StatusReport struct {
 
@@ -29,6 +32,36 @@ type StatusReport struct {
 
 	// stations
 	Stations []*StationStatus `json:"stations"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *StatusReport) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// kasse info
+		KasseInfo string `json:"kasse_info,omitempty"`
+
+		// kasse status
+		KasseStatus Status `json:"kasse_status,omitempty"`
+
+		// lcw info
+		LcwInfo string `json:"lcw_info,omitempty"`
+
+		// stations
+		Stations []*StationStatus `json:"stations"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.KasseInfo = props.KasseInfo
+	m.KasseStatus = props.KasseStatus
+	m.LcwInfo = props.LcwInfo
+	m.Stations = props.Stations
+	return nil
 }
 
 // Validate validates this status report
@@ -50,7 +83,6 @@ func (m *StatusReport) Validate(formats strfmt.Registry) error {
 }
 
 func (m *StatusReport) validateKasseStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.KasseStatus) { // not required
 		return nil
 	}
@@ -66,7 +98,6 @@ func (m *StatusReport) validateKasseStatus(formats strfmt.Registry) error {
 }
 
 func (m *StatusReport) validateStations(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Stations) { // not required
 		return nil
 	}
@@ -78,6 +109,54 @@ func (m *StatusReport) validateStations(formats strfmt.Registry) error {
 
 		if m.Stations[i] != nil {
 			if err := m.Stations[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("stations" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this status report based on the context it is used
+func (m *StatusReport) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateKasseStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateStations(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *StatusReport) contextValidateKasseStatus(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.KasseStatus.ContextValidate(ctx, formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("kasse_status")
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (m *StatusReport) contextValidateStations(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Stations); i++ {
+
+		if m.Stations[i] != nil {
+			if err := m.Stations[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stations" + "." + strconv.Itoa(i))
 				}

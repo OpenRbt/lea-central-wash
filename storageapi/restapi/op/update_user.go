@@ -6,13 +6,16 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"net/http"
 
-	errors "github.com/go-openapi/errors"
-	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
@@ -36,7 +39,7 @@ func NewUpdateUser(ctx *middleware.Context, handler UpdateUserHandler) *UpdateUs
 	return &UpdateUser{Context: ctx, Handler: handler}
 }
 
-/*UpdateUser swagger:route PUT /user updateUser
+/* UpdateUser swagger:route PUT /user updateUser
 
 UpdateUser update user API
 
@@ -49,17 +52,16 @@ type UpdateUser struct {
 func (o *UpdateUser) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewUpdateUserParams()
-
 	uprinc, aCtx, err := o.Context.Authorize(r, route)
 	if err != nil {
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 	if aCtx != nil {
-		r = aCtx
+		*r = *aCtx
 	}
 	var principal *storageapi.Profile
 	if uprinc != nil {
@@ -72,12 +74,12 @@ func (o *UpdateUser) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	res := o.Handler.Handle(Params, principal) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
 
 // UpdateUserBody update user body
+//
 // swagger:model UpdateUserBody
 type UpdateUserBody struct {
 
@@ -98,10 +100,53 @@ type UpdateUserBody struct {
 
 	// login
 	// Required: true
-	Login model.Login `json:"login"`
+	Login *model.Login `json:"login"`
 
 	// middle name
 	MiddleName *model.MiddleName `json:"middleName,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *UpdateUserBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// first name
+		FirstName *model.FirstName `json:"firstName,omitempty"`
+
+		// is admin
+		IsAdmin *model.IsAdmin `json:"isAdmin,omitempty"`
+
+		// is engineer
+		IsEngineer *model.IsEngineer `json:"isEngineer,omitempty"`
+
+		// is operator
+		IsOperator *model.IsOperator `json:"isOperator,omitempty"`
+
+		// last name
+		LastName *model.LastName `json:"lastName,omitempty"`
+
+		// login
+		// Required: true
+		Login *model.Login `json:"login"`
+
+		// middle name
+		MiddleName *model.MiddleName `json:"middleName,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.FirstName = props.FirstName
+	o.IsAdmin = props.IsAdmin
+	o.IsEngineer = props.IsEngineer
+	o.IsOperator = props.IsOperator
+	o.LastName = props.LastName
+	o.Login = props.Login
+	o.MiddleName = props.MiddleName
+	return nil
 }
 
 // Validate validates this update user body
@@ -131,7 +176,6 @@ func (o *UpdateUserBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *UpdateUserBody) validateFirstName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FirstName) { // not required
 		return nil
 	}
@@ -149,7 +193,6 @@ func (o *UpdateUserBody) validateFirstName(formats strfmt.Registry) error {
 }
 
 func (o *UpdateUserBody) validateLastName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.LastName) { // not required
 		return nil
 	}
@@ -168,24 +211,169 @@ func (o *UpdateUserBody) validateLastName(formats strfmt.Registry) error {
 
 func (o *UpdateUserBody) validateLogin(formats strfmt.Registry) error {
 
-	if err := o.Login.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "login")
-		}
+	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
+		return err
+	}
+
+	if o.Login != nil {
+		if err := o.Login.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "login")
+			}
+			return err
+		}
 	}
 
 	return nil
 }
 
 func (o *UpdateUserBody) validateMiddleName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MiddleName) { // not required
 		return nil
 	}
 
 	if o.MiddleName != nil {
 		if err := o.MiddleName.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "middleName")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this update user body based on the context it is used
+func (o *UpdateUserBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateFirstName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateIsAdmin(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateIsEngineer(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateIsOperator(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateLastName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateLogin(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateMiddleName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *UpdateUserBody) contextValidateFirstName(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.FirstName != nil {
+		if err := o.FirstName.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "firstName")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserBody) contextValidateIsAdmin(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.IsAdmin != nil {
+		if err := o.IsAdmin.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "isAdmin")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserBody) contextValidateIsEngineer(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.IsEngineer != nil {
+		if err := o.IsEngineer.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "isEngineer")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserBody) contextValidateIsOperator(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.IsOperator != nil {
+		if err := o.IsOperator.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "isOperator")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserBody) contextValidateLastName(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.LastName != nil {
+		if err := o.LastName.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "lastName")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserBody) contextValidateLogin(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Login != nil {
+		if err := o.Login.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "login")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *UpdateUserBody) contextValidateMiddleName(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.MiddleName != nil {
+		if err := o.MiddleName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "middleName")
 			}
@@ -215,12 +403,32 @@ func (o *UpdateUserBody) UnmarshalBinary(b []byte) error {
 }
 
 // UpdateUserCreatedBody update user created body
+//
 // swagger:model UpdateUserCreatedBody
 type UpdateUserCreatedBody struct {
 
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *UpdateUserCreatedBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// id
+		// Required: true
+		ID *int64 `json:"id"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ID = props.ID
+	return nil
 }
 
 // Validate validates this update user created body
@@ -243,6 +451,11 @@ func (o *UpdateUserCreatedBody) validateID(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this update user created body based on context it is used
+func (o *UpdateUserCreatedBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

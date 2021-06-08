@@ -13,60 +13,73 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
-// NewStationByHashParams creates a new StationByHashParams object
-// with the default values initialized.
+// NewStationByHashParams creates a new StationByHashParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewStationByHashParams() *StationByHashParams {
-	var ()
 	return &StationByHashParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewStationByHashParamsWithTimeout creates a new StationByHashParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewStationByHashParamsWithTimeout(timeout time.Duration) *StationByHashParams {
-	var ()
 	return &StationByHashParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewStationByHashParamsWithContext creates a new StationByHashParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewStationByHashParamsWithContext(ctx context.Context) *StationByHashParams {
-	var ()
 	return &StationByHashParams{
-
 		Context: ctx,
 	}
 }
 
 // NewStationByHashParamsWithHTTPClient creates a new StationByHashParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewStationByHashParamsWithHTTPClient(client *http.Client) *StationByHashParams {
-	var ()
 	return &StationByHashParams{
 		HTTPClient: client,
 	}
 }
 
-/*StationByHashParams contains all the parameters to send to the API endpoint
-for the station by hash operation typically these are written to a http.Request
+/* StationByHashParams contains all the parameters to send to the API endpoint
+   for the station by hash operation.
+
+   Typically these are written to a http.Request.
 */
 type StationByHashParams struct {
 
-	/*Args*/
+	// Args.
 	Args StationByHashBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the station by hash params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *StationByHashParams) WithDefaults() *StationByHashParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the station by hash params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *StationByHashParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the station by hash params
@@ -120,7 +133,6 @@ func (o *StationByHashParams) WriteToRequest(r runtime.ClientRequest, reg strfmt
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.Args); err != nil {
 		return err
 	}

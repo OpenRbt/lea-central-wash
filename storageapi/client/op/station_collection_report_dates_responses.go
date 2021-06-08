@@ -6,18 +6,20 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // StationCollectionReportDatesReader is a Reader for the StationCollectionReportDates structure.
@@ -28,44 +30,38 @@ type StationCollectionReportDatesReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *StationCollectionReportDatesReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewStationCollectionReportDatesOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewStationCollectionReportDatesUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewStationCollectionReportDatesForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewStationCollectionReportDatesNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewStationCollectionReportDatesInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -74,7 +70,7 @@ func NewStationCollectionReportDatesOK() *StationCollectionReportDatesOK {
 	return &StationCollectionReportDatesOK{}
 }
 
-/*StationCollectionReportDatesOK handles this case with default header values.
+/* StationCollectionReportDatesOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -84,6 +80,9 @@ type StationCollectionReportDatesOK struct {
 
 func (o *StationCollectionReportDatesOK) Error() string {
 	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesOK  %+v", 200, o.Payload)
+}
+func (o *StationCollectionReportDatesOK) GetPayload() *StationCollectionReportDatesOKBody {
+	return o.Payload
 }
 
 func (o *StationCollectionReportDatesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -103,7 +102,7 @@ func NewStationCollectionReportDatesUnauthorized() *StationCollectionReportDates
 	return &StationCollectionReportDatesUnauthorized{}
 }
 
-/*StationCollectionReportDatesUnauthorized handles this case with default header values.
+/* StationCollectionReportDatesUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -124,7 +123,7 @@ func NewStationCollectionReportDatesForbidden() *StationCollectionReportDatesFor
 	return &StationCollectionReportDatesForbidden{}
 }
 
-/*StationCollectionReportDatesForbidden handles this case with default header values.
+/* StationCollectionReportDatesForbidden describes a response with status code 403, with default header values.
 
 Access forbiddenn
 */
@@ -145,7 +144,7 @@ func NewStationCollectionReportDatesNotFound() *StationCollectionReportDatesNotF
 	return &StationCollectionReportDatesNotFound{}
 }
 
-/*StationCollectionReportDatesNotFound handles this case with default header values.
+/* StationCollectionReportDatesNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -166,7 +165,7 @@ func NewStationCollectionReportDatesInternalServerError() *StationCollectionRepo
 	return &StationCollectionReportDatesInternalServerError{}
 }
 
-/*StationCollectionReportDatesInternalServerError handles this case with default header values.
+/* StationCollectionReportDatesInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -197,8 +196,39 @@ type StationCollectionReportDatesBody struct {
 	StationID int64 `json:"stationID,omitempty"`
 }
 
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationCollectionReportDatesBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// Unix time
+		EndDate *int64 `json:"endDate,omitempty"`
+
+		// Unix time
+		StartDate *int64 `json:"startDate,omitempty"`
+
+		// station ID
+		StationID int64 `json:"stationID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.EndDate = props.EndDate
+	o.StartDate = props.StartDate
+	o.StationID = props.StationID
+	return nil
+}
+
 // Validate validates this station collection report dates body
 func (o *StationCollectionReportDatesBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this station collection report dates body based on context it is used
+func (o *StationCollectionReportDatesBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -230,6 +260,25 @@ type StationCollectionReportDatesOKBody struct {
 	CollectionReports []*model.CollectionReportWithUser `json:"collectionReports"`
 }
 
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationCollectionReportDatesOKBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// collection reports
+		// Required: true
+		CollectionReports []*model.CollectionReportWithUser `json:"collectionReports"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.CollectionReports = props.CollectionReports
+	return nil
+}
+
 // Validate validates this station collection report dates o k body
 func (o *StationCollectionReportDatesOKBody) Validate(formats strfmt.Registry) error {
 	var res []error
@@ -257,6 +306,38 @@ func (o *StationCollectionReportDatesOKBody) validateCollectionReports(formats s
 
 		if o.CollectionReports[i] != nil {
 			if err := o.CollectionReports[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("stationCollectionReportDatesOK" + "." + "collectionReports" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this station collection report dates o k body based on the context it is used
+func (o *StationCollectionReportDatesOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateCollectionReports(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *StationCollectionReportDatesOKBody) contextValidateCollectionReports(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.CollectionReports); i++ {
+
+		if o.CollectionReports[i] != nil {
+			if err := o.CollectionReports[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stationCollectionReportDatesOK" + "." + "collectionReports" + "." + strconv.Itoa(i))
 				}

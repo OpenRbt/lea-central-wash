@@ -6,13 +6,18 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"net/http"
 
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
+
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
-	errors "github.com/go-openapi/errors"
-	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
 )
 
 // CardReaderConfigByHashHandlerFunc turns a function with the right signature into a card reader config by hash handler
@@ -33,7 +38,7 @@ func NewCardReaderConfigByHash(ctx *middleware.Context, handler CardReaderConfig
 	return &CardReaderConfigByHash{Context: ctx, Handler: handler}
 }
 
-/*CardReaderConfigByHash swagger:route POST /card-reader-config-by-hash cardReaderConfigByHash
+/* CardReaderConfigByHash swagger:route POST /card-reader-config-by-hash cardReaderConfigByHash
 
 CardReaderConfigByHash card reader config by hash API
 
@@ -46,28 +51,46 @@ type CardReaderConfigByHash struct {
 func (o *CardReaderConfigByHash) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewCardReaderConfigByHashParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
 
 // CardReaderConfigByHashBody card reader config by hash body
+//
 // swagger:model CardReaderConfigByHashBody
 type CardReaderConfigByHashBody struct {
 
 	// hash
 	// Required: true
-	Hash model.Hash `json:"hash"`
+	Hash *model.Hash `json:"hash"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *CardReaderConfigByHashBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Hash = props.Hash
+	return nil
 }
 
 // Validate validates this card reader config by hash body
@@ -86,11 +109,49 @@ func (o *CardReaderConfigByHashBody) Validate(formats strfmt.Registry) error {
 
 func (o *CardReaderConfigByHashBody) validateHash(formats strfmt.Registry) error {
 
-	if err := o.Hash.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "hash")
-		}
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
+		return err
+	}
+
+	if o.Hash != nil {
+		if err := o.Hash.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this card reader config by hash body based on the context it is used
+func (o *CardReaderConfigByHashBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateHash(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CardReaderConfigByHashBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Hash != nil {
+		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
 	}
 
 	return nil

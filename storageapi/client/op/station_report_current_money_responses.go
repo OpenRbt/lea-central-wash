@@ -6,17 +6,19 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // StationReportCurrentMoneyReader is a Reader for the StationReportCurrentMoney structure.
@@ -27,30 +29,26 @@ type StationReportCurrentMoneyReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *StationReportCurrentMoneyReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewStationReportCurrentMoneyOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 404:
 		result := NewStationReportCurrentMoneyNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewStationReportCurrentMoneyInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -59,7 +57,7 @@ func NewStationReportCurrentMoneyOK() *StationReportCurrentMoneyOK {
 	return &StationReportCurrentMoneyOK{}
 }
 
-/*StationReportCurrentMoneyOK handles this case with default header values.
+/* StationReportCurrentMoneyOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -69,6 +67,9 @@ type StationReportCurrentMoneyOK struct {
 
 func (o *StationReportCurrentMoneyOK) Error() string {
 	return fmt.Sprintf("[POST /station-report-current-money][%d] stationReportCurrentMoneyOK  %+v", 200, o.Payload)
+}
+func (o *StationReportCurrentMoneyOK) GetPayload() *model.StationReport {
+	return o.Payload
 }
 
 func (o *StationReportCurrentMoneyOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -88,7 +89,7 @@ func NewStationReportCurrentMoneyNotFound() *StationReportCurrentMoneyNotFound {
 	return &StationReportCurrentMoneyNotFound{}
 }
 
-/*StationReportCurrentMoneyNotFound handles this case with default header values.
+/* StationReportCurrentMoneyNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -109,7 +110,7 @@ func NewStationReportCurrentMoneyInternalServerError() *StationReportCurrentMone
 	return &StationReportCurrentMoneyInternalServerError{}
 }
 
-/*StationReportCurrentMoneyInternalServerError handles this case with default header values.
+/* StationReportCurrentMoneyInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -135,6 +136,25 @@ type StationReportCurrentMoneyBody struct {
 	ID *int64 `json:"id"`
 }
 
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationReportCurrentMoneyBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// id
+		// Required: true
+		ID *int64 `json:"id"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ID = props.ID
+	return nil
+}
+
 // Validate validates this station report current money body
 func (o *StationReportCurrentMoneyBody) Validate(formats strfmt.Registry) error {
 	var res []error
@@ -155,6 +175,11 @@ func (o *StationReportCurrentMoneyBody) validateID(formats strfmt.Registry) erro
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this station report current money body based on context it is used
+func (o *StationReportCurrentMoneyBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

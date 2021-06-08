@@ -6,13 +6,16 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"net/http"
 
-	errors "github.com/go-openapi/errors"
-	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // StationHandlerFunc turns a function with the right signature into a station handler
@@ -33,7 +36,7 @@ func NewStation(ctx *middleware.Context, handler StationHandler) *Station {
 	return &Station{Context: ctx, Handler: handler}
 }
 
-/*Station swagger:route POST /station station
+/* Station swagger:route POST /station station
 
 Station station API
 
@@ -46,28 +49,46 @@ type Station struct {
 func (o *Station) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewStationParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
 
 // StationBody station body
+//
 // swagger:model StationBody
 type StationBody struct {
 
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// id
+		// Required: true
+		ID *int64 `json:"id"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ID = props.ID
+	return nil
 }
 
 // Validate validates this station body
@@ -90,6 +111,11 @@ func (o *StationBody) validateID(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this station body based on context it is used
+func (o *StationBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

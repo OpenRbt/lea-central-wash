@@ -8,7 +8,7 @@ package op
 import (
 	"net/http"
 
-	middleware "github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/runtime/middleware"
 )
 
 // StatusHandlerFunc turns a function with the right signature into a status handler
@@ -29,7 +29,7 @@ func NewStatus(ctx *middleware.Context, handler StatusHandler) *Status {
 	return &Status{Context: ctx, Handler: handler}
 }
 
-/*Status swagger:route GET /status status
+/* Status swagger:route GET /status status
 
 Status status API
 
@@ -42,17 +42,15 @@ type Status struct {
 func (o *Status) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewStatusParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

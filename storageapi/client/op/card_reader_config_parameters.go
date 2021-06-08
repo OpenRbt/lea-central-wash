@@ -13,60 +13,73 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
-// NewCardReaderConfigParams creates a new CardReaderConfigParams object
-// with the default values initialized.
+// NewCardReaderConfigParams creates a new CardReaderConfigParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewCardReaderConfigParams() *CardReaderConfigParams {
-	var ()
 	return &CardReaderConfigParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewCardReaderConfigParamsWithTimeout creates a new CardReaderConfigParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewCardReaderConfigParamsWithTimeout(timeout time.Duration) *CardReaderConfigParams {
-	var ()
 	return &CardReaderConfigParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewCardReaderConfigParamsWithContext creates a new CardReaderConfigParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewCardReaderConfigParamsWithContext(ctx context.Context) *CardReaderConfigParams {
-	var ()
 	return &CardReaderConfigParams{
-
 		Context: ctx,
 	}
 }
 
 // NewCardReaderConfigParamsWithHTTPClient creates a new CardReaderConfigParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewCardReaderConfigParamsWithHTTPClient(client *http.Client) *CardReaderConfigParams {
-	var ()
 	return &CardReaderConfigParams{
 		HTTPClient: client,
 	}
 }
 
-/*CardReaderConfigParams contains all the parameters to send to the API endpoint
-for the card reader config operation typically these are written to a http.Request
+/* CardReaderConfigParams contains all the parameters to send to the API endpoint
+   for the card reader config operation.
+
+   Typically these are written to a http.Request.
 */
 type CardReaderConfigParams struct {
 
-	/*Args*/
+	// Args.
 	Args CardReaderConfigBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the card reader config params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CardReaderConfigParams) WithDefaults() *CardReaderConfigParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the card reader config params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CardReaderConfigParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the card reader config params
@@ -120,7 +133,6 @@ func (o *CardReaderConfigParams) WriteToRequest(r runtime.ClientRequest, reg str
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.Args); err != nil {
 		return err
 	}

@@ -13,60 +13,73 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
-// NewSetStationButtonParams creates a new SetStationButtonParams object
-// with the default values initialized.
+// NewSetStationButtonParams creates a new SetStationButtonParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewSetStationButtonParams() *SetStationButtonParams {
-	var ()
 	return &SetStationButtonParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewSetStationButtonParamsWithTimeout creates a new SetStationButtonParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewSetStationButtonParamsWithTimeout(timeout time.Duration) *SetStationButtonParams {
-	var ()
 	return &SetStationButtonParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewSetStationButtonParamsWithContext creates a new SetStationButtonParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewSetStationButtonParamsWithContext(ctx context.Context) *SetStationButtonParams {
-	var ()
 	return &SetStationButtonParams{
-
 		Context: ctx,
 	}
 }
 
 // NewSetStationButtonParamsWithHTTPClient creates a new SetStationButtonParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewSetStationButtonParamsWithHTTPClient(client *http.Client) *SetStationButtonParams {
-	var ()
 	return &SetStationButtonParams{
 		HTTPClient: client,
 	}
 }
 
-/*SetStationButtonParams contains all the parameters to send to the API endpoint
-for the set station button operation typically these are written to a http.Request
+/* SetStationButtonParams contains all the parameters to send to the API endpoint
+   for the set station button operation.
+
+   Typically these are written to a http.Request.
 */
 type SetStationButtonParams struct {
 
-	/*Args*/
+	// Args.
 	Args SetStationButtonBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the set station button params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *SetStationButtonParams) WithDefaults() *SetStationButtonParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the set station button params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *SetStationButtonParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the set station button params
@@ -120,7 +133,6 @@ func (o *SetStationButtonParams) WriteToRequest(r runtime.ClientRequest, reg str
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.Args); err != nil {
 		return err
 	}

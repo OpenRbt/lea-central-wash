@@ -13,7 +13,8 @@ import (
 )
 
 // NewGetUsersParams creates a new GetUsersParams object
-// no default values defined in spec.
+//
+// There are no default values defined in the spec.
 func NewGetUsersParams() GetUsersParams {
 
 	return GetUsersParams{}

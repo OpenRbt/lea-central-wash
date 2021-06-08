@@ -6,14 +6,17 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"net/http"
 	"strconv"
 
-	errors "github.com/go-openapi/errors"
-	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // StationButtonHandlerFunc turns a function with the right signature into a station button handler
@@ -34,7 +37,7 @@ func NewStationButton(ctx *middleware.Context, handler StationButtonHandler) *St
 	return &StationButton{Context: ctx, Handler: handler}
 }
 
-/*StationButton swagger:route POST /station-button stationButton
+/* StationButton swagger:route POST /station-button stationButton
 
 StationButton station button API
 
@@ -47,22 +50,21 @@ type StationButton struct {
 func (o *StationButton) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewStationButtonParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
 
 // StationButtonBody station button body
+//
 // swagger:model StationButtonBody
 type StationButtonBody struct {
 
@@ -70,6 +72,26 @@ type StationButtonBody struct {
 	// Required: true
 	// Minimum: 1
 	StationID *int64 `json:"stationID"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationButtonBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// station ID
+		// Required: true
+		// Minimum: 1
+		StationID *int64 `json:"stationID"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.StationID = props.StationID
+	return nil
 }
 
 // Validate validates this station button body
@@ -92,10 +114,15 @@ func (o *StationButtonBody) validateStationID(formats strfmt.Registry) error {
 		return err
 	}
 
-	if err := validate.MinimumInt("args"+"."+"stationID", "body", int64(*o.StationID), 1, false); err != nil {
+	if err := validate.MinimumInt("args"+"."+"stationID", "body", *o.StationID, 1, false); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this station button body based on context it is used
+func (o *StationButtonBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -118,11 +145,30 @@ func (o *StationButtonBody) UnmarshalBinary(b []byte) error {
 }
 
 // StationButtonOKBody station button o k body
+//
 // swagger:model StationButtonOKBody
 type StationButtonOKBody struct {
 
 	// buttons
-	Buttons []*ButtonsItems0 `json:"buttons"`
+	Buttons []*StationButtonOKBodyButtonsItems0 `json:"buttons"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationButtonOKBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// buttons
+		Buttons []*StationButtonOKBodyButtonsItems0 `json:"buttons"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Buttons = props.Buttons
+	return nil
 }
 
 // Validate validates this station button o k body
@@ -140,7 +186,6 @@ func (o *StationButtonOKBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *StationButtonOKBody) validateButtons(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Buttons) { // not required
 		return nil
 	}
@@ -164,6 +209,38 @@ func (o *StationButtonOKBody) validateButtons(formats strfmt.Registry) error {
 	return nil
 }
 
+// ContextValidate validate this station button o k body based on the context it is used
+func (o *StationButtonOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateButtons(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *StationButtonOKBody) contextValidateButtons(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Buttons); i++ {
+
+		if o.Buttons[i] != nil {
+			if err := o.Buttons[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("stationButtonOK" + "." + "buttons" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *StationButtonOKBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -175,6 +252,68 @@ func (o *StationButtonOKBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *StationButtonOKBody) UnmarshalBinary(b []byte) error {
 	var res StationButtonOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+// StationButtonOKBodyButtonsItems0 station button o k body buttons items0
+//
+// swagger:model StationButtonOKBodyButtonsItems0
+type StationButtonOKBodyButtonsItems0 struct {
+
+	// button ID
+	ButtonID int64 `json:"buttonID,omitempty"`
+
+	// program ID
+	ProgramID int64 `json:"programID,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationButtonOKBodyButtonsItems0) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// button ID
+		ButtonID int64 `json:"buttonID,omitempty"`
+
+		// program ID
+		ProgramID int64 `json:"programID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ButtonID = props.ButtonID
+	o.ProgramID = props.ProgramID
+	return nil
+}
+
+// Validate validates this station button o k body buttons items0
+func (o *StationButtonOKBodyButtonsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this station button o k body buttons items0 based on context it is used
+func (o *StationButtonOKBodyButtonsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *StationButtonOKBodyButtonsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *StationButtonOKBodyButtonsItems0) UnmarshalBinary(b []byte) error {
+	var res StationButtonOKBodyButtonsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -6,14 +6,18 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"net/http"
 
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
+
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
-	errors "github.com/go-openapi/errors"
-	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
 )
 
 // LoadFromStationHandlerFunc turns a function with the right signature into a load from station handler
@@ -34,7 +38,7 @@ func NewLoadFromStation(ctx *middleware.Context, handler LoadFromStationHandler)
 	return &LoadFromStation{Context: ctx, Handler: handler}
 }
 
-/*LoadFromStation swagger:route POST /load-from-station loadFromStation
+/* LoadFromStation swagger:route POST /load-from-station loadFromStation
 
 LoadFromStation load from station API
 
@@ -47,28 +51,27 @@ type LoadFromStation struct {
 func (o *LoadFromStation) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewLoadFromStationParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
 
 // LoadFromStationBody load from station body
+//
 // swagger:model LoadFromStationBody
 type LoadFromStationBody struct {
 
 	// hash
 	// Required: true
-	Hash model.Hash `json:"hash"`
+	Hash *model.Hash `json:"hash"`
 
 	// key
 	// Required: true
@@ -78,6 +81,36 @@ type LoadFromStationBody struct {
 	// station ID
 	// Required: true
 	StationID *int64 `json:"stationID"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *LoadFromStationBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+
+		// key
+		// Required: true
+		// Min Length: 1
+		Key *string `json:"key"`
+
+		// station ID
+		// Required: true
+		StationID *int64 `json:"stationID"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Hash = props.Hash
+	o.Key = props.Key
+	o.StationID = props.StationID
+	return nil
 }
 
 // Validate validates this load from station body
@@ -104,11 +137,21 @@ func (o *LoadFromStationBody) Validate(formats strfmt.Registry) error {
 
 func (o *LoadFromStationBody) validateHash(formats strfmt.Registry) error {
 
-	if err := o.Hash.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "hash")
-		}
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
+		return err
+	}
+
+	if o.Hash != nil {
+		if err := o.Hash.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -120,7 +163,7 @@ func (o *LoadFromStationBody) validateKey(formats strfmt.Registry) error {
 		return err
 	}
 
-	if err := validate.MinLength("args"+"."+"key", "body", string(*o.Key), 1); err != nil {
+	if err := validate.MinLength("args"+"."+"key", "body", *o.Key, 1); err != nil {
 		return err
 	}
 
@@ -131,6 +174,34 @@ func (o *LoadFromStationBody) validateStationID(formats strfmt.Registry) error {
 
 	if err := validate.Required("args"+"."+"stationID", "body", o.StationID); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this load from station body based on the context it is used
+func (o *LoadFromStationBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateHash(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *LoadFromStationBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Hash != nil {
+		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
 	}
 
 	return nil

@@ -6,13 +6,18 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"bytes"
+	"context"
+	"encoding/json"
 
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // UserConfig user config
+//
 // swagger:model UserConfig
 type UserConfig struct {
 
@@ -33,10 +38,53 @@ type UserConfig struct {
 
 	// login
 	// Required: true
-	Login Login `json:"login"`
+	Login *Login `json:"login"`
 
 	// middle name
 	MiddleName *MiddleName `json:"middleName,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *UserConfig) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// first name
+		FirstName *FirstName `json:"firstName,omitempty"`
+
+		// is admin
+		IsAdmin *IsAdmin `json:"isAdmin,omitempty"`
+
+		// is engineer
+		IsEngineer *IsEngineer `json:"isEngineer,omitempty"`
+
+		// is operator
+		IsOperator *IsOperator `json:"isOperator,omitempty"`
+
+		// last name
+		LastName *LastName `json:"lastName,omitempty"`
+
+		// login
+		// Required: true
+		Login *Login `json:"login"`
+
+		// middle name
+		MiddleName *MiddleName `json:"middleName,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.FirstName = props.FirstName
+	m.IsAdmin = props.IsAdmin
+	m.IsEngineer = props.IsEngineer
+	m.IsOperator = props.IsOperator
+	m.LastName = props.LastName
+	m.Login = props.Login
+	m.MiddleName = props.MiddleName
+	return nil
 }
 
 // Validate validates this user config
@@ -78,7 +126,6 @@ func (m *UserConfig) Validate(formats strfmt.Registry) error {
 }
 
 func (m *UserConfig) validateFirstName(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.FirstName) { // not required
 		return nil
 	}
@@ -96,7 +143,6 @@ func (m *UserConfig) validateFirstName(formats strfmt.Registry) error {
 }
 
 func (m *UserConfig) validateIsAdmin(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.IsAdmin) { // not required
 		return nil
 	}
@@ -114,7 +160,6 @@ func (m *UserConfig) validateIsAdmin(formats strfmt.Registry) error {
 }
 
 func (m *UserConfig) validateIsEngineer(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.IsEngineer) { // not required
 		return nil
 	}
@@ -132,7 +177,6 @@ func (m *UserConfig) validateIsEngineer(formats strfmt.Registry) error {
 }
 
 func (m *UserConfig) validateIsOperator(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.IsOperator) { // not required
 		return nil
 	}
@@ -150,7 +194,6 @@ func (m *UserConfig) validateIsOperator(formats strfmt.Registry) error {
 }
 
 func (m *UserConfig) validateLastName(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.LastName) { // not required
 		return nil
 	}
@@ -169,24 +212,169 @@ func (m *UserConfig) validateLastName(formats strfmt.Registry) error {
 
 func (m *UserConfig) validateLogin(formats strfmt.Registry) error {
 
-	if err := m.Login.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("login")
-		}
+	if err := validate.Required("login", "body", m.Login); err != nil {
 		return err
+	}
+
+	if err := validate.Required("login", "body", m.Login); err != nil {
+		return err
+	}
+
+	if m.Login != nil {
+		if err := m.Login.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("login")
+			}
+			return err
+		}
 	}
 
 	return nil
 }
 
 func (m *UserConfig) validateMiddleName(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.MiddleName) { // not required
 		return nil
 	}
 
 	if m.MiddleName != nil {
 		if err := m.MiddleName.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("middleName")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this user config based on the context it is used
+func (m *UserConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateFirstName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateIsAdmin(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateIsEngineer(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateIsOperator(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateLastName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateLogin(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateMiddleName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *UserConfig) contextValidateFirstName(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.FirstName != nil {
+		if err := m.FirstName.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("firstName")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *UserConfig) contextValidateIsAdmin(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.IsAdmin != nil {
+		if err := m.IsAdmin.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("isAdmin")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *UserConfig) contextValidateIsEngineer(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.IsEngineer != nil {
+		if err := m.IsEngineer.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("isEngineer")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *UserConfig) contextValidateIsOperator(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.IsOperator != nil {
+		if err := m.IsOperator.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("isOperator")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *UserConfig) contextValidateLastName(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.LastName != nil {
+		if err := m.LastName.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("lastName")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *UserConfig) contextValidateLogin(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Login != nil {
+		if err := m.Login.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("login")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *UserConfig) contextValidateMiddleName(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.MiddleName != nil {
+		if err := m.MiddleName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("middleName")
 			}

@@ -13,60 +13,73 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
-// NewStationCollectionReportDatesParams creates a new StationCollectionReportDatesParams object
-// with the default values initialized.
+// NewStationCollectionReportDatesParams creates a new StationCollectionReportDatesParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewStationCollectionReportDatesParams() *StationCollectionReportDatesParams {
-	var ()
 	return &StationCollectionReportDatesParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewStationCollectionReportDatesParamsWithTimeout creates a new StationCollectionReportDatesParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewStationCollectionReportDatesParamsWithTimeout(timeout time.Duration) *StationCollectionReportDatesParams {
-	var ()
 	return &StationCollectionReportDatesParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewStationCollectionReportDatesParamsWithContext creates a new StationCollectionReportDatesParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewStationCollectionReportDatesParamsWithContext(ctx context.Context) *StationCollectionReportDatesParams {
-	var ()
 	return &StationCollectionReportDatesParams{
-
 		Context: ctx,
 	}
 }
 
 // NewStationCollectionReportDatesParamsWithHTTPClient creates a new StationCollectionReportDatesParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewStationCollectionReportDatesParamsWithHTTPClient(client *http.Client) *StationCollectionReportDatesParams {
-	var ()
 	return &StationCollectionReportDatesParams{
 		HTTPClient: client,
 	}
 }
 
-/*StationCollectionReportDatesParams contains all the parameters to send to the API endpoint
-for the station collection report dates operation typically these are written to a http.Request
+/* StationCollectionReportDatesParams contains all the parameters to send to the API endpoint
+   for the station collection report dates operation.
+
+   Typically these are written to a http.Request.
 */
 type StationCollectionReportDatesParams struct {
 
-	/*Args*/
+	// Args.
 	Args StationCollectionReportDatesBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the station collection report dates params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *StationCollectionReportDatesParams) WithDefaults() *StationCollectionReportDatesParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the station collection report dates params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *StationCollectionReportDatesParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the station collection report dates params
@@ -120,7 +133,6 @@ func (o *StationCollectionReportDatesParams) WriteToRequest(r runtime.ClientRequ
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.Args); err != nil {
 		return err
 	}

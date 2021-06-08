@@ -2992,15 +2992,7 @@ func init() {
                 "buttons": {
                   "type": "array",
                   "items": {
-                    "type": "object",
-                    "properties": {
-                      "buttonID": {
-                        "type": "integer"
-                      },
-                      "programID": {
-                        "type": "integer"
-                      }
-                    }
+                    "$ref": "#/definitions/ButtonsItems0"
                   }
                 },
                 "stationID": {
@@ -3098,15 +3090,7 @@ func init() {
                 "buttons": {
                   "type": "array",
                   "items": {
-                    "type": "object",
-                    "properties": {
-                      "buttonID": {
-                        "type": "integer"
-                      },
-                      "programID": {
-                        "type": "integer"
-                      }
-                    }
+                    "$ref": "#/definitions/ButtonsItems0"
                   }
                 }
               }
@@ -3733,6 +3717,17 @@ func init() {
     }
   },
   "definitions": {
+    "ButtonsItems0": {
+      "type": "object",
+      "properties": {
+        "buttonID": {
+          "type": "integer"
+        },
+        "programID": {
+          "type": "integer"
+        }
+      }
+    },
     "CardReaderConfig": {
       "type": "object",
       "required": [
@@ -4059,15 +4054,7 @@ func init() {
         "programs": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "buttonID": {
-                "type": "integer"
-              },
-              "program": {
-                "$ref": "#/definitions/Program"
-              }
-            }
+            "$ref": "#/definitions/StationProgramsProgramsItems0"
           }
         },
         "relayBoard": {
@@ -4075,6 +4062,17 @@ func init() {
         },
         "stationID": {
           "type": "integer"
+        }
+      }
+    },
+    "StationProgramsProgramsItems0": {
+      "type": "object",
+      "properties": {
+        "buttonID": {
+          "type": "integer"
+        },
+        "program": {
+          "$ref": "#/definitions/Program"
         }
       }
     },

@@ -6,17 +6,19 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // StationReportDatesReader is a Reader for the StationReportDates structure.
@@ -27,30 +29,26 @@ type StationReportDatesReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *StationReportDatesReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewStationReportDatesOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 404:
 		result := NewStationReportDatesNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewStationReportDatesInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -59,7 +57,7 @@ func NewStationReportDatesOK() *StationReportDatesOK {
 	return &StationReportDatesOK{}
 }
 
-/*StationReportDatesOK handles this case with default header values.
+/* StationReportDatesOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -69,6 +67,9 @@ type StationReportDatesOK struct {
 
 func (o *StationReportDatesOK) Error() string {
 	return fmt.Sprintf("[POST /station-report-dates][%d] stationReportDatesOK  %+v", 200, o.Payload)
+}
+func (o *StationReportDatesOK) GetPayload() *model.StationReport {
+	return o.Payload
 }
 
 func (o *StationReportDatesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -88,7 +89,7 @@ func NewStationReportDatesNotFound() *StationReportDatesNotFound {
 	return &StationReportDatesNotFound{}
 }
 
-/*StationReportDatesNotFound handles this case with default header values.
+/* StationReportDatesNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -109,7 +110,7 @@ func NewStationReportDatesInternalServerError() *StationReportDatesInternalServe
 	return &StationReportDatesInternalServerError{}
 }
 
-/*StationReportDatesInternalServerError handles this case with default header values.
+/* StationReportDatesInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -141,6 +142,35 @@ type StationReportDatesBody struct {
 	// Unix time
 	// Required: true
 	StartDate *int64 `json:"startDate"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationReportDatesBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// Unix time
+		// Required: true
+		EndDate *int64 `json:"endDate"`
+
+		// id
+		// Required: true
+		ID *int64 `json:"id"`
+
+		// Unix time
+		// Required: true
+		StartDate *int64 `json:"startDate"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.EndDate = props.EndDate
+	o.ID = props.ID
+	o.StartDate = props.StartDate
+	return nil
 }
 
 // Validate validates this station report dates body
@@ -189,6 +219,11 @@ func (o *StationReportDatesBody) validateStartDate(formats strfmt.Registry) erro
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this station report dates body based on context it is used
+func (o *StationReportDatesBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

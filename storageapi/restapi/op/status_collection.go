@@ -8,7 +8,7 @@ package op
 import (
 	"net/http"
 
-	middleware "github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/runtime/middleware"
 
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
@@ -31,7 +31,7 @@ func NewStatusCollection(ctx *middleware.Context, handler StatusCollectionHandle
 	return &StatusCollection{Context: ctx, Handler: handler}
 }
 
-/*StatusCollection swagger:route GET /status-collection statusCollection
+/* StatusCollection swagger:route GET /status-collection statusCollection
 
 StatusCollection status collection API
 
@@ -44,17 +44,16 @@ type StatusCollection struct {
 func (o *StatusCollection) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewStatusCollectionParams()
-
 	uprinc, aCtx, err := o.Context.Authorize(r, route)
 	if err != nil {
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 	if aCtx != nil {
-		r = aCtx
+		*r = *aCtx
 	}
 	var principal *storageapi.Profile
 	if uprinc != nil {
@@ -67,7 +66,6 @@ func (o *StatusCollection) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	res := o.Handler.Handle(Params, principal) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

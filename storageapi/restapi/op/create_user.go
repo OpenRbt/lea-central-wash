@@ -6,13 +6,16 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"net/http"
 
-	errors "github.com/go-openapi/errors"
-	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
@@ -36,7 +39,7 @@ func NewCreateUser(ctx *middleware.Context, handler CreateUserHandler) *CreateUs
 	return &CreateUser{Context: ctx, Handler: handler}
 }
 
-/*CreateUser swagger:route POST /user createUser
+/* CreateUser swagger:route POST /user createUser
 
 CreateUser create user API
 
@@ -49,17 +52,16 @@ type CreateUser struct {
 func (o *CreateUser) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewCreateUserParams()
-
 	uprinc, aCtx, err := o.Context.Authorize(r, route)
 	if err != nil {
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 	if aCtx != nil {
-		r = aCtx
+		*r = *aCtx
 	}
 	var principal *storageapi.Profile
 	if uprinc != nil {
@@ -72,12 +74,12 @@ func (o *CreateUser) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	res := o.Handler.Handle(Params, principal) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
 
 // CreateUserBody create user body
+//
 // swagger:model CreateUserBody
 type CreateUserBody struct {
 
@@ -98,14 +100,62 @@ type CreateUserBody struct {
 
 	// login
 	// Required: true
-	Login model.Login `json:"login"`
+	Login *model.Login `json:"login"`
 
 	// middle name
 	MiddleName *model.MiddleName `json:"middleName,omitempty"`
 
 	// password
 	// Required: true
-	Password model.Password `json:"password"`
+	Password *model.Password `json:"password"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *CreateUserBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// first name
+		FirstName *model.FirstName `json:"firstName,omitempty"`
+
+		// is admin
+		IsAdmin *model.IsAdmin `json:"isAdmin,omitempty"`
+
+		// is engineer
+		IsEngineer *model.IsEngineer `json:"isEngineer,omitempty"`
+
+		// is operator
+		IsOperator *model.IsOperator `json:"isOperator,omitempty"`
+
+		// last name
+		LastName *model.LastName `json:"lastName,omitempty"`
+
+		// login
+		// Required: true
+		Login *model.Login `json:"login"`
+
+		// middle name
+		MiddleName *model.MiddleName `json:"middleName,omitempty"`
+
+		// password
+		// Required: true
+		Password *model.Password `json:"password"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.FirstName = props.FirstName
+	o.IsAdmin = props.IsAdmin
+	o.IsEngineer = props.IsEngineer
+	o.IsOperator = props.IsOperator
+	o.LastName = props.LastName
+	o.Login = props.Login
+	o.MiddleName = props.MiddleName
+	o.Password = props.Password
+	return nil
 }
 
 // Validate validates this create user body
@@ -139,7 +189,6 @@ func (o *CreateUserBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *CreateUserBody) validateFirstName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FirstName) { // not required
 		return nil
 	}
@@ -157,7 +206,6 @@ func (o *CreateUserBody) validateFirstName(formats strfmt.Registry) error {
 }
 
 func (o *CreateUserBody) validateLastName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.LastName) { // not required
 		return nil
 	}
@@ -176,18 +224,27 @@ func (o *CreateUserBody) validateLastName(formats strfmt.Registry) error {
 
 func (o *CreateUserBody) validateLogin(formats strfmt.Registry) error {
 
-	if err := o.Login.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "login")
-		}
+	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"login", "body", o.Login); err != nil {
+		return err
+	}
+
+	if o.Login != nil {
+		if err := o.Login.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "login")
+			}
+			return err
+		}
 	}
 
 	return nil
 }
 
 func (o *CreateUserBody) validateMiddleName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MiddleName) { // not required
 		return nil
 	}
@@ -206,11 +263,175 @@ func (o *CreateUserBody) validateMiddleName(formats strfmt.Registry) error {
 
 func (o *CreateUserBody) validatePassword(formats strfmt.Registry) error {
 
-	if err := o.Password.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "password")
-		}
+	if err := validate.Required("args"+"."+"password", "body", o.Password); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"password", "body", o.Password); err != nil {
+		return err
+	}
+
+	if o.Password != nil {
+		if err := o.Password.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "password")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this create user body based on the context it is used
+func (o *CreateUserBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateFirstName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateIsAdmin(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateIsEngineer(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateIsOperator(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateLastName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateLogin(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateMiddleName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidatePassword(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CreateUserBody) contextValidateFirstName(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.FirstName != nil {
+		if err := o.FirstName.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "firstName")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CreateUserBody) contextValidateIsAdmin(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.IsAdmin != nil {
+		if err := o.IsAdmin.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "isAdmin")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CreateUserBody) contextValidateIsEngineer(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.IsEngineer != nil {
+		if err := o.IsEngineer.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "isEngineer")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CreateUserBody) contextValidateIsOperator(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.IsOperator != nil {
+		if err := o.IsOperator.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "isOperator")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CreateUserBody) contextValidateLastName(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.LastName != nil {
+		if err := o.LastName.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "lastName")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CreateUserBody) contextValidateLogin(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Login != nil {
+		if err := o.Login.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "login")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CreateUserBody) contextValidateMiddleName(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.MiddleName != nil {
+		if err := o.MiddleName.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "middleName")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CreateUserBody) contextValidatePassword(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Password != nil {
+		if err := o.Password.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "password")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -235,6 +456,7 @@ func (o *CreateUserBody) UnmarshalBinary(b []byte) error {
 }
 
 // CreateUserConflictBody create user conflict body
+//
 // swagger:model CreateUserConflictBody
 type CreateUserConflictBody struct {
 
@@ -245,6 +467,30 @@ type CreateUserConflictBody struct {
 	// message
 	// Required: true
 	Message *string `json:"message"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *CreateUserConflictBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// code
+		// Required: true
+		Code *int64 `json:"code"`
+
+		// message
+		// Required: true
+		Message *string `json:"message"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Code = props.Code
+	o.Message = props.Message
+	return nil
 }
 
 // Validate validates this create user conflict body
@@ -283,6 +529,11 @@ func (o *CreateUserConflictBody) validateMessage(formats strfmt.Registry) error 
 	return nil
 }
 
+// ContextValidate validates this create user conflict body based on context it is used
+func (o *CreateUserConflictBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *CreateUserConflictBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -302,12 +553,32 @@ func (o *CreateUserConflictBody) UnmarshalBinary(b []byte) error {
 }
 
 // CreateUserCreatedBody create user created body
+//
 // swagger:model CreateUserCreatedBody
 type CreateUserCreatedBody struct {
 
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *CreateUserCreatedBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// id
+		// Required: true
+		ID *int64 `json:"id"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ID = props.ID
+	return nil
 }
 
 // Validate validates this create user created body
@@ -330,6 +601,11 @@ func (o *CreateUserCreatedBody) validateID(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this create user created body based on context it is used
+func (o *CreateUserCreatedBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

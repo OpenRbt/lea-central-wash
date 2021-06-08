@@ -10,13 +10,13 @@ import (
 	"net/http"
 	"strings"
 
-	errors "github.com/go-openapi/errors"
-	loads "github.com/go-openapi/loads"
-	runtime "github.com/go-openapi/runtime"
-	middleware "github.com/go-openapi/runtime/middleware"
-	security "github.com/go-openapi/runtime/security"
-	spec "github.com/go-openapi/spec"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/loads"
+	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/runtime/security"
+	"github.com/go-openapi/spec"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
@@ -31,180 +31,143 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		defaultProduces:     "application/json",
 		customConsumers:     make(map[string]runtime.Consumer),
 		customProducers:     make(map[string]runtime.Producer),
+		PreServerShutdown:   func() {},
 		ServerShutdown:      func() {},
 		spec:                spec,
+		useSwaggerUI:        false,
 		ServeError:          errors.ServeError,
 		BasicAuthenticator:  security.BasicAuth,
 		APIKeyAuthenticator: security.APIKeyAuth,
 		BearerAuthenticator: security.BearerAuth,
-		JSONConsumer:        runtime.JSONConsumer(),
-		JSONProducer:        runtime.JSONProducer(),
+
+		JSONConsumer: runtime.JSONConsumer(),
+
+		JSONProducer: runtime.JSONProducer(),
+
 		AddServiceAmountHandler: AddServiceAmountHandlerFunc(func(params AddServiceAmountParams) AddServiceAmountResponder {
-			// return middleware.NotImplemented("operation AddServiceAmount has not yet been implemented")
 			return AddServiceAmountNotImplemented()
 		}),
 		CardReaderConfigHandler: CardReaderConfigHandlerFunc(func(params CardReaderConfigParams) CardReaderConfigResponder {
-			// return middleware.NotImplemented("operation CardReaderConfig has not yet been implemented")
 			return CardReaderConfigNotImplemented()
 		}),
 		CardReaderConfigByHashHandler: CardReaderConfigByHashHandlerFunc(func(params CardReaderConfigByHashParams) CardReaderConfigByHashResponder {
-			// return middleware.NotImplemented("operation CardReaderConfigByHash has not yet been implemented")
 			return CardReaderConfigByHashNotImplemented()
 		}),
 		CreateUserHandler: CreateUserHandlerFunc(func(params CreateUserParams, principal *storageapi.Profile) CreateUserResponder {
-			// return middleware.NotImplemented("operation CreateUser has not yet been implemented")
 			return CreateUserNotImplemented()
 		}),
 		DelStationHandler: DelStationHandlerFunc(func(params DelStationParams) DelStationResponder {
-			// return middleware.NotImplemented("operation DelStation has not yet been implemented")
 			return DelStationNotImplemented()
 		}),
 		DeleteUserHandler: DeleteUserHandlerFunc(func(params DeleteUserParams, principal *storageapi.Profile) DeleteUserResponder {
-			// return middleware.NotImplemented("operation DeleteUser has not yet been implemented")
 			return DeleteUserNotImplemented()
 		}),
 		GetPingHandler: GetPingHandlerFunc(func(params GetPingParams) GetPingResponder {
-			// return middleware.NotImplemented("operation GetPing has not yet been implemented")
 			return GetPingNotImplemented()
 		}),
 		GetUserHandler: GetUserHandlerFunc(func(params GetUserParams, principal *storageapi.Profile) GetUserResponder {
-			// return middleware.NotImplemented("operation GetUser has not yet been implemented")
 			return GetUserNotImplemented()
 		}),
 		GetUsersHandler: GetUsersHandlerFunc(func(params GetUsersParams, principal *storageapi.Profile) GetUsersResponder {
-			// return middleware.NotImplemented("operation GetUsers has not yet been implemented")
 			return GetUsersNotImplemented()
 		}),
 		InfoHandler: InfoHandlerFunc(func(params InfoParams) InfoResponder {
-			// return middleware.NotImplemented("operation Info has not yet been implemented")
 			return InfoNotImplemented()
 		}),
 		KasseHandler: KasseHandlerFunc(func(params KasseParams) KasseResponder {
-			// return middleware.NotImplemented("operation Kasse has not yet been implemented")
 			return KasseNotImplemented()
 		}),
 		LoadHandler: LoadHandlerFunc(func(params LoadParams) LoadResponder {
-			// return middleware.NotImplemented("operation Load has not yet been implemented")
 			return LoadNotImplemented()
 		}),
 		LoadFromStationHandler: LoadFromStationHandlerFunc(func(params LoadFromStationParams) LoadFromStationResponder {
-			// return middleware.NotImplemented("operation LoadFromStation has not yet been implemented")
 			return LoadFromStationNotImplemented()
 		}),
 		LoadMoneyHandler: LoadMoneyHandlerFunc(func(params LoadMoneyParams) LoadMoneyResponder {
-			// return middleware.NotImplemented("operation LoadMoney has not yet been implemented")
 			return LoadMoneyNotImplemented()
 		}),
 		LoadRelayHandler: LoadRelayHandlerFunc(func(params LoadRelayParams) LoadRelayResponder {
-			// return middleware.NotImplemented("operation LoadRelay has not yet been implemented")
 			return LoadRelayNotImplemented()
 		}),
 		OpenStationHandler: OpenStationHandlerFunc(func(params OpenStationParams) OpenStationResponder {
-			// return middleware.NotImplemented("operation OpenStation has not yet been implemented")
 			return OpenStationNotImplemented()
 		}),
 		PingHandler: PingHandlerFunc(func(params PingParams) PingResponder {
-			// return middleware.NotImplemented("operation Ping has not yet been implemented")
 			return PingNotImplemented()
 		}),
 		PressButtonHandler: PressButtonHandlerFunc(func(params PressButtonParams) PressButtonResponder {
-			// return middleware.NotImplemented("operation PressButton has not yet been implemented")
 			return PressButtonNotImplemented()
 		}),
 		ProgramsHandler: ProgramsHandlerFunc(func(params ProgramsParams) ProgramsResponder {
-			// return middleware.NotImplemented("operation Programs has not yet been implemented")
 			return ProgramsNotImplemented()
 		}),
 		RunProgramHandler: RunProgramHandlerFunc(func(params RunProgramParams) RunProgramResponder {
-			// return middleware.NotImplemented("operation RunProgram has not yet been implemented")
 			return RunProgramNotImplemented()
 		}),
 		SaveHandler: SaveHandlerFunc(func(params SaveParams) SaveResponder {
-			// return middleware.NotImplemented("operation Save has not yet been implemented")
 			return SaveNotImplemented()
 		}),
 		SaveCollectionHandler: SaveCollectionHandlerFunc(func(params SaveCollectionParams, principal *storageapi.Profile) SaveCollectionResponder {
-			// return middleware.NotImplemented("operation SaveCollection has not yet been implemented")
 			return SaveCollectionNotImplemented()
 		}),
 		SaveIfNotExistsHandler: SaveIfNotExistsHandlerFunc(func(params SaveIfNotExistsParams) SaveIfNotExistsResponder {
-			// return middleware.NotImplemented("operation SaveIfNotExists has not yet been implemented")
 			return SaveIfNotExistsNotImplemented()
 		}),
 		SaveMoneyHandler: SaveMoneyHandlerFunc(func(params SaveMoneyParams) SaveMoneyResponder {
-			// return middleware.NotImplemented("operation SaveMoney has not yet been implemented")
 			return SaveMoneyNotImplemented()
 		}),
 		SaveRelayHandler: SaveRelayHandlerFunc(func(params SaveRelayParams) SaveRelayResponder {
-			// return middleware.NotImplemented("operation SaveRelay has not yet been implemented")
 			return SaveRelayNotImplemented()
 		}),
 		SetCardReaderConfigHandler: SetCardReaderConfigHandlerFunc(func(params SetCardReaderConfigParams) SetCardReaderConfigResponder {
-			// return middleware.NotImplemented("operation SetCardReaderConfig has not yet been implemented")
 			return SetCardReaderConfigNotImplemented()
 		}),
 		SetKasseHandler: SetKasseHandlerFunc(func(params SetKasseParams) SetKasseResponder {
-			// return middleware.NotImplemented("operation SetKasse has not yet been implemented")
 			return SetKasseNotImplemented()
 		}),
 		SetProgramHandler: SetProgramHandlerFunc(func(params SetProgramParams) SetProgramResponder {
-			// return middleware.NotImplemented("operation SetProgram has not yet been implemented")
 			return SetProgramNotImplemented()
 		}),
 		SetStationHandler: SetStationHandlerFunc(func(params SetStationParams) SetStationResponder {
-			// return middleware.NotImplemented("operation SetStation has not yet been implemented")
 			return SetStationNotImplemented()
 		}),
 		SetStationButtonHandler: SetStationButtonHandlerFunc(func(params SetStationButtonParams) SetStationButtonResponder {
-			// return middleware.NotImplemented("operation SetStationButton has not yet been implemented")
 			return SetStationButtonNotImplemented()
 		}),
 		StationHandler: StationHandlerFunc(func(params StationParams) StationResponder {
-			// return middleware.NotImplemented("operation Station has not yet been implemented")
 			return StationNotImplemented()
 		}),
 		StationButtonHandler: StationButtonHandlerFunc(func(params StationButtonParams) StationButtonResponder {
-			// return middleware.NotImplemented("operation StationButton has not yet been implemented")
 			return StationButtonNotImplemented()
 		}),
 		StationByHashHandler: StationByHashHandlerFunc(func(params StationByHashParams) StationByHashResponder {
-			// return middleware.NotImplemented("operation StationByHash has not yet been implemented")
 			return StationByHashNotImplemented()
 		}),
 		StationCollectionReportDatesHandler: StationCollectionReportDatesHandlerFunc(func(params StationCollectionReportDatesParams, principal *storageapi.Profile) StationCollectionReportDatesResponder {
-			// return middleware.NotImplemented("operation StationCollectionReportDates has not yet been implemented")
 			return StationCollectionReportDatesNotImplemented()
 		}),
 		StationProgramByHashHandler: StationProgramByHashHandlerFunc(func(params StationProgramByHashParams) StationProgramByHashResponder {
-			// return middleware.NotImplemented("operation StationProgramByHash has not yet been implemented")
 			return StationProgramByHashNotImplemented()
 		}),
 		StationReportCurrentMoneyHandler: StationReportCurrentMoneyHandlerFunc(func(params StationReportCurrentMoneyParams) StationReportCurrentMoneyResponder {
-			// return middleware.NotImplemented("operation StationReportCurrentMoney has not yet been implemented")
 			return StationReportCurrentMoneyNotImplemented()
 		}),
 		StationReportDatesHandler: StationReportDatesHandlerFunc(func(params StationReportDatesParams) StationReportDatesResponder {
-			// return middleware.NotImplemented("operation StationReportDates has not yet been implemented")
 			return StationReportDatesNotImplemented()
 		}),
 		StationsVariablesHandler: StationsVariablesHandlerFunc(func(params StationsVariablesParams) StationsVariablesResponder {
-			// return middleware.NotImplemented("operation StationsVariables has not yet been implemented")
 			return StationsVariablesNotImplemented()
 		}),
 		StatusHandler: StatusHandlerFunc(func(params StatusParams) StatusResponder {
-			// return middleware.NotImplemented("operation Status has not yet been implemented")
 			return StatusNotImplemented()
 		}),
 		StatusCollectionHandler: StatusCollectionHandlerFunc(func(params StatusCollectionParams, principal *storageapi.Profile) StatusCollectionResponder {
-			// return middleware.NotImplemented("operation StatusCollection has not yet been implemented")
 			return StatusCollectionNotImplemented()
 		}),
 		UpdateUserHandler: UpdateUserHandlerFunc(func(params UpdateUserParams, principal *storageapi.Profile) UpdateUserResponder {
-			// return middleware.NotImplemented("operation UpdateUser has not yet been implemented")
 			return UpdateUserNotImplemented()
 		}),
 		UpdateUserPasswordHandler: UpdateUserPasswordHandlerFunc(func(params UpdateUserPasswordParams, principal *storageapi.Profile) UpdateUserPasswordResponder {
-			// return middleware.NotImplemented("operation UpdateUserPassword has not yet been implemented")
 			return UpdateUserPasswordNotImplemented()
 		}),
 
@@ -212,7 +175,6 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		PinCodeAuth: func(token string) (*storageapi.Profile, error) {
 			return nil, errors.NotImplemented("api key auth (pinCode) Pin from header param [Pin] has not yet been implemented")
 		},
-
 		// default authorizer is authorized meaning no requests are blocked
 		APIAuthorizer: security.Authorized(),
 	}
@@ -229,21 +191,26 @@ type StorageAPI struct {
 	defaultConsumes string
 	defaultProduces string
 	Middleware      func(middleware.Builder) http.Handler
+	useSwaggerUI    bool
 
 	// BasicAuthenticator generates a runtime.Authenticator from the supplied basic auth function.
 	// It has a default implementation in the security package, however you can replace it for your particular usage.
 	BasicAuthenticator func(security.UserPassAuthentication) runtime.Authenticator
+
 	// APIKeyAuthenticator generates a runtime.Authenticator from the supplied token auth function.
 	// It has a default implementation in the security package, however you can replace it for your particular usage.
 	APIKeyAuthenticator func(string, string, security.TokenAuthentication) runtime.Authenticator
+
 	// BearerAuthenticator generates a runtime.Authenticator from the supplied bearer token auth function.
 	// It has a default implementation in the security package, however you can replace it for your particular usage.
 	BearerAuthenticator func(string, security.ScopedTokenAuthentication) runtime.Authenticator
 
-	// JSONConsumer registers a consumer for a "application/json" mime type
+	// JSONConsumer registers a consumer for the following mime types:
+	//   - application/json
 	JSONConsumer runtime.Consumer
 
-	// JSONProducer registers a producer for a "application/json" mime type
+	// JSONProducer registers a producer for the following mime types:
+	//   - application/json
 	JSONProducer runtime.Producer
 
 	// PinCodeAuth registers a function that takes a token and returns a principal
@@ -342,6 +309,10 @@ type StorageAPI struct {
 	// but you can set your own with this
 	ServeError func(http.ResponseWriter, *http.Request, error)
 
+	// PreServerShutdown is called before the HTTP(S) server is shutdown
+	// This allows for custom functions to get executed before the HTTP(S) server stops accepting traffic
+	PreServerShutdown func()
+
 	// ServerShutdown is called when the HTTP(S) server is shut down and done
 	// handling all active connections and does not accept connections any more
 	ServerShutdown func()
@@ -351,6 +322,16 @@ type StorageAPI struct {
 
 	// User defined logger function.
 	Logger func(string, ...interface{})
+}
+
+// UseRedoc for documentation at /docs
+func (o *StorageAPI) UseRedoc() {
+	o.useSwaggerUI = false
+}
+
+// UseSwaggerUI for documentation at /docs
+func (o *StorageAPI) UseSwaggerUI() {
+	o.useSwaggerUI = true
 }
 
 // SetDefaultProduces sets the default produces media type
@@ -407,167 +388,126 @@ func (o *StorageAPI) Validate() error {
 	if o.AddServiceAmountHandler == nil {
 		unregistered = append(unregistered, "AddServiceAmountHandler")
 	}
-
 	if o.CardReaderConfigHandler == nil {
 		unregistered = append(unregistered, "CardReaderConfigHandler")
 	}
-
 	if o.CardReaderConfigByHashHandler == nil {
 		unregistered = append(unregistered, "CardReaderConfigByHashHandler")
 	}
-
 	if o.CreateUserHandler == nil {
 		unregistered = append(unregistered, "CreateUserHandler")
 	}
-
 	if o.DelStationHandler == nil {
 		unregistered = append(unregistered, "DelStationHandler")
 	}
-
 	if o.DeleteUserHandler == nil {
 		unregistered = append(unregistered, "DeleteUserHandler")
 	}
-
 	if o.GetPingHandler == nil {
 		unregistered = append(unregistered, "GetPingHandler")
 	}
-
 	if o.GetUserHandler == nil {
 		unregistered = append(unregistered, "GetUserHandler")
 	}
-
 	if o.GetUsersHandler == nil {
 		unregistered = append(unregistered, "GetUsersHandler")
 	}
-
 	if o.InfoHandler == nil {
 		unregistered = append(unregistered, "InfoHandler")
 	}
-
 	if o.KasseHandler == nil {
 		unregistered = append(unregistered, "KasseHandler")
 	}
-
 	if o.LoadHandler == nil {
 		unregistered = append(unregistered, "LoadHandler")
 	}
-
 	if o.LoadFromStationHandler == nil {
 		unregistered = append(unregistered, "LoadFromStationHandler")
 	}
-
 	if o.LoadMoneyHandler == nil {
 		unregistered = append(unregistered, "LoadMoneyHandler")
 	}
-
 	if o.LoadRelayHandler == nil {
 		unregistered = append(unregistered, "LoadRelayHandler")
 	}
-
 	if o.OpenStationHandler == nil {
 		unregistered = append(unregistered, "OpenStationHandler")
 	}
-
 	if o.PingHandler == nil {
 		unregistered = append(unregistered, "PingHandler")
 	}
-
 	if o.PressButtonHandler == nil {
 		unregistered = append(unregistered, "PressButtonHandler")
 	}
-
 	if o.ProgramsHandler == nil {
 		unregistered = append(unregistered, "ProgramsHandler")
 	}
-
 	if o.RunProgramHandler == nil {
 		unregistered = append(unregistered, "RunProgramHandler")
 	}
-
 	if o.SaveHandler == nil {
 		unregistered = append(unregistered, "SaveHandler")
 	}
-
 	if o.SaveCollectionHandler == nil {
 		unregistered = append(unregistered, "SaveCollectionHandler")
 	}
-
 	if o.SaveIfNotExistsHandler == nil {
 		unregistered = append(unregistered, "SaveIfNotExistsHandler")
 	}
-
 	if o.SaveMoneyHandler == nil {
 		unregistered = append(unregistered, "SaveMoneyHandler")
 	}
-
 	if o.SaveRelayHandler == nil {
 		unregistered = append(unregistered, "SaveRelayHandler")
 	}
-
 	if o.SetCardReaderConfigHandler == nil {
 		unregistered = append(unregistered, "SetCardReaderConfigHandler")
 	}
-
 	if o.SetKasseHandler == nil {
 		unregistered = append(unregistered, "SetKasseHandler")
 	}
-
 	if o.SetProgramHandler == nil {
 		unregistered = append(unregistered, "SetProgramHandler")
 	}
-
 	if o.SetStationHandler == nil {
 		unregistered = append(unregistered, "SetStationHandler")
 	}
-
 	if o.SetStationButtonHandler == nil {
 		unregistered = append(unregistered, "SetStationButtonHandler")
 	}
-
 	if o.StationHandler == nil {
 		unregistered = append(unregistered, "StationHandler")
 	}
-
 	if o.StationButtonHandler == nil {
 		unregistered = append(unregistered, "StationButtonHandler")
 	}
-
 	if o.StationByHashHandler == nil {
 		unregistered = append(unregistered, "StationByHashHandler")
 	}
-
 	if o.StationCollectionReportDatesHandler == nil {
 		unregistered = append(unregistered, "StationCollectionReportDatesHandler")
 	}
-
 	if o.StationProgramByHashHandler == nil {
 		unregistered = append(unregistered, "StationProgramByHashHandler")
 	}
-
 	if o.StationReportCurrentMoneyHandler == nil {
 		unregistered = append(unregistered, "StationReportCurrentMoneyHandler")
 	}
-
 	if o.StationReportDatesHandler == nil {
 		unregistered = append(unregistered, "StationReportDatesHandler")
 	}
-
 	if o.StationsVariablesHandler == nil {
 		unregistered = append(unregistered, "StationsVariablesHandler")
 	}
-
 	if o.StatusHandler == nil {
 		unregistered = append(unregistered, "StatusHandler")
 	}
-
 	if o.StatusCollectionHandler == nil {
 		unregistered = append(unregistered, "StatusCollectionHandler")
 	}
-
 	if o.UpdateUserHandler == nil {
 		unregistered = append(unregistered, "UpdateUserHandler")
 	}
-
 	if o.UpdateUserPasswordHandler == nil {
 		unregistered = append(unregistered, "UpdateUserPasswordHandler")
 	}
@@ -586,13 +526,11 @@ func (o *StorageAPI) ServeErrorFor(operationID string) func(http.ResponseWriter,
 
 // AuthenticatorsFor gets the authenticators for the specified security schemes
 func (o *StorageAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) map[string]runtime.Authenticator {
-
 	result := make(map[string]runtime.Authenticator)
-	for name, scheme := range schemes {
+	for name := range schemes {
 		switch name {
-
 		case "pinCode":
-
+			scheme := schemes[name]
 			result[name] = o.APIKeyAuthenticator(scheme.Name, scheme.In, func(token string) (interface{}, error) {
 				return o.PinCodeAuth(token)
 			})
@@ -600,26 +538,21 @@ func (o *StorageAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) m
 		}
 	}
 	return result
-
 }
 
 // Authorizer returns the registered authorizer
 func (o *StorageAPI) Authorizer() runtime.Authorizer {
-
 	return o.APIAuthorizer
-
 }
 
-// ConsumersFor gets the consumers for the specified media types
+// ConsumersFor gets the consumers for the specified media types.
+// MIME type parameters are ignored here.
 func (o *StorageAPI) ConsumersFor(mediaTypes []string) map[string]runtime.Consumer {
-
-	result := make(map[string]runtime.Consumer)
+	result := make(map[string]runtime.Consumer, len(mediaTypes))
 	for _, mt := range mediaTypes {
 		switch mt {
-
 		case "application/json":
 			result["application/json"] = o.JSONConsumer
-
 		}
 
 		if c, ok := o.customConsumers[mt]; ok {
@@ -627,19 +560,16 @@ func (o *StorageAPI) ConsumersFor(mediaTypes []string) map[string]runtime.Consum
 		}
 	}
 	return result
-
 }
 
-// ProducersFor gets the producers for the specified media types
+// ProducersFor gets the producers for the specified media types.
+// MIME type parameters are ignored here.
 func (o *StorageAPI) ProducersFor(mediaTypes []string) map[string]runtime.Producer {
-
-	result := make(map[string]runtime.Producer)
+	result := make(map[string]runtime.Producer, len(mediaTypes))
 	for _, mt := range mediaTypes {
 		switch mt {
-
 		case "application/json":
 			result["application/json"] = o.JSONProducer
-
 		}
 
 		if p, ok := o.customProducers[mt]; ok {
@@ -647,7 +577,6 @@ func (o *StorageAPI) ProducersFor(mediaTypes []string) map[string]runtime.Produc
 		}
 	}
 	return result
-
 }
 
 // HandlerFor gets a http.Handler for the provided operation method and path
@@ -677,7 +606,6 @@ func (o *StorageAPI) Context() *middleware.Context {
 
 func (o *StorageAPI) initHandlerCache() {
 	o.Context() // don't care about the result, just that the initialization happened
-
 	if o.handlers == nil {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
@@ -686,212 +614,170 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/add-service-amount"] = NewAddServiceAmount(o.context, o.AddServiceAmountHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/card-reader-config"] = NewCardReaderConfig(o.context, o.CardReaderConfigHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/card-reader-config-by-hash"] = NewCardReaderConfigByHash(o.context, o.CardReaderConfigByHashHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/user"] = NewCreateUser(o.context, o.CreateUserHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/del-station"] = NewDelStation(o.context, o.DelStationHandler)
-
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/user"] = NewDeleteUser(o.context, o.DeleteUserHandler)
-
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/ping"] = NewGetPing(o.context, o.GetPingHandler)
-
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/user"] = NewGetUser(o.context, o.GetUserHandler)
-
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/users"] = NewGetUsers(o.context, o.GetUsersHandler)
-
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/info"] = NewInfo(o.context, o.InfoHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/kasse"] = NewKasse(o.context, o.KasseHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/load"] = NewLoad(o.context, o.LoadHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/load-from-station"] = NewLoadFromStation(o.context, o.LoadFromStationHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/load-money"] = NewLoadMoney(o.context, o.LoadMoneyHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/load-relay"] = NewLoadRelay(o.context, o.LoadRelayHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/open-station"] = NewOpenStation(o.context, o.OpenStationHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/ping"] = NewPing(o.context, o.PingHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/press-button"] = NewPressButton(o.context, o.PressButtonHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/programs"] = NewPrograms(o.context, o.ProgramsHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/run-program"] = NewRunProgram(o.context, o.RunProgramHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/save"] = NewSave(o.context, o.SaveHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/save-collection"] = NewSaveCollection(o.context, o.SaveCollectionHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/save-if-not-exists"] = NewSaveIfNotExists(o.context, o.SaveIfNotExistsHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/save-money"] = NewSaveMoney(o.context, o.SaveMoneyHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/save-relay"] = NewSaveRelay(o.context, o.SaveRelayHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/set-card-reader-config"] = NewSetCardReaderConfig(o.context, o.SetCardReaderConfigHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/set-kasse"] = NewSetKasse(o.context, o.SetKasseHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/set-program"] = NewSetProgram(o.context, o.SetProgramHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/set-station"] = NewSetStation(o.context, o.SetStationHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/set-station-button"] = NewSetStationButton(o.context, o.SetStationButtonHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/station"] = NewStation(o.context, o.StationHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/station-button"] = NewStationButton(o.context, o.StationButtonHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/station-by-hash"] = NewStationByHash(o.context, o.StationByHashHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/station-collection-report-dates"] = NewStationCollectionReportDates(o.context, o.StationCollectionReportDatesHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/station-program-by-hash"] = NewStationProgramByHash(o.context, o.StationProgramByHashHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/station-report-current-money"] = NewStationReportCurrentMoney(o.context, o.StationReportCurrentMoneyHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/station-report-dates"] = NewStationReportDates(o.context, o.StationReportDatesHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/stations-variables"] = NewStationsVariables(o.context, o.StationsVariablesHandler)
-
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/status"] = NewStatus(o.context, o.StatusHandler)
-
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/status-collection"] = NewStatusCollection(o.context, o.StatusCollectionHandler)
-
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
 	o.handlers["PUT"]["/user"] = NewUpdateUser(o.context, o.UpdateUserHandler)
-
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/user-password"] = NewUpdateUserPassword(o.context, o.UpdateUserPasswordHandler)
-
 }
 
 // Serve creates a http handler to serve the API over HTTP
@@ -901,6 +787,9 @@ func (o *StorageAPI) Serve(builder middleware.Builder) http.Handler {
 
 	if o.Middleware != nil {
 		return o.Middleware(builder)
+	}
+	if o.useSwaggerUI {
+		return o.context.APIHandlerSwaggerUI(builder)
 	}
 	return o.context.APIHandler(builder)
 }
@@ -920,4 +809,16 @@ func (o *StorageAPI) RegisterConsumer(mediaType string, consumer runtime.Consume
 // RegisterProducer allows you to add (or override) a producer for a media type.
 func (o *StorageAPI) RegisterProducer(mediaType string, producer runtime.Producer) {
 	o.customProducers[mediaType] = producer
+}
+
+// AddMiddlewareFor adds a http middleware to existing handler
+func (o *StorageAPI) AddMiddlewareFor(method, path string, builder middleware.Builder) {
+	um := strings.ToUpper(method)
+	if path == "/" {
+		path = ""
+	}
+	o.Init()
+	if h, ok := o.handlers[um][path]; ok {
+		o.handlers[method][path] = builder(h)
+	}
 }

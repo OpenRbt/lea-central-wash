@@ -9,8 +9,7 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // SaveRelayReader is a Reader for the SaveRelay structure.
@@ -21,30 +20,26 @@ type SaveRelayReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *SaveRelayReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 204:
 		result := NewSaveRelayNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 404:
 		result := NewSaveRelayNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewSaveRelayInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -53,7 +48,7 @@ func NewSaveRelayNoContent() *SaveRelayNoContent {
 	return &SaveRelayNoContent{}
 }
 
-/*SaveRelayNoContent handles this case with default header values.
+/* SaveRelayNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -74,7 +69,7 @@ func NewSaveRelayNotFound() *SaveRelayNotFound {
 	return &SaveRelayNotFound{}
 }
 
-/*SaveRelayNotFound handles this case with default header values.
+/* SaveRelayNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -95,7 +90,7 @@ func NewSaveRelayInternalServerError() *SaveRelayInternalServerError {
 	return &SaveRelayInternalServerError{}
 }
 
-/*SaveRelayInternalServerError handles this case with default header values.
+/* SaveRelayInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

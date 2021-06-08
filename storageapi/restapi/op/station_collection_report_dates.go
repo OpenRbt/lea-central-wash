@@ -6,14 +6,17 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"net/http"
 	"strconv"
 
-	errors "github.com/go-openapi/errors"
-	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
@@ -37,7 +40,7 @@ func NewStationCollectionReportDates(ctx *middleware.Context, handler StationCol
 	return &StationCollectionReportDates{Context: ctx, Handler: handler}
 }
 
-/*StationCollectionReportDates swagger:route POST /station-collection-report-dates stationCollectionReportDates
+/* StationCollectionReportDates swagger:route POST /station-collection-report-dates stationCollectionReportDates
 
 StationCollectionReportDates station collection report dates API
 
@@ -50,17 +53,16 @@ type StationCollectionReportDates struct {
 func (o *StationCollectionReportDates) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewStationCollectionReportDatesParams()
-
 	uprinc, aCtx, err := o.Context.Authorize(r, route)
 	if err != nil {
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 	if aCtx != nil {
-		r = aCtx
+		*r = *aCtx
 	}
 	var principal *storageapi.Profile
 	if uprinc != nil {
@@ -73,12 +75,12 @@ func (o *StationCollectionReportDates) ServeHTTP(rw http.ResponseWriter, r *http
 	}
 
 	res := o.Handler.Handle(Params, principal) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
 
 // StationCollectionReportDatesBody station collection report dates body
+//
 // swagger:model StationCollectionReportDatesBody
 type StationCollectionReportDatesBody struct {
 
@@ -92,8 +94,39 @@ type StationCollectionReportDatesBody struct {
 	StationID int64 `json:"stationID,omitempty"`
 }
 
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationCollectionReportDatesBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// Unix time
+		EndDate *int64 `json:"endDate,omitempty"`
+
+		// Unix time
+		StartDate *int64 `json:"startDate,omitempty"`
+
+		// station ID
+		StationID int64 `json:"stationID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.EndDate = props.EndDate
+	o.StartDate = props.StartDate
+	o.StationID = props.StationID
+	return nil
+}
+
 // Validate validates this station collection report dates body
 func (o *StationCollectionReportDatesBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this station collection report dates body based on context it is used
+func (o *StationCollectionReportDatesBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -116,12 +149,32 @@ func (o *StationCollectionReportDatesBody) UnmarshalBinary(b []byte) error {
 }
 
 // StationCollectionReportDatesOKBody station collection report dates o k body
+//
 // swagger:model StationCollectionReportDatesOKBody
 type StationCollectionReportDatesOKBody struct {
 
 	// collection reports
 	// Required: true
 	CollectionReports []*model.CollectionReportWithUser `json:"collectionReports"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationCollectionReportDatesOKBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// collection reports
+		// Required: true
+		CollectionReports []*model.CollectionReportWithUser `json:"collectionReports"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.CollectionReports = props.CollectionReports
+	return nil
 }
 
 // Validate validates this station collection report dates o k body
@@ -151,6 +204,38 @@ func (o *StationCollectionReportDatesOKBody) validateCollectionReports(formats s
 
 		if o.CollectionReports[i] != nil {
 			if err := o.CollectionReports[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("stationCollectionReportDatesOK" + "." + "collectionReports" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this station collection report dates o k body based on the context it is used
+func (o *StationCollectionReportDatesOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateCollectionReports(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *StationCollectionReportDatesOKBody) contextValidateCollectionReports(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.CollectionReports); i++ {
+
+		if o.CollectionReports[i] != nil {
+			if err := o.CollectionReports[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stationCollectionReportDatesOK" + "." + "collectionReports" + "." + strconv.Itoa(i))
 				}

@@ -8,7 +8,7 @@ package op
 import (
 	"net/http"
 
-	middleware "github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/runtime/middleware"
 
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
@@ -31,7 +31,7 @@ func NewGetUsers(ctx *middleware.Context, handler GetUsersHandler) *GetUsers {
 	return &GetUsers{Context: ctx, Handler: handler}
 }
 
-/*GetUsers swagger:route GET /users getUsers
+/* GetUsers swagger:route GET /users getUsers
 
 GetUsers get users API
 
@@ -44,17 +44,16 @@ type GetUsers struct {
 func (o *GetUsers) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewGetUsersParams()
-
 	uprinc, aCtx, err := o.Context.Authorize(r, route)
 	if err != nil {
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 	if aCtx != nil {
-		r = aCtx
+		*r = *aCtx
 	}
 	var principal *storageapi.Profile
 	if uprinc != nil {
@@ -67,7 +66,6 @@ func (o *GetUsers) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	res := o.Handler.Handle(Params, principal) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

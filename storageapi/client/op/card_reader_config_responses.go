@@ -6,17 +6,19 @@ package op
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	model "github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 )
 
 // CardReaderConfigReader is a Reader for the CardReaderConfig structure.
@@ -27,30 +29,26 @@ type CardReaderConfigReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *CardReaderConfigReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewCardReaderConfigOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 404:
 		result := NewCardReaderConfigNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewCardReaderConfigInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -59,7 +57,7 @@ func NewCardReaderConfigOK() *CardReaderConfigOK {
 	return &CardReaderConfigOK{}
 }
 
-/*CardReaderConfigOK handles this case with default header values.
+/* CardReaderConfigOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -69,6 +67,9 @@ type CardReaderConfigOK struct {
 
 func (o *CardReaderConfigOK) Error() string {
 	return fmt.Sprintf("[POST /card-reader-config][%d] cardReaderConfigOK  %+v", 200, o.Payload)
+}
+func (o *CardReaderConfigOK) GetPayload() *model.CardReaderConfig {
+	return o.Payload
 }
 
 func (o *CardReaderConfigOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -88,7 +89,7 @@ func NewCardReaderConfigNotFound() *CardReaderConfigNotFound {
 	return &CardReaderConfigNotFound{}
 }
 
-/*CardReaderConfigNotFound handles this case with default header values.
+/* CardReaderConfigNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -109,7 +110,7 @@ func NewCardReaderConfigInternalServerError() *CardReaderConfigInternalServerErr
 	return &CardReaderConfigInternalServerError{}
 }
 
-/*CardReaderConfigInternalServerError handles this case with default header values.
+/* CardReaderConfigInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -136,6 +137,26 @@ type CardReaderConfigBody struct {
 	StationID *int64 `json:"stationID"`
 }
 
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *CardReaderConfigBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// station ID
+		// Required: true
+		// Minimum: 1
+		StationID *int64 `json:"stationID"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.StationID = props.StationID
+	return nil
+}
+
 // Validate validates this card reader config body
 func (o *CardReaderConfigBody) Validate(formats strfmt.Registry) error {
 	var res []error
@@ -156,10 +177,15 @@ func (o *CardReaderConfigBody) validateStationID(formats strfmt.Registry) error 
 		return err
 	}
 
-	if err := validate.MinimumInt("args"+"."+"stationID", "body", int64(*o.StationID), 1, false); err != nil {
+	if err := validate.MinimumInt("args"+"."+"stationID", "body", *o.StationID, 1, false); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this card reader config body based on context it is used
+func (o *CardReaderConfigBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

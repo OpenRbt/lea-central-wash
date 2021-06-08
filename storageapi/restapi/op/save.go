@@ -6,14 +6,18 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"net/http"
 
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
+
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
-	errors "github.com/go-openapi/errors"
-	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
-	validate "github.com/go-openapi/validate"
 )
 
 // SaveHandlerFunc turns a function with the right signature into a save handler
@@ -34,7 +38,7 @@ func NewSave(ctx *middleware.Context, handler SaveHandler) *Save {
 	return &Save{Context: ctx, Handler: handler}
 }
 
-/*Save swagger:route POST /save save
+/* Save swagger:route POST /save save
 
 Save save API
 
@@ -47,32 +51,55 @@ type Save struct {
 func (o *Save) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewSaveParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
 
 // SaveBody save body
+//
 // swagger:model SaveBody
 type SaveBody struct {
 
 	// hash
 	// Required: true
-	Hash model.Hash `json:"hash"`
+	Hash *model.Hash `json:"hash"`
 
 	// key pair
 	// Required: true
 	KeyPair *model.KeyPair `json:"keyPair"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *SaveBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+
+		// key pair
+		// Required: true
+		KeyPair *model.KeyPair `json:"keyPair"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Hash = props.Hash
+	o.KeyPair = props.KeyPair
+	return nil
 }
 
 // Validate validates this save body
@@ -95,11 +122,21 @@ func (o *SaveBody) Validate(formats strfmt.Registry) error {
 
 func (o *SaveBody) validateHash(formats strfmt.Registry) error {
 
-	if err := o.Hash.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("args" + "." + "hash")
-		}
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
+	}
+
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
+		return err
+	}
+
+	if o.Hash != nil {
+		if err := o.Hash.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -113,6 +150,52 @@ func (o *SaveBody) validateKeyPair(formats strfmt.Registry) error {
 
 	if o.KeyPair != nil {
 		if err := o.KeyPair.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "keyPair")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this save body based on the context it is used
+func (o *SaveBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateHash(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateKeyPair(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *SaveBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Hash != nil {
+		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("args" + "." + "hash")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *SaveBody) contextValidateKeyPair(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.KeyPair != nil {
+		if err := o.KeyPair.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "keyPair")
 			}

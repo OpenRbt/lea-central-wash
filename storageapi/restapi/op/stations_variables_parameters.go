@@ -13,7 +13,8 @@ import (
 )
 
 // NewStationsVariablesParams creates a new StationsVariablesParams object
-// no default values defined in spec.
+//
+// There are no default values defined in the spec.
 func NewStationsVariablesParams() StationsVariablesParams {
 
 	return StationsVariablesParams{}
