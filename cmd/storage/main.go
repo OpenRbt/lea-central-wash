@@ -89,6 +89,9 @@ func init() { //nolint:gochecknoinits
 	flag.BoolVar(&useMemDB, "d", false, "change database from postgres to memdb")
 	flag.BoolVar(&checkSysTime, "t", false, "check time")
 	flag.BoolVar(&cfg.testBoards, "testboards", false, "test relay board")
+	flag.IntVar(&cfg.extapi.CleanupTimeout, "extapi.cleanup-timeout", def.CleanupTimeout, "server timeout for cleaning in seconds")
+	flag.IntVar(&cfg.extapi.ReadTimeout, "extapi.read-timeout", def.ReadTimeout, "server timeout for reading in seconds")
+	flag.IntVar(&cfg.extapi.WriteTimeout, "extapi.write-timeout", def.WriteTimeout, "server timeout for writing in seconds")
 
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",

@@ -15,6 +15,7 @@ require (
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/lib/pq v1.10.2
 	github.com/pkg/errors v0.9.1
+	github.com/powerman/check v1.3.0
 	github.com/powerman/must v0.1.0
 	github.com/powerman/narada4d v1.7.1
 	github.com/powerman/pqx v0.7.0

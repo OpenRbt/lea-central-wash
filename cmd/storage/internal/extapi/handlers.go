@@ -2,6 +2,7 @@ package extapi
 
 import (
 	"net"
+	"strings"
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
@@ -716,8 +717,8 @@ func (svc *service) setCardReaderConfig(params op.SetCardReaderConfigParams) op.
 	err := svc.app.SetCardReaderConfig(app.CardReaderConfig{
 		StationID:      app.StationID(*params.Args.StationID),
 		CardReaderType: params.Args.CardReaderType,
-		Host:           params.Args.Host,
-		Port:           params.Args.Port,
+		Host:           strings.TrimSpace(params.Args.Host),
+		Port:           strings.TrimSpace(params.Args.Port),
 	})
 
 	switch errors.Cause(err) {
