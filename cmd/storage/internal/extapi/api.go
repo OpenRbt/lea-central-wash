@@ -19,9 +19,12 @@ var errNotFound = errors.New("not found")
 
 // Config contains configuration for internal API service.
 type Config struct {
-	Host     string
-	Port     int
-	BasePath string
+	Host           string
+	Port           int
+	BasePath       string
+	WriteTimeout   int
+	ReadTimeout    int
+	CleanupTimeout int
 }
 
 type repo interface {
@@ -122,6 +125,9 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port
+	server.CleanupTimeout = time.Second * time.Duration(cfg.CleanupTimeout)
+	server.ReadTimeout = time.Second * time.Duration(cfg.ReadTimeout)
+	server.WriteTimeout = time.Second * time.Duration(cfg.WriteTimeout)
 	svc.unknownHash = map[string]time.Time{}
 	err = svc.loadHash()
 	if err != nil {

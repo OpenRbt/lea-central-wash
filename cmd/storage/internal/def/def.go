@@ -50,6 +50,9 @@ var (
 	OpenWeatherAPIKey  = strGetenv("OPENWEATHER_API_KEY", "")
 	IpifyBaseURL       = "https://geo.ipify.org/api/v1"
 	IpifyAPIKey        = strGetenv("IPIFY_API_KEY", "")
+	CleanupTimeout     = intGetenv("STORAGE_API_CLEANUP_TIMEOUT", 5)
+	ReadTimeout        = intGetenv("STORAGE_API_READ_TIMEOUT", 2)
+	WriteTimeout       = intGetenv("STORAGE_API_WRITE_TIMEOUT", 2)
 )
 
 var initErr error

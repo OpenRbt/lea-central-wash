@@ -2,6 +2,7 @@ package extapi
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
@@ -226,8 +227,8 @@ func apiCardReaderConfig(v *app.CardReaderConfig) (res *model.CardReaderConfig) 
 	res = &model.CardReaderConfig{
 		StationID:      newInt64(int64(v.StationID)),
 		CardReaderType: v.CardReaderType,
-		Host:           v.Host,
-		Port:           v.Port,
+		Host:           strings.TrimSpace(v.Host),
+		Port:           strings.TrimSpace(v.Port),
 	}
 	return res
 }
