@@ -732,3 +732,16 @@ func (r *repo) LastUpdateConfig() (id int, err error) {
 	})
 	return //nolint:nakedret
 }
+func (r *repo) GetProgramName(programID int)(programName string, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &programName, sqlGetProgramName, argGetProgramName {
+			ProgramID: programID,
+		})
+		if err == sql.ErrNoRows {
+			programName = ""
+			return nil
+		}
+		return err
+	})
+	return
+}

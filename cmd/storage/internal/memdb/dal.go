@@ -224,3 +224,7 @@ func (t *DB) AddUpdateConfig(note string) (id int, err error) {
 func (t *DB) LastUpdateConfig() (id int, err error) {
 	return
 }
+
+func (t *DB) GetProgramName(programID int)(programName string, err error) {
+	return
+}

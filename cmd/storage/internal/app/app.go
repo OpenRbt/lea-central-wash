@@ -146,6 +146,8 @@ type (
 		SetCardReaderConfig(CardReaderConfig) error
 		AddUpdateConfig(note string) (int, error)
 		LastUpdateConfig() (int, error)
+		
+		GetProgramName(programID int)(programName string, err error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -244,6 +246,7 @@ type StationStatus struct {
 	Status         Status
 	CurrentBalance int
 	CurrentProgram int
+	ProgramName    string
 	IP             string
 }
 

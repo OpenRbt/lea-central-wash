@@ -385,12 +385,14 @@ func (a *app) StatusReport() StatusReport {
 		} else {
 			status = StatusOffline
 		}
+		programName, _ := a.repo.GetProgramName(v.CurrentProgram)
 		report.Stations = append(report.Stations, StationStatus{
 			ID:             v.ID,
 			Name:           v.Name,
 			Status:         status,
 			CurrentBalance: v.CurrentBalance,
 			CurrentProgram: v.CurrentProgram,
+			ProgramName:    programName,
 			IP:             v.IP,
 		})
 	}

@@ -47,6 +47,8 @@ definitions:
         type: integer
       currentProgram:
         type: integer
+      currentProgramName:
+        type: string
       ip:
         type: string  
 
@@ -1396,3 +1398,4 @@ paths:
           description: not found
         500:
           description: internal error
+
