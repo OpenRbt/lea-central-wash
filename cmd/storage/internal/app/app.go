@@ -96,6 +96,7 @@ type (
 		PressButton(id StationID, buttonID int64) (err error)
 
 		Station(StationID) (SetStation, error)
+		LoadPrograms() error
 	}
 
 	// Repo is a DAL interface.
@@ -145,9 +146,7 @@ type (
 		CardReaderConfig(StationID) (*CardReaderConfig, error)
 		SetCardReaderConfig(CardReaderConfig) error
 		AddUpdateConfig(note string) (int, error)
-		LastUpdateConfig() (int, error)
-		
-		GetProgramName(programID int)(programName string, err error)
+		LastUpdateConfig() (int, error)		
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -186,6 +185,8 @@ type app struct {
 	repo          Repo
 	stations      map[StationID]StationData
 	stationsMutex sync.Mutex
+	programs      map[int64]Program
+	programsMutex sync.Mutex
 	kasseSvc      KasseSvc
 	weatherSvc    WeatherSvc
 	hardware      HardwareAccessLayer
@@ -202,6 +203,7 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 		hardware:   hardware,
 	}
 	appl.loadStations()
+	appl.LoadPrograms()
 	id, err := appl.repo.LastUpdateConfig()
 	if err != nil {
 		log.PrintErr(err)

@@ -385,9 +385,6 @@ order by b.button_id
 	sqlLastUpdateConfigGet = `
 	SELECT max(id) as id from update_config
 	`
-	sqlGetProgramName = `
-	SELECT name FROM program WHERE id = :program_id
-	`
 )
 
 type (
@@ -670,9 +667,5 @@ type (
 		Electronical int
 		Service      int
 		Ctime        time.Time
-	}
-
-	argGetProgramName struct {
-		ProgramID    int
 	}
 )
