@@ -6,9 +6,9 @@ func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err err
 	}
 	if programID > 0 {
 		a.programsMutex.Lock()
-		program := a.programs[programID]
+		program, ok := a.programs[programID]
 		a.programsMutex.Unlock()
-		if program.ID == 0 {
+		if !ok {
 			return ErrNotFound
 		}
 		if preflight {

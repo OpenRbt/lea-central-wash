@@ -96,7 +96,6 @@ type (
 		PressButton(id StationID, buttonID int64) (err error)
 
 		Station(StationID) (SetStation, error)
-		LoadPrograms() error
 	}
 
 	// Repo is a DAL interface.
@@ -203,7 +202,7 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 		hardware:   hardware,
 	}
 	appl.loadStations()
-	appl.LoadPrograms()
+	appl.loadPrograms()
 	id, err := appl.repo.LastUpdateConfig()
 	if err != nil {
 		log.PrintErr(err)
