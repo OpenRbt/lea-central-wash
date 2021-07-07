@@ -145,7 +145,7 @@ type (
 		CardReaderConfig(StationID) (*CardReaderConfig, error)
 		SetCardReaderConfig(CardReaderConfig) error
 		AddUpdateConfig(note string) (int, error)
-		LastUpdateConfig() (int, error)
+		LastUpdateConfig() (int, error)		
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -184,6 +184,8 @@ type app struct {
 	repo          Repo
 	stations      map[StationID]StationData
 	stationsMutex sync.Mutex
+	programs      map[int64]Program
+	programsMutex sync.Mutex
 	kasseSvc      KasseSvc
 	weatherSvc    WeatherSvc
 	hardware      HardwareAccessLayer
@@ -200,6 +202,7 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 		hardware:   hardware,
 	}
 	appl.loadStations()
+	appl.loadPrograms()
 	id, err := appl.repo.LastUpdateConfig()
 	if err != nil {
 		log.PrintErr(err)
@@ -244,6 +247,7 @@ type StationStatus struct {
 	Status         Status
 	CurrentBalance int
 	CurrentProgram int
+	ProgramName    string
 	IP             string
 }
 

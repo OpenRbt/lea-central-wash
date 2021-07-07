@@ -149,6 +149,7 @@ func (svc *service) apiStationStatus(v app.StationStatus) *model.StationStatus {
 		Status:         apiStatus(v.Status),
 		CurrentBalance: int64(v.CurrentBalance),
 		CurrentProgram: int64(v.CurrentProgram),
+		CurrentProgramName:    v.ProgramName,
 		IP:             v.IP,
 	}
 }

@@ -26,6 +26,9 @@ type StationStatus struct {
 	// current program
 	CurrentProgram int64 `json:"currentProgram,omitempty"`
 
+	// current program name
+	CurrentProgramName string `json:"currentProgramName,omitempty"`
+
 	// hash
 	Hash Hash `json:"hash,omitempty"`
 
@@ -55,6 +58,9 @@ func (m *StationStatus) UnmarshalJSON(data []byte) error {
 		// current program
 		CurrentProgram int64 `json:"currentProgram,omitempty"`
 
+		// current program name
+		CurrentProgramName string `json:"currentProgramName,omitempty"`
+
 		// hash
 		Hash Hash `json:"hash,omitempty"`
 
@@ -82,6 +88,7 @@ func (m *StationStatus) UnmarshalJSON(data []byte) error {
 
 	m.CurrentBalance = props.CurrentBalance
 	m.CurrentProgram = props.CurrentProgram
+	m.CurrentProgramName = props.CurrentProgramName
 	m.Hash = props.Hash
 	m.ID = props.ID
 	m.Info = props.Info

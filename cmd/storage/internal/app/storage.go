@@ -385,12 +385,16 @@ func (a *app) StatusReport() StatusReport {
 		} else {
 			status = StatusOffline
 		}
+		a.programsMutex.Lock()
+		programName := a.programs[int64(v.CurrentProgram)].Name
+		a.programsMutex.Unlock()
 		report.Stations = append(report.Stations, StationStatus{
 			ID:             v.ID,
 			Name:           v.Name,
 			Status:         status,
 			CurrentBalance: v.CurrentBalance,
 			CurrentProgram: v.CurrentProgram,
+			ProgramName:    programName,
 			IP:             v.IP,
 		})
 	}
@@ -475,6 +479,9 @@ func (a *app) SetProgram(program Program) error {
 	if err != nil {
 		return err
 	}
+	a.programsMutex.Lock()
+	a.programs[program.ID] = program
+	a.programsMutex.Unlock()
 	err = a.updateConfig("SetProgram")
 	return err
 }
@@ -526,5 +533,19 @@ func (a *app) updateConfig(note string) error {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 	a.lastUpdate = id
+	return nil
+}
+func (a *app) loadPrograms() error {
+	programs, err := a.repo.Programs(nil)
+	if err != nil {
+		return err
+	}
+	mapPrograms := make(map[int64]Program)
+	for _, program := range programs {
+		mapPrograms[program.ID] = program
+	}
+	a.programsMutex.Lock()
+	a.programs = mapPrograms
+	a.programsMutex.Unlock()
 	return nil
 }
