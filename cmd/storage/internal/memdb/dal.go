@@ -224,3 +224,9 @@ func (t *DB) AddUpdateConfig(note string) (id int, err error) {
 func (t *DB) LastUpdateConfig() (id int, err error) {
 	return
 }
+func (t *DB) SaveStationEvent(id app.StationID, module string, status string, info string, eventTime time.Time)(err error) {
+	return
+}
+func (t *DB) StationEventsReportDates(id app.StationID, startDate, endDate *time.Time) (events []app.StationEvent, err error) {
+	return
+}

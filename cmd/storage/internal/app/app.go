@@ -96,6 +96,9 @@ type (
 		PressButton(id StationID, buttonID int64) (err error)
 
 		Station(StationID) (SetStation, error)
+		
+		SaveStationEvent(id StationID, module string, status string, info string) error
+		StationEventsReportDates(id StationID, startDate, endDate *time.Time) (events []StationEvent, err error)
 	}
 
 	// Repo is a DAL interface.
@@ -146,6 +149,9 @@ type (
 		SetCardReaderConfig(CardReaderConfig) error
 		AddUpdateConfig(note string) (int, error)
 		LastUpdateConfig() (int, error)
+
+		SaveStationEvent(id StationID, module string, status string, info string, eventTime time.Time) error
+		StationEventsReportDates(id StationID, startDate, endDate *time.Time) (events []StationEvent, err error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -245,8 +251,14 @@ type StationStatus struct {
 	CurrentBalance int
 	CurrentProgram int
 	IP             string
+	LastEvents	   LastEventsTime
 }
-
+type LastEventsTime struct {
+	Last_Ok			int64
+	Last_Warning	int64
+	Last_Error		int64
+	Last_Critical   int64
+}
 // SetStation is a struct to assign a name
 type SetStation struct {
 	ID           StationID

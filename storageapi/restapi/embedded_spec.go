@@ -760,6 +760,29 @@ func init() {
         }
       }
     },
+    "/save-station-event": {
+      "post": {
+        "operationId": "saveStationEvent",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewStationEvent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/set-card-reader-config": {
       "post": {
         "operationId": "setCardReaderConfig",
@@ -1077,7 +1100,8 @@ func init() {
                   "x-nullable": true
                 },
                 "stationID": {
-                  "type": "integer"
+                  "type": "integer",
+                  "minimum": 1
                 }
               }
             }
@@ -1109,6 +1133,51 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station-events-report-dates": {
+      "post": {
+        "operationId": "stationEventsReportDates",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "endDate": {
+                  "description": "Unix time",
+                  "type": "integer",
+                  "x-nullable": true
+                },
+                "startDate": {
+                  "description": "Unix time",
+                  "type": "integer",
+                  "x-nullable": true
+                },
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok",
+            "schema": {
+              "$ref": "#/definitions/StationEventReport"
+            }
           },
           "500": {
             "description": "internal error"
@@ -1813,6 +1882,35 @@ func init() {
         }
       }
     },
+    "NewStationEvent": {
+      "type": "object",
+      "required": [
+        "hash",
+        "module",
+        "status",
+        "info"
+      ],
+      "properties": {
+        "hash": {
+          "type": "string"
+        },
+        "info": {
+          "type": "string"
+        },
+        "module": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "OK",
+            "WARNING",
+            "ERROR",
+            "CRITICAL"
+          ]
+        }
+      }
+    },
     "Password": {
       "type": "string",
       "minLength": 4,
@@ -1937,6 +2035,60 @@ func init() {
         }
       }
     },
+    "StationEvent": {
+      "type": "object",
+      "properties": {
+        "ctime": {
+          "type": "integer"
+        },
+        "info": {
+          "type": "string"
+        },
+        "module": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "OK",
+            "WARNING",
+            "ERROR",
+            "CRITICAL"
+          ]
+        }
+      }
+    },
+    "StationEventReport": {
+      "type": "object",
+      "properties": {
+        "eventsReport": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StationEvent"
+          }
+        }
+      }
+    },
+    "StationLastEvents": {
+      "type": "object",
+      "properties": {
+        "critical_ctime": {
+          "type": "integer"
+        },
+        "error_ctime": {
+          "type": "integer"
+        },
+        "ok_ctime": {
+          "type": "integer"
+        },
+        "warning_ctime": {
+          "type": "integer"
+        }
+      }
+    },
     "StationPrograms": {
       "type": "object",
       "properties": {
@@ -2005,6 +2157,9 @@ func init() {
         },
         "ip": {
           "type": "string"
+        },
+        "lastEvents": {
+          "$ref": "#/definitions/StationLastEvents"
         },
         "name": {
           "type": "string"
@@ -2865,6 +3020,29 @@ func init() {
         }
       }
     },
+    "/save-station-event": {
+      "post": {
+        "operationId": "saveStationEvent",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewStationEvent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/set-card-reader-config": {
       "post": {
         "operationId": "setCardReaderConfig",
@@ -3166,7 +3344,8 @@ func init() {
                   "x-nullable": true
                 },
                 "stationID": {
-                  "type": "integer"
+                  "type": "integer",
+                  "minimum": 1
                 }
               }
             }
@@ -3198,6 +3377,51 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station-events-report-dates": {
+      "post": {
+        "operationId": "stationEventsReportDates",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "endDate": {
+                  "description": "Unix time",
+                  "type": "integer",
+                  "x-nullable": true
+                },
+                "startDate": {
+                  "description": "Unix time",
+                  "type": "integer",
+                  "x-nullable": true
+                },
+                "stationID": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok",
+            "schema": {
+              "$ref": "#/definitions/StationEventReport"
+            }
           },
           "500": {
             "description": "internal error"
@@ -3913,6 +4137,35 @@ func init() {
         }
       }
     },
+    "NewStationEvent": {
+      "type": "object",
+      "required": [
+        "hash",
+        "module",
+        "status",
+        "info"
+      ],
+      "properties": {
+        "hash": {
+          "type": "string"
+        },
+        "info": {
+          "type": "string"
+        },
+        "module": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "OK",
+            "WARNING",
+            "ERROR",
+            "CRITICAL"
+          ]
+        }
+      }
+    },
     "Password": {
       "type": "string",
       "minLength": 4,
@@ -4039,6 +4292,60 @@ func init() {
         }
       }
     },
+    "StationEvent": {
+      "type": "object",
+      "properties": {
+        "ctime": {
+          "type": "integer"
+        },
+        "info": {
+          "type": "string"
+        },
+        "module": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "OK",
+            "WARNING",
+            "ERROR",
+            "CRITICAL"
+          ]
+        }
+      }
+    },
+    "StationEventReport": {
+      "type": "object",
+      "properties": {
+        "eventsReport": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StationEvent"
+          }
+        }
+      }
+    },
+    "StationLastEvents": {
+      "type": "object",
+      "properties": {
+        "critical_ctime": {
+          "type": "integer"
+        },
+        "error_ctime": {
+          "type": "integer"
+        },
+        "ok_ctime": {
+          "type": "integer"
+        },
+        "warning_ctime": {
+          "type": "integer"
+        }
+      }
+    },
     "StationPrograms": {
       "type": "object",
       "properties": {
@@ -4110,6 +4417,9 @@ func init() {
         },
         "ip": {
           "type": "string"
+        },
+        "lastEvents": {
+          "$ref": "#/definitions/StationLastEvents"
         },
         "name": {
           "type": "string"

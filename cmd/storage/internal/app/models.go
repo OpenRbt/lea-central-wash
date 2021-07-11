@@ -45,8 +45,15 @@ type StationData struct {
 	ButtonID       int
 	LastUpdate     int
 	IP             string
+	LastEvents     LastStationEventsDate
 }
-
+// LastStationEventsDate is used to store last events date
+type LastStationEventsDate struct{
+	Last_Ok        int64
+	Last_Warning   int64
+	Last_Error     int64
+	Last_Critical  int64
+}
 // MoneyReport is just to represent money in a station. All known kinds of money
 type MoneyReport struct {
 	StationID    StationID
@@ -99,4 +106,13 @@ type CardReaderConfig struct {
 	CardReaderType string
 	Host           string
 	Port           string
+}
+
+// StationEvent represents station events
+type StationEvent struct {
+	ID			StationID
+	Ctime		time.Time
+	Module		string
+	Status		string
+	Info		string
 }

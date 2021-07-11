@@ -49,7 +49,21 @@ definitions:
         type: integer
       ip:
         type: string  
-
+      lastEvents:
+        $ref: '#/definitions/StationLastEvents'
+  
+  StationLastEvents:
+    type: object
+    properties:
+      ok_ctime:
+        type: integer
+      warning_ctime:
+        type: integer
+      error_ctime:
+        type: integer
+      critical_ctime:
+        type: integer
+  
   Status:
     type: string
     enum: ["offline", "online"]
@@ -367,7 +381,47 @@ definitions:
       relayBoard:
         $ref: '#/definitions/RelayBoard'
   
+  NewStationEvent:
+    type: object
+    required:
+      - hash
+      - module
+      - status
+      - info
+    properties:
+      hash:
+        type: string
+      module:
+        type: string
+      status:
+        type: string
+        enum: ["OK", "WARNING", "ERROR","CRITICAL"]
+      info:
+        type: string
 
+  StationEvent:
+    type: object
+    properties:
+      stationID:
+        type: integer
+      ctime:
+        type: integer
+      module:
+        type: string
+      status:
+        type: string
+        enum: ["OK", "WARNING", "ERROR","CRITICAL"]
+      info:
+        type: string
+  
+  StationEventReport:
+    type: object
+    properties:
+      eventsReport:
+        type: array
+        items:
+          $ref: '#/definitions/StationEvent'
+  
 consumes:
   - application/json
 produces:
@@ -1368,6 +1422,7 @@ paths:
             properties:
               stationID:
                 type: integer
+                minimum: 1
               startDate:
                 description: Unix time
                 type: integer
@@ -1396,3 +1451,51 @@ paths:
           description: not found
         500:
           description: internal error
+          
+  /save-station-event:
+    post:
+      operationId: "saveStationEvent"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/NewStationEvent'
+      responses:
+        200:
+          description: OK
+        500:
+          description: internal error
+          
+  /station-events-report-dates:
+    post:
+      operationId: "stationEventsReportDates"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - stationID
+            properties:
+              stationID:
+                type: integer
+                minimum: 1
+              startDate:
+                description: Unix time
+                type: integer
+                x-nullable: true
+              endDate:
+                description: Unix time
+                type: integer
+                x-nullable: true
+      responses:
+        200:
+          description: ok
+          schema:
+            $ref: '#/definitions/StationEventReport'
+        500:
+          description: internal error
+          
+

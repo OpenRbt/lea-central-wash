@@ -163,3 +163,16 @@ func appCollectionReportsByDate(r []resCollectionReportByDate) (res []app.Collec
 	}
 	return res
 }
+
+func appStationEvents(r []resStationEventByDate) (res []app.StationEvent) {
+	for i := range r {
+		res = append(res, app.StationEvent{
+			ID: 		r[i].StationID,
+			Ctime:		r[i].Ctime,
+			Module:		r[i].Module,
+			Status:		r[i].Status,
+			Info:		r[i].Info,
+		})
+	}
+	return res
+}

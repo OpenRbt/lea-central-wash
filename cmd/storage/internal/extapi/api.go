@@ -120,6 +120,9 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.SetCardReaderConfigHandler = op.SetCardReaderConfigHandlerFunc(svc.setCardReaderConfig)
 	api.CardReaderConfigByHashHandler = op.CardReaderConfigByHashHandlerFunc(svc.cardReaderConfigByHash)
 
+	api.SaveStationEventHandler = op.SaveStationEventHandlerFunc(svc.SaveStationEvent)
+	api.StationEventsReportDatesHandler = op.StationEventsReportDatesHandlerFunc(svc.StationEventsReportDates)
+
 	api.RunProgramHandler = op.RunProgramHandlerFunc(svc.runProgram)
 	api.PressButtonHandler = op.PressButtonHandlerFunc(svc.pressButton)
 	server := restapi.NewServer(api)

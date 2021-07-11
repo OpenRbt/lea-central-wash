@@ -392,6 +392,12 @@ func (a *app) StatusReport() StatusReport {
 			CurrentBalance: v.CurrentBalance,
 			CurrentProgram: v.CurrentProgram,
 			IP:             v.IP,
+			LastEvents:     LastEventsTime{
+				Last_Ok:		v.LastEvents.Last_Ok,
+				Last_Warning:	v.LastEvents.Last_Warning,
+				Last_Error:		v.LastEvents.Last_Error,
+				Last_Critical:	v.LastEvents.Last_Critical,
+			},
 		})
 	}
 	return report
@@ -527,4 +533,29 @@ func (a *app) updateConfig(note string) error {
 	defer a.stationsMutex.Unlock()
 	a.lastUpdate = id
 	return nil
+}
+
+func (a *app) SaveStationEvent(id StationID, module string, status string, info string) error {
+	eventTime := time.Now().UTC()
+
+	a.stationsMutex.Lock()
+	station := a.stations[id]
+	switch status {
+	case "CRITICAL":
+		station.LastEvents.Last_Critical = eventTime.Unix()
+	case "ERROR":
+		station.LastEvents.Last_Error = eventTime.Unix()
+	case "WARNING":
+		station.LastEvents.Last_Warning = eventTime.Unix()
+	case "OK":
+		station.LastEvents.Last_Ok = eventTime.Unix()
+	}
+	a.stations[id] = station
+	a.stationsMutex.Unlock()
+
+	return a.repo.SaveStationEvent(id, module, status, info, eventTime)
+}
+func (a *app) StationEventsReportDates(id StationID, startDate, endDate *time.Time) (events []StationEvent, err error) {
+	events, err = a.repo.StationEventsReportDates(id, startDate, endDate)
+	return events, err	
 }

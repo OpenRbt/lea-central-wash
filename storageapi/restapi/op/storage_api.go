@@ -119,6 +119,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		SaveRelayHandler: SaveRelayHandlerFunc(func(params SaveRelayParams) SaveRelayResponder {
 			return SaveRelayNotImplemented()
 		}),
+		SaveStationEventHandler: SaveStationEventHandlerFunc(func(params SaveStationEventParams) SaveStationEventResponder {
+			return SaveStationEventNotImplemented()
+		}),
 		SetCardReaderConfigHandler: SetCardReaderConfigHandlerFunc(func(params SetCardReaderConfigParams) SetCardReaderConfigResponder {
 			return SetCardReaderConfigNotImplemented()
 		}),
@@ -145,6 +148,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		StationCollectionReportDatesHandler: StationCollectionReportDatesHandlerFunc(func(params StationCollectionReportDatesParams, principal *storageapi.Profile) StationCollectionReportDatesResponder {
 			return StationCollectionReportDatesNotImplemented()
+		}),
+		StationEventsReportDatesHandler: StationEventsReportDatesHandlerFunc(func(params StationEventsReportDatesParams) StationEventsReportDatesResponder {
+			return StationEventsReportDatesNotImplemented()
 		}),
 		StationProgramByHashHandler: StationProgramByHashHandlerFunc(func(params StationProgramByHashParams) StationProgramByHashResponder {
 			return StationProgramByHashNotImplemented()
@@ -270,6 +276,8 @@ type StorageAPI struct {
 	SaveMoneyHandler SaveMoneyHandler
 	// SaveRelayHandler sets the operation handler for the save relay operation
 	SaveRelayHandler SaveRelayHandler
+	// SaveStationEventHandler sets the operation handler for the save station event operation
+	SaveStationEventHandler SaveStationEventHandler
 	// SetCardReaderConfigHandler sets the operation handler for the set card reader config operation
 	SetCardReaderConfigHandler SetCardReaderConfigHandler
 	// SetKasseHandler sets the operation handler for the set kasse operation
@@ -288,6 +296,8 @@ type StorageAPI struct {
 	StationByHashHandler StationByHashHandler
 	// StationCollectionReportDatesHandler sets the operation handler for the station collection report dates operation
 	StationCollectionReportDatesHandler StationCollectionReportDatesHandler
+	// StationEventsReportDatesHandler sets the operation handler for the station events report dates operation
+	StationEventsReportDatesHandler StationEventsReportDatesHandler
 	// StationProgramByHashHandler sets the operation handler for the station program by hash operation
 	StationProgramByHashHandler StationProgramByHashHandler
 	// StationReportCurrentMoneyHandler sets the operation handler for the station report current money operation
@@ -460,6 +470,9 @@ func (o *StorageAPI) Validate() error {
 	if o.SaveRelayHandler == nil {
 		unregistered = append(unregistered, "SaveRelayHandler")
 	}
+	if o.SaveStationEventHandler == nil {
+		unregistered = append(unregistered, "SaveStationEventHandler")
+	}
 	if o.SetCardReaderConfigHandler == nil {
 		unregistered = append(unregistered, "SetCardReaderConfigHandler")
 	}
@@ -486,6 +499,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.StationCollectionReportDatesHandler == nil {
 		unregistered = append(unregistered, "StationCollectionReportDatesHandler")
+	}
+	if o.StationEventsReportDatesHandler == nil {
+		unregistered = append(unregistered, "StationEventsReportDatesHandler")
 	}
 	if o.StationProgramByHashHandler == nil {
 		unregistered = append(unregistered, "StationProgramByHashHandler")
@@ -713,6 +729,10 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/save-station-event"] = NewSaveStationEvent(o.context, o.SaveStationEventHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/set-card-reader-config"] = NewSetCardReaderConfig(o.context, o.SetCardReaderConfigHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -746,6 +766,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/station-collection-report-dates"] = NewStationCollectionReportDates(o.context, o.StationCollectionReportDatesHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/station-events-report-dates"] = NewStationEventsReportDates(o.context, o.StationEventsReportDatesHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

@@ -38,6 +38,9 @@ type StationStatus struct {
 	// ip
 	IP string `json:"ip,omitempty"`
 
+	// last events
+	LastEvents *StationLastEvents `json:"lastEvents,omitempty"`
+
 	// name
 	Name string `json:"name,omitempty"`
 
@@ -67,6 +70,9 @@ func (m *StationStatus) UnmarshalJSON(data []byte) error {
 		// ip
 		IP string `json:"ip,omitempty"`
 
+		// last events
+		LastEvents *StationLastEvents `json:"lastEvents,omitempty"`
+
 		// name
 		Name string `json:"name,omitempty"`
 
@@ -86,6 +92,7 @@ func (m *StationStatus) UnmarshalJSON(data []byte) error {
 	m.ID = props.ID
 	m.Info = props.Info
 	m.IP = props.IP
+	m.LastEvents = props.LastEvents
 	m.Name = props.Name
 	m.Status = props.Status
 	return nil
@@ -96,6 +103,10 @@ func (m *StationStatus) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateHash(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateLastEvents(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -124,6 +135,23 @@ func (m *StationStatus) validateHash(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *StationStatus) validateLastEvents(formats strfmt.Registry) error {
+	if swag.IsZero(m.LastEvents) { // not required
+		return nil
+	}
+
+	if m.LastEvents != nil {
+		if err := m.LastEvents.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("lastEvents")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *StationStatus) validateStatus(formats strfmt.Registry) error {
 	if swag.IsZero(m.Status) { // not required
 		return nil
@@ -147,6 +175,10 @@ func (m *StationStatus) ContextValidate(ctx context.Context, formats strfmt.Regi
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateLastEvents(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateStatus(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -164,6 +196,20 @@ func (m *StationStatus) contextValidateHash(ctx context.Context, formats strfmt.
 			return ve.ValidateName("hash")
 		}
 		return err
+	}
+
+	return nil
+}
+
+func (m *StationStatus) contextValidateLastEvents(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.LastEvents != nil {
+		if err := m.LastEvents.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("lastEvents")
+			}
+			return err
+		}
 	}
 
 	return nil

@@ -732,3 +732,32 @@ func (r *repo) LastUpdateConfig() (id int, err error) {
 	})
 	return //nolint:nakedret
 }
+func (r *repo) SaveStationEvent(id app.StationID, module string, status string, info string, eventTime time.Time) error{
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error{
+		_, err := tx.NamedExec(sqlSaveStationEvent, argSaveStationEvent{
+			StationId:	id,
+			Ctime:		eventTime,
+			Module:		module,
+			Status:		status,
+			Info:		info,
+		})
+		return err
+	})
+	return err
+}
+func (r *repo) StationEventsReportDates(id app.StationID, startDate, endDate *time.Time) (events []app.StationEvent, err error){	
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error{
+		var res []resStationEventByDate
+		err := tx.NamedSelectContext(ctx, &res, sqlStationEventsReportDates, argStationEventByDate{
+			StationID: id,
+			StartDate: startDate,
+			EndDate:   endDate,
+		})
+		events = appStationEvents(res)
+		if err == sql.ErrNoRows {
+			return nil
+		}
+		return err
+	})
+	return
+}

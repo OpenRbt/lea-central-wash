@@ -193,6 +193,7 @@ type StationCollectionReportDatesBody struct {
 	StartDate *int64 `json:"startDate,omitempty"`
 
 	// station ID
+	// Minimum: 1
 	StationID int64 `json:"stationID,omitempty"`
 }
 
@@ -207,6 +208,7 @@ func (o *StationCollectionReportDatesBody) UnmarshalJSON(data []byte) error {
 		StartDate *int64 `json:"startDate,omitempty"`
 
 		// station ID
+		// Minimum: 1
 		StationID int64 `json:"stationID,omitempty"`
 	}
 
@@ -224,6 +226,27 @@ func (o *StationCollectionReportDatesBody) UnmarshalJSON(data []byte) error {
 
 // Validate validates this station collection report dates body
 func (o *StationCollectionReportDatesBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateStationID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *StationCollectionReportDatesBody) validateStationID(formats strfmt.Registry) error {
+	if swag.IsZero(o.StationID) { // not required
+		return nil
+	}
+
+	if err := validate.MinimumInt("args"+"."+"stationID", "body", o.StationID, 1, false); err != nil {
+		return err
+	}
+
 	return nil
 }
 

@@ -175,6 +175,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.SaveRelayNotImplemented()
 		})
 	}
+	if api.SaveStationEventHandler == nil {
+		api.SaveStationEventHandler = op.SaveStationEventHandlerFunc(func(params op.SaveStationEventParams) op.SaveStationEventResponder {
+			return op.SaveStationEventNotImplemented()
+		})
+	}
 	if api.SetCardReaderConfigHandler == nil {
 		api.SetCardReaderConfigHandler = op.SetCardReaderConfigHandlerFunc(func(params op.SetCardReaderConfigParams) op.SetCardReaderConfigResponder {
 			return op.SetCardReaderConfigNotImplemented()
@@ -218,6 +223,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.StationCollectionReportDatesHandler == nil {
 		api.StationCollectionReportDatesHandler = op.StationCollectionReportDatesHandlerFunc(func(params op.StationCollectionReportDatesParams, principal *storageapi.Profile) op.StationCollectionReportDatesResponder {
 			return op.StationCollectionReportDatesNotImplemented()
+		})
+	}
+	if api.StationEventsReportDatesHandler == nil {
+		api.StationEventsReportDatesHandler = op.StationEventsReportDatesHandlerFunc(func(params op.StationEventsReportDatesParams) op.StationEventsReportDatesResponder {
+			return op.StationEventsReportDatesNotImplemented()
 		})
 	}
 	if api.StationProgramByHashHandler == nil {

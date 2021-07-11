@@ -150,6 +150,12 @@ func (svc *service) apiStationStatus(v app.StationStatus) *model.StationStatus {
 		CurrentBalance: int64(v.CurrentBalance),
 		CurrentProgram: int64(v.CurrentProgram),
 		IP:             v.IP,
+		LastEvents:		&model.StationLastEvents{
+			OkCtime:	v.LastEvents.Last_Ok,
+			WarningCtime:	v.LastEvents.Last_Warning,
+			ErrorCtime:	v.LastEvents.Last_Error,
+			CriticalCtime:	v.LastEvents.Last_Critical,
+		},
 	}
 }
 
@@ -292,6 +298,20 @@ func apiCollectionReportWithUser(reports []app.CollectionReportWithUser) (res []
 			Service:      int64(reports[i].Service),
 			Ctime:        reports[i].Ctime.Unix(),
 			User:         reports[i].User,
+		})
+	}
+	return res
+}
+
+func apiStationEvents(events []app.StationEvent) (res []*model.StationEvent) {
+	res = []*model.StationEvent{}
+	for i := range events {
+		res = append(res, &model.StationEvent{
+			Ctime:		events[i].Ctime.Unix(),
+			Info:		events[i].Info,
+			Module:		events[i].Module,
+			StationID:	int64(events[i].ID),
+			Status:		events[i].Status,
 		})
 	}
 	return res

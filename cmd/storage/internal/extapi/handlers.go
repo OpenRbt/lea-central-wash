@@ -884,3 +884,45 @@ func (svc *service) deleteUser(params op.DeleteUserParams, auth *app.Auth) op.De
 		return op.NewDeleteUserInternalServerError()
 	}
 }
+
+func (svc *service) SaveStationEvent(params op.SaveStationEventParams) op.SaveStationEventResponder{
+	log.Info("saveStationEvent", "hash", params.Args.Hash, "Module", params.Args.Module, "Status", params.Args.Status)
+	id, err := svc.getID(*params.Args.Hash)
+	if err != nil {
+		return op.NewSaveStationEventInternalServerError()
+	}
+	
+	err = svc.app.SaveStationEvent(id, *params.Args.Module, *params.Args.Status, *params.Args.Info)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSaveStationEventOK()
+	default:
+		return op.NewSaveStationEventInternalServerError()
+	}
+}
+
+func (svc *service) StationEventsReportDates(params op.StationEventsReportDatesParams) op.StationEventsReportDatesResponder {
+	log.Info("stationEventByDate", "station", *params.Args.StationID, "startDate", params.Args.StartDate, "endDate", params.Args.EndDate)
+	var startDate *time.Time
+	if params.Args.StartDate != nil {
+		CreateDateStart := time.Unix(*params.Args.StartDate, 0)
+		startDate = &CreateDateStart
+	}
+	var endDate *time.Time
+	if params.Args.EndDate != nil {
+		CreateDateEnd := time.Unix(*params.Args.EndDate, 0)
+		endDate = &CreateDateEnd
+	}
+
+	appEvents, err := svc.app.StationEventsReportDates(app.StationID(*params.Args.StationID), startDate, endDate)
+	events := apiStationEvents(appEvents)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewStationEventsReportDatesOK().WithPayload(&model.StationEventReport{
+			EventsReport: events,
+		})
+	default:
+		return op.NewStationEventsReportDatesInternalServerError()
+	}
+}

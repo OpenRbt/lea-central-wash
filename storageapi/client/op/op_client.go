@@ -80,6 +80,8 @@ type ClientService interface {
 
 	SaveRelay(params *SaveRelayParams, opts ...ClientOption) (*SaveRelayNoContent, error)
 
+	SaveStationEvent(params *SaveStationEventParams, opts ...ClientOption) (*SaveStationEventOK, error)
+
 	SetCardReaderConfig(params *SetCardReaderConfigParams, opts ...ClientOption) (*SetCardReaderConfigNoContent, error)
 
 	SetKasse(params *SetKasseParams, opts ...ClientOption) (*SetKasseNoContent, error)
@@ -97,6 +99,8 @@ type ClientService interface {
 	StationByHash(params *StationByHashParams, opts ...ClientOption) (*StationByHashOK, error)
 
 	StationCollectionReportDates(params *StationCollectionReportDatesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationCollectionReportDatesOK, error)
+
+	StationEventsReportDates(params *StationEventsReportDatesParams, opts ...ClientOption) (*StationEventsReportDatesOK, error)
 
 	StationProgramByHash(params *StationProgramByHashParams, opts ...ClientOption) (*StationProgramByHashOK, error)
 
@@ -1073,6 +1077,44 @@ func (a *Client) SaveRelay(params *SaveRelayParams, opts ...ClientOption) (*Save
 }
 
 /*
+  SaveStationEvent save station event API
+*/
+func (a *Client) SaveStationEvent(params *SaveStationEventParams, opts ...ClientOption) (*SaveStationEventOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSaveStationEventParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "saveStationEvent",
+		Method:             "POST",
+		PathPattern:        "/save-station-event",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SaveStationEventReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*SaveStationEventOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for saveStationEvent: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   SetCardReaderConfig set card reader config API
 */
 func (a *Client) SetCardReaderConfig(params *SetCardReaderConfigParams, opts ...ClientOption) (*SetCardReaderConfigNoContent, error) {
@@ -1412,6 +1454,44 @@ func (a *Client) StationCollectionReportDates(params *StationCollectionReportDat
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for stationCollectionReportDates: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  StationEventsReportDates station events report dates API
+*/
+func (a *Client) StationEventsReportDates(params *StationEventsReportDatesParams, opts ...ClientOption) (*StationEventsReportDatesOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStationEventsReportDatesParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "stationEventsReportDates",
+		Method:             "POST",
+		PathPattern:        "/station-events-report-dates",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StationEventsReportDatesReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*StationEventsReportDatesOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for stationEventsReportDates: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

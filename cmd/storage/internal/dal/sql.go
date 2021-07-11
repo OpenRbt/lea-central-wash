@@ -385,6 +385,19 @@ order by b.button_id
 	sqlLastUpdateConfigGet = `
 	SELECT max(id) as id from update_config
 	`
+	sqlSaveStationEvent = `
+	INSERT INTO station_events(station_id, ctime, module, status, info)
+		VALUES (:station_id, :ctime, :module, :status, :info);
+	`
+	sqlStationEventsReportDates = `
+	SELECT station_id, 
+		ctime,
+		module,
+		status,
+		info
+	FROM station_events
+	WHERE (:start_date <= ctime or CAST(:start_date AS TIMESTAMP) is null) AND (ctime <= :end_date or CAST(:end_date AS TIMESTAMP) is null) AND  station_id = :station_id
+	`
 )
 
 type (
@@ -667,5 +680,24 @@ type (
 		Electronical int
 		Service      int
 		Ctime        time.Time
+	}
+	argSaveStationEvent struct {
+		StationId   app.StationID
+		Ctime		time.Time
+		Module		string
+		Status		string
+		Info		string
+	}
+	argStationEventByDate struct {
+		StationID 	app.StationID
+		StartDate 	*time.Time
+		EndDate   	*time.Time
+	}
+	resStationEventByDate struct {
+		StationID  	app.StationID
+		Ctime       time.Time
+		Module		string
+		Status		string
+		Info		string
 	}
 )
