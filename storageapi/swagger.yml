@@ -47,6 +47,8 @@ definitions:
         type: integer
       currentProgram:
         type: integer
+      currentProgramName:
+        type: string
       ip:
         type: string  
       lastEvents:
@@ -1451,51 +1453,4 @@ paths:
           description: not found
         500:
           description: internal error
-          
-  /save-station-event:
-    post:
-      operationId: "saveStationEvent"
-      parameters:
-        - name: args
-          required: true
-          in: body
-          schema:
-            $ref: '#/definitions/NewStationEvent'
-      responses:
-        200:
-          description: OK
-        500:
-          description: internal error
-          
-  /station-events-report-dates:
-    post:
-      operationId: "stationEventsReportDates"
-      parameters:
-        - name: args
-          required: true
-          in: body
-          schema:
-            type: object
-            required:
-              - stationID
-            properties:
-              stationID:
-                type: integer
-                minimum: 1
-              startDate:
-                description: Unix time
-                type: integer
-                x-nullable: true
-              endDate:
-                description: Unix time
-                type: integer
-                x-nullable: true
-      responses:
-        200:
-          description: ok
-          schema:
-            $ref: '#/definitions/StationEventReport'
-        500:
-          description: internal error
-          
 

@@ -5,11 +5,10 @@ func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err err
 		TimeoutSec: relayTimeoutSec,
 	}
 	if programID > 0 {
-		program, err := a.repo.Programs(&programID)
-		if err != nil {
-			return err
-		}
-		if len(program) != 1 {
+		a.programsMutex.Lock()
+		program, ok := a.programs[programID]
+		a.programsMutex.Unlock()
+		if !ok {
 			return ErrNotFound
 		}
 		if preflight {
@@ -21,11 +20,11 @@ func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err err
 		}
 
 		if preflight {
-			cfg.MotorSpeedPercent = int(program[0].PreflightMotorSpeedPercent)
-			cfg.Timings = program[0].PreflightRelays
+			cfg.MotorSpeedPercent = int(program.PreflightMotorSpeedPercent)
+			cfg.Timings = program.PreflightRelays
 		} else {
-			cfg.MotorSpeedPercent = int(program[0].MotorSpeedPercent)
-			cfg.Timings = program[0].Relays
+			cfg.MotorSpeedPercent = int(program.MotorSpeedPercent)
+			cfg.Timings = program.Relays
 		}
 	}
 	return a.hardware.RunProgram(int(id), cfg)
