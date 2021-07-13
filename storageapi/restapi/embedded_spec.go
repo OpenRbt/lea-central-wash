@@ -2146,6 +2146,9 @@ func init() {
         "currentProgram": {
           "type": "integer"
         },
+        "currentProgramName": {
+          "type": "string"
+        },
         "hash": {
           "$ref": "#/definitions/Hash"
         },
@@ -4405,6 +4408,9 @@ func init() {
         },
         "currentProgram": {
           "type": "integer"
+        },
+        "currentProgramName": {
+          "type": "string"
         },
         "hash": {
           "$ref": "#/definitions/Hash"
