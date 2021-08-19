@@ -314,6 +314,8 @@ definitions:
         type: integer
       preflightEnabled:
         type: boolean
+      isFinishingProgram:
+        type: boolean
       motorSpeedPercent:
         type: integer
         minimum: 0

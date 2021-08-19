@@ -39,6 +39,7 @@ func appPrograms(p *model.Program) app.Program {
 		PreflightEnabled:           p.PreflightEnabled,
 		MotorSpeedPercent:          motorSpeedPercent,
 		PreflightMotorSpeedPercent: preflightMotorSpeedPercent,
+		IsFinishingProgram:         p.IsFinishingProgram,
 		Relays:                     appRelays(p.Relays),
 		PreflightRelays:            appRelays(p.PreflightRelays),
 	}
@@ -60,6 +61,7 @@ func apiProgram(p app.Program) *model.Program {
 		PreflightEnabled:           p.PreflightEnabled,
 		MotorSpeedPercent:          &p.MotorSpeedPercent,
 		PreflightMotorSpeedPercent: &p.PreflightMotorSpeedPercent,
+		IsFinishingProgram:         p.IsFinishingProgram,
 		Relays:                     apiRelays(p.Relays),
 		PreflightRelays:            apiRelays(p.PreflightRelays),
 	}
@@ -142,15 +144,15 @@ func (svc *service) apiStatusReport(v app.StatusReport) *model.StatusReport {
 
 func (svc *service) apiStationStatus(v app.StationStatus) *model.StationStatus {
 	return &model.StationStatus{
-		Hash:           model.Hash(svc.getHash(v.ID)),
-		ID:             int64(v.ID),
-		Info:           v.Info,
-		Name:           v.Name,
-		Status:         apiStatus(v.Status),
-		CurrentBalance: int64(v.CurrentBalance),
-		CurrentProgram: int64(v.CurrentProgram),
-		CurrentProgramName:    v.ProgramName,
-		IP:             v.IP,
+		Hash:               model.Hash(svc.getHash(v.ID)),
+		ID:                 int64(v.ID),
+		Info:               v.Info,
+		Name:               v.Name,
+		Status:             apiStatus(v.Status),
+		CurrentBalance:     int64(v.CurrentBalance),
+		CurrentProgram:     int64(v.CurrentProgram),
+		CurrentProgramName: v.ProgramName,
+		IP:                 v.IP,
 	}
 }
 

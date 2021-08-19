@@ -282,7 +282,8 @@ ORDER BY relay_id
 	relays,
 	preflight_relays,
 	motor_speed_percent,
-	preflight_motor_speed_percent
+	preflight_motor_speed_percent,
+	is_finishing_program
     FROM program
 	WHERE ((id = :id) or (CAST(:id as integer) is null)) 
 	ORDER BY id ASC
@@ -297,7 +298,8 @@ ORDER BY relay_id
 		relays,
 		preflight_relays,
 		motor_speed_percent,
-		preflight_motor_speed_percent
+		preflight_motor_speed_percent,
+		is_finishing_program
 		)
 	VALUES (
 		:id,
@@ -307,7 +309,8 @@ ORDER BY relay_id
 		:relays,
 		:preflight_relays,
 		:motor_speed_percent,
-		:preflight_motor_speed_percent
+		:preflight_motor_speed_percent,
+		:is_finishing_program
 		) ON CONFLICT (id) DO
 	UPDATE
 	SET
@@ -317,7 +320,8 @@ ORDER BY relay_id
 	relays = :relays,
 	preflight_relays = :preflight_relays,
 	motor_speed_percent = :motor_speed_percent,
-	preflight_motor_speed_percent = :preflight_motor_speed_percent
+	preflight_motor_speed_percent = :preflight_motor_speed_percent,
+	is_finishing_program = :is_finishing_program
 	`
 
 	sqlStationProgramAdd = `
@@ -342,7 +346,8 @@ select s.id,
 	p.relays,
 	p.preflight_relays,
 	p.motor_speed_percent,
-	p.preflight_motor_speed_percent
+	p.preflight_motor_speed_percent,
+	p.is_finishing_program
 from station s
 join station_program b on s.id=b.station_id
 join program p on b.program_id=p.id
@@ -584,6 +589,7 @@ type (
 		PreflightRelays            string
 		MotorSpeedPercent          int64
 		PreflightMotorSpeedPercent int64
+		IsFinishingProgram         bool
 	}
 
 	argStationProgram struct {
@@ -615,6 +621,7 @@ type (
 		ButtonID                   int
 		ProgramName                string
 		PreflightEnabled           bool
+		IsFinishingProgram         bool
 		Relays                     string
 		PreflightRelays            string
 		MotorSpeedPercent          int64
@@ -642,6 +649,7 @@ type (
 		PreflightMotorSpeedPercent int64
 		Relays                     string
 		PreflightRelays            string
+		IsFinishingProgram         bool
 	}
 
 	argKasseGet struct {

@@ -1828,6 +1828,9 @@ func init() {
           "type": "integer",
           "minimum": 1
         },
+        "isFinishingProgram": {
+          "type": "boolean"
+        },
         "motorSpeedPercent": {
           "type": "integer",
           "maximum": 100
@@ -3930,6 +3933,9 @@ func init() {
         "id": {
           "type": "integer",
           "minimum": 1
+        },
+        "isFinishingProgram": {
+          "type": "boolean"
         },
         "motorSpeedPercent": {
           "type": "integer",

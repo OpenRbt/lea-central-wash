@@ -560,6 +560,7 @@ func (r *repo) SetProgram(program app.Program) (err error) {
 			PreflightEnabled:           program.PreflightEnabled,
 			MotorSpeedPercent:          program.MotorSpeedPercent,
 			PreflightMotorSpeedPercent: program.PreflightMotorSpeedPercent,
+			IsFinishingProgram:         program.IsFinishingProgram,
 			Relays:                     dalProgramRelays(program.Relays),
 			PreflightRelays:            dalProgramRelays(program.PreflightRelays),
 		})
