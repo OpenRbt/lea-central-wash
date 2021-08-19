@@ -145,7 +145,7 @@ type (
 		CardReaderConfig(StationID) (*CardReaderConfig, error)
 		SetCardReaderConfig(CardReaderConfig) error
 		AddUpdateConfig(note string) (int, error)
-		LastUpdateConfig() (int, error)		
+		LastUpdateConfig() (int, error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -288,6 +288,7 @@ type Program struct {
 	PreflightEnabled           bool
 	MotorSpeedPercent          int64
 	PreflightMotorSpeedPercent int64
+	IsFinishingProgram         bool
 	Relays                     []Relay
 	PreflightRelays            []Relay
 }

@@ -27,6 +27,9 @@ type Program struct {
 	// Minimum: 1
 	ID *int64 `json:"id"`
 
+	// is finishing program
+	IsFinishingProgram bool `json:"isFinishingProgram,omitempty"`
+
 	// motor speed percent
 	// Maximum: 100
 	// Minimum: 0
@@ -62,6 +65,9 @@ func (m *Program) UnmarshalJSON(data []byte) error {
 		// Minimum: 1
 		ID *int64 `json:"id"`
 
+		// is finishing program
+		IsFinishingProgram bool `json:"isFinishingProgram,omitempty"`
+
 		// motor speed percent
 		// Maximum: 100
 		// Minimum: 0
@@ -95,6 +101,7 @@ func (m *Program) UnmarshalJSON(data []byte) error {
 	}
 
 	m.ID = props.ID
+	m.IsFinishingProgram = props.IsFinishingProgram
 	m.MotorSpeedPercent = props.MotorSpeedPercent
 	m.Name = props.Name
 	m.PreflightEnabled = props.PreflightEnabled

@@ -77,6 +77,7 @@ func appPrograms(p []resPrograms) (res []app.Program) {
 			PreflightEnabled:           p[i].PreflightEnabled,
 			MotorSpeedPercent:          p[i].MotorSpeedPercent,
 			PreflightMotorSpeedPercent: p[i].PreflightMotorSpeedPercent,
+			IsFinishingProgram:         p[i].IsFinishingProgram,
 			Relays:                     appProgramRelays(p[i].Relays),
 			PreflightRelays:            appProgramRelays(p[i].PreflightRelays),
 		})
@@ -141,6 +142,7 @@ func appStationConfig(p []resStationConfig) (res app.StationConfig) {
 			PreflightEnabled:           p[i].PreflightEnabled,
 			MotorSpeedPercent:          p[i].MotorSpeedPercent,
 			PreflightMotorSpeedPercent: p[i].PreflightMotorSpeedPercent,
+			IsFinishingProgram:         p[i].IsFinishingProgram,
 			Relays:                     appProgramRelays(p[i].Relays),
 			PreflightRelays:            appProgramRelays(p[i].PreflightRelays),
 		})
