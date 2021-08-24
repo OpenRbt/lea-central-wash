@@ -545,6 +545,47 @@ func init() {
         }
       }
     },
+    "/reset-station-stat": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "resetStationStat",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/run-program": {
       "post": {
         "operationId": "runProgram",
@@ -1234,6 +1275,102 @@ func init() {
         }
       }
     },
+    "/station-stat-current": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "stationStatCurrent",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "stationID": {
+                  "type": "integer",
+                  "x-nullable": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationsStat"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station-stat-dates": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "stationStatDates",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "startDate",
+                "endDate"
+              ],
+              "properties": {
+                "endDate": {
+                  "description": "Unix time",
+                  "type": "integer"
+                },
+                "startDate": {
+                  "description": "Unix time",
+                  "type": "integer"
+                },
+                "stationID": {
+                  "type": "integer",
+                  "x-nullable": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationsStat"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/stations-variables": {
       "post": {
         "operationId": "stationsVariables",
@@ -1862,6 +1999,20 @@ func init() {
         }
       }
     },
+    "ProgramStat": {
+      "type": "object",
+      "properties": {
+        "programID": {
+          "type": "integer"
+        },
+        "programName": {
+          "type": "string"
+        },
+        "timeOn": {
+          "type": "integer"
+        }
+      }
+    },
     "RelayBoard": {
       "type": "string",
       "enum": [
@@ -1906,7 +2057,6 @@ func init() {
       "properties": {
         "relayID": {
           "type": "integer",
-          "maximum": 6,
           "minimum": 1
         },
         "switchedCount": {
@@ -1988,6 +2138,29 @@ func init() {
         }
       }
     },
+    "StationStat": {
+      "type": "object",
+      "properties": {
+        "programStats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProgramStat"
+          }
+        },
+        "pumpTimeOn": {
+          "type": "integer"
+        },
+        "relayStats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RelayStat"
+          }
+        },
+        "stationID": {
+          "type": "integer"
+        }
+      }
+    },
     "StationStatus": {
       "type": "object",
       "properties": {
@@ -2018,6 +2191,12 @@ func init() {
         "status": {
           "$ref": "#/definitions/Status"
         }
+      }
+    },
+    "StationsStat": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/StationStat"
       }
     },
     "StationsVariables": {
@@ -2656,6 +2835,47 @@ func init() {
         }
       }
     },
+    "/reset-station-stat": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "resetStationStat",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "stationID"
+              ],
+              "properties": {
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/run-program": {
       "post": {
         "operationId": "runProgram",
@@ -3322,6 +3542,102 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station-stat-current": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "stationStatCurrent",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "stationID": {
+                  "type": "integer",
+                  "x-nullable": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationsStat"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/station-stat-dates": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "stationStatDates",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "startDate",
+                "endDate"
+              ],
+              "properties": {
+                "endDate": {
+                  "description": "Unix time",
+                  "type": "integer"
+                },
+                "startDate": {
+                  "description": "Unix time",
+                  "type": "integer"
+                },
+                "stationID": {
+                  "type": "integer",
+                  "x-nullable": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationsStat"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
           },
           "500": {
             "description": "internal error"
@@ -3970,6 +4286,20 @@ func init() {
         }
       }
     },
+    "ProgramStat": {
+      "type": "object",
+      "properties": {
+        "programID": {
+          "type": "integer"
+        },
+        "programName": {
+          "type": "string"
+        },
+        "timeOn": {
+          "type": "integer"
+        }
+      }
+    },
     "RelayBoard": {
       "type": "string",
       "enum": [
@@ -4014,7 +4344,6 @@ func init() {
       "properties": {
         "relayID": {
           "type": "integer",
-          "maximum": 6,
           "minimum": 1
         },
         "switchedCount": {
@@ -4099,6 +4428,29 @@ func init() {
         }
       }
     },
+    "StationStat": {
+      "type": "object",
+      "properties": {
+        "programStats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProgramStat"
+          }
+        },
+        "pumpTimeOn": {
+          "type": "integer"
+        },
+        "relayStats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RelayStat"
+          }
+        },
+        "stationID": {
+          "type": "integer"
+        }
+      }
+    },
     "StationStatus": {
       "type": "object",
       "properties": {
@@ -4129,6 +4481,12 @@ func init() {
         "status": {
           "$ref": "#/definitions/Status"
         }
+      }
+    },
+    "StationsStat": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/StationStat"
       }
     },
     "StationsVariables": {

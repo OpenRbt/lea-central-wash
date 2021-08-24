@@ -3,6 +3,7 @@ package dal
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"runtime"
 	"strconv"
@@ -333,22 +334,83 @@ func (r *repo) SaveMoneyReport(report app.MoneyReport) (err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) LastRelayReport(stationID app.StationID) (report app.RelayReport, err error) {
+func (r *repo) ResetStationStat(stationID app.StationID) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res resRelayReport
-		err := tx.NamedGetContext(ctx, &res, sqlLastRelayReport, argLastRelayReport{
-			StationID: stationID,
+		var res []resRelayReport
+		report := app.StationsStat{}
+		err := tx.NamedSelectContext(ctx, &res, sqlCurentStationReport, argStationReport{
+			StationID: &stationID,
 		})
-		switch {
-		case err == sql.ErrNoRows:
-			return app.ErrNotFound
-		case err != nil:
+		if err != nil {
 			return err
 		}
-		report.StationID = res.ID
-		err = tx.NamedSelectContext(ctx, &report.RelayStats, sqlRelayStat, argRelayStat{
-			RelayReportID: res.ID,
+		var relay []resRelayStats
+		err = tx.NamedSelectContext(ctx, &relay, sqlCurentRelayStat, argStationReport{
+			StationID: &stationID,
 		})
+		if err != nil {
+			return err
+		}
+		report = appStationsStat(res, relay)
+		stat := report[stationID]
+		bytes, err := json.Marshal(stat)
+		if err != nil {
+			panic(err)
+		}
+		_, err = tx.NamedExec(sqlResetRelayStat, argResetRelayStat{
+			StationID: stationID,
+			Ver:       1,
+			Data:      string(bytes),
+		})
+
+		return err
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) RelayReportCurrent(stationID *app.StationID) (report app.StationsStat, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res []resRelayReport
+		err := tx.NamedSelectContext(ctx, &res, sqlCurentStationReport, argStationReport{
+			StationID: stationID,
+		})
+		if err != nil {
+			return err
+		}
+		var relay []resRelayStats
+		err = tx.NamedSelectContext(ctx, &relay, sqlCurentRelayStat, argStationReport{
+			StationID: stationID,
+		})
+		if err != nil {
+			return err
+		}
+		report = appStationsStat(res, relay)
+		return nil
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) RelayReportDates(stationID *app.StationID, startDate, endDate time.Time) (report app.StationsStat, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res []resRelayReport
+		err := tx.NamedSelectContext(ctx, &res, sqlDatesStationReport, argDatesStationStat{
+			StationID: stationID,
+			StartDate: startDate,
+			EndDate:   endDate,
+		})
+		if err != nil {
+			return err
+		}
+		var relay []resRelayStats
+		err = tx.NamedSelectContext(ctx, &relay, sqlDatesRelayStat, argDatesStationStat{
+			StationID: stationID,
+			StartDate: startDate,
+			EndDate:   endDate,
+		})
+		if err != nil {
+			return err
+		}
+		report = appStationsStat(res, relay)
 		return nil
 	})
 	return //nolint:nakedret
@@ -361,7 +423,12 @@ func (r *repo) SaveRelayReport(report app.RelayReport) (err error) {
 		if err != nil {
 			return err
 		}
-		err = stmt.Get(&id, argAddRelayReport{StationID: report.StationID})
+		err = stmt.Get(&id, argAddRelayReport{
+			StationID:  report.StationID,
+			ProgramID:  report.ProgramID,
+			PumpTimeOn: report.PumpTimeOn,
+			TimeOn:     report.TimeOn,
+		})
 		if err != nil {
 			return err
 		}

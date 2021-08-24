@@ -61,7 +61,7 @@ type (
 		SaveMoneyReport(report MoneyReport) error
 		SaveRelayReport(report RelayReport) error
 		LoadMoneyReport(StationID) (*MoneyReport, error)
-		LoadRelayReport(StationID) (*RelayReport, error)
+		RelayReportCurrent(auth *Auth, id *StationID) (StationsStat, error)
 
 		StatusReport() StatusReport
 		SetStation(station SetStation) error
@@ -96,6 +96,8 @@ type (
 		PressButton(id StationID, buttonID int64) (err error)
 
 		Station(StationID) (SetStation, error)
+		RelayReportDates(auth *Auth, stationID *StationID, startDate, endDate time.Time) (StationsStat, error)
+		ResetStationStat(auth *Auth, stationID StationID) error
 	}
 
 	// Repo is a DAL interface.
@@ -109,7 +111,7 @@ type (
 		DelStation(StationID) error
 		LastMoneyReport(stationID StationID) (MoneyReport, error)
 		SaveMoneyReport(MoneyReport) error
-		LastRelayReport(stationID StationID) (RelayReport, error)
+		RelayReportCurrent(stationID *StationID) (StationsStat, error)
 		SaveRelayReport(RelayReport) error
 		MoneyReport(stationID StationID, startDate, endDate time.Time) (MoneyReport, error)
 		RelayStatReport(stationID StationID, startDate, endDate time.Time) (RelayReport, error)
@@ -146,6 +148,8 @@ type (
 		SetCardReaderConfig(CardReaderConfig) error
 		AddUpdateConfig(note string) (int, error)
 		LastUpdateConfig() (int, error)
+		RelayReportDates(stationID *StationID, startDate, endDate time.Time) (StationsStat, error)
+		ResetStationStat(stationID StationID) error
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -211,6 +215,7 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 	appl.stationsMutex.Lock()
 	appl.lastUpdate = id
 	appl.stationsMutex.Unlock()
+	go appl.runCheckStationOnline()
 	return appl
 }
 

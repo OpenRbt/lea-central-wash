@@ -165,3 +165,38 @@ func appCollectionReportsByDate(r []resCollectionReportByDate) (res []app.Collec
 	}
 	return res
 }
+
+func appStationsStat(res []resRelayReport, relay []resRelayStats) app.StationsStat {
+	report := app.StationsStat{}
+	for i := range res {
+		tmp, ok := report[res[i].StationID]
+		if !ok {
+			tmp = app.StationStat{
+				StationID:    res[i].StationID,
+				PumpTimeOn:   0,
+				RelayStats:   []app.RelayStat{},
+				ProgramStats: []app.ProgramStat{},
+			}
+		}
+		tmp.PumpTimeOn = tmp.PumpTimeOn + res[i].PumpTimeOn
+		tmp.ProgramStats = append(tmp.ProgramStats, app.ProgramStat{
+			ProgramID:   res[i].ProgramID,
+			ProgramName: res[i].ProgramName,
+			TimeOn:      res[i].TimeOn,
+		})
+		report[res[i].StationID] = tmp
+	}
+	for i := range relay {
+		tmp, ok := report[relay[i].StationID]
+		if ok {
+			tmp.RelayStats = append(tmp.RelayStats, app.RelayStat{
+				RelayID:       relay[i].RelayID,
+				SwitchedCount: relay[i].SwitchedCount,
+				TotalTimeOn:   relay[i].TotalTimeOn,
+			})
+		}
+		report[relay[i].StationID] = tmp
+	}
+
+	return report
+}

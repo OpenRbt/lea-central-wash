@@ -82,6 +82,45 @@ func apiRelayReport(data *app.RelayReport) *model.RelayReport {
 	}
 }
 
+func apiRelayStats(data []app.RelayStat) []*model.RelayStat {
+	var relayStats []*model.RelayStat
+	for i := range data {
+		r := model.RelayStat{
+			RelayID:       int64(data[i].RelayID),
+			SwitchedCount: int64(data[i].SwitchedCount),
+			TotalTimeOn:   data[i].TotalTimeOn,
+		}
+		relayStats = append(relayStats, &r)
+	}
+	return relayStats
+}
+
+func apiStationsStat(data app.StationsStat) model.StationsStat {
+	var res model.StationsStat
+	for i := range data {
+		res = append(res, &model.StationStat{
+			StationID:    int64(data[i].StationID),
+			ProgramStats: apiProgramStat(data[i].ProgramStats),
+			PumpTimeOn:   int64(data[i].PumpTimeOn),
+			RelayStats:   apiRelayStats(data[i].RelayStats),
+		})
+	}
+	return res
+}
+
+func apiProgramStat(data []app.ProgramStat) []*model.ProgramStat {
+	var programStats []*model.ProgramStat
+	for i := range data {
+		r := model.ProgramStat{
+			ProgramID:   int64(data[i].ProgramID),
+			ProgramName: data[i].ProgramName,
+			TimeOn:      int64(data[i].TimeOn),
+		}
+		programStats = append(programStats, &r)
+	}
+	return programStats
+}
+
 func apiMoneyReport(data *app.MoneyReport) *model.MoneyReport {
 	return &model.MoneyReport{
 		Banknotes:    int64(data.Banknotes),

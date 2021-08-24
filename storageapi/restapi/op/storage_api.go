@@ -101,6 +101,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		ProgramsHandler: ProgramsHandlerFunc(func(params ProgramsParams) ProgramsResponder {
 			return ProgramsNotImplemented()
 		}),
+		ResetStationStatHandler: ResetStationStatHandlerFunc(func(params ResetStationStatParams, principal *storageapi.Profile) ResetStationStatResponder {
+			return ResetStationStatNotImplemented()
+		}),
 		RunProgramHandler: RunProgramHandlerFunc(func(params RunProgramParams) RunProgramResponder {
 			return RunProgramNotImplemented()
 		}),
@@ -154,6 +157,12 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		StationReportDatesHandler: StationReportDatesHandlerFunc(func(params StationReportDatesParams) StationReportDatesResponder {
 			return StationReportDatesNotImplemented()
+		}),
+		StationStatCurrentHandler: StationStatCurrentHandlerFunc(func(params StationStatCurrentParams, principal *storageapi.Profile) StationStatCurrentResponder {
+			return StationStatCurrentNotImplemented()
+		}),
+		StationStatDatesHandler: StationStatDatesHandlerFunc(func(params StationStatDatesParams, principal *storageapi.Profile) StationStatDatesResponder {
+			return StationStatDatesNotImplemented()
 		}),
 		StationsVariablesHandler: StationsVariablesHandlerFunc(func(params StationsVariablesParams) StationsVariablesResponder {
 			return StationsVariablesNotImplemented()
@@ -258,6 +267,8 @@ type StorageAPI struct {
 	PressButtonHandler PressButtonHandler
 	// ProgramsHandler sets the operation handler for the programs operation
 	ProgramsHandler ProgramsHandler
+	// ResetStationStatHandler sets the operation handler for the reset station stat operation
+	ResetStationStatHandler ResetStationStatHandler
 	// RunProgramHandler sets the operation handler for the run program operation
 	RunProgramHandler RunProgramHandler
 	// SaveHandler sets the operation handler for the save operation
@@ -294,6 +305,10 @@ type StorageAPI struct {
 	StationReportCurrentMoneyHandler StationReportCurrentMoneyHandler
 	// StationReportDatesHandler sets the operation handler for the station report dates operation
 	StationReportDatesHandler StationReportDatesHandler
+	// StationStatCurrentHandler sets the operation handler for the station stat current operation
+	StationStatCurrentHandler StationStatCurrentHandler
+	// StationStatDatesHandler sets the operation handler for the station stat dates operation
+	StationStatDatesHandler StationStatDatesHandler
 	// StationsVariablesHandler sets the operation handler for the stations variables operation
 	StationsVariablesHandler StationsVariablesHandler
 	// StatusHandler sets the operation handler for the status operation
@@ -442,6 +457,9 @@ func (o *StorageAPI) Validate() error {
 	if o.ProgramsHandler == nil {
 		unregistered = append(unregistered, "ProgramsHandler")
 	}
+	if o.ResetStationStatHandler == nil {
+		unregistered = append(unregistered, "ResetStationStatHandler")
+	}
 	if o.RunProgramHandler == nil {
 		unregistered = append(unregistered, "RunProgramHandler")
 	}
@@ -495,6 +513,12 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.StationReportDatesHandler == nil {
 		unregistered = append(unregistered, "StationReportDatesHandler")
+	}
+	if o.StationStatCurrentHandler == nil {
+		unregistered = append(unregistered, "StationStatCurrentHandler")
+	}
+	if o.StationStatDatesHandler == nil {
+		unregistered = append(unregistered, "StationStatDatesHandler")
 	}
 	if o.StationsVariablesHandler == nil {
 		unregistered = append(unregistered, "StationsVariablesHandler")
@@ -689,6 +713,10 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/reset-station-stat"] = NewResetStationStat(o.context, o.ResetStationStatHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/run-program"] = NewRunProgram(o.context, o.RunProgramHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -758,6 +786,14 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/station-report-dates"] = NewStationReportDates(o.context, o.StationReportDatesHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/station-stat-current"] = NewStationStatCurrent(o.context, o.StationStatCurrentHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/station-stat-dates"] = NewStationStatDates(o.context, o.StationStatDatesHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
