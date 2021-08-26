@@ -160,56 +160,11 @@ func (svc *service) saveIfNotExists(params op.SaveIfNotExistsParams) op.SaveIfNo
 }
 
 func (svc *service) loadRelay(params op.LoadRelayParams) op.LoadRelayResponder {
-	log.Info("load relay", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-	stationID, err := svc.getID(string(*params.Args.Hash))
-	if err != nil {
-		log.Info("load relay: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewLoadRelayNotFound()
-	}
-
-	toLoad, err := svc.app.LoadRelayReport(stationID)
-
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewLoadRelayOK().WithPayload(apiRelayReport(toLoad))
-	case app.ErrNotFound:
-		log.Info("load relay: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewLoadRelayNotFound()
-	default:
-		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewLoadRelayInternalServerError()
-	}
+	return op.NewLoadRelayOK()
 }
 
 func (svc *service) saveRelay(params op.SaveRelayParams) op.SaveRelayResponder {
-	log.Info("save relay", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-
-	var toSave app.RelayReport
-	var err error
-	toSave.StationID, err = svc.getID(string(*params.Args.Hash))
-	if err != nil {
-		log.Info("save relay: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSaveRelayNotFound()
-	}
-
-	for i := range params.Args.RelayStats {
-		r := app.RelayStat{
-			RelayID:       int(params.Args.RelayStats[i].RelayID),
-			SwitchedCount: int(params.Args.RelayStats[i].SwitchedCount),
-			TotalTimeOn:   params.Args.RelayStats[i].TotalTimeOn,
-		}
-		toSave.RelayStats = append(toSave.RelayStats, r)
-	}
-
-	err = svc.app.SaveRelayReport(toSave)
-
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewSaveRelayNoContent()
-	default:
-		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSaveRelayInternalServerError()
-	}
+	return op.NewSaveRelayNoContent()
 }
 
 func (svc *service) loadMoney(params op.LoadMoneyParams) op.LoadMoneyResponder {
@@ -418,7 +373,7 @@ func (svc *service) stationReportDates(params op.StationReportDatesParams) op.St
 		res.RelayStats = apiRelay.RelayStats
 		return op.NewStationReportDatesOK().WithPayload(res)
 	case app.ErrNotFound:
-		log.Info("station report: not found", "id", *params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+		log.Info("station report dates: not found", "id", *params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewStationReportDatesNotFound()
 	default:
 		log.PrintErr(err, "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
@@ -439,7 +394,7 @@ func (svc *service) stationReportCurrentMoney(params op.StationReportCurrentMone
 		res.RelayStats = apiRelay.RelayStats
 		return op.NewStationReportCurrentMoneyOK().WithPayload(res)
 	case app.ErrNotFound:
-		log.Info("station report: not found", "id", *params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
+		log.Info("station report current money: not found", "id", *params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewStationReportCurrentMoneyNotFound()
 	default:
 		log.PrintErr(err, "id", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
@@ -882,5 +837,51 @@ func (svc *service) deleteUser(params op.DeleteUserParams, auth *app.Auth) op.De
 		})
 	default:
 		return op.NewDeleteUserInternalServerError()
+	}
+}
+
+func (svc *service) stationStatCurrent(params op.StationStatCurrentParams, auth *app.Auth) op.StationStatCurrentResponder {
+	var id *app.StationID
+	if params.Args.StationID != nil {
+		tmp := app.StationID(*params.Args.StationID)
+		id = &tmp
+	}
+	report, err := svc.app.RelayReportCurrent(auth, id)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewStationStatCurrentOK().WithPayload(apiStationsStat(report))
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationStatCurrentInternalServerError()
+	}
+}
+
+func (svc *service) stationStatDates(params op.StationStatDatesParams, auth *app.Auth) op.StationStatDatesResponder {
+	var id *app.StationID
+	if params.Args.StationID != nil {
+		tmp := app.StationID(*params.Args.StationID)
+		id = &tmp
+	}
+	report, err := svc.app.RelayReportDates(auth, id, time.Unix(*params.Args.StartDate, 0), time.Unix(*params.Args.EndDate, 0))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewStationStatDatesOK().WithPayload(apiStationsStat(report))
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewStationStatDatesInternalServerError()
+	}
+}
+
+func (svc *service) resetStationStat(params op.ResetStationStatParams, auth *app.Auth) op.ResetStationStatResponder {
+	err := svc.app.ResetStationStat(auth, app.StationID(*params.Args.StationID))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewResetStationStatNoContent()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewResetStationStatInternalServerError()
 	}
 }

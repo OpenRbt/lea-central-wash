@@ -22,7 +22,6 @@ import (
 type RelayStat struct {
 
 	// relay ID
-	// Maximum: 6
 	// Minimum: 1
 	RelayID int64 `json:"relayID,omitempty"`
 
@@ -38,7 +37,6 @@ func (m *RelayStat) UnmarshalJSON(data []byte) error {
 	var props struct {
 
 		// relay ID
-		// Maximum: 6
 		// Minimum: 1
 		RelayID int64 `json:"relayID,omitempty"`
 
@@ -81,10 +79,6 @@ func (m *RelayStat) validateRelayID(formats strfmt.Registry) error {
 	}
 
 	if err := validate.MinimumInt("relayID", "body", m.RelayID, 1, false); err != nil {
-		return err
-	}
-
-	if err := validate.MaximumInt("relayID", "body", m.RelayID, 6, false); err != nil {
 		return err
 	}
 

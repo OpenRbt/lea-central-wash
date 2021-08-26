@@ -68,6 +68,8 @@ type ClientService interface {
 
 	Programs(params *ProgramsParams, opts ...ClientOption) (*ProgramsOK, error)
 
+	ResetStationStat(params *ResetStationStatParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResetStationStatNoContent, error)
+
 	RunProgram(params *RunProgramParams, opts ...ClientOption) (*RunProgramNoContent, error)
 
 	Save(params *SaveParams, opts ...ClientOption) (*SaveNoContent, error)
@@ -103,6 +105,10 @@ type ClientService interface {
 	StationReportCurrentMoney(params *StationReportCurrentMoneyParams, opts ...ClientOption) (*StationReportCurrentMoneyOK, error)
 
 	StationReportDates(params *StationReportDatesParams, opts ...ClientOption) (*StationReportDatesOK, error)
+
+	StationStatCurrent(params *StationStatCurrentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationStatCurrentOK, error)
+
+	StationStatDates(params *StationStatDatesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationStatDatesOK, error)
 
 	StationsVariables(params *StationsVariablesParams, opts ...ClientOption) (*StationsVariablesOK, error)
 
@@ -844,6 +850,45 @@ func (a *Client) Programs(params *ProgramsParams, opts ...ClientOption) (*Progra
 }
 
 /*
+  ResetStationStat reset station stat API
+*/
+func (a *Client) ResetStationStat(params *ResetStationStatParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResetStationStatNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewResetStationStatParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "resetStationStat",
+		Method:             "POST",
+		PathPattern:        "/reset-station-stat",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &ResetStationStatReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*ResetStationStatNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for resetStationStat: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   RunProgram run program API
 */
 func (a *Client) RunProgram(params *RunProgramParams, opts ...ClientOption) (*RunProgramNoContent, error) {
@@ -1526,6 +1571,84 @@ func (a *Client) StationReportDates(params *StationReportDatesParams, opts ...Cl
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for stationReportDates: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  StationStatCurrent station stat current API
+*/
+func (a *Client) StationStatCurrent(params *StationStatCurrentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationStatCurrentOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStationStatCurrentParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "stationStatCurrent",
+		Method:             "POST",
+		PathPattern:        "/station-stat-current",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StationStatCurrentReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*StationStatCurrentOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for stationStatCurrent: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  StationStatDates station stat dates API
+*/
+func (a *Client) StationStatDates(params *StationStatDatesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationStatDatesOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStationStatDatesParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "stationStatDates",
+		Method:             "POST",
+		PathPattern:        "/station-stat-dates",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &StationStatDatesReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*StationStatDatesOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for stationStatDates: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

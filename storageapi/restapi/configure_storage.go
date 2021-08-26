@@ -145,6 +145,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.ProgramsNotImplemented()
 		})
 	}
+	if api.ResetStationStatHandler == nil {
+		api.ResetStationStatHandler = op.ResetStationStatHandlerFunc(func(params op.ResetStationStatParams, principal *storageapi.Profile) op.ResetStationStatResponder {
+			return op.ResetStationStatNotImplemented()
+		})
+	}
 	if api.RunProgramHandler == nil {
 		api.RunProgramHandler = op.RunProgramHandlerFunc(func(params op.RunProgramParams) op.RunProgramResponder {
 			return op.RunProgramNotImplemented()
@@ -233,6 +238,16 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.StationReportDatesHandler == nil {
 		api.StationReportDatesHandler = op.StationReportDatesHandlerFunc(func(params op.StationReportDatesParams) op.StationReportDatesResponder {
 			return op.StationReportDatesNotImplemented()
+		})
+	}
+	if api.StationStatCurrentHandler == nil {
+		api.StationStatCurrentHandler = op.StationStatCurrentHandlerFunc(func(params op.StationStatCurrentParams, principal *storageapi.Profile) op.StationStatCurrentResponder {
+			return op.StationStatCurrentNotImplemented()
+		})
+	}
+	if api.StationStatDatesHandler == nil {
+		api.StationStatDatesHandler = op.StationStatDatesHandlerFunc(func(params op.StationStatDatesParams, principal *storageapi.Profile) op.StationStatDatesResponder {
+			return op.StationStatDatesNotImplemented()
 		})
 	}
 	if api.StationsVariablesHandler == nil {

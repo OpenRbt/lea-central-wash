@@ -151,7 +151,6 @@ definitions:
       relayID:
           type: integer
           minimum: 1
-          maximum: 6
       switchedCount:
           type: integer
       totalTimeOn:
@@ -370,7 +369,37 @@ definitions:
         type: string
       relayBoard:
         $ref: '#/definitions/RelayBoard'
-  
+
+  ProgramStat:
+    type: object
+    properties:
+      programID:
+          type: integer
+      programName:
+          type: string
+      timeOn:
+          type: integer
+
+  StationStat:
+    type: object
+    properties:
+        stationID:
+          type: integer
+        pumpTimeOn:
+          type: integer
+        relayStats:
+          type: array
+          items:
+            $ref: '#/definitions/RelayStat'
+        programStats:
+          type: array
+          items:
+            $ref: '#/definitions/ProgramStat'
+  StationsStat:
+    type: array
+    items:
+      $ref: '#/definitions/StationStat'
+
 
 consumes:
   - application/json
@@ -378,6 +407,92 @@ produces:
   - application/json          
 
 paths:
+  /station-stat-current:
+    post:
+      operationId: "stationStatCurrent"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          in: body
+          schema:
+            type: object
+            properties:
+              stationID:
+                type: integer
+                x-nullable: true
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/StationsStat'
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbiddenn
+        500:
+          description: internal error
+
+  /station-stat-dates:
+    post:
+      operationId: "stationStatDates"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          in: body
+          schema:
+            type: object
+            required:
+              - startDate
+              - endDate
+            properties:
+              stationID:
+                type: integer
+                x-nullable: true
+              startDate:
+                description: Unix time
+                type: integer
+              endDate:
+                description: Unix time
+                type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/StationsStat'
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbiddenn
+        500:
+          description: internal error
+
+  /reset-station-stat:
+    post:
+      operationId: "resetStationStat"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          in: body
+          schema:
+            type: object
+            required:
+              - stationID
+            properties:
+              stationID:
+                type: integer
+      responses:
+        204:
+          description: OK
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbiddenn
+        500:
+          description: internal error
+
   /station-report-dates:
     post:
       operationId: "stationReportDates"

@@ -211,22 +211,65 @@ LIMIT 1
 	ORDER BY mc.ctime
 	`
 	sqlAddRelayReport = `
-INSERT INTO relay_report (station_id)  
-VALUES 	(:station_id) RETURNING id
+INSERT INTO relay_report (station_id, program_id, time_on, pump_time_on)  
+VALUES 	(:station_id, :program_id, :time_on, :pump_time_on) RETURNING id
 	`
 	sqlAddRelayStat = `
 INSERT INTO relay_stat (relay_report_id, relay_id, switched_count, total_time_on)
 VALUES 	(:relay_report_id, :relay_id, :switched_count, :total_time_on)
 	`
-	sqlLastRelayReport = `
-SELECT id FROM relay_report WHERE station_id = :station_id
-ORDER BY id DESC
-LIMIT 1
+	sqlResetRelayStat = `
+	INSERT INTO reset_relay_report (station_id, last_relay_report_id, ver, data)
+	(SELECT :station_id,coalesce(max(id),0),:ver, :data
+	from relay_report
+	where station_id = :station_id
+	GROUP BY station_id
+)
 	`
-	sqlRelayStat = `
-SELECT relay_id, switched_count, total_time_on FROM relay_stat WHERE relay_report_id = :relay_report_id
-ORDER BY relay_id
+
+	sqlCurentStationReport = `
+SELECT r.station_id, r.program_id, coalesce(p.name, '') as program_name, sum(r.time_on) as time_on ,sum(r.pump_time_on) as pump_time_on FROM relay_report r
+LEFT JOIN program p on p.id = r.program_id
+WHERE r.id > coalesce(
+	(SELECT last_relay_report_id FROM reset_relay_report WHERE station_id = r.station_id
+	ORDER BY id DESC
+	LIMIT 1)
+	,0)
+AND (r.station_id = :station_id or CAST(:station_id AS INT) is NULL)
+GROUP BY r.station_id,r.program_id,coalesce(p.name, '')
+ORDER BY r.station_id,r.program_id
+`
+	sqlCurentRelayStat = `
+	SELECT p.station_id, r.relay_id, sum(r.switched_count) as switched_count, sum(r.total_time_on) as total_time_on
+	FROM relay_stat r
+	JOIN relay_report p on r.relay_report_id = p.id
+	WHERE p.id > coalesce(
+		(SELECT last_relay_report_id FROM reset_relay_report WHERE station_id = p.station_id
+		ORDER BY id DESC
+		LIMIT 1)
+		,0)
+	AND (station_id = :station_id or CAST(:station_id AS INT) is NULL)
+	Group BY p.station_id, r.relay_id
+	ORDER BY p.station_id, r.relay_id
 	`
+	sqlDatesStationReport = `
+SELECT r.station_id, r.program_id, coalesce(p.name, '') as program_name, sum(r.time_on) as time_on ,sum(r.pump_time_on) as pump_time_on FROM relay_report r
+LEFT JOIN program p on p.id = r.program_id
+WHERE r.ctime >= :start_date AND r.ctime <= :end_date
+AND (r.station_id = :station_id or CAST(:station_id AS INT) is NULL)
+GROUP BY r.station_id,r.program_id,coalesce(p.name, '')
+ORDER BY r.station_id,r.program_id
+`
+	sqlDatesRelayStat = `
+	SELECT p.station_id, r.relay_id, sum(r.switched_count) as switched_count, sum(r.total_time_on) as total_time_on
+	FROM relay_stat r
+	JOIN relay_report p on r.relay_report_id = p.id
+	WHERE p.ctime >= :start_date AND p.ctime <= :end_date
+	AND (station_id = :station_id or CAST(:station_id AS INT) is NULL)
+	Group BY p.station_id, r.relay_id
+	ORDER BY p.station_id, r.relay_id
+	`
+
 	sqlMoneyReport = `
 	SELECT station_id, 
 		   sum(banknotes) as banknotes, 
@@ -518,11 +561,19 @@ type (
 		StartDate *time.Time
 		EndDate   *time.Time
 	}
-	argLastRelayReport struct {
-		StationID app.StationID
+	argStationReport struct {
+		StationID *app.StationID
+	}
+	argDatesStationStat struct {
+		StationID *app.StationID
+		StartDate time.Time
+		EndDate   time.Time
 	}
 	argAddRelayReport struct {
-		StationID app.StationID
+		StationID  app.StationID
+		ProgramID  int
+		PumpTimeOn int
+		TimeOn     int
 	}
 	argAddRelayStat struct {
 		RelayReportID int
@@ -530,11 +581,27 @@ type (
 		SwitchedCount int
 		TotalTimeOn   int64
 	}
+	resRelayStats struct {
+		StationID     app.StationID
+		RelayID       int
+		SwitchedCount int
+		TotalTimeOn   int64
+	}
+	argResetRelayStat struct {
+		StationID app.StationID
+		Ver       int
+		Data      string
+	}
+
 	argOpenStationLogAdd struct {
 		StationID app.StationID
 	}
 	resRelayReport struct {
-		ID app.StationID
+		StationID   app.StationID
+		ProgramID   int
+		ProgramName string
+		TimeOn      int
+		PumpTimeOn  int
 	}
 	resRelayStat struct {
 		RelayID       int

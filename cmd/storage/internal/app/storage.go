@@ -120,9 +120,77 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) Station
 	station.CurrentProgram = program
 	station.ButtonID = 0
 	station.IP = stationIP
+	station.RunProgram = oldStation.RunProgram
+	if oldStation.CurrentProgram != station.CurrentProgram {
+		station.RunProgram = time.Now()
+		if oldStation.CurrentProgram > 0 {
+			go a.saveStationStat(id, oldStation.CurrentProgram, time.Now().Sub(oldStation.RunProgram))
+		}
+	}
 	a.stations[id] = station
 	oldStation.LastUpdate = a.lastUpdate
 	return oldStation
+}
+
+func (a *app) checkStationOnline() {
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+	for i := range a.stations {
+		if a.stations[i].CurrentProgram > 0 && time.Now().Sub(a.stations[i].LastPing).Seconds() > 5 {
+			station := a.stations[i]
+			station.CurrentProgram = 0
+			if a.stations[i].CurrentProgram != station.CurrentProgram {
+				if a.stations[i].CurrentProgram > 0 {
+					go a.saveStationStat(a.stations[i].ID, a.stations[i].CurrentProgram, a.stations[i].LastPing.Sub(a.stations[i].RunProgram))
+				}
+			}
+			a.stations[i] = station
+		}
+	}
+	return
+}
+
+func (a *app) runCheckStationOnline() {
+	for {
+		time.Sleep(5 * time.Second)
+		a.checkStationOnline()
+	}
+}
+
+func (a *app) saveStationStat(id StationID, programID int, timeOn time.Duration) {
+	timeSec := int(timeOn.Seconds())
+	report := RelayReport{
+		StationID:  id,
+		ProgramID:  programID,
+		TimeOn:     timeSec,
+		PumpTimeOn: 0,
+		RelayStats: []RelayStat{},
+	}
+	program, ok := a.programs[int64(programID)]
+	if ok {
+		if program.MotorSpeedPercent > 0 {
+			report.PumpTimeOn = timeSec
+		}
+		for i := range program.Relays {
+			if program.Relays[i].TimeOn > 0 {
+				count := int(timeOn.Milliseconds() / int64((program.Relays[i].TimeOn + program.Relays[i].TimeOff)))
+				if program.Relays[i].TimeOff == 0 {
+					count = 1
+				}
+				report.RelayStats = append(report.RelayStats, RelayStat{
+					RelayID:       program.Relays[i].ID,
+					SwitchedCount: count,
+					TotalTimeOn:   timeOn.Milliseconds() / int64((program.Relays[i].TimeOn + program.Relays[i].TimeOff)) * int64(program.Relays[i].TimeOn) / 1000,
+				})
+			}
+		}
+	} else {
+		log.Warn("saveStationStat unknown program", "programID", programID)
+	}
+	err := a.repo.SaveRelayReport(report)
+	if err != nil {
+		log.Err(err)
+	}
 }
 
 func (a *app) PressButton(id StationID, buttonID int64) (err error) {
@@ -356,12 +424,8 @@ func (a *app) DeleteUser(login string, auth *Auth) error {
 	return a.repo.DeleteUser(login)
 }
 
-// LoadRelayReport gets hash string
-// Checks pairment of hash in report and ID in the map
-// Returns ErrNotFound in case of hash or ID failure
-func (a *app) LoadRelayReport(id StationID) (*RelayReport, error) {
-	report, err := a.repo.LastRelayReport(id)
-	return &report, err
+func (a *app) RelayReportCurrent(auth *Auth, id *StationID) (StationsStat, error) {
+	return a.repo.RelayReportCurrent(id)
 }
 
 func (a *app) StatusReport() StatusReport {
@@ -446,9 +510,9 @@ func (a *app) StationReportDates(id StationID, startDate, endDate time.Time) (Mo
 	if err != nil {
 		return MoneyReport{}, RelayReport{}, err
 	}
-	stat, err := a.repo.RelayStatReport(id, startDate, endDate)
+	// stat, err := a.repo.RelayStatReport(id, startDate, endDate)
 
-	return report, stat, err
+	return report, RelayReport{}, err
 }
 
 // StationReportCurrentMoney current amount of money in the station, after the last collection
@@ -458,9 +522,9 @@ func (a *app) StationReportCurrentMoney(id StationID) (MoneyReport, RelayReport,
 		return MoneyReport{}, RelayReport{}, err
 	}
 
-	stat, err := a.repo.RelayStatReport(id, time.Unix(0, 0), time.Now().UTC())
+	// stat, err := a.repo.RelayStatReport(id, time.Unix(0, 0), time.Now().UTC())
 
-	return report, stat, err
+	return report, RelayReport{}, err
 }
 func (a *app) CollectionReports(id StationID, startDate, endDate *time.Time) (reports []CollectionReportWithUser, err error) {
 	reports, err = a.repo.CollectionReports(id, startDate, endDate)
@@ -548,4 +612,12 @@ func (a *app) loadPrograms() error {
 	a.programs = mapPrograms
 	a.programsMutex.Unlock()
 	return nil
+}
+
+func (a *app) RelayReportDates(auth *Auth, stationID *StationID, startDate, endDate time.Time) (StationsStat, error) {
+	return a.repo.RelayReportDates(stationID, startDate, endDate)
+}
+
+func (a *app) ResetStationStat(auth *Auth, stationID StationID) error {
+	return a.repo.ResetStationStat(stationID)
 }

@@ -39,6 +39,7 @@ type StationData struct {
 	Name           string
 	ServiceMoney   int
 	LastPing       time.Time
+	RunProgram     time.Time
 	OpenStation    bool
 	CurrentBalance int
 	CurrentProgram int
@@ -90,8 +91,26 @@ type RelayStat struct {
 // RelayReport is RelayStat for multiple(actaully all) relays of one station
 type RelayReport struct {
 	StationID  StationID
+	ProgramID  int
+	TimeOn     int
+	PumpTimeOn int
 	RelayStats []RelayStat
 }
+
+type StationStat struct {
+	StationID    StationID
+	PumpTimeOn   int
+	RelayStats   []RelayStat
+	ProgramStats []ProgramStat
+}
+
+type ProgramStat struct {
+	ProgramID   int
+	ProgramName string
+	TimeOn      int
+}
+
+type StationsStat map[StationID]StationStat
 
 // CardReaderConfig is for Vendotek(Ethernet) or Paymentworld(their own binary exec)
 type CardReaderConfig struct {

@@ -155,7 +155,7 @@ func (t *DB) RelayStatReport(stationID app.StationID, startDate, endDate time.Ti
 func (t *DB) LastCollectionReport(stationID app.StationID) (report app.CollectionReport, err error) {
 	return
 }
-func (t *DB) CollectionReports(stationID app.StationID, startDate, endDate *time.Time) (reports []app.CollectionReportWithUser, err error){
+func (t *DB) CollectionReports(stationID app.StationID, startDate, endDate *time.Time) (reports []app.CollectionReportWithUser, err error) {
 	return nil, nil
 }
 func (t *DB) SaveCollectionReport(userID int, stationID app.StationID) error {
@@ -223,4 +223,16 @@ func (t *DB) AddUpdateConfig(note string) (id int, err error) {
 
 func (t *DB) LastUpdateConfig() (id int, err error) {
 	return
+}
+
+func (t *DB) RelayReportCurrent(id *app.StationID) (app.StationsStat, error) {
+	return app.StationsStat{}, nil
+}
+
+func (t *DB) RelayReportDates(stationID *app.StationID, startDate, endDate time.Time) (app.StationsStat, error) {
+	return app.StationsStat{}, nil
+}
+
+func (t *DB) ResetStationStat(stationID app.StationID) (err error) {
+	return nil
 }
