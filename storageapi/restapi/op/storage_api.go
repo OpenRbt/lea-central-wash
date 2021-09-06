@@ -44,8 +44,14 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		AddAdvertisingCampaignHandler: AddAdvertisingCampaignHandlerFunc(func(params AddAdvertisingCampaignParams, principal *storageapi.Profile) AddAdvertisingCampaignResponder {
+			return AddAdvertisingCampaignNotImplemented()
+		}),
 		AddServiceAmountHandler: AddServiceAmountHandlerFunc(func(params AddServiceAmountParams) AddServiceAmountResponder {
 			return AddServiceAmountNotImplemented()
+		}),
+		AdvertisingCampaignHandler: AdvertisingCampaignHandlerFunc(func(params AdvertisingCampaignParams, principal *storageapi.Profile) AdvertisingCampaignResponder {
+			return AdvertisingCampaignNotImplemented()
 		}),
 		CardReaderConfigHandler: CardReaderConfigHandlerFunc(func(params CardReaderConfigParams) CardReaderConfigResponder {
 			return CardReaderConfigNotImplemented()
@@ -61,6 +67,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		DeleteUserHandler: DeleteUserHandlerFunc(func(params DeleteUserParams, principal *storageapi.Profile) DeleteUserResponder {
 			return DeleteUserNotImplemented()
+		}),
+		EditAdvertisingCampaignHandler: EditAdvertisingCampaignHandlerFunc(func(params EditAdvertisingCampaignParams, principal *storageapi.Profile) EditAdvertisingCampaignResponder {
+			return EditAdvertisingCampaignNotImplemented()
 		}),
 		GetPingHandler: GetPingHandlerFunc(func(params GetPingParams) GetPingResponder {
 			return GetPingNotImplemented()
@@ -229,8 +238,12 @@ type StorageAPI struct {
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
 
+	// AddAdvertisingCampaignHandler sets the operation handler for the add advertising campaign operation
+	AddAdvertisingCampaignHandler AddAdvertisingCampaignHandler
 	// AddServiceAmountHandler sets the operation handler for the add service amount operation
 	AddServiceAmountHandler AddServiceAmountHandler
+	// AdvertisingCampaignHandler sets the operation handler for the advertising campaign operation
+	AdvertisingCampaignHandler AdvertisingCampaignHandler
 	// CardReaderConfigHandler sets the operation handler for the card reader config operation
 	CardReaderConfigHandler CardReaderConfigHandler
 	// CardReaderConfigByHashHandler sets the operation handler for the card reader config by hash operation
@@ -241,6 +254,8 @@ type StorageAPI struct {
 	DelStationHandler DelStationHandler
 	// DeleteUserHandler sets the operation handler for the delete user operation
 	DeleteUserHandler DeleteUserHandler
+	// EditAdvertisingCampaignHandler sets the operation handler for the edit advertising campaign operation
+	EditAdvertisingCampaignHandler EditAdvertisingCampaignHandler
 	// GetPingHandler sets the operation handler for the get ping operation
 	GetPingHandler GetPingHandler
 	// GetUserHandler sets the operation handler for the get user operation
@@ -400,8 +415,14 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "PinAuth")
 	}
 
+	if o.AddAdvertisingCampaignHandler == nil {
+		unregistered = append(unregistered, "AddAdvertisingCampaignHandler")
+	}
 	if o.AddServiceAmountHandler == nil {
 		unregistered = append(unregistered, "AddServiceAmountHandler")
+	}
+	if o.AdvertisingCampaignHandler == nil {
+		unregistered = append(unregistered, "AdvertisingCampaignHandler")
 	}
 	if o.CardReaderConfigHandler == nil {
 		unregistered = append(unregistered, "CardReaderConfigHandler")
@@ -417,6 +438,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.DeleteUserHandler == nil {
 		unregistered = append(unregistered, "DeleteUserHandler")
+	}
+	if o.EditAdvertisingCampaignHandler == nil {
+		unregistered = append(unregistered, "EditAdvertisingCampaignHandler")
 	}
 	if o.GetPingHandler == nil {
 		unregistered = append(unregistered, "GetPingHandler")
@@ -637,7 +661,15 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/add-advertising-campaign"] = NewAddAdvertisingCampaign(o.context, o.AddAdvertisingCampaignHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/add-service-amount"] = NewAddServiceAmount(o.context, o.AddServiceAmountHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/advertising-campaign"] = NewAdvertisingCampaign(o.context, o.AdvertisingCampaignHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
@@ -658,6 +690,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/user"] = NewDeleteUser(o.context, o.DeleteUserHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/edit-advertising-campaign"] = NewEditAdvertisingCampaign(o.context, o.EditAdvertisingCampaignHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

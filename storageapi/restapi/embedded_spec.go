@@ -34,6 +34,39 @@ func init() {
   },
   "basePath": "/",
   "paths": {
+    "/add-advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "addAdvertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaign"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/add-service-amount": {
       "post": {
         "operationId": "addServiceAmount",
@@ -61,6 +94,56 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "advertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "startDate",
+                "endDate"
+              ],
+              "properties": {
+                "endDate": {
+                  "description": "Unix time UTC",
+                  "type": "integer"
+                },
+                "startDate": {
+                  "description": "Unix time UTC",
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaigns"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
           },
           "500": {
             "description": "internal error"
@@ -170,6 +253,39 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/edit-advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "editAdvertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaign"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
           },
           "500": {
             "description": "internal error"
@@ -1765,6 +1881,63 @@ func init() {
     }
   },
   "definitions": {
+    "AdvertisingCampaign": {
+      "type": "object",
+      "required": [
+        "startDate",
+        "endDate"
+      ],
+      "properties": {
+        "defaultDiscount": {
+          "type": "integer"
+        },
+        "discountPrograms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DiscountProgram"
+          }
+        },
+        "endDate": {
+          "description": "Unix time UTC",
+          "type": "integer"
+        },
+        "endMinute": {
+          "type": "integer"
+        },
+        "startDate": {
+          "description": "Unix time UTC",
+          "type": "integer"
+        },
+        "startMinute": {
+          "type": "integer"
+        },
+        "timezone": {
+          "description": "minute",
+          "type": "integer"
+        },
+        "weekday": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "sunday",
+              "monday",
+              "tuesday",
+              "wednesday",
+              "thursday",
+              "friday",
+              "saturday"
+            ]
+          }
+        }
+      }
+    },
+    "AdvertisingCampaigns": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AdvertisingCampaign"
+      }
+    },
     "CardReaderConfig": {
       "type": "object",
       "required": [
@@ -1842,6 +2015,17 @@ func init() {
         },
         "user": {
           "type": "string"
+        }
+      }
+    },
+    "DiscountProgram": {
+      "type": "object",
+      "properties": {
+        "discount": {
+          "type": "integer"
+        },
+        "programID": {
+          "type": "integer"
         }
       }
     },
@@ -2324,6 +2508,39 @@ func init() {
   },
   "basePath": "/",
   "paths": {
+    "/add-advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "addAdvertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaign"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/add-service-amount": {
       "post": {
         "operationId": "addServiceAmount",
@@ -2351,6 +2568,56 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "advertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "startDate",
+                "endDate"
+              ],
+              "properties": {
+                "endDate": {
+                  "description": "Unix time UTC",
+                  "type": "integer"
+                },
+                "startDate": {
+                  "description": "Unix time UTC",
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaigns"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
           },
           "500": {
             "description": "internal error"
@@ -2460,6 +2727,39 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/edit-advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "editAdvertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaign"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
           },
           "500": {
             "description": "internal error"
@@ -4039,6 +4339,63 @@ func init() {
     }
   },
   "definitions": {
+    "AdvertisingCampaign": {
+      "type": "object",
+      "required": [
+        "startDate",
+        "endDate"
+      ],
+      "properties": {
+        "defaultDiscount": {
+          "type": "integer"
+        },
+        "discountPrograms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DiscountProgram"
+          }
+        },
+        "endDate": {
+          "description": "Unix time UTC",
+          "type": "integer"
+        },
+        "endMinute": {
+          "type": "integer"
+        },
+        "startDate": {
+          "description": "Unix time UTC",
+          "type": "integer"
+        },
+        "startMinute": {
+          "type": "integer"
+        },
+        "timezone": {
+          "description": "minute",
+          "type": "integer"
+        },
+        "weekday": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "sunday",
+              "monday",
+              "tuesday",
+              "wednesday",
+              "thursday",
+              "friday",
+              "saturday"
+            ]
+          }
+        }
+      }
+    },
+    "AdvertisingCampaigns": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AdvertisingCampaign"
+      }
+    },
     "ButtonsItems0": {
       "type": "object",
       "properties": {
@@ -4127,6 +4484,17 @@ func init() {
         },
         "user": {
           "type": "string"
+        }
+      }
+    },
+    "DiscountProgram": {
+      "type": "object",
+      "properties": {
+        "discount": {
+          "type": "integer"
+        },
+        "programID": {
+          "type": "integer"
         }
       }
     },

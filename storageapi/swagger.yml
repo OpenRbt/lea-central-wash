@@ -400,6 +400,55 @@ definitions:
     items:
       $ref: '#/definitions/StationStat'
 
+  DiscountProgram:
+    type: object
+    properties:
+      programID:
+          type: integer
+      discount:
+          type: integer
+
+  AdvertisingCampaign:
+    type: object
+    required:
+      - startDate
+      - endDate
+    properties:
+        startDate:
+          description: Unix time UTC
+          type: integer
+        endDate:
+          description: Unix time UTC
+          type: integer
+        timezone:
+          description: minute
+          type: integer
+        startMinute:
+          type: integer
+        endMinute:
+          type: integer
+        defaultDiscount:
+          type: integer
+        discountPrograms:
+          type: array
+          items:
+            $ref: '#/definitions/DiscountProgram'
+        weekday:
+          type: array
+          items:
+            type: string
+            enum: 
+              - sunday
+              - monday
+              - tuesday
+              - wednesday
+              - thursday
+              - friday
+              - saturday
+  AdvertisingCampaigns:
+    type: array
+    items:
+      $ref: '#/definitions/AdvertisingCampaign'
 
 consumes:
   - application/json
@@ -407,6 +456,77 @@ produces:
   - application/json          
 
 paths:
+  /add-advertising-campaign:
+    post:
+      operationId: "addAdvertisingCampaign"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          in: body
+          schema:
+            $ref: '#/definitions/AdvertisingCampaign'
+      responses:
+        204:
+          description: OK
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbiddenn
+        500:
+          description: internal error
+  /edit-advertising-campaign:
+    post:
+      operationId: "editAdvertisingCampaign"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          in: body
+          schema:
+            $ref: '#/definitions/AdvertisingCampaign'
+      responses:
+        204:
+          description: OK
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbiddenn
+        500:
+          description: internal error
+
+  /advertising-campaign:
+    post:
+      operationId: "advertisingCampaign"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          in: body
+          schema:
+            type: object
+            required:
+              - startDate
+              - endDate
+            properties:
+              startDate:
+                description: Unix time UTC
+                type: integer
+              endDate:
+                description: Unix time UTC
+                type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/AdvertisingCampaigns'
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbiddenn
+        500:
+          description: internal error
+
   /station-stat-current:
     post:
       operationId: "stationStatCurrent"

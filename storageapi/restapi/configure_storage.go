@@ -50,9 +50,19 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	// Example:
 	// api.APIAuthorizer = security.Authorized()
 
+	if api.AddAdvertisingCampaignHandler == nil {
+		api.AddAdvertisingCampaignHandler = op.AddAdvertisingCampaignHandlerFunc(func(params op.AddAdvertisingCampaignParams, principal *storageapi.Profile) op.AddAdvertisingCampaignResponder {
+			return op.AddAdvertisingCampaignNotImplemented()
+		})
+	}
 	if api.AddServiceAmountHandler == nil {
 		api.AddServiceAmountHandler = op.AddServiceAmountHandlerFunc(func(params op.AddServiceAmountParams) op.AddServiceAmountResponder {
 			return op.AddServiceAmountNotImplemented()
+		})
+	}
+	if api.AdvertisingCampaignHandler == nil {
+		api.AdvertisingCampaignHandler = op.AdvertisingCampaignHandlerFunc(func(params op.AdvertisingCampaignParams, principal *storageapi.Profile) op.AdvertisingCampaignResponder {
+			return op.AdvertisingCampaignNotImplemented()
 		})
 	}
 	if api.CardReaderConfigHandler == nil {
@@ -78,6 +88,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.DeleteUserHandler == nil {
 		api.DeleteUserHandler = op.DeleteUserHandlerFunc(func(params op.DeleteUserParams, principal *storageapi.Profile) op.DeleteUserResponder {
 			return op.DeleteUserNotImplemented()
+		})
+	}
+	if api.EditAdvertisingCampaignHandler == nil {
+		api.EditAdvertisingCampaignHandler = op.EditAdvertisingCampaignHandlerFunc(func(params op.EditAdvertisingCampaignParams, principal *storageapi.Profile) op.EditAdvertisingCampaignResponder {
+			return op.EditAdvertisingCampaignNotImplemented()
 		})
 	}
 	if api.GetPingHandler == nil {
