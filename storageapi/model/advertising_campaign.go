@@ -35,6 +35,9 @@ type AdvertisingCampaign struct {
 	// end minute
 	EndMinute int64 `json:"endMinute,omitempty"`
 
+	// id
+	ID int64 `json:"id,omitempty"`
+
 	// Unix time UTC
 	// Required: true
 	StartDate *int64 `json:"startDate"`
@@ -66,6 +69,9 @@ func (m *AdvertisingCampaign) UnmarshalJSON(data []byte) error {
 		// end minute
 		EndMinute int64 `json:"endMinute,omitempty"`
 
+		// id
+		ID int64 `json:"id,omitempty"`
+
 		// Unix time UTC
 		// Required: true
 		StartDate *int64 `json:"startDate"`
@@ -90,6 +96,7 @@ func (m *AdvertisingCampaign) UnmarshalJSON(data []byte) error {
 	m.DiscountPrograms = props.DiscountPrograms
 	m.EndDate = props.EndDate
 	m.EndMinute = props.EndMinute
+	m.ID = props.ID
 	m.StartDate = props.StartDate
 	m.StartMinute = props.StartMinute
 	m.Timezone = props.Timezone

@@ -414,6 +414,8 @@ definitions:
       - startDate
       - endDate
     properties:
+        id:
+          type: integer
         startDate:
           description: Unix time UTC
           type: integer

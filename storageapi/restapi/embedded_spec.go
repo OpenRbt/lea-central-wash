@@ -1904,6 +1904,9 @@ func init() {
         "endMinute": {
           "type": "integer"
         },
+        "id": {
+          "type": "integer"
+        },
         "startDate": {
           "description": "Unix time UTC",
           "type": "integer"
@@ -4360,6 +4363,9 @@ func init() {
           "type": "integer"
         },
         "endMinute": {
+          "type": "integer"
+        },
+        "id": {
           "type": "integer"
         },
         "startDate": {
