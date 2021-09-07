@@ -416,15 +416,19 @@ definitions:
     properties:
         id:
           type: integer
+        name:
+          type: string
         startDate:
-          description: Unix time UTC
+          description: Unix time local
           type: integer
         endDate:
-          description: Unix time UTC
+          description: Unix time local
           type: integer
         timezone:
           description: minute
           type: integer
+        enabled:
+          type: boolean
         startMinute:
           type: integer
         endMinute:
@@ -507,16 +511,15 @@ paths:
           in: body
           schema:
             type: object
-            required:
-              - startDate
-              - endDate
             properties:
               startDate:
-                description: Unix time UTC
+                description: Unix time local
                 type: integer
+                x-nullable: true
               endDate:
-                description: Unix time UTC
+                description: Unix time local
                 type: integer
+                x-nullable: true
       responses:
         200:
           description: OK
@@ -553,6 +556,8 @@ paths:
           description: PIN is missing or invalid
         403:
           description: Access forbiddenn
+        404:
+          description: not found
         500:
           description: internal error
 
