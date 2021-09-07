@@ -53,6 +53,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		AdvertisingCampaignHandler: AdvertisingCampaignHandlerFunc(func(params AdvertisingCampaignParams, principal *storageapi.Profile) AdvertisingCampaignResponder {
 			return AdvertisingCampaignNotImplemented()
 		}),
+		AdvertisingCampaignByIDHandler: AdvertisingCampaignByIDHandlerFunc(func(params AdvertisingCampaignByIDParams, principal *storageapi.Profile) AdvertisingCampaignByIDResponder {
+			return AdvertisingCampaignByIDNotImplemented()
+		}),
 		CardReaderConfigHandler: CardReaderConfigHandlerFunc(func(params CardReaderConfigParams) CardReaderConfigResponder {
 			return CardReaderConfigNotImplemented()
 		}),
@@ -61,6 +64,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		CreateUserHandler: CreateUserHandlerFunc(func(params CreateUserParams, principal *storageapi.Profile) CreateUserResponder {
 			return CreateUserNotImplemented()
+		}),
+		DelAdvertisingCampaignHandler: DelAdvertisingCampaignHandlerFunc(func(params DelAdvertisingCampaignParams, principal *storageapi.Profile) DelAdvertisingCampaignResponder {
+			return DelAdvertisingCampaignNotImplemented()
 		}),
 		DelStationHandler: DelStationHandlerFunc(func(params DelStationParams) DelStationResponder {
 			return DelStationNotImplemented()
@@ -244,12 +250,16 @@ type StorageAPI struct {
 	AddServiceAmountHandler AddServiceAmountHandler
 	// AdvertisingCampaignHandler sets the operation handler for the advertising campaign operation
 	AdvertisingCampaignHandler AdvertisingCampaignHandler
+	// AdvertisingCampaignByIDHandler sets the operation handler for the advertising campaign by ID operation
+	AdvertisingCampaignByIDHandler AdvertisingCampaignByIDHandler
 	// CardReaderConfigHandler sets the operation handler for the card reader config operation
 	CardReaderConfigHandler CardReaderConfigHandler
 	// CardReaderConfigByHashHandler sets the operation handler for the card reader config by hash operation
 	CardReaderConfigByHashHandler CardReaderConfigByHashHandler
 	// CreateUserHandler sets the operation handler for the create user operation
 	CreateUserHandler CreateUserHandler
+	// DelAdvertisingCampaignHandler sets the operation handler for the del advertising campaign operation
+	DelAdvertisingCampaignHandler DelAdvertisingCampaignHandler
 	// DelStationHandler sets the operation handler for the del station operation
 	DelStationHandler DelStationHandler
 	// DeleteUserHandler sets the operation handler for the delete user operation
@@ -424,6 +434,9 @@ func (o *StorageAPI) Validate() error {
 	if o.AdvertisingCampaignHandler == nil {
 		unregistered = append(unregistered, "AdvertisingCampaignHandler")
 	}
+	if o.AdvertisingCampaignByIDHandler == nil {
+		unregistered = append(unregistered, "AdvertisingCampaignByIDHandler")
+	}
 	if o.CardReaderConfigHandler == nil {
 		unregistered = append(unregistered, "CardReaderConfigHandler")
 	}
@@ -432,6 +445,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.CreateUserHandler == nil {
 		unregistered = append(unregistered, "CreateUserHandler")
+	}
+	if o.DelAdvertisingCampaignHandler == nil {
+		unregistered = append(unregistered, "DelAdvertisingCampaignHandler")
 	}
 	if o.DelStationHandler == nil {
 		unregistered = append(unregistered, "DelStationHandler")
@@ -673,6 +689,10 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/advertising-campaign-by-id"] = NewAdvertisingCampaignByID(o.context, o.AdvertisingCampaignByIDHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/card-reader-config"] = NewCardReaderConfig(o.context, o.CardReaderConfigHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -682,6 +702,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/user"] = NewCreateUser(o.context, o.CreateUserHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/del-advertising-campaign"] = NewDelAdvertisingCampaign(o.context, o.DelAdvertisingCampaignHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

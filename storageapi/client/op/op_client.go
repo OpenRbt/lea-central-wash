@@ -36,11 +36,15 @@ type ClientService interface {
 
 	AdvertisingCampaign(params *AdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*AdvertisingCampaignOK, error)
 
+	AdvertisingCampaignByID(params *AdvertisingCampaignByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*AdvertisingCampaignByIDOK, error)
+
 	CardReaderConfig(params *CardReaderConfigParams, opts ...ClientOption) (*CardReaderConfigOK, error)
 
 	CardReaderConfigByHash(params *CardReaderConfigByHashParams, opts ...ClientOption) (*CardReaderConfigByHashOK, error)
 
 	CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateUserCreated, error)
+
+	DelAdvertisingCampaign(params *DelAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DelAdvertisingCampaignNoContent, error)
 
 	DelStation(params *DelStationParams, opts ...ClientOption) (*DelStationNoContent, error)
 
@@ -246,6 +250,45 @@ func (a *Client) AdvertisingCampaign(params *AdvertisingCampaignParams, authInfo
 }
 
 /*
+  AdvertisingCampaignByID advertising campaign by ID API
+*/
+func (a *Client) AdvertisingCampaignByID(params *AdvertisingCampaignByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*AdvertisingCampaignByIDOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewAdvertisingCampaignByIDParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "advertisingCampaignByID",
+		Method:             "POST",
+		PathPattern:        "/advertising-campaign-by-id",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &AdvertisingCampaignByIDReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*AdvertisingCampaignByIDOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for advertisingCampaignByID: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   CardReaderConfig card reader config API
 */
 func (a *Client) CardReaderConfig(params *CardReaderConfigParams, opts ...ClientOption) (*CardReaderConfigOK, error) {
@@ -357,6 +400,45 @@ func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAut
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for createUser: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  DelAdvertisingCampaign del advertising campaign API
+*/
+func (a *Client) DelAdvertisingCampaign(params *DelAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DelAdvertisingCampaignNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewDelAdvertisingCampaignParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "delAdvertisingCampaign",
+		Method:             "POST",
+		PathPattern:        "/del-advertising-campaign",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &DelAdvertisingCampaignReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*DelAdvertisingCampaignNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for delAdvertisingCampaign: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

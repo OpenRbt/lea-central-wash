@@ -151,6 +151,50 @@ func init() {
         }
       }
     },
+    "/advertising-campaign-by-id": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "advertisingCampaignByID",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaign"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/card-reader-config": {
       "post": {
         "operationId": "cardReaderConfig",
@@ -219,6 +263,47 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/del-advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "delAdvertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
           },
           "500": {
             "description": "internal error"
@@ -2628,6 +2713,50 @@ func init() {
         }
       }
     },
+    "/advertising-campaign-by-id": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "advertisingCampaignByID",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaign"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/card-reader-config": {
       "post": {
         "operationId": "cardReaderConfig",
@@ -2696,6 +2825,47 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/del-advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "delAdvertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
           },
           "500": {
             "description": "internal error"

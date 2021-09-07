@@ -529,6 +529,58 @@ paths:
         500:
           description: internal error
 
+  /advertising-campaign-by-id:
+    post:
+      operationId: "advertisingCampaignByID"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          in: body
+          schema:
+            type: object
+            required:
+              - id
+            properties:
+              id:
+                type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/AdvertisingCampaign'
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbiddenn
+        500:
+          description: internal error
+
+  /del-advertising-campaign:
+    post:
+      operationId: "delAdvertisingCampaign"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          in: body
+          schema:
+            type: object
+            required:
+              - id
+            properties:
+              id:
+                type: integer
+      responses:
+        204:
+          description: OK
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbiddenn
+        500:
+          description: internal error
+
   /station-stat-current:
     post:
       operationId: "stationStatCurrent"

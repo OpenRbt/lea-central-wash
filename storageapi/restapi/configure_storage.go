@@ -65,6 +65,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.AdvertisingCampaignNotImplemented()
 		})
 	}
+	if api.AdvertisingCampaignByIDHandler == nil {
+		api.AdvertisingCampaignByIDHandler = op.AdvertisingCampaignByIDHandlerFunc(func(params op.AdvertisingCampaignByIDParams, principal *storageapi.Profile) op.AdvertisingCampaignByIDResponder {
+			return op.AdvertisingCampaignByIDNotImplemented()
+		})
+	}
 	if api.CardReaderConfigHandler == nil {
 		api.CardReaderConfigHandler = op.CardReaderConfigHandlerFunc(func(params op.CardReaderConfigParams) op.CardReaderConfigResponder {
 			return op.CardReaderConfigNotImplemented()
@@ -78,6 +83,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.CreateUserHandler == nil {
 		api.CreateUserHandler = op.CreateUserHandlerFunc(func(params op.CreateUserParams, principal *storageapi.Profile) op.CreateUserResponder {
 			return op.CreateUserNotImplemented()
+		})
+	}
+	if api.DelAdvertisingCampaignHandler == nil {
+		api.DelAdvertisingCampaignHandler = op.DelAdvertisingCampaignHandlerFunc(func(params op.DelAdvertisingCampaignParams, principal *storageapi.Profile) op.DelAdvertisingCampaignResponder {
+			return op.DelAdvertisingCampaignNotImplemented()
 		})
 	}
 	if api.DelStationHandler == nil {
