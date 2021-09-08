@@ -433,6 +433,82 @@ order by b.button_id
 	sqlLastUpdateConfigGet = `
 	SELECT max(id) as id from update_config
 	`
+	sqlAddAdvertisingCampaign = `
+	INSERT INTO advertising_campaign (
+		default_discount,
+		discount_programs,
+		end_date,
+		end_minute,
+		start_date,
+		start_minute,
+		timezone,
+		weekday,
+		enabled,
+		name
+	) VALUES (
+		:default_discount,
+		:discount_programs,
+		:end_date,
+		:end_minute,
+		:start_date,
+		:start_minute,
+		:timezone,
+		:weekday,
+		:enabled,
+		:name
+	)
+	`
+	sqlEditAdvertisingCampaign = `
+	UPDATE advertising_campaign SET
+		default_discount = :default_discount,
+		discount_programs = :discount_programs,
+		end_date = :end_date,
+		end_minute = :end_minute,
+		start_date = :start_date,
+		start_minute = :start_minute,
+		timezone = :timezone,
+		weekday = :weekday,
+		enabled = :enabled,
+		name = :name
+	WHERE id = :id
+		`
+	sqlDelAdvertisingCampaign = `
+		DELETE FROM advertising_campaign
+		WHERE id = :id
+			`
+
+	sqlAdvertisingCampaignByID = `
+	SELECT 
+		id,
+		default_discount,
+		discount_programs,
+		end_date,
+		end_minute,
+		start_date,
+		start_minute,
+		timezone,
+		weekday,
+		enabled,
+		name
+	FROM advertising_campaign
+	WHERE id = :id
+`
+	sqlAdvertisingCampaign = `
+SELECT 
+	id,
+	default_discount,
+	discount_programs,
+	end_date,
+	end_minute,
+	start_date,
+	start_minute,
+	timezone,
+	weekday,
+	enabled,
+	name
+FROM advertising_campaign
+WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:end_date >= start_date or CAST(:start_date AS TIMESTAMP) is null)
+`
 )
 
 type (
@@ -742,5 +818,41 @@ type (
 		Electronical int
 		Service      int
 		Ctime        time.Time
+	}
+	argAdvertisingCampaign struct {
+		DefaultDiscount  int64
+		DiscountPrograms string
+		EndDate          time.Time
+		EndMinute        int64
+		ID               int64
+		StartDate        time.Time
+		StartMinute      int64
+		Timezone         int64
+		Weekday          string
+		Enabled          bool
+		Name             string
+	}
+	resAdvertisingCampaign struct {
+		DefaultDiscount  int64
+		DiscountPrograms string
+		EndDate          time.Time
+		EndMinute        int64
+		ID               int64
+		StartDate        time.Time
+		StartMinute      int64
+		Timezone         int64
+		Weekday          string
+		Enabled          bool
+		Name             string
+	}
+	argDelAdvertisingCampaign struct {
+		ID int64
+	}
+	argAdvertisingCampaignByID struct {
+		ID int64
+	}
+	argAdvertisingCampaignGet struct {
+		StartDate *time.Time
+		EndDate   *time.Time
 	}
 )

@@ -47,6 +47,12 @@ func (o *AdvertisingCampaignByIDReader) ReadResponse(response runtime.ClientResp
 			return nil, err
 		}
 		return nil, result
+	case 404:
+		result := NewAdvertisingCampaignByIDNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewAdvertisingCampaignByIDInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -128,6 +134,27 @@ func (o *AdvertisingCampaignByIDForbidden) Error() string {
 }
 
 func (o *AdvertisingCampaignByIDForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewAdvertisingCampaignByIDNotFound creates a AdvertisingCampaignByIDNotFound with default headers values
+func NewAdvertisingCampaignByIDNotFound() *AdvertisingCampaignByIDNotFound {
+	return &AdvertisingCampaignByIDNotFound{}
+}
+
+/* AdvertisingCampaignByIDNotFound describes a response with status code 404, with default header values.
+
+not found
+*/
+type AdvertisingCampaignByIDNotFound struct {
+}
+
+func (o *AdvertisingCampaignByIDNotFound) Error() string {
+	return fmt.Sprintf("[POST /advertising-campaign-by-id][%d] advertisingCampaignByIdNotFound ", 404)
+}
+
+func (o *AdvertisingCampaignByIDNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

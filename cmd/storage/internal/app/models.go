@@ -119,3 +119,22 @@ type CardReaderConfig struct {
 	Host           string
 	Port           string
 }
+
+type DiscountProgram struct {
+	Discount  int64
+	ProgramID int64
+}
+
+type AdvertisingCampaign struct {
+	DefaultDiscount  int64
+	DiscountPrograms []DiscountProgram
+	EndDate          time.Time
+	EndMinute        int64
+	ID               int64
+	StartDate        time.Time
+	StartMinute      int64
+	Timezone         int64
+	Weekday          []string
+	Enabled          bool
+	Name             string
+}

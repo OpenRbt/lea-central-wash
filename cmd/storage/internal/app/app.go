@@ -98,6 +98,11 @@ type (
 		Station(StationID) (SetStation, error)
 		RelayReportDates(auth *Auth, stationID *StationID, startDate, endDate time.Time) (StationsStat, error)
 		ResetStationStat(auth *Auth, stationID StationID) error
+		AddAdvertisingCampaign(*Auth, AdvertisingCampaign) error
+		EditAdvertisingCampaign(auth *Auth, a AdvertisingCampaign) error
+		DelAdvertisingCampaign(auth *Auth, id int64) (err error)
+		AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaign, error)
+		AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
 	}
 
 	// Repo is a DAL interface.
@@ -150,6 +155,12 @@ type (
 		LastUpdateConfig() (int, error)
 		RelayReportDates(stationID *StationID, startDate, endDate time.Time) (StationsStat, error)
 		ResetStationStat(stationID StationID) error
+
+		AddAdvertisingCampaign(AdvertisingCampaign) error
+		EditAdvertisingCampaign(AdvertisingCampaign) error
+		DelAdvertisingCampaign(id int64) error
+		AdvertisingCampaignByID(id int64) (*AdvertisingCampaign, error)
+		AdvertisingCampaign(startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {

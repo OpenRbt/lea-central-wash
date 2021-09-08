@@ -115,18 +115,16 @@ func init() {
             "in": "body",
             "schema": {
               "type": "object",
-              "required": [
-                "startDate",
-                "endDate"
-              ],
               "properties": {
                 "endDate": {
-                  "description": "Unix time UTC",
-                  "type": "integer"
+                  "description": "Unix time local",
+                  "type": "integer",
+                  "x-nullable": true
                 },
                 "startDate": {
-                  "description": "Unix time UTC",
-                  "type": "integer"
+                  "description": "Unix time local",
+                  "type": "integer",
+                  "x-nullable": true
                 }
               }
             }
@@ -188,6 +186,9 @@ func init() {
           },
           "403": {
             "description": "Access forbiddenn"
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"
@@ -1982,8 +1983,11 @@ func init() {
             "$ref": "#/definitions/DiscountProgram"
           }
         },
+        "enabled": {
+          "type": "boolean"
+        },
         "endDate": {
-          "description": "Unix time UTC",
+          "description": "Unix time local",
           "type": "integer"
         },
         "endMinute": {
@@ -1992,8 +1996,11 @@ func init() {
         "id": {
           "type": "integer"
         },
+        "name": {
+          "type": "string"
+        },
         "startDate": {
-          "description": "Unix time UTC",
+          "description": "Unix time local",
           "type": "integer"
         },
         "startMinute": {
@@ -2677,18 +2684,16 @@ func init() {
             "in": "body",
             "schema": {
               "type": "object",
-              "required": [
-                "startDate",
-                "endDate"
-              ],
               "properties": {
                 "endDate": {
-                  "description": "Unix time UTC",
-                  "type": "integer"
+                  "description": "Unix time local",
+                  "type": "integer",
+                  "x-nullable": true
                 },
                 "startDate": {
-                  "description": "Unix time UTC",
-                  "type": "integer"
+                  "description": "Unix time local",
+                  "type": "integer",
+                  "x-nullable": true
                 }
               }
             }
@@ -2750,6 +2755,9 @@ func init() {
           },
           "403": {
             "description": "Access forbiddenn"
+          },
+          "404": {
+            "description": "not found"
           },
           "500": {
             "description": "internal error"
@@ -4528,8 +4536,11 @@ func init() {
             "$ref": "#/definitions/DiscountProgram"
           }
         },
+        "enabled": {
+          "type": "boolean"
+        },
         "endDate": {
-          "description": "Unix time UTC",
+          "description": "Unix time local",
           "type": "integer"
         },
         "endMinute": {
@@ -4538,8 +4549,11 @@ func init() {
         "id": {
           "type": "integer"
         },
+        "name": {
+          "type": "string"
+        },
         "startDate": {
-          "description": "Unix time UTC",
+          "description": "Unix time local",
           "type": "integer"
         },
         "startMinute": {

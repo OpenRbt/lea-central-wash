@@ -127,6 +127,11 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.StationStatDatesHandler = op.StationStatDatesHandlerFunc(svc.stationStatDates)
 	api.ResetStationStatHandler = op.ResetStationStatHandlerFunc(svc.resetStationStat)
 
+	api.AddAdvertisingCampaignHandler = op.AddAdvertisingCampaignHandlerFunc(svc.addAdvertisingCampaign)
+	api.EditAdvertisingCampaignHandler = op.EditAdvertisingCampaignHandlerFunc(svc.editAdvertisingCampaign)
+	api.AdvertisingCampaignHandler = op.AdvertisingCampaignHandlerFunc(svc.advertisingCampaign)
+	api.AdvertisingCampaignByIDHandler = op.AdvertisingCampaignByIDHandlerFunc(svc.advertisingCampaignByID)
+
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port

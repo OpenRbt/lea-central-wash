@@ -885,3 +885,64 @@ func (svc *service) resetStationStat(params op.ResetStationStatParams, auth *app
 		return op.NewResetStationStatInternalServerError()
 	}
 }
+
+func (svc *service) addAdvertisingCampaign(params op.AddAdvertisingCampaignParams, auth *app.Auth) op.AddAdvertisingCampaignResponder {
+	err := svc.app.AddAdvertisingCampaign(auth, appAdvertisingCampaign(params.Args))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewAddAdvertisingCampaignNoContent()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewAddAdvertisingCampaignInternalServerError()
+	}
+}
+
+func (svc *service) editAdvertisingCampaign(params op.EditAdvertisingCampaignParams, auth *app.Auth) op.EditAdvertisingCampaignResponder {
+	err := svc.app.EditAdvertisingCampaign(auth, appAdvertisingCampaign(params.Args))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewEditAdvertisingCampaignNoContent()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewEditAdvertisingCampaignInternalServerError()
+	}
+}
+
+func (svc *service) advertisingCampaign(params op.AdvertisingCampaignParams, auth *app.Auth) op.AdvertisingCampaignResponder {
+	var startDate *time.Time
+	if params.Args.StartDate != nil {
+		start := time.Unix(*params.Args.StartDate, 0)
+		startDate = &start
+	}
+	var endDate *time.Time
+	if params.Args.EndDate != nil {
+		end := time.Unix(*params.Args.EndDate, 0)
+		endDate = &end
+	}
+
+	res, err := svc.app.AdvertisingCampaign(auth, startDate, endDate)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewAdvertisingCampaignOK().WithPayload(apiAdvertisingCampaigns(res))
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewAdvertisingCampaignInternalServerError()
+	}
+}
+
+func (svc *service) advertisingCampaignByID(params op.AdvertisingCampaignByIDParams, auth *app.Auth) op.AdvertisingCampaignByIDResponder {
+	res, err := svc.app.AdvertisingCampaignByID(auth, *params.Args.ID)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewAdvertisingCampaignByIDOK().WithPayload(apiAdvertisingCampaign(*res))
+	case app.ErrNotFound:
+		return op.NewAdvertisingCampaignByIDNotFound()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewAdvertisingCampaignByIDInternalServerError()
+	}
+}

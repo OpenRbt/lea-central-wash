@@ -800,3 +800,63 @@ func (r *repo) LastUpdateConfig() (id int, err error) {
 	})
 	return //nolint:nakedret
 }
+
+func (r *repo) AddAdvertisingCampaign(a app.AdvertisingCampaign) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlAddAdvertisingCampaign, dalAdvertisingCampaign(a))
+		return err
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) EditAdvertisingCampaign(a app.AdvertisingCampaign) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlEditAdvertisingCampaign, dalAdvertisingCampaign(a))
+		return err
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) DelAdvertisingCampaign(id int64) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlDelAdvertisingCampaign, argDelAdvertisingCampaign{
+			ID: id,
+		})
+		return err
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) AdvertisingCampaignByID(id int64) (a *app.AdvertisingCampaign, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		res := resAdvertisingCampaign{}
+		err := tx.NamedGetContext(ctx, &res, sqlAdvertisingCampaignByID, argAdvertisingCampaignByID{
+			ID: id,
+		})
+		if err == sql.ErrNoRows {
+			return app.ErrNotFound
+		}
+		if err != nil {
+			return err
+		}
+		a = appAdvertisingCampaign(res)
+		return nil
+	})
+	return //nolint:nakedret
+}
+
+func (r *repo) AdvertisingCampaign(startDate, endDate *time.Time) (a []app.AdvertisingCampaign, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		res := []resAdvertisingCampaign{}
+		err := tx.NamedSelectContext(ctx, &res, sqlAdvertisingCampaign, argAdvertisingCampaignGet{
+			StartDate: startDate,
+			EndDate:   endDate,
+		})
+		if err != nil {
+			return err
+		}
+		a = appAdvertisingCampaigns(res)
+		return nil
+	})
+	return //nolint:nakedret
+}

@@ -112,6 +112,32 @@ func (o *AdvertisingCampaignByIDForbidden) WriteResponse(rw http.ResponseWriter,
 
 func (o *AdvertisingCampaignByIDForbidden) AdvertisingCampaignByIDResponder() {}
 
+// AdvertisingCampaignByIDNotFoundCode is the HTTP code returned for type AdvertisingCampaignByIDNotFound
+const AdvertisingCampaignByIDNotFoundCode int = 404
+
+/*AdvertisingCampaignByIDNotFound not found
+
+swagger:response advertisingCampaignByIdNotFound
+*/
+type AdvertisingCampaignByIDNotFound struct {
+}
+
+// NewAdvertisingCampaignByIDNotFound creates AdvertisingCampaignByIDNotFound with default headers values
+func NewAdvertisingCampaignByIDNotFound() *AdvertisingCampaignByIDNotFound {
+
+	return &AdvertisingCampaignByIDNotFound{}
+}
+
+// WriteResponse to the client
+func (o *AdvertisingCampaignByIDNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(404)
+}
+
+func (o *AdvertisingCampaignByIDNotFound) AdvertisingCampaignByIDResponder() {}
+
 // AdvertisingCampaignByIDInternalServerErrorCode is the HTTP code returned for type AdvertisingCampaignByIDInternalServerError
 const AdvertisingCampaignByIDInternalServerErrorCode int = 500
 

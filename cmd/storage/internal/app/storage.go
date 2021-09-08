@@ -621,3 +621,19 @@ func (a *app) RelayReportDates(auth *Auth, stationID *StationID, startDate, endD
 func (a *app) ResetStationStat(auth *Auth, stationID StationID) error {
 	return a.repo.ResetStationStat(stationID)
 }
+
+func (a *app) AddAdvertisingCampaign(auth *Auth, res AdvertisingCampaign) error {
+	return a.repo.AddAdvertisingCampaign(res)
+}
+func (a *app) EditAdvertisingCampaign(auth *Auth, res AdvertisingCampaign) error {
+	return a.repo.EditAdvertisingCampaign(res)
+}
+func (a *app) DelAdvertisingCampaign(auth *Auth, id int64) error {
+	return a.repo.DelAdvertisingCampaign(id)
+}
+func (a *app) AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaign, error) {
+	return a.repo.AdvertisingCampaignByID(id)
+}
+func (a *app) AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error) {
+	return a.repo.AdvertisingCampaign(startDate, endDate)
+}

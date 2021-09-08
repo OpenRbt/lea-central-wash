@@ -233,6 +233,23 @@ func (t *DB) RelayReportDates(stationID *app.StationID, startDate, endDate time.
 	return app.StationsStat{}, nil
 }
 
-func (t *DB) ResetStationStat(stationID app.StationID) (err error) {
+func (t *DB) ResetStationStat(stationID app.StationID) error {
 	return nil
+}
+
+func (t *DB) AddAdvertisingCampaign(a app.AdvertisingCampaign) error {
+	return nil
+}
+
+func (t *DB) EditAdvertisingCampaign(a app.AdvertisingCampaign) error {
+	return nil
+}
+func (t *DB) DelAdvertisingCampaign(id int64) error {
+	return nil
+}
+func (t *DB) AdvertisingCampaignByID(id int64) (*app.AdvertisingCampaign, error) {
+	return nil, nil
+}
+func (t *DB) AdvertisingCampaign(startDate, endDate *time.Time) ([]app.AdvertisingCampaign, error) {
+	return nil, nil
 }

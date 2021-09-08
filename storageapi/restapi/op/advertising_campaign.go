@@ -11,11 +11,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
@@ -82,26 +80,22 @@ func (o *AdvertisingCampaign) ServeHTTP(rw http.ResponseWriter, r *http.Request)
 // swagger:model AdvertisingCampaignBody
 type AdvertisingCampaignBody struct {
 
-	// Unix time UTC
-	// Required: true
-	EndDate *int64 `json:"endDate"`
+	// Unix time local
+	EndDate *int64 `json:"endDate,omitempty"`
 
-	// Unix time UTC
-	// Required: true
-	StartDate *int64 `json:"startDate"`
+	// Unix time local
+	StartDate *int64 `json:"startDate,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
 func (o *AdvertisingCampaignBody) UnmarshalJSON(data []byte) error {
 	var props struct {
 
-		// Unix time UTC
-		// Required: true
-		EndDate *int64 `json:"endDate"`
+		// Unix time local
+		EndDate *int64 `json:"endDate,omitempty"`
 
-		// Unix time UTC
-		// Required: true
-		StartDate *int64 `json:"startDate"`
+		// Unix time local
+		StartDate *int64 `json:"startDate,omitempty"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -117,37 +111,6 @@ func (o *AdvertisingCampaignBody) UnmarshalJSON(data []byte) error {
 
 // Validate validates this advertising campaign body
 func (o *AdvertisingCampaignBody) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateEndDate(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateStartDate(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *AdvertisingCampaignBody) validateEndDate(formats strfmt.Registry) error {
-
-	if err := validate.Required("args"+"."+"endDate", "body", o.EndDate); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *AdvertisingCampaignBody) validateStartDate(formats strfmt.Registry) error {
-
-	if err := validate.Required("args"+"."+"startDate", "body", o.StartDate); err != nil {
-		return err
-	}
-
 	return nil
 }
 
