@@ -858,6 +858,7 @@ func (svc *service) stationStatCurrent(params op.StationStatCurrentParams, auth 
 }
 
 func (svc *service) stationStatDates(params op.StationStatDatesParams, auth *app.Auth) op.StationStatDatesResponder {
+	log.Info("stationStatDates", "startDate", time.Unix(*params.Args.StartDate, 0), "endDate", time.Unix(*params.Args.EndDate, 0), "ip", params.HTTPRequest.RemoteAddr)
 	var id *app.StationID
 	if params.Args.StationID != nil {
 		tmp := app.StationID(*params.Args.StationID)

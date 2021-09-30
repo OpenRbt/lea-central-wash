@@ -428,6 +428,7 @@ func (r *repo) SaveRelayReport(report app.RelayReport) (err error) {
 			ProgramID:  report.ProgramID,
 			PumpTimeOn: report.PumpTimeOn,
 			TimeOn:     report.TimeOn,
+			Ctime:      time.Now().UTC(),
 		})
 		if err != nil {
 			return err

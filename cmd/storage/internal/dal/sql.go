@@ -211,8 +211,8 @@ LIMIT 1
 	ORDER BY mc.ctime
 	`
 	sqlAddRelayReport = `
-INSERT INTO relay_report (station_id, program_id, time_on, pump_time_on)  
-VALUES 	(:station_id, :program_id, :time_on, :pump_time_on) RETURNING id
+INSERT INTO relay_report (station_id, program_id, time_on, pump_time_on, ctime)  
+VALUES 	(:station_id, :program_id, :time_on, :pump_time_on, :ctime) RETURNING id
 	`
 	sqlAddRelayStat = `
 INSERT INTO relay_stat (relay_report_id, relay_id, switched_count, total_time_on)
@@ -650,6 +650,7 @@ type (
 		ProgramID  int
 		PumpTimeOn int
 		TimeOn     int
+		Ctime      time.Time
 	}
 	argAddRelayStat struct {
 		RelayReportID int
