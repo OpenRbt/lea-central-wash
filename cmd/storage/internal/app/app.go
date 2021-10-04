@@ -103,6 +103,9 @@ type (
 		DelAdvertisingCampaign(auth *Auth, id int64) (err error)
 		AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaign, error)
 		AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
+
+		CheckDiscounts() error
+		GetStationDiscount(id StationID) (*StationDiscount, error)
 	}
 
 	// Repo is a DAL interface.
@@ -161,6 +164,8 @@ type (
 		DelAdvertisingCampaign(id int64) error
 		AdvertisingCampaignByID(id int64) (*AdvertisingCampaign, error)
 		AdvertisingCampaign(startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
+
+		GetCurrentAdvertisingCampaigns() ([]AdvertisingCampaign, error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -196,15 +201,18 @@ type (
 )
 
 type app struct {
-	repo          Repo
-	stations      map[StationID]StationData
-	stationsMutex sync.Mutex
-	programs      map[int64]Program
-	programsMutex sync.Mutex
-	kasseSvc      KasseSvc
-	weatherSvc    WeatherSvc
-	hardware      HardwareAccessLayer
-	lastUpdate    int
+	repo                  Repo
+	stations              map[StationID]StationData
+	stationsMutex         sync.Mutex
+	programs              map[int64]Program
+	programsMutex         sync.Mutex
+	programsDiscounts     ProgramsDiscount
+	programsDiscountMutex sync.Mutex
+	kasseSvc              KasseSvc
+	weatherSvc            WeatherSvc
+	hardware              HardwareAccessLayer
+	lastUpdate            int
+	lastDiscountUpdate    int64
 }
 
 // New creates and returns new App.
@@ -227,6 +235,7 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 	appl.lastUpdate = id
 	appl.stationsMutex.Unlock()
 	go appl.runCheckStationOnline()
+	go appl.refreshDiscounts()
 	return appl
 }
 

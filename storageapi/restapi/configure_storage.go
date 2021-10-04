@@ -110,6 +110,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.GetPingNotImplemented()
 		})
 	}
+	if api.GetStationDiscountsHandler == nil {
+		api.GetStationDiscountsHandler = op.GetStationDiscountsHandlerFunc(func(params op.GetStationDiscountsParams) op.GetStationDiscountsResponder {
+			return op.GetStationDiscountsNotImplemented()
+		})
+	}
 	if api.GetUserHandler == nil {
 		api.GetUserHandler = op.GetUserHandlerFunc(func(params op.GetUserParams, principal *storageapi.Profile) op.GetUserResponder {
 			return op.GetUserNotImplemented()

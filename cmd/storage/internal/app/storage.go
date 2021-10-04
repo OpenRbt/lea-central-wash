@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"reflect"
 	"strconv"
 	"time"
 
@@ -129,6 +130,7 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) Station
 	}
 	a.stations[id] = station
 	oldStation.LastUpdate = a.lastUpdate
+	oldStation.LastDiscountUpdate = a.lastDiscountUpdate
 	return oldStation
 }
 
@@ -154,6 +156,13 @@ func (a *app) runCheckStationOnline() {
 	for {
 		time.Sleep(5 * time.Second)
 		a.checkStationOnline()
+	}
+}
+
+func (a *app) refreshDiscounts() {
+	for {
+		time.Sleep(1 * time.Minute)
+		a.CheckDiscounts()
 	}
 }
 
@@ -213,6 +222,7 @@ func (a *app) Get(id StationID) (StationData, error) {
 		return StationData{}, ErrNotFound
 	}
 	value.LastUpdate = a.lastUpdate
+	value.LastDiscountUpdate = a.lastDiscountUpdate
 	return value, nil
 }
 
@@ -599,6 +609,7 @@ func (a *app) updateConfig(note string) error {
 	a.lastUpdate = id
 	return nil
 }
+
 func (a *app) loadPrograms() error {
 	programs, err := a.repo.Programs(nil)
 	if err != nil {
@@ -636,4 +647,85 @@ func (a *app) AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaig
 }
 func (a *app) AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error) {
 	return a.repo.AdvertisingCampaign(startDate, endDate)
+}
+
+func (a *app) CheckDiscounts() (err error) {
+	campagins, err := a.repo.GetCurrentAdvertisingCampaigns()
+
+	isDiscountsChanged := false
+
+	if err != nil {
+		return err
+	}
+
+	tmpDiscounts := ProgramsDiscount{
+		DefaultDiscount: 0,
+		Discounts:       make(map[int64]int64),
+	}
+
+	for _, campagin := range campagins {
+		if campagin.DefaultDiscount > tmpDiscounts.DefaultDiscount {
+			tmpDiscounts.DefaultDiscount = campagin.DefaultDiscount
+		}
+	}
+
+	for _, campagin := range campagins {
+		for _, discount := range campagin.DiscountPrograms {
+			if val, ok := tmpDiscounts.Discounts[discount.ProgramID]; ok {
+				if val < discount.Discount {
+					tmpDiscounts.Discounts[discount.ProgramID] = discount.Discount
+				}
+			} else {
+				if discount.Discount > tmpDiscounts.DefaultDiscount {
+					tmpDiscounts.Discounts[discount.ProgramID] = discount.Discount
+				} else {
+					tmpDiscounts.Discounts[discount.ProgramID] = tmpDiscounts.DefaultDiscount
+				}
+			}
+		}
+	}
+
+	a.programsDiscountMutex.Lock()
+	defer a.programsDiscountMutex.Unlock()
+
+	if !reflect.DeepEqual(a.programsDiscounts, tmpDiscounts) {
+		a.programsDiscounts = tmpDiscounts
+		isDiscountsChanged = true
+	}
+
+	if isDiscountsChanged {
+		a.lastDiscountUpdate++
+	}
+	return nil
+}
+
+func (a *app) GetStationDiscount(id StationID) (discount *StationDiscount, err error) {
+	stationPrograms, err := a.StationProgram(id)
+	if err != nil {
+		return nil, err
+	}
+
+	discount = &StationDiscount{
+		Discounts: []ButtonDiscount{},
+	}
+
+	a.programsDiscountMutex.Lock()
+
+	for _, program := range stationPrograms {
+		if val, ok := a.programsDiscounts.Discounts[int64(program.ProgramID)]; ok {
+			discount.Discounts = append(discount.Discounts, ButtonDiscount{
+				ButtonID: int64(program.ButtonID),
+				Discount: val,
+			})
+		} else {
+			discount.Discounts = append(discount.Discounts, ButtonDiscount{
+				ButtonID: int64(program.ButtonID),
+				Discount: a.programsDiscounts.DefaultDiscount,
+			})
+		}
+	}
+
+	defer a.programsDiscountMutex.Unlock()
+
+	return
 }

@@ -197,6 +197,9 @@ type PingOKBody struct {
 	// button ID
 	ButtonID int64 `json:"ButtonID,omitempty"`
 
+	// last discount update
+	LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
+
 	// last update
 	LastUpdate int64 `json:"lastUpdate,omitempty"`
 
@@ -215,6 +218,9 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 
 		// button ID
 		ButtonID int64 `json:"ButtonID,omitempty"`
+
+		// last discount update
+		LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
 
 		// last update
 		LastUpdate int64 `json:"lastUpdate,omitempty"`
@@ -235,6 +241,7 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 	}
 
 	o.ButtonID = props.ButtonID
+	o.LastDiscountUpdate = props.LastDiscountUpdate
 	o.LastUpdate = props.LastUpdate
 	o.OpenStation = props.OpenStation
 	o.ServiceAmount = props.ServiceAmount

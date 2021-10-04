@@ -402,3 +402,12 @@ func apiAdvertisingCampaigns(a []app.AdvertisingCampaign) model.AdvertisingCampa
 	}
 	return res
 }
+
+func apiStationDiscount(a app.StationDiscount) model.StationDiscounts {
+	res := model.StationDiscounts{}
+
+	for _, discount := range a.Discounts {
+		res = append(res, &model.ButtonDiscount{ButtonID: discount.ButtonID, Discount: discount.Discount})
+	}
+	return res
+}

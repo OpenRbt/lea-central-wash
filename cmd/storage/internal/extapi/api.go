@@ -132,6 +132,8 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.AdvertisingCampaignHandler = op.AdvertisingCampaignHandlerFunc(svc.advertisingCampaign)
 	api.AdvertisingCampaignByIDHandler = op.AdvertisingCampaignByIDHandlerFunc(svc.advertisingCampaignByID)
 
+	api.GetStationDiscountsHandler = op.GetStationDiscountsHandlerFunc(svc.getStationDiscount)
+
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port

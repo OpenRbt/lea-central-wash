@@ -861,3 +861,20 @@ func (r *repo) AdvertisingCampaign(startDate, endDate *time.Time) (a []app.Adver
 	})
 	return //nolint:nakedret
 }
+
+func (r *repo) GetCurrentAdvertisingCampaigns() (a []app.AdvertisingCampaign, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		currentTime := time.Now().UTC()
+		res := []resAdvertisingCampaign{}
+		err := tx.NamedSelectContext(ctx, &res, sqlCurrentAdvertisingCampaign, argCurrentAdvertisingCampagins{
+			CurrentDate:   currentTime.Unix(),
+			CurrentMinute: currentTime.Hour()*60 + currentTime.Minute(),
+		})
+		if err != nil {
+			return err
+		}
+		a = appAdvertisingCampaigns(res)
+		return nil
+	})
+	return //nolint:nakedret
+}

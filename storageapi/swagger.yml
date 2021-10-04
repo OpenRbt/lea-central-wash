@@ -455,13 +455,48 @@ definitions:
     type: array
     items:
       $ref: '#/definitions/AdvertisingCampaign'
-
+  
+  
+  ButtonDiscount:
+    type: object
+    properties:
+      buttonID:
+          type: integer
+      discount:
+          type: integer
+    
+  StationDiscounts:
+    type: array
+    items:
+      $ref: '#/definitions/ButtonDiscount'
+      
 consumes:
   - application/json
 produces:
   - application/json          
 
 paths:
+  /get-station-discounts:
+    post:
+      operationId: "getStationDiscounts"
+      parameters:
+        - name: args
+          in: body
+          schema:
+            type: object
+            properties:
+              hash:
+                type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref:  '#/definitions/StationDiscounts'
+        404:
+          description: Not found
+        500:
+          description: Internal error
+
   /add-advertising-campaign:
     post:
       operationId: "addAdvertisingCampaign"
@@ -1065,6 +1100,8 @@ paths:
               openStation:
                 type: boolean
               lastUpdate:
+                type: integer
+              lastDiscountUpdate:
                 type: integer
               ButtonID:
                 type: integer

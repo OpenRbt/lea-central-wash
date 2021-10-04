@@ -253,3 +253,7 @@ func (t *DB) AdvertisingCampaignByID(id int64) (*app.AdvertisingCampaign, error)
 func (t *DB) AdvertisingCampaign(startDate, endDate *time.Time) ([]app.AdvertisingCampaign, error) {
 	return nil, nil
 }
+
+func (r *DB) GetCurrentAdvertisingCampaigns() ([]app.AdvertisingCampaign, error) {
+	return nil, nil
+}

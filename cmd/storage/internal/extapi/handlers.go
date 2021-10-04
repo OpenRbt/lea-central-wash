@@ -248,10 +248,11 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 	station := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP)
 
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
-		ServiceAmount: newInt64(int64(station.ServiceMoney)),
-		OpenStation:   &station.OpenStation,
-		ButtonID:      int64(station.ButtonID),
-		LastUpdate:    int64(station.LastUpdate),
+		ServiceAmount:      newInt64(int64(station.ServiceMoney)),
+		OpenStation:        &station.OpenStation,
+		ButtonID:           int64(station.ButtonID),
+		LastUpdate:         int64(station.LastUpdate),
+		LastDiscountUpdate: int64(station.LastDiscountUpdate),
 	})
 }
 
@@ -945,5 +946,21 @@ func (svc *service) advertisingCampaignByID(params op.AdvertisingCampaignByIDPar
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewAdvertisingCampaignByIDInternalServerError()
+	}
+}
+
+func (svc *service) getStationDiscount(params op.GetStationDiscountsParams) op.GetStationDiscountsResponder {
+	stationID, err := svc.getID(string(params.Args.Hash))
+	if err != nil {
+		return op.NewGetStationDiscountsNotFound()
+	}
+
+	res, err := svc.app.GetStationDiscount(stationID)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetStationDiscountsOK().WithPayload(apiStationDiscount(*res))
+	default:
+		return op.NewGetStationDiscountsInternalServerError()
 	}
 }

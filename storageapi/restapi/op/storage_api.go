@@ -80,6 +80,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		GetPingHandler: GetPingHandlerFunc(func(params GetPingParams) GetPingResponder {
 			return GetPingNotImplemented()
 		}),
+		GetStationDiscountsHandler: GetStationDiscountsHandlerFunc(func(params GetStationDiscountsParams) GetStationDiscountsResponder {
+			return GetStationDiscountsNotImplemented()
+		}),
 		GetUserHandler: GetUserHandlerFunc(func(params GetUserParams, principal *storageapi.Profile) GetUserResponder {
 			return GetUserNotImplemented()
 		}),
@@ -268,6 +271,8 @@ type StorageAPI struct {
 	EditAdvertisingCampaignHandler EditAdvertisingCampaignHandler
 	// GetPingHandler sets the operation handler for the get ping operation
 	GetPingHandler GetPingHandler
+	// GetStationDiscountsHandler sets the operation handler for the get station discounts operation
+	GetStationDiscountsHandler GetStationDiscountsHandler
 	// GetUserHandler sets the operation handler for the get user operation
 	GetUserHandler GetUserHandler
 	// GetUsersHandler sets the operation handler for the get users operation
@@ -460,6 +465,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.GetPingHandler == nil {
 		unregistered = append(unregistered, "GetPingHandler")
+	}
+	if o.GetStationDiscountsHandler == nil {
+		unregistered = append(unregistered, "GetStationDiscountsHandler")
 	}
 	if o.GetUserHandler == nil {
 		unregistered = append(unregistered, "GetUserHandler")
@@ -722,6 +730,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/ping"] = NewGetPing(o.context, o.GetPingHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-station-discounts"] = NewGetStationDiscounts(o.context, o.GetStationDiscountsHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

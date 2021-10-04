@@ -379,6 +379,39 @@ func init() {
         }
       }
     },
+    "/get-station-discounts": {
+      "post": {
+        "operationId": "getStationDiscounts",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationDiscounts"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/info": {
       "get": {
         "operationId": "info",
@@ -653,6 +686,9 @@ func init() {
               ],
               "properties": {
                 "ButtonID": {
+                  "type": "integer"
+                },
+                "lastDiscountUpdate": {
                   "type": "integer"
                 },
                 "lastUpdate": {
@@ -2033,6 +2069,17 @@ func init() {
         "$ref": "#/definitions/AdvertisingCampaign"
       }
     },
+    "ButtonDiscount": {
+      "type": "object",
+      "properties": {
+        "buttonID": {
+          "type": "integer"
+        },
+        "discount": {
+          "type": "integer"
+        }
+      }
+    },
     "CardReaderConfig": {
       "type": "object",
       "required": [
@@ -2367,6 +2414,12 @@ func init() {
         "relayBoard": {
           "$ref": "#/definitions/RelayBoard"
         }
+      }
+    },
+    "StationDiscounts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ButtonDiscount"
       }
     },
     "StationPrograms": {
@@ -2948,6 +3001,39 @@ func init() {
         }
       }
     },
+    "/get-station-discounts": {
+      "post": {
+        "operationId": "getStationDiscounts",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationDiscounts"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/info": {
       "get": {
         "operationId": "info",
@@ -3222,6 +3308,9 @@ func init() {
               ],
               "properties": {
                 "ButtonID": {
+                  "type": "integer"
+                },
+                "lastDiscountUpdate": {
                   "type": "integer"
                 },
                 "lastUpdate": {
@@ -4586,6 +4675,17 @@ func init() {
         "$ref": "#/definitions/AdvertisingCampaign"
       }
     },
+    "ButtonDiscount": {
+      "type": "object",
+      "properties": {
+        "buttonID": {
+          "type": "integer"
+        },
+        "discount": {
+          "type": "integer"
+        }
+      }
+    },
     "ButtonsItems0": {
       "type": "object",
       "properties": {
@@ -4933,6 +5033,12 @@ func init() {
         "relayBoard": {
           "$ref": "#/definitions/RelayBoard"
         }
+      }
+    },
+    "StationDiscounts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ButtonDiscount"
       }
     },
     "StationPrograms": {

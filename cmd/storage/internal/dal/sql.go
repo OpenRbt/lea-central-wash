@@ -509,6 +509,17 @@ SELECT
 FROM advertising_campaign
 WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:end_date >= start_date or CAST(:start_date AS TIMESTAMP) is null)
 `
+	sqlCurrentAdvertisingCampaign = `
+	SELECT id,
+       default_discount,
+       discount_programs,
+		FROM public.advertising_campaign
+		WHERE enabled and 
+		weekday LIKE '%'||to_char(CAST(:current_date AS TIMESTAMP) + (timezone || ' minutes')::interval, 'day')||'%' and
+		((start_minute <= (:current_minute + timezone) % 1440 and end_minute >= (:current_minute + timezone) % 1440) OR 
+			(start_minute >= (:current_minute + timezone) % 1440 and end_minute <= (:current_minute + timezone))) and
+		start_date <= CAST(:current_date AS TIMESTAMP)' and end_date >= CAST(:current_date AS TIMESTAMP)'
+`
 )
 
 type (
@@ -855,5 +866,10 @@ type (
 	argAdvertisingCampaignGet struct {
 		StartDate *time.Time
 		EndDate   *time.Time
+	}
+
+	argCurrentAdvertisingCampagins struct {
+		CurrentDate   int64
+		CurrentMinute int
 	}
 )

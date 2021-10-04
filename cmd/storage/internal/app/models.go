@@ -35,17 +35,18 @@ type UpdatePasswordData struct {
 
 // StationData represents current status of a station
 type StationData struct {
-	ID             StationID
-	Name           string
-	ServiceMoney   int
-	LastPing       time.Time
-	RunProgram     time.Time
-	OpenStation    bool
-	CurrentBalance int
-	CurrentProgram int
-	ButtonID       int
-	LastUpdate     int
-	IP             string
+	ID                 StationID
+	Name               string
+	ServiceMoney       int
+	LastPing           time.Time
+	RunProgram         time.Time
+	OpenStation        bool
+	CurrentBalance     int
+	CurrentProgram     int
+	ButtonID           int
+	LastUpdate         int
+	LastDiscountUpdate int64
+	IP                 string
 }
 
 // MoneyReport is just to represent money in a station. All known kinds of money
@@ -137,4 +138,18 @@ type AdvertisingCampaign struct {
 	Weekday          []string
 	Enabled          bool
 	Name             string
+}
+
+type ProgramsDiscount struct {
+	DefaultDiscount int64
+	Discounts       map[int64]int64
+}
+
+type ButtonDiscount struct {
+	ButtonID int64
+	Discount int64
+}
+
+type StationDiscount struct {
+	Discounts []ButtonDiscount
 }
