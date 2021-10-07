@@ -66,7 +66,6 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("listing files...")
 	for _, f := range files {
 		if strings.HasPrefix(f.Name(), "ttyUSB") {
 			_, err = h.findPort(f.Name())
