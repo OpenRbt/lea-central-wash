@@ -867,7 +867,7 @@ func (r *repo) GetCurrentAdvertisingCampaigns() (a []app.AdvertisingCampaign, er
 		currentTime := time.Now().UTC()
 		res := []resAdvertisingCampaign{}
 		err := tx.NamedSelectContext(ctx, &res, sqlCurrentAdvertisingCampaign, argCurrentAdvertisingCampagins{
-			CurrentDate:   currentTime.Unix(),
+			CurrentDate:   &currentTime,
 			CurrentMinute: currentTime.Hour()*60 + currentTime.Minute(),
 		})
 		if err != nil {

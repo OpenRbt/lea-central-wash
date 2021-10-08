@@ -161,8 +161,11 @@ func (a *app) runCheckStationOnline() {
 
 func (a *app) refreshDiscounts() {
 	for {
+		err := a.CheckDiscounts()
+		if err != nil {
+			log.PrintErr(err)
+		}
 		time.Sleep(1 * time.Minute)
-		a.CheckDiscounts()
 	}
 }
 
@@ -652,8 +655,6 @@ func (a *app) AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]
 func (a *app) CheckDiscounts() (err error) {
 	campagins, err := a.repo.GetCurrentAdvertisingCampaigns()
 
-	isDiscountsChanged := false
-
 	if err != nil {
 		return err
 	}
@@ -690,12 +691,9 @@ func (a *app) CheckDiscounts() (err error) {
 
 	if !reflect.DeepEqual(a.programsDiscounts, tmpDiscounts) {
 		a.programsDiscounts = tmpDiscounts
-		isDiscountsChanged = true
-	}
-
-	if isDiscountsChanged {
 		a.lastDiscountUpdate++
 	}
+
 	return nil
 }
 

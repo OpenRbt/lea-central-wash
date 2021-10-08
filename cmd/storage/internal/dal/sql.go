@@ -511,15 +511,33 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 `
 	sqlCurrentAdvertisingCampaign = `
 	SELECT id,
-       default_discount,
-       discount_programs,
-		FROM public.advertising_campaign
-		WHERE enabled and 
-		weekday LIKE '%'||to_char(CAST(:current_date AS TIMESTAMP) + (timezone || ' minutes')::interval, 'day')||'%' and
-		((start_minute <= (:current_minute + timezone) % 1440 and end_minute >= (:current_minute + timezone) % 1440) OR 
-			(start_minute >= (:current_minute + timezone) % 1440 and end_minute <= (:current_minute + timezone))) and
-		start_date <= CAST(:current_date AS TIMESTAMP)' and end_date >= CAST(:current_date AS TIMESTAMP)'
-`
+		default_discount,
+		discount_programs
+	FROM advertising_campaign
+	WHERE enabled AND 
+	(
+		(
+			(start_minute <= (:current_minute + timezone) % 1440 and end_minute >= (:current_minute + timezone) % 1440)
+			AND
+			weekday LIKE('%'||TRIM(to_char(CAST(:current_date AS TIMESTAMP) + CAST(timezone || ' minutes' AS INTERVAL), 'day'))||'%')
+		) 
+		OR
+		(
+			(
+				start_minute >= end_minute AND 
+				(start_minute >= (:current_minute + timezone) % 1440 AND (:current_minute + timezone) <= 1440) OR
+				(end_minute <= (:current_minute + timezone) % 1440 AND (:current_minute + timezone) % 1440 >= 0)
+			)
+			AND
+			(
+				weekday LIKE('%'||TRIM(to_char(CAST(:current_date AS TIMESTAMP) + CAST(timezone || ' minutes' AS INTERVAL), 'day'))||'%')
+				OR					
+				weekday LIKE('%'||TRIM(to_char(CAST(:current_date AS TIMESTAMP) + CAST(timezone || ' minutes' AS INTERVAL) - CAST('1 day' AS INTERVAL), 'day'))||'%')
+			)
+		)
+	) AND
+	start_date <= CAST(:current_date AS TIMESTAMP) and end_date >= CAST(:current_date AS TIMESTAMP)
+	`
 )
 
 type (
@@ -869,7 +887,7 @@ type (
 	}
 
 	argCurrentAdvertisingCampagins struct {
-		CurrentDate   int64
+		CurrentDate   *time.Time
 		CurrentMinute int
 	}
 )
