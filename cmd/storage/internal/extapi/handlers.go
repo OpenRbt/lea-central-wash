@@ -949,6 +949,20 @@ func (svc *service) advertisingCampaignByID(params op.AdvertisingCampaignByIDPar
 	}
 }
 
+func (svc *service) delAdvertistingCampagin(params op.DelAdvertisingCampaignParams, auth *app.Auth) op.DelAdvertisingCampaignResponder {
+	err := svc.app.DelAdvertisingCampaign(auth, *params.Args.ID)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewDelAdvertisingCampaignNoContent()
+	case app.ErrAccessDenied:
+		return op.NewDelAdvertisingCampaignForbidden()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewDelAdvertisingCampaignInternalServerError()
+	}
+}
+
 func (svc *service) getStationDiscount(params op.GetStationDiscountsParams) op.GetStationDiscountsResponder {
 	stationID, err := svc.getID(string(params.Args.Hash))
 	if err != nil {

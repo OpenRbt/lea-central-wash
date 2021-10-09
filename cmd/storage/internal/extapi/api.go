@@ -131,6 +131,7 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.EditAdvertisingCampaignHandler = op.EditAdvertisingCampaignHandlerFunc(svc.editAdvertisingCampaign)
 	api.AdvertisingCampaignHandler = op.AdvertisingCampaignHandlerFunc(svc.advertisingCampaign)
 	api.AdvertisingCampaignByIDHandler = op.AdvertisingCampaignByIDHandlerFunc(svc.advertisingCampaignByID)
+	api.DelAdvertisingCampaignHandler = op.DelAdvertisingCampaignHandlerFunc(svc.delAdvertistingCampagin)
 
 	api.GetStationDiscountsHandler = op.GetStationDiscountsHandlerFunc(svc.getStationDiscount)
 
