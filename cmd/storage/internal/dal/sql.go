@@ -525,8 +525,10 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 		(
 			(
 				start_minute >= end_minute AND 
-				(start_minute >= (:current_minute + timezone) % 1440 AND (:current_minute + timezone) <= 1440) OR
-				(end_minute <= (:current_minute + timezone) % 1440 AND (:current_minute + timezone) % 1440 >= 0)
+				(
+					(start_minute <= (:current_minute + timezone) % 1440 AND (:current_minute + timezone) % 1440 <= 1440) OR
+					(end_minute >= (:current_minute + timezone) % 1440 AND (:current_minute + timezone) % 1440 >= 0)
+				)
 			)
 			AND
 			(

@@ -160,12 +160,11 @@ func (a *app) runCheckStationOnline() {
 }
 
 func (a *app) refreshDiscounts() {
-	for {
+	for range time.Tick(time.Minute) {
 		err := a.CheckDiscounts()
 		if err != nil {
 			log.PrintErr(err)
 		}
-		time.Sleep(1 * time.Minute)
 	}
 }
 
@@ -691,6 +690,7 @@ func (a *app) CheckDiscounts() (err error) {
 
 	if !reflect.DeepEqual(a.programsDiscounts, tmpDiscounts) {
 		a.programsDiscounts = tmpDiscounts
+		log.Info("Discounts updated", "Default discount", a.programsDiscounts.DefaultDiscount)
 		a.lastDiscountUpdate++
 	}
 
