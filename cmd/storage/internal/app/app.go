@@ -8,6 +8,11 @@ import (
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
 
+//go:generate mockgen -destination=../mocks/mock_app.go -package=mocks github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app App
+//go:generate mockgen -destination=../mocks/mock_repo.go -package=mocks github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app Repo
+//go:generate mockgen -destination=../mocks/mock_kasse.go -package=mocks github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app KasseSvc
+//go:generate mockgen -destination=../mocks/mock_weather.go -package=mocks github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app WeatherSvc
+//go:generate mockgen -destination=../mocks/mock_hal.go -package=mocks github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app HardwareAccessLayer
 const durationStationOffline = time.Second * 10
 
 // For testing purposes
