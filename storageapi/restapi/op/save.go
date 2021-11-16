@@ -6,9 +6,7 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -76,30 +74,6 @@ type SaveBody struct {
 	// key pair
 	// Required: true
 	KeyPair *model.KeyPair `json:"keyPair"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *SaveBody) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// hash
-		// Required: true
-		Hash *model.Hash `json:"hash"`
-
-		// key pair
-		// Required: true
-		KeyPair *model.KeyPair `json:"keyPair"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	o.Hash = props.Hash
-	o.KeyPair = props.KeyPair
-	return nil
 }
 
 // Validate validates this save body

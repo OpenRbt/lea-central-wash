@@ -6,9 +6,7 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -81,36 +79,6 @@ type LoadFromStationBody struct {
 	// station ID
 	// Required: true
 	StationID *int64 `json:"stationID"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *LoadFromStationBody) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// hash
-		// Required: true
-		Hash *model.Hash `json:"hash"`
-
-		// key
-		// Required: true
-		// Min Length: 1
-		Key *string `json:"key"`
-
-		// station ID
-		// Required: true
-		StationID *int64 `json:"stationID"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	o.Hash = props.Hash
-	o.Key = props.Key
-	o.StationID = props.StationID
-	return nil
 }
 
 // Validate validates this load from station body

@@ -6,9 +6,7 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -94,35 +92,6 @@ type UpdateUserPasswordBody struct {
 	// old password
 	// Required: true
 	OldPassword *model.Password `json:"oldPassword"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *UpdateUserPasswordBody) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// login
-		// Required: true
-		Login *model.Login `json:"login"`
-
-		// new password
-		// Required: true
-		NewPassword *model.Password `json:"newPassword"`
-
-		// old password
-		// Required: true
-		OldPassword *model.Password `json:"oldPassword"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	o.Login = props.Login
-	o.NewPassword = props.NewPassword
-	o.OldPassword = props.OldPassword
-	return nil
 }
 
 // Validate validates this update user password body
@@ -303,25 +272,6 @@ type UpdateUserPasswordCreatedBody struct {
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *UpdateUserPasswordCreatedBody) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// id
-		// Required: true
-		ID *int64 `json:"id"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	o.ID = props.ID
-	return nil
 }
 
 // Validate validates this update user password created body

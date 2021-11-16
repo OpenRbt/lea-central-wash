@@ -6,7 +6,6 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"strconv"
@@ -56,66 +55,6 @@ type AdvertisingCampaign struct {
 
 	// weekday
 	Weekday []string `json:"weekday"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (m *AdvertisingCampaign) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// default discount
-		DefaultDiscount int64 `json:"defaultDiscount,omitempty"`
-
-		// discount programs
-		DiscountPrograms []*DiscountProgram `json:"discountPrograms"`
-
-		// enabled
-		Enabled bool `json:"enabled,omitempty"`
-
-		// Unix time local
-		// Required: true
-		EndDate *int64 `json:"endDate"`
-
-		// end minute
-		EndMinute int64 `json:"endMinute,omitempty"`
-
-		// id
-		ID int64 `json:"id,omitempty"`
-
-		// name
-		Name string `json:"name,omitempty"`
-
-		// Unix time local
-		// Required: true
-		StartDate *int64 `json:"startDate"`
-
-		// start minute
-		StartMinute int64 `json:"startMinute,omitempty"`
-
-		// minute
-		Timezone int64 `json:"timezone,omitempty"`
-
-		// weekday
-		Weekday []string `json:"weekday"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	m.DefaultDiscount = props.DefaultDiscount
-	m.DiscountPrograms = props.DiscountPrograms
-	m.Enabled = props.Enabled
-	m.EndDate = props.EndDate
-	m.EndMinute = props.EndMinute
-	m.ID = props.ID
-	m.Name = props.Name
-	m.StartDate = props.StartDate
-	m.StartMinute = props.StartMinute
-	m.Timezone = props.Timezone
-	m.Weekday = props.Weekday
-	return nil
 }
 
 // Validate validates this advertising campaign

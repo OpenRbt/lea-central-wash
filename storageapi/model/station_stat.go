@@ -6,9 +6,7 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -32,36 +30,6 @@ type StationStat struct {
 
 	// station ID
 	StationID int64 `json:"stationID,omitempty"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (m *StationStat) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// program stats
-		ProgramStats []*ProgramStat `json:"programStats"`
-
-		// pump time on
-		PumpTimeOn int64 `json:"pumpTimeOn,omitempty"`
-
-		// relay stats
-		RelayStats []*RelayStat `json:"relayStats"`
-
-		// station ID
-		StationID int64 `json:"stationID,omitempty"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	m.ProgramStats = props.ProgramStats
-	m.PumpTimeOn = props.PumpTimeOn
-	m.RelayStats = props.RelayStats
-	m.StationID = props.StationID
-	return nil
 }
 
 // Validate validates this station stat

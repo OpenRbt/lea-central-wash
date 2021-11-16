@@ -10,26 +10,15 @@ import (
 func TestAddAdvertisingCampaign(tt *testing.T) {
 	t := check.T(tt)
 	t.Parallel()
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
 
-	//mockRepo := mocks.NewMockRepo(ctrl)
-	//mockKasse := mocks.NewMockKasseSvc(ctrl)
-	//mockWeather := mocks.NewMockWeatherSvc(ctrl)
-	//mockHal := mocks.NewMockHardwareAccessLayer(ctrl)
+	a, finish, mocks := testNew(t)
+	defer finish()
 
-	//a := app{
-	//	repo:       mockRepo,
-	//	kasseSvc:   mockKasse,
-	//	weatherSvc: mockWeather,
-	//	hardware:   mockHal,
-	//}
+	mocks.mockRepo.EXPECT().AddAdvertisingCampaign(gomock.Any()).Return(nil)
 
-	//mockRepo.EXPECT().AddAdvertisingCampaign(gomock.Any()).Return(nil)
-	//res, err := a.AddAdvertisingCampaign(nil, AdvertisingCampaign{})
+	err := a.AddAdvertisingCampaign(nil, AdvertisingCampaign{})
 
-	//t.Nil(err)
-	//t.DeepEqual(testAdvertistgCampagin1, res)
+	t.Nil(err)
 }
 func TestEditAdvertisingCampaign(tt *testing.T) {
 	t := check.T(tt)

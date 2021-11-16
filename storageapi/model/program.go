@@ -6,9 +6,7 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -54,62 +52,6 @@ type Program struct {
 
 	// relays
 	Relays []*RelayConfig `json:"relays"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (m *Program) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// id
-		// Required: true
-		// Minimum: 1
-		ID *int64 `json:"id"`
-
-		// is finishing program
-		IsFinishingProgram bool `json:"isFinishingProgram,omitempty"`
-
-		// motor speed percent
-		// Maximum: 100
-		// Minimum: 0
-		MotorSpeedPercent *int64 `json:"motorSpeedPercent,omitempty"`
-
-		// name
-		Name string `json:"name,omitempty"`
-
-		// preflight enabled
-		PreflightEnabled bool `json:"preflightEnabled,omitempty"`
-
-		// preflight motor speed percent
-		// Maximum: 100
-		// Minimum: 0
-		PreflightMotorSpeedPercent *int64 `json:"preflightMotorSpeedPercent,omitempty"`
-
-		// preflight relays
-		PreflightRelays []*RelayConfig `json:"preflightRelays"`
-
-		// price
-		Price int64 `json:"price,omitempty"`
-
-		// relays
-		Relays []*RelayConfig `json:"relays"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	m.ID = props.ID
-	m.IsFinishingProgram = props.IsFinishingProgram
-	m.MotorSpeedPercent = props.MotorSpeedPercent
-	m.Name = props.Name
-	m.PreflightEnabled = props.PreflightEnabled
-	m.PreflightMotorSpeedPercent = props.PreflightMotorSpeedPercent
-	m.PreflightRelays = props.PreflightRelays
-	m.Price = props.Price
-	m.Relays = props.Relays
-	return nil
 }
 
 // Validate validates this program

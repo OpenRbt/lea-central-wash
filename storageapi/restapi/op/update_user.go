@@ -6,9 +6,7 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -104,49 +102,6 @@ type UpdateUserBody struct {
 
 	// middle name
 	MiddleName *model.MiddleName `json:"middleName,omitempty"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *UpdateUserBody) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// first name
-		FirstName *model.FirstName `json:"firstName,omitempty"`
-
-		// is admin
-		IsAdmin *model.IsAdmin `json:"isAdmin,omitempty"`
-
-		// is engineer
-		IsEngineer *model.IsEngineer `json:"isEngineer,omitempty"`
-
-		// is operator
-		IsOperator *model.IsOperator `json:"isOperator,omitempty"`
-
-		// last name
-		LastName *model.LastName `json:"lastName,omitempty"`
-
-		// login
-		// Required: true
-		Login *model.Login `json:"login"`
-
-		// middle name
-		MiddleName *model.MiddleName `json:"middleName,omitempty"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	o.FirstName = props.FirstName
-	o.IsAdmin = props.IsAdmin
-	o.IsEngineer = props.IsEngineer
-	o.IsOperator = props.IsOperator
-	o.LastName = props.LastName
-	o.Login = props.Login
-	o.MiddleName = props.MiddleName
-	return nil
 }
 
 // Validate validates this update user body
@@ -410,25 +365,6 @@ type UpdateUserCreatedBody struct {
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *UpdateUserCreatedBody) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// id
-		// Required: true
-		ID *int64 `json:"id"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	o.ID = props.ID
-	return nil
 }
 
 // Validate validates this update user created body
