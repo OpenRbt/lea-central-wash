@@ -107,20 +107,6 @@ func (mr *MockAppMockRecorder) CardReaderConfig(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CardReaderConfig", reflect.TypeOf((*MockApp)(nil).CardReaderConfig), arg0)
 }
 
-// CheckDiscounts mocks base method.
-func (m *MockApp) CheckDiscounts() error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CheckDiscounts")
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// CheckDiscounts indicates an expected call of CheckDiscounts.
-func (mr *MockAppMockRecorder) CheckDiscounts() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckDiscounts", reflect.TypeOf((*MockApp)(nil).CheckDiscounts))
-}
-
 // CollectionReports mocks base method.
 func (m *MockApp) CollectionReports(id StationID, startDate, endDate *time.Time) ([]CollectionReportWithUser, error) {
 	m.ctrl.T.Helper()
@@ -1001,18 +987,18 @@ func (mr *MockRepoMockRecorder) EditAdvertisingCampaign(arg0 interface{}) *gomoc
 }
 
 // GetCurrentAdvertisingCampaigns mocks base method.
-func (m *MockRepo) GetCurrentAdvertisingCampaigns() ([]AdvertisingCampaign, error) {
+func (m *MockRepo) GetCurrentAdvertisingCampaigns(arg0 time.Time) ([]AdvertisingCampaign, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetCurrentAdvertisingCampaigns")
+	ret := m.ctrl.Call(m, "GetCurrentAdvertisingCampaigns", arg0)
 	ret0, _ := ret[0].([]AdvertisingCampaign)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetCurrentAdvertisingCampaigns indicates an expected call of GetCurrentAdvertisingCampaigns.
-func (mr *MockRepoMockRecorder) GetCurrentAdvertisingCampaigns() *gomock.Call {
+func (mr *MockRepoMockRecorder) GetCurrentAdvertisingCampaigns(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCurrentAdvertisingCampaigns", reflect.TypeOf((*MockRepo)(nil).GetCurrentAdvertisingCampaigns))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCurrentAdvertisingCampaigns", reflect.TypeOf((*MockRepo)(nil).GetCurrentAdvertisingCampaigns), arg0)
 }
 
 // Info mocks base method.

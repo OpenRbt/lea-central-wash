@@ -104,7 +104,6 @@ type (
 		AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaign, error)
 		AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
 
-		CheckDiscounts() error
 		GetStationDiscount(id StationID) (*StationDiscount, error)
 	}
 
@@ -165,7 +164,7 @@ type (
 		AdvertisingCampaignByID(id int64) (*AdvertisingCampaign, error)
 		AdvertisingCampaign(startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
 
-		GetCurrentAdvertisingCampaigns() ([]AdvertisingCampaign, error)
+		GetCurrentAdvertisingCampaigns(time.Time) ([]AdvertisingCampaign, error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {

@@ -254,6 +254,6 @@ func (t *DB) AdvertisingCampaign(startDate, endDate *time.Time) ([]app.Advertisi
 	return nil, nil
 }
 
-func (r *DB) GetCurrentAdvertisingCampaigns() ([]app.AdvertisingCampaign, error) {
+func (r *DB) GetCurrentAdvertisingCampaigns(time.Time) ([]app.AdvertisingCampaign, error) {
 	return nil, nil
 }

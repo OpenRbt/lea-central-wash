@@ -161,7 +161,7 @@ func (a *app) runCheckStationOnline() {
 
 func (a *app) refreshDiscounts() {
 	for range time.Tick(time.Minute) {
-		err := a.CheckDiscounts()
+		err := a.checkDiscounts(time.Now().UTC())
 		if err != nil {
 			log.PrintErr(err)
 		}
@@ -651,8 +651,22 @@ func (a *app) AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]
 	return a.repo.AdvertisingCampaign(startDate, endDate)
 }
 
-func (a *app) CheckDiscounts() (err error) {
-	campagins, err := a.repo.GetCurrentAdvertisingCampaigns()
+func (a *app) currentAdvertisingCampaigns(curTime time.Time) ([]AdvertisingCampaign, error) {
+	campagins, err := a.repo.GetCurrentAdvertisingCampaigns(curTime)
+	if err != nil {
+		return nil, err
+	}
+	validCampagins := []AdvertisingCampaign{}
+	for i := range campagins {
+		if isValidPromotion(curTime, campagins[i]) {
+			validCampagins = append(validCampagins, campagins[i])
+		}
+	}
+	return validCampagins, nil
+}
+
+func (a *app) checkDiscounts(curTime time.Time) (err error) {
+	campagins, err := a.currentAdvertisingCampaigns(curTime)
 
 	if err != nil {
 		return err
@@ -691,7 +705,7 @@ func (a *app) CheckDiscounts() (err error) {
 	if !reflect.DeepEqual(a.programsDiscounts, tmpDiscounts) {
 		a.programsDiscounts = tmpDiscounts
 		log.Info("Discounts updated", "Default discount", a.programsDiscounts.DefaultDiscount)
-		a.lastDiscountUpdate++
+		a.lastDiscountUpdate = curTime.Unix()
 	}
 
 	return nil
@@ -726,4 +740,52 @@ func (a *app) GetStationDiscount(id StationID) (discount *StationDiscount, err e
 	defer a.programsDiscountMutex.Unlock()
 
 	return
+}
+
+func isValidPromotion(t time.Time, a AdvertisingCampaign) bool {
+	timeLocal := t.Add(time.Duration(a.Timezone) * time.Minute)
+	minute := int64(timeLocal.Hour()*60 + timeLocal.Minute())
+	log.Info("isValidPromotion", "timeLocal", timeLocal, "minute", minute, "StartMinute", a.StartMinute, "EndMinute", a.EndMinute)
+	if (a.StartMinute < a.EndMinute) && ((a.StartMinute > minute) || (minute >= a.EndMinute)) {
+		return false
+	}
+	if (a.StartMinute > a.EndMinute) && ((a.EndMinute <= minute) && (minute < a.StartMinute)) {
+		return false
+	}
+	dayOfWeek := timeLocal.Weekday()
+	if (a.StartMinute > a.EndMinute) && (minute < a.StartMinute) {
+		dayOfWeek = timeLocal.Add(-24 * time.Hour).Weekday()
+	}
+
+	return isValidDayOfWeek(int(dayOfWeek), a.Weekday)
+}
+
+func isValidDayOfWeek(dayOfWeek int, weekDay []string) bool {
+	if len(weekDay) == 0 {
+		return true
+	}
+	dayName := ""
+
+	switch dayOfWeek {
+	case 0:
+		dayName = "sunday"
+	case 1:
+		dayName = "monday"
+	case 2:
+		dayName = "tuesday"
+	case 3:
+		dayName = "wednesday"
+	case 4:
+		dayName = "thursday"
+	case 5:
+		dayName = "friday"
+	case 6:
+		dayName = "saturday"
+	}
+	for _, v := range weekDay {
+		if v == dayName {
+			return true
+		}
+	}
+	return false
 }
