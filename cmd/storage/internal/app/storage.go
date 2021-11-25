@@ -679,24 +679,28 @@ func (a *app) checkDiscounts(curTime time.Time) (err error) {
 
 	for _, campagin := range campagins {
 		if campagin.DefaultDiscount > tmpDiscounts.DefaultDiscount {
-			tmpDiscounts.DefaultDiscount = campagin.DefaultDiscount
-		}
-	}
-
-	for _, campagin := range campagins {
-		for _, discount := range campagin.DiscountPrograms {
-			if val, ok := tmpDiscounts.Discounts[discount.ProgramID]; ok {
-				if val < discount.Discount {
-					tmpDiscounts.Discounts[discount.ProgramID] = discount.Discount
-				}
-			} else {
-				if discount.Discount > tmpDiscounts.DefaultDiscount {
-					tmpDiscounts.Discounts[discount.ProgramID] = discount.Discount
-				} else {
-					tmpDiscounts.Discounts[discount.ProgramID] = tmpDiscounts.DefaultDiscount
+			tmpPrograms := map[int64]int64{}
+			for i, v := range tmpDiscounts.Discounts {
+				if v > campagin.DefaultDiscount {
+					tmpPrograms[i] = v
 				}
 			}
+			tmpDiscounts.Discounts = tmpPrograms
 		}
+		for i, v := range tmpDiscounts.Discounts {
+			if v < campagin.DefaultDiscount {
+				tmpDiscounts.Discounts[i] = campagin.DefaultDiscount
+			}
+		}
+
+		for _, discount := range campagin.DiscountPrograms {
+			if val, ok := tmpDiscounts.Discounts[discount.ProgramID]; ok {
+				tmpDiscounts.Discounts[discount.ProgramID] = max(val, discount.Discount, tmpDiscounts.DefaultDiscount)
+			} else {
+				tmpDiscounts.Discounts[discount.ProgramID] = max(discount.Discount, tmpDiscounts.DefaultDiscount)
+			}
+		}
+		tmpDiscounts.DefaultDiscount = max(campagin.DefaultDiscount, tmpDiscounts.DefaultDiscount)
 	}
 
 	a.programsDiscountMutex.Lock()
@@ -711,6 +715,18 @@ func (a *app) checkDiscounts(curTime time.Time) (err error) {
 	return nil
 }
 
+func max(v ...int64) int64 {
+	if len(v) == 0 {
+		return 0
+	}
+	out := v[0]
+	for i := range v {
+		if v[i] > out {
+			out = v[i]
+		}
+	}
+	return out
+}
 func (a *app) GetStationDiscount(id StationID) (discount *StationDiscount, err error) {
 	stationPrograms, err := a.StationProgram(id)
 	if err != nil {

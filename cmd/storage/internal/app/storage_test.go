@@ -152,6 +152,24 @@ func TestCheckDiscounts(tt *testing.T) {
 			4: 60,
 		},
 	})
+	mocks.mockRepo.EXPECT().GetCurrentAdvertisingCampaigns(gomock.Any()).Return([]AdvertisingCampaign{
+		testAdvertistgCampaign3,
+		testAdvertistgCampaign2,
+		testAdvertistgCampaign1,
+	}, nil)
+	err = a.checkDiscounts(mustParseTime("2021-11-01T18:23:46Z"))
+	t.Nil(err)
+	t.DeepEqual(a.lastDiscountUpdate, curTime.Unix())
+	t.DeepEqual(a.programsDiscounts, ProgramsDiscount{
+		DefaultDiscount: 50,
+		Discounts: map[int64]int64{
+			1: 10,
+			2: 15,
+			3: 40,
+			4: 60,
+		},
+	})
+
 }
 
 func TestAddAdvertisingCampaign(tt *testing.T) {
