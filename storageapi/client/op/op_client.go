@@ -52,6 +52,12 @@ type ClientService interface {
 
 	EditAdvertisingCampaign(params *EditAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EditAdvertisingCampaignNoContent, error)
 
+	GetConfigVarBool(params *GetConfigVarBoolParams, opts ...ClientOption) (*GetConfigVarBoolOK, error)
+
+	GetConfigVarInt(params *GetConfigVarIntParams, opts ...ClientOption) (*GetConfigVarIntOK, error)
+
+	GetConfigVarString(params *GetConfigVarStringParams, opts ...ClientOption) (*GetConfigVarStringOK, error)
+
 	GetPing(params *GetPingParams, opts ...ClientOption) (*GetPingOK, error)
 
 	GetStationDiscounts(params *GetStationDiscountsParams, opts ...ClientOption) (*GetStationDiscountsOK, error)
@@ -95,6 +101,12 @@ type ClientService interface {
 	SaveRelay(params *SaveRelayParams, opts ...ClientOption) (*SaveRelayNoContent, error)
 
 	SetCardReaderConfig(params *SetCardReaderConfigParams, opts ...ClientOption) (*SetCardReaderConfigNoContent, error)
+
+	SetConfigVarBool(params *SetConfigVarBoolParams, opts ...ClientOption) (*SetConfigVarBoolOK, error)
+
+	SetConfigVarInt(params *SetConfigVarIntParams, opts ...ClientOption) (*SetConfigVarIntOK, error)
+
+	SetConfigVarString(params *SetConfigVarStringParams, opts ...ClientOption) (*SetConfigVarStringOK, error)
 
 	SetKasse(params *SetKasseParams, opts ...ClientOption) (*SetKasseNoContent, error)
 
@@ -557,6 +569,120 @@ func (a *Client) EditAdvertisingCampaign(params *EditAdvertisingCampaignParams, 
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for editAdvertisingCampaign: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  GetConfigVarBool get config var bool API
+*/
+func (a *Client) GetConfigVarBool(params *GetConfigVarBoolParams, opts ...ClientOption) (*GetConfigVarBoolOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetConfigVarBoolParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getConfigVarBool",
+		Method:             "POST",
+		PathPattern:        "/get-config-var-bool",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetConfigVarBoolReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetConfigVarBoolOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getConfigVarBool: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  GetConfigVarInt get config var int API
+*/
+func (a *Client) GetConfigVarInt(params *GetConfigVarIntParams, opts ...ClientOption) (*GetConfigVarIntOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetConfigVarIntParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getConfigVarInt",
+		Method:             "POST",
+		PathPattern:        "/get-config-var-int",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetConfigVarIntReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetConfigVarIntOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getConfigVarInt: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  GetConfigVarString get config var string API
+*/
+func (a *Client) GetConfigVarString(params *GetConfigVarStringParams, opts ...ClientOption) (*GetConfigVarStringOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetConfigVarStringParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getConfigVarString",
+		Method:             "POST",
+		PathPattern:        "/get-config-var-string",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetConfigVarStringReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetConfigVarStringOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getConfigVarString: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -1397,6 +1523,120 @@ func (a *Client) SetCardReaderConfig(params *SetCardReaderConfigParams, opts ...
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for setCardReaderConfig: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  SetConfigVarBool set config var bool API
+*/
+func (a *Client) SetConfigVarBool(params *SetConfigVarBoolParams, opts ...ClientOption) (*SetConfigVarBoolOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetConfigVarBoolParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "setConfigVarBool",
+		Method:             "POST",
+		PathPattern:        "/set-config-var-bool",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetConfigVarBoolReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*SetConfigVarBoolOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setConfigVarBool: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  SetConfigVarInt set config var int API
+*/
+func (a *Client) SetConfigVarInt(params *SetConfigVarIntParams, opts ...ClientOption) (*SetConfigVarIntOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetConfigVarIntParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "setConfigVarInt",
+		Method:             "POST",
+		PathPattern:        "/set-config-var-int",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetConfigVarIntReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*SetConfigVarIntOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setConfigVarInt: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  SetConfigVarString set config var string API
+*/
+func (a *Client) SetConfigVarString(params *SetConfigVarStringParams, opts ...ClientOption) (*SetConfigVarStringOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetConfigVarStringParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "setConfigVarString",
+		Method:             "POST",
+		PathPattern:        "/set-config-var-string",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetConfigVarStringReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*SetConfigVarStringOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setConfigVarString: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

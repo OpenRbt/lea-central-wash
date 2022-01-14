@@ -165,6 +165,14 @@ type (
 		AdvertisingCampaign(startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
 
 		GetCurrentAdvertisingCampaigns(time.Time) ([]AdvertisingCampaign, error)
+
+		GetConfigInt(name string) (*ConfigInt, error)
+		GetConfigBool(name string) (*ConfigBool, error)
+		GetConfigString(name string) (*ConfigString, error)
+
+		SetConfigInt(config ConfigInt) error
+		SetConfigBool(config ConfigBool) error
+		SetConfigString(config ConfigString) error
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {

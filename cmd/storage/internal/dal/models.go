@@ -216,7 +216,6 @@ func dalAdvertisingCampaign(a app.AdvertisingCampaign) argAdvertisingCampaign {
 		ID:               a.ID,
 		StartDate:        a.StartDate,
 		StartMinute:      a.StartMinute,
-		Timezone:         a.Timezone,
 		Weekday:          strings.Join(a.Weekday, ","),
 		Enabled:          a.Enabled,
 		Name:             a.Name,
@@ -237,7 +236,6 @@ func appAdvertisingCampaign(a resAdvertisingCampaign) *app.AdvertisingCampaign {
 		ID:               a.ID,
 		StartDate:        a.StartDate,
 		StartMinute:      a.StartMinute,
-		Timezone:         a.Timezone,
 		Weekday:          strings.Split(a.Weekday, ","),
 		Enabled:          a.Enabled,
 		Name:             a.Name,
@@ -250,4 +248,31 @@ func appAdvertisingCampaigns(a []resAdvertisingCampaign) []app.AdvertisingCampai
 		res = append(res, *appAdvertisingCampaign(a[i]))
 	}
 	return res
+}
+
+func appConfigInt(a resGetConfigInt) *app.ConfigInt {
+	return &app.ConfigInt{
+		Name:        a.Name,
+		Value:       &a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
+}
+
+func appConfigBool(a resGetConfigBool) *app.ConfigBool {
+	return &app.ConfigBool{
+		Name:        a.Name,
+		Value:       &a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
+}
+
+func appConfigString(a resGetConfigString) *app.ConfigString {
+	return &app.ConfigString{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
 }

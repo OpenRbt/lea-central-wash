@@ -122,7 +122,7 @@ func (o *GetStationDiscountsInternalServerError) readResponse(response runtime.C
 	return nil
 }
 
-/*GetStationDiscountsBody get station discounts body
+/*GetStationDiscountsBody ArgGetStationDiscounts
 swagger:model GetStationDiscountsBody
 */
 type GetStationDiscountsBody struct {

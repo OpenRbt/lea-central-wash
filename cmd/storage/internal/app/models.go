@@ -134,7 +134,6 @@ type AdvertisingCampaign struct {
 	ID               int64
 	StartDate        time.Time
 	StartMinute      int64
-	Timezone         int64
 	Weekday          []string
 	Enabled          bool
 	Name             string
@@ -152,4 +151,23 @@ type ButtonDiscount struct {
 
 type StationDiscount struct {
 	Discounts []ButtonDiscount
+}
+
+type ConfigInt struct {
+	Name        string
+	Value       *int64
+	Description string
+	Note        string
+}
+type ConfigBool struct {
+	Name        string
+	Value       *bool
+	Description string
+	Note        string
+}
+type ConfigString struct {
+	Name        string
+	Value       string
+	Description string
+	Note        string
 }

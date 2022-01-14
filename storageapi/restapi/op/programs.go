@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -60,7 +62,7 @@ func (o *Programs) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// ProgramsBody programs body
+// ProgramsBody ArgPrograms
 //
 // swagger:model ProgramsBody
 type ProgramsBody struct {
@@ -68,6 +70,25 @@ type ProgramsBody struct {
 	// program ID
 	// Minimum: 1
 	ProgramID *int64 `json:"programID,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *ProgramsBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// program ID
+		// Minimum: 1
+		ProgramID *int64 `json:"programID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ProgramID = props.ProgramID
+	return nil
 }
 
 // Validate validates this programs body

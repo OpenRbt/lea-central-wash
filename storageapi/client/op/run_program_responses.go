@@ -124,7 +124,7 @@ func (o *RunProgramInternalServerError) readResponse(response runtime.ClientResp
 	return nil
 }
 
-/*RunProgramBody run program body
+/*RunProgramBody ArgRunProgram
 swagger:model RunProgramBody
 */
 type RunProgramBody struct {

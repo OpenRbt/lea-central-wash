@@ -124,7 +124,7 @@ func (o *LoadFromStationInternalServerError) readResponse(response runtime.Clien
 	return nil
 }
 
-/*LoadFromStationBody load from station body
+/*LoadFromStationBody ArgLoadFromStation
 swagger:model LoadFromStationBody
 */
 type LoadFromStationBody struct {

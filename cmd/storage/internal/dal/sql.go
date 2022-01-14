@@ -517,6 +517,53 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 	WHERE enabled AND 
 	start_date <= CAST(:current_date AS TIMESTAMP)+ CAST(timezone || ' minutes' AS INTERVAL) and end_date >= CAST(:current_date AS TIMESTAMP)+ CAST(timezone || ' minutes' AS INTERVAL)
 	`
+
+	sqlGetConfigInt = `
+	SELECT name, value, description, note
+	FROM config_vars_int
+	WHERE name = :name
+	`
+	sqlGetConfigBool = `
+	SELECT name, value, description, note
+	FROM config_vars_bool
+	WHERE name = :name
+	`
+	sqlGetConfigString = `
+	SELECT name, value, description, note
+	FROM config_vars_string
+	WHERE name = :name
+	`
+
+	sqlSetConfigInt = `
+	INSERT INTO config_vars_int (name, value, description, note)
+		VALUES (:name, :value, :description, :note)
+	ON CONFLICT (name)
+	DO
+		UPDATE 
+			SET value = COALESCE(CAST(:value as integer), value),
+			description = :description,
+			note = :note
+	`
+	sqlSetConfigBool = `
+	INSERT INTO config_vars_bool (name, value, description, note)
+		VALUES (:name, :value, :description, :note)
+	ON CONFLICT (name)
+	DO
+		UPDATE 
+			SET value = COALESCE(CAST(:value as boolean), value),
+			description = :description,
+			note = :note
+	`
+	sqlSetConfigString = `
+	INSERT INTO config_vars_string (name, value, description, note)
+		VALUES (:name, :value, :description, :note)
+	ON CONFLICT (name)
+	DO
+		UPDATE 
+			SET value = :value,
+			description = :description,
+			note = :note
+	`
 )
 
 type (
@@ -867,5 +914,45 @@ type (
 
 	argCurrentAdvertisingCampagins struct {
 		CurrentDate time.Time
+	}
+
+	argGetConfig struct {
+		Name string
+	}
+	argSetConfigInt struct {
+		Name        string
+		Value       *int64
+		Description string
+		Note        string
+	}
+	argSetConfigBool struct {
+		Name        string
+		Value       *bool
+		Description string
+		Note        string
+	}
+	argSetConfigString struct {
+		Name        string
+		Value       string
+		Description string
+		Note        string
+	}
+	resGetConfigInt struct {
+		Name        string
+		Value       int64
+		Description string
+		Note        string
+	}
+	resGetConfigBool struct {
+		Name        string
+		Value       bool
+		Description string
+		Note        string
+	}
+	resGetConfigString struct {
+		Name        string
+		Value       string
+		Description string
+		Note        string
 	}
 )

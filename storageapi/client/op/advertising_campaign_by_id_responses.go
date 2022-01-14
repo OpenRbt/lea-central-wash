@@ -180,7 +180,7 @@ func (o *AdvertisingCampaignByIDInternalServerError) readResponse(response runti
 	return nil
 }
 
-/*AdvertisingCampaignByIDBody advertising campaign by ID body
+/*AdvertisingCampaignByIDBody ArgAdvertisingCampaignByID
 swagger:model AdvertisingCampaignByIDBody
 */
 type AdvertisingCampaignByIDBody struct {

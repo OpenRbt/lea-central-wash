@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -58,7 +60,7 @@ func (o *AddServiceAmount) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// AddServiceAmountBody add service amount body
+// AddServiceAmountBody ArgAddServiceAmount
 //
 // swagger:model AddServiceAmountBody
 type AddServiceAmountBody struct {
@@ -68,6 +70,28 @@ type AddServiceAmountBody struct {
 
 	// hash
 	Hash string `json:"hash,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *AddServiceAmountBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// amount
+		Amount int64 `json:"amount,omitempty"`
+
+		// hash
+		Hash string `json:"hash,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Amount = props.Amount
+	o.Hash = props.Hash
+	return nil
 }
 
 // Validate validates this add service amount body

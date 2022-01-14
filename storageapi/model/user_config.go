@@ -6,7 +6,9 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -40,6 +42,49 @@ type UserConfig struct {
 
 	// middle name
 	MiddleName *MiddleName `json:"middleName,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *UserConfig) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// first name
+		FirstName *FirstName `json:"firstName,omitempty"`
+
+		// is admin
+		IsAdmin *IsAdmin `json:"isAdmin,omitempty"`
+
+		// is engineer
+		IsEngineer *IsEngineer `json:"isEngineer,omitempty"`
+
+		// is operator
+		IsOperator *IsOperator `json:"isOperator,omitempty"`
+
+		// last name
+		LastName *LastName `json:"lastName,omitempty"`
+
+		// login
+		// Required: true
+		Login *Login `json:"login"`
+
+		// middle name
+		MiddleName *MiddleName `json:"middleName,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.FirstName = props.FirstName
+	m.IsAdmin = props.IsAdmin
+	m.IsEngineer = props.IsEngineer
+	m.IsOperator = props.IsOperator
+	m.LastName = props.LastName
+	m.Login = props.Login
+	m.MiddleName = props.MiddleName
+	return nil
 }
 
 // Validate validates this user config

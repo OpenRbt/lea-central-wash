@@ -876,3 +876,83 @@ func (r *repo) GetCurrentAdvertisingCampaigns(curTime time.Time) (a []app.Advert
 	})
 	return //nolint:nakedret
 }
+
+func (r *repo) GetConfigInt(name string) (cfg *app.ConfigInt, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		res := resGetConfigInt{}
+		err := tx.NamedGetContext(ctx, &res, sqlGetConfigInt, argGetConfig{
+			Name: name,
+		})
+		if err != nil {
+			return err
+		}
+		cfg = appConfigInt(res)
+		return nil
+	})
+	return
+}
+func (r *repo) GetConfigBool(name string) (cfg *app.ConfigBool, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		res := resGetConfigBool{}
+		err := tx.NamedGetContext(ctx, &res, sqlGetConfigBool, argGetConfig{
+			Name: name,
+		})
+		if err != nil {
+			return err
+		}
+		cfg = appConfigBool(res)
+		return nil
+	})
+	return
+}
+func (r *repo) GetConfigString(name string) (cfg *app.ConfigString, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		res := resGetConfigString{}
+		err := tx.NamedGetContext(ctx, &res, sqlGetConfigString, argGetConfig{
+			Name: name,
+		})
+		if err != nil {
+			return err
+		}
+		cfg = appConfigString(res)
+		return nil
+	})
+	return
+}
+
+func (r *repo) SetConfigInt(config app.ConfigInt) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlSetConfigInt, argSetConfigInt{
+			Name:        config.Name,
+			Value:       config.Value,
+			Description: config.Description,
+			Note:        config.Note,
+		})
+		return err
+	})
+	return
+}
+func (r *repo) SetConfigBool(config app.ConfigBool) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlSetConfigInt, argSetConfigBool{
+			Name:        config.Name,
+			Value:       config.Value,
+			Description: config.Description,
+			Note:        config.Note,
+		})
+		return err
+	})
+	return
+}
+func (r *repo) SetConfigString(config app.ConfigString) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlSetConfigInt, argSetConfigString{
+			Name:        config.Name,
+			Value:       config.Value,
+			Description: config.Description,
+			Note:        config.Note,
+		})
+		return err
+	})
+	return
+}

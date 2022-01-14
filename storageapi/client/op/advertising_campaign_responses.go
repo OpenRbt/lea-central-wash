@@ -149,7 +149,7 @@ func (o *AdvertisingCampaignInternalServerError) readResponse(response runtime.C
 	return nil
 }
 
-/*AdvertisingCampaignBody advertising campaign body
+/*AdvertisingCampaignBody ArgAdvertisingCampagin
 swagger:model AdvertisingCampaignBody
 */
 type AdvertisingCampaignBody struct {

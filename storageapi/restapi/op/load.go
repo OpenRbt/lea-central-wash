@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -62,7 +64,7 @@ func (o *Load) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// LoadBody load body
+// LoadBody ArgLoad
 //
 // swagger:model LoadBody
 type LoadBody struct {
@@ -75,6 +77,31 @@ type LoadBody struct {
 	// Required: true
 	// Min Length: 1
 	Key *string `json:"key"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *LoadBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+
+		// key
+		// Required: true
+		// Min Length: 1
+		Key *string `json:"key"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Hash = props.Hash
+	o.Key = props.Key
+	return nil
 }
 
 // Validate validates this load body

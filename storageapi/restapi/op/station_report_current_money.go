@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -60,7 +62,7 @@ func (o *StationReportCurrentMoney) ServeHTTP(rw http.ResponseWriter, r *http.Re
 
 }
 
-// StationReportCurrentMoneyBody station report current money body
+// StationReportCurrentMoneyBody ArgStationReportCurrentMoney
 //
 // swagger:model StationReportCurrentMoneyBody
 type StationReportCurrentMoneyBody struct {
@@ -68,6 +70,25 @@ type StationReportCurrentMoneyBody struct {
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationReportCurrentMoneyBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// id
+		// Required: true
+		ID *int64 `json:"id"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ID = props.ID
+	return nil
 }
 
 // Validate validates this station report current money body

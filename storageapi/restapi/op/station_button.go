@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -61,7 +63,7 @@ func (o *StationButton) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// StationButtonBody station button body
+// StationButtonBody ArgStationButton
 //
 // swagger:model StationButtonBody
 type StationButtonBody struct {
@@ -70,6 +72,26 @@ type StationButtonBody struct {
 	// Required: true
 	// Minimum: 1
 	StationID *int64 `json:"stationID"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationButtonBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// station ID
+		// Required: true
+		// Minimum: 1
+		StationID *int64 `json:"stationID"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.StationID = props.StationID
+	return nil
 }
 
 // Validate validates this station button body
@@ -122,13 +144,31 @@ func (o *StationButtonBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// StationButtonOKBody station button o k body
+// StationButtonOKBody ResponseStationButton
 //
 // swagger:model StationButtonOKBody
 type StationButtonOKBody struct {
 
 	// buttons
 	Buttons []*StationButtonOKBodyButtonsItems0 `json:"buttons"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationButtonOKBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// buttons
+		Buttons []*StationButtonOKBodyButtonsItems0 `json:"buttons"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Buttons = props.Buttons
+	return nil
 }
 
 // Validate validates this station button o k body
@@ -229,6 +269,28 @@ type StationButtonOKBodyButtonsItems0 struct {
 
 	// program ID
 	ProgramID int64 `json:"programID,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationButtonOKBodyButtonsItems0) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// button ID
+		ButtonID int64 `json:"buttonID,omitempty"`
+
+		// program ID
+		ProgramID int64 `json:"programID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ButtonID = props.ButtonID
+	o.ProgramID = props.ProgramID
+	return nil
 }
 
 // Validate validates this station button o k body buttons items0

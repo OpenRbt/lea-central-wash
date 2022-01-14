@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -60,7 +62,7 @@ func (o *StationReportDates) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 
 }
 
-// StationReportDatesBody station report dates body
+// StationReportDatesBody ArgStationReportDates
 //
 // swagger:model StationReportDatesBody
 type StationReportDatesBody struct {
@@ -76,6 +78,35 @@ type StationReportDatesBody struct {
 	// Unix time
 	// Required: true
 	StartDate *int64 `json:"startDate"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationReportDatesBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// Unix time
+		// Required: true
+		EndDate *int64 `json:"endDate"`
+
+		// id
+		// Required: true
+		ID *int64 `json:"id"`
+
+		// Unix time
+		// Required: true
+		StartDate *int64 `json:"startDate"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.EndDate = props.EndDate
+	o.ID = props.ID
+	o.StartDate = props.StartDate
+	return nil
 }
 
 // Validate validates this station report dates body

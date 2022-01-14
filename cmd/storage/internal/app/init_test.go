@@ -11,13 +11,11 @@ var (
 	testAdvertistgCampaign1 = AdvertisingCampaign{
 		StartMinute:     21 * 60,
 		EndMinute:       23 * 60,
-		Timezone:        7 * 60,
 		DefaultDiscount: 30,
 	}
 	testAdvertistgCampaign2 = AdvertisingCampaign{
 		StartMinute:     23 * 60,
 		EndMinute:       3 * 60,
-		Timezone:        7 * 60,
 		DefaultDiscount: 50,
 		DiscountPrograms: []DiscountProgram{
 			{
@@ -41,7 +39,6 @@ var (
 	testAdvertistgCampaign3 = AdvertisingCampaign{
 		StartMinute:     60,
 		EndMinute:       60,
-		Timezone:        7 * 60,
 		DefaultDiscount: 10,
 	}
 )

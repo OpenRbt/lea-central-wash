@@ -97,7 +97,7 @@ func (o *StationByHashInternalServerError) readResponse(response runtime.ClientR
 	return nil
 }
 
-/*StationByHashBody station by hash body
+/*StationByHashBody ArgStationByHash
 swagger:model StationByHashBody
 */
 type StationByHashBody struct {

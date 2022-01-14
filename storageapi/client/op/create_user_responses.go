@@ -191,7 +191,7 @@ func (o *CreateUserInternalServerError) readResponse(response runtime.ClientResp
 	return nil
 }
 
-/*CreateUserBody create user body
+/*CreateUserBody ArgUserCreate
 swagger:model CreateUserBody
 */
 type CreateUserBody struct {
@@ -568,7 +568,7 @@ func (o *CreateUserBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*CreateUserConflictBody create user conflict body
+/*CreateUserConflictBody ResponseUserCreateConflict
 swagger:model CreateUserConflictBody
 */
 type CreateUserConflictBody struct {
@@ -665,7 +665,7 @@ func (o *CreateUserConflictBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*CreateUserCreatedBody create user created body
+/*CreateUserCreatedBody ResponseUserCreate
 swagger:model CreateUserCreatedBody
 */
 type CreateUserCreatedBody struct {

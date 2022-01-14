@@ -105,6 +105,21 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.EditAdvertisingCampaignNotImplemented()
 		})
 	}
+	if api.GetConfigVarBoolHandler == nil {
+		api.GetConfigVarBoolHandler = op.GetConfigVarBoolHandlerFunc(func(params op.GetConfigVarBoolParams) op.GetConfigVarBoolResponder {
+			return op.GetConfigVarBoolNotImplemented()
+		})
+	}
+	if api.GetConfigVarIntHandler == nil {
+		api.GetConfigVarIntHandler = op.GetConfigVarIntHandlerFunc(func(params op.GetConfigVarIntParams) op.GetConfigVarIntResponder {
+			return op.GetConfigVarIntNotImplemented()
+		})
+	}
+	if api.GetConfigVarStringHandler == nil {
+		api.GetConfigVarStringHandler = op.GetConfigVarStringHandlerFunc(func(params op.GetConfigVarStringParams) op.GetConfigVarStringResponder {
+			return op.GetConfigVarStringNotImplemented()
+		})
+	}
 	if api.GetPingHandler == nil {
 		api.GetPingHandler = op.GetPingHandlerFunc(func(params op.GetPingParams) op.GetPingResponder {
 			return op.GetPingNotImplemented()
@@ -213,6 +228,21 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.SetCardReaderConfigHandler == nil {
 		api.SetCardReaderConfigHandler = op.SetCardReaderConfigHandlerFunc(func(params op.SetCardReaderConfigParams) op.SetCardReaderConfigResponder {
 			return op.SetCardReaderConfigNotImplemented()
+		})
+	}
+	if api.SetConfigVarBoolHandler == nil {
+		api.SetConfigVarBoolHandler = op.SetConfigVarBoolHandlerFunc(func(params op.SetConfigVarBoolParams) op.SetConfigVarBoolResponder {
+			return op.SetConfigVarBoolNotImplemented()
+		})
+	}
+	if api.SetConfigVarIntHandler == nil {
+		api.SetConfigVarIntHandler = op.SetConfigVarIntHandlerFunc(func(params op.SetConfigVarIntParams) op.SetConfigVarIntResponder {
+			return op.SetConfigVarIntNotImplemented()
+		})
+	}
+	if api.SetConfigVarStringHandler == nil {
+		api.SetConfigVarStringHandler = op.SetConfigVarStringHandlerFunc(func(params op.SetConfigVarStringParams) op.SetConfigVarStringResponder {
+			return op.SetConfigVarStringNotImplemented()
 		})
 	}
 	if api.SetKasseHandler == nil {

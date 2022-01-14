@@ -6,7 +6,9 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -34,6 +36,41 @@ type StationConfig struct {
 
 	// relay board
 	RelayBoard RelayBoard `json:"relayBoard,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *StationConfig) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		Hash string `json:"hash,omitempty"`
+
+		// id
+		// Required: true
+		ID *int64 `json:"id"`
+
+		// name
+		Name string `json:"name,omitempty"`
+
+		// preflight sec
+		PreflightSec int64 `json:"preflightSec,omitempty"`
+
+		// relay board
+		RelayBoard RelayBoard `json:"relayBoard,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.Hash = props.Hash
+	m.ID = props.ID
+	m.Name = props.Name
+	m.PreflightSec = props.PreflightSec
+	m.RelayBoard = props.RelayBoard
+	return nil
 }
 
 // Validate validates this station config

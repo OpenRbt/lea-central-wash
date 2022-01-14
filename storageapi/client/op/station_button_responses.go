@@ -98,7 +98,7 @@ func (o *StationButtonInternalServerError) readResponse(response runtime.ClientR
 	return nil
 }
 
-/*StationButtonBody station button body
+/*StationButtonBody ArgStationButton
 swagger:model StationButtonBody
 */
 type StationButtonBody struct {
@@ -179,7 +179,7 @@ func (o *StationButtonBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*StationButtonOKBody station button o k body
+/*StationButtonOKBody ResponseStationButton
 swagger:model StationButtonOKBody
 */
 type StationButtonOKBody struct {

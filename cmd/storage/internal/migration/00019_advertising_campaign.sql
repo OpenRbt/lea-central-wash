@@ -11,7 +11,6 @@ CREATE TABLE advertising_campaign (
 	end_minute          INT       NOT NULL DEFAULT 0,
 	start_date          timestamp default now(),
 	start_minute        INT       NOT NULL DEFAULT 0,
-	timezone            INT       NOT NULL DEFAULT 0,
 	weekday             TEXT NOT NULL  DEFAULT '',
     enabled             BOOLEAN NOT NULL DEFAULT true,
     ctime               timestamp default now()

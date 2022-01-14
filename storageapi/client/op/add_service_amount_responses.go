@@ -110,7 +110,7 @@ func (o *AddServiceAmountInternalServerError) readResponse(response runtime.Clie
 	return nil
 }
 
-/*AddServiceAmountBody add service amount body
+/*AddServiceAmountBody ArgAddServiceAmount
 swagger:model AddServiceAmountBody
 */
 type AddServiceAmountBody struct {

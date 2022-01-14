@@ -759,7 +759,7 @@ func (a *app) GetStationDiscount(id StationID) (discount *StationDiscount, err e
 }
 
 func isValidPromotion(t time.Time, a AdvertisingCampaign) bool {
-	timeLocal := t.Add(time.Duration(a.Timezone) * time.Minute)
+	timeLocal := t.Add(time.Duration(*AppCfg.TimeZone.Value) * time.Minute)
 	minute := int64(timeLocal.Hour()*60 + timeLocal.Minute())
 	log.Info("isValidPromotion", "timeLocal", timeLocal, "minute", minute, "StartMinute", a.StartMinute, "EndMinute", a.EndMinute)
 	if (a.StartMinute < a.EndMinute) && ((a.StartMinute > minute) || (minute >= a.EndMinute)) {

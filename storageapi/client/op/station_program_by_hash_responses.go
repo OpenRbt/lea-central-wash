@@ -99,7 +99,7 @@ func (o *StationProgramByHashInternalServerError) readResponse(response runtime.
 	return nil
 }
 
-/*StationProgramByHashBody station program by hash body
+/*StationProgramByHashBody ArgStationProgramByHash
 swagger:model StationProgramByHashBody
 */
 type StationProgramByHashBody struct {

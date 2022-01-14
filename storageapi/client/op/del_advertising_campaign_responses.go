@@ -139,7 +139,7 @@ func (o *DelAdvertisingCampaignInternalServerError) readResponse(response runtim
 	return nil
 }
 
-/*DelAdvertisingCampaignBody del advertising campaign body
+/*DelAdvertisingCampaignBody ArgDelAdvertisingCampagin
 swagger:model DelAdvertisingCampaignBody
 */
 type DelAdvertisingCampaignBody struct {

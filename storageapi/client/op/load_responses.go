@@ -124,7 +124,7 @@ func (o *LoadInternalServerError) readResponse(response runtime.ClientResponse, 
 	return nil
 }
 
-/*LoadBody load body
+/*LoadBody ArgLoad
 swagger:model LoadBody
 */
 type LoadBody struct {

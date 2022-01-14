@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -73,13 +75,31 @@ func (o *StationStatCurrent) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 
 }
 
-// StationStatCurrentBody station stat current body
+// StationStatCurrentBody ArgStationStat
 //
 // swagger:model StationStatCurrentBody
 type StationStatCurrentBody struct {
 
 	// station ID
 	StationID *int64 `json:"stationID,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationStatCurrentBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// station ID
+		StationID *int64 `json:"stationID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.StationID = props.StationID
+	return nil
 }
 
 // Validate validates this station stat current body

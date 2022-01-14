@@ -72,7 +72,7 @@ func (o *PingOK) readResponse(response runtime.ClientResponse, consumer runtime.
 	return nil
 }
 
-/*PingBody ping body
+/*PingBody ArgPing
 swagger:model PingBody
 */
 type PingBody struct {
@@ -197,7 +197,7 @@ func (o *PingBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*PingOKBody ping o k body
+/*PingOKBody ResponsePing
 swagger:model PingOKBody
 */
 type PingOKBody struct {

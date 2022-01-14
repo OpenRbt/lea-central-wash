@@ -254,6 +254,25 @@ func (t *DB) AdvertisingCampaign(startDate, endDate *time.Time) ([]app.Advertisi
 	return nil, nil
 }
 
-func (r *DB) GetCurrentAdvertisingCampaigns(time.Time) ([]app.AdvertisingCampaign, error) {
+func (t *DB) GetCurrentAdvertisingCampaigns(time.Time) ([]app.AdvertisingCampaign, error) {
 	return nil, nil
+}
+func (t *DB) GetConfigInt(name string) (*app.ConfigInt, error) {
+	return nil, nil
+}
+func (t *DB) GetConfigBool(name string) (*app.ConfigBool, error) {
+	return nil, nil
+}
+func (t *DB) GetConfigString(name string) (*app.ConfigString, error) {
+	return nil, nil
+}
+
+func (t *DB) SetConfigInt(config app.ConfigInt) error {
+	return nil
+}
+func (t *DB) SetConfigBool(config app.ConfigBool) error {
+	return nil
+}
+func (t *DB) SetConfigString(config app.ConfigString) error {
+	return nil
 }

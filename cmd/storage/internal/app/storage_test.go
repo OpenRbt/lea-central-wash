@@ -11,7 +11,7 @@ import (
 func TestIsValidPromotion(tt *testing.T) {
 	t := check.T(tt)
 	t.Parallel()
-	timezone := 7 * 60
+	timezone := AppCfg.TimeZone.Value
 	testCases := []struct {
 		localTime time.Time
 		a         AdvertisingCampaign
@@ -91,8 +91,7 @@ func TestIsValidPromotion(tt *testing.T) {
 		tc := tc
 		t.Run("", func(tt *testing.T) {
 			t := check.T(tt)
-			tc.a.Timezone = int64(timezone)
-			res := isValidPromotion(tc.localTime.Add(-time.Duration(timezone)*time.Minute), tc.a)
+			res := isValidPromotion(tc.localTime.Add(-time.Duration(*timezone)*time.Minute), tc.a)
 			t.Equal(res, tc.want)
 		})
 	}

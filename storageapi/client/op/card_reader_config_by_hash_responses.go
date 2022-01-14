@@ -126,7 +126,7 @@ func (o *CardReaderConfigByHashInternalServerError) readResponse(response runtim
 	return nil
 }
 
-/*CardReaderConfigByHashBody card reader config by hash body
+/*CardReaderConfigByHashBody ArgCardReaderConfigByCash
 swagger:model CardReaderConfigByHashBody
 */
 type CardReaderConfigByHashBody struct {
