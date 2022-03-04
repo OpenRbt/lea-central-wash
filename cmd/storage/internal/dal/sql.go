@@ -441,7 +441,6 @@ order by b.button_id
 		end_minute,
 		start_date,
 		start_minute,
-		timezone,
 		weekday,
 		enabled,
 		name
@@ -452,7 +451,6 @@ order by b.button_id
 		:end_minute,
 		:start_date,
 		:start_minute,
-		:timezone,
 		:weekday,
 		:enabled,
 		:name
@@ -466,7 +464,6 @@ order by b.button_id
 		end_minute = :end_minute,
 		start_date = :start_date,
 		start_minute = :start_minute,
-		timezone = :timezone,
 		weekday = :weekday,
 		enabled = :enabled,
 		name = :name
@@ -486,7 +483,6 @@ order by b.button_id
 		end_minute,
 		start_date,
 		start_minute,
-		timezone,
 		weekday,
 		enabled,
 		name
@@ -502,7 +498,6 @@ SELECT
 	end_minute,
 	start_date,
 	start_minute,
-	timezone,
 	weekday,
 	enabled,
 	name
@@ -510,53 +505,67 @@ FROM advertising_campaign
 WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:end_date >= start_date or CAST(:start_date AS TIMESTAMP) is null)
 `
 	sqlCurrentAdvertisingCampaign = `
-	SELECT id,
-		default_discount,
-		discount_programs
+	SELECT
+	id,
+	default_discount,
+	discount_programs,
+	end_date,
+	end_minute,
+	start_date,
+	start_minute,
+	weekday,
+	enabled,
+	name
 	FROM advertising_campaign
 	WHERE enabled AND 
-	start_date <= CAST(:current_date AS TIMESTAMP)+ CAST(timezone || ' minutes' AS INTERVAL) and end_date >= CAST(:current_date AS TIMESTAMP)+ CAST(timezone || ' minutes' AS INTERVAL)
+	start_date <= :current_date and end_date >= :current_date
 	`
 
 	sqlGetConfigInt = `
 	SELECT name, value, description, note
 	FROM config_vars_int
-	WHERE name = :name
+	WHERE name = UPPER(:name)
 	`
 	sqlGetConfigBool = `
 	SELECT name, value, description, note
 	FROM config_vars_bool
-	WHERE name = :name
+	WHERE name = UPPER(:name)
 	`
 	sqlGetConfigString = `
 	SELECT name, value, description, note
 	FROM config_vars_string
-	WHERE name = :name
+	WHERE name = UPPER(:name)
 	`
 
 	sqlSetConfigInt = `
 	INSERT INTO config_vars_int (name, value, description, note)
-		VALUES (:name, :value, :description, :note)
+		VALUES (UPPER(:name), :value, :description, :note)
 	ON CONFLICT (name)
 	DO
 		UPDATE 
-			SET value = COALESCE(CAST(:value as integer), value),
+			SET value = :value,
 			description = :description,
 			note = :note
 	`
+	sqlSetConfigIntIfNotExists = `
+	INSERT INTO config_vars_int (name, value, description, note)
+		VALUES (UPPER(:name), :value, :description, :note)
+	ON CONFLICT (name)
+	DO NOTHING
+	`
 	sqlSetConfigBool = `
 	INSERT INTO config_vars_bool (name, value, description, note)
-		VALUES (:name, :value, :description, :note)
+		VALUES (UPPER(:name), :value, :description, :note)
 	ON CONFLICT (name)
 	DO
 		UPDATE 
-			SET value = COALESCE(CAST(:value as boolean), value),
+			SET value = :value,
 			description = :description,
 			note = :note
 	`
 	sqlSetConfigString = `
 	INSERT INTO config_vars_string (name, value, description, note)
-		VALUES (:name, :value, :description, :note)
+		VALUES (UPPER(:name), :value, :description, :note)
 	ON CONFLICT (name)
 	DO
 		UPDATE 
@@ -883,7 +892,6 @@ type (
 		ID               int64
 		StartDate        time.Time
 		StartMinute      int64
-		Timezone         int64
 		Weekday          string
 		Enabled          bool
 		Name             string
@@ -896,7 +904,6 @@ type (
 		ID               int64
 		StartDate        time.Time
 		StartMinute      int64
-		Timezone         int64
 		Weekday          string
 		Enabled          bool
 		Name             string
@@ -921,13 +928,13 @@ type (
 	}
 	argSetConfigInt struct {
 		Name        string
-		Value       *int64
+		Value       int64
 		Description string
 		Note        string
 	}
 	argSetConfigBool struct {
 		Name        string
-		Value       *bool
+		Value       bool
 		Description string
 		Note        string
 	}

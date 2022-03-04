@@ -464,8 +464,14 @@ definitions:
           type: boolean
         startMinute:
           type: integer
+          default: 0
+          maximum: 1440
+          minimum: 0
         endMinute:
           type: integer
+          default: 0
+          maximum: 1440
+          minimum: 0
         defaultDiscount:
           type: integer
         discountPrograms:
@@ -512,8 +518,11 @@ paths:
   /get-config-var-int:
     post:
       operationId: "getConfigVarInt"
+      security:
+        - pinCode: []
       parameters:
         - name: args
+          required: true
           in: body
           schema:
             title: "ArgGetConfigVar"
@@ -534,8 +543,11 @@ paths:
   /get-config-var-bool:
     post:
       operationId: "getConfigVarBool"
+      security:
+        - pinCode: []
       parameters:
         - name: args
+          required: true
           in: body
           schema:
             title: "ArgGetConfigVar"
@@ -556,8 +568,11 @@ paths:
   /get-config-var-string:
     post:
       operationId: "getConfigVarString"
+      security:
+        - pinCode: []
       parameters:
         - name: args
+          required: true
           in: body
           schema:
             title: "ArgGetConfigVar"
@@ -578,51 +593,53 @@ paths:
   /set-config-var-int:
     post:
       operationId: "setConfigVarInt"
+      security:
+        - pinCode: []
       parameters:
         - name: args
+          required: true
           in: body
           schema:
             $ref:  '#/definitions/ConfigVarInt'
       responses:
-          200:
+          204:
             description: OK
-          404:
-            description: Not found
           500:
             description: Internal error
 
   /set-config-var-bool:
     post:
       operationId: "setConfigVarBool"
+      security:
+        - pinCode: []
       parameters:
         - name: args
+          required: true
           in: body
           schema:
             $ref:  '#/definitions/ConfigVarBool'
       responses:
-          200:
+          204:
             description: OK
-          404:
-            description: Not found
           500:
             description: Internal error
 
   /set-config-var-string:
     post:
       operationId: "setConfigVarString"
+      security:
+        - pinCode: []
       parameters:
         - name: args
+          required: true
           in: body
           schema:
             $ref:  '#/definitions/ConfigVarString'
       responses:
-          200:
+          204:
             description: OK
-          404:
-            description: Not found
           500:
             description: Internal error
-  
 
   /get-station-discounts:
     post:
@@ -630,6 +647,7 @@ paths:
       parameters:
         - name: args
           in: body
+          required: true
           schema:
             title: "ArgGetStationDiscounts"
             type: object
@@ -653,6 +671,7 @@ paths:
         - pinCode: []
       parameters:
         - name: args
+          required: true
           in: body
           schema:
             $ref: '#/definitions/AdvertisingCampaign'
@@ -672,6 +691,7 @@ paths:
         - pinCode: []
       parameters:
         - name: args
+          required: true
           in: body
           schema:
             $ref: '#/definitions/AdvertisingCampaign'
@@ -724,6 +744,7 @@ paths:
         - pinCode: []
       parameters:
         - name: args
+          required: true
           in: body
           schema:
             title: "ArgAdvertisingCampaignByID"
@@ -754,6 +775,7 @@ paths:
         - pinCode: []
       parameters:
         - name: args
+          required: true
           in: body
           schema:
             title: "ArgDelAdvertisingCampagin"

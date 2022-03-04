@@ -355,10 +355,10 @@ func appAdvertisingCampaign(a *model.AdvertisingCampaign) app.AdvertisingCampaig
 		DefaultDiscount:  a.DefaultDiscount,
 		DiscountPrograms: appDiscountPrograms(a.DiscountPrograms),
 		EndDate:          time.Unix(*a.EndDate, 0),
-		EndMinute:        a.EndMinute,
+		EndMinute:        *a.EndMinute,
 		ID:               a.ID,
 		StartDate:        time.Unix(*a.StartDate, 0),
-		StartMinute:      a.StartMinute,
+		StartMinute:      *a.StartMinute,
 		Weekday:          a.Weekday,
 		Enabled:          a.Enabled,
 		Name:             a.Name,
@@ -383,10 +383,10 @@ func apiAdvertisingCampaign(a app.AdvertisingCampaign) *model.AdvertisingCampaig
 		DefaultDiscount:  a.DefaultDiscount,
 		DiscountPrograms: apiDiscountPrograms(a.DiscountPrograms),
 		EndDate:          &endDate,
-		EndMinute:        a.EndMinute,
+		EndMinute:        &a.EndMinute,
 		ID:               a.ID,
 		StartDate:        &startDate,
-		StartMinute:      a.StartMinute,
+		StartMinute:      &a.StartMinute,
 		Weekday:          a.Weekday,
 		Enabled:          a.Enabled,
 		Name:             a.Name,
@@ -408,4 +408,58 @@ func apiStationDiscount(a app.StationDiscount) model.StationDiscounts {
 		res = append(res, &model.ButtonDiscount{ButtonID: discount.ButtonID, Discount: discount.Discount})
 	}
 	return res
+}
+
+func appConfigInt(a *model.ConfigVarInt) app.ConfigInt {
+	return app.ConfigInt{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
+}
+
+func appConfigBool(a *model.ConfigVarBool) app.ConfigBool {
+	return app.ConfigBool{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
+}
+
+func appConfigString(a *model.ConfigVarString) app.ConfigString {
+	return app.ConfigString{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
+}
+
+func apiConfigBool(a *app.ConfigBool) *model.ConfigVarBool {
+	return &model.ConfigVarBool{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
+}
+
+func apiConfigInt(a *app.ConfigInt) *model.ConfigVarInt {
+	return &model.ConfigVarInt{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
+}
+
+func apiConfigString(a *app.ConfigString) *model.ConfigVarString {
+	return &model.ConfigVarString{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
 }

@@ -53,13 +53,17 @@ var (
 	CleanupTimeout     = intGetenv("STORAGE_API_CLEANUP_TIMEOUT", 5)
 	ReadTimeout        = intGetenv("STORAGE_API_READ_TIMEOUT", 2)
 	WriteTimeout       = intGetenv("STORAGE_API_WRITE_TIMEOUT", 2)
+	StartDelaySec      = intGetenv("STORAGE_START_DELAY", 30)
 )
 
 var initErr error
 
+var Offset int
+
 // Init must be called once before using this package.
 // It provides common initialization for both commands and tests.
 func Init() error {
+	_, Offset = time.Now().Zone()
 	time.Local = time.UTC
 	must.AbortIf = must.PanicIf
 	sqlx.NameMapper = sqlxx.ToSnake

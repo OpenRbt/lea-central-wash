@@ -19,11 +19,6 @@ import (
 // swagger:model Status
 type Status string
 
-func NewStatus(value Status) *Status {
-	v := value
-	return &v
-}
-
 const (
 
 	// StatusOffline captures enum value "offline"

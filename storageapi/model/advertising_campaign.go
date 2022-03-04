@@ -36,7 +36,9 @@ type AdvertisingCampaign struct {
 	EndDate *int64 `json:"endDate"`
 
 	// end minute
-	EndMinute int64 `json:"endMinute,omitempty"`
+	// Maximum: 1440
+	// Minimum: 0
+	EndMinute *int64 `json:"endMinute,omitempty"`
 
 	// id
 	ID int64 `json:"id,omitempty"`
@@ -49,7 +51,9 @@ type AdvertisingCampaign struct {
 	StartDate *int64 `json:"startDate"`
 
 	// start minute
-	StartMinute int64 `json:"startMinute,omitempty"`
+	// Maximum: 1440
+	// Minimum: 0
+	StartMinute *int64 `json:"startMinute,omitempty"`
 
 	// weekday
 	Weekday []string `json:"weekday"`
@@ -73,7 +77,9 @@ func (m *AdvertisingCampaign) UnmarshalJSON(data []byte) error {
 		EndDate *int64 `json:"endDate"`
 
 		// end minute
-		EndMinute int64 `json:"endMinute,omitempty"`
+		// Maximum: 1440
+		// Minimum: 0
+		EndMinute *int64 `json:"endMinute,omitempty"`
 
 		// id
 		ID int64 `json:"id,omitempty"`
@@ -86,7 +92,9 @@ func (m *AdvertisingCampaign) UnmarshalJSON(data []byte) error {
 		StartDate *int64 `json:"startDate"`
 
 		// start minute
-		StartMinute int64 `json:"startMinute,omitempty"`
+		// Maximum: 1440
+		// Minimum: 0
+		StartMinute *int64 `json:"startMinute,omitempty"`
 
 		// weekday
 		Weekday []string `json:"weekday"`
@@ -123,7 +131,15 @@ func (m *AdvertisingCampaign) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateEndMinute(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateStartDate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateStartMinute(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -170,9 +186,41 @@ func (m *AdvertisingCampaign) validateEndDate(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *AdvertisingCampaign) validateEndMinute(formats strfmt.Registry) error {
+	if swag.IsZero(m.EndMinute) { // not required
+		return nil
+	}
+
+	if err := validate.MinimumInt("endMinute", "body", *m.EndMinute, 0, false); err != nil {
+		return err
+	}
+
+	if err := validate.MaximumInt("endMinute", "body", *m.EndMinute, 1440, false); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *AdvertisingCampaign) validateStartDate(formats strfmt.Registry) error {
 
 	if err := validate.Required("startDate", "body", m.StartDate); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *AdvertisingCampaign) validateStartMinute(formats strfmt.Registry) error {
+	if swag.IsZero(m.StartMinute) { // not required
+		return nil
+	}
+
+	if err := validate.MinimumInt("startMinute", "body", *m.StartMinute, 0, false); err != nil {
+		return err
+	}
+
+	if err := validate.MaximumInt("startMinute", "body", *m.StartMinute, 1440, false); err != nil {
 		return err
 	}
 

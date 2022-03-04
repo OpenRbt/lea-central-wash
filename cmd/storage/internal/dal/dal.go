@@ -932,6 +932,20 @@ func (r *repo) SetConfigInt(config app.ConfigInt) (err error) {
 	})
 	return
 }
+
+func (r *repo) SetConfigIntIfNotExists(config app.ConfigInt) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlSetConfigIntIfNotExists, argSetConfigInt{
+			Name:        config.Name,
+			Value:       config.Value,
+			Description: config.Description,
+			Note:        config.Note,
+		})
+		return err
+	})
+	return
+}
+
 func (r *repo) SetConfigBool(config app.ConfigBool) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlSetConfigInt, argSetConfigBool{

@@ -106,17 +106,17 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 		})
 	}
 	if api.GetConfigVarBoolHandler == nil {
-		api.GetConfigVarBoolHandler = op.GetConfigVarBoolHandlerFunc(func(params op.GetConfigVarBoolParams) op.GetConfigVarBoolResponder {
+		api.GetConfigVarBoolHandler = op.GetConfigVarBoolHandlerFunc(func(params op.GetConfigVarBoolParams, principal *storageapi.Profile) op.GetConfigVarBoolResponder {
 			return op.GetConfigVarBoolNotImplemented()
 		})
 	}
 	if api.GetConfigVarIntHandler == nil {
-		api.GetConfigVarIntHandler = op.GetConfigVarIntHandlerFunc(func(params op.GetConfigVarIntParams) op.GetConfigVarIntResponder {
+		api.GetConfigVarIntHandler = op.GetConfigVarIntHandlerFunc(func(params op.GetConfigVarIntParams, principal *storageapi.Profile) op.GetConfigVarIntResponder {
 			return op.GetConfigVarIntNotImplemented()
 		})
 	}
 	if api.GetConfigVarStringHandler == nil {
-		api.GetConfigVarStringHandler = op.GetConfigVarStringHandlerFunc(func(params op.GetConfigVarStringParams) op.GetConfigVarStringResponder {
+		api.GetConfigVarStringHandler = op.GetConfigVarStringHandlerFunc(func(params op.GetConfigVarStringParams, principal *storageapi.Profile) op.GetConfigVarStringResponder {
 			return op.GetConfigVarStringNotImplemented()
 		})
 	}
@@ -231,17 +231,17 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 		})
 	}
 	if api.SetConfigVarBoolHandler == nil {
-		api.SetConfigVarBoolHandler = op.SetConfigVarBoolHandlerFunc(func(params op.SetConfigVarBoolParams) op.SetConfigVarBoolResponder {
+		api.SetConfigVarBoolHandler = op.SetConfigVarBoolHandlerFunc(func(params op.SetConfigVarBoolParams, principal *storageapi.Profile) op.SetConfigVarBoolResponder {
 			return op.SetConfigVarBoolNotImplemented()
 		})
 	}
 	if api.SetConfigVarIntHandler == nil {
-		api.SetConfigVarIntHandler = op.SetConfigVarIntHandlerFunc(func(params op.SetConfigVarIntParams) op.SetConfigVarIntResponder {
+		api.SetConfigVarIntHandler = op.SetConfigVarIntHandlerFunc(func(params op.SetConfigVarIntParams, principal *storageapi.Profile) op.SetConfigVarIntResponder {
 			return op.SetConfigVarIntNotImplemented()
 		})
 	}
 	if api.SetConfigVarStringHandler == nil {
-		api.SetConfigVarStringHandler = op.SetConfigVarStringHandlerFunc(func(params op.SetConfigVarStringParams) op.SetConfigVarStringResponder {
+		api.SetConfigVarStringHandler = op.SetConfigVarStringHandlerFunc(func(params op.SetConfigVarStringParams, principal *storageapi.Profile) op.SetConfigVarStringResponder {
 			return op.SetConfigVarStringNotImplemented()
 		})
 	}

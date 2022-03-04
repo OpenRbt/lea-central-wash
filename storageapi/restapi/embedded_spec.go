@@ -46,6 +46,7 @@ func init() {
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/AdvertisingCampaign"
             }
@@ -163,6 +164,7 @@ func init() {
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "title": "ArgAdvertisingCampaignByID",
@@ -288,6 +290,7 @@ func init() {
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "title": "ArgDelAdvertisingCampagin",
@@ -365,6 +368,7 @@ func init() {
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/AdvertisingCampaign"
             }
@@ -388,11 +392,17 @@ func init() {
     },
     "/get-config-var-bool": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "getConfigVarBool",
         "parameters": [
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "title": "ArgGetConfigVar",
@@ -422,11 +432,17 @@ func init() {
     },
     "/get-config-var-int": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "getConfigVarInt",
         "parameters": [
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "title": "ArgGetConfigVar",
@@ -456,11 +472,17 @@ func init() {
     },
     "/get-config-var-string": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "getConfigVarString",
         "parameters": [
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "title": "ArgGetConfigVar",
@@ -495,6 +517,7 @@ func init() {
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "title": "ArgGetStationDiscounts",
@@ -1195,22 +1218,25 @@ func init() {
     },
     "/set-config-var-bool": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "setConfigVarBool",
         "parameters": [
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/ConfigVarBool"
             }
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not found"
           },
           "500": {
             "description": "Internal error"
@@ -1220,22 +1246,25 @@ func init() {
     },
     "/set-config-var-int": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "setConfigVarInt",
         "parameters": [
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/ConfigVarInt"
             }
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not found"
           },
           "500": {
             "description": "Internal error"
@@ -1245,22 +1274,25 @@ func init() {
     },
     "/set-config-var-string": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "setConfigVarString",
         "parameters": [
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/ConfigVarString"
             }
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not found"
           },
           "500": {
             "description": "Internal error"
@@ -2243,7 +2275,9 @@ func init() {
           "type": "integer"
         },
         "endMinute": {
-          "type": "integer"
+          "type": "integer",
+          "default": 0,
+          "maximum": 1440
         },
         "id": {
           "type": "integer"
@@ -2256,7 +2290,9 @@ func init() {
           "type": "integer"
         },
         "startMinute": {
-          "type": "integer"
+          "type": "integer",
+          "default": 0,
+          "maximum": 1440
         },
         "weekday": {
           "type": "array",
@@ -2931,6 +2967,7 @@ func init() {
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/AdvertisingCampaign"
             }
@@ -3048,6 +3085,7 @@ func init() {
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "title": "ArgAdvertisingCampaignByID",
@@ -3173,6 +3211,7 @@ func init() {
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "title": "ArgDelAdvertisingCampagin",
@@ -3250,6 +3289,7 @@ func init() {
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/AdvertisingCampaign"
             }
@@ -3273,11 +3313,17 @@ func init() {
     },
     "/get-config-var-bool": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "getConfigVarBool",
         "parameters": [
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "title": "ArgGetConfigVar",
@@ -3307,11 +3353,17 @@ func init() {
     },
     "/get-config-var-int": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "getConfigVarInt",
         "parameters": [
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "title": "ArgGetConfigVar",
@@ -3341,11 +3393,17 @@ func init() {
     },
     "/get-config-var-string": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "getConfigVarString",
         "parameters": [
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "title": "ArgGetConfigVar",
@@ -3380,6 +3438,7 @@ func init() {
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "title": "ArgGetStationDiscounts",
@@ -4080,22 +4139,25 @@ func init() {
     },
     "/set-config-var-bool": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "setConfigVarBool",
         "parameters": [
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/ConfigVarBool"
             }
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not found"
           },
           "500": {
             "description": "Internal error"
@@ -4105,22 +4167,25 @@ func init() {
     },
     "/set-config-var-int": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "setConfigVarInt",
         "parameters": [
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/ConfigVarInt"
             }
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not found"
           },
           "500": {
             "description": "Internal error"
@@ -4130,22 +4195,25 @@ func init() {
     },
     "/set-config-var-string": {
       "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
         "operationId": "setConfigVarString",
         "parameters": [
           {
             "name": "args",
             "in": "body",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/ConfigVarString"
             }
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not found"
           },
           "500": {
             "description": "Internal error"
@@ -5112,7 +5180,10 @@ func init() {
           "type": "integer"
         },
         "endMinute": {
-          "type": "integer"
+          "type": "integer",
+          "default": 0,
+          "maximum": 1440,
+          "minimum": 0
         },
         "id": {
           "type": "integer"
@@ -5125,7 +5196,10 @@ func init() {
           "type": "integer"
         },
         "startMinute": {
-          "type": "integer"
+          "type": "integer",
+          "default": 0,
+          "maximum": 1440,
+          "minimum": 0
         },
         "weekday": {
           "type": "array",

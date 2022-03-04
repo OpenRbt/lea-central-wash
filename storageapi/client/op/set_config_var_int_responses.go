@@ -20,18 +20,12 @@ type SetConfigVarIntReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *SetConfigVarIntReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-	case 200:
-		result := NewSetConfigVarIntOK()
+	case 204:
+		result := NewSetConfigVarIntNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-	case 404:
-		result := NewSetConfigVarIntNotFound()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
 	case 500:
 		result := NewSetConfigVarIntInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -43,44 +37,23 @@ func (o *SetConfigVarIntReader) ReadResponse(response runtime.ClientResponse, co
 	}
 }
 
-// NewSetConfigVarIntOK creates a SetConfigVarIntOK with default headers values
-func NewSetConfigVarIntOK() *SetConfigVarIntOK {
-	return &SetConfigVarIntOK{}
+// NewSetConfigVarIntNoContent creates a SetConfigVarIntNoContent with default headers values
+func NewSetConfigVarIntNoContent() *SetConfigVarIntNoContent {
+	return &SetConfigVarIntNoContent{}
 }
 
-/* SetConfigVarIntOK describes a response with status code 200, with default header values.
+/* SetConfigVarIntNoContent describes a response with status code 204, with default header values.
 
 OK
 */
-type SetConfigVarIntOK struct {
+type SetConfigVarIntNoContent struct {
 }
 
-func (o *SetConfigVarIntOK) Error() string {
-	return fmt.Sprintf("[POST /set-config-var-int][%d] setConfigVarIntOK ", 200)
+func (o *SetConfigVarIntNoContent) Error() string {
+	return fmt.Sprintf("[POST /set-config-var-int][%d] setConfigVarIntNoContent ", 204)
 }
 
-func (o *SetConfigVarIntOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	return nil
-}
-
-// NewSetConfigVarIntNotFound creates a SetConfigVarIntNotFound with default headers values
-func NewSetConfigVarIntNotFound() *SetConfigVarIntNotFound {
-	return &SetConfigVarIntNotFound{}
-}
-
-/* SetConfigVarIntNotFound describes a response with status code 404, with default header values.
-
-Not found
-*/
-type SetConfigVarIntNotFound struct {
-}
-
-func (o *SetConfigVarIntNotFound) Error() string {
-	return fmt.Sprintf("[POST /set-config-var-int][%d] setConfigVarIntNotFound ", 404)
-}
-
-func (o *SetConfigVarIntNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *SetConfigVarIntNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

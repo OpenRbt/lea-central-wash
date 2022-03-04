@@ -160,11 +160,17 @@ func (a *app) runCheckStationOnline() {
 }
 
 func (a *app) refreshDiscounts() {
-	for range time.Tick(time.Minute) {
-		err := a.checkDiscounts(time.Now().UTC())
+	if testApp {
+		return
+	}
+	for {
+		log.Debug("checkDiscounts", "time", time.Now().UTC())
+		err := a.checkDiscounts(time.Now().UTC().Add(time.Duration(a.cfg.TimeZone.Value)))
 		if err != nil {
 			log.PrintErr(err)
 		}
+		start := time.Now().Truncate(time.Minute).Add(time.Minute)
+		time.Sleep(start.Sub(time.Now()))
 	}
 }
 
@@ -651,27 +657,25 @@ func (a *app) AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]
 	return a.repo.AdvertisingCampaign(startDate, endDate)
 }
 
-func (a *app) currentAdvertisingCampaigns(curTime time.Time) ([]AdvertisingCampaign, error) {
-	campagins, err := a.repo.GetCurrentAdvertisingCampaigns(curTime)
+func (a *app) currentAdvertisingCampaigns(localTime time.Time) ([]AdvertisingCampaign, error) {
+	campagins, err := a.repo.GetCurrentAdvertisingCampaigns(localTime)
 	if err != nil {
 		return nil, err
 	}
 	validCampagins := []AdvertisingCampaign{}
 	for i := range campagins {
-		if isValidPromotion(curTime, campagins[i]) {
+		if isValidPromotion(localTime, campagins[i]) {
 			validCampagins = append(validCampagins, campagins[i])
 		}
 	}
 	return validCampagins, nil
 }
 
-func (a *app) checkDiscounts(curTime time.Time) (err error) {
-	campagins, err := a.currentAdvertisingCampaigns(curTime)
-
+func (a *app) checkDiscounts(localTime time.Time) (err error) {
+	campagins, err := a.currentAdvertisingCampaigns(localTime)
 	if err != nil {
 		return err
 	}
-
 	tmpDiscounts := ProgramsDiscount{
 		DefaultDiscount: 0,
 		Discounts:       make(map[int64]int64),
@@ -709,7 +713,7 @@ func (a *app) checkDiscounts(curTime time.Time) (err error) {
 	if !reflect.DeepEqual(a.programsDiscounts, tmpDiscounts) {
 		a.programsDiscounts = tmpDiscounts
 		log.Info("Discounts updated", "Default discount", a.programsDiscounts.DefaultDiscount)
-		a.lastDiscountUpdate = curTime.Unix()
+		a.lastDiscountUpdate = localTime.Unix()
 	}
 
 	return nil
@@ -758,21 +762,20 @@ func (a *app) GetStationDiscount(id StationID) (discount *StationDiscount, err e
 	return
 }
 
-func isValidPromotion(t time.Time, a AdvertisingCampaign) bool {
-	timeLocal := t.Add(time.Duration(*AppCfg.TimeZone.Value) * time.Minute)
+func isValidPromotion(timeLocal time.Time, a AdvertisingCampaign) bool {
 	minute := int64(timeLocal.Hour()*60 + timeLocal.Minute())
-	log.Info("isValidPromotion", "timeLocal", timeLocal, "minute", minute, "StartMinute", a.StartMinute, "EndMinute", a.EndMinute)
-	if (a.StartMinute < a.EndMinute) && ((a.StartMinute > minute) || (minute >= a.EndMinute)) {
-		return false
-	}
-	if (a.StartMinute > a.EndMinute) && ((a.EndMinute <= minute) && (minute < a.StartMinute)) {
-		return false
+	if a.StartMinute != 0 || a.EndMinute != 0 {
+		if (a.StartMinute <= a.EndMinute) && ((a.StartMinute > minute) || (minute >= a.EndMinute)) {
+			return false
+		}
+		if (a.StartMinute > a.EndMinute) && ((a.EndMinute <= minute) && (minute < a.StartMinute)) {
+			return false
+		}
 	}
 	dayOfWeek := timeLocal.Weekday()
 	if (a.StartMinute > a.EndMinute) && (minute < a.StartMinute) {
 		dayOfWeek = timeLocal.Add(-24 * time.Hour).Weekday()
 	}
-
 	return isValidDayOfWeek(int(dayOfWeek), a.Weekday)
 }
 

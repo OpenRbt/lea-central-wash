@@ -7,6 +7,7 @@ package op
 
 import (
 	"context"
+	"io"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -33,6 +34,7 @@ type DelAdvertisingCampaignParams struct {
 	HTTPRequest *http.Request `json:"-"`
 
 	/*
+	  Required: true
 	  In: body
 	*/
 	Args DelAdvertisingCampaignBody
@@ -51,7 +53,11 @@ func (o *DelAdvertisingCampaignParams) BindRequest(r *http.Request, route *middl
 		defer r.Body.Close()
 		var body DelAdvertisingCampaignBody
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
-			res = append(res, errors.NewParseError("args", "body", "", err))
+			if err == io.EOF {
+				res = append(res, errors.Required("args", "body", ""))
+			} else {
+				res = append(res, errors.NewParseError("args", "body", "", err))
+			}
 		} else {
 			// validate body object
 			if err := body.Validate(route.Formats); err != nil {
@@ -67,6 +73,8 @@ func (o *DelAdvertisingCampaignParams) BindRequest(r *http.Request, route *middl
 				o.Args = body
 			}
 		}
+	} else {
+		res = append(res, errors.Required("args", "body", ""))
 	}
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)

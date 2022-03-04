@@ -155,13 +155,13 @@ type StationDiscount struct {
 
 type ConfigInt struct {
 	Name        string
-	Value       *int64
+	Value       int64
 	Description string
 	Note        string
 }
 type ConfigBool struct {
 	Name        string
-	Value       *bool
+	Value       bool
 	Description string
 	Note        string
 }

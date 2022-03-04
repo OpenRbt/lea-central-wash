@@ -986,6 +986,51 @@ func (mr *MockRepoMockRecorder) EditAdvertisingCampaign(arg0 interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditAdvertisingCampaign", reflect.TypeOf((*MockRepo)(nil).EditAdvertisingCampaign), arg0)
 }
 
+// GetConfigBool mocks base method.
+func (m *MockRepo) GetConfigBool(name string) (*ConfigBool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetConfigBool", name)
+	ret0, _ := ret[0].(*ConfigBool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetConfigBool indicates an expected call of GetConfigBool.
+func (mr *MockRepoMockRecorder) GetConfigBool(name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetConfigBool", reflect.TypeOf((*MockRepo)(nil).GetConfigBool), name)
+}
+
+// GetConfigInt mocks base method.
+func (m *MockRepo) GetConfigInt(name string) (*ConfigInt, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetConfigInt", name)
+	ret0, _ := ret[0].(*ConfigInt)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetConfigInt indicates an expected call of GetConfigInt.
+func (mr *MockRepoMockRecorder) GetConfigInt(name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetConfigInt", reflect.TypeOf((*MockRepo)(nil).GetConfigInt), name)
+}
+
+// GetConfigString mocks base method.
+func (m *MockRepo) GetConfigString(name string) (*ConfigString, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetConfigString", name)
+	ret0, _ := ret[0].(*ConfigString)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetConfigString indicates an expected call of GetConfigString.
+func (mr *MockRepoMockRecorder) GetConfigString(name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetConfigString", reflect.TypeOf((*MockRepo)(nil).GetConfigString), name)
+}
+
 // GetCurrentAdvertisingCampaigns mocks base method.
 func (m *MockRepo) GetCurrentAdvertisingCampaigns(arg0 time.Time) ([]AdvertisingCampaign, error) {
 	m.ctrl.T.Helper()
@@ -1277,6 +1322,62 @@ func (m *MockRepo) SetCardReaderConfig(arg0 CardReaderConfig) error {
 func (mr *MockRepoMockRecorder) SetCardReaderConfig(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetCardReaderConfig", reflect.TypeOf((*MockRepo)(nil).SetCardReaderConfig), arg0)
+}
+
+// SetConfigBool mocks base method.
+func (m *MockRepo) SetConfigBool(config ConfigBool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetConfigBool", config)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetConfigBool indicates an expected call of SetConfigBool.
+func (mr *MockRepoMockRecorder) SetConfigBool(config interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetConfigBool", reflect.TypeOf((*MockRepo)(nil).SetConfigBool), config)
+}
+
+// SetConfigInt mocks base method.
+func (m *MockRepo) SetConfigInt(config ConfigInt) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetConfigInt", config)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetConfigInt indicates an expected call of SetConfigInt.
+func (mr *MockRepoMockRecorder) SetConfigInt(config interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetConfigInt", reflect.TypeOf((*MockRepo)(nil).SetConfigInt), config)
+}
+
+// SetConfigIntIfNotExists mocks base method.
+func (m *MockRepo) SetConfigIntIfNotExists(arg0 ConfigInt) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetConfigIntIfNotExists", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetConfigIntIfNotExists indicates an expected call of SetConfigIntIfNotExists.
+func (mr *MockRepoMockRecorder) SetConfigIntIfNotExists(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetConfigIntIfNotExists", reflect.TypeOf((*MockRepo)(nil).SetConfigIntIfNotExists), arg0)
+}
+
+// SetConfigString mocks base method.
+func (m *MockRepo) SetConfigString(config ConfigString) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetConfigString", config)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetConfigString indicates an expected call of SetConfigString.
+func (mr *MockRepoMockRecorder) SetConfigString(config interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetConfigString", reflect.TypeOf((*MockRepo)(nil).SetConfigString), config)
 }
 
 // SetHash mocks base method.

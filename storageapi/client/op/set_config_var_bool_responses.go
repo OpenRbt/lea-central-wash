@@ -20,18 +20,12 @@ type SetConfigVarBoolReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *SetConfigVarBoolReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-	case 200:
-		result := NewSetConfigVarBoolOK()
+	case 204:
+		result := NewSetConfigVarBoolNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-	case 404:
-		result := NewSetConfigVarBoolNotFound()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
 	case 500:
 		result := NewSetConfigVarBoolInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -43,44 +37,23 @@ func (o *SetConfigVarBoolReader) ReadResponse(response runtime.ClientResponse, c
 	}
 }
 
-// NewSetConfigVarBoolOK creates a SetConfigVarBoolOK with default headers values
-func NewSetConfigVarBoolOK() *SetConfigVarBoolOK {
-	return &SetConfigVarBoolOK{}
+// NewSetConfigVarBoolNoContent creates a SetConfigVarBoolNoContent with default headers values
+func NewSetConfigVarBoolNoContent() *SetConfigVarBoolNoContent {
+	return &SetConfigVarBoolNoContent{}
 }
 
-/* SetConfigVarBoolOK describes a response with status code 200, with default header values.
+/* SetConfigVarBoolNoContent describes a response with status code 204, with default header values.
 
 OK
 */
-type SetConfigVarBoolOK struct {
+type SetConfigVarBoolNoContent struct {
 }
 
-func (o *SetConfigVarBoolOK) Error() string {
-	return fmt.Sprintf("[POST /set-config-var-bool][%d] setConfigVarBoolOK ", 200)
+func (o *SetConfigVarBoolNoContent) Error() string {
+	return fmt.Sprintf("[POST /set-config-var-bool][%d] setConfigVarBoolNoContent ", 204)
 }
 
-func (o *SetConfigVarBoolOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	return nil
-}
-
-// NewSetConfigVarBoolNotFound creates a SetConfigVarBoolNotFound with default headers values
-func NewSetConfigVarBoolNotFound() *SetConfigVarBoolNotFound {
-	return &SetConfigVarBoolNotFound{}
-}
-
-/* SetConfigVarBoolNotFound describes a response with status code 404, with default header values.
-
-Not found
-*/
-type SetConfigVarBoolNotFound struct {
-}
-
-func (o *SetConfigVarBoolNotFound) Error() string {
-	return fmt.Sprintf("[POST /set-config-var-bool][%d] setConfigVarBoolNotFound ", 404)
-}
-
-func (o *SetConfigVarBoolNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *SetConfigVarBoolNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

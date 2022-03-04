@@ -12,57 +12,31 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 )
 
-// SetConfigVarStringOKCode is the HTTP code returned for type SetConfigVarStringOK
-const SetConfigVarStringOKCode int = 200
+// SetConfigVarStringNoContentCode is the HTTP code returned for type SetConfigVarStringNoContent
+const SetConfigVarStringNoContentCode int = 204
 
-/*SetConfigVarStringOK OK
+/*SetConfigVarStringNoContent OK
 
-swagger:response setConfigVarStringOK
+swagger:response setConfigVarStringNoContent
 */
-type SetConfigVarStringOK struct {
+type SetConfigVarStringNoContent struct {
 }
 
-// NewSetConfigVarStringOK creates SetConfigVarStringOK with default headers values
-func NewSetConfigVarStringOK() *SetConfigVarStringOK {
+// NewSetConfigVarStringNoContent creates SetConfigVarStringNoContent with default headers values
+func NewSetConfigVarStringNoContent() *SetConfigVarStringNoContent {
 
-	return &SetConfigVarStringOK{}
+	return &SetConfigVarStringNoContent{}
 }
 
 // WriteResponse to the client
-func (o *SetConfigVarStringOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *SetConfigVarStringNoContent) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
-	rw.WriteHeader(200)
+	rw.WriteHeader(204)
 }
 
-func (o *SetConfigVarStringOK) SetConfigVarStringResponder() {}
-
-// SetConfigVarStringNotFoundCode is the HTTP code returned for type SetConfigVarStringNotFound
-const SetConfigVarStringNotFoundCode int = 404
-
-/*SetConfigVarStringNotFound Not found
-
-swagger:response setConfigVarStringNotFound
-*/
-type SetConfigVarStringNotFound struct {
-}
-
-// NewSetConfigVarStringNotFound creates SetConfigVarStringNotFound with default headers values
-func NewSetConfigVarStringNotFound() *SetConfigVarStringNotFound {
-
-	return &SetConfigVarStringNotFound{}
-}
-
-// WriteResponse to the client
-func (o *SetConfigVarStringNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
-
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
-	rw.WriteHeader(404)
-}
-
-func (o *SetConfigVarStringNotFound) SetConfigVarStringResponder() {}
+func (o *SetConfigVarStringNoContent) SetConfigVarStringResponder() {}
 
 // SetConfigVarStringInternalServerErrorCode is the HTTP code returned for type SetConfigVarStringInternalServerError
 const SetConfigVarStringInternalServerErrorCode int = 500

@@ -77,13 +77,13 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		EditAdvertisingCampaignHandler: EditAdvertisingCampaignHandlerFunc(func(params EditAdvertisingCampaignParams, principal *storageapi.Profile) EditAdvertisingCampaignResponder {
 			return EditAdvertisingCampaignNotImplemented()
 		}),
-		GetConfigVarBoolHandler: GetConfigVarBoolHandlerFunc(func(params GetConfigVarBoolParams) GetConfigVarBoolResponder {
+		GetConfigVarBoolHandler: GetConfigVarBoolHandlerFunc(func(params GetConfigVarBoolParams, principal *storageapi.Profile) GetConfigVarBoolResponder {
 			return GetConfigVarBoolNotImplemented()
 		}),
-		GetConfigVarIntHandler: GetConfigVarIntHandlerFunc(func(params GetConfigVarIntParams) GetConfigVarIntResponder {
+		GetConfigVarIntHandler: GetConfigVarIntHandlerFunc(func(params GetConfigVarIntParams, principal *storageapi.Profile) GetConfigVarIntResponder {
 			return GetConfigVarIntNotImplemented()
 		}),
-		GetConfigVarStringHandler: GetConfigVarStringHandlerFunc(func(params GetConfigVarStringParams) GetConfigVarStringResponder {
+		GetConfigVarStringHandler: GetConfigVarStringHandlerFunc(func(params GetConfigVarStringParams, principal *storageapi.Profile) GetConfigVarStringResponder {
 			return GetConfigVarStringNotImplemented()
 		}),
 		GetPingHandler: GetPingHandlerFunc(func(params GetPingParams) GetPingResponder {
@@ -152,13 +152,13 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		SetCardReaderConfigHandler: SetCardReaderConfigHandlerFunc(func(params SetCardReaderConfigParams) SetCardReaderConfigResponder {
 			return SetCardReaderConfigNotImplemented()
 		}),
-		SetConfigVarBoolHandler: SetConfigVarBoolHandlerFunc(func(params SetConfigVarBoolParams) SetConfigVarBoolResponder {
+		SetConfigVarBoolHandler: SetConfigVarBoolHandlerFunc(func(params SetConfigVarBoolParams, principal *storageapi.Profile) SetConfigVarBoolResponder {
 			return SetConfigVarBoolNotImplemented()
 		}),
-		SetConfigVarIntHandler: SetConfigVarIntHandlerFunc(func(params SetConfigVarIntParams) SetConfigVarIntResponder {
+		SetConfigVarIntHandler: SetConfigVarIntHandlerFunc(func(params SetConfigVarIntParams, principal *storageapi.Profile) SetConfigVarIntResponder {
 			return SetConfigVarIntNotImplemented()
 		}),
-		SetConfigVarStringHandler: SetConfigVarStringHandlerFunc(func(params SetConfigVarStringParams) SetConfigVarStringResponder {
+		SetConfigVarStringHandler: SetConfigVarStringHandlerFunc(func(params SetConfigVarStringParams, principal *storageapi.Profile) SetConfigVarStringResponder {
 			return SetConfigVarStringNotImplemented()
 		}),
 		SetKasseHandler: SetKasseHandlerFunc(func(params SetKasseParams) SetKasseResponder {

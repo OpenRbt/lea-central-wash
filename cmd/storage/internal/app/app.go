@@ -21,11 +21,12 @@ type Auth = storageapi.Profile
 
 // Key aliases
 const (
-	TemperatureCurrent = "curr_temp"
-	MeteoInfo          = "meteoinfo"
-	OpenWeather        = "openWeather"
-	Ipify              = "ipify"
-	relayTimeoutSec    = 5
+	TemperatureCurrent    = "curr_temp"
+	MeteoInfo             = "meteoinfo"
+	OpenWeather           = "openWeather"
+	Ipify                 = "ipify"
+	relayTimeoutSec       = 5
+	parameterNameTimeZone = "TIMEZONE"
 )
 
 // Errors.
@@ -38,6 +39,8 @@ var (
 	ErrUnknownStation           = errors.New("unknown station")
 	ErrStationProgramMustUnique = errors.New("programID and buttonID must be unique")
 )
+
+var testApp = false
 
 type (
 	// App is an application interface.
@@ -105,6 +108,14 @@ type (
 		AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
 
 		GetStationDiscount(id StationID) (*StationDiscount, error)
+
+		GetConfigInt(auth *Auth, name string) (*ConfigInt, error)
+		GetConfigBool(auth *Auth, name string) (*ConfigBool, error)
+		GetConfigString(auth *Auth, name string) (*ConfigString, error)
+
+		SetConfigInt(auth *Auth, config ConfigInt) error
+		SetConfigBool(auth *Auth, config ConfigBool) error
+		SetConfigString(auth *Auth, config ConfigString) error
 	}
 
 	// Repo is a DAL interface.
@@ -173,6 +184,7 @@ type (
 		SetConfigInt(config ConfigInt) error
 		SetConfigBool(config ConfigBool) error
 		SetConfigString(config ConfigString) error
+		SetConfigIntIfNotExists(ConfigInt) error
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -220,6 +232,8 @@ type app struct {
 	hardware              HardwareAccessLayer
 	lastUpdate            int
 	lastDiscountUpdate    int64
+	cfg                   AppConfig
+	cfgMutex              sync.Mutex
 }
 
 // New creates and returns new App.
@@ -230,6 +244,14 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 		kasseSvc:   kasseSvc,
 		weatherSvc: weatherSvc,
 		hardware:   hardware,
+	}
+	err := appl.setDefaultConfig()
+	if err != nil {
+		log.PrintErr(err)
+	}
+	err = appl.loadConfig()
+	if err != nil {
+		log.PrintErr(err)
 	}
 	appl.loadStations()
 	appl.loadPrograms()

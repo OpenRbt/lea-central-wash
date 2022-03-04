@@ -12,57 +12,31 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 )
 
-// SetConfigVarIntOKCode is the HTTP code returned for type SetConfigVarIntOK
-const SetConfigVarIntOKCode int = 200
+// SetConfigVarIntNoContentCode is the HTTP code returned for type SetConfigVarIntNoContent
+const SetConfigVarIntNoContentCode int = 204
 
-/*SetConfigVarIntOK OK
+/*SetConfigVarIntNoContent OK
 
-swagger:response setConfigVarIntOK
+swagger:response setConfigVarIntNoContent
 */
-type SetConfigVarIntOK struct {
+type SetConfigVarIntNoContent struct {
 }
 
-// NewSetConfigVarIntOK creates SetConfigVarIntOK with default headers values
-func NewSetConfigVarIntOK() *SetConfigVarIntOK {
+// NewSetConfigVarIntNoContent creates SetConfigVarIntNoContent with default headers values
+func NewSetConfigVarIntNoContent() *SetConfigVarIntNoContent {
 
-	return &SetConfigVarIntOK{}
+	return &SetConfigVarIntNoContent{}
 }
 
 // WriteResponse to the client
-func (o *SetConfigVarIntOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *SetConfigVarIntNoContent) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
-	rw.WriteHeader(200)
+	rw.WriteHeader(204)
 }
 
-func (o *SetConfigVarIntOK) SetConfigVarIntResponder() {}
-
-// SetConfigVarIntNotFoundCode is the HTTP code returned for type SetConfigVarIntNotFound
-const SetConfigVarIntNotFoundCode int = 404
-
-/*SetConfigVarIntNotFound Not found
-
-swagger:response setConfigVarIntNotFound
-*/
-type SetConfigVarIntNotFound struct {
-}
-
-// NewSetConfigVarIntNotFound creates SetConfigVarIntNotFound with default headers values
-func NewSetConfigVarIntNotFound() *SetConfigVarIntNotFound {
-
-	return &SetConfigVarIntNotFound{}
-}
-
-// WriteResponse to the client
-func (o *SetConfigVarIntNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
-
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
-	rw.WriteHeader(404)
-}
-
-func (o *SetConfigVarIntNotFound) SetConfigVarIntResponder() {}
+func (o *SetConfigVarIntNoContent) SetConfigVarIntResponder() {}
 
 // SetConfigVarIntInternalServerErrorCode is the HTTP code returned for type SetConfigVarIntInternalServerError
 const SetConfigVarIntInternalServerErrorCode int = 500

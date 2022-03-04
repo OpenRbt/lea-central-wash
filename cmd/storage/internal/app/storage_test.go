@@ -11,17 +11,20 @@ import (
 func TestIsValidPromotion(tt *testing.T) {
 	t := check.T(tt)
 	t.Parallel()
-	timezone := AppCfg.TimeZone.Value
 	testCases := []struct {
 		localTime time.Time
 		a         AdvertisingCampaign
 		want      bool
 	}{
 		// time
-		{mustParseTime("2021-11-01T01:22:46Z"), AdvertisingCampaign{
+		{mustParseTime("2021-11-01T02:00:00Z"), AdvertisingCampaign{
+			StartMinute: 0,
+			EndMinute:   0,
+		}, true},
+		{mustParseTime("2021-11-01T02:00:00Z"), AdvertisingCampaign{
 			StartMinute: 2 * 60,
 			EndMinute:   2 * 60,
-		}, true},
+		}, false},
 		{mustParseTime("2021-11-01T01:22:46Z"), AdvertisingCampaign{
 			StartMinute: 1 * 60,
 			EndMinute:   2 * 60,
@@ -50,6 +53,10 @@ func TestIsValidPromotion(tt *testing.T) {
 			StartMinute: 23 * 60,
 			EndMinute:   2 * 60,
 		}, false},
+		{mustParseTime("2021-11-02T02:00:00Z"), AdvertisingCampaign{
+			StartMinute: 0,
+			EndMinute:   0,
+		}, true},
 		// weekday
 		{mustParseTime("2021-11-01T23:22:46Z"), AdvertisingCampaign{
 			StartMinute: 23 * 60,
@@ -91,7 +98,7 @@ func TestIsValidPromotion(tt *testing.T) {
 		tc := tc
 		t.Run("", func(tt *testing.T) {
 			t := check.T(tt)
-			res := isValidPromotion(tc.localTime.Add(-time.Duration(*timezone)*time.Minute), tc.a)
+			res := isValidPromotion(tc.localTime, tc.a)
 			t.Equal(res, tc.want)
 		})
 	}
@@ -110,13 +117,13 @@ func TestCurrentAdvertisingCampaigns(tt *testing.T) {
 		testAdvertistgCampaign3,
 	}, nil).Times(2)
 
-	getted, err := a.currentAdvertisingCampaigns(mustParseTime("2021-11-01T18:22:46Z"))
+	getted, err := a.currentAdvertisingCampaigns(mustParseTime("2021-11-02T01:22:46Z"))
 	t.Nil(err)
 	t.DeepEqual(getted, []AdvertisingCampaign{
 		testAdvertistgCampaign2,
 		testAdvertistgCampaign3,
 	})
-	getted, err = a.currentAdvertisingCampaigns(mustParseTime("2021-11-01T14:22:46Z"))
+	getted, err = a.currentAdvertisingCampaigns(mustParseTime("2021-11-01T21:22:46Z"))
 	t.Nil(err)
 	t.DeepEqual(getted, []AdvertisingCampaign{
 		testAdvertistgCampaign1,
@@ -135,11 +142,11 @@ func TestCheckDiscounts(tt *testing.T) {
 		testAdvertistgCampaign2,
 		testAdvertistgCampaign3,
 	}, nil).Times(2)
-	curTime := mustParseTime("2021-11-01T18:22:46Z")
+	curTime := mustParseTime("2021-11-02T01:22:46Z")
 	err := a.checkDiscounts(curTime)
 	t.Nil(err)
 	t.DeepEqual(a.lastDiscountUpdate, curTime.Unix())
-	err = a.checkDiscounts(mustParseTime("2021-11-01T18:23:46Z"))
+	err = a.checkDiscounts(mustParseTime("2021-11-02T01:22:46Z"))
 	t.Nil(err)
 	t.DeepEqual(a.lastDiscountUpdate, curTime.Unix())
 	t.DeepEqual(a.programsDiscounts, ProgramsDiscount{
@@ -156,7 +163,7 @@ func TestCheckDiscounts(tt *testing.T) {
 		testAdvertistgCampaign2,
 		testAdvertistgCampaign1,
 	}, nil)
-	err = a.checkDiscounts(mustParseTime("2021-11-01T18:23:46Z"))
+	err = a.checkDiscounts(mustParseTime("2021-11-02T01:23:46Z"))
 	t.Nil(err)
 	t.DeepEqual(a.lastDiscountUpdate, curTime.Unix())
 	t.DeepEqual(a.programsDiscounts, ProgramsDiscount{

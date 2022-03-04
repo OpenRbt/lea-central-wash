@@ -51,7 +51,7 @@ type SaveIfNotExists struct {
 func (o *SaveIfNotExists) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewSaveIfNotExistsParams()
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params

@@ -37,8 +37,8 @@ var (
 		},
 	}
 	testAdvertistgCampaign3 = AdvertisingCampaign{
-		StartMinute:     60,
-		EndMinute:       60,
+		StartMinute:     0,
+		EndMinute:       0,
 		DefaultDiscount: 10,
 	}
 )
@@ -51,6 +51,7 @@ type mocks struct {
 }
 
 func testNew(t *check.C) (*app, func(), *mocks) {
+	testApp = true
 	ctrl := gomock.NewController(t)
 	m := &mocks{
 		mockRepo:    NewMockRepo(ctrl),
@@ -63,6 +64,10 @@ func testNew(t *check.C) (*app, func(), *mocks) {
 	m.mockRepo.EXPECT().LastUpdateConfig().Return(2, nil).AnyTimes()
 	m.mockRepo.EXPECT().Programs(gomock.Any()).Return(nil, nil).AnyTimes()
 	m.mockRepo.EXPECT().AddStation(gomock.Any()).Return(nil).AnyTimes()
+	m.mockRepo.EXPECT().GetConfigInt(parameterNameTimeZone).Return(&ConfigInt{
+		Value: 420,
+	}, nil)
+	m.mockRepo.EXPECT().SetConfigIntIfNotExists(gomock.Any()).Return(nil).AnyTimes()
 
 	appl := New(m.mockRepo, m.mockKasse, m.mockWeather, m.mockHal).(*app)
 

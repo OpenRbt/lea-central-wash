@@ -12,57 +12,31 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 )
 
-// SetConfigVarBoolOKCode is the HTTP code returned for type SetConfigVarBoolOK
-const SetConfigVarBoolOKCode int = 200
+// SetConfigVarBoolNoContentCode is the HTTP code returned for type SetConfigVarBoolNoContent
+const SetConfigVarBoolNoContentCode int = 204
 
-/*SetConfigVarBoolOK OK
+/*SetConfigVarBoolNoContent OK
 
-swagger:response setConfigVarBoolOK
+swagger:response setConfigVarBoolNoContent
 */
-type SetConfigVarBoolOK struct {
+type SetConfigVarBoolNoContent struct {
 }
 
-// NewSetConfigVarBoolOK creates SetConfigVarBoolOK with default headers values
-func NewSetConfigVarBoolOK() *SetConfigVarBoolOK {
+// NewSetConfigVarBoolNoContent creates SetConfigVarBoolNoContent with default headers values
+func NewSetConfigVarBoolNoContent() *SetConfigVarBoolNoContent {
 
-	return &SetConfigVarBoolOK{}
+	return &SetConfigVarBoolNoContent{}
 }
 
 // WriteResponse to the client
-func (o *SetConfigVarBoolOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *SetConfigVarBoolNoContent) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
-	rw.WriteHeader(200)
+	rw.WriteHeader(204)
 }
 
-func (o *SetConfigVarBoolOK) SetConfigVarBoolResponder() {}
-
-// SetConfigVarBoolNotFoundCode is the HTTP code returned for type SetConfigVarBoolNotFound
-const SetConfigVarBoolNotFoundCode int = 404
-
-/*SetConfigVarBoolNotFound Not found
-
-swagger:response setConfigVarBoolNotFound
-*/
-type SetConfigVarBoolNotFound struct {
-}
-
-// NewSetConfigVarBoolNotFound creates SetConfigVarBoolNotFound with default headers values
-func NewSetConfigVarBoolNotFound() *SetConfigVarBoolNotFound {
-
-	return &SetConfigVarBoolNotFound{}
-}
-
-// WriteResponse to the client
-func (o *SetConfigVarBoolNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
-
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
-	rw.WriteHeader(404)
-}
-
-func (o *SetConfigVarBoolNotFound) SetConfigVarBoolResponder() {}
+func (o *SetConfigVarBoolNoContent) SetConfigVarBoolResponder() {}
 
 // SetConfigVarBoolInternalServerErrorCode is the HTTP code returned for type SetConfigVarBoolInternalServerError
 const SetConfigVarBoolInternalServerErrorCode int = 500

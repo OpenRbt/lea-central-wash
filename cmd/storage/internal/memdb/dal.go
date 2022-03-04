@@ -276,3 +276,6 @@ func (t *DB) SetConfigBool(config app.ConfigBool) error {
 func (t *DB) SetConfigString(config app.ConfigString) error {
 	return nil
 }
+func (t *DB) SetConfigIntIfNotExists(config app.ConfigInt) error {
+	return nil
+}

@@ -9,19 +9,21 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
+
+	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
 
 // SetConfigVarStringHandlerFunc turns a function with the right signature into a set config var string handler
-type SetConfigVarStringHandlerFunc func(SetConfigVarStringParams) SetConfigVarStringResponder
+type SetConfigVarStringHandlerFunc func(SetConfigVarStringParams, *storageapi.Profile) SetConfigVarStringResponder
 
 // Handle executing the request and returning a response
-func (fn SetConfigVarStringHandlerFunc) Handle(params SetConfigVarStringParams) SetConfigVarStringResponder {
-	return fn(params)
+func (fn SetConfigVarStringHandlerFunc) Handle(params SetConfigVarStringParams, principal *storageapi.Profile) SetConfigVarStringResponder {
+	return fn(params, principal)
 }
 
 // SetConfigVarStringHandler interface for that can handle valid set config var string params
 type SetConfigVarStringHandler interface {
-	Handle(SetConfigVarStringParams) SetConfigVarStringResponder
+	Handle(SetConfigVarStringParams, *storageapi.Profile) SetConfigVarStringResponder
 }
 
 // NewSetConfigVarString creates a new http.Handler for the set config var string operation
@@ -42,15 +44,28 @@ type SetConfigVarString struct {
 func (o *SetConfigVarString) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewSetConfigVarStringParams()
+	uprinc, aCtx, err := o.Context.Authorize(r, route)
+	if err != nil {
+		o.Context.Respond(rw, r, route.Produces, route, err)
+		return
+	}
+	if aCtx != nil {
+		r = aCtx
+	}
+	var principal *storageapi.Profile
+	if uprinc != nil {
+		principal = uprinc.(*storageapi.Profile) // this is really a storageapi.Profile, I promise
+	}
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
-	res := o.Handler.Handle(Params) // actually handle the request
+	res := o.Handler.Handle(Params, principal) // actually handle the request
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

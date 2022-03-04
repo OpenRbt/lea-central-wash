@@ -7,6 +7,7 @@ package op
 
 import (
 	"context"
+	"io"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -35,6 +36,7 @@ type SetConfigVarBoolParams struct {
 	HTTPRequest *http.Request `json:"-"`
 
 	/*
+	  Required: true
 	  In: body
 	*/
 	Args *model.ConfigVarBool
@@ -53,7 +55,11 @@ func (o *SetConfigVarBoolParams) BindRequest(r *http.Request, route *middleware.
 		defer r.Body.Close()
 		var body model.ConfigVarBool
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
-			res = append(res, errors.NewParseError("args", "body", "", err))
+			if err == io.EOF {
+				res = append(res, errors.Required("args", "body", ""))
+			} else {
+				res = append(res, errors.NewParseError("args", "body", "", err))
+			}
 		} else {
 			// validate body object
 			if err := body.Validate(route.Formats); err != nil {
@@ -69,6 +75,8 @@ func (o *SetConfigVarBoolParams) BindRequest(r *http.Request, route *middleware.
 				o.Args = &body
 			}
 		}
+	} else {
+		res = append(res, errors.Required("args", "body", ""))
 	}
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)

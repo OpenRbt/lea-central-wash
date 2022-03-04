@@ -44,12 +44,13 @@ const (
 //nolint:gochecknoglobals
 var (
 	// set by ./build
-	gitVersion   string
-	gitBranch    string
-	gitRevision  string
-	buildDate    string
-	useMemDB     bool
-	checkSysTime bool
+	gitVersion    string
+	gitBranch     string
+	gitRevision   string
+	buildDate     string
+	useMemDB      bool
+	checkSysTime  bool
+	startDelaySec int
 
 	cmd = strings.TrimSuffix(path.Base(os.Args[0]), ".test")
 	ver = strings.Join(strings.Fields(strings.Join([]string{gitVersion, gitBranch, gitRevision, buildDate}, " ")), " ")
@@ -92,6 +93,7 @@ func init() { //nolint:gochecknoinits
 	flag.IntVar(&cfg.extapi.CleanupTimeout, "extapi.cleanup-timeout", def.CleanupTimeout, "server timeout for cleaning in seconds")
 	flag.IntVar(&cfg.extapi.ReadTimeout, "extapi.read-timeout", def.ReadTimeout, "server timeout for reading in seconds")
 	flag.IntVar(&cfg.extapi.WriteTimeout, "extapi.write-timeout", def.WriteTimeout, "server timeout for writing in seconds")
+	flag.IntVar(&startDelaySec, "delay", def.StartDelaySec, "startup delay in seconds")
 
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",
@@ -100,13 +102,14 @@ func init() { //nolint:gochecknoinits
 
 func main() { //nolint:gocyclo
 	fmt.Printf("Getting ready to start ...\n")
-	time.Sleep(time.Second * 30)
 	flag.Usage = func() {
 		fmt.Printf("Usage of %s:\n", cmd)
 		flag.PrintDefaults()
 		fmt.Print(goose.Usage)
 	}
 	flag.Parse()
+	log.Info("main", "delay", startDelaySec)
+	time.Sleep(time.Second * time.Duration(startDelaySec))
 
 	if checkSysTime {
 		waitUntilSysTimeIsCorrect()

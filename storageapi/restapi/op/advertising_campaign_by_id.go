@@ -51,7 +51,7 @@ type AdvertisingCampaignByID struct {
 func (o *AdvertisingCampaignByID) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewAdvertisingCampaignByIDParams()
 	uprinc, aCtx, err := o.Context.Authorize(r, route)
@@ -60,7 +60,7 @@ func (o *AdvertisingCampaignByID) ServeHTTP(rw http.ResponseWriter, r *http.Requ
 		return
 	}
 	if aCtx != nil {
-		*r = *aCtx
+		r = aCtx
 	}
 	var principal *storageapi.Profile
 	if uprinc != nil {

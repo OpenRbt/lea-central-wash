@@ -228,6 +228,10 @@ func appAdvertisingCampaign(a resAdvertisingCampaign) *app.AdvertisingCampaign {
 	if err != nil {
 		panic(err)
 	}
+	weekday := []string{}
+	if a.Weekday != "" {
+		weekday = strings.Split(a.Weekday, ",")
+	}
 	return &app.AdvertisingCampaign{
 		DefaultDiscount:  a.DefaultDiscount,
 		DiscountPrograms: discountPrograms,
@@ -236,7 +240,7 @@ func appAdvertisingCampaign(a resAdvertisingCampaign) *app.AdvertisingCampaign {
 		ID:               a.ID,
 		StartDate:        a.StartDate,
 		StartMinute:      a.StartMinute,
-		Weekday:          strings.Split(a.Weekday, ","),
+		Weekday:          weekday,
 		Enabled:          a.Enabled,
 		Name:             a.Name,
 	}
@@ -253,7 +257,7 @@ func appAdvertisingCampaigns(a []resAdvertisingCampaign) []app.AdvertisingCampai
 func appConfigInt(a resGetConfigInt) *app.ConfigInt {
 	return &app.ConfigInt{
 		Name:        a.Name,
-		Value:       &a.Value,
+		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
 	}
@@ -262,7 +266,7 @@ func appConfigInt(a resGetConfigInt) *app.ConfigInt {
 func appConfigBool(a resGetConfigBool) *app.ConfigBool {
 	return &app.ConfigBool{
 		Name:        a.Name,
-		Value:       &a.Value,
+		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
 	}
