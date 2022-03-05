@@ -6,14 +6,6 @@ import (
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/def"
 )
 
-const (
-	DefaultTimeZone = 7 * 60
-)
-
-var (
-	AppCfg = AppConfig{}
-)
-
 type (
 	AppConfig struct {
 		TimeZone ConfigInt
