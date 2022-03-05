@@ -181,7 +181,7 @@ func (o *StationCollectionReportDatesInternalServerError) readResponse(response 
 	return nil
 }
 
-/*StationCollectionReportDatesBody station collection report dates body
+/*StationCollectionReportDatesBody ArgCollectionReportDates
 swagger:model StationCollectionReportDatesBody
 */
 type StationCollectionReportDatesBody struct {
@@ -250,7 +250,7 @@ func (o *StationCollectionReportDatesBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*StationCollectionReportDatesOKBody station collection report dates o k body
+/*StationCollectionReportDatesOKBody ResponseStationCollectionReportDates
 swagger:model StationCollectionReportDatesOKBody
 */
 type StationCollectionReportDatesOKBody struct {

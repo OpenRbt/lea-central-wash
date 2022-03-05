@@ -112,7 +112,7 @@ func (o *DelStationInternalServerError) readResponse(response runtime.ClientResp
 	return nil
 }
 
-/*DelStationBody del station body
+/*DelStationBody ArgDelStation
 swagger:model DelStationBody
 */
 type DelStationBody struct {

@@ -114,7 +114,7 @@ func (o *SaveIfNotExistsInternalServerError) readResponse(response runtime.Clien
 	return nil
 }
 
-/*SaveIfNotExistsBody save if not exists body
+/*SaveIfNotExistsBody ArgSaveIfNotExists
 swagger:model SaveIfNotExistsBody
 */
 type SaveIfNotExistsBody struct {

@@ -51,7 +51,7 @@ type LoadMoney struct {
 func (o *LoadMoney) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewLoadMoneyParams()
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
@@ -64,7 +64,7 @@ func (o *LoadMoney) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// LoadMoneyBody load money body
+// LoadMoneyBody ArgLoadMoney
 //
 // swagger:model LoadMoneyBody
 type LoadMoneyBody struct {

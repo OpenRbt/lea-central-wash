@@ -50,7 +50,7 @@ type StationButton struct {
 func (o *StationButton) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewStationButtonParams()
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
@@ -63,7 +63,7 @@ func (o *StationButton) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// StationButtonBody station button body
+// StationButtonBody ArgStationButton
 //
 // swagger:model StationButtonBody
 type StationButtonBody struct {
@@ -144,7 +144,7 @@ func (o *StationButtonBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// StationButtonOKBody station button o k body
+// StationButtonOKBody ResponseStationButton
 //
 // swagger:model StationButtonOKBody
 type StationButtonOKBody struct {

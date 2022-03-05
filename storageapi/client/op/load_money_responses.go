@@ -126,7 +126,7 @@ func (o *LoadMoneyInternalServerError) readResponse(response runtime.ClientRespo
 	return nil
 }
 
-/*LoadMoneyBody load money body
+/*LoadMoneyBody ArgLoadMoney
 swagger:model LoadMoneyBody
 */
 type LoadMoneyBody struct {

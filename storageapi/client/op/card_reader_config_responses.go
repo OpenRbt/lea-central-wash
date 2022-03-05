@@ -126,7 +126,7 @@ func (o *CardReaderConfigInternalServerError) readResponse(response runtime.Clie
 	return nil
 }
 
-/*CardReaderConfigBody card reader config body
+/*CardReaderConfigBody ArgCardReaderConfig
 swagger:model CardReaderConfigBody
 */
 type CardReaderConfigBody struct {

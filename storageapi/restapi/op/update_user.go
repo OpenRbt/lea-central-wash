@@ -52,7 +52,7 @@ type UpdateUser struct {
 func (o *UpdateUser) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewUpdateUserParams()
 	uprinc, aCtx, err := o.Context.Authorize(r, route)
@@ -61,7 +61,7 @@ func (o *UpdateUser) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if aCtx != nil {
-		*r = *aCtx
+		r = aCtx
 	}
 	var principal *storageapi.Profile
 	if uprinc != nil {
@@ -78,7 +78,7 @@ func (o *UpdateUser) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// UpdateUserBody update user body
+// UpdateUserBody ArgUserUpdate
 //
 // swagger:model UpdateUserBody
 type UpdateUserBody struct {
@@ -402,7 +402,7 @@ func (o *UpdateUserBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// UpdateUserCreatedBody update user created body
+// UpdateUserCreatedBody ResponseUserUpdate
 //
 // swagger:model UpdateUserCreatedBody
 type UpdateUserCreatedBody struct {

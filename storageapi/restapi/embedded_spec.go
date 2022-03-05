@@ -34,6 +34,40 @@ func init() {
   },
   "basePath": "/",
   "paths": {
+    "/add-advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "addAdvertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaign"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/add-service-amount": {
       "post": {
         "operationId": "addServiceAmount",
@@ -44,6 +78,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgAddServiceAmount",
               "properties": {
                 "amount": {
                   "type": "integer"
@@ -68,6 +103,104 @@ func init() {
         }
       }
     },
+    "/advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "advertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "title": "ArgAdvertisingCampagin",
+              "properties": {
+                "endDate": {
+                  "description": "Unix time local",
+                  "type": "integer",
+                  "x-nullable": true
+                },
+                "startDate": {
+                  "description": "Unix time local",
+                  "type": "integer",
+                  "x-nullable": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaigns"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/advertising-campaign-by-id": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "advertisingCampaignByID",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgAdvertisingCampaignByID",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaign"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/card-reader-config": {
       "post": {
         "operationId": "cardReaderConfig",
@@ -78,6 +211,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgCardReaderConfig",
               "required": [
                 "stationID"
               ],
@@ -116,6 +250,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgCardReaderConfigByCash",
               "required": [
                 "hash"
               ],
@@ -143,6 +278,49 @@ func init() {
         }
       }
     },
+    "/del-advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "delAdvertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgDelAdvertisingCampagin",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/del-station": {
       "post": {
         "operationId": "delStation",
@@ -153,6 +331,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgDelStation",
               "required": [
                 "id"
               ],
@@ -173,6 +352,195 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/edit-advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "editAdvertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaign"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/get-config-var-bool": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getConfigVarBool",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetConfigVar",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ConfigVarBool"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-config-var-int": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getConfigVarInt",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetConfigVar",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ConfigVarInt"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-config-var-string": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getConfigVarString",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetConfigVar",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ConfigVarString"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-station-discounts": {
+      "post": {
+        "operationId": "getStationDiscounts",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationDiscounts",
+              "properties": {
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationDiscounts"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -219,6 +587,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgLoad",
               "required": [
                 "hash",
                 "key"
@@ -261,6 +630,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgLoadFromStation",
               "required": [
                 "hash",
                 "stationID",
@@ -307,6 +677,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgLoadMoney",
               "required": [
                 "hash"
               ],
@@ -381,6 +752,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgOpenStation",
               "required": [
                 "stationID"
               ],
@@ -423,6 +795,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgPing",
               "required": [
                 "hash"
               ],
@@ -445,12 +818,16 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
+              "title": "ResponsePing",
               "required": [
                 "serviceAmount",
                 "openStation"
               ],
               "properties": {
                 "ButtonID": {
+                  "type": "integer"
+                },
+                "lastDiscountUpdate": {
                   "type": "integer"
                 },
                 "lastUpdate": {
@@ -478,6 +855,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgPressButton",
               "required": [
                 "hash",
                 "buttonID"
@@ -519,6 +897,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgPrograms",
               "properties": {
                 "programID": {
                   "type": "integer",
@@ -559,6 +938,7 @@ func init() {
             "in": "body",
             "schema": {
               "type": "object",
+              "title": "ArgResetStationStat",
               "required": [
                 "stationID"
               ],
@@ -596,6 +976,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgRunProgram",
               "required": [
                 "hash",
                 "programID",
@@ -641,6 +1022,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgSave",
               "required": [
                 "hash",
                 "keyPair"
@@ -721,6 +1103,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgSaveIfNotExists",
               "required": [
                 "hash",
                 "keyPair"
@@ -833,6 +1216,90 @@ func init() {
         }
       }
     },
+    "/set-config-var-bool": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setConfigVarBool",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ConfigVarBool"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/set-config-var-int": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setConfigVarInt",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ConfigVarInt"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/set-config-var-string": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setConfigVarString",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ConfigVarString"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/set-kasse": {
       "post": {
         "operationId": "setKasse",
@@ -921,6 +1388,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgSetStationButton",
               "required": [
                 "stationID"
               ],
@@ -1013,6 +1481,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgStationButton",
               "required": [
                 "stationID"
               ],
@@ -1030,6 +1499,7 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
+              "title": "ResponseStationButton",
               "properties": {
                 "buttons": {
                   "type": "array",
@@ -1064,6 +1534,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgStationByHash",
               "required": [
                 "hash"
               ],
@@ -1103,6 +1574,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgCollectionReportDates",
               "required": [
                 "stationId"
               ],
@@ -1129,6 +1601,7 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
+              "title": "ResponseStationCollectionReportDates",
               "required": [
                 "collectionReports"
               ],
@@ -1167,6 +1640,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgStationProgramByHash",
               "required": [
                 "hash"
               ],
@@ -1201,6 +1675,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgStationReportCurrentMoney",
               "required": [
                 "id"
               ],
@@ -1238,6 +1713,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgStationReportDates",
               "required": [
                 "id",
                 "startDate",
@@ -1289,6 +1765,7 @@ func init() {
             "in": "body",
             "schema": {
               "type": "object",
+              "title": "ArgStationStat",
               "properties": {
                 "stationID": {
                   "type": "integer",
@@ -1331,6 +1808,7 @@ func init() {
             "in": "body",
             "schema": {
               "type": "object",
+              "title": "ArgStationStatDates",
               "required": [
                 "startDate",
                 "endDate"
@@ -1464,6 +1942,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgUserUpdate",
               "required": [
                 "login"
               ],
@@ -1498,6 +1977,7 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
+              "title": "ResponseUserUpdate",
               "required": [
                 "id"
               ],
@@ -1536,6 +2016,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgUserCreate",
               "required": [
                 "login",
                 "password"
@@ -1574,6 +2055,7 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
+              "title": "ResponseUserCreate",
               "required": [
                 "id"
               ],
@@ -1594,6 +2076,7 @@ func init() {
             "description": "Conflict",
             "schema": {
               "type": "object",
+              "title": "ResponseUserCreateConflict",
               "required": [
                 "code",
                 "message"
@@ -1627,6 +2110,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgUserDelete",
               "required": [
                 "login"
               ],
@@ -1687,6 +2171,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgUserPassword",
               "required": [
                 "login",
                 "oldPassword",
@@ -1711,6 +2196,7 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
+              "title": "ResponseUserPassword",
               "required": [
                 "id"
               ],
@@ -1765,6 +2251,83 @@ func init() {
     }
   },
   "definitions": {
+    "AdvertisingCampaign": {
+      "type": "object",
+      "required": [
+        "startDate",
+        "endDate"
+      ],
+      "properties": {
+        "defaultDiscount": {
+          "type": "integer"
+        },
+        "discountPrograms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DiscountProgram"
+          }
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "endDate": {
+          "description": "Unix time local",
+          "type": "integer"
+        },
+        "endMinute": {
+          "type": "integer",
+          "default": 0,
+          "maximum": 1440
+        },
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "startDate": {
+          "description": "Unix time local",
+          "type": "integer"
+        },
+        "startMinute": {
+          "type": "integer",
+          "default": 0,
+          "maximum": 1440
+        },
+        "weekday": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "sunday",
+              "monday",
+              "tuesday",
+              "wednesday",
+              "thursday",
+              "friday",
+              "saturday"
+            ]
+          }
+        }
+      }
+    },
+    "AdvertisingCampaigns": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AdvertisingCampaign"
+      }
+    },
+    "ButtonDiscount": {
+      "type": "object",
+      "properties": {
+        "buttonID": {
+          "type": "integer"
+        },
+        "discount": {
+          "type": "integer"
+        }
+      }
+    },
     "CardReaderConfig": {
       "type": "object",
       "required": [
@@ -1842,6 +2405,68 @@ func init() {
         },
         "user": {
           "type": "string"
+        }
+      }
+    },
+    "ConfigVarBool": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "value": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ConfigVarInt": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "value": {
+          "type": "integer"
+        }
+      }
+    },
+    "ConfigVarString": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "DiscountProgram": {
+      "type": "object",
+      "properties": {
+        "discount": {
+          "type": "integer"
+        },
+        "programID": {
+          "type": "integer"
         }
       }
     },
@@ -2088,6 +2713,12 @@ func init() {
         "relayBoard": {
           "$ref": "#/definitions/RelayBoard"
         }
+      }
+    },
+    "StationDiscounts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ButtonDiscount"
       }
     },
     "StationPrograms": {
@@ -2324,6 +2955,40 @@ func init() {
   },
   "basePath": "/",
   "paths": {
+    "/add-advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "addAdvertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaign"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/add-service-amount": {
       "post": {
         "operationId": "addServiceAmount",
@@ -2334,6 +2999,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgAddServiceAmount",
               "properties": {
                 "amount": {
                   "type": "integer"
@@ -2358,6 +3024,104 @@ func init() {
         }
       }
     },
+    "/advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "advertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "title": "ArgAdvertisingCampagin",
+              "properties": {
+                "endDate": {
+                  "description": "Unix time local",
+                  "type": "integer",
+                  "x-nullable": true
+                },
+                "startDate": {
+                  "description": "Unix time local",
+                  "type": "integer",
+                  "x-nullable": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaigns"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/advertising-campaign-by-id": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "advertisingCampaignByID",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgAdvertisingCampaignByID",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaign"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/card-reader-config": {
       "post": {
         "operationId": "cardReaderConfig",
@@ -2368,6 +3132,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgCardReaderConfig",
               "required": [
                 "stationID"
               ],
@@ -2406,6 +3171,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgCardReaderConfigByCash",
               "required": [
                 "hash"
               ],
@@ -2433,6 +3199,49 @@ func init() {
         }
       }
     },
+    "/del-advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "delAdvertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgDelAdvertisingCampagin",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/del-station": {
       "post": {
         "operationId": "delStation",
@@ -2443,6 +3252,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgDelStation",
               "required": [
                 "id"
               ],
@@ -2463,6 +3273,195 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/edit-advertising-campaign": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "editAdvertisingCampaign",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AdvertisingCampaign"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/get-config-var-bool": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getConfigVarBool",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetConfigVar",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ConfigVarBool"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-config-var-int": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getConfigVarInt",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetConfigVar",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ConfigVarInt"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-config-var-string": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getConfigVarString",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetConfigVar",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ConfigVarString"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-station-discounts": {
+      "post": {
+        "operationId": "getStationDiscounts",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationDiscounts",
+              "properties": {
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationDiscounts"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -2509,6 +3508,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgLoad",
               "required": [
                 "hash",
                 "key"
@@ -2551,6 +3551,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgLoadFromStation",
               "required": [
                 "hash",
                 "stationID",
@@ -2597,6 +3598,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgLoadMoney",
               "required": [
                 "hash"
               ],
@@ -2671,6 +3673,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgOpenStation",
               "required": [
                 "stationID"
               ],
@@ -2713,6 +3716,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgPing",
               "required": [
                 "hash"
               ],
@@ -2735,12 +3739,16 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
+              "title": "ResponsePing",
               "required": [
                 "serviceAmount",
                 "openStation"
               ],
               "properties": {
                 "ButtonID": {
+                  "type": "integer"
+                },
+                "lastDiscountUpdate": {
                   "type": "integer"
                 },
                 "lastUpdate": {
@@ -2768,6 +3776,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgPressButton",
               "required": [
                 "hash",
                 "buttonID"
@@ -2809,6 +3818,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgPrograms",
               "properties": {
                 "programID": {
                   "type": "integer",
@@ -2849,6 +3859,7 @@ func init() {
             "in": "body",
             "schema": {
               "type": "object",
+              "title": "ArgResetStationStat",
               "required": [
                 "stationID"
               ],
@@ -2886,6 +3897,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgRunProgram",
               "required": [
                 "hash",
                 "programID",
@@ -2931,6 +3943,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgSave",
               "required": [
                 "hash",
                 "keyPair"
@@ -3011,6 +4024,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgSaveIfNotExists",
               "required": [
                 "hash",
                 "keyPair"
@@ -3123,6 +4137,90 @@ func init() {
         }
       }
     },
+    "/set-config-var-bool": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setConfigVarBool",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ConfigVarBool"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/set-config-var-int": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setConfigVarInt",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ConfigVarInt"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/set-config-var-string": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setConfigVarString",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ConfigVarString"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/set-kasse": {
       "post": {
         "operationId": "setKasse",
@@ -3211,6 +4309,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgSetStationButton",
               "required": [
                 "stationID"
               ],
@@ -3295,6 +4394,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgStationButton",
               "required": [
                 "stationID"
               ],
@@ -3312,6 +4412,7 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
+              "title": "ResponseStationButton",
               "properties": {
                 "buttons": {
                   "type": "array",
@@ -3338,6 +4439,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgStationByHash",
               "required": [
                 "hash"
               ],
@@ -3377,6 +4479,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgCollectionReportDates",
               "required": [
                 "stationId"
               ],
@@ -3403,6 +4506,7 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
+              "title": "ResponseStationCollectionReportDates",
               "required": [
                 "collectionReports"
               ],
@@ -3441,6 +4545,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgStationProgramByHash",
               "required": [
                 "hash"
               ],
@@ -3475,6 +4580,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgStationReportCurrentMoney",
               "required": [
                 "id"
               ],
@@ -3512,6 +4618,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgStationReportDates",
               "required": [
                 "id",
                 "startDate",
@@ -3563,6 +4670,7 @@ func init() {
             "in": "body",
             "schema": {
               "type": "object",
+              "title": "ArgStationStat",
               "properties": {
                 "stationID": {
                   "type": "integer",
@@ -3605,6 +4713,7 @@ func init() {
             "in": "body",
             "schema": {
               "type": "object",
+              "title": "ArgStationStatDates",
               "required": [
                 "startDate",
                 "endDate"
@@ -3738,6 +4847,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgUserUpdate",
               "required": [
                 "login"
               ],
@@ -3772,6 +4882,7 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
+              "title": "ResponseUserUpdate",
               "required": [
                 "id"
               ],
@@ -3810,6 +4921,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgUserCreate",
               "required": [
                 "login",
                 "password"
@@ -3848,6 +4960,7 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
+              "title": "ResponseUserCreate",
               "required": [
                 "id"
               ],
@@ -3868,6 +4981,7 @@ func init() {
             "description": "Conflict",
             "schema": {
               "type": "object",
+              "title": "ResponseUserCreateConflict",
               "required": [
                 "code",
                 "message"
@@ -3901,6 +5015,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgUserDelete",
               "required": [
                 "login"
               ],
@@ -3961,6 +5076,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
+              "title": "ArgUserPassword",
               "required": [
                 "login",
                 "oldPassword",
@@ -3985,6 +5101,7 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
+              "title": "ResponseUserPassword",
               "required": [
                 "id"
               ],
@@ -4039,6 +5156,85 @@ func init() {
     }
   },
   "definitions": {
+    "AdvertisingCampaign": {
+      "type": "object",
+      "required": [
+        "startDate",
+        "endDate"
+      ],
+      "properties": {
+        "defaultDiscount": {
+          "type": "integer"
+        },
+        "discountPrograms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DiscountProgram"
+          }
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "endDate": {
+          "description": "Unix time local",
+          "type": "integer"
+        },
+        "endMinute": {
+          "type": "integer",
+          "default": 0,
+          "maximum": 1440,
+          "minimum": 0
+        },
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "startDate": {
+          "description": "Unix time local",
+          "type": "integer"
+        },
+        "startMinute": {
+          "type": "integer",
+          "default": 0,
+          "maximum": 1440,
+          "minimum": 0
+        },
+        "weekday": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "sunday",
+              "monday",
+              "tuesday",
+              "wednesday",
+              "thursday",
+              "friday",
+              "saturday"
+            ]
+          }
+        }
+      }
+    },
+    "AdvertisingCampaigns": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AdvertisingCampaign"
+      }
+    },
+    "ButtonDiscount": {
+      "type": "object",
+      "properties": {
+        "buttonID": {
+          "type": "integer"
+        },
+        "discount": {
+          "type": "integer"
+        }
+      }
+    },
     "ButtonsItems0": {
       "type": "object",
       "properties": {
@@ -4127,6 +5323,68 @@ func init() {
         },
         "user": {
           "type": "string"
+        }
+      }
+    },
+    "ConfigVarBool": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "value": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ConfigVarInt": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "value": {
+          "type": "integer"
+        }
+      }
+    },
+    "ConfigVarString": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "DiscountProgram": {
+      "type": "object",
+      "properties": {
+        "discount": {
+          "type": "integer"
+        },
+        "programID": {
+          "type": "integer"
         }
       }
     },
@@ -4375,6 +5633,12 @@ func init() {
         "relayBoard": {
           "$ref": "#/definitions/RelayBoard"
         }
+      }
+    },
+    "StationDiscounts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ButtonDiscount"
       }
     },
     "StationPrograms": {

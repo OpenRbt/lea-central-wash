@@ -151,7 +151,7 @@ func (o *StationStatDatesInternalServerError) readResponse(response runtime.Clie
 	return nil
 }
 
-/*StationStatDatesBody station stat dates body
+/*StationStatDatesBody ArgStationStatDates
 swagger:model StationStatDatesBody
 */
 type StationStatDatesBody struct {

@@ -51,7 +51,7 @@ type Ping struct {
 func (o *Ping) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewPingParams()
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
@@ -64,7 +64,7 @@ func (o *Ping) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// PingBody ping body
+// PingBody ArgPing
 //
 // swagger:model PingBody
 type PingBody struct {
@@ -189,13 +189,16 @@ func (o *PingBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// PingOKBody ping o k body
+// PingOKBody ResponsePing
 //
 // swagger:model PingOKBody
 type PingOKBody struct {
 
 	// button ID
 	ButtonID int64 `json:"ButtonID,omitempty"`
+
+	// last discount update
+	LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
 
 	// last update
 	LastUpdate int64 `json:"lastUpdate,omitempty"`
@@ -216,6 +219,9 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 		// button ID
 		ButtonID int64 `json:"ButtonID,omitempty"`
 
+		// last discount update
+		LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
+
 		// last update
 		LastUpdate int64 `json:"lastUpdate,omitempty"`
 
@@ -235,6 +241,7 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 	}
 
 	o.ButtonID = props.ButtonID
+	o.LastDiscountUpdate = props.LastDiscountUpdate
 	o.LastUpdate = props.LastUpdate
 	o.OpenStation = props.OpenStation
 	o.ServiceAmount = props.ServiceAmount

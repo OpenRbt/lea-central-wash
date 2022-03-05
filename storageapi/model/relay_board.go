@@ -19,11 +19,6 @@ import (
 // swagger:model RelayBoard
 type RelayBoard string
 
-func NewRelayBoard(value RelayBoard) *RelayBoard {
-	v := value
-	return &v
-}
-
 const (
 
 	// RelayBoardLocalGPIO captures enum value "localGPIO"

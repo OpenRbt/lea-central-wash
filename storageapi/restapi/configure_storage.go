@@ -50,9 +50,24 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	// Example:
 	// api.APIAuthorizer = security.Authorized()
 
+	if api.AddAdvertisingCampaignHandler == nil {
+		api.AddAdvertisingCampaignHandler = op.AddAdvertisingCampaignHandlerFunc(func(params op.AddAdvertisingCampaignParams, principal *storageapi.Profile) op.AddAdvertisingCampaignResponder {
+			return op.AddAdvertisingCampaignNotImplemented()
+		})
+	}
 	if api.AddServiceAmountHandler == nil {
 		api.AddServiceAmountHandler = op.AddServiceAmountHandlerFunc(func(params op.AddServiceAmountParams) op.AddServiceAmountResponder {
 			return op.AddServiceAmountNotImplemented()
+		})
+	}
+	if api.AdvertisingCampaignHandler == nil {
+		api.AdvertisingCampaignHandler = op.AdvertisingCampaignHandlerFunc(func(params op.AdvertisingCampaignParams, principal *storageapi.Profile) op.AdvertisingCampaignResponder {
+			return op.AdvertisingCampaignNotImplemented()
+		})
+	}
+	if api.AdvertisingCampaignByIDHandler == nil {
+		api.AdvertisingCampaignByIDHandler = op.AdvertisingCampaignByIDHandlerFunc(func(params op.AdvertisingCampaignByIDParams, principal *storageapi.Profile) op.AdvertisingCampaignByIDResponder {
+			return op.AdvertisingCampaignByIDNotImplemented()
 		})
 	}
 	if api.CardReaderConfigHandler == nil {
@@ -70,6 +85,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.CreateUserNotImplemented()
 		})
 	}
+	if api.DelAdvertisingCampaignHandler == nil {
+		api.DelAdvertisingCampaignHandler = op.DelAdvertisingCampaignHandlerFunc(func(params op.DelAdvertisingCampaignParams, principal *storageapi.Profile) op.DelAdvertisingCampaignResponder {
+			return op.DelAdvertisingCampaignNotImplemented()
+		})
+	}
 	if api.DelStationHandler == nil {
 		api.DelStationHandler = op.DelStationHandlerFunc(func(params op.DelStationParams) op.DelStationResponder {
 			return op.DelStationNotImplemented()
@@ -80,9 +100,34 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.DeleteUserNotImplemented()
 		})
 	}
+	if api.EditAdvertisingCampaignHandler == nil {
+		api.EditAdvertisingCampaignHandler = op.EditAdvertisingCampaignHandlerFunc(func(params op.EditAdvertisingCampaignParams, principal *storageapi.Profile) op.EditAdvertisingCampaignResponder {
+			return op.EditAdvertisingCampaignNotImplemented()
+		})
+	}
+	if api.GetConfigVarBoolHandler == nil {
+		api.GetConfigVarBoolHandler = op.GetConfigVarBoolHandlerFunc(func(params op.GetConfigVarBoolParams, principal *storageapi.Profile) op.GetConfigVarBoolResponder {
+			return op.GetConfigVarBoolNotImplemented()
+		})
+	}
+	if api.GetConfigVarIntHandler == nil {
+		api.GetConfigVarIntHandler = op.GetConfigVarIntHandlerFunc(func(params op.GetConfigVarIntParams, principal *storageapi.Profile) op.GetConfigVarIntResponder {
+			return op.GetConfigVarIntNotImplemented()
+		})
+	}
+	if api.GetConfigVarStringHandler == nil {
+		api.GetConfigVarStringHandler = op.GetConfigVarStringHandlerFunc(func(params op.GetConfigVarStringParams, principal *storageapi.Profile) op.GetConfigVarStringResponder {
+			return op.GetConfigVarStringNotImplemented()
+		})
+	}
 	if api.GetPingHandler == nil {
 		api.GetPingHandler = op.GetPingHandlerFunc(func(params op.GetPingParams) op.GetPingResponder {
 			return op.GetPingNotImplemented()
+		})
+	}
+	if api.GetStationDiscountsHandler == nil {
+		api.GetStationDiscountsHandler = op.GetStationDiscountsHandlerFunc(func(params op.GetStationDiscountsParams) op.GetStationDiscountsResponder {
+			return op.GetStationDiscountsNotImplemented()
 		})
 	}
 	if api.GetUserHandler == nil {
@@ -183,6 +228,21 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.SetCardReaderConfigHandler == nil {
 		api.SetCardReaderConfigHandler = op.SetCardReaderConfigHandlerFunc(func(params op.SetCardReaderConfigParams) op.SetCardReaderConfigResponder {
 			return op.SetCardReaderConfigNotImplemented()
+		})
+	}
+	if api.SetConfigVarBoolHandler == nil {
+		api.SetConfigVarBoolHandler = op.SetConfigVarBoolHandlerFunc(func(params op.SetConfigVarBoolParams, principal *storageapi.Profile) op.SetConfigVarBoolResponder {
+			return op.SetConfigVarBoolNotImplemented()
+		})
+	}
+	if api.SetConfigVarIntHandler == nil {
+		api.SetConfigVarIntHandler = op.SetConfigVarIntHandlerFunc(func(params op.SetConfigVarIntParams, principal *storageapi.Profile) op.SetConfigVarIntResponder {
+			return op.SetConfigVarIntNotImplemented()
+		})
+	}
+	if api.SetConfigVarStringHandler == nil {
+		api.SetConfigVarStringHandler = op.SetConfigVarStringHandlerFunc(func(params op.SetConfigVarStringParams, principal *storageapi.Profile) op.SetConfigVarStringResponder {
+			return op.SetConfigVarStringNotImplemented()
 		})
 	}
 	if api.SetKasseHandler == nil {

@@ -139,7 +139,7 @@ func (o *ResetStationStatInternalServerError) readResponse(response runtime.Clie
 	return nil
 }
 
-/*ResetStationStatBody reset station stat body
+/*ResetStationStatBody ArgResetStationStat
 swagger:model ResetStationStatBody
 */
 type ResetStationStatBody struct {

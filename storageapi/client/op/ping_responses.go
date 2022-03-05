@@ -72,7 +72,7 @@ func (o *PingOK) readResponse(response runtime.ClientResponse, consumer runtime.
 	return nil
 }
 
-/*PingBody ping body
+/*PingBody ArgPing
 swagger:model PingBody
 */
 type PingBody struct {
@@ -197,13 +197,16 @@ func (o *PingBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*PingOKBody ping o k body
+/*PingOKBody ResponsePing
 swagger:model PingOKBody
 */
 type PingOKBody struct {
 
 	// button ID
 	ButtonID int64 `json:"ButtonID,omitempty"`
+
+	// last discount update
+	LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
 
 	// last update
 	LastUpdate int64 `json:"lastUpdate,omitempty"`
@@ -224,6 +227,9 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 		// button ID
 		ButtonID int64 `json:"ButtonID,omitempty"`
 
+		// last discount update
+		LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
+
 		// last update
 		LastUpdate int64 `json:"lastUpdate,omitempty"`
 
@@ -243,6 +249,7 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 	}
 
 	o.ButtonID = props.ButtonID
+	o.LastDiscountUpdate = props.LastDiscountUpdate
 	o.LastUpdate = props.LastUpdate
 	o.OpenStation = props.OpenStation
 	o.ServiceAmount = props.ServiceAmount

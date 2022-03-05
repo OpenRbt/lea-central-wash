@@ -233,6 +233,49 @@ func (t *DB) RelayReportDates(stationID *app.StationID, startDate, endDate time.
 	return app.StationsStat{}, nil
 }
 
-func (t *DB) ResetStationStat(stationID app.StationID) (err error) {
+func (t *DB) ResetStationStat(stationID app.StationID) error {
+	return nil
+}
+
+func (t *DB) AddAdvertisingCampaign(a app.AdvertisingCampaign) error {
+	return nil
+}
+
+func (t *DB) EditAdvertisingCampaign(a app.AdvertisingCampaign) error {
+	return nil
+}
+func (t *DB) DelAdvertisingCampaign(id int64) error {
+	return nil
+}
+func (t *DB) AdvertisingCampaignByID(id int64) (*app.AdvertisingCampaign, error) {
+	return nil, nil
+}
+func (t *DB) AdvertisingCampaign(startDate, endDate *time.Time) ([]app.AdvertisingCampaign, error) {
+	return nil, nil
+}
+
+func (t *DB) GetCurrentAdvertisingCampaigns(time.Time) ([]app.AdvertisingCampaign, error) {
+	return nil, nil
+}
+func (t *DB) GetConfigInt(name string) (*app.ConfigInt, error) {
+	return nil, nil
+}
+func (t *DB) GetConfigBool(name string) (*app.ConfigBool, error) {
+	return nil, nil
+}
+func (t *DB) GetConfigString(name string) (*app.ConfigString, error) {
+	return nil, nil
+}
+
+func (t *DB) SetConfigInt(config app.ConfigInt) error {
+	return nil
+}
+func (t *DB) SetConfigBool(config app.ConfigBool) error {
+	return nil
+}
+func (t *DB) SetConfigString(config app.ConfigString) error {
+	return nil
+}
+func (t *DB) SetConfigIntIfNotExists(config app.ConfigInt) error {
 	return nil
 }

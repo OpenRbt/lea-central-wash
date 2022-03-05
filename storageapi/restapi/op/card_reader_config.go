@@ -49,7 +49,7 @@ type CardReaderConfig struct {
 func (o *CardReaderConfig) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewCardReaderConfigParams()
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
@@ -62,7 +62,7 @@ func (o *CardReaderConfig) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// CardReaderConfigBody card reader config body
+// CardReaderConfigBody ArgCardReaderConfig
 //
 // swagger:model CardReaderConfigBody
 type CardReaderConfigBody struct {

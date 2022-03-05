@@ -44,8 +44,17 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		AddAdvertisingCampaignHandler: AddAdvertisingCampaignHandlerFunc(func(params AddAdvertisingCampaignParams, principal *storageapi.Profile) AddAdvertisingCampaignResponder {
+			return AddAdvertisingCampaignNotImplemented()
+		}),
 		AddServiceAmountHandler: AddServiceAmountHandlerFunc(func(params AddServiceAmountParams) AddServiceAmountResponder {
 			return AddServiceAmountNotImplemented()
+		}),
+		AdvertisingCampaignHandler: AdvertisingCampaignHandlerFunc(func(params AdvertisingCampaignParams, principal *storageapi.Profile) AdvertisingCampaignResponder {
+			return AdvertisingCampaignNotImplemented()
+		}),
+		AdvertisingCampaignByIDHandler: AdvertisingCampaignByIDHandlerFunc(func(params AdvertisingCampaignByIDParams, principal *storageapi.Profile) AdvertisingCampaignByIDResponder {
+			return AdvertisingCampaignByIDNotImplemented()
 		}),
 		CardReaderConfigHandler: CardReaderConfigHandlerFunc(func(params CardReaderConfigParams) CardReaderConfigResponder {
 			return CardReaderConfigNotImplemented()
@@ -56,14 +65,32 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		CreateUserHandler: CreateUserHandlerFunc(func(params CreateUserParams, principal *storageapi.Profile) CreateUserResponder {
 			return CreateUserNotImplemented()
 		}),
+		DelAdvertisingCampaignHandler: DelAdvertisingCampaignHandlerFunc(func(params DelAdvertisingCampaignParams, principal *storageapi.Profile) DelAdvertisingCampaignResponder {
+			return DelAdvertisingCampaignNotImplemented()
+		}),
 		DelStationHandler: DelStationHandlerFunc(func(params DelStationParams) DelStationResponder {
 			return DelStationNotImplemented()
 		}),
 		DeleteUserHandler: DeleteUserHandlerFunc(func(params DeleteUserParams, principal *storageapi.Profile) DeleteUserResponder {
 			return DeleteUserNotImplemented()
 		}),
+		EditAdvertisingCampaignHandler: EditAdvertisingCampaignHandlerFunc(func(params EditAdvertisingCampaignParams, principal *storageapi.Profile) EditAdvertisingCampaignResponder {
+			return EditAdvertisingCampaignNotImplemented()
+		}),
+		GetConfigVarBoolHandler: GetConfigVarBoolHandlerFunc(func(params GetConfigVarBoolParams, principal *storageapi.Profile) GetConfigVarBoolResponder {
+			return GetConfigVarBoolNotImplemented()
+		}),
+		GetConfigVarIntHandler: GetConfigVarIntHandlerFunc(func(params GetConfigVarIntParams, principal *storageapi.Profile) GetConfigVarIntResponder {
+			return GetConfigVarIntNotImplemented()
+		}),
+		GetConfigVarStringHandler: GetConfigVarStringHandlerFunc(func(params GetConfigVarStringParams, principal *storageapi.Profile) GetConfigVarStringResponder {
+			return GetConfigVarStringNotImplemented()
+		}),
 		GetPingHandler: GetPingHandlerFunc(func(params GetPingParams) GetPingResponder {
 			return GetPingNotImplemented()
+		}),
+		GetStationDiscountsHandler: GetStationDiscountsHandlerFunc(func(params GetStationDiscountsParams) GetStationDiscountsResponder {
+			return GetStationDiscountsNotImplemented()
 		}),
 		GetUserHandler: GetUserHandlerFunc(func(params GetUserParams, principal *storageapi.Profile) GetUserResponder {
 			return GetUserNotImplemented()
@@ -124,6 +151,15 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		SetCardReaderConfigHandler: SetCardReaderConfigHandlerFunc(func(params SetCardReaderConfigParams) SetCardReaderConfigResponder {
 			return SetCardReaderConfigNotImplemented()
+		}),
+		SetConfigVarBoolHandler: SetConfigVarBoolHandlerFunc(func(params SetConfigVarBoolParams, principal *storageapi.Profile) SetConfigVarBoolResponder {
+			return SetConfigVarBoolNotImplemented()
+		}),
+		SetConfigVarIntHandler: SetConfigVarIntHandlerFunc(func(params SetConfigVarIntParams, principal *storageapi.Profile) SetConfigVarIntResponder {
+			return SetConfigVarIntNotImplemented()
+		}),
+		SetConfigVarStringHandler: SetConfigVarStringHandlerFunc(func(params SetConfigVarStringParams, principal *storageapi.Profile) SetConfigVarStringResponder {
+			return SetConfigVarStringNotImplemented()
 		}),
 		SetKasseHandler: SetKasseHandlerFunc(func(params SetKasseParams) SetKasseResponder {
 			return SetKasseNotImplemented()
@@ -229,20 +265,38 @@ type StorageAPI struct {
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
 
+	// AddAdvertisingCampaignHandler sets the operation handler for the add advertising campaign operation
+	AddAdvertisingCampaignHandler AddAdvertisingCampaignHandler
 	// AddServiceAmountHandler sets the operation handler for the add service amount operation
 	AddServiceAmountHandler AddServiceAmountHandler
+	// AdvertisingCampaignHandler sets the operation handler for the advertising campaign operation
+	AdvertisingCampaignHandler AdvertisingCampaignHandler
+	// AdvertisingCampaignByIDHandler sets the operation handler for the advertising campaign by ID operation
+	AdvertisingCampaignByIDHandler AdvertisingCampaignByIDHandler
 	// CardReaderConfigHandler sets the operation handler for the card reader config operation
 	CardReaderConfigHandler CardReaderConfigHandler
 	// CardReaderConfigByHashHandler sets the operation handler for the card reader config by hash operation
 	CardReaderConfigByHashHandler CardReaderConfigByHashHandler
 	// CreateUserHandler sets the operation handler for the create user operation
 	CreateUserHandler CreateUserHandler
+	// DelAdvertisingCampaignHandler sets the operation handler for the del advertising campaign operation
+	DelAdvertisingCampaignHandler DelAdvertisingCampaignHandler
 	// DelStationHandler sets the operation handler for the del station operation
 	DelStationHandler DelStationHandler
 	// DeleteUserHandler sets the operation handler for the delete user operation
 	DeleteUserHandler DeleteUserHandler
+	// EditAdvertisingCampaignHandler sets the operation handler for the edit advertising campaign operation
+	EditAdvertisingCampaignHandler EditAdvertisingCampaignHandler
+	// GetConfigVarBoolHandler sets the operation handler for the get config var bool operation
+	GetConfigVarBoolHandler GetConfigVarBoolHandler
+	// GetConfigVarIntHandler sets the operation handler for the get config var int operation
+	GetConfigVarIntHandler GetConfigVarIntHandler
+	// GetConfigVarStringHandler sets the operation handler for the get config var string operation
+	GetConfigVarStringHandler GetConfigVarStringHandler
 	// GetPingHandler sets the operation handler for the get ping operation
 	GetPingHandler GetPingHandler
+	// GetStationDiscountsHandler sets the operation handler for the get station discounts operation
+	GetStationDiscountsHandler GetStationDiscountsHandler
 	// GetUserHandler sets the operation handler for the get user operation
 	GetUserHandler GetUserHandler
 	// GetUsersHandler sets the operation handler for the get users operation
@@ -283,6 +337,12 @@ type StorageAPI struct {
 	SaveRelayHandler SaveRelayHandler
 	// SetCardReaderConfigHandler sets the operation handler for the set card reader config operation
 	SetCardReaderConfigHandler SetCardReaderConfigHandler
+	// SetConfigVarBoolHandler sets the operation handler for the set config var bool operation
+	SetConfigVarBoolHandler SetConfigVarBoolHandler
+	// SetConfigVarIntHandler sets the operation handler for the set config var int operation
+	SetConfigVarIntHandler SetConfigVarIntHandler
+	// SetConfigVarStringHandler sets the operation handler for the set config var string operation
+	SetConfigVarStringHandler SetConfigVarStringHandler
 	// SetKasseHandler sets the operation handler for the set kasse operation
 	SetKasseHandler SetKasseHandler
 	// SetProgramHandler sets the operation handler for the set program operation
@@ -400,8 +460,17 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "PinAuth")
 	}
 
+	if o.AddAdvertisingCampaignHandler == nil {
+		unregistered = append(unregistered, "AddAdvertisingCampaignHandler")
+	}
 	if o.AddServiceAmountHandler == nil {
 		unregistered = append(unregistered, "AddServiceAmountHandler")
+	}
+	if o.AdvertisingCampaignHandler == nil {
+		unregistered = append(unregistered, "AdvertisingCampaignHandler")
+	}
+	if o.AdvertisingCampaignByIDHandler == nil {
+		unregistered = append(unregistered, "AdvertisingCampaignByIDHandler")
 	}
 	if o.CardReaderConfigHandler == nil {
 		unregistered = append(unregistered, "CardReaderConfigHandler")
@@ -412,14 +481,32 @@ func (o *StorageAPI) Validate() error {
 	if o.CreateUserHandler == nil {
 		unregistered = append(unregistered, "CreateUserHandler")
 	}
+	if o.DelAdvertisingCampaignHandler == nil {
+		unregistered = append(unregistered, "DelAdvertisingCampaignHandler")
+	}
 	if o.DelStationHandler == nil {
 		unregistered = append(unregistered, "DelStationHandler")
 	}
 	if o.DeleteUserHandler == nil {
 		unregistered = append(unregistered, "DeleteUserHandler")
 	}
+	if o.EditAdvertisingCampaignHandler == nil {
+		unregistered = append(unregistered, "EditAdvertisingCampaignHandler")
+	}
+	if o.GetConfigVarBoolHandler == nil {
+		unregistered = append(unregistered, "GetConfigVarBoolHandler")
+	}
+	if o.GetConfigVarIntHandler == nil {
+		unregistered = append(unregistered, "GetConfigVarIntHandler")
+	}
+	if o.GetConfigVarStringHandler == nil {
+		unregistered = append(unregistered, "GetConfigVarStringHandler")
+	}
 	if o.GetPingHandler == nil {
 		unregistered = append(unregistered, "GetPingHandler")
+	}
+	if o.GetStationDiscountsHandler == nil {
+		unregistered = append(unregistered, "GetStationDiscountsHandler")
 	}
 	if o.GetUserHandler == nil {
 		unregistered = append(unregistered, "GetUserHandler")
@@ -480,6 +567,15 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.SetCardReaderConfigHandler == nil {
 		unregistered = append(unregistered, "SetCardReaderConfigHandler")
+	}
+	if o.SetConfigVarBoolHandler == nil {
+		unregistered = append(unregistered, "SetConfigVarBoolHandler")
+	}
+	if o.SetConfigVarIntHandler == nil {
+		unregistered = append(unregistered, "SetConfigVarIntHandler")
+	}
+	if o.SetConfigVarStringHandler == nil {
+		unregistered = append(unregistered, "SetConfigVarStringHandler")
 	}
 	if o.SetKasseHandler == nil {
 		unregistered = append(unregistered, "SetKasseHandler")
@@ -637,7 +733,19 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/add-advertising-campaign"] = NewAddAdvertisingCampaign(o.context, o.AddAdvertisingCampaignHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/add-service-amount"] = NewAddServiceAmount(o.context, o.AddServiceAmountHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/advertising-campaign"] = NewAdvertisingCampaign(o.context, o.AdvertisingCampaignHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/advertising-campaign-by-id"] = NewAdvertisingCampaignByID(o.context, o.AdvertisingCampaignByIDHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
@@ -653,15 +761,39 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/del-advertising-campaign"] = NewDelAdvertisingCampaign(o.context, o.DelAdvertisingCampaignHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/del-station"] = NewDelStation(o.context, o.DelStationHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/user"] = NewDeleteUser(o.context, o.DeleteUserHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/edit-advertising-campaign"] = NewEditAdvertisingCampaign(o.context, o.EditAdvertisingCampaignHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-config-var-bool"] = NewGetConfigVarBool(o.context, o.GetConfigVarBoolHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-config-var-int"] = NewGetConfigVarInt(o.context, o.GetConfigVarIntHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-config-var-string"] = NewGetConfigVarString(o.context, o.GetConfigVarStringHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/ping"] = NewGetPing(o.context, o.GetPingHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-station-discounts"] = NewGetStationDiscounts(o.context, o.GetStationDiscountsHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -742,6 +874,18 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/set-card-reader-config"] = NewSetCardReaderConfig(o.context, o.SetCardReaderConfigHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-config-var-bool"] = NewSetConfigVarBool(o.context, o.SetConfigVarBoolHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-config-var-int"] = NewSetConfigVarInt(o.context, o.SetConfigVarIntHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-config-var-string"] = NewSetConfigVarString(o.context, o.SetConfigVarStringHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

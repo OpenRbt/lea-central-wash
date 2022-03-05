@@ -180,7 +180,7 @@ func (o *DeleteUserInternalServerError) readResponse(response runtime.ClientResp
 	return nil
 }
 
-/*DeleteUserBody delete user body
+/*DeleteUserBody ArgUserDelete
 swagger:model DeleteUserBody
 */
 type DeleteUserBody struct {

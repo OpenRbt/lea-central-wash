@@ -97,7 +97,7 @@ func (o *ProgramsInternalServerError) readResponse(response runtime.ClientRespon
 	return nil
 }
 
-/*ProgramsBody programs body
+/*ProgramsBody ArgPrograms
 swagger:model ProgramsBody
 */
 type ProgramsBody struct {

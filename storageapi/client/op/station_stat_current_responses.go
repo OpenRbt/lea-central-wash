@@ -149,7 +149,7 @@ func (o *StationStatCurrentInternalServerError) readResponse(response runtime.Cl
 	return nil
 }
 
-/*StationStatCurrentBody station stat current body
+/*StationStatCurrentBody ArgStationStat
 swagger:model StationStatCurrentBody
 */
 type StationStatCurrentBody struct {

@@ -21,11 +21,12 @@ type Auth = storageapi.Profile
 
 // Key aliases
 const (
-	TemperatureCurrent = "curr_temp"
-	MeteoInfo          = "meteoinfo"
-	OpenWeather        = "openWeather"
-	Ipify              = "ipify"
-	relayTimeoutSec    = 5
+	TemperatureCurrent    = "curr_temp"
+	MeteoInfo             = "meteoinfo"
+	OpenWeather           = "openWeather"
+	Ipify                 = "ipify"
+	relayTimeoutSec       = 5
+	parameterNameTimeZone = "TIMEZONE"
 )
 
 // Errors.
@@ -38,6 +39,8 @@ var (
 	ErrUnknownStation           = errors.New("unknown station")
 	ErrStationProgramMustUnique = errors.New("programID and buttonID must be unique")
 )
+
+var testApp = false
 
 type (
 	// App is an application interface.
@@ -98,6 +101,21 @@ type (
 		Station(StationID) (SetStation, error)
 		RelayReportDates(auth *Auth, stationID *StationID, startDate, endDate time.Time) (StationsStat, error)
 		ResetStationStat(auth *Auth, stationID StationID) error
+		AddAdvertisingCampaign(*Auth, AdvertisingCampaign) error
+		EditAdvertisingCampaign(auth *Auth, a AdvertisingCampaign) error
+		DelAdvertisingCampaign(auth *Auth, id int64) (err error)
+		AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaign, error)
+		AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
+
+		GetStationDiscount(id StationID) (*StationDiscount, error)
+
+		GetConfigInt(auth *Auth, name string) (*ConfigInt, error)
+		GetConfigBool(auth *Auth, name string) (*ConfigBool, error)
+		GetConfigString(auth *Auth, name string) (*ConfigString, error)
+
+		SetConfigInt(auth *Auth, config ConfigInt) error
+		SetConfigBool(auth *Auth, config ConfigBool) error
+		SetConfigString(auth *Auth, config ConfigString) error
 	}
 
 	// Repo is a DAL interface.
@@ -150,6 +168,23 @@ type (
 		LastUpdateConfig() (int, error)
 		RelayReportDates(stationID *StationID, startDate, endDate time.Time) (StationsStat, error)
 		ResetStationStat(stationID StationID) error
+
+		AddAdvertisingCampaign(AdvertisingCampaign) error
+		EditAdvertisingCampaign(AdvertisingCampaign) error
+		DelAdvertisingCampaign(id int64) error
+		AdvertisingCampaignByID(id int64) (*AdvertisingCampaign, error)
+		AdvertisingCampaign(startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
+
+		GetCurrentAdvertisingCampaigns(time.Time) ([]AdvertisingCampaign, error)
+
+		GetConfigInt(name string) (*ConfigInt, error)
+		GetConfigBool(name string) (*ConfigBool, error)
+		GetConfigString(name string) (*ConfigString, error)
+
+		SetConfigInt(config ConfigInt) error
+		SetConfigBool(config ConfigBool) error
+		SetConfigString(config ConfigString) error
+		SetConfigIntIfNotExists(ConfigInt) error
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -185,15 +220,20 @@ type (
 )
 
 type app struct {
-	repo          Repo
-	stations      map[StationID]StationData
-	stationsMutex sync.Mutex
-	programs      map[int64]Program
-	programsMutex sync.Mutex
-	kasseSvc      KasseSvc
-	weatherSvc    WeatherSvc
-	hardware      HardwareAccessLayer
-	lastUpdate    int
+	repo                  Repo
+	stations              map[StationID]StationData
+	stationsMutex         sync.Mutex
+	programs              map[int64]Program
+	programsMutex         sync.Mutex
+	programsDiscounts     ProgramsDiscount
+	programsDiscountMutex sync.Mutex
+	kasseSvc              KasseSvc
+	weatherSvc            WeatherSvc
+	hardware              HardwareAccessLayer
+	lastUpdate            int
+	lastDiscountUpdate    int64
+	cfg                   AppConfig
+	cfgMutex              sync.Mutex
 }
 
 // New creates and returns new App.
@@ -204,6 +244,14 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 		kasseSvc:   kasseSvc,
 		weatherSvc: weatherSvc,
 		hardware:   hardware,
+	}
+	err := appl.setDefaultConfig()
+	if err != nil {
+		log.PrintErr(err)
+	}
+	err = appl.loadConfig()
+	if err != nil {
+		log.PrintErr(err)
 	}
 	appl.loadStations()
 	appl.loadPrograms()
@@ -216,6 +264,7 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 	appl.lastUpdate = id
 	appl.stationsMutex.Unlock()
 	go appl.runCheckStationOnline()
+	go appl.refreshDiscounts()
 	return appl
 }
 

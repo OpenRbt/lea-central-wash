@@ -49,7 +49,7 @@ type StationReportDates struct {
 func (o *StationReportDates) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewStationReportDatesParams()
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
@@ -62,7 +62,7 @@ func (o *StationReportDates) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 
 }
 
-// StationReportDatesBody station report dates body
+// StationReportDatesBody ArgStationReportDates
 //
 // swagger:model StationReportDatesBody
 type StationReportDatesBody struct {

@@ -180,7 +180,7 @@ func (o *UpdateUserPasswordInternalServerError) readResponse(response runtime.Cl
 	return nil
 }
 
-/*UpdateUserPasswordBody update user password body
+/*UpdateUserPasswordBody ArgUserPassword
 swagger:model UpdateUserPasswordBody
 */
 type UpdateUserPasswordBody struct {
@@ -397,7 +397,7 @@ func (o *UpdateUserPasswordBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*UpdateUserPasswordCreatedBody update user password created body
+/*UpdateUserPasswordCreatedBody ResponseUserPassword
 swagger:model UpdateUserPasswordCreatedBody
 */
 type UpdateUserPasswordCreatedBody struct {

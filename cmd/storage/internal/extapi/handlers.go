@@ -248,10 +248,11 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 	station := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP)
 
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
-		ServiceAmount: newInt64(int64(station.ServiceMoney)),
-		OpenStation:   &station.OpenStation,
-		ButtonID:      int64(station.ButtonID),
-		LastUpdate:    int64(station.LastUpdate),
+		ServiceAmount:      newInt64(int64(station.ServiceMoney)),
+		OpenStation:        &station.OpenStation,
+		ButtonID:           int64(station.ButtonID),
+		LastUpdate:         int64(station.LastUpdate),
+		LastDiscountUpdate: int64(station.LastDiscountUpdate),
 	})
 }
 
@@ -858,6 +859,7 @@ func (svc *service) stationStatCurrent(params op.StationStatCurrentParams, auth 
 }
 
 func (svc *service) stationStatDates(params op.StationStatDatesParams, auth *app.Auth) op.StationStatDatesResponder {
+	log.Info("stationStatDates", "startDate", time.Unix(*params.Args.StartDate, 0), "endDate", time.Unix(*params.Args.EndDate, 0), "ip", params.HTTPRequest.RemoteAddr)
 	var id *app.StationID
 	if params.Args.StationID != nil {
 		tmp := app.StationID(*params.Args.StationID)
@@ -883,5 +885,96 @@ func (svc *service) resetStationStat(params op.ResetStationStatParams, auth *app
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewResetStationStatInternalServerError()
+	}
+}
+
+func (svc *service) addAdvertisingCampaign(params op.AddAdvertisingCampaignParams, auth *app.Auth) op.AddAdvertisingCampaignResponder {
+	err := svc.app.AddAdvertisingCampaign(auth, appAdvertisingCampaign(params.Args))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewAddAdvertisingCampaignNoContent()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewAddAdvertisingCampaignInternalServerError()
+	}
+}
+
+func (svc *service) editAdvertisingCampaign(params op.EditAdvertisingCampaignParams, auth *app.Auth) op.EditAdvertisingCampaignResponder {
+	err := svc.app.EditAdvertisingCampaign(auth, appAdvertisingCampaign(params.Args))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewEditAdvertisingCampaignNoContent()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewEditAdvertisingCampaignInternalServerError()
+	}
+}
+
+func (svc *service) advertisingCampaign(params op.AdvertisingCampaignParams, auth *app.Auth) op.AdvertisingCampaignResponder {
+	var startDate *time.Time
+	if params.Args.StartDate != nil {
+		start := time.Unix(*params.Args.StartDate, 0)
+		startDate = &start
+	}
+	var endDate *time.Time
+	if params.Args.EndDate != nil {
+		end := time.Unix(*params.Args.EndDate, 0)
+		endDate = &end
+	}
+
+	res, err := svc.app.AdvertisingCampaign(auth, startDate, endDate)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewAdvertisingCampaignOK().WithPayload(apiAdvertisingCampaigns(res))
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewAdvertisingCampaignInternalServerError()
+	}
+}
+
+func (svc *service) advertisingCampaignByID(params op.AdvertisingCampaignByIDParams, auth *app.Auth) op.AdvertisingCampaignByIDResponder {
+	res, err := svc.app.AdvertisingCampaignByID(auth, *params.Args.ID)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewAdvertisingCampaignByIDOK().WithPayload(apiAdvertisingCampaign(*res))
+	case app.ErrNotFound:
+		return op.NewAdvertisingCampaignByIDNotFound()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewAdvertisingCampaignByIDInternalServerError()
+	}
+}
+
+func (svc *service) delAdvertistingCampagin(params op.DelAdvertisingCampaignParams, auth *app.Auth) op.DelAdvertisingCampaignResponder {
+	err := svc.app.DelAdvertisingCampaign(auth, *params.Args.ID)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewDelAdvertisingCampaignNoContent()
+	case app.ErrAccessDenied:
+		return op.NewDelAdvertisingCampaignForbidden()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewDelAdvertisingCampaignInternalServerError()
+	}
+}
+
+func (svc *service) getStationDiscount(params op.GetStationDiscountsParams) op.GetStationDiscountsResponder {
+	stationID, err := svc.getID(string(params.Args.Hash))
+	if err != nil {
+		return op.NewGetStationDiscountsNotFound()
+	}
+
+	res, err := svc.app.GetStationDiscount(stationID)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetStationDiscountsOK().WithPayload(apiStationDiscount(*res))
+	default:
+		return op.NewGetStationDiscountsInternalServerError()
 	}
 }

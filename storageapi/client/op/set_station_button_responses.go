@@ -123,7 +123,7 @@ func (o *SetStationButtonInternalServerError) readResponse(response runtime.Clie
 	return nil
 }
 
-/*SetStationButtonBody set station button body
+/*SetStationButtonBody ArgSetStationButton
 swagger:model SetStationButtonBody
 */
 type SetStationButtonBody struct {

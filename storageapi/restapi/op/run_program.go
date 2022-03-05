@@ -51,7 +51,7 @@ type RunProgram struct {
 func (o *RunProgram) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewRunProgramParams()
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
@@ -64,7 +64,7 @@ func (o *RunProgram) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// RunProgramBody run program body
+// RunProgramBody ArgRunProgram
 //
 // swagger:model RunProgramBody
 type RunProgramBody struct {

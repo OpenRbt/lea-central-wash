@@ -49,7 +49,7 @@ type Programs struct {
 func (o *Programs) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewProgramsParams()
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
@@ -62,7 +62,7 @@ func (o *Programs) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// ProgramsBody programs body
+// ProgramsBody ArgPrograms
 //
 // swagger:model ProgramsBody
 type ProgramsBody struct {

@@ -180,7 +180,7 @@ func (o *UpdateUserInternalServerError) readResponse(response runtime.ClientResp
 	return nil
 }
 
-/*UpdateUserBody update user body
+/*UpdateUserBody ArgUserUpdate
 swagger:model UpdateUserBody
 */
 type UpdateUserBody struct {
@@ -504,7 +504,7 @@ func (o *UpdateUserBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*UpdateUserCreatedBody update user created body
+/*UpdateUserCreatedBody ResponseUserUpdate
 swagger:model UpdateUserCreatedBody
 */
 type UpdateUserCreatedBody struct {

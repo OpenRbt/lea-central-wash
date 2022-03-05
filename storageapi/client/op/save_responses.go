@@ -114,7 +114,7 @@ func (o *SaveInternalServerError) readResponse(response runtime.ClientResponse, 
 	return nil
 }
 
-/*SaveBody save body
+/*SaveBody ArgSave
 swagger:model SaveBody
 */
 type SaveBody struct {

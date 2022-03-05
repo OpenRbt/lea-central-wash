@@ -2,6 +2,7 @@ package dal
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 )
@@ -199,4 +200,83 @@ func appStationsStat(res []resRelayReport, relay []resRelayStats) app.StationsSt
 	}
 
 	return report
+}
+
+func dalAdvertisingCampaign(a app.AdvertisingCampaign) argAdvertisingCampaign {
+	bytes, err := json.Marshal(a.DiscountPrograms)
+	if err != nil {
+		panic(err)
+	}
+
+	return argAdvertisingCampaign{
+		DefaultDiscount:  a.DefaultDiscount,
+		DiscountPrograms: string(bytes),
+		EndDate:          a.EndDate,
+		EndMinute:        a.EndMinute,
+		ID:               a.ID,
+		StartDate:        a.StartDate,
+		StartMinute:      a.StartMinute,
+		Weekday:          strings.Join(a.Weekday, ","),
+		Enabled:          a.Enabled,
+		Name:             a.Name,
+	}
+}
+
+func appAdvertisingCampaign(a resAdvertisingCampaign) *app.AdvertisingCampaign {
+	discountPrograms := []app.DiscountProgram{}
+	err := json.Unmarshal([]byte(a.DiscountPrograms), &discountPrograms)
+	if err != nil {
+		panic(err)
+	}
+	weekday := []string{}
+	if a.Weekday != "" {
+		weekday = strings.Split(a.Weekday, ",")
+	}
+	return &app.AdvertisingCampaign{
+		DefaultDiscount:  a.DefaultDiscount,
+		DiscountPrograms: discountPrograms,
+		EndDate:          a.EndDate,
+		EndMinute:        a.EndMinute,
+		ID:               a.ID,
+		StartDate:        a.StartDate,
+		StartMinute:      a.StartMinute,
+		Weekday:          weekday,
+		Enabled:          a.Enabled,
+		Name:             a.Name,
+	}
+}
+
+func appAdvertisingCampaigns(a []resAdvertisingCampaign) []app.AdvertisingCampaign {
+	res := []app.AdvertisingCampaign{}
+	for i := range a {
+		res = append(res, *appAdvertisingCampaign(a[i]))
+	}
+	return res
+}
+
+func appConfigInt(a resGetConfigInt) *app.ConfigInt {
+	return &app.ConfigInt{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
+}
+
+func appConfigBool(a resGetConfigBool) *app.ConfigBool {
+	return &app.ConfigBool{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
+}
+
+func appConfigString(a resGetConfigString) *app.ConfigString {
+	return &app.ConfigString{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
 }

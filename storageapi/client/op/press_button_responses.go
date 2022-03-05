@@ -124,7 +124,7 @@ func (o *PressButtonInternalServerError) readResponse(response runtime.ClientRes
 	return nil
 }
 
-/*PressButtonBody press button body
+/*PressButtonBody ArgPressButton
 swagger:model PressButtonBody
 */
 type PressButtonBody struct {

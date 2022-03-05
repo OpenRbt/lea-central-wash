@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"reflect"
 	"strconv"
 	"time"
 
@@ -129,6 +130,7 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) Station
 	}
 	a.stations[id] = station
 	oldStation.LastUpdate = a.lastUpdate
+	oldStation.LastDiscountUpdate = a.lastDiscountUpdate
 	return oldStation
 }
 
@@ -154,6 +156,21 @@ func (a *app) runCheckStationOnline() {
 	for {
 		time.Sleep(5 * time.Second)
 		a.checkStationOnline()
+	}
+}
+
+func (a *app) refreshDiscounts() {
+	if testApp {
+		return
+	}
+	for {
+		log.Debug("checkDiscounts", "time", time.Now().UTC())
+		err := a.checkDiscounts(time.Now().UTC().Add(time.Duration(a.cfg.TimeZone.Value)))
+		if err != nil {
+			log.PrintErr(err)
+		}
+		start := time.Now().Truncate(time.Minute).Add(time.Minute)
+		time.Sleep(start.Sub(time.Now()))
 	}
 }
 
@@ -213,6 +230,7 @@ func (a *app) Get(id StationID) (StationData, error) {
 		return StationData{}, ErrNotFound
 	}
 	value.LastUpdate = a.lastUpdate
+	value.LastDiscountUpdate = a.lastDiscountUpdate
 	return value, nil
 }
 
@@ -599,6 +617,7 @@ func (a *app) updateConfig(note string) error {
 	a.lastUpdate = id
 	return nil
 }
+
 func (a *app) loadPrograms() error {
 	programs, err := a.repo.Programs(nil)
 	if err != nil {
@@ -620,4 +639,172 @@ func (a *app) RelayReportDates(auth *Auth, stationID *StationID, startDate, endD
 
 func (a *app) ResetStationStat(auth *Auth, stationID StationID) error {
 	return a.repo.ResetStationStat(stationID)
+}
+
+func (a *app) AddAdvertisingCampaign(auth *Auth, res AdvertisingCampaign) error {
+	return a.repo.AddAdvertisingCampaign(res)
+}
+func (a *app) EditAdvertisingCampaign(auth *Auth, res AdvertisingCampaign) error {
+	return a.repo.EditAdvertisingCampaign(res)
+}
+func (a *app) DelAdvertisingCampaign(auth *Auth, id int64) error {
+	return a.repo.DelAdvertisingCampaign(id)
+}
+func (a *app) AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaign, error) {
+	return a.repo.AdvertisingCampaignByID(id)
+}
+func (a *app) AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error) {
+	return a.repo.AdvertisingCampaign(startDate, endDate)
+}
+
+func (a *app) currentAdvertisingCampaigns(localTime time.Time) ([]AdvertisingCampaign, error) {
+	campagins, err := a.repo.GetCurrentAdvertisingCampaigns(localTime)
+	if err != nil {
+		return nil, err
+	}
+	validCampagins := []AdvertisingCampaign{}
+	for i := range campagins {
+		if isValidPromotion(localTime, campagins[i]) {
+			validCampagins = append(validCampagins, campagins[i])
+		}
+	}
+	return validCampagins, nil
+}
+
+func (a *app) checkDiscounts(localTime time.Time) (err error) {
+	campagins, err := a.currentAdvertisingCampaigns(localTime)
+	if err != nil {
+		return err
+	}
+	tmpDiscounts := ProgramsDiscount{
+		DefaultDiscount: 0,
+		Discounts:       make(map[int64]int64),
+	}
+
+	for _, campagin := range campagins {
+		if campagin.DefaultDiscount > tmpDiscounts.DefaultDiscount {
+			tmpPrograms := map[int64]int64{}
+			for i, v := range tmpDiscounts.Discounts {
+				if v > campagin.DefaultDiscount {
+					tmpPrograms[i] = v
+				}
+			}
+			tmpDiscounts.Discounts = tmpPrograms
+		}
+		for i, v := range tmpDiscounts.Discounts {
+			if v < campagin.DefaultDiscount {
+				tmpDiscounts.Discounts[i] = campagin.DefaultDiscount
+			}
+		}
+
+		for _, discount := range campagin.DiscountPrograms {
+			if val, ok := tmpDiscounts.Discounts[discount.ProgramID]; ok {
+				tmpDiscounts.Discounts[discount.ProgramID] = max(val, discount.Discount, tmpDiscounts.DefaultDiscount)
+			} else {
+				tmpDiscounts.Discounts[discount.ProgramID] = max(discount.Discount, tmpDiscounts.DefaultDiscount)
+			}
+		}
+		tmpDiscounts.DefaultDiscount = max(campagin.DefaultDiscount, tmpDiscounts.DefaultDiscount)
+	}
+
+	a.programsDiscountMutex.Lock()
+	defer a.programsDiscountMutex.Unlock()
+
+	if !reflect.DeepEqual(a.programsDiscounts, tmpDiscounts) {
+		a.programsDiscounts = tmpDiscounts
+		log.Info("Discounts updated", "Default discount", a.programsDiscounts.DefaultDiscount)
+		a.lastDiscountUpdate = localTime.Unix()
+	}
+
+	return nil
+}
+
+func max(v ...int64) int64 {
+	if len(v) == 0 {
+		return 0
+	}
+	out := v[0]
+	for i := range v {
+		if v[i] > out {
+			out = v[i]
+		}
+	}
+	return out
+}
+func (a *app) GetStationDiscount(id StationID) (discount *StationDiscount, err error) {
+	stationPrograms, err := a.StationProgram(id)
+	if err != nil {
+		return nil, err
+	}
+
+	discount = &StationDiscount{
+		Discounts: []ButtonDiscount{},
+	}
+
+	a.programsDiscountMutex.Lock()
+
+	for _, program := range stationPrograms {
+		if val, ok := a.programsDiscounts.Discounts[int64(program.ProgramID)]; ok {
+			discount.Discounts = append(discount.Discounts, ButtonDiscount{
+				ButtonID: int64(program.ButtonID),
+				Discount: val,
+			})
+		} else {
+			discount.Discounts = append(discount.Discounts, ButtonDiscount{
+				ButtonID: int64(program.ButtonID),
+				Discount: a.programsDiscounts.DefaultDiscount,
+			})
+		}
+	}
+
+	defer a.programsDiscountMutex.Unlock()
+
+	return
+}
+
+func isValidPromotion(timeLocal time.Time, a AdvertisingCampaign) bool {
+	minute := int64(timeLocal.Hour()*60 + timeLocal.Minute())
+	if a.StartMinute != 0 || a.EndMinute != 0 {
+		if (a.StartMinute <= a.EndMinute) && ((a.StartMinute > minute) || (minute >= a.EndMinute)) {
+			return false
+		}
+		if (a.StartMinute > a.EndMinute) && ((a.EndMinute <= minute) && (minute < a.StartMinute)) {
+			return false
+		}
+	}
+	dayOfWeek := timeLocal.Weekday()
+	if (a.StartMinute > a.EndMinute) && (minute < a.StartMinute) {
+		dayOfWeek = timeLocal.Add(-24 * time.Hour).Weekday()
+	}
+	return isValidDayOfWeek(int(dayOfWeek), a.Weekday)
+}
+
+func isValidDayOfWeek(dayOfWeek int, weekDay []string) bool {
+	if len(weekDay) == 0 {
+		return true
+	}
+	dayName := ""
+
+	switch dayOfWeek {
+	case 0:
+		dayName = "sunday"
+	case 1:
+		dayName = "monday"
+	case 2:
+		dayName = "tuesday"
+	case 3:
+		dayName = "wednesday"
+	case 4:
+		dayName = "thursday"
+	case 5:
+		dayName = "friday"
+	case 6:
+		dayName = "saturday"
+	}
+	for _, v := range weekDay {
+		if v == dayName {
+			return true
+		}
+	}
+	return false
 }

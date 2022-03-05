@@ -112,7 +112,7 @@ func (o *OpenStationInternalServerError) readResponse(response runtime.ClientRes
 	return nil
 }
 
-/*OpenStationBody open station body
+/*OpenStationBody ArgOpenStation
 swagger:model OpenStationBody
 */
 type OpenStationBody struct {

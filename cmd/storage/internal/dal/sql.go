@@ -211,8 +211,8 @@ LIMIT 1
 	ORDER BY mc.ctime
 	`
 	sqlAddRelayReport = `
-INSERT INTO relay_report (station_id, program_id, time_on, pump_time_on)  
-VALUES 	(:station_id, :program_id, :time_on, :pump_time_on) RETURNING id
+INSERT INTO relay_report (station_id, program_id, time_on, pump_time_on, ctime)  
+VALUES 	(:station_id, :program_id, :time_on, :pump_time_on, :ctime) RETURNING id
 	`
 	sqlAddRelayStat = `
 INSERT INTO relay_stat (relay_report_id, relay_id, switched_count, total_time_on)
@@ -433,6 +433,146 @@ order by b.button_id
 	sqlLastUpdateConfigGet = `
 	SELECT max(id) as id from update_config
 	`
+	sqlAddAdvertisingCampaign = `
+	INSERT INTO advertising_campaign (
+		default_discount,
+		discount_programs,
+		end_date,
+		end_minute,
+		start_date,
+		start_minute,
+		weekday,
+		enabled,
+		name
+	) VALUES (
+		:default_discount,
+		:discount_programs,
+		:end_date,
+		:end_minute,
+		:start_date,
+		:start_minute,
+		:weekday,
+		:enabled,
+		:name
+	)
+	`
+	sqlEditAdvertisingCampaign = `
+	UPDATE advertising_campaign SET
+		default_discount = :default_discount,
+		discount_programs = :discount_programs,
+		end_date = :end_date,
+		end_minute = :end_minute,
+		start_date = :start_date,
+		start_minute = :start_minute,
+		weekday = :weekday,
+		enabled = :enabled,
+		name = :name
+	WHERE id = :id
+		`
+	sqlDelAdvertisingCampaign = `
+		DELETE FROM advertising_campaign
+		WHERE id = :id
+			`
+
+	sqlAdvertisingCampaignByID = `
+	SELECT 
+		id,
+		default_discount,
+		discount_programs,
+		end_date,
+		end_minute,
+		start_date,
+		start_minute,
+		weekday,
+		enabled,
+		name
+	FROM advertising_campaign
+	WHERE id = :id
+`
+	sqlAdvertisingCampaign = `
+SELECT 
+	id,
+	default_discount,
+	discount_programs,
+	end_date,
+	end_minute,
+	start_date,
+	start_minute,
+	weekday,
+	enabled,
+	name
+FROM advertising_campaign
+WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:end_date >= start_date or CAST(:start_date AS TIMESTAMP) is null)
+`
+	sqlCurrentAdvertisingCampaign = `
+	SELECT
+	id,
+	default_discount,
+	discount_programs,
+	end_date,
+	end_minute,
+	start_date,
+	start_minute,
+	weekday,
+	enabled,
+	name
+	FROM advertising_campaign
+	WHERE enabled AND 
+	start_date <= :current_date and end_date >= :current_date
+	`
+
+	sqlGetConfigInt = `
+	SELECT name, value, description, note
+	FROM config_vars_int
+	WHERE name = UPPER(:name)
+	`
+	sqlGetConfigBool = `
+	SELECT name, value, description, note
+	FROM config_vars_bool
+	WHERE name = UPPER(:name)
+	`
+	sqlGetConfigString = `
+	SELECT name, value, description, note
+	FROM config_vars_string
+	WHERE name = UPPER(:name)
+	`
+
+	sqlSetConfigInt = `
+	INSERT INTO config_vars_int (name, value, description, note)
+		VALUES (UPPER(:name), :value, :description, :note)
+	ON CONFLICT (name)
+	DO
+		UPDATE 
+			SET value = :value,
+			description = :description,
+			note = :note
+	`
+	sqlSetConfigIntIfNotExists = `
+	INSERT INTO config_vars_int (name, value, description, note)
+		VALUES (UPPER(:name), :value, :description, :note)
+	ON CONFLICT (name)
+	DO NOTHING
+	`
+	sqlSetConfigBool = `
+	INSERT INTO config_vars_bool (name, value, description, note)
+		VALUES (UPPER(:name), :value, :description, :note)
+	ON CONFLICT (name)
+	DO
+		UPDATE 
+			SET value = :value,
+			description = :description,
+			note = :note
+	`
+	sqlSetConfigString = `
+	INSERT INTO config_vars_string (name, value, description, note)
+		VALUES (UPPER(:name), :value, :description, :note)
+	ON CONFLICT (name)
+	DO
+		UPDATE 
+			SET value = :value,
+			description = :description,
+			note = :note
+	`
 )
 
 type (
@@ -574,6 +714,7 @@ type (
 		ProgramID  int
 		PumpTimeOn int
 		TimeOn     int
+		Ctime      time.Time
 	}
 	argAddRelayStat struct {
 		RelayReportID int
@@ -742,5 +883,83 @@ type (
 		Electronical int
 		Service      int
 		Ctime        time.Time
+	}
+	argAdvertisingCampaign struct {
+		DefaultDiscount  int64
+		DiscountPrograms string
+		EndDate          time.Time
+		EndMinute        int64
+		ID               int64
+		StartDate        time.Time
+		StartMinute      int64
+		Weekday          string
+		Enabled          bool
+		Name             string
+	}
+	resAdvertisingCampaign struct {
+		DefaultDiscount  int64
+		DiscountPrograms string
+		EndDate          time.Time
+		EndMinute        int64
+		ID               int64
+		StartDate        time.Time
+		StartMinute      int64
+		Weekday          string
+		Enabled          bool
+		Name             string
+	}
+	argDelAdvertisingCampaign struct {
+		ID int64
+	}
+	argAdvertisingCampaignByID struct {
+		ID int64
+	}
+	argAdvertisingCampaignGet struct {
+		StartDate *time.Time
+		EndDate   *time.Time
+	}
+
+	argCurrentAdvertisingCampagins struct {
+		CurrentDate time.Time
+	}
+
+	argGetConfig struct {
+		Name string
+	}
+	argSetConfigInt struct {
+		Name        string
+		Value       int64
+		Description string
+		Note        string
+	}
+	argSetConfigBool struct {
+		Name        string
+		Value       bool
+		Description string
+		Note        string
+	}
+	argSetConfigString struct {
+		Name        string
+		Value       string
+		Description string
+		Note        string
+	}
+	resGetConfigInt struct {
+		Name        string
+		Value       int64
+		Description string
+		Note        string
+	}
+	resGetConfigBool struct {
+		Name        string
+		Value       bool
+		Description string
+		Note        string
+	}
+	resGetConfigString struct {
+		Name        string
+		Value       string
+		Description string
+		Note        string
 	}
 )

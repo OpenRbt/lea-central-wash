@@ -35,17 +35,18 @@ type UpdatePasswordData struct {
 
 // StationData represents current status of a station
 type StationData struct {
-	ID             StationID
-	Name           string
-	ServiceMoney   int
-	LastPing       time.Time
-	RunProgram     time.Time
-	OpenStation    bool
-	CurrentBalance int
-	CurrentProgram int
-	ButtonID       int
-	LastUpdate     int
-	IP             string
+	ID                 StationID
+	Name               string
+	ServiceMoney       int
+	LastPing           time.Time
+	RunProgram         time.Time
+	OpenStation        bool
+	CurrentBalance     int
+	CurrentProgram     int
+	ButtonID           int
+	LastUpdate         int
+	LastDiscountUpdate int64
+	IP                 string
 }
 
 // MoneyReport is just to represent money in a station. All known kinds of money
@@ -118,4 +119,55 @@ type CardReaderConfig struct {
 	CardReaderType string
 	Host           string
 	Port           string
+}
+
+type DiscountProgram struct {
+	Discount  int64
+	ProgramID int64
+}
+
+type AdvertisingCampaign struct {
+	DefaultDiscount  int64
+	DiscountPrograms []DiscountProgram
+	EndDate          time.Time
+	EndMinute        int64
+	ID               int64
+	StartDate        time.Time
+	StartMinute      int64
+	Weekday          []string
+	Enabled          bool
+	Name             string
+}
+
+type ProgramsDiscount struct {
+	DefaultDiscount int64
+	Discounts       map[int64]int64
+}
+
+type ButtonDiscount struct {
+	ButtonID int64
+	Discount int64
+}
+
+type StationDiscount struct {
+	Discounts []ButtonDiscount
+}
+
+type ConfigInt struct {
+	Name        string
+	Value       int64
+	Description string
+	Note        string
+}
+type ConfigBool struct {
+	Name        string
+	Value       bool
+	Description string
+	Note        string
+}
+type ConfigString struct {
+	Name        string
+	Value       string
+	Description string
+	Note        string
 }

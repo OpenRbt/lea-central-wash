@@ -49,7 +49,7 @@ type OpenStation struct {
 func (o *OpenStation) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewOpenStationParams()
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
@@ -62,7 +62,7 @@ func (o *OpenStation) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// OpenStationBody open station body
+// OpenStationBody ArgOpenStation
 //
 // swagger:model OpenStationBody
 type OpenStationBody struct {

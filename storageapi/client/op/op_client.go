@@ -25,113 +25,170 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-// ClientOption is the option for Client methods
-type ClientOption func(*runtime.ClientOperation)
-
 // ClientService is the interface for Client methods
 type ClientService interface {
-	AddServiceAmount(params *AddServiceAmountParams, opts ...ClientOption) (*AddServiceAmountNoContent, error)
+	AddAdvertisingCampaign(params *AddAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter) (*AddAdvertisingCampaignNoContent, error)
 
-	CardReaderConfig(params *CardReaderConfigParams, opts ...ClientOption) (*CardReaderConfigOK, error)
+	AddServiceAmount(params *AddServiceAmountParams) (*AddServiceAmountNoContent, error)
 
-	CardReaderConfigByHash(params *CardReaderConfigByHashParams, opts ...ClientOption) (*CardReaderConfigByHashOK, error)
+	AdvertisingCampaign(params *AdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter) (*AdvertisingCampaignOK, error)
 
-	CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateUserCreated, error)
+	AdvertisingCampaignByID(params *AdvertisingCampaignByIDParams, authInfo runtime.ClientAuthInfoWriter) (*AdvertisingCampaignByIDOK, error)
 
-	DelStation(params *DelStationParams, opts ...ClientOption) (*DelStationNoContent, error)
+	CardReaderConfig(params *CardReaderConfigParams) (*CardReaderConfigOK, error)
 
-	DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteUserNoContent, error)
+	CardReaderConfigByHash(params *CardReaderConfigByHashParams) (*CardReaderConfigByHashOK, error)
 
-	GetPing(params *GetPingParams, opts ...ClientOption) (*GetPingOK, error)
+	CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter) (*CreateUserCreated, error)
 
-	GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetUserOK, error)
+	DelAdvertisingCampaign(params *DelAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter) (*DelAdvertisingCampaignNoContent, error)
 
-	GetUsers(params *GetUsersParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetUsersOK, error)
+	DelStation(params *DelStationParams) (*DelStationNoContent, error)
 
-	Info(params *InfoParams, opts ...ClientOption) (*InfoOK, error)
+	DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteUserNoContent, error)
 
-	Kasse(params *KasseParams, opts ...ClientOption) (*KasseOK, error)
+	EditAdvertisingCampaign(params *EditAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter) (*EditAdvertisingCampaignNoContent, error)
 
-	Load(params *LoadParams, opts ...ClientOption) (*LoadOK, error)
+	GetConfigVarBool(params *GetConfigVarBoolParams, authInfo runtime.ClientAuthInfoWriter) (*GetConfigVarBoolOK, error)
 
-	LoadFromStation(params *LoadFromStationParams, opts ...ClientOption) (*LoadFromStationOK, error)
+	GetConfigVarInt(params *GetConfigVarIntParams, authInfo runtime.ClientAuthInfoWriter) (*GetConfigVarIntOK, error)
 
-	LoadMoney(params *LoadMoneyParams, opts ...ClientOption) (*LoadMoneyOK, error)
+	GetConfigVarString(params *GetConfigVarStringParams, authInfo runtime.ClientAuthInfoWriter) (*GetConfigVarStringOK, error)
 
-	LoadRelay(params *LoadRelayParams, opts ...ClientOption) (*LoadRelayOK, error)
+	GetPing(params *GetPingParams) (*GetPingOK, error)
 
-	OpenStation(params *OpenStationParams, opts ...ClientOption) (*OpenStationNoContent, error)
+	GetStationDiscounts(params *GetStationDiscountsParams) (*GetStationDiscountsOK, error)
 
-	Ping(params *PingParams, opts ...ClientOption) (*PingOK, error)
+	GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoWriter) (*GetUserOK, error)
 
-	PressButton(params *PressButtonParams, opts ...ClientOption) (*PressButtonNoContent, error)
+	GetUsers(params *GetUsersParams, authInfo runtime.ClientAuthInfoWriter) (*GetUsersOK, error)
 
-	Programs(params *ProgramsParams, opts ...ClientOption) (*ProgramsOK, error)
+	Info(params *InfoParams) (*InfoOK, error)
 
-	ResetStationStat(params *ResetStationStatParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResetStationStatNoContent, error)
+	Kasse(params *KasseParams) (*KasseOK, error)
 
-	RunProgram(params *RunProgramParams, opts ...ClientOption) (*RunProgramNoContent, error)
+	Load(params *LoadParams) (*LoadOK, error)
 
-	Save(params *SaveParams, opts ...ClientOption) (*SaveNoContent, error)
+	LoadFromStation(params *LoadFromStationParams) (*LoadFromStationOK, error)
 
-	SaveCollection(params *SaveCollectionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SaveCollectionNoContent, error)
+	LoadMoney(params *LoadMoneyParams) (*LoadMoneyOK, error)
 
-	SaveIfNotExists(params *SaveIfNotExistsParams, opts ...ClientOption) (*SaveIfNotExistsNoContent, error)
+	LoadRelay(params *LoadRelayParams) (*LoadRelayOK, error)
 
-	SaveMoney(params *SaveMoneyParams, opts ...ClientOption) (*SaveMoneyNoContent, error)
+	OpenStation(params *OpenStationParams) (*OpenStationNoContent, error)
 
-	SaveRelay(params *SaveRelayParams, opts ...ClientOption) (*SaveRelayNoContent, error)
+	Ping(params *PingParams) (*PingOK, error)
 
-	SetCardReaderConfig(params *SetCardReaderConfigParams, opts ...ClientOption) (*SetCardReaderConfigNoContent, error)
+	PressButton(params *PressButtonParams) (*PressButtonNoContent, error)
 
-	SetKasse(params *SetKasseParams, opts ...ClientOption) (*SetKasseNoContent, error)
+	Programs(params *ProgramsParams) (*ProgramsOK, error)
 
-	SetProgram(params *SetProgramParams, opts ...ClientOption) (*SetProgramNoContent, error)
+	ResetStationStat(params *ResetStationStatParams, authInfo runtime.ClientAuthInfoWriter) (*ResetStationStatNoContent, error)
 
-	SetStation(params *SetStationParams, opts ...ClientOption) (*SetStationNoContent, error)
+	RunProgram(params *RunProgramParams) (*RunProgramNoContent, error)
 
-	SetStationButton(params *SetStationButtonParams, opts ...ClientOption) (*SetStationButtonNoContent, error)
+	Save(params *SaveParams) (*SaveNoContent, error)
 
-	Station(params *StationParams, opts ...ClientOption) (*StationOK, error)
+	SaveCollection(params *SaveCollectionParams, authInfo runtime.ClientAuthInfoWriter) (*SaveCollectionNoContent, error)
 
-	StationButton(params *StationButtonParams, opts ...ClientOption) (*StationButtonOK, error)
+	SaveIfNotExists(params *SaveIfNotExistsParams) (*SaveIfNotExistsNoContent, error)
 
-	StationByHash(params *StationByHashParams, opts ...ClientOption) (*StationByHashOK, error)
+	SaveMoney(params *SaveMoneyParams) (*SaveMoneyNoContent, error)
 
-	StationCollectionReportDates(params *StationCollectionReportDatesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationCollectionReportDatesOK, error)
+	SaveRelay(params *SaveRelayParams) (*SaveRelayNoContent, error)
 
-	StationProgramByHash(params *StationProgramByHashParams, opts ...ClientOption) (*StationProgramByHashOK, error)
+	SetCardReaderConfig(params *SetCardReaderConfigParams) (*SetCardReaderConfigNoContent, error)
 
-	StationReportCurrentMoney(params *StationReportCurrentMoneyParams, opts ...ClientOption) (*StationReportCurrentMoneyOK, error)
+	SetConfigVarBool(params *SetConfigVarBoolParams, authInfo runtime.ClientAuthInfoWriter) (*SetConfigVarBoolNoContent, error)
 
-	StationReportDates(params *StationReportDatesParams, opts ...ClientOption) (*StationReportDatesOK, error)
+	SetConfigVarInt(params *SetConfigVarIntParams, authInfo runtime.ClientAuthInfoWriter) (*SetConfigVarIntNoContent, error)
 
-	StationStatCurrent(params *StationStatCurrentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationStatCurrentOK, error)
+	SetConfigVarString(params *SetConfigVarStringParams, authInfo runtime.ClientAuthInfoWriter) (*SetConfigVarStringNoContent, error)
 
-	StationStatDates(params *StationStatDatesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationStatDatesOK, error)
+	SetKasse(params *SetKasseParams) (*SetKasseNoContent, error)
 
-	StationsVariables(params *StationsVariablesParams, opts ...ClientOption) (*StationsVariablesOK, error)
+	SetProgram(params *SetProgramParams) (*SetProgramNoContent, error)
 
-	Status(params *StatusParams, opts ...ClientOption) (*StatusOK, error)
+	SetStation(params *SetStationParams) (*SetStationNoContent, error)
 
-	StatusCollection(params *StatusCollectionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StatusCollectionOK, error)
+	SetStationButton(params *SetStationButtonParams) (*SetStationButtonNoContent, error)
 
-	UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateUserCreated, error)
+	Station(params *StationParams) (*StationOK, error)
 
-	UpdateUserPassword(params *UpdateUserPasswordParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateUserPasswordCreated, error)
+	StationButton(params *StationButtonParams) (*StationButtonOK, error)
+
+	StationByHash(params *StationByHashParams) (*StationByHashOK, error)
+
+	StationCollectionReportDates(params *StationCollectionReportDatesParams, authInfo runtime.ClientAuthInfoWriter) (*StationCollectionReportDatesOK, error)
+
+	StationProgramByHash(params *StationProgramByHashParams) (*StationProgramByHashOK, error)
+
+	StationReportCurrentMoney(params *StationReportCurrentMoneyParams) (*StationReportCurrentMoneyOK, error)
+
+	StationReportDates(params *StationReportDatesParams) (*StationReportDatesOK, error)
+
+	StationStatCurrent(params *StationStatCurrentParams, authInfo runtime.ClientAuthInfoWriter) (*StationStatCurrentOK, error)
+
+	StationStatDates(params *StationStatDatesParams, authInfo runtime.ClientAuthInfoWriter) (*StationStatDatesOK, error)
+
+	StationsVariables(params *StationsVariablesParams) (*StationsVariablesOK, error)
+
+	Status(params *StatusParams) (*StatusOK, error)
+
+	StatusCollection(params *StatusCollectionParams, authInfo runtime.ClientAuthInfoWriter) (*StatusCollectionOK, error)
+
+	UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateUserCreated, error)
+
+	UpdateUserPassword(params *UpdateUserPasswordParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateUserPasswordCreated, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
+  AddAdvertisingCampaign add advertising campaign API
+*/
+func (a *Client) AddAdvertisingCampaign(params *AddAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter) (*AddAdvertisingCampaignNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewAddAdvertisingCampaignParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "addAdvertisingCampaign",
+		Method:             "POST",
+		PathPattern:        "/add-advertising-campaign",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &AddAdvertisingCampaignReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*AddAdvertisingCampaignNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for addAdvertisingCampaign: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   AddServiceAmount add service amount API
 */
-func (a *Client) AddServiceAmount(params *AddServiceAmountParams, opts ...ClientOption) (*AddServiceAmountNoContent, error) {
+func (a *Client) AddServiceAmount(params *AddServiceAmountParams) (*AddServiceAmountNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewAddServiceAmountParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "addServiceAmount",
 		Method:             "POST",
 		PathPattern:        "/add-service-amount",
@@ -142,12 +199,7 @@ func (a *Client) AddServiceAmount(params *AddServiceAmountParams, opts ...Client
 		Reader:             &AddServiceAmountReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -162,14 +214,85 @@ func (a *Client) AddServiceAmount(params *AddServiceAmountParams, opts ...Client
 }
 
 /*
+  AdvertisingCampaign advertising campaign API
+*/
+func (a *Client) AdvertisingCampaign(params *AdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter) (*AdvertisingCampaignOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewAdvertisingCampaignParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "advertisingCampaign",
+		Method:             "POST",
+		PathPattern:        "/advertising-campaign",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &AdvertisingCampaignReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*AdvertisingCampaignOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for advertisingCampaign: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  AdvertisingCampaignByID advertising campaign by ID API
+*/
+func (a *Client) AdvertisingCampaignByID(params *AdvertisingCampaignByIDParams, authInfo runtime.ClientAuthInfoWriter) (*AdvertisingCampaignByIDOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewAdvertisingCampaignByIDParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "advertisingCampaignByID",
+		Method:             "POST",
+		PathPattern:        "/advertising-campaign-by-id",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &AdvertisingCampaignByIDReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*AdvertisingCampaignByIDOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for advertisingCampaignByID: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   CardReaderConfig card reader config API
 */
-func (a *Client) CardReaderConfig(params *CardReaderConfigParams, opts ...ClientOption) (*CardReaderConfigOK, error) {
+func (a *Client) CardReaderConfig(params *CardReaderConfigParams) (*CardReaderConfigOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCardReaderConfigParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "cardReaderConfig",
 		Method:             "POST",
 		PathPattern:        "/card-reader-config",
@@ -180,12 +303,7 @@ func (a *Client) CardReaderConfig(params *CardReaderConfigParams, opts ...Client
 		Reader:             &CardReaderConfigReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -202,12 +320,13 @@ func (a *Client) CardReaderConfig(params *CardReaderConfigParams, opts ...Client
 /*
   CardReaderConfigByHash card reader config by hash API
 */
-func (a *Client) CardReaderConfigByHash(params *CardReaderConfigByHashParams, opts ...ClientOption) (*CardReaderConfigByHashOK, error) {
+func (a *Client) CardReaderConfigByHash(params *CardReaderConfigByHashParams) (*CardReaderConfigByHashOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCardReaderConfigByHashParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "cardReaderConfigByHash",
 		Method:             "POST",
 		PathPattern:        "/card-reader-config-by-hash",
@@ -218,12 +337,7 @@ func (a *Client) CardReaderConfigByHash(params *CardReaderConfigByHashParams, op
 		Reader:             &CardReaderConfigByHashReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -240,12 +354,13 @@ func (a *Client) CardReaderConfigByHash(params *CardReaderConfigByHashParams, op
 /*
   CreateUser create user API
 */
-func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateUserCreated, error) {
+func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter) (*CreateUserCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateUserParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "createUser",
 		Method:             "POST",
 		PathPattern:        "/user",
@@ -257,12 +372,7 @@ func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAut
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -277,14 +387,50 @@ func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAut
 }
 
 /*
+  DelAdvertisingCampaign del advertising campaign API
+*/
+func (a *Client) DelAdvertisingCampaign(params *DelAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter) (*DelAdvertisingCampaignNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewDelAdvertisingCampaignParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "delAdvertisingCampaign",
+		Method:             "POST",
+		PathPattern:        "/del-advertising-campaign",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &DelAdvertisingCampaignReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*DelAdvertisingCampaignNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for delAdvertisingCampaign: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   DelStation del station API
 */
-func (a *Client) DelStation(params *DelStationParams, opts ...ClientOption) (*DelStationNoContent, error) {
+func (a *Client) DelStation(params *DelStationParams) (*DelStationNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDelStationParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "delStation",
 		Method:             "POST",
 		PathPattern:        "/del-station",
@@ -295,12 +441,7 @@ func (a *Client) DelStation(params *DelStationParams, opts ...ClientOption) (*De
 		Reader:             &DelStationReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -317,12 +458,13 @@ func (a *Client) DelStation(params *DelStationParams, opts ...ClientOption) (*De
 /*
   DeleteUser delete user API
 */
-func (a *Client) DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteUserNoContent, error) {
+func (a *Client) DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteUserNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeleteUserParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "deleteUser",
 		Method:             "DELETE",
 		PathPattern:        "/user",
@@ -334,12 +476,7 @@ func (a *Client) DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAut
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -354,14 +491,155 @@ func (a *Client) DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAut
 }
 
 /*
+  EditAdvertisingCampaign edit advertising campaign API
+*/
+func (a *Client) EditAdvertisingCampaign(params *EditAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter) (*EditAdvertisingCampaignNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewEditAdvertisingCampaignParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "editAdvertisingCampaign",
+		Method:             "POST",
+		PathPattern:        "/edit-advertising-campaign",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &EditAdvertisingCampaignReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*EditAdvertisingCampaignNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for editAdvertisingCampaign: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  GetConfigVarBool get config var bool API
+*/
+func (a *Client) GetConfigVarBool(params *GetConfigVarBoolParams, authInfo runtime.ClientAuthInfoWriter) (*GetConfigVarBoolOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetConfigVarBoolParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getConfigVarBool",
+		Method:             "POST",
+		PathPattern:        "/get-config-var-bool",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetConfigVarBoolReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetConfigVarBoolOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getConfigVarBool: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  GetConfigVarInt get config var int API
+*/
+func (a *Client) GetConfigVarInt(params *GetConfigVarIntParams, authInfo runtime.ClientAuthInfoWriter) (*GetConfigVarIntOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetConfigVarIntParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getConfigVarInt",
+		Method:             "POST",
+		PathPattern:        "/get-config-var-int",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetConfigVarIntReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetConfigVarIntOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getConfigVarInt: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  GetConfigVarString get config var string API
+*/
+func (a *Client) GetConfigVarString(params *GetConfigVarStringParams, authInfo runtime.ClientAuthInfoWriter) (*GetConfigVarStringOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetConfigVarStringParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getConfigVarString",
+		Method:             "POST",
+		PathPattern:        "/get-config-var-string",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetConfigVarStringReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetConfigVarStringOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getConfigVarString: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   GetPing get ping API
 */
-func (a *Client) GetPing(params *GetPingParams, opts ...ClientOption) (*GetPingOK, error) {
+func (a *Client) GetPing(params *GetPingParams) (*GetPingOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetPingParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getPing",
 		Method:             "GET",
 		PathPattern:        "/ping",
@@ -372,12 +650,7 @@ func (a *Client) GetPing(params *GetPingParams, opts ...ClientOption) (*GetPingO
 		Reader:             &GetPingReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -392,14 +665,49 @@ func (a *Client) GetPing(params *GetPingParams, opts ...ClientOption) (*GetPingO
 }
 
 /*
+  GetStationDiscounts get station discounts API
+*/
+func (a *Client) GetStationDiscounts(params *GetStationDiscountsParams) (*GetStationDiscountsOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetStationDiscountsParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getStationDiscounts",
+		Method:             "POST",
+		PathPattern:        "/get-station-discounts",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetStationDiscountsReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetStationDiscountsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getStationDiscounts: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   GetUser get user API
 */
-func (a *Client) GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetUserOK, error) {
+func (a *Client) GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoWriter) (*GetUserOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetUserParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getUser",
 		Method:             "GET",
 		PathPattern:        "/user",
@@ -411,12 +719,7 @@ func (a *Client) GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoW
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -433,12 +736,13 @@ func (a *Client) GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoW
 /*
   GetUsers get users API
 */
-func (a *Client) GetUsers(params *GetUsersParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetUsersOK, error) {
+func (a *Client) GetUsers(params *GetUsersParams, authInfo runtime.ClientAuthInfoWriter) (*GetUsersOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetUsersParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getUsers",
 		Method:             "GET",
 		PathPattern:        "/users",
@@ -450,12 +754,7 @@ func (a *Client) GetUsers(params *GetUsersParams, authInfo runtime.ClientAuthInf
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -472,12 +771,13 @@ func (a *Client) GetUsers(params *GetUsersParams, authInfo runtime.ClientAuthInf
 /*
   Info info API
 */
-func (a *Client) Info(params *InfoParams, opts ...ClientOption) (*InfoOK, error) {
+func (a *Client) Info(params *InfoParams) (*InfoOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewInfoParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "info",
 		Method:             "GET",
 		PathPattern:        "/info",
@@ -488,12 +788,7 @@ func (a *Client) Info(params *InfoParams, opts ...ClientOption) (*InfoOK, error)
 		Reader:             &InfoReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -510,12 +805,13 @@ func (a *Client) Info(params *InfoParams, opts ...ClientOption) (*InfoOK, error)
 /*
   Kasse kasse API
 */
-func (a *Client) Kasse(params *KasseParams, opts ...ClientOption) (*KasseOK, error) {
+func (a *Client) Kasse(params *KasseParams) (*KasseOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewKasseParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "kasse",
 		Method:             "POST",
 		PathPattern:        "/kasse",
@@ -526,12 +822,7 @@ func (a *Client) Kasse(params *KasseParams, opts ...ClientOption) (*KasseOK, err
 		Reader:             &KasseReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -548,12 +839,13 @@ func (a *Client) Kasse(params *KasseParams, opts ...ClientOption) (*KasseOK, err
 /*
   Load load API
 */
-func (a *Client) Load(params *LoadParams, opts ...ClientOption) (*LoadOK, error) {
+func (a *Client) Load(params *LoadParams) (*LoadOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewLoadParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "load",
 		Method:             "POST",
 		PathPattern:        "/load",
@@ -564,12 +856,7 @@ func (a *Client) Load(params *LoadParams, opts ...ClientOption) (*LoadOK, error)
 		Reader:             &LoadReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -586,12 +873,13 @@ func (a *Client) Load(params *LoadParams, opts ...ClientOption) (*LoadOK, error)
 /*
   LoadFromStation load from station API
 */
-func (a *Client) LoadFromStation(params *LoadFromStationParams, opts ...ClientOption) (*LoadFromStationOK, error) {
+func (a *Client) LoadFromStation(params *LoadFromStationParams) (*LoadFromStationOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewLoadFromStationParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "loadFromStation",
 		Method:             "POST",
 		PathPattern:        "/load-from-station",
@@ -602,12 +890,7 @@ func (a *Client) LoadFromStation(params *LoadFromStationParams, opts ...ClientOp
 		Reader:             &LoadFromStationReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -624,12 +907,13 @@ func (a *Client) LoadFromStation(params *LoadFromStationParams, opts ...ClientOp
 /*
   LoadMoney load money API
 */
-func (a *Client) LoadMoney(params *LoadMoneyParams, opts ...ClientOption) (*LoadMoneyOK, error) {
+func (a *Client) LoadMoney(params *LoadMoneyParams) (*LoadMoneyOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewLoadMoneyParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "loadMoney",
 		Method:             "POST",
 		PathPattern:        "/load-money",
@@ -640,12 +924,7 @@ func (a *Client) LoadMoney(params *LoadMoneyParams, opts ...ClientOption) (*Load
 		Reader:             &LoadMoneyReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -662,12 +941,13 @@ func (a *Client) LoadMoney(params *LoadMoneyParams, opts ...ClientOption) (*Load
 /*
   LoadRelay load relay API
 */
-func (a *Client) LoadRelay(params *LoadRelayParams, opts ...ClientOption) (*LoadRelayOK, error) {
+func (a *Client) LoadRelay(params *LoadRelayParams) (*LoadRelayOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewLoadRelayParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "loadRelay",
 		Method:             "POST",
 		PathPattern:        "/load-relay",
@@ -678,12 +958,7 @@ func (a *Client) LoadRelay(params *LoadRelayParams, opts ...ClientOption) (*Load
 		Reader:             &LoadRelayReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -700,12 +975,13 @@ func (a *Client) LoadRelay(params *LoadRelayParams, opts ...ClientOption) (*Load
 /*
   OpenStation open station API
 */
-func (a *Client) OpenStation(params *OpenStationParams, opts ...ClientOption) (*OpenStationNoContent, error) {
+func (a *Client) OpenStation(params *OpenStationParams) (*OpenStationNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewOpenStationParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "openStation",
 		Method:             "POST",
 		PathPattern:        "/open-station",
@@ -716,12 +992,7 @@ func (a *Client) OpenStation(params *OpenStationParams, opts ...ClientOption) (*
 		Reader:             &OpenStationReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -738,12 +1009,13 @@ func (a *Client) OpenStation(params *OpenStationParams, opts ...ClientOption) (*
 /*
   Ping ping API
 */
-func (a *Client) Ping(params *PingParams, opts ...ClientOption) (*PingOK, error) {
+func (a *Client) Ping(params *PingParams) (*PingOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewPingParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "ping",
 		Method:             "POST",
 		PathPattern:        "/ping",
@@ -754,12 +1026,7 @@ func (a *Client) Ping(params *PingParams, opts ...ClientOption) (*PingOK, error)
 		Reader:             &PingReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -776,12 +1043,13 @@ func (a *Client) Ping(params *PingParams, opts ...ClientOption) (*PingOK, error)
 /*
   PressButton press button API
 */
-func (a *Client) PressButton(params *PressButtonParams, opts ...ClientOption) (*PressButtonNoContent, error) {
+func (a *Client) PressButton(params *PressButtonParams) (*PressButtonNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewPressButtonParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "pressButton",
 		Method:             "POST",
 		PathPattern:        "/press-button",
@@ -792,12 +1060,7 @@ func (a *Client) PressButton(params *PressButtonParams, opts ...ClientOption) (*
 		Reader:             &PressButtonReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -814,12 +1077,13 @@ func (a *Client) PressButton(params *PressButtonParams, opts ...ClientOption) (*
 /*
   Programs programs API
 */
-func (a *Client) Programs(params *ProgramsParams, opts ...ClientOption) (*ProgramsOK, error) {
+func (a *Client) Programs(params *ProgramsParams) (*ProgramsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewProgramsParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "programs",
 		Method:             "POST",
 		PathPattern:        "/programs",
@@ -830,12 +1094,7 @@ func (a *Client) Programs(params *ProgramsParams, opts ...ClientOption) (*Progra
 		Reader:             &ProgramsReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -852,12 +1111,13 @@ func (a *Client) Programs(params *ProgramsParams, opts ...ClientOption) (*Progra
 /*
   ResetStationStat reset station stat API
 */
-func (a *Client) ResetStationStat(params *ResetStationStatParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResetStationStatNoContent, error) {
+func (a *Client) ResetStationStat(params *ResetStationStatParams, authInfo runtime.ClientAuthInfoWriter) (*ResetStationStatNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewResetStationStatParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "resetStationStat",
 		Method:             "POST",
 		PathPattern:        "/reset-station-stat",
@@ -869,12 +1129,7 @@ func (a *Client) ResetStationStat(params *ResetStationStatParams, authInfo runti
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -891,12 +1146,13 @@ func (a *Client) ResetStationStat(params *ResetStationStatParams, authInfo runti
 /*
   RunProgram run program API
 */
-func (a *Client) RunProgram(params *RunProgramParams, opts ...ClientOption) (*RunProgramNoContent, error) {
+func (a *Client) RunProgram(params *RunProgramParams) (*RunProgramNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewRunProgramParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "runProgram",
 		Method:             "POST",
 		PathPattern:        "/run-program",
@@ -907,12 +1163,7 @@ func (a *Client) RunProgram(params *RunProgramParams, opts ...ClientOption) (*Ru
 		Reader:             &RunProgramReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -929,12 +1180,13 @@ func (a *Client) RunProgram(params *RunProgramParams, opts ...ClientOption) (*Ru
 /*
   Save save API
 */
-func (a *Client) Save(params *SaveParams, opts ...ClientOption) (*SaveNoContent, error) {
+func (a *Client) Save(params *SaveParams) (*SaveNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSaveParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "save",
 		Method:             "POST",
 		PathPattern:        "/save",
@@ -945,12 +1197,7 @@ func (a *Client) Save(params *SaveParams, opts ...ClientOption) (*SaveNoContent,
 		Reader:             &SaveReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -967,12 +1214,13 @@ func (a *Client) Save(params *SaveParams, opts ...ClientOption) (*SaveNoContent,
 /*
   SaveCollection save collection API
 */
-func (a *Client) SaveCollection(params *SaveCollectionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SaveCollectionNoContent, error) {
+func (a *Client) SaveCollection(params *SaveCollectionParams, authInfo runtime.ClientAuthInfoWriter) (*SaveCollectionNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSaveCollectionParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "saveCollection",
 		Method:             "POST",
 		PathPattern:        "/save-collection",
@@ -984,12 +1232,7 @@ func (a *Client) SaveCollection(params *SaveCollectionParams, authInfo runtime.C
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1006,12 +1249,13 @@ func (a *Client) SaveCollection(params *SaveCollectionParams, authInfo runtime.C
 /*
   SaveIfNotExists save if not exists API
 */
-func (a *Client) SaveIfNotExists(params *SaveIfNotExistsParams, opts ...ClientOption) (*SaveIfNotExistsNoContent, error) {
+func (a *Client) SaveIfNotExists(params *SaveIfNotExistsParams) (*SaveIfNotExistsNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSaveIfNotExistsParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "saveIfNotExists",
 		Method:             "POST",
 		PathPattern:        "/save-if-not-exists",
@@ -1022,12 +1266,7 @@ func (a *Client) SaveIfNotExists(params *SaveIfNotExistsParams, opts ...ClientOp
 		Reader:             &SaveIfNotExistsReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1044,12 +1283,13 @@ func (a *Client) SaveIfNotExists(params *SaveIfNotExistsParams, opts ...ClientOp
 /*
   SaveMoney save money API
 */
-func (a *Client) SaveMoney(params *SaveMoneyParams, opts ...ClientOption) (*SaveMoneyNoContent, error) {
+func (a *Client) SaveMoney(params *SaveMoneyParams) (*SaveMoneyNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSaveMoneyParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "saveMoney",
 		Method:             "POST",
 		PathPattern:        "/save-money",
@@ -1060,12 +1300,7 @@ func (a *Client) SaveMoney(params *SaveMoneyParams, opts ...ClientOption) (*Save
 		Reader:             &SaveMoneyReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1082,12 +1317,13 @@ func (a *Client) SaveMoney(params *SaveMoneyParams, opts ...ClientOption) (*Save
 /*
   SaveRelay save relay API
 */
-func (a *Client) SaveRelay(params *SaveRelayParams, opts ...ClientOption) (*SaveRelayNoContent, error) {
+func (a *Client) SaveRelay(params *SaveRelayParams) (*SaveRelayNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSaveRelayParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "saveRelay",
 		Method:             "POST",
 		PathPattern:        "/save-relay",
@@ -1098,12 +1334,7 @@ func (a *Client) SaveRelay(params *SaveRelayParams, opts ...ClientOption) (*Save
 		Reader:             &SaveRelayReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1120,12 +1351,13 @@ func (a *Client) SaveRelay(params *SaveRelayParams, opts ...ClientOption) (*Save
 /*
   SetCardReaderConfig set card reader config API
 */
-func (a *Client) SetCardReaderConfig(params *SetCardReaderConfigParams, opts ...ClientOption) (*SetCardReaderConfigNoContent, error) {
+func (a *Client) SetCardReaderConfig(params *SetCardReaderConfigParams) (*SetCardReaderConfigNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSetCardReaderConfigParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "setCardReaderConfig",
 		Method:             "POST",
 		PathPattern:        "/set-card-reader-config",
@@ -1136,12 +1368,7 @@ func (a *Client) SetCardReaderConfig(params *SetCardReaderConfigParams, opts ...
 		Reader:             &SetCardReaderConfigReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1156,14 +1383,120 @@ func (a *Client) SetCardReaderConfig(params *SetCardReaderConfigParams, opts ...
 }
 
 /*
+  SetConfigVarBool set config var bool API
+*/
+func (a *Client) SetConfigVarBool(params *SetConfigVarBoolParams, authInfo runtime.ClientAuthInfoWriter) (*SetConfigVarBoolNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetConfigVarBoolParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "setConfigVarBool",
+		Method:             "POST",
+		PathPattern:        "/set-config-var-bool",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetConfigVarBoolReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*SetConfigVarBoolNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setConfigVarBool: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  SetConfigVarInt set config var int API
+*/
+func (a *Client) SetConfigVarInt(params *SetConfigVarIntParams, authInfo runtime.ClientAuthInfoWriter) (*SetConfigVarIntNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetConfigVarIntParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "setConfigVarInt",
+		Method:             "POST",
+		PathPattern:        "/set-config-var-int",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetConfigVarIntReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*SetConfigVarIntNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setConfigVarInt: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  SetConfigVarString set config var string API
+*/
+func (a *Client) SetConfigVarString(params *SetConfigVarStringParams, authInfo runtime.ClientAuthInfoWriter) (*SetConfigVarStringNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetConfigVarStringParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "setConfigVarString",
+		Method:             "POST",
+		PathPattern:        "/set-config-var-string",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetConfigVarStringReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*SetConfigVarStringNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setConfigVarString: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   SetKasse set kasse API
 */
-func (a *Client) SetKasse(params *SetKasseParams, opts ...ClientOption) (*SetKasseNoContent, error) {
+func (a *Client) SetKasse(params *SetKasseParams) (*SetKasseNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSetKasseParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "setKasse",
 		Method:             "POST",
 		PathPattern:        "/set-kasse",
@@ -1174,12 +1507,7 @@ func (a *Client) SetKasse(params *SetKasseParams, opts ...ClientOption) (*SetKas
 		Reader:             &SetKasseReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1196,12 +1524,13 @@ func (a *Client) SetKasse(params *SetKasseParams, opts ...ClientOption) (*SetKas
 /*
   SetProgram set program API
 */
-func (a *Client) SetProgram(params *SetProgramParams, opts ...ClientOption) (*SetProgramNoContent, error) {
+func (a *Client) SetProgram(params *SetProgramParams) (*SetProgramNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSetProgramParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "setProgram",
 		Method:             "POST",
 		PathPattern:        "/set-program",
@@ -1212,12 +1541,7 @@ func (a *Client) SetProgram(params *SetProgramParams, opts ...ClientOption) (*Se
 		Reader:             &SetProgramReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1234,12 +1558,13 @@ func (a *Client) SetProgram(params *SetProgramParams, opts ...ClientOption) (*Se
 /*
   SetStation set station API
 */
-func (a *Client) SetStation(params *SetStationParams, opts ...ClientOption) (*SetStationNoContent, error) {
+func (a *Client) SetStation(params *SetStationParams) (*SetStationNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSetStationParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "setStation",
 		Method:             "POST",
 		PathPattern:        "/set-station",
@@ -1250,12 +1575,7 @@ func (a *Client) SetStation(params *SetStationParams, opts ...ClientOption) (*Se
 		Reader:             &SetStationReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1272,12 +1592,13 @@ func (a *Client) SetStation(params *SetStationParams, opts ...ClientOption) (*Se
 /*
   SetStationButton set station button API
 */
-func (a *Client) SetStationButton(params *SetStationButtonParams, opts ...ClientOption) (*SetStationButtonNoContent, error) {
+func (a *Client) SetStationButton(params *SetStationButtonParams) (*SetStationButtonNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSetStationButtonParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "setStationButton",
 		Method:             "POST",
 		PathPattern:        "/set-station-button",
@@ -1288,12 +1609,7 @@ func (a *Client) SetStationButton(params *SetStationButtonParams, opts ...Client
 		Reader:             &SetStationButtonReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1310,12 +1626,13 @@ func (a *Client) SetStationButton(params *SetStationButtonParams, opts ...Client
 /*
   Station station API
 */
-func (a *Client) Station(params *StationParams, opts ...ClientOption) (*StationOK, error) {
+func (a *Client) Station(params *StationParams) (*StationOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "station",
 		Method:             "POST",
 		PathPattern:        "/station",
@@ -1326,12 +1643,7 @@ func (a *Client) Station(params *StationParams, opts ...ClientOption) (*StationO
 		Reader:             &StationReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1348,12 +1660,13 @@ func (a *Client) Station(params *StationParams, opts ...ClientOption) (*StationO
 /*
   StationButton station button API
 */
-func (a *Client) StationButton(params *StationButtonParams, opts ...ClientOption) (*StationButtonOK, error) {
+func (a *Client) StationButton(params *StationButtonParams) (*StationButtonOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationButtonParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "stationButton",
 		Method:             "POST",
 		PathPattern:        "/station-button",
@@ -1364,12 +1677,7 @@ func (a *Client) StationButton(params *StationButtonParams, opts ...ClientOption
 		Reader:             &StationButtonReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1386,12 +1694,13 @@ func (a *Client) StationButton(params *StationButtonParams, opts ...ClientOption
 /*
   StationByHash station by hash API
 */
-func (a *Client) StationByHash(params *StationByHashParams, opts ...ClientOption) (*StationByHashOK, error) {
+func (a *Client) StationByHash(params *StationByHashParams) (*StationByHashOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationByHashParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "stationByHash",
 		Method:             "POST",
 		PathPattern:        "/station-by-hash",
@@ -1402,12 +1711,7 @@ func (a *Client) StationByHash(params *StationByHashParams, opts ...ClientOption
 		Reader:             &StationByHashReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1424,12 +1728,13 @@ func (a *Client) StationByHash(params *StationByHashParams, opts ...ClientOption
 /*
   StationCollectionReportDates station collection report dates API
 */
-func (a *Client) StationCollectionReportDates(params *StationCollectionReportDatesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationCollectionReportDatesOK, error) {
+func (a *Client) StationCollectionReportDates(params *StationCollectionReportDatesParams, authInfo runtime.ClientAuthInfoWriter) (*StationCollectionReportDatesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationCollectionReportDatesParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "stationCollectionReportDates",
 		Method:             "POST",
 		PathPattern:        "/station-collection-report-dates",
@@ -1441,12 +1746,7 @@ func (a *Client) StationCollectionReportDates(params *StationCollectionReportDat
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1463,12 +1763,13 @@ func (a *Client) StationCollectionReportDates(params *StationCollectionReportDat
 /*
   StationProgramByHash station program by hash API
 */
-func (a *Client) StationProgramByHash(params *StationProgramByHashParams, opts ...ClientOption) (*StationProgramByHashOK, error) {
+func (a *Client) StationProgramByHash(params *StationProgramByHashParams) (*StationProgramByHashOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationProgramByHashParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "stationProgramByHash",
 		Method:             "POST",
 		PathPattern:        "/station-program-by-hash",
@@ -1479,12 +1780,7 @@ func (a *Client) StationProgramByHash(params *StationProgramByHashParams, opts .
 		Reader:             &StationProgramByHashReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1501,12 +1797,13 @@ func (a *Client) StationProgramByHash(params *StationProgramByHashParams, opts .
 /*
   StationReportCurrentMoney station report current money API
 */
-func (a *Client) StationReportCurrentMoney(params *StationReportCurrentMoneyParams, opts ...ClientOption) (*StationReportCurrentMoneyOK, error) {
+func (a *Client) StationReportCurrentMoney(params *StationReportCurrentMoneyParams) (*StationReportCurrentMoneyOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationReportCurrentMoneyParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "stationReportCurrentMoney",
 		Method:             "POST",
 		PathPattern:        "/station-report-current-money",
@@ -1517,12 +1814,7 @@ func (a *Client) StationReportCurrentMoney(params *StationReportCurrentMoneyPara
 		Reader:             &StationReportCurrentMoneyReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1539,12 +1831,13 @@ func (a *Client) StationReportCurrentMoney(params *StationReportCurrentMoneyPara
 /*
   StationReportDates station report dates API
 */
-func (a *Client) StationReportDates(params *StationReportDatesParams, opts ...ClientOption) (*StationReportDatesOK, error) {
+func (a *Client) StationReportDates(params *StationReportDatesParams) (*StationReportDatesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationReportDatesParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "stationReportDates",
 		Method:             "POST",
 		PathPattern:        "/station-report-dates",
@@ -1555,12 +1848,7 @@ func (a *Client) StationReportDates(params *StationReportDatesParams, opts ...Cl
 		Reader:             &StationReportDatesReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1577,12 +1865,13 @@ func (a *Client) StationReportDates(params *StationReportDatesParams, opts ...Cl
 /*
   StationStatCurrent station stat current API
 */
-func (a *Client) StationStatCurrent(params *StationStatCurrentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationStatCurrentOK, error) {
+func (a *Client) StationStatCurrent(params *StationStatCurrentParams, authInfo runtime.ClientAuthInfoWriter) (*StationStatCurrentOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationStatCurrentParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "stationStatCurrent",
 		Method:             "POST",
 		PathPattern:        "/station-stat-current",
@@ -1594,12 +1883,7 @@ func (a *Client) StationStatCurrent(params *StationStatCurrentParams, authInfo r
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1616,12 +1900,13 @@ func (a *Client) StationStatCurrent(params *StationStatCurrentParams, authInfo r
 /*
   StationStatDates station stat dates API
 */
-func (a *Client) StationStatDates(params *StationStatDatesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationStatDatesOK, error) {
+func (a *Client) StationStatDates(params *StationStatDatesParams, authInfo runtime.ClientAuthInfoWriter) (*StationStatDatesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationStatDatesParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "stationStatDates",
 		Method:             "POST",
 		PathPattern:        "/station-stat-dates",
@@ -1633,12 +1918,7 @@ func (a *Client) StationStatDates(params *StationStatDatesParams, authInfo runti
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1655,12 +1935,13 @@ func (a *Client) StationStatDates(params *StationStatDatesParams, authInfo runti
 /*
   StationsVariables stations variables API
 */
-func (a *Client) StationsVariables(params *StationsVariablesParams, opts ...ClientOption) (*StationsVariablesOK, error) {
+func (a *Client) StationsVariables(params *StationsVariablesParams) (*StationsVariablesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStationsVariablesParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "stationsVariables",
 		Method:             "POST",
 		PathPattern:        "/stations-variables",
@@ -1671,12 +1952,7 @@ func (a *Client) StationsVariables(params *StationsVariablesParams, opts ...Clie
 		Reader:             &StationsVariablesReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1693,12 +1969,13 @@ func (a *Client) StationsVariables(params *StationsVariablesParams, opts ...Clie
 /*
   Status status API
 */
-func (a *Client) Status(params *StatusParams, opts ...ClientOption) (*StatusOK, error) {
+func (a *Client) Status(params *StatusParams) (*StatusOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStatusParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "status",
 		Method:             "GET",
 		PathPattern:        "/status",
@@ -1709,12 +1986,7 @@ func (a *Client) Status(params *StatusParams, opts ...ClientOption) (*StatusOK, 
 		Reader:             &StatusReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1731,12 +2003,13 @@ func (a *Client) Status(params *StatusParams, opts ...ClientOption) (*StatusOK, 
 /*
   StatusCollection status collection API
 */
-func (a *Client) StatusCollection(params *StatusCollectionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StatusCollectionOK, error) {
+func (a *Client) StatusCollection(params *StatusCollectionParams, authInfo runtime.ClientAuthInfoWriter) (*StatusCollectionOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStatusCollectionParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "statusCollection",
 		Method:             "GET",
 		PathPattern:        "/status-collection",
@@ -1748,12 +2021,7 @@ func (a *Client) StatusCollection(params *StatusCollectionParams, authInfo runti
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1770,12 +2038,13 @@ func (a *Client) StatusCollection(params *StatusCollectionParams, authInfo runti
 /*
   UpdateUser update user API
 */
-func (a *Client) UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateUserCreated, error) {
+func (a *Client) UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateUserCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewUpdateUserParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "updateUser",
 		Method:             "PUT",
 		PathPattern:        "/user",
@@ -1787,12 +2056,7 @@ func (a *Client) UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAut
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1809,12 +2073,13 @@ func (a *Client) UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAut
 /*
   UpdateUserPassword update user password API
 */
-func (a *Client) UpdateUserPassword(params *UpdateUserPasswordParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateUserPasswordCreated, error) {
+func (a *Client) UpdateUserPassword(params *UpdateUserPasswordParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateUserPasswordCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewUpdateUserPasswordParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "updateUserPassword",
 		Method:             "POST",
 		PathPattern:        "/user-password",
@@ -1826,12 +2091,7 @@ func (a *Client) UpdateUserPassword(params *UpdateUserPasswordParams, authInfo r
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}

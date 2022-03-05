@@ -51,7 +51,7 @@ type LoadFromStation struct {
 func (o *LoadFromStation) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewLoadFromStationParams()
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
@@ -64,7 +64,7 @@ func (o *LoadFromStation) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// LoadFromStationBody load from station body
+// LoadFromStationBody ArgLoadFromStation
 //
 // swagger:model LoadFromStationBody
 type LoadFromStationBody struct {

@@ -338,3 +338,128 @@ func apiCollectionReportWithUser(reports []app.CollectionReportWithUser) (res []
 	}
 	return res
 }
+
+func appDiscountPrograms(a []*model.DiscountProgram) []app.DiscountProgram {
+	res := []app.DiscountProgram{}
+	for i := range a {
+		res = append(res, app.DiscountProgram{
+			Discount:  a[i].Discount,
+			ProgramID: a[i].ProgramID,
+		})
+	}
+	return res
+}
+
+func appAdvertisingCampaign(a *model.AdvertisingCampaign) app.AdvertisingCampaign {
+	return app.AdvertisingCampaign{
+		DefaultDiscount:  a.DefaultDiscount,
+		DiscountPrograms: appDiscountPrograms(a.DiscountPrograms),
+		EndDate:          time.Unix(*a.EndDate, 0),
+		EndMinute:        *a.EndMinute,
+		ID:               a.ID,
+		StartDate:        time.Unix(*a.StartDate, 0),
+		StartMinute:      *a.StartMinute,
+		Weekday:          a.Weekday,
+		Enabled:          a.Enabled,
+		Name:             a.Name,
+	}
+}
+
+func apiDiscountPrograms(a []app.DiscountProgram) []*model.DiscountProgram {
+	res := []*model.DiscountProgram{}
+	for i := range a {
+		res = append(res, &model.DiscountProgram{
+			Discount:  a[i].Discount,
+			ProgramID: a[i].ProgramID,
+		})
+	}
+	return res
+}
+
+func apiAdvertisingCampaign(a app.AdvertisingCampaign) *model.AdvertisingCampaign {
+	startDate := a.StartDate.Unix()
+	endDate := a.EndDate.Unix()
+	return &model.AdvertisingCampaign{
+		DefaultDiscount:  a.DefaultDiscount,
+		DiscountPrograms: apiDiscountPrograms(a.DiscountPrograms),
+		EndDate:          &endDate,
+		EndMinute:        &a.EndMinute,
+		ID:               a.ID,
+		StartDate:        &startDate,
+		StartMinute:      &a.StartMinute,
+		Weekday:          a.Weekday,
+		Enabled:          a.Enabled,
+		Name:             a.Name,
+	}
+}
+
+func apiAdvertisingCampaigns(a []app.AdvertisingCampaign) model.AdvertisingCampaigns {
+	res := []*model.AdvertisingCampaign{}
+	for i := range a {
+		res = append(res, apiAdvertisingCampaign(a[i]))
+	}
+	return res
+}
+
+func apiStationDiscount(a app.StationDiscount) model.StationDiscounts {
+	res := model.StationDiscounts{}
+
+	for _, discount := range a.Discounts {
+		res = append(res, &model.ButtonDiscount{ButtonID: discount.ButtonID, Discount: discount.Discount})
+	}
+	return res
+}
+
+func appConfigInt(a *model.ConfigVarInt) app.ConfigInt {
+	return app.ConfigInt{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
+}
+
+func appConfigBool(a *model.ConfigVarBool) app.ConfigBool {
+	return app.ConfigBool{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
+}
+
+func appConfigString(a *model.ConfigVarString) app.ConfigString {
+	return app.ConfigString{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
+}
+
+func apiConfigBool(a *app.ConfigBool) *model.ConfigVarBool {
+	return &model.ConfigVarBool{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
+}
+
+func apiConfigInt(a *app.ConfigInt) *model.ConfigVarInt {
+	return &model.ConfigVarInt{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
+}
+
+func apiConfigString(a *app.ConfigString) *model.ConfigVarString {
+	return &model.ConfigVarString{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+	}
+}

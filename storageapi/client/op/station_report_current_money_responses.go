@@ -126,7 +126,7 @@ func (o *StationReportCurrentMoneyInternalServerError) readResponse(response run
 	return nil
 }
 
-/*StationReportCurrentMoneyBody station report current money body
+/*StationReportCurrentMoneyBody ArgStationReportCurrentMoney
 swagger:model StationReportCurrentMoneyBody
 */
 type StationReportCurrentMoneyBody struct {

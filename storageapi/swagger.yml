@@ -15,7 +15,43 @@ securityDefinitions:
      name: Pin
 
 definitions:
-        
+  
+  ConfigVarInt:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: integer
+      description:
+        type: string
+      note:
+        type: string
+  
+  ConfigVarBool:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: boolean
+      description:
+        type: string
+      note:
+        type: string
+  
+  ConfigVarString:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+      description:
+        type: string
+      note:
+        type: string
+
   StatusReport:
     type: object
     properties:
@@ -400,13 +436,365 @@ definitions:
     items:
       $ref: '#/definitions/StationStat'
 
+  DiscountProgram:
+    type: object
+    properties:
+      programID:
+          type: integer
+      discount:
+          type: integer
 
+  AdvertisingCampaign:
+    type: object
+    required:
+      - startDate
+      - endDate
+    properties:
+        id:
+          type: integer
+        name:
+          type: string
+        startDate:
+          description: Unix time local
+          type: integer
+        endDate:
+          description: Unix time local
+          type: integer
+        enabled:
+          type: boolean
+        startMinute:
+          type: integer
+          default: 0
+          maximum: 1440
+          minimum: 0
+        endMinute:
+          type: integer
+          default: 0
+          maximum: 1440
+          minimum: 0
+        defaultDiscount:
+          type: integer
+        discountPrograms:
+          type: array
+          items:
+            $ref: '#/definitions/DiscountProgram'
+        weekday:
+          type: array
+          items:
+            type: string
+            enum: 
+              - sunday
+              - monday
+              - tuesday
+              - wednesday
+              - thursday
+              - friday
+              - saturday
+  AdvertisingCampaigns:
+    type: array
+    items:
+      $ref: '#/definitions/AdvertisingCampaign'
+  
+  
+  ButtonDiscount:
+    type: object
+    properties:
+      buttonID:
+          type: integer
+      discount:
+          type: integer
+    
+  StationDiscounts:
+    type: array
+    items:
+      $ref: '#/definitions/ButtonDiscount'
+      
 consumes:
   - application/json
 produces:
   - application/json          
 
 paths:
+  /get-config-var-int:
+    post:
+      operationId: "getConfigVarInt"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetConfigVar"
+            type: object
+            properties:
+              name:
+                type: string
+      responses:
+          200:
+            description: OK
+            schema:
+              $ref:  '#/definitions/ConfigVarInt'
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /get-config-var-bool:
+    post:
+      operationId: "getConfigVarBool"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetConfigVar"
+            type: object
+            properties:
+              name:
+                type: string
+      responses:
+          200:
+            description: OK
+            schema:
+              $ref:  '#/definitions/ConfigVarBool'
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /get-config-var-string:
+    post:
+      operationId: "getConfigVarString"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetConfigVar"
+            type: object
+            properties:
+              name:
+                type: string
+      responses:
+          200:
+            description: OK
+            schema:
+              $ref:  '#/definitions/ConfigVarString'
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /set-config-var-int:
+    post:
+      operationId: "setConfigVarInt"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref:  '#/definitions/ConfigVarInt'
+      responses:
+          204:
+            description: OK
+          500:
+            description: Internal error
+
+  /set-config-var-bool:
+    post:
+      operationId: "setConfigVarBool"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref:  '#/definitions/ConfigVarBool'
+      responses:
+          204:
+            description: OK
+          500:
+            description: Internal error
+
+  /set-config-var-string:
+    post:
+      operationId: "setConfigVarString"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref:  '#/definitions/ConfigVarString'
+      responses:
+          204:
+            description: OK
+          500:
+            description: Internal error
+
+  /get-station-discounts:
+    post:
+      operationId: "getStationDiscounts"
+      parameters:
+        - name: args
+          in: body
+          required: true
+          schema:
+            title: "ArgGetStationDiscounts"
+            type: object
+            properties:
+              hash:
+                type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref:  '#/definitions/StationDiscounts'
+        404:
+          description: Not found
+        500:
+          description: Internal error
+
+  /add-advertising-campaign:
+    post:
+      operationId: "addAdvertisingCampaign"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/AdvertisingCampaign'
+      responses:
+        204:
+          description: OK
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbiddenn
+        500:
+          description: internal error
+  /edit-advertising-campaign:
+    post:
+      operationId: "editAdvertisingCampaign"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/AdvertisingCampaign'
+      responses:
+        204:
+          description: OK
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbiddenn
+        500:
+          description: internal error
+
+  /advertising-campaign:
+    post:
+      operationId: "advertisingCampaign"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          in: body
+          schema:
+            title: "ArgAdvertisingCampagin"
+            type: object
+            properties:
+              startDate:
+                description: Unix time local
+                type: integer
+                x-nullable: true
+              endDate:
+                description: Unix time local
+                type: integer
+                x-nullable: true
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/AdvertisingCampaigns'
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbiddenn
+        500:
+          description: internal error
+
+  /advertising-campaign-by-id:
+    post:
+      operationId: "advertisingCampaignByID"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgAdvertisingCampaignByID"
+            type: object
+            required:
+              - id
+            properties:
+              id:
+                type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/AdvertisingCampaign'
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbiddenn
+        404:
+          description: not found
+        500:
+          description: internal error
+
+  /del-advertising-campaign:
+    post:
+      operationId: "delAdvertisingCampaign"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgDelAdvertisingCampagin"
+            type: object
+            required:
+              - id
+            properties:
+              id:
+                type: integer
+      responses:
+        204:
+          description: OK
+        401:
+          description: PIN is missing or invalid
+        403:
+          description: Access forbiddenn
+        500:
+          description: internal error
+
   /station-stat-current:
     post:
       operationId: "stationStatCurrent"
@@ -416,6 +804,7 @@ paths:
         - name: args
           in: body
           schema:
+            title: "ArgStationStat"
             type: object
             properties:
               stationID:
@@ -442,6 +831,7 @@ paths:
         - name: args
           in: body
           schema:
+            title: "ArgStationStatDates"
             type: object
             required:
               - startDate
@@ -477,6 +867,7 @@ paths:
         - name: args
           in: body
           schema:
+            title: "ArgResetStationStat"
             type: object
             required:
               - stationID
@@ -501,6 +892,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgStationReportDates"
             type: object
             required:
               - id
@@ -532,6 +924,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgStationReportCurrentMoney"
             type: object
             required:
               - id
@@ -582,6 +975,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgAddServiceAmount"
             type: object
             properties:
               hash:
@@ -651,6 +1045,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgDelStation"
             type: object
             required:
               - id
@@ -757,6 +1152,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgLoadMoney"
             type: object
             required:
               - hash
@@ -781,6 +1177,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgSave"
             type: object
             required:
               - hash
@@ -805,6 +1202,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgLoad"
             type: object
             required:
               - hash
@@ -832,6 +1230,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgLoadFromStation"
             type: object
             required:
               - hash
@@ -862,6 +1261,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgPing"
             type: object
             required:
               - hash
@@ -876,6 +1276,7 @@ paths:
         200:
           description: OK
           schema:
+            title: "ResponsePing"
             type: object
             required:
               - serviceAmount
@@ -886,6 +1287,8 @@ paths:
               openStation:
                 type: boolean
               lastUpdate:
+                type: integer
+              lastDiscountUpdate:
                 type: integer
               ButtonID:
                 type: integer
@@ -911,6 +1314,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgStationByHash"
             type: object
             required:
               - hash
@@ -932,6 +1336,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgSaveIfNotExists"
             type: object
             required:
               - hash
@@ -968,6 +1373,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgOpenStation"
             type: object
             required:
               - stationID
@@ -990,6 +1396,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgPrograms"
             type: object
             properties:
               programID:
@@ -1029,6 +1436,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgStationProgramByHash"
             type: object
             required:
               - hash
@@ -1051,6 +1459,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgStationButton"
             type: object
             required:
               - stationID
@@ -1062,6 +1471,7 @@ paths:
         200:
           description: OK
           schema:
+            title: "ResponseStationButton"
             type: object
             properties:
               buttons:
@@ -1084,6 +1494,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgSetStationButton"
             type: object
             required:
               - stationID
@@ -1145,6 +1556,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgCardReaderConfig"
             type: object
             required:
               - stationID
@@ -1189,6 +1601,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgCardReaderConfigByCash"
             type: object
             required:
               - hash
@@ -1232,6 +1645,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgUserPassword"
             type: object
             required:
               - login
@@ -1248,6 +1662,7 @@ paths:
         201:
           description: OK
           schema:
+            title: "ResponseUserPassword"
             type: object
             required:
               - id
@@ -1284,6 +1699,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgUserCreate"
             type: object
             required:
               - login
@@ -1309,6 +1725,7 @@ paths:
         201:
           description: OK
           schema:
+            title: "ResponseUserCreate"
             type: object
             required:
               - id
@@ -1322,6 +1739,7 @@ paths:
         409:
           description: Conflict
           schema:
+            title: "ResponseUserCreateConflict"
             type: object
             required:
               - code
@@ -1342,6 +1760,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgUserUpdate"
             type: object
             required:
               - login
@@ -1364,6 +1783,7 @@ paths:
         201:
           description: OK
           schema:
+            title: "ResponseUserUpdate"
             type: object
             required:
               - id
@@ -1387,6 +1807,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgUserDelete"
             type: object
             required:
               - login
@@ -1423,6 +1844,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgRunProgram"
             type: object
             required:
               - hash
@@ -1453,6 +1875,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgPressButton"
             type: object
             required:
               - hash
@@ -1471,6 +1894,7 @@ paths:
             type: string
         500:
           description: internal error
+          
   /station-collection-report-dates:
     post:
       security:
@@ -1481,6 +1905,7 @@ paths:
           required: true
           in: body
           schema:
+            title: "ArgCollectionReportDates"
             type: object
             required:
               - stationId
@@ -1499,6 +1924,7 @@ paths:
         200:
           description: OK
           schema:
+            title: "ResponseStationCollectionReportDates"
             type: object
             required:
               - collectionReports

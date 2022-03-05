@@ -47,7 +47,7 @@ type AddServiceAmount struct {
 func (o *AddServiceAmount) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		*r = *rCtx
+		r = rCtx
 	}
 	var Params = NewAddServiceAmountParams()
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
@@ -60,7 +60,7 @@ func (o *AddServiceAmount) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// AddServiceAmountBody add service amount body
+// AddServiceAmountBody ArgAddServiceAmount
 //
 // swagger:model AddServiceAmountBody
 type AddServiceAmountBody struct {
