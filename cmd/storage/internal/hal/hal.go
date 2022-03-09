@@ -68,14 +68,14 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 
 	for _, f := range files {
 		if strings.HasPrefix(f.Name(), "ttyUSB") {
-			_, err = h.findPort(f.Name())
-			if err != nil {
+			_, portExists := h.portByKey(f.Name())
+			if !portExists {
 				// port is not found in our dictionary
-				h.checkAndAddPort(f.Name())
-			} else {
-				fmt.Printf("Port is already added: %s, no action required\n", f.Name())
+				err := h.checkAndAddPort(f.Name())
+				if err != nil {
+					fmt.Printf("New device added [%s]\n", f.Name())
+				}
 			}
-			fmt.Println(f.Name())
 		}
 	}
 }
@@ -214,14 +214,14 @@ func (r *Rev2Board) SendPing() (int, error) {
 	return int(answer), nil
 }
 
-func (h *HardwareAccessLayer) findPort(key string) (*Rev2Board, error) {
+func (h *HardwareAccessLayer) portByKey(key string) (*Rev2Board, bool) {
 	h.portsMu.Lock()
 	el, found := h.ports[key]
 	h.portsMu.Unlock()
 	if !found {
-		return nil, app.ErrNotFound
+		return nil, false
 	}
-	return el, nil
+	return el, true
 }
 
 func (h *HardwareAccessLayer) deletePort(key string) {
