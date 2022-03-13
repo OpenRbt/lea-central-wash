@@ -72,8 +72,10 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 			if !portExists {
 				// port is not found in our dictionary
 				err := h.checkAndAddPort(f.Name())
-				if err != nil {
-					fmt.Printf("New device added [%s]\n", f.Name())
+				if err == nil {
+					fmt.Printf("New device is added [%s]\n", f.Name())
+				} else {
+					fmt.Printf("New device is not added [%s], err [%+v]\n", f.Name(), err)
 				}
 			}
 		}
@@ -286,6 +288,7 @@ func (h *HardwareAccessLayer) ControlBoard(wantedPosition int) (app.ControlBoard
 			return h.ports[key], nil
 		}
 	}
+	fmt.Printf("board #%d is not found on dictionary\n", wantedPosition)
 	return nil, app.ErrNotFound
 }
 
