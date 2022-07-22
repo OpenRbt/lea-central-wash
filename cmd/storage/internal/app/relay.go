@@ -27,5 +27,5 @@ func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err err
 			cfg.Timings = program.Relays
 		}
 	}
-	return a.hardware.RunProgram(int(id), cfg)
+	return a.hardware.RunProgram(int64(id), cfg)
 }

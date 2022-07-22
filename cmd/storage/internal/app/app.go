@@ -196,9 +196,7 @@ type (
 	}
 	// HardwareAccessLayer describes an interface to access hardware control modules
 	HardwareAccessLayer interface {
-		Start()
-		ControlBoard(key int) (ControlBoard, error)
-		RunProgram(id int, config RelayConfig) (err error)
+		RunProgram(id int32, cfg RelayConfig) (err error)
 	}
 	// ControlBoard represents one board (even virtual) to control relays
 	ControlBoard interface {
@@ -214,7 +212,7 @@ type (
 		// If anything happens with the whole system, the control board will stop all after this time
 		// NOT MORE THAN 3600 SECONDS!!!
 		TimeoutSec int
-		// Timings are settigns for actual relays
+		// Timings are settings for actual relays
 		Timings []Relay
 	}
 )

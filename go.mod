@@ -27,3 +27,11 @@ require (
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a
 	golang.org/x/net v0.0.0-20210525063256-abc453219eb5
 )
+
+require (
+	github.com/golang/protobuf v1.5.2
+	google.golang.org/grpc v1.48.0
+	google.golang.org/protobuf v1.28.0 // indirect
+)
+
+require golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect

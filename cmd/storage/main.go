@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/hal"
 	"os"
 	"os/user"
 	"path"
@@ -19,7 +20,6 @@ import (
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/extapi"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/flags"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/goose"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/hal"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/memdb"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/migration"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/svckasse"
@@ -230,19 +230,14 @@ func run(db *sqlx.DB, errc chan<- error) {
 		log.Info("Weather IS TURNED OFF")
 	}
 
-	var hardware app.HardwareAccessLayer
-	var errHardware error
-	if cfg.testBoards {
-		hardware, errHardware = hal.NewHardwareDebugAccessLayer()
-	} else {
-		hardware, errHardware = hal.NewHardwareAccessLayer()
+	//hal client creation
+	client, err := hal.NewClient()
+	if err != nil {
+		errc <- err
+		return
 	}
-	if errHardware != nil {
-		log.Info("HARDWARE IS NOT WORKING")
-	}
-	hardware.Start()
 
-	appl := app.New(repo, kasse, weather, hardware)
+	appl := app.New(repo, kasse, weather, client)
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
 	if err != nil {
