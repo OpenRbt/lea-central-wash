@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package xgrpc;
+
+import "google/protobuf/empty.proto";
+
+service HardwareAccessLayer{
+    rpc RunProgram(Options) returns(google.protobuf.Empty);
+}
+
+message Options{
+    int32 program_id = 1;
+    int32 timeoutSec = 2;
+    int32 motorSpeedPercent = 3;
+}
