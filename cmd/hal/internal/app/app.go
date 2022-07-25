@@ -10,6 +10,7 @@ var (
 type HardwareAccessLayer interface {
 	Start()
 	RunProgram(id int32, cfg RelayConfig) (err error)
+	Run2Programs(id int32, secondID int32, cfg RelayConfig) (err error)
 }
 
 // ControlBoard represents one board (even virtual) to control relays

@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type HardwareAccessLayerClient interface {
 	RunProgram(ctx context.Context, in *Options, opts ...grpc.CallOption) (*empty.Empty, error)
+	Run2Programs(ctx context.Context, in *Options, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type hardwareAccessLayerClient struct {
@@ -43,11 +44,21 @@ func (c *hardwareAccessLayerClient) RunProgram(ctx context.Context, in *Options,
 	return out, nil
 }
 
+func (c *hardwareAccessLayerClient) Run2Programs(ctx context.Context, in *Options, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/xgrpc.HardwareAccessLayer/Run2Programs", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HardwareAccessLayerServer is the server API for HardwareAccessLayer service.
 // All implementations must embed UnimplementedHardwareAccessLayerServer
 // for forward compatibility
 type HardwareAccessLayerServer interface {
 	RunProgram(context.Context, *Options) (*empty.Empty, error)
+	Run2Programs(context.Context, *Options) (*empty.Empty, error)
 	mustEmbedUnimplementedHardwareAccessLayerServer()
 }
 
@@ -57,6 +68,9 @@ type UnimplementedHardwareAccessLayerServer struct {
 
 func (UnimplementedHardwareAccessLayerServer) RunProgram(context.Context, *Options) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RunProgram not implemented")
+}
+func (UnimplementedHardwareAccessLayerServer) Run2Programs(context.Context, *Options) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Run2Programs not implemented")
 }
 func (UnimplementedHardwareAccessLayerServer) mustEmbedUnimplementedHardwareAccessLayerServer() {}
 
@@ -89,6 +103,24 @@ func _HardwareAccessLayer_RunProgram_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _HardwareAccessLayer_Run2Programs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Options)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HardwareAccessLayerServer).Run2Programs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/xgrpc.HardwareAccessLayer/Run2Programs",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HardwareAccessLayerServer).Run2Programs(ctx, req.(*Options))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // HardwareAccessLayer_ServiceDesc is the grpc.ServiceDesc for HardwareAccessLayer service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -99,6 +131,10 @@ var HardwareAccessLayer_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RunProgram",
 			Handler:    _HardwareAccessLayer_RunProgram_Handler,
+		},
+		{
+			MethodName: "Run2Programs",
+			Handler:    _HardwareAccessLayer_Run2Programs_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

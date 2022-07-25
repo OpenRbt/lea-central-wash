@@ -26,4 +26,24 @@ func (h HalHandler) RunProgram(ctx context.Context, in *Options) (*empty.Empty, 
 	return nil, nil
 }
 
+func (h HalHandler) Run2Programs(ctx context.Context, in *Options) (*empty.Empty, error) {
+	err := h.hal.RunProgram(in.ProgramId, app.RelayConfig{
+		MotorSpeedPercent: in.MotorSpeedPercent,
+		TimeoutSec:        in.TimeoutSec,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	err = h.hal.RunProgram(in.SecondProgramId, app.RelayConfig{
+		MotorSpeedPercent: in.MotorSpeedPercent,
+		TimeoutSec:        in.TimeoutSec,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
 func (h HalHandler) mustEmbedUnimplementedHardwareAccessLayerServer() {}
