@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	isDebug := flag.Bool("debug", true, "debug")
+	isDebug := flag.Bool("debug", false, "debug")
 
 	var hardware app.HardwareAccessLayer
 	var errHardware error
