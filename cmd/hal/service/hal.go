@@ -335,6 +335,20 @@ func (h *HardwareAccessLayer) RunProgram(id int32, cfg app.RelayConfig) (err err
 	return nil
 }
 
+func (h *HardwareAccessLayer) Run2Programs(id int32, secondID int32, cfg app.RelayConfig) (err error) {
+	err = h.RunProgram(id, cfg)
+	if err != nil {
+		return err
+	}
+
+	err = h.RunProgram(secondID, cfg)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // HardwareDebugAccessLayer is the whole layer to communicate with boards
 type HardwareDebugAccessLayer struct {
 	portsMu sync.Mutex
@@ -385,6 +399,21 @@ func (h *HardwareDebugAccessLayer) RunProgram(id int32, cfg app.RelayConfig) (er
 		return err
 	}
 	go board.RunConfig(cfg)
+	return nil
+}
+
+// Run2Programs
+func (h *HardwareDebugAccessLayer) Run2Programs(id int32, secondID int32, cfg app.RelayConfig) (err error) {
+	err = h.RunProgram(id, cfg)
+	if err != nil {
+		return err
+	}
+
+	err = h.RunProgram(secondID, cfg)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
