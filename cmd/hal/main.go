@@ -39,11 +39,12 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	var text string
-	fmt.Scanf("%s\n", &text)
-	arduinoware.Command(text)
 
-	// hardware.Start()
+	// var text string
+	// fmt.Scanf("%s\n", &text)
+	// arduinoware.Command(text)
+
+	hardware.Start()
 
 	s := grpc.NewServer()
 

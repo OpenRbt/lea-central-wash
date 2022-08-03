@@ -16,7 +16,7 @@ type HardwareAccessLayer interface {
 
 type HardwareArduinoAccessLayer interface {
 	Start()
-	Command(cmd string) error
+	Command(cmd int) error
 }
 
 // ControlBoard represents one board (even virtual) to control relays
