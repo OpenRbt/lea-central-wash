@@ -158,6 +158,10 @@ func (r *RevSensor) workingLoop() {
 	}
 }
 
+func (h *HardwareArduinoAccessLayer) Value() float64 {
+	return lastValue
+}
+
 // Run command for Arduino
 func (h *HardwareArduinoAccessLayer) Command(cmd int) error {
 	r := h.ports[lastKey]

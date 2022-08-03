@@ -7,6 +7,8 @@ import "google/protobuf/empty.proto";
 service HardwareAccessLayer{
     rpc RunProgram(Options) returns(google.protobuf.Empty);
     rpc Run2Programs(Options) returns(google.protobuf.Empty);
+    rpc Command(Opti) returns(google.protobuf.Empty);
+    rpc Value(google.protobuf.Empty) returns(Otvet);
 }
 
 message Options{
@@ -14,4 +16,12 @@ message Options{
     int32 second_program_id = 2;
     int32 timeoutSec = 3;
     int32 motorSpeedPercent = 4;
+}
+
+message Opti{
+    int32 cmd = 1;
+}
+
+message Otvet{
+    double otvet = 1;
 }
