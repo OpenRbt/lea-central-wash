@@ -1866,6 +1866,38 @@ paths:
             type: string
         500:
           description: internal error
+  
+  /run-2program:
+    post:
+      operationId: "run2Program"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgRun2Program"
+            type: object
+            required:
+              - hash
+              - programID
+              - programID2
+              - preflight
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+              programID:
+                type: integer
+              preflight:
+                type: boolean
+      responses:
+        204:
+          description: OK
+        404:
+          description: not found
+          schema:
+            type: string
+        500:
+          description: internal error
 
   /press-button:
     post:
