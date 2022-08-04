@@ -58,9 +58,39 @@ type StationButtonOK struct {
 	Payload *StationButtonOKBody
 }
 
+// IsSuccess returns true when this station button o k response has a 2xx status code
+func (o *StationButtonOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this station button o k response has a 3xx status code
+func (o *StationButtonOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station button o k response has a 4xx status code
+func (o *StationButtonOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station button o k response has a 5xx status code
+func (o *StationButtonOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station button o k response a status code equal to that given
+func (o *StationButtonOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *StationButtonOK) Error() string {
 	return fmt.Sprintf("[POST /station-button][%d] stationButtonOK  %+v", 200, o.Payload)
 }
+
+func (o *StationButtonOK) String() string {
+	return fmt.Sprintf("[POST /station-button][%d] stationButtonOK  %+v", 200, o.Payload)
+}
+
 func (o *StationButtonOK) GetPayload() *StationButtonOKBody {
 	return o.Payload
 }
@@ -89,7 +119,36 @@ internal error
 type StationButtonInternalServerError struct {
 }
 
+// IsSuccess returns true when this station button internal server error response has a 2xx status code
+func (o *StationButtonInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station button internal server error response has a 3xx status code
+func (o *StationButtonInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station button internal server error response has a 4xx status code
+func (o *StationButtonInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station button internal server error response has a 5xx status code
+func (o *StationButtonInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this station button internal server error response a status code equal to that given
+func (o *StationButtonInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *StationButtonInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /station-button][%d] stationButtonInternalServerError ", 500)
+}
+
+func (o *StationButtonInternalServerError) String() string {
 	return fmt.Sprintf("[POST /station-button][%d] stationButtonInternalServerError ", 500)
 }
 
@@ -234,6 +293,8 @@ func (o *StationButtonOKBody) validateButtons(formats strfmt.Registry) error {
 			if err := o.Buttons[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stationButtonOK" + "." + "buttons" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("stationButtonOK" + "." + "buttons" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -266,6 +327,8 @@ func (o *StationButtonOKBody) contextValidateButtons(ctx context.Context, format
 			if err := o.Buttons[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stationButtonOK" + "." + "buttons" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("stationButtonOK" + "." + "buttons" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

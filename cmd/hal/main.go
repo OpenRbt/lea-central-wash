@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"hal/internal/api/xgrpc"
 	"hal/internal/app"
 	"hal/service"

@@ -51,7 +51,7 @@ type Ping struct {
 func (o *Ping) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewPingParams()
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
@@ -135,6 +135,8 @@ func (o *PingBody) validateHash(formats strfmt.Registry) error {
 		if err := o.Hash.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
@@ -163,6 +165,8 @@ func (o *PingBody) contextValidateHash(ctx context.Context, formats strfmt.Regis
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}

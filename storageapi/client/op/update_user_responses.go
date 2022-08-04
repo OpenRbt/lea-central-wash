@@ -77,9 +77,39 @@ type UpdateUserCreated struct {
 	Payload *UpdateUserCreatedBody
 }
 
+// IsSuccess returns true when this update user created response has a 2xx status code
+func (o *UpdateUserCreated) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this update user created response has a 3xx status code
+func (o *UpdateUserCreated) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update user created response has a 4xx status code
+func (o *UpdateUserCreated) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this update user created response has a 5xx status code
+func (o *UpdateUserCreated) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update user created response a status code equal to that given
+func (o *UpdateUserCreated) IsCode(code int) bool {
+	return code == 201
+}
+
 func (o *UpdateUserCreated) Error() string {
 	return fmt.Sprintf("[PUT /user][%d] updateUserCreated  %+v", 201, o.Payload)
 }
+
+func (o *UpdateUserCreated) String() string {
+	return fmt.Sprintf("[PUT /user][%d] updateUserCreated  %+v", 201, o.Payload)
+}
+
 func (o *UpdateUserCreated) GetPayload() *UpdateUserCreatedBody {
 	return o.Payload
 }
@@ -108,7 +138,36 @@ PIN is missing or invalid
 type UpdateUserUnauthorized struct {
 }
 
+// IsSuccess returns true when this update user unauthorized response has a 2xx status code
+func (o *UpdateUserUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update user unauthorized response has a 3xx status code
+func (o *UpdateUserUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update user unauthorized response has a 4xx status code
+func (o *UpdateUserUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update user unauthorized response has a 5xx status code
+func (o *UpdateUserUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update user unauthorized response a status code equal to that given
+func (o *UpdateUserUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *UpdateUserUnauthorized) Error() string {
+	return fmt.Sprintf("[PUT /user][%d] updateUserUnauthorized ", 401)
+}
+
+func (o *UpdateUserUnauthorized) String() string {
 	return fmt.Sprintf("[PUT /user][%d] updateUserUnauthorized ", 401)
 }
 
@@ -129,7 +188,36 @@ Access forbidden
 type UpdateUserForbidden struct {
 }
 
+// IsSuccess returns true when this update user forbidden response has a 2xx status code
+func (o *UpdateUserForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update user forbidden response has a 3xx status code
+func (o *UpdateUserForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update user forbidden response has a 4xx status code
+func (o *UpdateUserForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update user forbidden response has a 5xx status code
+func (o *UpdateUserForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update user forbidden response a status code equal to that given
+func (o *UpdateUserForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
 func (o *UpdateUserForbidden) Error() string {
+	return fmt.Sprintf("[PUT /user][%d] updateUserForbidden ", 403)
+}
+
+func (o *UpdateUserForbidden) String() string {
 	return fmt.Sprintf("[PUT /user][%d] updateUserForbidden ", 403)
 }
 
@@ -150,7 +238,36 @@ Not found
 type UpdateUserNotFound struct {
 }
 
+// IsSuccess returns true when this update user not found response has a 2xx status code
+func (o *UpdateUserNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update user not found response has a 3xx status code
+func (o *UpdateUserNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update user not found response has a 4xx status code
+func (o *UpdateUserNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update user not found response has a 5xx status code
+func (o *UpdateUserNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update user not found response a status code equal to that given
+func (o *UpdateUserNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *UpdateUserNotFound) Error() string {
+	return fmt.Sprintf("[PUT /user][%d] updateUserNotFound ", 404)
+}
+
+func (o *UpdateUserNotFound) String() string {
 	return fmt.Sprintf("[PUT /user][%d] updateUserNotFound ", 404)
 }
 
@@ -171,7 +288,36 @@ internal error
 type UpdateUserInternalServerError struct {
 }
 
+// IsSuccess returns true when this update user internal server error response has a 2xx status code
+func (o *UpdateUserInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update user internal server error response has a 3xx status code
+func (o *UpdateUserInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update user internal server error response has a 4xx status code
+func (o *UpdateUserInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this update user internal server error response has a 5xx status code
+func (o *UpdateUserInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this update user internal server error response a status code equal to that given
+func (o *UpdateUserInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *UpdateUserInternalServerError) Error() string {
+	return fmt.Sprintf("[PUT /user][%d] updateUserInternalServerError ", 500)
+}
+
+func (o *UpdateUserInternalServerError) String() string {
 	return fmt.Sprintf("[PUT /user][%d] updateUserInternalServerError ", 500)
 }
 
@@ -286,6 +432,8 @@ func (o *UpdateUserBody) validateFirstName(formats strfmt.Registry) error {
 		if err := o.FirstName.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "firstName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "firstName")
 			}
 			return err
 		}
@@ -303,6 +451,8 @@ func (o *UpdateUserBody) validateLastName(formats strfmt.Registry) error {
 		if err := o.LastName.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "lastName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "lastName")
 			}
 			return err
 		}
@@ -325,6 +475,8 @@ func (o *UpdateUserBody) validateLogin(formats strfmt.Registry) error {
 		if err := o.Login.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "login")
 			}
 			return err
 		}
@@ -342,6 +494,8 @@ func (o *UpdateUserBody) validateMiddleName(formats strfmt.Registry) error {
 		if err := o.MiddleName.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "middleName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "middleName")
 			}
 			return err
 		}
@@ -394,6 +548,8 @@ func (o *UpdateUserBody) contextValidateFirstName(ctx context.Context, formats s
 		if err := o.FirstName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "firstName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "firstName")
 			}
 			return err
 		}
@@ -408,6 +564,8 @@ func (o *UpdateUserBody) contextValidateIsAdmin(ctx context.Context, formats str
 		if err := o.IsAdmin.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "isAdmin")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "isAdmin")
 			}
 			return err
 		}
@@ -422,6 +580,8 @@ func (o *UpdateUserBody) contextValidateIsEngineer(ctx context.Context, formats 
 		if err := o.IsEngineer.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "isEngineer")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "isEngineer")
 			}
 			return err
 		}
@@ -436,6 +596,8 @@ func (o *UpdateUserBody) contextValidateIsOperator(ctx context.Context, formats 
 		if err := o.IsOperator.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "isOperator")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "isOperator")
 			}
 			return err
 		}
@@ -450,6 +612,8 @@ func (o *UpdateUserBody) contextValidateLastName(ctx context.Context, formats st
 		if err := o.LastName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "lastName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "lastName")
 			}
 			return err
 		}
@@ -464,6 +628,8 @@ func (o *UpdateUserBody) contextValidateLogin(ctx context.Context, formats strfm
 		if err := o.Login.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "login")
 			}
 			return err
 		}
@@ -478,6 +644,8 @@ func (o *UpdateUserBody) contextValidateMiddleName(ctx context.Context, formats 
 		if err := o.MiddleName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "middleName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "middleName")
 			}
 			return err
 		}

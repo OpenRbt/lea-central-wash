@@ -195,6 +195,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.ResetStationStatNotImplemented()
 		})
 	}
+	if api.Run2ProgramHandler == nil {
+		api.Run2ProgramHandler = op.Run2ProgramHandlerFunc(func(params op.Run2ProgramParams) op.Run2ProgramResponder {
+			return op.Run2ProgramNotImplemented()
+		})
+	}
 	if api.RunProgramHandler == nil {
 		api.RunProgramHandler = op.RunProgramHandlerFunc(func(params op.RunProgramParams) op.RunProgramResponder {
 			return op.RunProgramNotImplemented()

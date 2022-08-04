@@ -65,9 +65,39 @@ type LoadOK struct {
 	Payload string
 }
 
+// IsSuccess returns true when this load o k response has a 2xx status code
+func (o *LoadOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this load o k response has a 3xx status code
+func (o *LoadOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this load o k response has a 4xx status code
+func (o *LoadOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this load o k response has a 5xx status code
+func (o *LoadOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this load o k response a status code equal to that given
+func (o *LoadOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *LoadOK) Error() string {
 	return fmt.Sprintf("[POST /load][%d] loadOK  %+v", 200, o.Payload)
 }
+
+func (o *LoadOK) String() string {
+	return fmt.Sprintf("[POST /load][%d] loadOK  %+v", 200, o.Payload)
+}
+
 func (o *LoadOK) GetPayload() string {
 	return o.Payload
 }
@@ -94,7 +124,36 @@ not found
 type LoadNotFound struct {
 }
 
+// IsSuccess returns true when this load not found response has a 2xx status code
+func (o *LoadNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this load not found response has a 3xx status code
+func (o *LoadNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this load not found response has a 4xx status code
+func (o *LoadNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this load not found response has a 5xx status code
+func (o *LoadNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this load not found response a status code equal to that given
+func (o *LoadNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *LoadNotFound) Error() string {
+	return fmt.Sprintf("[POST /load][%d] loadNotFound ", 404)
+}
+
+func (o *LoadNotFound) String() string {
 	return fmt.Sprintf("[POST /load][%d] loadNotFound ", 404)
 }
 
@@ -115,7 +174,36 @@ internal error
 type LoadInternalServerError struct {
 }
 
+// IsSuccess returns true when this load internal server error response has a 2xx status code
+func (o *LoadInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this load internal server error response has a 3xx status code
+func (o *LoadInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this load internal server error response has a 4xx status code
+func (o *LoadInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this load internal server error response has a 5xx status code
+func (o *LoadInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this load internal server error response a status code equal to that given
+func (o *LoadInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *LoadInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /load][%d] loadInternalServerError ", 500)
+}
+
+func (o *LoadInternalServerError) String() string {
 	return fmt.Sprintf("[POST /load][%d] loadInternalServerError ", 500)
 }
 
@@ -196,6 +284,8 @@ func (o *LoadBody) validateHash(formats strfmt.Registry) error {
 		if err := o.Hash.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
@@ -237,6 +327,8 @@ func (o *LoadBody) contextValidateHash(ctx context.Context, formats strfmt.Regis
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}

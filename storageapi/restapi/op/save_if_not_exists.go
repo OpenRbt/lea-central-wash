@@ -51,7 +51,7 @@ type SaveIfNotExists struct {
 func (o *SaveIfNotExists) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewSaveIfNotExistsParams()
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
@@ -134,6 +134,8 @@ func (o *SaveIfNotExistsBody) validateHash(formats strfmt.Registry) error {
 		if err := o.Hash.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
@@ -152,6 +154,8 @@ func (o *SaveIfNotExistsBody) validateKeyPair(formats strfmt.Registry) error {
 		if err := o.KeyPair.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "keyPair")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "keyPair")
 			}
 			return err
 		}
@@ -184,6 +188,8 @@ func (o *SaveIfNotExistsBody) contextValidateHash(ctx context.Context, formats s
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
@@ -198,6 +204,8 @@ func (o *SaveIfNotExistsBody) contextValidateKeyPair(ctx context.Context, format
 		if err := o.KeyPair.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "keyPair")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "keyPair")
 			}
 			return err
 		}

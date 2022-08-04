@@ -77,9 +77,39 @@ type UpdateUserPasswordCreated struct {
 	Payload *UpdateUserPasswordCreatedBody
 }
 
+// IsSuccess returns true when this update user password created response has a 2xx status code
+func (o *UpdateUserPasswordCreated) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this update user password created response has a 3xx status code
+func (o *UpdateUserPasswordCreated) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update user password created response has a 4xx status code
+func (o *UpdateUserPasswordCreated) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this update user password created response has a 5xx status code
+func (o *UpdateUserPasswordCreated) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update user password created response a status code equal to that given
+func (o *UpdateUserPasswordCreated) IsCode(code int) bool {
+	return code == 201
+}
+
 func (o *UpdateUserPasswordCreated) Error() string {
 	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordCreated  %+v", 201, o.Payload)
 }
+
+func (o *UpdateUserPasswordCreated) String() string {
+	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordCreated  %+v", 201, o.Payload)
+}
+
 func (o *UpdateUserPasswordCreated) GetPayload() *UpdateUserPasswordCreatedBody {
 	return o.Payload
 }
@@ -108,7 +138,36 @@ PIN is missing or invalid
 type UpdateUserPasswordUnauthorized struct {
 }
 
+// IsSuccess returns true when this update user password unauthorized response has a 2xx status code
+func (o *UpdateUserPasswordUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update user password unauthorized response has a 3xx status code
+func (o *UpdateUserPasswordUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update user password unauthorized response has a 4xx status code
+func (o *UpdateUserPasswordUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update user password unauthorized response has a 5xx status code
+func (o *UpdateUserPasswordUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update user password unauthorized response a status code equal to that given
+func (o *UpdateUserPasswordUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *UpdateUserPasswordUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordUnauthorized ", 401)
+}
+
+func (o *UpdateUserPasswordUnauthorized) String() string {
 	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordUnauthorized ", 401)
 }
 
@@ -129,7 +188,36 @@ Access forbidden
 type UpdateUserPasswordForbidden struct {
 }
 
+// IsSuccess returns true when this update user password forbidden response has a 2xx status code
+func (o *UpdateUserPasswordForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update user password forbidden response has a 3xx status code
+func (o *UpdateUserPasswordForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update user password forbidden response has a 4xx status code
+func (o *UpdateUserPasswordForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update user password forbidden response has a 5xx status code
+func (o *UpdateUserPasswordForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update user password forbidden response a status code equal to that given
+func (o *UpdateUserPasswordForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
 func (o *UpdateUserPasswordForbidden) Error() string {
+	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordForbidden ", 403)
+}
+
+func (o *UpdateUserPasswordForbidden) String() string {
 	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordForbidden ", 403)
 }
 
@@ -150,7 +238,36 @@ not found
 type UpdateUserPasswordNotFound struct {
 }
 
+// IsSuccess returns true when this update user password not found response has a 2xx status code
+func (o *UpdateUserPasswordNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update user password not found response has a 3xx status code
+func (o *UpdateUserPasswordNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update user password not found response has a 4xx status code
+func (o *UpdateUserPasswordNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update user password not found response has a 5xx status code
+func (o *UpdateUserPasswordNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update user password not found response a status code equal to that given
+func (o *UpdateUserPasswordNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *UpdateUserPasswordNotFound) Error() string {
+	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordNotFound ", 404)
+}
+
+func (o *UpdateUserPasswordNotFound) String() string {
 	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordNotFound ", 404)
 }
 
@@ -171,7 +288,36 @@ internal error
 type UpdateUserPasswordInternalServerError struct {
 }
 
+// IsSuccess returns true when this update user password internal server error response has a 2xx status code
+func (o *UpdateUserPasswordInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update user password internal server error response has a 3xx status code
+func (o *UpdateUserPasswordInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update user password internal server error response has a 4xx status code
+func (o *UpdateUserPasswordInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this update user password internal server error response has a 5xx status code
+func (o *UpdateUserPasswordInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this update user password internal server error response a status code equal to that given
+func (o *UpdateUserPasswordInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *UpdateUserPasswordInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordInternalServerError ", 500)
+}
+
+func (o *UpdateUserPasswordInternalServerError) String() string {
 	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordInternalServerError ", 500)
 }
 
@@ -263,6 +409,8 @@ func (o *UpdateUserPasswordBody) validateLogin(formats strfmt.Registry) error {
 		if err := o.Login.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "login")
 			}
 			return err
 		}
@@ -285,6 +433,8 @@ func (o *UpdateUserPasswordBody) validateNewPassword(formats strfmt.Registry) er
 		if err := o.NewPassword.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "newPassword")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "newPassword")
 			}
 			return err
 		}
@@ -307,6 +457,8 @@ func (o *UpdateUserPasswordBody) validateOldPassword(formats strfmt.Registry) er
 		if err := o.OldPassword.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "oldPassword")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "oldPassword")
 			}
 			return err
 		}
@@ -343,6 +495,8 @@ func (o *UpdateUserPasswordBody) contextValidateLogin(ctx context.Context, forma
 		if err := o.Login.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "login")
 			}
 			return err
 		}
@@ -357,6 +511,8 @@ func (o *UpdateUserPasswordBody) contextValidateNewPassword(ctx context.Context,
 		if err := o.NewPassword.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "newPassword")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "newPassword")
 			}
 			return err
 		}
@@ -371,6 +527,8 @@ func (o *UpdateUserPasswordBody) contextValidateOldPassword(ctx context.Context,
 		if err := o.OldPassword.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "oldPassword")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "oldPassword")
 			}
 			return err
 		}

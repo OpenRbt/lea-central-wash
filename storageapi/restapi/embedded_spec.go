@@ -966,6 +966,56 @@ func init() {
         }
       }
     },
+    "/run-2program": {
+      "post": {
+        "operationId": "run2Program",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgRun2Program",
+              "required": [
+                "hash",
+                "programID",
+                "programID2",
+                "preflight"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "preflight": {
+                  "type": "boolean"
+                },
+                "programID": {
+                  "type": "integer"
+                },
+                "programID2": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/run-program": {
       "post": {
         "operationId": "runProgram",
@@ -3880,6 +3930,56 @@ func init() {
           },
           "403": {
             "description": "Access forbiddenn"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/run-2program": {
+      "post": {
+        "operationId": "run2Program",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgRun2Program",
+              "required": [
+                "hash",
+                "programID",
+                "programID2",
+                "preflight"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "preflight": {
+                  "type": "boolean"
+                },
+                "programID": {
+                  "type": "integer"
+                },
+                "programID2": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"

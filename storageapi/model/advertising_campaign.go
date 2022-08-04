@@ -167,6 +167,8 @@ func (m *AdvertisingCampaign) validateDiscountPrograms(formats strfmt.Registry) 
 			if err := m.DiscountPrograms[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("discountPrograms" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("discountPrograms" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -285,6 +287,8 @@ func (m *AdvertisingCampaign) contextValidateDiscountPrograms(ctx context.Contex
 			if err := m.DiscountPrograms[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("discountPrograms" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("discountPrograms" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

@@ -65,9 +65,39 @@ type StationReportDatesOK struct {
 	Payload *model.StationReport
 }
 
+// IsSuccess returns true when this station report dates o k response has a 2xx status code
+func (o *StationReportDatesOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this station report dates o k response has a 3xx status code
+func (o *StationReportDatesOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station report dates o k response has a 4xx status code
+func (o *StationReportDatesOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station report dates o k response has a 5xx status code
+func (o *StationReportDatesOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station report dates o k response a status code equal to that given
+func (o *StationReportDatesOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *StationReportDatesOK) Error() string {
 	return fmt.Sprintf("[POST /station-report-dates][%d] stationReportDatesOK  %+v", 200, o.Payload)
 }
+
+func (o *StationReportDatesOK) String() string {
+	return fmt.Sprintf("[POST /station-report-dates][%d] stationReportDatesOK  %+v", 200, o.Payload)
+}
+
 func (o *StationReportDatesOK) GetPayload() *model.StationReport {
 	return o.Payload
 }
@@ -96,7 +126,36 @@ not found
 type StationReportDatesNotFound struct {
 }
 
+// IsSuccess returns true when this station report dates not found response has a 2xx status code
+func (o *StationReportDatesNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station report dates not found response has a 3xx status code
+func (o *StationReportDatesNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station report dates not found response has a 4xx status code
+func (o *StationReportDatesNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this station report dates not found response has a 5xx status code
+func (o *StationReportDatesNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station report dates not found response a status code equal to that given
+func (o *StationReportDatesNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *StationReportDatesNotFound) Error() string {
+	return fmt.Sprintf("[POST /station-report-dates][%d] stationReportDatesNotFound ", 404)
+}
+
+func (o *StationReportDatesNotFound) String() string {
 	return fmt.Sprintf("[POST /station-report-dates][%d] stationReportDatesNotFound ", 404)
 }
 
@@ -117,7 +176,36 @@ internal error
 type StationReportDatesInternalServerError struct {
 }
 
+// IsSuccess returns true when this station report dates internal server error response has a 2xx status code
+func (o *StationReportDatesInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station report dates internal server error response has a 3xx status code
+func (o *StationReportDatesInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station report dates internal server error response has a 4xx status code
+func (o *StationReportDatesInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station report dates internal server error response has a 5xx status code
+func (o *StationReportDatesInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this station report dates internal server error response a status code equal to that given
+func (o *StationReportDatesInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *StationReportDatesInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /station-report-dates][%d] stationReportDatesInternalServerError ", 500)
+}
+
+func (o *StationReportDatesInternalServerError) String() string {
 	return fmt.Sprintf("[POST /station-report-dates][%d] stationReportDatesInternalServerError ", 500)
 }
 

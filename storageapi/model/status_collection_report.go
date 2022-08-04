@@ -71,6 +71,8 @@ func (m *StatusCollectionReport) validateStations(formats strfmt.Registry) error
 			if err := m.Stations[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stations" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("stations" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -103,6 +105,8 @@ func (m *StatusCollectionReport) contextValidateStations(ctx context.Context, fo
 			if err := m.Stations[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stations" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("stations" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

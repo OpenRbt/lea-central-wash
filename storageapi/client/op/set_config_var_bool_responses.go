@@ -49,7 +49,36 @@ OK
 type SetConfigVarBoolNoContent struct {
 }
 
+// IsSuccess returns true when this set config var bool no content response has a 2xx status code
+func (o *SetConfigVarBoolNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this set config var bool no content response has a 3xx status code
+func (o *SetConfigVarBoolNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this set config var bool no content response has a 4xx status code
+func (o *SetConfigVarBoolNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this set config var bool no content response has a 5xx status code
+func (o *SetConfigVarBoolNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this set config var bool no content response a status code equal to that given
+func (o *SetConfigVarBoolNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
 func (o *SetConfigVarBoolNoContent) Error() string {
+	return fmt.Sprintf("[POST /set-config-var-bool][%d] setConfigVarBoolNoContent ", 204)
+}
+
+func (o *SetConfigVarBoolNoContent) String() string {
 	return fmt.Sprintf("[POST /set-config-var-bool][%d] setConfigVarBoolNoContent ", 204)
 }
 
@@ -70,7 +99,36 @@ Internal error
 type SetConfigVarBoolInternalServerError struct {
 }
 
+// IsSuccess returns true when this set config var bool internal server error response has a 2xx status code
+func (o *SetConfigVarBoolInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this set config var bool internal server error response has a 3xx status code
+func (o *SetConfigVarBoolInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this set config var bool internal server error response has a 4xx status code
+func (o *SetConfigVarBoolInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this set config var bool internal server error response has a 5xx status code
+func (o *SetConfigVarBoolInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this set config var bool internal server error response a status code equal to that given
+func (o *SetConfigVarBoolInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *SetConfigVarBoolInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /set-config-var-bool][%d] setConfigVarBoolInternalServerError ", 500)
+}
+
+func (o *SetConfigVarBoolInternalServerError) String() string {
 	return fmt.Sprintf("[POST /set-config-var-bool][%d] setConfigVarBoolInternalServerError ", 500)
 }
 

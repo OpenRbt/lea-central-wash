@@ -55,7 +55,36 @@ OK
 type SaveMoneyNoContent struct {
 }
 
+// IsSuccess returns true when this save money no content response has a 2xx status code
+func (o *SaveMoneyNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this save money no content response has a 3xx status code
+func (o *SaveMoneyNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this save money no content response has a 4xx status code
+func (o *SaveMoneyNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this save money no content response has a 5xx status code
+func (o *SaveMoneyNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this save money no content response a status code equal to that given
+func (o *SaveMoneyNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
 func (o *SaveMoneyNoContent) Error() string {
+	return fmt.Sprintf("[POST /save-money][%d] saveMoneyNoContent ", 204)
+}
+
+func (o *SaveMoneyNoContent) String() string {
 	return fmt.Sprintf("[POST /save-money][%d] saveMoneyNoContent ", 204)
 }
 
@@ -76,7 +105,36 @@ not found
 type SaveMoneyNotFound struct {
 }
 
+// IsSuccess returns true when this save money not found response has a 2xx status code
+func (o *SaveMoneyNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this save money not found response has a 3xx status code
+func (o *SaveMoneyNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this save money not found response has a 4xx status code
+func (o *SaveMoneyNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this save money not found response has a 5xx status code
+func (o *SaveMoneyNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this save money not found response a status code equal to that given
+func (o *SaveMoneyNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *SaveMoneyNotFound) Error() string {
+	return fmt.Sprintf("[POST /save-money][%d] saveMoneyNotFound ", 404)
+}
+
+func (o *SaveMoneyNotFound) String() string {
 	return fmt.Sprintf("[POST /save-money][%d] saveMoneyNotFound ", 404)
 }
 
@@ -97,7 +155,36 @@ internal error
 type SaveMoneyInternalServerError struct {
 }
 
+// IsSuccess returns true when this save money internal server error response has a 2xx status code
+func (o *SaveMoneyInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this save money internal server error response has a 3xx status code
+func (o *SaveMoneyInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this save money internal server error response has a 4xx status code
+func (o *SaveMoneyInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this save money internal server error response has a 5xx status code
+func (o *SaveMoneyInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this save money internal server error response a status code equal to that given
+func (o *SaveMoneyInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *SaveMoneyInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /save-money][%d] saveMoneyInternalServerError ", 500)
+}
+
+func (o *SaveMoneyInternalServerError) String() string {
 	return fmt.Sprintf("[POST /save-money][%d] saveMoneyInternalServerError ", 500)
 }
 

@@ -67,7 +67,36 @@ OK
 type ResetStationStatNoContent struct {
 }
 
+// IsSuccess returns true when this reset station stat no content response has a 2xx status code
+func (o *ResetStationStatNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this reset station stat no content response has a 3xx status code
+func (o *ResetStationStatNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this reset station stat no content response has a 4xx status code
+func (o *ResetStationStatNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this reset station stat no content response has a 5xx status code
+func (o *ResetStationStatNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this reset station stat no content response a status code equal to that given
+func (o *ResetStationStatNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
 func (o *ResetStationStatNoContent) Error() string {
+	return fmt.Sprintf("[POST /reset-station-stat][%d] resetStationStatNoContent ", 204)
+}
+
+func (o *ResetStationStatNoContent) String() string {
 	return fmt.Sprintf("[POST /reset-station-stat][%d] resetStationStatNoContent ", 204)
 }
 
@@ -88,7 +117,36 @@ PIN is missing or invalid
 type ResetStationStatUnauthorized struct {
 }
 
+// IsSuccess returns true when this reset station stat unauthorized response has a 2xx status code
+func (o *ResetStationStatUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this reset station stat unauthorized response has a 3xx status code
+func (o *ResetStationStatUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this reset station stat unauthorized response has a 4xx status code
+func (o *ResetStationStatUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this reset station stat unauthorized response has a 5xx status code
+func (o *ResetStationStatUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this reset station stat unauthorized response a status code equal to that given
+func (o *ResetStationStatUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *ResetStationStatUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /reset-station-stat][%d] resetStationStatUnauthorized ", 401)
+}
+
+func (o *ResetStationStatUnauthorized) String() string {
 	return fmt.Sprintf("[POST /reset-station-stat][%d] resetStationStatUnauthorized ", 401)
 }
 
@@ -109,7 +167,36 @@ Access forbiddenn
 type ResetStationStatForbidden struct {
 }
 
+// IsSuccess returns true when this reset station stat forbidden response has a 2xx status code
+func (o *ResetStationStatForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this reset station stat forbidden response has a 3xx status code
+func (o *ResetStationStatForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this reset station stat forbidden response has a 4xx status code
+func (o *ResetStationStatForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this reset station stat forbidden response has a 5xx status code
+func (o *ResetStationStatForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this reset station stat forbidden response a status code equal to that given
+func (o *ResetStationStatForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
 func (o *ResetStationStatForbidden) Error() string {
+	return fmt.Sprintf("[POST /reset-station-stat][%d] resetStationStatForbidden ", 403)
+}
+
+func (o *ResetStationStatForbidden) String() string {
 	return fmt.Sprintf("[POST /reset-station-stat][%d] resetStationStatForbidden ", 403)
 }
 
@@ -130,7 +217,36 @@ internal error
 type ResetStationStatInternalServerError struct {
 }
 
+// IsSuccess returns true when this reset station stat internal server error response has a 2xx status code
+func (o *ResetStationStatInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this reset station stat internal server error response has a 3xx status code
+func (o *ResetStationStatInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this reset station stat internal server error response has a 4xx status code
+func (o *ResetStationStatInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this reset station stat internal server error response has a 5xx status code
+func (o *ResetStationStatInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this reset station stat internal server error response a status code equal to that given
+func (o *ResetStationStatInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *ResetStationStatInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /reset-station-stat][%d] resetStationStatInternalServerError ", 500)
+}
+
+func (o *ResetStationStatInternalServerError) String() string {
 	return fmt.Sprintf("[POST /reset-station-stat][%d] resetStationStatInternalServerError ", 500)
 }
 

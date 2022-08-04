@@ -59,9 +59,39 @@ type StationProgramByHashOK struct {
 	Payload *model.StationPrograms
 }
 
+// IsSuccess returns true when this station program by hash o k response has a 2xx status code
+func (o *StationProgramByHashOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this station program by hash o k response has a 3xx status code
+func (o *StationProgramByHashOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station program by hash o k response has a 4xx status code
+func (o *StationProgramByHashOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station program by hash o k response has a 5xx status code
+func (o *StationProgramByHashOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station program by hash o k response a status code equal to that given
+func (o *StationProgramByHashOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *StationProgramByHashOK) Error() string {
 	return fmt.Sprintf("[POST /station-program-by-hash][%d] stationProgramByHashOK  %+v", 200, o.Payload)
 }
+
+func (o *StationProgramByHashOK) String() string {
+	return fmt.Sprintf("[POST /station-program-by-hash][%d] stationProgramByHashOK  %+v", 200, o.Payload)
+}
+
 func (o *StationProgramByHashOK) GetPayload() *model.StationPrograms {
 	return o.Payload
 }
@@ -90,7 +120,36 @@ internal error
 type StationProgramByHashInternalServerError struct {
 }
 
+// IsSuccess returns true when this station program by hash internal server error response has a 2xx status code
+func (o *StationProgramByHashInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station program by hash internal server error response has a 3xx status code
+func (o *StationProgramByHashInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station program by hash internal server error response has a 4xx status code
+func (o *StationProgramByHashInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station program by hash internal server error response has a 5xx status code
+func (o *StationProgramByHashInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this station program by hash internal server error response a status code equal to that given
+func (o *StationProgramByHashInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *StationProgramByHashInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /station-program-by-hash][%d] stationProgramByHashInternalServerError ", 500)
+}
+
+func (o *StationProgramByHashInternalServerError) String() string {
 	return fmt.Sprintf("[POST /station-program-by-hash][%d] stationProgramByHashInternalServerError ", 500)
 }
 
@@ -156,6 +215,8 @@ func (o *StationProgramByHashBody) validateHash(formats strfmt.Registry) error {
 		if err := o.Hash.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
@@ -184,6 +245,8 @@ func (o *StationProgramByHashBody) contextValidateHash(ctx context.Context, form
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}

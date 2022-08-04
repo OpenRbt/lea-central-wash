@@ -53,9 +53,39 @@ type PingOK struct {
 	Payload *PingOKBody
 }
 
+// IsSuccess returns true when this ping o k response has a 2xx status code
+func (o *PingOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this ping o k response has a 3xx status code
+func (o *PingOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this ping o k response has a 4xx status code
+func (o *PingOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this ping o k response has a 5xx status code
+func (o *PingOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this ping o k response a status code equal to that given
+func (o *PingOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *PingOK) Error() string {
 	return fmt.Sprintf("[POST /ping][%d] pingOK  %+v", 200, o.Payload)
 }
+
+func (o *PingOK) String() string {
+	return fmt.Sprintf("[POST /ping][%d] pingOK  %+v", 200, o.Payload)
+}
+
 func (o *PingOK) GetPayload() *PingOKBody {
 	return o.Payload
 }
@@ -143,6 +173,8 @@ func (o *PingBody) validateHash(formats strfmt.Registry) error {
 		if err := o.Hash.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
@@ -171,6 +203,8 @@ func (o *PingBody) contextValidateHash(ctx context.Context, formats strfmt.Regis
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}

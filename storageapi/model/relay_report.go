@@ -85,6 +85,8 @@ func (m *RelayReport) validateHash(formats strfmt.Registry) error {
 		if err := m.Hash.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("hash")
 			}
 			return err
 		}
@@ -107,6 +109,8 @@ func (m *RelayReport) validateRelayStats(formats strfmt.Registry) error {
 			if err := m.RelayStats[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relayStats" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("relayStats" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -141,6 +145,8 @@ func (m *RelayReport) contextValidateHash(ctx context.Context, formats strfmt.Re
 		if err := m.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("hash")
 			}
 			return err
 		}
@@ -157,6 +163,8 @@ func (m *RelayReport) contextValidateRelayStats(ctx context.Context, formats str
 			if err := m.RelayStats[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relayStats" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("relayStats" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

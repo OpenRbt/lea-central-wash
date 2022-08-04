@@ -19,6 +19,15 @@ import (
 // swagger:model RelayBoard
 type RelayBoard string
 
+func NewRelayBoard(value RelayBoard) *RelayBoard {
+	return &value
+}
+
+// Pointer returns a pointer to a freshly-allocated RelayBoard.
+func (m RelayBoard) Pointer() *RelayBoard {
+	return &m
+}
+
 const (
 
 	// RelayBoardLocalGPIO captures enum value "localGPIO"

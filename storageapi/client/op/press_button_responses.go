@@ -64,7 +64,36 @@ OK
 type PressButtonNoContent struct {
 }
 
+// IsSuccess returns true when this press button no content response has a 2xx status code
+func (o *PressButtonNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this press button no content response has a 3xx status code
+func (o *PressButtonNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this press button no content response has a 4xx status code
+func (o *PressButtonNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this press button no content response has a 5xx status code
+func (o *PressButtonNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this press button no content response a status code equal to that given
+func (o *PressButtonNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
 func (o *PressButtonNoContent) Error() string {
+	return fmt.Sprintf("[POST /press-button][%d] pressButtonNoContent ", 204)
+}
+
+func (o *PressButtonNoContent) String() string {
 	return fmt.Sprintf("[POST /press-button][%d] pressButtonNoContent ", 204)
 }
 
@@ -86,9 +115,39 @@ type PressButtonNotFound struct {
 	Payload string
 }
 
+// IsSuccess returns true when this press button not found response has a 2xx status code
+func (o *PressButtonNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this press button not found response has a 3xx status code
+func (o *PressButtonNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this press button not found response has a 4xx status code
+func (o *PressButtonNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this press button not found response has a 5xx status code
+func (o *PressButtonNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this press button not found response a status code equal to that given
+func (o *PressButtonNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *PressButtonNotFound) Error() string {
 	return fmt.Sprintf("[POST /press-button][%d] pressButtonNotFound  %+v", 404, o.Payload)
 }
+
+func (o *PressButtonNotFound) String() string {
+	return fmt.Sprintf("[POST /press-button][%d] pressButtonNotFound  %+v", 404, o.Payload)
+}
+
 func (o *PressButtonNotFound) GetPayload() string {
 	return o.Payload
 }
@@ -115,7 +174,36 @@ internal error
 type PressButtonInternalServerError struct {
 }
 
+// IsSuccess returns true when this press button internal server error response has a 2xx status code
+func (o *PressButtonInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this press button internal server error response has a 3xx status code
+func (o *PressButtonInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this press button internal server error response has a 4xx status code
+func (o *PressButtonInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this press button internal server error response has a 5xx status code
+func (o *PressButtonInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this press button internal server error response a status code equal to that given
+func (o *PressButtonInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *PressButtonInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /press-button][%d] pressButtonInternalServerError ", 500)
+}
+
+func (o *PressButtonInternalServerError) String() string {
 	return fmt.Sprintf("[POST /press-button][%d] pressButtonInternalServerError ", 500)
 }
 
@@ -203,6 +291,8 @@ func (o *PressButtonBody) validateHash(formats strfmt.Registry) error {
 		if err := o.Hash.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
@@ -231,6 +321,8 @@ func (o *PressButtonBody) contextValidateHash(ctx context.Context, formats strfm
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}

@@ -5,13 +5,14 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/hal"
 	"os"
 	"os/user"
 	"path"
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/hal"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/auth"

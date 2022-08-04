@@ -1887,6 +1887,8 @@ paths:
                 $ref: '#/definitions/Hash'
               programID:
                 type: integer
+              programID2:
+                type: integer
               preflight:
                 type: boolean
       responses:

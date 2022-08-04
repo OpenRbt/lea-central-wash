@@ -110,6 +110,8 @@ func (m *StationPrograms) validatePrograms(formats strfmt.Registry) error {
 			if err := m.Programs[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("programs" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("programs" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -128,6 +130,8 @@ func (m *StationPrograms) validateRelayBoard(formats strfmt.Registry) error {
 	if err := m.RelayBoard.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("relayBoard")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("relayBoard")
 		}
 		return err
 	}
@@ -161,6 +165,8 @@ func (m *StationPrograms) contextValidatePrograms(ctx context.Context, formats s
 			if err := m.Programs[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("programs" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("programs" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -176,6 +182,8 @@ func (m *StationPrograms) contextValidateRelayBoard(ctx context.Context, formats
 	if err := m.RelayBoard.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("relayBoard")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("relayBoard")
 		}
 		return err
 	}
@@ -258,6 +266,8 @@ func (m *StationProgramsProgramsItems0) validateProgram(formats strfmt.Registry)
 		if err := m.Program.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("program")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("program")
 			}
 			return err
 		}
@@ -286,6 +296,8 @@ func (m *StationProgramsProgramsItems0) contextValidateProgram(ctx context.Conte
 		if err := m.Program.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("program")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("program")
 			}
 			return err
 		}

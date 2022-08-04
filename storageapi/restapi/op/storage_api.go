@@ -131,6 +131,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		ResetStationStatHandler: ResetStationStatHandlerFunc(func(params ResetStationStatParams, principal *storageapi.Profile) ResetStationStatResponder {
 			return ResetStationStatNotImplemented()
 		}),
+		Run2ProgramHandler: Run2ProgramHandlerFunc(func(params Run2ProgramParams) Run2ProgramResponder {
+			return Run2ProgramNotImplemented()
+		}),
 		RunProgramHandler: RunProgramHandlerFunc(func(params RunProgramParams) RunProgramResponder {
 			return RunProgramNotImplemented()
 		}),
@@ -323,6 +326,8 @@ type StorageAPI struct {
 	ProgramsHandler ProgramsHandler
 	// ResetStationStatHandler sets the operation handler for the reset station stat operation
 	ResetStationStatHandler ResetStationStatHandler
+	// Run2ProgramHandler sets the operation handler for the run2 program operation
+	Run2ProgramHandler Run2ProgramHandler
 	// RunProgramHandler sets the operation handler for the run program operation
 	RunProgramHandler RunProgramHandler
 	// SaveHandler sets the operation handler for the save operation
@@ -546,6 +551,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.ResetStationStatHandler == nil {
 		unregistered = append(unregistered, "ResetStationStatHandler")
+	}
+	if o.Run2ProgramHandler == nil {
+		unregistered = append(unregistered, "Run2ProgramHandler")
 	}
 	if o.RunProgramHandler == nil {
 		unregistered = append(unregistered, "RunProgramHandler")
@@ -846,6 +854,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/reset-station-stat"] = NewResetStationStat(o.context, o.ResetStationStatHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/run-2program"] = NewRun2Program(o.context, o.Run2ProgramHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

@@ -632,7 +632,7 @@ func (svc *service) runProgram(params op.RunProgramParams) op.RunProgramResponde
 	}
 }
 
-func (svc *service) run2Program(params op.RunProgramParams) op.RunProgramResponder {
+func (svc *service) run2Program(params op.Run2ProgramParams) op.RunProgramResponder {
 	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("runProgram: not found", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)

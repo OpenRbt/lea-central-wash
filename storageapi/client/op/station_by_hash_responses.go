@@ -59,9 +59,39 @@ type StationByHashOK struct {
 	Payload int64
 }
 
+// IsSuccess returns true when this station by hash o k response has a 2xx status code
+func (o *StationByHashOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this station by hash o k response has a 3xx status code
+func (o *StationByHashOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station by hash o k response has a 4xx status code
+func (o *StationByHashOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station by hash o k response has a 5xx status code
+func (o *StationByHashOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station by hash o k response a status code equal to that given
+func (o *StationByHashOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *StationByHashOK) Error() string {
 	return fmt.Sprintf("[POST /station-by-hash][%d] stationByHashOK  %+v", 200, o.Payload)
 }
+
+func (o *StationByHashOK) String() string {
+	return fmt.Sprintf("[POST /station-by-hash][%d] stationByHashOK  %+v", 200, o.Payload)
+}
+
 func (o *StationByHashOK) GetPayload() int64 {
 	return o.Payload
 }
@@ -88,7 +118,36 @@ internal error
 type StationByHashInternalServerError struct {
 }
 
+// IsSuccess returns true when this station by hash internal server error response has a 2xx status code
+func (o *StationByHashInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station by hash internal server error response has a 3xx status code
+func (o *StationByHashInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station by hash internal server error response has a 4xx status code
+func (o *StationByHashInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station by hash internal server error response has a 5xx status code
+func (o *StationByHashInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this station by hash internal server error response a status code equal to that given
+func (o *StationByHashInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *StationByHashInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /station-by-hash][%d] stationByHashInternalServerError ", 500)
+}
+
+func (o *StationByHashInternalServerError) String() string {
 	return fmt.Sprintf("[POST /station-by-hash][%d] stationByHashInternalServerError ", 500)
 }
 
@@ -154,6 +213,8 @@ func (o *StationByHashBody) validateHash(formats strfmt.Registry) error {
 		if err := o.Hash.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
@@ -182,6 +243,8 @@ func (o *StationByHashBody) contextValidateHash(ctx context.Context, formats str
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
