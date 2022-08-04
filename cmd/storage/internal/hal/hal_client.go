@@ -11,7 +11,8 @@ import (
 )
 
 type Client struct {
-	hal xgrpc.HardwareAccessLayerClient
+	hal     xgrpc.HardwareAccessLayerClient
+	arduino xgrpc.HardwareArduinoAccessLayerClient
 }
 
 func NewClient() (*Client, error) {
@@ -24,8 +25,11 @@ func NewClient() (*Client, error) {
 
 	client := xgrpc.NewHardwareAccessLayerClient(conn)
 
+	arduino := xgrpc.NewHardwareArduinoAccessLayerClient(conn)
+
 	return &Client{
-		hal: client,
+		hal:     client,
+		arduino: arduino,
 	}, nil
 }
 
@@ -49,7 +53,7 @@ func (c *Client) Command(chi int32) (err error) {
 	}
 	ctx := context.Background()
 
-	_, err = c.hal.Command(ctx, &com)
+	_, err = c.arduino.Command(ctx, &com)
 	return err
 }
 
@@ -59,7 +63,7 @@ func (c *Client) Value() float64 {
 
 	ss := emptypb.Empty{}
 
-	com, _ := c.hal.Value(ctx, &ss)
+	com, _ := c.arduino.Value(ctx, &ss)
 
 	return com.Otvet
 }

@@ -7,6 +7,9 @@ import "google/protobuf/empty.proto";
 service HardwareAccessLayer{
     rpc RunProgram(Options) returns(google.protobuf.Empty);
     rpc Run2Programs(Options) returns(google.protobuf.Empty);
+}
+
+service HardwareArduinoAccessLayer{
     rpc Command(Opti) returns(google.protobuf.Empty);
     rpc Value(google.protobuf.Empty) returns(Otvet);
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"hal/internal/api/xgrpc"
 	"hal/internal/app"
 	"hal/service"
@@ -12,6 +13,7 @@ import (
 )
 
 func main() {
+	fmt.Println("HAL START, AVE ME!!!")
 	isDebug := flag.Bool("debug", false, "debug")
 
 	var hardware app.HardwareAccessLayer
