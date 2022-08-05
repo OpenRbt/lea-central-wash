@@ -1,7 +1,5 @@
 package app
 
-import "fmt"
-
 func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err error) {
 	cfg := RelayConfig{
 		TimeoutSec: relayTimeoutSec,
@@ -29,11 +27,7 @@ func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err err
 			cfg.Timings = program.Relays
 		}
 	}
-	for _, relay := range cfg.Timings {
-		fmt.Println(relay.ID, " ", relay.TimeOff, " ", relay.TimeOn)
-	}
-	return nil
-	// return a.hardware.RunProgram(int32(id), cfg)
+	return a.hardware.RunProgram(int32(id), cfg)
 }
 
 func (a *app) Run2Program(id StationID, programID int64, programID2 int64, preflight bool) (err error) {
@@ -63,19 +57,29 @@ func (a *app) Run2Program(id StationID, programID int64, programID2 int64, prefl
 			cfg.TimeoutSec = station.PreflightSec + 2
 		}
 
+		list := []Relay{}
+
 		if preflight {
 			cfg.MotorSpeedPercent = int(program.PreflightMotorSpeedPercent)
-			cfg.Timings = program.PreflightRelays
-			cfg.Timings = append(cfg.Timings, program2.Relays...)
+			list = program.PreflightRelays
+			list = append(list, program2.Relays...)
+			// cfg.Timings = program.PreflightRelays
+			// cfg.Timings = append(cfg.Timings, program2.Relays...)
 		} else {
 			cfg.MotorSpeedPercent = int(program.MotorSpeedPercent)
-			cfg.Timings = program.Relays
-			cfg.Timings = append(cfg.Timings, program2.Relays...)
+			list = program.PreflightRelays
+			list = append(list, program2.Relays...)
+			// cfg.Timings = program.Relays
+			// cfg.Timings = append(cfg.Timings, program2.Relays...)
+		}
+		keys := make(map[Relay]bool)
+
+		for _, entry := range list {
+			if _, value := keys[entry]; !value {
+				keys[entry] = true
+				cfg.Timings = append(cfg.Timings, entry)
+			}
 		}
 	}
-	for _, relay := range cfg.Timings {
-		fmt.Println(relay.ID, " ", relay.TimeOff, " ", relay.TimeOn)
-	}
-	return nil
-	//return a.hardware.RunProgram(int32(id), cfg)
+	return a.hardware.RunProgram(int32(id), cfg)
 }
