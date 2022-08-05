@@ -1,5 +1,7 @@
 package app
 
+import "fmt"
+
 func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err error) {
 	cfg := RelayConfig{
 		TimeoutSec: relayTimeoutSec,
@@ -27,7 +29,11 @@ func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err err
 			cfg.Timings = program.Relays
 		}
 	}
-	return a.hardware.RunProgram(int32(id), cfg)
+	for _, relay := range cfg.Timings {
+		fmt.Println(relay.ID, " ", relay.TimeOff, " ", relay.TimeOn)
+	}
+	return nil
+	// return a.hardware.RunProgram(int32(id), cfg)
 }
 
 func (a *app) Run2Program(id StationID, programID int64, programID2 int64, preflight bool) (err error) {
@@ -67,5 +73,9 @@ func (a *app) Run2Program(id StationID, programID int64, programID2 int64, prefl
 			cfg.Timings = append(cfg.Timings, program2.Relays...)
 		}
 	}
-	return a.hardware.RunProgram(int32(id), cfg)
+	for _, relay := range cfg.Timings {
+		fmt.Println(relay.ID, " ", relay.TimeOff, " ", relay.TimeOn)
+	}
+	return nil
+	//return a.hardware.RunProgram(int32(id), cfg)
 }
