@@ -1,7 +1,6 @@
 package extapi
 
 import (
-	"fmt"
 	"net"
 	"strings"
 	"time"
@@ -612,7 +611,6 @@ func (svc *service) setKasse(params op.SetKasseParams) op.SetKasseResponder {
 }
 
 func (svc *service) runProgram(params op.RunProgramParams) op.RunProgramResponder {
-	fmt.Println("Start Handler Run1programm")
 	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("runProgram: not found", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
@@ -635,7 +633,6 @@ func (svc *service) runProgram(params op.RunProgramParams) op.RunProgramResponde
 }
 
 func (svc *service) run2Program(params op.Run2ProgramParams) op.Run2ProgramResponder {
-	fmt.Println("Start Handler Run2programm")
 	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("runProgram: not found", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)

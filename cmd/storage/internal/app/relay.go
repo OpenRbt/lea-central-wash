@@ -3,7 +3,6 @@ package app
 import "fmt"
 
 func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err error) {
-	fmt.Println("Start Run1programm")
 	cfg := RelayConfig{
 		TimeoutSec: relayTimeoutSec,
 	}
@@ -38,7 +37,6 @@ func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err err
 }
 
 func (a *app) Run2Program(id StationID, programID int64, programID2 int64, preflight bool) (err error) {
-	fmt.Println("Start Run2programm")
 	cfg := RelayConfig{
 		TimeoutSec: relayTimeoutSec,
 	}
