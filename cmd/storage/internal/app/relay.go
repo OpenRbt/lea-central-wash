@@ -29,7 +29,11 @@ func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err err
 			cfg.Timings = program.Relays
 		}
 	}
-	return a.hardware.RunProgram(int32(id), cfg)
+	for _, relay := range cfg.Timings {
+		fmt.Println("Relay: id - ", relay.ID, " Timeoff - ", relay.TimeOff, " TimeOn - ", relay.TimeOn)
+	}
+	return nil
+	// return a.hardware.RunProgram(int32(id), cfg)
 }
 
 func (a *app) Run2Program(id StationID, programID int64, programID2 int64, preflight bool) (err error) {
@@ -84,5 +88,9 @@ func (a *app) Run2Program(id StationID, programID int64, programID2 int64, prefl
 		}
 	}
 	fmt.Println("Config is completeS")
-	return a.hardware.RunProgram(int32(id), cfg)
+	for _, relay := range cfg.Timings {
+		fmt.Println("Relay: id - ", relay.ID, " Timeoff - ", relay.TimeOff, " TimeOn - ", relay.TimeOn)
+	}
+	return nil
+	// return a.hardware.RunProgram(int32(id), cfg)
 }
