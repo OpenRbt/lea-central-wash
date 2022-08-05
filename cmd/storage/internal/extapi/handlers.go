@@ -1,6 +1,7 @@
 package extapi
 
 import (
+	"fmt"
 	"net"
 	"strings"
 	"time"
@@ -611,6 +612,7 @@ func (svc *service) setKasse(params op.SetKasseParams) op.SetKasseResponder {
 }
 
 func (svc *service) runProgram(params op.RunProgramParams) op.RunProgramResponder {
+	fmt.Println("Start Handler Run1programm")
 	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("runProgram: not found", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
@@ -632,11 +634,12 @@ func (svc *service) runProgram(params op.RunProgramParams) op.RunProgramResponde
 	}
 }
 
-func (svc *service) run2Program(params op.Run2ProgramParams) op.RunProgramResponder {
+func (svc *service) run2Program(params op.Run2ProgramParams) op.Run2ProgramResponder {
+	fmt.Println("Start Handler Run2programm")
 	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("runProgram: not found", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewRunProgramNotFound().WithPayload("station not found")
+		return op.NewRun2ProgramNotFound().WithPayload("station not found")
 	}
 	err = svc.app.Run2Program(stationID, *params.Args.ProgramID, *params.Args.ProgramID2, *params.Args.Preflight)
 
@@ -644,13 +647,13 @@ func (svc *service) run2Program(params op.Run2ProgramParams) op.RunProgramRespon
 
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewRunProgramNoContent()
+		return op.NewRun2ProgramNoContent()
 	case app.ErrNotFound:
 		log.PrintErr(err, "hash", params.Args.Hash, "stationID", stationID, "programID", *params.Args.ProgramID, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewRunProgramNotFound().WithPayload("program or relay board not found")
+		return op.NewRun2ProgramNotFound().WithPayload("program or relay board not found")
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewRunProgramInternalServerError()
+		return op.NewRun2ProgramInternalServerError()
 	}
 }
 
