@@ -639,6 +639,7 @@ func (svc *service) run2Program(params op.Run2ProgramParams) op.Run2ProgramRespo
 		return op.NewRun2ProgramNotFound().WithPayload("station not found")
 	}
 	err = svc.app.Run2Program(stationID, *params.Args.ProgramID, *params.Args.ProgramID2, *params.Args.Preflight)
+	log.Info("Error run2programm is - ", err)
 
 	log.Info("runProgram", "programID", *params.Args.ProgramID, "programID2", *params.Args.ProgramID2, "stationID", stationID, "preflight", *params.Args.Preflight, "ip", params.HTTPRequest.RemoteAddr)
 

@@ -1,5 +1,7 @@
 package app
 
+import "fmt"
+
 func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err error) {
 	cfg := RelayConfig{
 		TimeoutSec: relayTimeoutSec,
@@ -81,5 +83,6 @@ func (a *app) Run2Program(id StationID, programID int64, programID2 int64, prefl
 			}
 		}
 	}
+	fmt.Println("Config is completeS")
 	return a.hardware.RunProgram(int32(id), cfg)
 }
