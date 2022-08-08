@@ -65,9 +65,39 @@ type StationReportCurrentMoneyOK struct {
 	Payload *model.StationReport
 }
 
+// IsSuccess returns true when this station report current money o k response has a 2xx status code
+func (o *StationReportCurrentMoneyOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this station report current money o k response has a 3xx status code
+func (o *StationReportCurrentMoneyOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station report current money o k response has a 4xx status code
+func (o *StationReportCurrentMoneyOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station report current money o k response has a 5xx status code
+func (o *StationReportCurrentMoneyOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station report current money o k response a status code equal to that given
+func (o *StationReportCurrentMoneyOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *StationReportCurrentMoneyOK) Error() string {
 	return fmt.Sprintf("[POST /station-report-current-money][%d] stationReportCurrentMoneyOK  %+v", 200, o.Payload)
 }
+
+func (o *StationReportCurrentMoneyOK) String() string {
+	return fmt.Sprintf("[POST /station-report-current-money][%d] stationReportCurrentMoneyOK  %+v", 200, o.Payload)
+}
+
 func (o *StationReportCurrentMoneyOK) GetPayload() *model.StationReport {
 	return o.Payload
 }
@@ -96,7 +126,36 @@ not found
 type StationReportCurrentMoneyNotFound struct {
 }
 
+// IsSuccess returns true when this station report current money not found response has a 2xx status code
+func (o *StationReportCurrentMoneyNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station report current money not found response has a 3xx status code
+func (o *StationReportCurrentMoneyNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station report current money not found response has a 4xx status code
+func (o *StationReportCurrentMoneyNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this station report current money not found response has a 5xx status code
+func (o *StationReportCurrentMoneyNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station report current money not found response a status code equal to that given
+func (o *StationReportCurrentMoneyNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *StationReportCurrentMoneyNotFound) Error() string {
+	return fmt.Sprintf("[POST /station-report-current-money][%d] stationReportCurrentMoneyNotFound ", 404)
+}
+
+func (o *StationReportCurrentMoneyNotFound) String() string {
 	return fmt.Sprintf("[POST /station-report-current-money][%d] stationReportCurrentMoneyNotFound ", 404)
 }
 
@@ -117,7 +176,36 @@ internal error
 type StationReportCurrentMoneyInternalServerError struct {
 }
 
+// IsSuccess returns true when this station report current money internal server error response has a 2xx status code
+func (o *StationReportCurrentMoneyInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station report current money internal server error response has a 3xx status code
+func (o *StationReportCurrentMoneyInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station report current money internal server error response has a 4xx status code
+func (o *StationReportCurrentMoneyInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station report current money internal server error response has a 5xx status code
+func (o *StationReportCurrentMoneyInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this station report current money internal server error response a status code equal to that given
+func (o *StationReportCurrentMoneyInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *StationReportCurrentMoneyInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /station-report-current-money][%d] stationReportCurrentMoneyInternalServerError ", 500)
+}
+
+func (o *StationReportCurrentMoneyInternalServerError) String() string {
 	return fmt.Sprintf("[POST /station-report-current-money][%d] stationReportCurrentMoneyInternalServerError ", 500)
 }
 

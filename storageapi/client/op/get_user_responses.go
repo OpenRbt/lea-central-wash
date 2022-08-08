@@ -53,9 +53,39 @@ type GetUserOK struct {
 	Payload *model.UserConfig
 }
 
+// IsSuccess returns true when this get user o k response has a 2xx status code
+func (o *GetUserOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get user o k response has a 3xx status code
+func (o *GetUserOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get user o k response has a 4xx status code
+func (o *GetUserOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get user o k response has a 5xx status code
+func (o *GetUserOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get user o k response a status code equal to that given
+func (o *GetUserOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *GetUserOK) Error() string {
 	return fmt.Sprintf("[GET /user][%d] getUserOK  %+v", 200, o.Payload)
 }
+
+func (o *GetUserOK) String() string {
+	return fmt.Sprintf("[GET /user][%d] getUserOK  %+v", 200, o.Payload)
+}
+
 func (o *GetUserOK) GetPayload() *model.UserConfig {
 	return o.Payload
 }
@@ -84,7 +114,36 @@ PIN is missing or invalid
 type GetUserUnauthorized struct {
 }
 
+// IsSuccess returns true when this get user unauthorized response has a 2xx status code
+func (o *GetUserUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get user unauthorized response has a 3xx status code
+func (o *GetUserUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get user unauthorized response has a 4xx status code
+func (o *GetUserUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get user unauthorized response has a 5xx status code
+func (o *GetUserUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get user unauthorized response a status code equal to that given
+func (o *GetUserUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *GetUserUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /user][%d] getUserUnauthorized ", 401)
+}
+
+func (o *GetUserUnauthorized) String() string {
 	return fmt.Sprintf("[GET /user][%d] getUserUnauthorized ", 401)
 }
 

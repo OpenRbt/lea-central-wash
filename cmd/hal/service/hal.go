@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"hal/internal/app"
+	"io"
 	"io/ioutil"
 	"log"
 	"regexp"
@@ -21,6 +22,10 @@ const uidAnswerRegex = "UID\\s([0-9A-F]*);"
 var (
 	ErrWrongAnswer = errors.New("wrong answer from the board")
 )
+
+var lastKey string
+
+var lastValue int64
 
 // PostError describes an error happened to a post
 type PostError struct {
@@ -46,6 +51,20 @@ type Rev2Board struct {
 	Commands      chan app.RelayConfig
 }
 
+//
+type HardwareArduinoAccessLayer struct {
+	uidAnswer string
+	portsMu   sync.Mutex
+	ports     map[string]*RevSensor
+}
+
+type RevSensor struct {
+	osPath     string
+	openPort   *serial.Port
+	toRemove   bool
+	errorCount int
+}
+
 // NewRev2Board is a constructor
 func NewRev2Board(osPath string, openPort *serial.Port) *Rev2Board {
 	return &Rev2Board{
@@ -54,6 +73,38 @@ func NewRev2Board(osPath string, openPort *serial.Port) *Rev2Board {
 		stationNumber: -1,
 		toRemove:      false,
 		Commands:      make(chan app.RelayConfig),
+	}
+}
+
+// NewRevSensor is a constructor
+func NewSensor(osPath string, openPort *serial.Port) *RevSensor {
+	return &RevSensor{
+		osPath:   osPath,
+		openPort: openPort,
+		toRemove: false,
+	}
+}
+
+func (h *HardwareArduinoAccessLayer) CollectArduinoPorts() {
+	h.uidAnswer = "YF-S201" //
+	files, err := ioutil.ReadDir("/dev")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, f := range files {
+		if strings.HasPrefix(f.Name(), "ttyUSB") {
+			portExists := h.portByKey(f.Name())
+			if !portExists {
+				// port is not found in our dictionary
+				err := h.checkAndAddPortArduino(f.Name())
+				if err == nil {
+					fmt.Printf("New arduino device is added [%s]\n", f.Name())
+				} else {
+					fmt.Printf("New arduino device is not added [%s], err [%+v]\n", f.Name(), err)
+				}
+			}
+		}
 	}
 }
 
@@ -75,6 +126,71 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 					fmt.Printf("New device is added [%s]\n", f.Name())
 				} else {
 					fmt.Printf("New device is not added [%s], err [%+v]\n", f.Name(), err)
+				}
+			}
+		}
+	}
+}
+
+func (r *RevSensor) Run() error {
+	go r.workingLoop()
+	return nil
+}
+
+func (r *RevSensor) workingLoop() {
+	tick := time.Tick(800 * time.Millisecond)
+	// var cmd app.RelayConfig
+	for {
+		select {
+		case <-tick:
+			err := r.SendPing()
+			if err != nil {
+				r.errorCount++
+				if r.errorCount >= 5 {
+					r.toRemove = true
+					return
+				}
+			} else {
+				r.errorCount = 0
+			}
+		}
+	}
+}
+
+func (h *HardwareArduinoAccessLayer) Volume() (int64, error) {
+	return lastValue, nil
+}
+
+// Run command for Arduino
+func (h *HardwareArduinoAccessLayer) Command(cmd int) error {
+	r := h.ports[lastKey]
+	cmdd := "S" + string(cmd)
+	_, err := r.openPort.Write([]byte(cmdd))
+	if err != nil {
+		fmt.Println("Error in command ", cmd)
+		return err
+	} else {
+		fmt.Println("Start command ", cmd)
+		tick := time.Tick(100 * time.Millisecond)
+		buf := make([]byte, 32)
+		for {
+			select {
+			case <-tick:
+				N, err := r.openPort.Read(buf)
+				if err != io.EOF {
+					if err == nil {
+						ans := string(buf[1:N])
+						lastValue, _ := strconv.ParseInt(ans, 10, 10)
+						fmt.Println("Answer Arduino", lastValue)
+						if ans[0] == 'F' {
+							fmt.Println("Finish command ", cmd, " Successfully!")
+							return nil
+						}
+					} else {
+						fmt.Println(err)
+						fmt.Println("Error in command ", cmd)
+						return err
+					}
 				}
 			}
 		}
@@ -192,6 +308,24 @@ func (r *Rev2Board) StopAll() error {
 	return errors.New("not implemented")
 }
 
+func (r *RevSensor) SendPing() error {
+	_, err := r.openPort.Write([]byte("PING"))
+	if err != nil {
+		return err
+	}
+
+	buf := make([]byte, 32)
+	_, err = r.openPort.Read(buf)
+	if err != nil {
+		return err
+	}
+	st := string(buf[0:2])
+	if st != "OK-1" {
+		return err
+	}
+	return nil
+}
+
 // SendPing just pings the station periodically
 func (r *Rev2Board) SendPing() (int, error) {
 	_, err := r.openPort.Write([]byte("PING;"))
@@ -225,7 +359,23 @@ func (h *HardwareAccessLayer) portByKey(key string) (*Rev2Board, bool) {
 	return el, true
 }
 
+func (h *HardwareArduinoAccessLayer) portByKey(key string) bool {
+	h.portsMu.Lock()
+	_, found := h.ports[key]
+	h.portsMu.Unlock()
+	if !found {
+		return false
+	}
+	return true
+}
+
 func (h *HardwareAccessLayer) deletePort(key string) {
+	h.portsMu.Lock()
+	delete(h.ports, key)
+	h.portsMu.Unlock()
+}
+
+func (h *HardwareArduinoAccessLayer) deletePort(key string) {
 	h.portsMu.Lock()
 	delete(h.ports, key)
 	h.portsMu.Unlock()
@@ -237,8 +387,14 @@ func (h *HardwareAccessLayer) addPort(key string, board *Rev2Board) {
 	h.portsMu.Unlock()
 }
 
+func (h *HardwareArduinoAccessLayer) addPort(key string, sensor *RevSensor) {
+	h.portsMu.Lock()
+	h.ports[key] = sensor
+	h.portsMu.Unlock()
+}
+
 func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
-	c := &serial.Config{Name: "/dev/" + key, Baud: 38400, ReadTimeout: time.Millisecond * 100}
+	c := &serial.Config{Name: "/dev/" + key, Baud: 9600, ReadTimeout: time.Millisecond * 100}
 	s, err := serial.OpenPort(c)
 	if err != nil {
 		return err
@@ -251,17 +407,19 @@ func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
 
 	buf := make([]byte, 128)
 	N, err := s.Read(buf)
+	fmt.Println("N = ", N)
 	if err != nil {
 		s.Close()
 		return err
 	}
-	if N < 3 {
+	if N < 1 {
 		s.Close()
 		return nil
 	}
 	ans := string(buf[0:N])
 	fmt.Printf("answer is [%s]\n", ans)
 	foundStrings := h.uidAnswer.FindStringSubmatch(ans)
+	fmt.Println(foundStrings)
 	if len(foundStrings) < 2 {
 		s.Close()
 		return nil
@@ -271,6 +429,39 @@ func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
 	board := NewRev2Board(key, s)
 	h.addPort(key, board)
 	return board.Run()
+}
+
+func (h *HardwareArduinoAccessLayer) checkAndAddPortArduino(key string) error {
+	c := &serial.Config{Name: "/dev/" + key, Baud: 38400, ReadTimeout: time.Millisecond * 100}
+	s, err := serial.OpenPort(c)
+	if err != nil {
+		return err
+	}
+
+	_, err = s.Write([]byte("UID"))
+	if err != nil {
+		return err
+	}
+
+	buf := make([]byte, 128)
+	N, err := s.Read(buf)
+	if err != nil {
+		s.Close()
+		return err
+	}
+
+	ans := string(buf[0:N])
+	fmt.Printf("answer is [%s]\n", ans)
+	if h.uidAnswer != ans {
+		s.Close()
+		return nil
+	}
+
+	fmt.Printf("uid is [%s]\n", ans)
+	sensor := NewSensor(key, s)
+	h.addPort(key, sensor)
+	lastKey = key
+	return sensor.Run()
 }
 
 // RunConfig just runs a config
@@ -304,6 +495,7 @@ func (h *HardwareAccessLayer) workingLoop() ([]app.ControlBoard, error) {
 		for t {
 			t = false
 			for key := range h.ports {
+				fmt.Println(h.ports[key].toRemove)
 				if h.ports[key].toRemove {
 					delete(h.ports, key)
 					t = true
@@ -314,6 +506,38 @@ func (h *HardwareAccessLayer) workingLoop() ([]app.ControlBoard, error) {
 		h.portsMu.Unlock()
 		time.Sleep(time.Second) // Let's do maintenance just once per second
 	}
+}
+
+func (h *HardwareArduinoAccessLayer) Start() {
+	go h.workingLoop()
+}
+
+func (h *HardwareArduinoAccessLayer) workingLoop() error {
+	for {
+		h.CollectArduinoPorts()
+		t := true
+		h.portsMu.Lock()
+		for t {
+			t = false
+			for key := range h.ports {
+				if h.ports[key].toRemove {
+					delete(h.ports, key)
+					t = true
+					break
+				}
+			}
+		}
+		h.portsMu.Unlock()
+		time.Sleep(time.Second)
+	}
+}
+
+// Hardware Arduino Layer is new
+func NewHardwareArduinoLayer() (app.HardwareArduinoAccessLayer, error) {
+	res := &HardwareArduinoAccessLayer{
+		ports: make(map[string]*RevSensor),
+	}
+	return res, nil
 }
 
 // NewHardwareAccessLayer is just a constructor

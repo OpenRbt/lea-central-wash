@@ -67,7 +67,36 @@ OK
 type DelAdvertisingCampaignNoContent struct {
 }
 
+// IsSuccess returns true when this del advertising campaign no content response has a 2xx status code
+func (o *DelAdvertisingCampaignNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this del advertising campaign no content response has a 3xx status code
+func (o *DelAdvertisingCampaignNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this del advertising campaign no content response has a 4xx status code
+func (o *DelAdvertisingCampaignNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this del advertising campaign no content response has a 5xx status code
+func (o *DelAdvertisingCampaignNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this del advertising campaign no content response a status code equal to that given
+func (o *DelAdvertisingCampaignNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
 func (o *DelAdvertisingCampaignNoContent) Error() string {
+	return fmt.Sprintf("[POST /del-advertising-campaign][%d] delAdvertisingCampaignNoContent ", 204)
+}
+
+func (o *DelAdvertisingCampaignNoContent) String() string {
 	return fmt.Sprintf("[POST /del-advertising-campaign][%d] delAdvertisingCampaignNoContent ", 204)
 }
 
@@ -88,7 +117,36 @@ PIN is missing or invalid
 type DelAdvertisingCampaignUnauthorized struct {
 }
 
+// IsSuccess returns true when this del advertising campaign unauthorized response has a 2xx status code
+func (o *DelAdvertisingCampaignUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this del advertising campaign unauthorized response has a 3xx status code
+func (o *DelAdvertisingCampaignUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this del advertising campaign unauthorized response has a 4xx status code
+func (o *DelAdvertisingCampaignUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this del advertising campaign unauthorized response has a 5xx status code
+func (o *DelAdvertisingCampaignUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this del advertising campaign unauthorized response a status code equal to that given
+func (o *DelAdvertisingCampaignUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *DelAdvertisingCampaignUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /del-advertising-campaign][%d] delAdvertisingCampaignUnauthorized ", 401)
+}
+
+func (o *DelAdvertisingCampaignUnauthorized) String() string {
 	return fmt.Sprintf("[POST /del-advertising-campaign][%d] delAdvertisingCampaignUnauthorized ", 401)
 }
 
@@ -109,7 +167,36 @@ Access forbiddenn
 type DelAdvertisingCampaignForbidden struct {
 }
 
+// IsSuccess returns true when this del advertising campaign forbidden response has a 2xx status code
+func (o *DelAdvertisingCampaignForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this del advertising campaign forbidden response has a 3xx status code
+func (o *DelAdvertisingCampaignForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this del advertising campaign forbidden response has a 4xx status code
+func (o *DelAdvertisingCampaignForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this del advertising campaign forbidden response has a 5xx status code
+func (o *DelAdvertisingCampaignForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this del advertising campaign forbidden response a status code equal to that given
+func (o *DelAdvertisingCampaignForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
 func (o *DelAdvertisingCampaignForbidden) Error() string {
+	return fmt.Sprintf("[POST /del-advertising-campaign][%d] delAdvertisingCampaignForbidden ", 403)
+}
+
+func (o *DelAdvertisingCampaignForbidden) String() string {
 	return fmt.Sprintf("[POST /del-advertising-campaign][%d] delAdvertisingCampaignForbidden ", 403)
 }
 
@@ -130,7 +217,36 @@ internal error
 type DelAdvertisingCampaignInternalServerError struct {
 }
 
+// IsSuccess returns true when this del advertising campaign internal server error response has a 2xx status code
+func (o *DelAdvertisingCampaignInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this del advertising campaign internal server error response has a 3xx status code
+func (o *DelAdvertisingCampaignInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this del advertising campaign internal server error response has a 4xx status code
+func (o *DelAdvertisingCampaignInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this del advertising campaign internal server error response has a 5xx status code
+func (o *DelAdvertisingCampaignInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this del advertising campaign internal server error response a status code equal to that given
+func (o *DelAdvertisingCampaignInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *DelAdvertisingCampaignInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /del-advertising-campaign][%d] delAdvertisingCampaignInternalServerError ", 500)
+}
+
+func (o *DelAdvertisingCampaignInternalServerError) String() string {
 	return fmt.Sprintf("[POST /del-advertising-campaign][%d] delAdvertisingCampaignInternalServerError ", 500)
 }
 

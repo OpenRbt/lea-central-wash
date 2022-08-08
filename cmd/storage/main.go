@@ -5,13 +5,14 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/hal"
 	"os"
 	"os/user"
 	"path"
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/hal"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/auth"
@@ -231,13 +232,13 @@ func run(db *sqlx.DB, errc chan<- error) {
 	}
 
 	//hal client creation
-	client, err := hal.NewClient()
+	client, arduino, err := hal.NewClient()
 	if err != nil {
 		errc <- err
 		return
 	}
 
-	appl := app.New(repo, kasse, weather, client)
+	appl := app.New(repo, kasse, weather, client, arduino)
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
 	if err != nil {

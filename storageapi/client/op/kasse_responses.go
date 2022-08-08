@@ -59,9 +59,39 @@ type KasseOK struct {
 	Payload *model.KasseConfig
 }
 
+// IsSuccess returns true when this kasse o k response has a 2xx status code
+func (o *KasseOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this kasse o k response has a 3xx status code
+func (o *KasseOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this kasse o k response has a 4xx status code
+func (o *KasseOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this kasse o k response has a 5xx status code
+func (o *KasseOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this kasse o k response a status code equal to that given
+func (o *KasseOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *KasseOK) Error() string {
 	return fmt.Sprintf("[POST /kasse][%d] kasseOK  %+v", 200, o.Payload)
 }
+
+func (o *KasseOK) String() string {
+	return fmt.Sprintf("[POST /kasse][%d] kasseOK  %+v", 200, o.Payload)
+}
+
 func (o *KasseOK) GetPayload() *model.KasseConfig {
 	return o.Payload
 }
@@ -90,7 +120,36 @@ not found
 type KasseNotFound struct {
 }
 
+// IsSuccess returns true when this kasse not found response has a 2xx status code
+func (o *KasseNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this kasse not found response has a 3xx status code
+func (o *KasseNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this kasse not found response has a 4xx status code
+func (o *KasseNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this kasse not found response has a 5xx status code
+func (o *KasseNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this kasse not found response a status code equal to that given
+func (o *KasseNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *KasseNotFound) Error() string {
+	return fmt.Sprintf("[POST /kasse][%d] kasseNotFound ", 404)
+}
+
+func (o *KasseNotFound) String() string {
 	return fmt.Sprintf("[POST /kasse][%d] kasseNotFound ", 404)
 }
 
@@ -111,7 +170,36 @@ internal error
 type KasseInternalServerError struct {
 }
 
+// IsSuccess returns true when this kasse internal server error response has a 2xx status code
+func (o *KasseInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this kasse internal server error response has a 3xx status code
+func (o *KasseInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this kasse internal server error response has a 4xx status code
+func (o *KasseInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this kasse internal server error response has a 5xx status code
+func (o *KasseInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this kasse internal server error response a status code equal to that given
+func (o *KasseInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *KasseInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /kasse][%d] kasseInternalServerError ", 500)
+}
+
+func (o *KasseInternalServerError) String() string {
 	return fmt.Sprintf("[POST /kasse][%d] kasseInternalServerError ", 500)
 }
 

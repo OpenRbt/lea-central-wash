@@ -67,7 +67,36 @@ OK
 type SaveCollectionNoContent struct {
 }
 
+// IsSuccess returns true when this save collection no content response has a 2xx status code
+func (o *SaveCollectionNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this save collection no content response has a 3xx status code
+func (o *SaveCollectionNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this save collection no content response has a 4xx status code
+func (o *SaveCollectionNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this save collection no content response has a 5xx status code
+func (o *SaveCollectionNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this save collection no content response a status code equal to that given
+func (o *SaveCollectionNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
 func (o *SaveCollectionNoContent) Error() string {
+	return fmt.Sprintf("[POST /save-collection][%d] saveCollectionNoContent ", 204)
+}
+
+func (o *SaveCollectionNoContent) String() string {
 	return fmt.Sprintf("[POST /save-collection][%d] saveCollectionNoContent ", 204)
 }
 
@@ -88,7 +117,36 @@ PIN is missing or invalid
 type SaveCollectionUnauthorized struct {
 }
 
+// IsSuccess returns true when this save collection unauthorized response has a 2xx status code
+func (o *SaveCollectionUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this save collection unauthorized response has a 3xx status code
+func (o *SaveCollectionUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this save collection unauthorized response has a 4xx status code
+func (o *SaveCollectionUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this save collection unauthorized response has a 5xx status code
+func (o *SaveCollectionUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this save collection unauthorized response a status code equal to that given
+func (o *SaveCollectionUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *SaveCollectionUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /save-collection][%d] saveCollectionUnauthorized ", 401)
+}
+
+func (o *SaveCollectionUnauthorized) String() string {
 	return fmt.Sprintf("[POST /save-collection][%d] saveCollectionUnauthorized ", 401)
 }
 
@@ -109,7 +167,36 @@ not found
 type SaveCollectionNotFound struct {
 }
 
+// IsSuccess returns true when this save collection not found response has a 2xx status code
+func (o *SaveCollectionNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this save collection not found response has a 3xx status code
+func (o *SaveCollectionNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this save collection not found response has a 4xx status code
+func (o *SaveCollectionNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this save collection not found response has a 5xx status code
+func (o *SaveCollectionNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this save collection not found response a status code equal to that given
+func (o *SaveCollectionNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *SaveCollectionNotFound) Error() string {
+	return fmt.Sprintf("[POST /save-collection][%d] saveCollectionNotFound ", 404)
+}
+
+func (o *SaveCollectionNotFound) String() string {
 	return fmt.Sprintf("[POST /save-collection][%d] saveCollectionNotFound ", 404)
 }
 
@@ -130,7 +217,36 @@ internal error
 type SaveCollectionInternalServerError struct {
 }
 
+// IsSuccess returns true when this save collection internal server error response has a 2xx status code
+func (o *SaveCollectionInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this save collection internal server error response has a 3xx status code
+func (o *SaveCollectionInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this save collection internal server error response has a 4xx status code
+func (o *SaveCollectionInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this save collection internal server error response has a 5xx status code
+func (o *SaveCollectionInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this save collection internal server error response a status code equal to that given
+func (o *SaveCollectionInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *SaveCollectionInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /save-collection][%d] saveCollectionInternalServerError ", 500)
+}
+
+func (o *SaveCollectionInternalServerError) String() string {
 	return fmt.Sprintf("[POST /save-collection][%d] saveCollectionInternalServerError ", 500)
 }
 

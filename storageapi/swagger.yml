@@ -1866,6 +1866,103 @@ paths:
             type: string
         500:
           description: internal error
+  
+  /run-2program:
+    post:
+      operationId: "run2Program"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgRun2Program"
+            type: object
+            required:
+              - hash
+              - programID
+              - programID2
+              - preflight
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+              programID:
+                type: integer
+              programID2:
+                type: integer
+              preflight:
+                type: boolean
+      responses:
+        204:
+          description: OK
+        404:
+          description: not found
+          schema:
+            type: string
+        500:
+          description: internal error
+  
+  /run-arduino:
+    post:
+      operationId: "runArduino"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgRunArduino"
+            type: object
+            required:
+              - hash
+              - volume
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+              volume:
+                type: integer
+      responses:
+        204:
+          description: OK
+        404:
+          description: not found
+          schema:
+            type: string
+        500:
+          description: internal error
+
+  /volume-arduino:
+    post:
+      operationId: "VolumeArduino"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "VolumeArduino"
+            type: object
+            required:
+              - hash
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+      responses:
+        200:
+          description: OK
+          schema:
+            title: "ResponseVolumeArduino"
+            type: object
+            required:
+              - volume
+            properties:
+              volume: 
+                type: integer
+        204:
+          description: OK
+        404:
+          description: not found
+          schema:
+            type: string
+        500:
+          description: internal error
 
   /press-button:
     post:

@@ -632,6 +632,63 @@ func (svc *service) runProgram(params op.RunProgramParams) op.RunProgramResponde
 	}
 }
 
+func (svc *service) run2Program(params op.Run2ProgramParams) op.Run2ProgramResponder {
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		log.Info("runProgram: not found", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewRun2ProgramNotFound().WithPayload("station not found")
+	}
+	err = svc.app.Run2Program(stationID, *params.Args.ProgramID, *params.Args.ProgramID2, *params.Args.Preflight)
+	log.Info("Error run2programm is - ", err)
+
+	log.Info("runProgram", "programID", *params.Args.ProgramID, "programID2", *params.Args.ProgramID2, "stationID", stationID, "preflight", *params.Args.Preflight, "ip", params.HTTPRequest.RemoteAddr)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewRun2ProgramNoContent()
+	case app.ErrNotFound:
+		log.PrintErr(err, "hash", params.Args.Hash, "stationID", stationID, "programID", *params.Args.ProgramID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewRun2ProgramNotFound().WithPayload("program or relay board not found")
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewRun2ProgramInternalServerError()
+	}
+}
+
+func (svc *service) runArduino(params op.RunArduinoParams) op.RunArduinoResponder {
+	err := svc.app.RunArduino(*params.Args.Volume)
+
+	log.Info("runArduino", "Volume", *params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewRunArduinoNoContent()
+	case app.ErrNotFound:
+		log.PrintErr(err, "hash", params.Args.Hash, "Volume", params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewRunArduinoNotFound().WithPayload("program or Arduino not found")
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewRunArduinoInternalServerError()
+	}
+}
+
+func (svc *service) getVolume(params op.VolumeArduinoParams) op.VolumeArduinoResponder {
+	znach, err := svc.app.GetVolume()
+
+	log.Info("Get Volume", "ip", params.HTTPRequest.RemoteAddr)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewVolumeArduinoOK().WithPayload(&op.VolumeArduinoOKBody{Volume: &znach})
+	case app.ErrNotFound:
+		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewVolumeArduinoNotFound().WithPayload("program or Arduino not found")
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewVolumeArduinoInternalServerError()
+	}
+}
+
 func (svc *service) pressButton(params op.PressButtonParams) op.PressButtonResponder {
 	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {

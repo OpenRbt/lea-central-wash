@@ -69,9 +69,39 @@ type StationStatCurrentOK struct {
 	Payload model.StationsStat
 }
 
+// IsSuccess returns true when this station stat current o k response has a 2xx status code
+func (o *StationStatCurrentOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this station stat current o k response has a 3xx status code
+func (o *StationStatCurrentOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station stat current o k response has a 4xx status code
+func (o *StationStatCurrentOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station stat current o k response has a 5xx status code
+func (o *StationStatCurrentOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station stat current o k response a status code equal to that given
+func (o *StationStatCurrentOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *StationStatCurrentOK) Error() string {
 	return fmt.Sprintf("[POST /station-stat-current][%d] stationStatCurrentOK  %+v", 200, o.Payload)
 }
+
+func (o *StationStatCurrentOK) String() string {
+	return fmt.Sprintf("[POST /station-stat-current][%d] stationStatCurrentOK  %+v", 200, o.Payload)
+}
+
 func (o *StationStatCurrentOK) GetPayload() model.StationsStat {
 	return o.Payload
 }
@@ -98,7 +128,36 @@ PIN is missing or invalid
 type StationStatCurrentUnauthorized struct {
 }
 
+// IsSuccess returns true when this station stat current unauthorized response has a 2xx status code
+func (o *StationStatCurrentUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station stat current unauthorized response has a 3xx status code
+func (o *StationStatCurrentUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station stat current unauthorized response has a 4xx status code
+func (o *StationStatCurrentUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this station stat current unauthorized response has a 5xx status code
+func (o *StationStatCurrentUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station stat current unauthorized response a status code equal to that given
+func (o *StationStatCurrentUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *StationStatCurrentUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /station-stat-current][%d] stationStatCurrentUnauthorized ", 401)
+}
+
+func (o *StationStatCurrentUnauthorized) String() string {
 	return fmt.Sprintf("[POST /station-stat-current][%d] stationStatCurrentUnauthorized ", 401)
 }
 
@@ -119,7 +178,36 @@ Access forbiddenn
 type StationStatCurrentForbidden struct {
 }
 
+// IsSuccess returns true when this station stat current forbidden response has a 2xx status code
+func (o *StationStatCurrentForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station stat current forbidden response has a 3xx status code
+func (o *StationStatCurrentForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station stat current forbidden response has a 4xx status code
+func (o *StationStatCurrentForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this station stat current forbidden response has a 5xx status code
+func (o *StationStatCurrentForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station stat current forbidden response a status code equal to that given
+func (o *StationStatCurrentForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
 func (o *StationStatCurrentForbidden) Error() string {
+	return fmt.Sprintf("[POST /station-stat-current][%d] stationStatCurrentForbidden ", 403)
+}
+
+func (o *StationStatCurrentForbidden) String() string {
 	return fmt.Sprintf("[POST /station-stat-current][%d] stationStatCurrentForbidden ", 403)
 }
 
@@ -140,7 +228,36 @@ internal error
 type StationStatCurrentInternalServerError struct {
 }
 
+// IsSuccess returns true when this station stat current internal server error response has a 2xx status code
+func (o *StationStatCurrentInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station stat current internal server error response has a 3xx status code
+func (o *StationStatCurrentInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station stat current internal server error response has a 4xx status code
+func (o *StationStatCurrentInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station stat current internal server error response has a 5xx status code
+func (o *StationStatCurrentInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this station stat current internal server error response a status code equal to that given
+func (o *StationStatCurrentInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *StationStatCurrentInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /station-stat-current][%d] stationStatCurrentInternalServerError ", 500)
+}
+
+func (o *StationStatCurrentInternalServerError) String() string {
 	return fmt.Sprintf("[POST /station-stat-current][%d] stationStatCurrentInternalServerError ", 500)
 }
 

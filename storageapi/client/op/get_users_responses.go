@@ -65,9 +65,39 @@ type GetUsersOK struct {
 	Payload *model.UsersReport
 }
 
+// IsSuccess returns true when this get users o k response has a 2xx status code
+func (o *GetUsersOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get users o k response has a 3xx status code
+func (o *GetUsersOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get users o k response has a 4xx status code
+func (o *GetUsersOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get users o k response has a 5xx status code
+func (o *GetUsersOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get users o k response a status code equal to that given
+func (o *GetUsersOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *GetUsersOK) Error() string {
 	return fmt.Sprintf("[GET /users][%d] getUsersOK  %+v", 200, o.Payload)
 }
+
+func (o *GetUsersOK) String() string {
+	return fmt.Sprintf("[GET /users][%d] getUsersOK  %+v", 200, o.Payload)
+}
+
 func (o *GetUsersOK) GetPayload() *model.UsersReport {
 	return o.Payload
 }
@@ -96,7 +126,36 @@ PIN is missing or invalid
 type GetUsersUnauthorized struct {
 }
 
+// IsSuccess returns true when this get users unauthorized response has a 2xx status code
+func (o *GetUsersUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get users unauthorized response has a 3xx status code
+func (o *GetUsersUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get users unauthorized response has a 4xx status code
+func (o *GetUsersUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get users unauthorized response has a 5xx status code
+func (o *GetUsersUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get users unauthorized response a status code equal to that given
+func (o *GetUsersUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *GetUsersUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /users][%d] getUsersUnauthorized ", 401)
+}
+
+func (o *GetUsersUnauthorized) String() string {
 	return fmt.Sprintf("[GET /users][%d] getUsersUnauthorized ", 401)
 }
 
@@ -117,7 +176,36 @@ Access forbidden
 type GetUsersForbidden struct {
 }
 
+// IsSuccess returns true when this get users forbidden response has a 2xx status code
+func (o *GetUsersForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get users forbidden response has a 3xx status code
+func (o *GetUsersForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get users forbidden response has a 4xx status code
+func (o *GetUsersForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get users forbidden response has a 5xx status code
+func (o *GetUsersForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get users forbidden response a status code equal to that given
+func (o *GetUsersForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
 func (o *GetUsersForbidden) Error() string {
+	return fmt.Sprintf("[GET /users][%d] getUsersForbidden ", 403)
+}
+
+func (o *GetUsersForbidden) String() string {
 	return fmt.Sprintf("[GET /users][%d] getUsersForbidden ", 403)
 }
 
@@ -138,7 +226,36 @@ internal error
 type GetUsersInternalServerError struct {
 }
 
+// IsSuccess returns true when this get users internal server error response has a 2xx status code
+func (o *GetUsersInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get users internal server error response has a 3xx status code
+func (o *GetUsersInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get users internal server error response has a 4xx status code
+func (o *GetUsersInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get users internal server error response has a 5xx status code
+func (o *GetUsersInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this get users internal server error response a status code equal to that given
+func (o *GetUsersInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *GetUsersInternalServerError) Error() string {
+	return fmt.Sprintf("[GET /users][%d] getUsersInternalServerError ", 500)
+}
+
+func (o *GetUsersInternalServerError) String() string {
 	return fmt.Sprintf("[GET /users][%d] getUsersInternalServerError ", 500)
 }
 

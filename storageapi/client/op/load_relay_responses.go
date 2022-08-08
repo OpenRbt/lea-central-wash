@@ -65,9 +65,39 @@ type LoadRelayOK struct {
 	Payload *model.RelayReport
 }
 
+// IsSuccess returns true when this load relay o k response has a 2xx status code
+func (o *LoadRelayOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this load relay o k response has a 3xx status code
+func (o *LoadRelayOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this load relay o k response has a 4xx status code
+func (o *LoadRelayOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this load relay o k response has a 5xx status code
+func (o *LoadRelayOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this load relay o k response a status code equal to that given
+func (o *LoadRelayOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *LoadRelayOK) Error() string {
 	return fmt.Sprintf("[POST /load-relay][%d] loadRelayOK  %+v", 200, o.Payload)
 }
+
+func (o *LoadRelayOK) String() string {
+	return fmt.Sprintf("[POST /load-relay][%d] loadRelayOK  %+v", 200, o.Payload)
+}
+
 func (o *LoadRelayOK) GetPayload() *model.RelayReport {
 	return o.Payload
 }
@@ -96,7 +126,36 @@ not found
 type LoadRelayNotFound struct {
 }
 
+// IsSuccess returns true when this load relay not found response has a 2xx status code
+func (o *LoadRelayNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this load relay not found response has a 3xx status code
+func (o *LoadRelayNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this load relay not found response has a 4xx status code
+func (o *LoadRelayNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this load relay not found response has a 5xx status code
+func (o *LoadRelayNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this load relay not found response a status code equal to that given
+func (o *LoadRelayNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *LoadRelayNotFound) Error() string {
+	return fmt.Sprintf("[POST /load-relay][%d] loadRelayNotFound ", 404)
+}
+
+func (o *LoadRelayNotFound) String() string {
 	return fmt.Sprintf("[POST /load-relay][%d] loadRelayNotFound ", 404)
 }
 
@@ -117,7 +176,36 @@ internal error
 type LoadRelayInternalServerError struct {
 }
 
+// IsSuccess returns true when this load relay internal server error response has a 2xx status code
+func (o *LoadRelayInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this load relay internal server error response has a 3xx status code
+func (o *LoadRelayInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this load relay internal server error response has a 4xx status code
+func (o *LoadRelayInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this load relay internal server error response has a 5xx status code
+func (o *LoadRelayInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this load relay internal server error response a status code equal to that given
+func (o *LoadRelayInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *LoadRelayInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /load-relay][%d] loadRelayInternalServerError ", 500)
+}
+
+func (o *LoadRelayInternalServerError) String() string {
 	return fmt.Sprintf("[POST /load-relay][%d] loadRelayInternalServerError ", 500)
 }
 
@@ -183,6 +271,8 @@ func (o *LoadRelayBody) validateHash(formats strfmt.Registry) error {
 		if err := o.Hash.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
@@ -211,6 +301,8 @@ func (o *LoadRelayBody) contextValidateHash(ctx context.Context, formats strfmt.
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}

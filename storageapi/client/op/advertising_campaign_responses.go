@@ -69,9 +69,39 @@ type AdvertisingCampaignOK struct {
 	Payload model.AdvertisingCampaigns
 }
 
+// IsSuccess returns true when this advertising campaign o k response has a 2xx status code
+func (o *AdvertisingCampaignOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this advertising campaign o k response has a 3xx status code
+func (o *AdvertisingCampaignOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this advertising campaign o k response has a 4xx status code
+func (o *AdvertisingCampaignOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this advertising campaign o k response has a 5xx status code
+func (o *AdvertisingCampaignOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this advertising campaign o k response a status code equal to that given
+func (o *AdvertisingCampaignOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *AdvertisingCampaignOK) Error() string {
 	return fmt.Sprintf("[POST /advertising-campaign][%d] advertisingCampaignOK  %+v", 200, o.Payload)
 }
+
+func (o *AdvertisingCampaignOK) String() string {
+	return fmt.Sprintf("[POST /advertising-campaign][%d] advertisingCampaignOK  %+v", 200, o.Payload)
+}
+
 func (o *AdvertisingCampaignOK) GetPayload() model.AdvertisingCampaigns {
 	return o.Payload
 }
@@ -98,7 +128,36 @@ PIN is missing or invalid
 type AdvertisingCampaignUnauthorized struct {
 }
 
+// IsSuccess returns true when this advertising campaign unauthorized response has a 2xx status code
+func (o *AdvertisingCampaignUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this advertising campaign unauthorized response has a 3xx status code
+func (o *AdvertisingCampaignUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this advertising campaign unauthorized response has a 4xx status code
+func (o *AdvertisingCampaignUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this advertising campaign unauthorized response has a 5xx status code
+func (o *AdvertisingCampaignUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this advertising campaign unauthorized response a status code equal to that given
+func (o *AdvertisingCampaignUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *AdvertisingCampaignUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /advertising-campaign][%d] advertisingCampaignUnauthorized ", 401)
+}
+
+func (o *AdvertisingCampaignUnauthorized) String() string {
 	return fmt.Sprintf("[POST /advertising-campaign][%d] advertisingCampaignUnauthorized ", 401)
 }
 
@@ -119,7 +178,36 @@ Access forbiddenn
 type AdvertisingCampaignForbidden struct {
 }
 
+// IsSuccess returns true when this advertising campaign forbidden response has a 2xx status code
+func (o *AdvertisingCampaignForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this advertising campaign forbidden response has a 3xx status code
+func (o *AdvertisingCampaignForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this advertising campaign forbidden response has a 4xx status code
+func (o *AdvertisingCampaignForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this advertising campaign forbidden response has a 5xx status code
+func (o *AdvertisingCampaignForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this advertising campaign forbidden response a status code equal to that given
+func (o *AdvertisingCampaignForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
 func (o *AdvertisingCampaignForbidden) Error() string {
+	return fmt.Sprintf("[POST /advertising-campaign][%d] advertisingCampaignForbidden ", 403)
+}
+
+func (o *AdvertisingCampaignForbidden) String() string {
 	return fmt.Sprintf("[POST /advertising-campaign][%d] advertisingCampaignForbidden ", 403)
 }
 
@@ -140,7 +228,36 @@ internal error
 type AdvertisingCampaignInternalServerError struct {
 }
 
+// IsSuccess returns true when this advertising campaign internal server error response has a 2xx status code
+func (o *AdvertisingCampaignInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this advertising campaign internal server error response has a 3xx status code
+func (o *AdvertisingCampaignInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this advertising campaign internal server error response has a 4xx status code
+func (o *AdvertisingCampaignInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this advertising campaign internal server error response has a 5xx status code
+func (o *AdvertisingCampaignInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this advertising campaign internal server error response a status code equal to that given
+func (o *AdvertisingCampaignInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *AdvertisingCampaignInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /advertising-campaign][%d] advertisingCampaignInternalServerError ", 500)
+}
+
+func (o *AdvertisingCampaignInternalServerError) String() string {
 	return fmt.Sprintf("[POST /advertising-campaign][%d] advertisingCampaignInternalServerError ", 500)
 }
 

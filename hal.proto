@@ -9,9 +9,23 @@ service HardwareAccessLayer{
     rpc Run2Programs(Options) returns(google.protobuf.Empty);
 }
 
+service HardwareArduinoAccessLayer{
+    rpc Command(Opti) returns(google.protobuf.Empty);
+    rpc Volume(google.protobuf.Empty) returns(Otvet);
+}
+
 message Options{
     int32 program_id = 1;
     int32 second_program_id = 2;
     int32 timeoutSec = 3;
     int32 motorSpeedPercent = 4;
+}
+
+message Opti{
+    int32 cmd = 1;
+}
+
+message Otvet{
+    int64 otvet = 1;
+    google.protobuf.Empty err = 2;
 }

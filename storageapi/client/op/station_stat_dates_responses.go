@@ -71,9 +71,39 @@ type StationStatDatesOK struct {
 	Payload model.StationsStat
 }
 
+// IsSuccess returns true when this station stat dates o k response has a 2xx status code
+func (o *StationStatDatesOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this station stat dates o k response has a 3xx status code
+func (o *StationStatDatesOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station stat dates o k response has a 4xx status code
+func (o *StationStatDatesOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station stat dates o k response has a 5xx status code
+func (o *StationStatDatesOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station stat dates o k response a status code equal to that given
+func (o *StationStatDatesOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *StationStatDatesOK) Error() string {
 	return fmt.Sprintf("[POST /station-stat-dates][%d] stationStatDatesOK  %+v", 200, o.Payload)
 }
+
+func (o *StationStatDatesOK) String() string {
+	return fmt.Sprintf("[POST /station-stat-dates][%d] stationStatDatesOK  %+v", 200, o.Payload)
+}
+
 func (o *StationStatDatesOK) GetPayload() model.StationsStat {
 	return o.Payload
 }
@@ -100,7 +130,36 @@ PIN is missing or invalid
 type StationStatDatesUnauthorized struct {
 }
 
+// IsSuccess returns true when this station stat dates unauthorized response has a 2xx status code
+func (o *StationStatDatesUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station stat dates unauthorized response has a 3xx status code
+func (o *StationStatDatesUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station stat dates unauthorized response has a 4xx status code
+func (o *StationStatDatesUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this station stat dates unauthorized response has a 5xx status code
+func (o *StationStatDatesUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station stat dates unauthorized response a status code equal to that given
+func (o *StationStatDatesUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *StationStatDatesUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /station-stat-dates][%d] stationStatDatesUnauthorized ", 401)
+}
+
+func (o *StationStatDatesUnauthorized) String() string {
 	return fmt.Sprintf("[POST /station-stat-dates][%d] stationStatDatesUnauthorized ", 401)
 }
 
@@ -121,7 +180,36 @@ Access forbiddenn
 type StationStatDatesForbidden struct {
 }
 
+// IsSuccess returns true when this station stat dates forbidden response has a 2xx status code
+func (o *StationStatDatesForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station stat dates forbidden response has a 3xx status code
+func (o *StationStatDatesForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station stat dates forbidden response has a 4xx status code
+func (o *StationStatDatesForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this station stat dates forbidden response has a 5xx status code
+func (o *StationStatDatesForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station stat dates forbidden response a status code equal to that given
+func (o *StationStatDatesForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
 func (o *StationStatDatesForbidden) Error() string {
+	return fmt.Sprintf("[POST /station-stat-dates][%d] stationStatDatesForbidden ", 403)
+}
+
+func (o *StationStatDatesForbidden) String() string {
 	return fmt.Sprintf("[POST /station-stat-dates][%d] stationStatDatesForbidden ", 403)
 }
 
@@ -142,7 +230,36 @@ internal error
 type StationStatDatesInternalServerError struct {
 }
 
+// IsSuccess returns true when this station stat dates internal server error response has a 2xx status code
+func (o *StationStatDatesInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station stat dates internal server error response has a 3xx status code
+func (o *StationStatDatesInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station stat dates internal server error response has a 4xx status code
+func (o *StationStatDatesInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station stat dates internal server error response has a 5xx status code
+func (o *StationStatDatesInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this station stat dates internal server error response a status code equal to that given
+func (o *StationStatDatesInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *StationStatDatesInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /station-stat-dates][%d] stationStatDatesInternalServerError ", 500)
+}
+
+func (o *StationStatDatesInternalServerError) String() string {
 	return fmt.Sprintf("[POST /station-stat-dates][%d] stationStatDatesInternalServerError ", 500)
 }
 

@@ -52,7 +52,7 @@ type DeleteUser struct {
 func (o *DeleteUser) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewDeleteUserParams()
 	uprinc, aCtx, err := o.Context.Authorize(r, route)
@@ -61,7 +61,7 @@ func (o *DeleteUser) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if aCtx != nil {
-		r = aCtx
+		*r = *aCtx
 	}
 	var principal *storageapi.Profile
 	if uprinc != nil {
@@ -135,6 +135,8 @@ func (o *DeleteUserBody) validateLogin(formats strfmt.Registry) error {
 		if err := o.Login.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "login")
 			}
 			return err
 		}
@@ -163,6 +165,8 @@ func (o *DeleteUserBody) contextValidateLogin(ctx context.Context, formats strfm
 		if err := o.Login.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "login")
 			}
 			return err
 		}

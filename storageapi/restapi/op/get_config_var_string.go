@@ -49,7 +49,7 @@ type GetConfigVarString struct {
 func (o *GetConfigVarString) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewGetConfigVarStringParams()
 	uprinc, aCtx, err := o.Context.Authorize(r, route)
@@ -58,7 +58,7 @@ func (o *GetConfigVarString) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 		return
 	}
 	if aCtx != nil {
-		r = aCtx
+		*r = *aCtx
 	}
 	var principal *storageapi.Profile
 	if uprinc != nil {

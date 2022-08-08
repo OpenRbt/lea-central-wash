@@ -44,6 +44,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		VolumeArduinoHandler: VolumeArduinoHandlerFunc(func(params VolumeArduinoParams) VolumeArduinoResponder {
+			return VolumeArduinoNotImplemented()
+		}),
 		AddAdvertisingCampaignHandler: AddAdvertisingCampaignHandlerFunc(func(params AddAdvertisingCampaignParams, principal *storageapi.Profile) AddAdvertisingCampaignResponder {
 			return AddAdvertisingCampaignNotImplemented()
 		}),
@@ -130,6 +133,12 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		ResetStationStatHandler: ResetStationStatHandlerFunc(func(params ResetStationStatParams, principal *storageapi.Profile) ResetStationStatResponder {
 			return ResetStationStatNotImplemented()
+		}),
+		Run2ProgramHandler: Run2ProgramHandlerFunc(func(params Run2ProgramParams) Run2ProgramResponder {
+			return Run2ProgramNotImplemented()
+		}),
+		RunArduinoHandler: RunArduinoHandlerFunc(func(params RunArduinoParams) RunArduinoResponder {
+			return RunArduinoNotImplemented()
 		}),
 		RunProgramHandler: RunProgramHandlerFunc(func(params RunProgramParams) RunProgramResponder {
 			return RunProgramNotImplemented()
@@ -265,6 +274,8 @@ type StorageAPI struct {
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
 
+	// VolumeArduinoHandler sets the operation handler for the volume arduino operation
+	VolumeArduinoHandler VolumeArduinoHandler
 	// AddAdvertisingCampaignHandler sets the operation handler for the add advertising campaign operation
 	AddAdvertisingCampaignHandler AddAdvertisingCampaignHandler
 	// AddServiceAmountHandler sets the operation handler for the add service amount operation
@@ -323,6 +334,10 @@ type StorageAPI struct {
 	ProgramsHandler ProgramsHandler
 	// ResetStationStatHandler sets the operation handler for the reset station stat operation
 	ResetStationStatHandler ResetStationStatHandler
+	// Run2ProgramHandler sets the operation handler for the run2 program operation
+	Run2ProgramHandler Run2ProgramHandler
+	// RunArduinoHandler sets the operation handler for the run arduino operation
+	RunArduinoHandler RunArduinoHandler
 	// RunProgramHandler sets the operation handler for the run program operation
 	RunProgramHandler RunProgramHandler
 	// SaveHandler sets the operation handler for the save operation
@@ -460,6 +475,9 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "PinAuth")
 	}
 
+	if o.VolumeArduinoHandler == nil {
+		unregistered = append(unregistered, "VolumeArduinoHandler")
+	}
 	if o.AddAdvertisingCampaignHandler == nil {
 		unregistered = append(unregistered, "AddAdvertisingCampaignHandler")
 	}
@@ -546,6 +564,12 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.ResetStationStatHandler == nil {
 		unregistered = append(unregistered, "ResetStationStatHandler")
+	}
+	if o.Run2ProgramHandler == nil {
+		unregistered = append(unregistered, "Run2ProgramHandler")
+	}
+	if o.RunArduinoHandler == nil {
+		unregistered = append(unregistered, "RunArduinoHandler")
 	}
 	if o.RunProgramHandler == nil {
 		unregistered = append(unregistered, "RunProgramHandler")
@@ -733,6 +757,10 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/volume-arduino"] = NewVolumeArduino(o.context, o.VolumeArduinoHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/add-advertising-campaign"] = NewAddAdvertisingCampaign(o.context, o.AddAdvertisingCampaignHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -846,6 +874,14 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/reset-station-stat"] = NewResetStationStat(o.context, o.ResetStationStatHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/run-2program"] = NewRun2Program(o.context, o.Run2ProgramHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/run-arduino"] = NewRunArduino(o.context, o.RunArduinoHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

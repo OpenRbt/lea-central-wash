@@ -52,7 +52,7 @@ type UpdateUser struct {
 func (o *UpdateUser) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewUpdateUserParams()
 	uprinc, aCtx, err := o.Context.Authorize(r, route)
@@ -61,7 +61,7 @@ func (o *UpdateUser) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if aCtx != nil {
-		r = aCtx
+		*r = *aCtx
 	}
 	var principal *storageapi.Profile
 	if uprinc != nil {
@@ -184,6 +184,8 @@ func (o *UpdateUserBody) validateFirstName(formats strfmt.Registry) error {
 		if err := o.FirstName.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "firstName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "firstName")
 			}
 			return err
 		}
@@ -201,6 +203,8 @@ func (o *UpdateUserBody) validateLastName(formats strfmt.Registry) error {
 		if err := o.LastName.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "lastName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "lastName")
 			}
 			return err
 		}
@@ -223,6 +227,8 @@ func (o *UpdateUserBody) validateLogin(formats strfmt.Registry) error {
 		if err := o.Login.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "login")
 			}
 			return err
 		}
@@ -240,6 +246,8 @@ func (o *UpdateUserBody) validateMiddleName(formats strfmt.Registry) error {
 		if err := o.MiddleName.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "middleName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "middleName")
 			}
 			return err
 		}
@@ -292,6 +300,8 @@ func (o *UpdateUserBody) contextValidateFirstName(ctx context.Context, formats s
 		if err := o.FirstName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "firstName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "firstName")
 			}
 			return err
 		}
@@ -306,6 +316,8 @@ func (o *UpdateUserBody) contextValidateIsAdmin(ctx context.Context, formats str
 		if err := o.IsAdmin.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "isAdmin")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "isAdmin")
 			}
 			return err
 		}
@@ -320,6 +332,8 @@ func (o *UpdateUserBody) contextValidateIsEngineer(ctx context.Context, formats 
 		if err := o.IsEngineer.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "isEngineer")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "isEngineer")
 			}
 			return err
 		}
@@ -334,6 +348,8 @@ func (o *UpdateUserBody) contextValidateIsOperator(ctx context.Context, formats 
 		if err := o.IsOperator.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "isOperator")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "isOperator")
 			}
 			return err
 		}
@@ -348,6 +364,8 @@ func (o *UpdateUserBody) contextValidateLastName(ctx context.Context, formats st
 		if err := o.LastName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "lastName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "lastName")
 			}
 			return err
 		}
@@ -362,6 +380,8 @@ func (o *UpdateUserBody) contextValidateLogin(ctx context.Context, formats strfm
 		if err := o.Login.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "login")
 			}
 			return err
 		}
@@ -376,6 +396,8 @@ func (o *UpdateUserBody) contextValidateMiddleName(ctx context.Context, formats 
 		if err := o.MiddleName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "middleName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "middleName")
 			}
 			return err
 		}

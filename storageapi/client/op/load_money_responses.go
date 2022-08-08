@@ -65,9 +65,39 @@ type LoadMoneyOK struct {
 	Payload *model.MoneyReport
 }
 
+// IsSuccess returns true when this load money o k response has a 2xx status code
+func (o *LoadMoneyOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this load money o k response has a 3xx status code
+func (o *LoadMoneyOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this load money o k response has a 4xx status code
+func (o *LoadMoneyOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this load money o k response has a 5xx status code
+func (o *LoadMoneyOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this load money o k response a status code equal to that given
+func (o *LoadMoneyOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *LoadMoneyOK) Error() string {
 	return fmt.Sprintf("[POST /load-money][%d] loadMoneyOK  %+v", 200, o.Payload)
 }
+
+func (o *LoadMoneyOK) String() string {
+	return fmt.Sprintf("[POST /load-money][%d] loadMoneyOK  %+v", 200, o.Payload)
+}
+
 func (o *LoadMoneyOK) GetPayload() *model.MoneyReport {
 	return o.Payload
 }
@@ -96,7 +126,36 @@ not found
 type LoadMoneyNotFound struct {
 }
 
+// IsSuccess returns true when this load money not found response has a 2xx status code
+func (o *LoadMoneyNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this load money not found response has a 3xx status code
+func (o *LoadMoneyNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this load money not found response has a 4xx status code
+func (o *LoadMoneyNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this load money not found response has a 5xx status code
+func (o *LoadMoneyNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this load money not found response a status code equal to that given
+func (o *LoadMoneyNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *LoadMoneyNotFound) Error() string {
+	return fmt.Sprintf("[POST /load-money][%d] loadMoneyNotFound ", 404)
+}
+
+func (o *LoadMoneyNotFound) String() string {
 	return fmt.Sprintf("[POST /load-money][%d] loadMoneyNotFound ", 404)
 }
 
@@ -117,7 +176,36 @@ internal error
 type LoadMoneyInternalServerError struct {
 }
 
+// IsSuccess returns true when this load money internal server error response has a 2xx status code
+func (o *LoadMoneyInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this load money internal server error response has a 3xx status code
+func (o *LoadMoneyInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this load money internal server error response has a 4xx status code
+func (o *LoadMoneyInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this load money internal server error response has a 5xx status code
+func (o *LoadMoneyInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this load money internal server error response a status code equal to that given
+func (o *LoadMoneyInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *LoadMoneyInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /load-money][%d] loadMoneyInternalServerError ", 500)
+}
+
+func (o *LoadMoneyInternalServerError) String() string {
 	return fmt.Sprintf("[POST /load-money][%d] loadMoneyInternalServerError ", 500)
 }
 
@@ -183,6 +271,8 @@ func (o *LoadMoneyBody) validateHash(formats strfmt.Registry) error {
 		if err := o.Hash.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
@@ -211,6 +301,8 @@ func (o *LoadMoneyBody) contextValidateHash(ctx context.Context, formats strfmt.
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}

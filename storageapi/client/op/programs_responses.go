@@ -59,9 +59,39 @@ type ProgramsOK struct {
 	Payload []*model.Program
 }
 
+// IsSuccess returns true when this programs o k response has a 2xx status code
+func (o *ProgramsOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this programs o k response has a 3xx status code
+func (o *ProgramsOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this programs o k response has a 4xx status code
+func (o *ProgramsOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this programs o k response has a 5xx status code
+func (o *ProgramsOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this programs o k response a status code equal to that given
+func (o *ProgramsOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *ProgramsOK) Error() string {
 	return fmt.Sprintf("[POST /programs][%d] programsOK  %+v", 200, o.Payload)
 }
+
+func (o *ProgramsOK) String() string {
+	return fmt.Sprintf("[POST /programs][%d] programsOK  %+v", 200, o.Payload)
+}
+
 func (o *ProgramsOK) GetPayload() []*model.Program {
 	return o.Payload
 }
@@ -88,7 +118,36 @@ internal error
 type ProgramsInternalServerError struct {
 }
 
+// IsSuccess returns true when this programs internal server error response has a 2xx status code
+func (o *ProgramsInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this programs internal server error response has a 3xx status code
+func (o *ProgramsInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this programs internal server error response has a 4xx status code
+func (o *ProgramsInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this programs internal server error response has a 5xx status code
+func (o *ProgramsInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this programs internal server error response a status code equal to that given
+func (o *ProgramsInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *ProgramsInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /programs][%d] programsInternalServerError ", 500)
+}
+
+func (o *ProgramsInternalServerError) String() string {
 	return fmt.Sprintf("[POST /programs][%d] programsInternalServerError ", 500)
 }
 
