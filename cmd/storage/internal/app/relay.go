@@ -102,3 +102,15 @@ func (a *app) Run2Program(id StationID, programID int64, programID2 int64, prefl
 	return nil
 	// return a.hardware.RunProgram(int32(id), cfg)
 }
+
+func (a *app) RunArduino(volume int64) (err error) {
+	fmt.Println("Run Command for arduino - plug!")
+	return nil
+	// return a.arduino.Command(volume)
+}
+
+func (a *app) GetVolume() (znach int64, err error) {
+	return 100, nil
+	// zhach, err := a.arduino.Volume()
+	//return zhach, err
+}

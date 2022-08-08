@@ -11,16 +11,19 @@ import (
 )
 
 type Client struct {
-	hal     xgrpc.HardwareAccessLayerClient
+	hal xgrpc.HardwareAccessLayerClient
+}
+
+type Arduino struct {
 	arduino xgrpc.HardwareArduinoAccessLayerClient
 }
 
-func NewClient() (*Client, error) {
+func NewClient() (*Client, *Arduino, error) {
 	opt := grpc.WithTransportCredentials(insecure.NewCredentials())
 
 	conn, err := grpc.Dial(":8099", opt)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	client := xgrpc.NewHardwareAccessLayerClient(conn)
@@ -28,9 +31,11 @@ func NewClient() (*Client, error) {
 	arduino := xgrpc.NewHardwareArduinoAccessLayerClient(conn)
 
 	return &Client{
-		hal:     client,
-		arduino: arduino,
-	}, nil
+			hal: client,
+		},
+		&Arduino{
+			arduino: arduino,
+		}, nil
 }
 
 func (c *Client) RunProgram(id int32, cfg app.RelayConfig) (err error) {
@@ -47,9 +52,9 @@ func (c *Client) RunProgram(id int32, cfg app.RelayConfig) (err error) {
 	return err
 }
 
-func (c *Client) Command(chi int32) (err error) {
+func (c *Arduino) Command(volume int64) (err error) {
 	com := xgrpc.Opti{
-		Cmd: chi,
+		Cmd: int32(volume),
 	}
 	ctx := context.Background()
 
@@ -57,13 +62,13 @@ func (c *Client) Command(chi int32) (err error) {
 	return err
 }
 
-func (c *Client) Value() float64 {
+func (c *Arduino) Volume() (int64, error) {
 
 	ctx := context.Background()
 
 	ss := emptypb.Empty{}
 
-	com, _ := c.arduino.Value(ctx, &ss)
+	com, err := c.arduino.Volume(ctx, &ss)
 
-	return com.Otvet
+	return com.Otvet, err
 }

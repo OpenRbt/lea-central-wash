@@ -25,7 +25,7 @@ var (
 
 var lastKey string
 
-var lastValue float64
+var lastValue int64
 
 // PostError describes an error happened to a post
 type PostError struct {
@@ -157,8 +157,8 @@ func (r *RevSensor) workingLoop() {
 	}
 }
 
-func (h *HardwareArduinoAccessLayer) Value() float64 {
-	return lastValue
+func (h *HardwareArduinoAccessLayer) Volume() (int64, error) {
+	return lastValue, nil
 }
 
 // Run command for Arduino
@@ -180,7 +180,7 @@ func (h *HardwareArduinoAccessLayer) Command(cmd int) error {
 				if err != io.EOF {
 					if err == nil {
 						ans := string(buf[1:N])
-						lastValue, _ := strconv.ParseFloat(ans, 64)
+						lastValue, _ := strconv.ParseInt(ans, 10, 10)
 						fmt.Println("Answer Arduino", lastValue)
 						if ans[0] == 'F' {
 							fmt.Println("Finish command ", cmd, " Successfully!")

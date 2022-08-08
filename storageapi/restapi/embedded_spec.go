@@ -1016,6 +1016,48 @@ func init() {
         }
       }
     },
+    "/run-arduino": {
+      "post": {
+        "operationId": "runArduino",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgRunArduino",
+              "required": [
+                "hash",
+                "volume"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "volume": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/run-program": {
       "post": {
         "operationId": "runProgram",
@@ -2292,6 +2334,59 @@ func init() {
           },
           "403": {
             "description": "Access forbidden"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/volume-arduino": {
+      "post": {
+        "operationId": "VolumeArduino",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "VolumeArduino",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "title": "ResponseVolumeArduino",
+              "required": [
+                "volume"
+              ],
+              "properties": {
+                "volume": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"
@@ -3987,6 +4082,48 @@ func init() {
         }
       }
     },
+    "/run-arduino": {
+      "post": {
+        "operationId": "runArduino",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgRunArduino",
+              "required": [
+                "hash",
+                "volume"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "volume": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/run-program": {
       "post": {
         "operationId": "runProgram",
@@ -5247,6 +5384,59 @@ func init() {
           },
           "403": {
             "description": "Access forbidden"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/volume-arduino": {
+      "post": {
+        "operationId": "VolumeArduino",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "VolumeArduino",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "title": "ResponseVolumeArduino",
+              "required": [
+                "volume"
+              ],
+              "properties": {
+                "volume": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"
