@@ -672,20 +672,20 @@ func (svc *service) runArduino(params op.RunArduinoParams) op.RunArduinoResponde
 	}
 }
 
-func (svc *service) getVolume(params op.VolumeArduinoParams) op.VolumeArduinoResponder {
+func (svc *service) getVolume(params op.GetVolumeParams) op.GetVolumeResponder {
 	znach, err := svc.app.GetVolume()
 
 	log.Info("Get Volume", "ip", params.HTTPRequest.RemoteAddr)
 
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewVolumeArduinoOK().WithPayload(&op.VolumeArduinoOKBody{Volume: &znach})
+		return op.NewGetVolumeOK().WithPayload(&op.GetVolumeOKBody{Volume: &znach})
 	case app.ErrNotFound:
 		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewVolumeArduinoNotFound().WithPayload("program or Arduino not found")
+		return op.NewGetVolumeNotFound().WithPayload("Volume not found")
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewVolumeArduinoInternalServerError()
+		return op.NewGetVolumeInternalServerError()
 	}
 }
 

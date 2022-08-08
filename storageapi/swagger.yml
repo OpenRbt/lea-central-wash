@@ -1931,7 +1931,7 @@ paths:
 
   /volume-arduino:
     post:
-      operationId: "VolumeArduino"
+      operationId: "getVolume"
       parameters:
         - name: args
           required: true

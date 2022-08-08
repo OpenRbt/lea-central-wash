@@ -50,11 +50,6 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	// Example:
 	// api.APIAuthorizer = security.Authorized()
 
-	if api.VolumeArduinoHandler == nil {
-		api.VolumeArduinoHandler = op.VolumeArduinoHandlerFunc(func(params op.VolumeArduinoParams) op.VolumeArduinoResponder {
-			return op.VolumeArduinoNotImplemented()
-		})
-	}
 	if api.AddAdvertisingCampaignHandler == nil {
 		api.AddAdvertisingCampaignHandler = op.AddAdvertisingCampaignHandlerFunc(func(params op.AddAdvertisingCampaignParams, principal *storageapi.Profile) op.AddAdvertisingCampaignResponder {
 			return op.AddAdvertisingCampaignNotImplemented()
@@ -143,6 +138,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.GetUsersHandler == nil {
 		api.GetUsersHandler = op.GetUsersHandlerFunc(func(params op.GetUsersParams, principal *storageapi.Profile) op.GetUsersResponder {
 			return op.GetUsersNotImplemented()
+		})
+	}
+	if api.GetVolumeHandler == nil {
+		api.GetVolumeHandler = op.GetVolumeHandlerFunc(func(params op.GetVolumeParams) op.GetVolumeResponder {
+			return op.GetVolumeNotImplemented()
 		})
 	}
 	if api.InfoHandler == nil {

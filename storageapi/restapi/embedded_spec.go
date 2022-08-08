@@ -2343,7 +2343,7 @@ func init() {
     },
     "/volume-arduino": {
       "post": {
-        "operationId": "VolumeArduino",
+        "operationId": "getVolume",
         "parameters": [
           {
             "name": "args",
@@ -5393,7 +5393,7 @@ func init() {
     },
     "/volume-arduino": {
       "post": {
-        "operationId": "VolumeArduino",
+        "operationId": "getVolume",
         "parameters": [
           {
             "name": "args",

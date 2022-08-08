@@ -157,8 +157,8 @@ func (r *RevSensor) workingLoop() {
 	}
 }
 
-func (h *HardwareArduinoAccessLayer) Volume() (int64, error) {
-	return lastValue, nil
+func (h *HardwareArduinoAccessLayer) Volume() int64 {
+	return lastValue
 }
 
 // Run command for Arduino

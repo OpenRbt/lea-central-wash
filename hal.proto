@@ -27,5 +27,4 @@ message Opti{
 
 message Otvet{
     int64 otvet = 1;
-    google.protobuf.Empty err = 2;
 }

@@ -44,9 +44,6 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
-		VolumeArduinoHandler: VolumeArduinoHandlerFunc(func(params VolumeArduinoParams) VolumeArduinoResponder {
-			return VolumeArduinoNotImplemented()
-		}),
 		AddAdvertisingCampaignHandler: AddAdvertisingCampaignHandlerFunc(func(params AddAdvertisingCampaignParams, principal *storageapi.Profile) AddAdvertisingCampaignResponder {
 			return AddAdvertisingCampaignNotImplemented()
 		}),
@@ -100,6 +97,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		GetUsersHandler: GetUsersHandlerFunc(func(params GetUsersParams, principal *storageapi.Profile) GetUsersResponder {
 			return GetUsersNotImplemented()
+		}),
+		GetVolumeHandler: GetVolumeHandlerFunc(func(params GetVolumeParams) GetVolumeResponder {
+			return GetVolumeNotImplemented()
 		}),
 		InfoHandler: InfoHandlerFunc(func(params InfoParams) InfoResponder {
 			return InfoNotImplemented()
@@ -274,8 +274,6 @@ type StorageAPI struct {
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
 
-	// VolumeArduinoHandler sets the operation handler for the volume arduino operation
-	VolumeArduinoHandler VolumeArduinoHandler
 	// AddAdvertisingCampaignHandler sets the operation handler for the add advertising campaign operation
 	AddAdvertisingCampaignHandler AddAdvertisingCampaignHandler
 	// AddServiceAmountHandler sets the operation handler for the add service amount operation
@@ -312,6 +310,8 @@ type StorageAPI struct {
 	GetUserHandler GetUserHandler
 	// GetUsersHandler sets the operation handler for the get users operation
 	GetUsersHandler GetUsersHandler
+	// GetVolumeHandler sets the operation handler for the get volume operation
+	GetVolumeHandler GetVolumeHandler
 	// InfoHandler sets the operation handler for the info operation
 	InfoHandler InfoHandler
 	// KasseHandler sets the operation handler for the kasse operation
@@ -475,9 +475,6 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "PinAuth")
 	}
 
-	if o.VolumeArduinoHandler == nil {
-		unregistered = append(unregistered, "VolumeArduinoHandler")
-	}
 	if o.AddAdvertisingCampaignHandler == nil {
 		unregistered = append(unregistered, "AddAdvertisingCampaignHandler")
 	}
@@ -531,6 +528,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.GetUsersHandler == nil {
 		unregistered = append(unregistered, "GetUsersHandler")
+	}
+	if o.GetVolumeHandler == nil {
+		unregistered = append(unregistered, "GetVolumeHandler")
 	}
 	if o.InfoHandler == nil {
 		unregistered = append(unregistered, "InfoHandler")
@@ -757,10 +757,6 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/volume-arduino"] = NewVolumeArduino(o.context, o.VolumeArduinoHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
 	o.handlers["POST"]["/add-advertising-campaign"] = NewAddAdvertisingCampaign(o.context, o.AddAdvertisingCampaignHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -830,6 +826,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/users"] = NewGetUsers(o.context, o.GetUsersHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/volume-arduino"] = NewGetVolume(o.context, o.GetVolumeHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
