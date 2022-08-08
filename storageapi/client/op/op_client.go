@@ -30,6 +30,8 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
+	VolumeArduino(params *VolumeArduinoParams, opts ...ClientOption) (*VolumeArduinoOK, *VolumeArduinoNoContent, error)
+
 	AddAdvertisingCampaign(params *AddAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*AddAdvertisingCampaignNoContent, error)
 
 	AddServiceAmount(params *AddServiceAmountParams, opts ...ClientOption) (*AddServiceAmountNoContent, error)
@@ -90,6 +92,8 @@ type ClientService interface {
 
 	Run2Program(params *Run2ProgramParams, opts ...ClientOption) (*Run2ProgramNoContent, error)
 
+	RunArduino(params *RunArduinoParams, opts ...ClientOption) (*RunArduinoNoContent, error)
+
 	RunProgram(params *RunProgramParams, opts ...ClientOption) (*RunProgramNoContent, error)
 
 	Save(params *SaveParams, opts ...ClientOption) (*SaveNoContent, error)
@@ -147,6 +151,45 @@ type ClientService interface {
 	UpdateUserPassword(params *UpdateUserPasswordParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateUserPasswordCreated, error)
 
 	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  VolumeArduino volume arduino API
+*/
+func (a *Client) VolumeArduino(params *VolumeArduinoParams, opts ...ClientOption) (*VolumeArduinoOK, *VolumeArduinoNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewVolumeArduinoParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "VolumeArduino",
+		Method:             "POST",
+		PathPattern:        "/volume-arduino",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &VolumeArduinoReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, nil, err
+	}
+	switch value := result.(type) {
+	case *VolumeArduinoOK:
+		return value, nil, nil
+	case *VolumeArduinoNoContent:
+		return nil, value, nil
+	}
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for op: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -1299,6 +1342,44 @@ func (a *Client) Run2Program(params *Run2ProgramParams, opts ...ClientOption) (*
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for run2Program: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  RunArduino run arduino API
+*/
+func (a *Client) RunArduino(params *RunArduinoParams, opts ...ClientOption) (*RunArduinoNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewRunArduinoParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "runArduino",
+		Method:             "POST",
+		PathPattern:        "/run-arduino",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &RunArduinoReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*RunArduinoNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for runArduino: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

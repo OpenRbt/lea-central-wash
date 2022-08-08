@@ -1,5 +1,7 @@
 package app
 
+import "fmt"
+
 func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err error) {
 	cfg := RelayConfig{
 		TimeoutSec: relayTimeoutSec,
@@ -27,26 +29,37 @@ func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err err
 			cfg.Timings = program.Relays
 		}
 	}
-	return a.hardware.RunProgram(int32(id), cfg)
+	for _, relay := range cfg.Timings {
+		fmt.Println("Relay: id - ", relay.ID, " Timeoff - ", relay.TimeOff, " TimeOn - ", relay.TimeOn)
+	}
+	return nil
+	// return a.hardware.RunProgram(int32(id), cfg)
 }
 
 func (a *app) Run2Program(id StationID, programID int64, programID2 int64, preflight bool) (err error) {
 	cfg := RelayConfig{
 		TimeoutSec: relayTimeoutSec,
 	}
-	if programID > 0 {
-		a.programsMutex.Lock()
-		program, ok := a.programs[programID]
-		a.programsMutex.Unlock()
-		if !ok {
-			return ErrNotFound
+	if programID > 0 || programID2 > 0 {
+		program := Program{}
+		program2 := Program{}
+		if programID > 0 {
+			a.programsMutex.Lock()
+			p, ok := a.programs[programID]
+			program = p
+			a.programsMutex.Unlock()
+			if !ok {
+				return ErrNotFound
+			}
 		}
-
-		a.programsMutex.Lock()
-		program2, ok := a.programs[programID2]
-		a.programsMutex.Unlock()
-		if !ok {
-			return ErrNotFound
+		if programID2 > 0 {
+			a.programsMutex.Lock()
+			p, ok := a.programs[programID2]
+			program2 = p
+			a.programsMutex.Unlock()
+			if !ok {
+				return ErrNotFound
+			}
 		}
 
 		if preflight {
@@ -61,25 +74,31 @@ func (a *app) Run2Program(id StationID, programID int64, programID2 int64, prefl
 
 		if preflight {
 			cfg.MotorSpeedPercent = int(program.PreflightMotorSpeedPercent)
-			list = program.PreflightRelays
-			list = append(list, program2.Relays...)
-			// cfg.Timings = program.PreflightRelays
-			// cfg.Timings = append(cfg.Timings, program2.Relays...)
+			list = append(list, program.PreflightRelays...)
+			list = append(list, program2.PreflightRelays...)
 		} else {
 			cfg.MotorSpeedPercent = int(program.MotorSpeedPercent)
-			list = program.PreflightRelays
+			list = append(list, program.Relays...)
 			list = append(list, program2.Relays...)
-			// cfg.Timings = program.Relays
-			// cfg.Timings = append(cfg.Timings, program2.Relays...)
 		}
-		keys := make(map[Relay]bool)
+
+		keys := make(map[int]bool)
 
 		for _, entry := range list {
-			if _, value := keys[entry]; !value {
-				keys[entry] = true
+			if _, value := keys[entry.ID]; !value {
+				keys[entry.ID] = true
 				cfg.Timings = append(cfg.Timings, entry)
 			}
 		}
 	}
 	return a.hardware.RunProgram(int32(id), cfg)
+}
+
+func (a *app) RunArduino(volume int64) (err error) {
+	return a.arduino.Command(volume)
+}
+
+func (a *app) GetVolume() (znach int64, err error) {
+	zhach, err := a.arduino.Volume()
+	return zhach, err
 }

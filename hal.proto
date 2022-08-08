@@ -11,7 +11,7 @@ service HardwareAccessLayer{
 
 service HardwareArduinoAccessLayer{
     rpc Command(Opti) returns(google.protobuf.Empty);
-    rpc Value(google.protobuf.Empty) returns(Otvet);
+    rpc Volume(google.protobuf.Empty) returns(Otvet);
 }
 
 message Options{
@@ -26,5 +26,6 @@ message Opti{
 }
 
 message Otvet{
-    double otvet = 1;
+    int64 otvet = 1;
+    google.protobuf.Empty err = 2;
 }

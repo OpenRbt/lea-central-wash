@@ -25,7 +25,7 @@ var (
 
 var lastKey string
 
-var lastValue float64
+var lastValue int64
 
 // PostError describes an error happened to a post
 type PostError struct {
@@ -151,15 +151,14 @@ func (r *RevSensor) workingLoop() {
 					return
 				}
 			} else {
-				//r.stationNumber = stationNumber
 				r.errorCount = 0
 			}
 		}
 	}
 }
 
-func (h *HardwareArduinoAccessLayer) Value() float64 {
-	return lastValue
+func (h *HardwareArduinoAccessLayer) Volume() (int64, error) {
+	return lastValue, nil
 }
 
 // Run command for Arduino
@@ -181,7 +180,7 @@ func (h *HardwareArduinoAccessLayer) Command(cmd int) error {
 				if err != io.EOF {
 					if err == nil {
 						ans := string(buf[1:N])
-						lastValue, _ := strconv.ParseFloat(ans, 64)
+						lastValue, _ := strconv.ParseInt(ans, 10, 10)
 						fmt.Println("Answer Arduino", lastValue)
 						if ans[0] == 'F' {
 							fmt.Println("Finish command ", cmd, " Successfully!")
@@ -395,7 +394,7 @@ func (h *HardwareArduinoAccessLayer) addPort(key string, sensor *RevSensor) {
 }
 
 func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
-	c := &serial.Config{Name: "/dev/" + key, Baud: 38400, ReadTimeout: time.Millisecond * 100}
+	c := &serial.Config{Name: "/dev/" + key, Baud: 9600, ReadTimeout: time.Millisecond * 100}
 	s, err := serial.OpenPort(c)
 	if err != nil {
 		return err
@@ -408,17 +407,19 @@ func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
 
 	buf := make([]byte, 128)
 	N, err := s.Read(buf)
+	fmt.Println("N = ", N)
 	if err != nil {
 		s.Close()
 		return err
 	}
-	if N < 3 {
+	if N < 1 {
 		s.Close()
 		return nil
 	}
 	ans := string(buf[0:N])
 	fmt.Printf("answer is [%s]\n", ans)
 	foundStrings := h.uidAnswer.FindStringSubmatch(ans)
+	fmt.Println(foundStrings)
 	if len(foundStrings) < 2 {
 		s.Close()
 		return nil
@@ -452,17 +453,14 @@ func (h *HardwareArduinoAccessLayer) checkAndAddPortArduino(key string) error {
 	ans := string(buf[0:N])
 	fmt.Printf("answer is [%s]\n", ans)
 	if h.uidAnswer != ans {
-		fmt.Println("Answer is not correct")
 		s.Close()
 		return nil
 	}
 
 	fmt.Printf("uid is [%s]\n", ans)
-	fmt.Printf("key [%s]\n ", key)
 	sensor := NewSensor(key, s)
 	h.addPort(key, sensor)
 	lastKey = key
-	// h.Command("S500", "ttyUSB0")
 	return sensor.Run()
 }
 
@@ -497,6 +495,7 @@ func (h *HardwareAccessLayer) workingLoop() ([]app.ControlBoard, error) {
 		for t {
 			t = false
 			for key := range h.ports {
+				fmt.Println(h.ports[key].toRemove)
 				if h.ports[key].toRemove {
 					delete(h.ports, key)
 					t = true
