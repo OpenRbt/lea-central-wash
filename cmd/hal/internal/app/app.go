@@ -9,6 +9,7 @@ var (
 // HardwareAccessLayer describes an interface to access hardware control modules
 type HardwareAccessLayer interface {
 	Start()
+	ControlBoard(key int32) (ControlBoard, error)
 	RunProgram(id int32, cfg RelayConfig) (err error)
 	Run2Programs(id int32, secondID int32, cfg RelayConfig) (err error)
 }
