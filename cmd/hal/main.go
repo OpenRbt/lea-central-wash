@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"hal/internal/api/xgrpc"
 	"hal/internal/app"
 	"hal/service"
@@ -13,8 +12,8 @@ import (
 )
 
 func main() {
-	fmt.Println("HAL START, AVE ME!!!")
 	isDebug := flag.Bool("debug", false, "debug")
+	flag.Parse()
 
 	var hardware app.HardwareAccessLayer
 	var arduinoware app.HardwareArduinoAccessLayer
@@ -40,10 +39,6 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
-	// var text string
-	// fmt.Scanf("%s\n", &text)
-	// arduinoware.Command(text)
 
 	hardware.Start()
 
