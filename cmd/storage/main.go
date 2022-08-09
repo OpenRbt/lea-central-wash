@@ -232,13 +232,13 @@ func run(db *sqlx.DB, errc chan<- error) {
 	}
 
 	//hal client creation
-	client, arduino, err := hal.NewClient()
+	client, err := hal.NewClient()
 	if err != nil {
 		errc <- err
 		return
 	}
 
-	appl := app.New(repo, kasse, weather, client, arduino)
+	appl := app.New(repo, kasse, weather, client)
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
 	if err != nil {

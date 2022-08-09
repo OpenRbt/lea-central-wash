@@ -2,8 +2,10 @@ package xgrpc
 
 import (
 	"context"
-	"github.com/golang/protobuf/ptypes/empty"
 	"hal/internal/app"
+
+	"github.com/golang/protobuf/ptypes/empty"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 type HalHandler struct {
@@ -26,24 +28,18 @@ func (h HalHandler) RunProgram(ctx context.Context, in *Options) (*empty.Empty, 
 	return nil, nil
 }
 
-func (h HalHandler) Run2Programs(ctx context.Context, in *Options) (*empty.Empty, error) {
-	err := h.hal.RunProgram(in.ProgramId, app.RelayConfig{
-		MotorSpeedPercent: in.MotorSpeedPercent,
-		TimeoutSec:        in.TimeoutSec,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	err = h.hal.RunProgram(in.SecondProgramId, app.RelayConfig{
-		MotorSpeedPercent: in.MotorSpeedPercent,
-		TimeoutSec:        in.TimeoutSec,
-	})
+func (h HalHandler) Command(ctx context.Context, in *Opti) (*empty.Empty, error) {
+	err := h.hal.Command(int(in.Cmd))
 	if err != nil {
 		return nil, err
 	}
 
 	return nil, nil
+}
+
+func (h HalHandler) Volume(ctx context.Context, in *emptypb.Empty) (*Answer, error) {
+	ans := h.hal.Volume()
+	return &Answer{Ans: ans}, nil
 }
 
 func (h HalHandler) mustEmbedUnimplementedHardwareAccessLayerServer() {}

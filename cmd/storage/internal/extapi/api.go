@@ -122,8 +122,8 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 
 	api.RunProgramHandler = op.RunProgramHandlerFunc(svc.runProgram)
 	api.Run2ProgramHandler = op.Run2ProgramHandlerFunc(svc.run2Program)
-	api.RunArduinoHandler = op.RunArduinoHandlerFunc(svc.runArduino)
-	api.VolumeArduinoHandler = op.VolumeArduinoHandlerFunc(svc.getVolume)
+	api.RunDespenserHandler = op.RunDespenserHandlerFunc(svc.runDespenser)
+	api.VolumeDespenserHandler = op.VolumeDespenserHandlerFunc(svc.VolumeDespenser)
 	api.PressButtonHandler = op.PressButtonHandlerFunc(svc.pressButton)
 
 	api.StationStatCurrentHandler = op.StationStatCurrentHandlerFunc(svc.stationStatCurrent)

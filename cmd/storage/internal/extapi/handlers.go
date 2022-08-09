@@ -655,37 +655,39 @@ func (svc *service) run2Program(params op.Run2ProgramParams) op.Run2ProgramRespo
 	}
 }
 
-func (svc *service) runArduino(params op.RunArduinoParams) op.RunArduinoResponder {
-	err := svc.app.RunArduino(*params.Args.Volume)
+func (svc *service) runDespenser(params op.RunDespenserParams) op.RunDespenserResponder {
+
+	err := svc.app.RunDespenserBoard(*params.Args.Volume)
 
 	log.Info("runArduino", "Volume", *params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
 
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewRunArduinoNoContent()
+		return op.NewRunDespenserNoContent()
 	case app.ErrNotFound:
 		log.PrintErr(err, "hash", params.Args.Hash, "Volume", params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewRunArduinoNotFound().WithPayload("Arduino not found")
+		return op.NewRunDespenserNotFound().WithPayload("Arduino not found")
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewRunArduinoInternalServerError()
+		return op.NewRunDespenserInternalServerError()
 	}
 }
 
-func (svc *service) getVolume(params op.VolumeArduinoParams) op.VolumeArduinoResponder {
-	znach, err := svc.app.GetVolume()
+func (svc *service) VolumeDespenser(params op.VolumeDespenserParams) op.VolumeDespenserResponder {
+
+	znach, err := svc.app.GetVolumeDespenser()
 
 	log.Info("Get Volume", "ip", params.HTTPRequest.RemoteAddr)
 
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewVolumeArduinoOK().WithPayload(&op.VolumeArduinoOKBody{Volume: &znach})
+		return op.NewVolumeDespenserOK().WithPayload(&op.VolumeDespenserOKBody{Volume: &znach})
 	case app.ErrNotFound:
 		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewVolumeArduinoNotFound().WithPayload("Volume from Arduino not found")
+		return op.NewVolumeDespenserNotFound().WithPayload("Volume from Arduino not found")
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewVolumeArduinoInternalServerError()
+		return op.NewVolumeDespenserInternalServerError()
 	}
 }
 

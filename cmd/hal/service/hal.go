@@ -18,12 +18,12 @@ import (
 
 const uidAnswerRegex = "UID\\s([0-9A-F]*);"
 
+const despenserAnswer = "YF-S201"
+
 // Errors ...
 var (
 	ErrWrongAnswer = errors.New("wrong answer from the board")
 )
-
-var lastKey string
 
 var lastValue int64
 
@@ -35,10 +35,12 @@ type PostError struct {
 
 // HardwareAccessLayer is the whole layer to communicate with boards
 type HardwareAccessLayer struct {
-	uidAnswer *regexp.Regexp
-	portsMu   sync.Mutex
-	ports     map[string]*Rev2Board
-	Errors    chan PostError
+	uidAnswer     *regexp.Regexp
+	portsMu       sync.Mutex
+	ports         map[string]*ports
+	portRev2Board map[string]*Rev2Board
+	dispencer     *Rev1DispencerBoard
+	Errors        chan PostError
 }
 
 // Rev2Board describes Revision 2 openrbt.com board
@@ -51,14 +53,13 @@ type Rev2Board struct {
 	Commands      chan app.RelayConfig
 }
 
-//
-type HardwareArduinoAccessLayer struct {
-	uidAnswer string
-	portsMu   sync.Mutex
-	ports     map[string]*RevSensor
+type ports struct {
+	osPath   string
+	openPort *serial.Port
+	toRemove bool
 }
 
-type RevSensor struct {
+type Rev1DispencerBoard struct {
 	osPath     string
 	openPort   *serial.Port
 	toRemove   bool
@@ -77,34 +78,19 @@ func NewRev2Board(osPath string, openPort *serial.Port) *Rev2Board {
 }
 
 // NewRevSensor is a constructor
-func NewSensor(osPath string, openPort *serial.Port) *RevSensor {
-	return &RevSensor{
+func NewDispencerBoard(osPath string, openPort *serial.Port) *Rev1DispencerBoard {
+	return &Rev1DispencerBoard{
 		osPath:   osPath,
 		openPort: openPort,
 		toRemove: false,
 	}
 }
 
-func (h *HardwareArduinoAccessLayer) CollectArduinoPorts() {
-	h.uidAnswer = "YF-S201" //
-	files, err := ioutil.ReadDir("/dev")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, f := range files {
-		if strings.HasPrefix(f.Name(), "ttyUSB") {
-			portExists := h.portByKey(f.Name())
-			if !portExists {
-				// port is not found in our dictionary
-				err := h.checkAndAddPortArduino(f.Name())
-				if err == nil {
-					fmt.Printf("New arduino device is added [%s]\n", f.Name())
-				} else {
-					fmt.Printf("New arduino device is not added [%s], err [%+v]\n", f.Name(), err)
-				}
-			}
-		}
+func NewPorts(osPath string, openPort *serial.Port) *ports {
+	return &ports{
+		osPath:   osPath,
+		openPort: openPort,
+		toRemove: false,
 	}
 }
 
@@ -132,14 +118,13 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 	}
 }
 
-func (r *RevSensor) Run() error {
+func (r *Rev1DispencerBoard) Run() error {
 	go r.workingLoop()
 	return nil
 }
 
-func (r *RevSensor) workingLoop() {
+func (r *Rev1DispencerBoard) workingLoop() {
 	tick := time.Tick(800 * time.Millisecond)
-	// var cmd app.RelayConfig
 	for {
 		select {
 		case <-tick:
@@ -157,13 +142,13 @@ func (r *RevSensor) workingLoop() {
 	}
 }
 
-func (h *HardwareArduinoAccessLayer) Volume() (int64, error) {
-	return lastValue, nil
+func (h *HardwareAccessLayer) Volume() int64 {
+	return lastValue
 }
 
 // Run command for Arduino
-func (h *HardwareArduinoAccessLayer) Command(cmd int) error {
-	r := h.ports[lastKey]
+func (h *HardwareAccessLayer) Command(cmd int) error {
+	r := h.dispencer
 	cmdd := "S" + string(cmd)
 	_, err := r.openPort.Write([]byte(cmdd))
 	if err != nil {
@@ -308,8 +293,8 @@ func (r *Rev2Board) StopAll() error {
 	return errors.New("not implemented")
 }
 
-func (r *RevSensor) SendPing() error {
-	_, err := r.openPort.Write([]byte("PING"))
+func (r *Rev1DispencerBoard) SendPing() error {
+	_, err := r.openPort.Write([]byte("PING;"))
 	if err != nil {
 		return err
 	}
@@ -349,7 +334,7 @@ func (r *Rev2Board) SendPing() (int, error) {
 	return int(answer), nil
 }
 
-func (h *HardwareAccessLayer) portByKey(key string) (*Rev2Board, bool) {
+func (h *HardwareAccessLayer) portByKey(key string) (*ports, bool) {
 	h.portsMu.Lock()
 	el, found := h.ports[key]
 	h.portsMu.Unlock()
@@ -359,42 +344,37 @@ func (h *HardwareAccessLayer) portByKey(key string) (*Rev2Board, bool) {
 	return el, true
 }
 
-func (h *HardwareArduinoAccessLayer) portByKey(key string) bool {
-	h.portsMu.Lock()
-	_, found := h.ports[key]
-	h.portsMu.Unlock()
-	if !found {
-		return false
-	}
-	return true
-}
-
 func (h *HardwareAccessLayer) deletePort(key string) {
 	h.portsMu.Lock()
 	delete(h.ports, key)
+	if h.dispencer.osPath == key {
+		h.dispencer = nil
+	} else {
+		delete(h.portRev2Board, key)
+	}
 	h.portsMu.Unlock()
 }
 
-func (h *HardwareArduinoAccessLayer) deletePort(key string) {
+func (h *HardwareAccessLayer) addPort(key string, port *ports) {
 	h.portsMu.Lock()
-	delete(h.ports, key)
+	h.ports[key] = port
 	h.portsMu.Unlock()
 }
 
-func (h *HardwareAccessLayer) addPort(key string, board *Rev2Board) {
+func (h *HardwareAccessLayer) addRev2Board(key string, board *Rev2Board) {
 	h.portsMu.Lock()
-	h.ports[key] = board
+	h.portRev2Board[key] = board
 	h.portsMu.Unlock()
 }
 
-func (h *HardwareArduinoAccessLayer) addPort(key string, sensor *RevSensor) {
+func (h *HardwareAccessLayer) addDispencerBoard(key string, sensor *Rev1DispencerBoard) {
 	h.portsMu.Lock()
-	h.ports[key] = sensor
+	h.dispencer = sensor
 	h.portsMu.Unlock()
 }
 
 func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
-	c := &serial.Config{Name: "/dev/" + key, Baud: 9600, ReadTimeout: time.Millisecond * 100}
+	c := &serial.Config{Name: "/dev/" + key, Baud: 38400, ReadTimeout: time.Millisecond * 100}
 	s, err := serial.OpenPort(c)
 	if err != nil {
 		return err
@@ -407,19 +387,24 @@ func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
 
 	buf := make([]byte, 128)
 	N, err := s.Read(buf)
-	fmt.Println("N = ", N)
 	if err != nil {
 		s.Close()
 		return err
 	}
-	if N < 1 {
+	if N < 2 {
 		s.Close()
 		return nil
 	}
 	ans := string(buf[0:N])
 	fmt.Printf("answer is [%s]\n", ans)
+	if despenserAnswer == ans {
+		sensor := NewDispencerBoard(key, s)
+		port := NewPorts(key, s)
+		h.addDispencerBoard(key, sensor)
+		h.addPort(key, port)
+		return sensor.Run()
+	}
 	foundStrings := h.uidAnswer.FindStringSubmatch(ans)
-	fmt.Println(foundStrings)
 	if len(foundStrings) < 2 {
 		s.Close()
 		return nil
@@ -427,41 +412,10 @@ func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
 
 	fmt.Printf("uid is [%s]\n", foundStrings[1])
 	board := NewRev2Board(key, s)
-	h.addPort(key, board)
+	port := NewPorts(key, s)
+	h.addRev2Board(key, board)
+	h.addPort(key, port)
 	return board.Run()
-}
-
-func (h *HardwareArduinoAccessLayer) checkAndAddPortArduino(key string) error {
-	c := &serial.Config{Name: "/dev/" + key, Baud: 38400, ReadTimeout: time.Millisecond * 100}
-	s, err := serial.OpenPort(c)
-	if err != nil {
-		return err
-	}
-
-	_, err = s.Write([]byte("UID"))
-	if err != nil {
-		return err
-	}
-
-	buf := make([]byte, 128)
-	N, err := s.Read(buf)
-	if err != nil {
-		s.Close()
-		return err
-	}
-
-	ans := string(buf[0:N])
-	fmt.Printf("answer is [%s]\n", ans)
-	if h.uidAnswer != ans {
-		s.Close()
-		return nil
-	}
-
-	fmt.Printf("uid is [%s]\n", ans)
-	sensor := NewSensor(key, s)
-	h.addPort(key, sensor)
-	lastKey = key
-	return sensor.Run()
 }
 
 // RunConfig just runs a config
@@ -474,8 +428,8 @@ func (h *HardwareAccessLayer) ControlBoard(wantedPosition int32) (app.ControlBoa
 	h.portsMu.Lock()
 	defer h.portsMu.Unlock()
 	for key := range h.ports {
-		if h.ports[key].stationNumber == int(wantedPosition) {
-			return h.ports[key], nil
+		if h.portRev2Board[key].stationNumber == int(wantedPosition) {
+			return h.portRev2Board[key], nil
 		}
 	}
 	fmt.Printf("board #%d is not found on dictionary\n", wantedPosition)
@@ -495,7 +449,6 @@ func (h *HardwareAccessLayer) workingLoop() ([]app.ControlBoard, error) {
 		for t {
 			t = false
 			for key := range h.ports {
-				fmt.Println(h.ports[key].toRemove)
 				if h.ports[key].toRemove {
 					delete(h.ports, key)
 					t = true
@@ -508,42 +461,11 @@ func (h *HardwareAccessLayer) workingLoop() ([]app.ControlBoard, error) {
 	}
 }
 
-func (h *HardwareArduinoAccessLayer) Start() {
-	go h.workingLoop()
-}
-
-func (h *HardwareArduinoAccessLayer) workingLoop() error {
-	for {
-		h.CollectArduinoPorts()
-		t := true
-		h.portsMu.Lock()
-		for t {
-			t = false
-			for key := range h.ports {
-				if h.ports[key].toRemove {
-					delete(h.ports, key)
-					t = true
-					break
-				}
-			}
-		}
-		h.portsMu.Unlock()
-		time.Sleep(time.Second)
-	}
-}
-
-// Hardware Arduino Layer is new
-func NewHardwareArduinoLayer() (app.HardwareArduinoAccessLayer, error) {
-	res := &HardwareArduinoAccessLayer{
-		ports: make(map[string]*RevSensor),
-	}
-	return res, nil
-}
-
 // NewHardwareAccessLayer is just a constructor
 func NewHardwareAccessLayer() (app.HardwareAccessLayer, error) {
 	res := &HardwareAccessLayer{
-		ports: make(map[string]*Rev2Board),
+		ports:         make(map[string]*ports),
+		portRev2Board: make(map[string]*Rev2Board),
 	}
 	return res, nil
 }
@@ -559,24 +481,11 @@ func (h *HardwareAccessLayer) RunProgram(id int32, cfg app.RelayConfig) (err err
 	return nil
 }
 
-func (h *HardwareAccessLayer) Run2Programs(id int32, secondID int32, cfg app.RelayConfig) (err error) {
-	err = h.RunProgram(id, cfg)
-	if err != nil {
-		return err
-	}
-
-	err = h.RunProgram(secondID, cfg)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // HardwareDebugAccessLayer is the whole layer to communicate with boards
 type HardwareDebugAccessLayer struct {
 	portsMu sync.Mutex
-	ports   map[string]*Rev2DebugBoard
+	// ports   map[string]*ports
+	portsRev2Board map[string]*Rev2DebugBoard
 }
 
 // Rev2DebugBoard describes Revision 2 openrbt.com board
@@ -597,8 +506,9 @@ func NewRev2DebugBoard(stationNumber int) *Rev2DebugBoard {
 
 // NewHardwareDebugAccessLayer is just a constructor
 func NewHardwareDebugAccessLayer() (app.HardwareAccessLayer, error) {
-	res := &HardwareDebugAccessLayer{
-		ports: make(map[string]*Rev2DebugBoard),
+	res := &HardwareAccessLayer{
+		// ports:         make(map[string]*ports),
+		portRev2Board: make(map[string]*Rev2Board),
 	}
 	return res, nil
 }
@@ -606,12 +516,12 @@ func NewHardwareDebugAccessLayer() (app.HardwareAccessLayer, error) {
 // Start just starts everything
 func (h *HardwareDebugAccessLayer) Start() {
 	h.portsMu.Lock()
-	h.ports["testboard1"] = NewRev2DebugBoard(1)
-	h.ports["testboard2"] = NewRev2DebugBoard(2)
-	h.ports["testboard3"] = NewRev2DebugBoard(3)
-	h.ports["testboard4"] = NewRev2DebugBoard(4)
-	h.ports["testboard5"] = NewRev2DebugBoard(5)
-	h.ports["testboard6"] = NewRev2DebugBoard(6)
+	h.portsRev2Board["testboard1"] = NewRev2DebugBoard(1)
+	h.portsRev2Board["testboard2"] = NewRev2DebugBoard(2)
+	h.portsRev2Board["testboard3"] = NewRev2DebugBoard(3)
+	h.portsRev2Board["testboard4"] = NewRev2DebugBoard(4)
+	h.portsRev2Board["testboard5"] = NewRev2DebugBoard(5)
+	h.portsRev2Board["testboard6"] = NewRev2DebugBoard(6)
 	h.portsMu.Unlock()
 }
 
@@ -644,9 +554,9 @@ func (h HardwareDebugAccessLayer) Run2Programs(id int32, secondID int32, cfg app
 // ControlBoard returns required control board by its key
 func (h *HardwareDebugAccessLayer) ControlBoard(wantedPosition int32) (app.ControlBoard, error) {
 	// h.portsMu.Lock()
-	for key := range h.ports {
-		if h.ports[key].stationNumber == int(wantedPosition) {
-			return h.ports[key], nil
+	for key := range h.portsRev2Board {
+		if h.portsRev2Board[key].stationNumber == int(wantedPosition) {
+			return h.portsRev2Board[key], nil
 		}
 	}
 	// defer h.portsMu.Unlock()

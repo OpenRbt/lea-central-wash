@@ -11,12 +11,8 @@ type HardwareAccessLayer interface {
 	Start()
 	ControlBoard(key int32) (ControlBoard, error)
 	RunProgram(id int32, cfg RelayConfig) (err error)
-	Run2Programs(id int32, secondID int32, cfg RelayConfig) (err error)
-}
-
-type HardwareArduinoAccessLayer interface {
-	Start()
 	Command(cmd int) error
+	Volume() int64
 }
 
 // ControlBoard represents one board (even virtual) to control relays

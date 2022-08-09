@@ -30,7 +30,7 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	VolumeArduino(params *VolumeArduinoParams, opts ...ClientOption) (*VolumeArduinoOK, *VolumeArduinoNoContent, error)
+	VolumeDespenser(params *VolumeDespenserParams, opts ...ClientOption) (*VolumeDespenserOK, *VolumeDespenserNoContent, error)
 
 	AddAdvertisingCampaign(params *AddAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*AddAdvertisingCampaignNoContent, error)
 
@@ -92,7 +92,7 @@ type ClientService interface {
 
 	Run2Program(params *Run2ProgramParams, opts ...ClientOption) (*Run2ProgramNoContent, error)
 
-	RunArduino(params *RunArduinoParams, opts ...ClientOption) (*RunArduinoNoContent, error)
+	RunDespenser(params *RunDespenserParams, opts ...ClientOption) (*RunDespenserNoContent, error)
 
 	RunProgram(params *RunProgramParams, opts ...ClientOption) (*RunProgramNoContent, error)
 
@@ -154,22 +154,22 @@ type ClientService interface {
 }
 
 /*
-  VolumeArduino volume arduino API
+  VolumeDespenser volume despenser API
 */
-func (a *Client) VolumeArduino(params *VolumeArduinoParams, opts ...ClientOption) (*VolumeArduinoOK, *VolumeArduinoNoContent, error) {
+func (a *Client) VolumeDespenser(params *VolumeDespenserParams, opts ...ClientOption) (*VolumeDespenserOK, *VolumeDespenserNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewVolumeArduinoParams()
+		params = NewVolumeDespenserParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "VolumeArduino",
+		ID:                 "VolumeDespenser",
 		Method:             "POST",
-		PathPattern:        "/volume-arduino",
+		PathPattern:        "/volume-despenser",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http"},
 		Params:             params,
-		Reader:             &VolumeArduinoReader{formats: a.formats},
+		Reader:             &VolumeDespenserReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
@@ -182,9 +182,9 @@ func (a *Client) VolumeArduino(params *VolumeArduinoParams, opts ...ClientOption
 		return nil, nil, err
 	}
 	switch value := result.(type) {
-	case *VolumeArduinoOK:
+	case *VolumeDespenserOK:
 		return value, nil, nil
-	case *VolumeArduinoNoContent:
+	case *VolumeDespenserNoContent:
 		return nil, value, nil
 	}
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
@@ -1346,22 +1346,22 @@ func (a *Client) Run2Program(params *Run2ProgramParams, opts ...ClientOption) (*
 }
 
 /*
-  RunArduino run arduino API
+  RunDespenser run despenser API
 */
-func (a *Client) RunArduino(params *RunArduinoParams, opts ...ClientOption) (*RunArduinoNoContent, error) {
+func (a *Client) RunDespenser(params *RunDespenserParams, opts ...ClientOption) (*RunDespenserNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewRunArduinoParams()
+		params = NewRunDespenserParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "runArduino",
+		ID:                 "runDespenser",
 		Method:             "POST",
-		PathPattern:        "/run-arduino",
+		PathPattern:        "/run-despenser",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http"},
 		Params:             params,
-		Reader:             &RunArduinoReader{formats: a.formats},
+		Reader:             &RunDespenserReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
@@ -1373,13 +1373,13 @@ func (a *Client) RunArduino(params *RunArduinoParams, opts ...ClientOption) (*Ru
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*RunArduinoNoContent)
+	success, ok := result.(*RunDespenserNoContent)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for runArduino: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for runDespenser: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

@@ -20,7 +20,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type HardwareAccessLayerClient interface {
 	RunProgram(ctx context.Context, in *Options, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Run2Programs(ctx context.Context, in *Options, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Command(ctx context.Context, in *Opti, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Volume(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Answer, error)
 }
 
 type hardwareAccessLayerClient struct {
@@ -40,9 +41,18 @@ func (c *hardwareAccessLayerClient) RunProgram(ctx context.Context, in *Options,
 	return out, nil
 }
 
-func (c *hardwareAccessLayerClient) Run2Programs(ctx context.Context, in *Options, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *hardwareAccessLayerClient) Command(ctx context.Context, in *Opti, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/xgrpc.HardwareAccessLayer/Run2Programs", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/xgrpc.HardwareAccessLayer/Command", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *hardwareAccessLayerClient) Volume(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Answer, error) {
+	out := new(Answer)
+	err := c.cc.Invoke(ctx, "/xgrpc.HardwareAccessLayer/Volume", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +64,8 @@ func (c *hardwareAccessLayerClient) Run2Programs(ctx context.Context, in *Option
 // for forward compatibility
 type HardwareAccessLayerServer interface {
 	RunProgram(context.Context, *Options) (*emptypb.Empty, error)
-	Run2Programs(context.Context, *Options) (*emptypb.Empty, error)
+	Command(context.Context, *Opti) (*emptypb.Empty, error)
+	Volume(context.Context, *emptypb.Empty) (*Answer, error)
 	mustEmbedUnimplementedHardwareAccessLayerServer()
 }
 
@@ -65,8 +76,11 @@ type UnimplementedHardwareAccessLayerServer struct {
 func (UnimplementedHardwareAccessLayerServer) RunProgram(context.Context, *Options) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RunProgram not implemented")
 }
-func (UnimplementedHardwareAccessLayerServer) Run2Programs(context.Context, *Options) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Run2Programs not implemented")
+func (UnimplementedHardwareAccessLayerServer) Command(context.Context, *Opti) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Command not implemented")
+}
+func (UnimplementedHardwareAccessLayerServer) Volume(context.Context, *emptypb.Empty) (*Answer, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Volume not implemented")
 }
 func (UnimplementedHardwareAccessLayerServer) mustEmbedUnimplementedHardwareAccessLayerServer() {}
 
@@ -99,20 +113,38 @@ func _HardwareAccessLayer_RunProgram_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _HardwareAccessLayer_Run2Programs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Options)
+func _HardwareAccessLayer_Command_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Opti)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HardwareAccessLayerServer).Run2Programs(ctx, in)
+		return srv.(HardwareAccessLayerServer).Command(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/xgrpc.HardwareAccessLayer/Run2Programs",
+		FullMethod: "/xgrpc.HardwareAccessLayer/Command",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HardwareAccessLayerServer).Run2Programs(ctx, req.(*Options))
+		return srv.(HardwareAccessLayerServer).Command(ctx, req.(*Opti))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HardwareAccessLayer_Volume_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HardwareAccessLayerServer).Volume(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/xgrpc.HardwareAccessLayer/Volume",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HardwareAccessLayerServer).Volume(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -129,131 +161,12 @@ var HardwareAccessLayer_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _HardwareAccessLayer_RunProgram_Handler,
 		},
 		{
-			MethodName: "Run2Programs",
-			Handler:    _HardwareAccessLayer_Run2Programs_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "hal.proto",
-}
-
-// HardwareArduinoAccessLayerClient is the client API for HardwareArduinoAccessLayer service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type HardwareArduinoAccessLayerClient interface {
-	Command(ctx context.Context, in *Opti, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Volume(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Otvet, error)
-}
-
-type hardwareArduinoAccessLayerClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewHardwareArduinoAccessLayerClient(cc grpc.ClientConnInterface) HardwareArduinoAccessLayerClient {
-	return &hardwareArduinoAccessLayerClient{cc}
-}
-
-func (c *hardwareArduinoAccessLayerClient) Command(ctx context.Context, in *Opti, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/xgrpc.HardwareArduinoAccessLayer/Command", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *hardwareArduinoAccessLayerClient) Volume(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Otvet, error) {
-	out := new(Otvet)
-	err := c.cc.Invoke(ctx, "/xgrpc.HardwareArduinoAccessLayer/Volume", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// HardwareArduinoAccessLayerServer is the server API for HardwareArduinoAccessLayer service.
-// All implementations must embed UnimplementedHardwareArduinoAccessLayerServer
-// for forward compatibility
-type HardwareArduinoAccessLayerServer interface {
-	Command(context.Context, *Opti) (*emptypb.Empty, error)
-	Volume(context.Context, *emptypb.Empty) (*Otvet, error)
-	mustEmbedUnimplementedHardwareArduinoAccessLayerServer()
-}
-
-// UnimplementedHardwareArduinoAccessLayerServer must be embedded to have forward compatible implementations.
-type UnimplementedHardwareArduinoAccessLayerServer struct {
-}
-
-func (UnimplementedHardwareArduinoAccessLayerServer) Command(context.Context, *Opti) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Command not implemented")
-}
-func (UnimplementedHardwareArduinoAccessLayerServer) Volume(context.Context, *emptypb.Empty) (*Otvet, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Volume not implemented")
-}
-func (UnimplementedHardwareArduinoAccessLayerServer) mustEmbedUnimplementedHardwareArduinoAccessLayerServer() {
-}
-
-// UnsafeHardwareArduinoAccessLayerServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to HardwareArduinoAccessLayerServer will
-// result in compilation errors.
-type UnsafeHardwareArduinoAccessLayerServer interface {
-	mustEmbedUnimplementedHardwareArduinoAccessLayerServer()
-}
-
-func RegisterHardwareArduinoAccessLayerServer(s grpc.ServiceRegistrar, srv HardwareArduinoAccessLayerServer) {
-	s.RegisterService(&HardwareArduinoAccessLayer_ServiceDesc, srv)
-}
-
-func _HardwareArduinoAccessLayer_Command_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Opti)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HardwareArduinoAccessLayerServer).Command(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/xgrpc.HardwareArduinoAccessLayer/Command",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HardwareArduinoAccessLayerServer).Command(ctx, req.(*Opti))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _HardwareArduinoAccessLayer_Volume_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HardwareArduinoAccessLayerServer).Volume(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/xgrpc.HardwareArduinoAccessLayer/Volume",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HardwareArduinoAccessLayerServer).Volume(ctx, req.(*emptypb.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// HardwareArduinoAccessLayer_ServiceDesc is the grpc.ServiceDesc for HardwareArduinoAccessLayer service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var HardwareArduinoAccessLayer_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "xgrpc.HardwareArduinoAccessLayer",
-	HandlerType: (*HardwareArduinoAccessLayerServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
 			MethodName: "Command",
-			Handler:    _HardwareArduinoAccessLayer_Command_Handler,
+			Handler:    _HardwareAccessLayer_Command_Handler,
 		},
 		{
 			MethodName: "Volume",
-			Handler:    _HardwareArduinoAccessLayer_Volume_Handler,
+			Handler:    _HardwareAccessLayer_Volume_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1,11 +1,11 @@
-volatile int flow_frequency; // с помощью этой переменной мы будем подсчитывать импульсы от датчика расходы воды
+volatile int flow_frequency; // with this variable, we will count the pulses from the water flow sensor
 // Calculated litres/hour
  float vol = 0.0,l_minute;
 unsigned char flowsensor = 2; // Sensor Input
 unsigned long currentTime;
 unsigned long cloopTime;
 
-void flow () // функция обработки прерывания
+void flow () // interrupt handling function
 {
    flow_frequency++;
 }
@@ -39,7 +39,7 @@ void loop() {
             l_minute = l_minute/60;
             vol = vol +l_minute;
             Serial.println("P" + (String)(vol*1000));
-            flow_frequency = 0; // сбрасываем счетчик
+            flow_frequency = 0; // resetting the counter
           }
         }
       }
@@ -47,10 +47,10 @@ void loop() {
       Serial.println("F" + (String)d);
     }
     else {
-      if (str == "UID") {
+      if (str == "UID;") {
         Serial.print("YF-S201");
       }
-      if (str == "PING") {
+      if (str == "PING;") {
         Serial.print("OK-1");
       }
     }

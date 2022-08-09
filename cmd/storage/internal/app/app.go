@@ -97,8 +97,8 @@ type (
 
 		RunProgram(id StationID, programID int64, preflight bool) (err error)
 		Run2Program(id StationID, programID int64, programID2 int64, preflight bool) (err error)
-		RunArduino(volume int64) (err error)
-		GetVolume() (volume int64, err error)
+		RunDespenserBoard(volume int64) (err error)
+		GetVolumeDespenser() (volume int64, err error) //
 		PressButton(id StationID, buttonID int64) (err error)
 
 		Station(StationID) (SetStation, error)
@@ -200,8 +200,6 @@ type (
 	// HardwareAccessLayer describes an interface to access hardware control modules
 	HardwareAccessLayer interface {
 		RunProgram(id int32, cfg RelayConfig) (err error)
-	}
-	HardwareArduinoAccessLayer interface {
 		Command(volume int64) (err error)
 		Volume() (volume int64, err error)
 	}
@@ -235,7 +233,6 @@ type app struct {
 	kasseSvc              KasseSvc
 	weatherSvc            WeatherSvc
 	hardware              HardwareAccessLayer
-	arduino               HardwareArduinoAccessLayer
 	lastUpdate            int
 	lastDiscountUpdate    int64
 	cfg                   AppConfig
@@ -243,14 +240,13 @@ type app struct {
 }
 
 // New creates and returns new App.
-func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareAccessLayer, arduino HardwareArduinoAccessLayer) App {
+func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareAccessLayer) App {
 	appl := &app{
 		repo:       repo,
 		stations:   make(map[StationID]StationData),
 		kasseSvc:   kasseSvc,
 		weatherSvc: weatherSvc,
 		hardware:   hardware,
-		arduino:    arduino,
 	}
 	err := appl.setDefaultConfig()
 	if err != nil {

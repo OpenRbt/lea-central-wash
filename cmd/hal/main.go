@@ -13,12 +13,9 @@ import (
 
 func main() {
 	isDebug := flag.Bool("debug", false, "debug")
-	flag.Parse()
 
 	var hardware app.HardwareAccessLayer
-	var arduinoware app.HardwareArduinoAccessLayer
 	var errHardware error
-	var errArduino error
 	if *isDebug {
 		hardware, errHardware = service.NewHardwareDebugAccessLayer()
 	} else {
@@ -27,11 +24,6 @@ func main() {
 	if errHardware != nil {
 		log.Println("HARDWARE IS NOT WORKING")
 	}
-	arduinoware, errArduino = service.NewHardwareArduinoLayer()
-	if errArduino != nil {
-		log.Println("ARDUINO IS NOT WORKING")
-	}
-	arduinoware.Start()
 
 	halHandler := xgrpc.New(hardware)
 

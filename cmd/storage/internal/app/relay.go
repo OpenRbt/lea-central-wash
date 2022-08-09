@@ -88,11 +88,11 @@ func (a *app) Run2Program(id StationID, programID int64, programID2 int64, prefl
 	return a.hardware.RunProgram(int32(id), cfg)
 }
 
-func (a *app) RunArduino(volume int64) (err error) {
-	return a.arduino.Command(volume)
+func (a *app) RunDespenserBoard(volume int64) (err error) {
+	return a.hardware.Command(volume)
 }
 
-func (a *app) GetVolume() (znach int64, err error) {
-	zhach, err := a.arduino.Volume()
+func (a *app) GetVolumeDespenser() (znach int64, err error) {
+	zhach, err := a.hardware.Volume()
 	return zhach, err
 }

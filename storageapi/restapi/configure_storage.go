@@ -50,9 +50,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	// Example:
 	// api.APIAuthorizer = security.Authorized()
 
-	if api.VolumeArduinoHandler == nil {
-		api.VolumeArduinoHandler = op.VolumeArduinoHandlerFunc(func(params op.VolumeArduinoParams) op.VolumeArduinoResponder {
-			return op.VolumeArduinoNotImplemented()
+	if api.VolumeDespenserHandler == nil {
+		api.VolumeDespenserHandler = op.VolumeDespenserHandlerFunc(func(params op.VolumeDespenserParams) op.VolumeDespenserResponder {
+			return op.VolumeDespenserNotImplemented()
 		})
 	}
 	if api.AddAdvertisingCampaignHandler == nil {
@@ -205,9 +205,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.Run2ProgramNotImplemented()
 		})
 	}
-	if api.RunArduinoHandler == nil {
-		api.RunArduinoHandler = op.RunArduinoHandlerFunc(func(params op.RunArduinoParams) op.RunArduinoResponder {
-			return op.RunArduinoNotImplemented()
+	if api.RunDespenserHandler == nil {
+		api.RunDespenserHandler = op.RunDespenserHandlerFunc(func(params op.RunDespenserParams) op.RunDespenserResponder {
+			return op.RunDespenserNotImplemented()
 		})
 	}
 	if api.RunProgramHandler == nil {

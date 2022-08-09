@@ -6,12 +6,8 @@ import "google/protobuf/empty.proto";
 
 service HardwareAccessLayer{
     rpc RunProgram(Options) returns(google.protobuf.Empty);
-    rpc Run2Programs(Options) returns(google.protobuf.Empty);
-}
-
-service HardwareArduinoAccessLayer{
     rpc Command(Opti) returns(google.protobuf.Empty);
-    rpc Volume(google.protobuf.Empty) returns(Otvet);
+    rpc Volume(google.protobuf.Empty) returns(Answer);
 }
 
 message Options{
@@ -25,7 +21,6 @@ message Opti{
     int32 cmd = 1;
 }
 
-message Otvet{
-    int64 otvet = 1;
-    google.protobuf.Empty err = 2;
+message Answer{
+    int64 ans = 1;
 }

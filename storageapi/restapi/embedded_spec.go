@@ -1016,9 +1016,9 @@ func init() {
         }
       }
     },
-    "/run-arduino": {
+    "/run-despenser": {
       "post": {
-        "operationId": "runArduino",
+        "operationId": "runDespenser",
         "parameters": [
           {
             "name": "args",
@@ -1026,7 +1026,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgRunArduino",
+              "title": "ArgRunDespenser",
               "required": [
                 "hash",
                 "volume"
@@ -2341,9 +2341,9 @@ func init() {
         }
       }
     },
-    "/volume-arduino": {
+    "/volume-despenser": {
       "post": {
-        "operationId": "VolumeArduino",
+        "operationId": "VolumeDespenser",
         "parameters": [
           {
             "name": "args",
@@ -2351,7 +2351,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "VolumeArduino",
+              "title": "VolumeDespenser",
               "required": [
                 "hash"
               ],
@@ -2368,7 +2368,7 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
-              "title": "ResponseVolumeArduino",
+              "title": "ResponseVolumeDespenser",
               "required": [
                 "volume"
               ],
@@ -4082,9 +4082,9 @@ func init() {
         }
       }
     },
-    "/run-arduino": {
+    "/run-despenser": {
       "post": {
-        "operationId": "runArduino",
+        "operationId": "runDespenser",
         "parameters": [
           {
             "name": "args",
@@ -4092,7 +4092,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgRunArduino",
+              "title": "ArgRunDespenser",
               "required": [
                 "hash",
                 "volume"
@@ -5391,9 +5391,9 @@ func init() {
         }
       }
     },
-    "/volume-arduino": {
+    "/volume-despenser": {
       "post": {
-        "operationId": "VolumeArduino",
+        "operationId": "VolumeDespenser",
         "parameters": [
           {
             "name": "args",
@@ -5401,7 +5401,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "VolumeArduino",
+              "title": "VolumeDespenser",
               "required": [
                 "hash"
               ],
@@ -5418,7 +5418,7 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
-              "title": "ResponseVolumeArduino",
+              "title": "ResponseVolumeDespenser",
               "required": [
                 "volume"
               ],
