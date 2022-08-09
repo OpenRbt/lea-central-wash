@@ -665,7 +665,7 @@ func (svc *service) runArduino(params op.RunArduinoParams) op.RunArduinoResponde
 		return op.NewRunArduinoNoContent()
 	case app.ErrNotFound:
 		log.PrintErr(err, "hash", params.Args.Hash, "Volume", params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewRunArduinoNotFound().WithPayload("program or Arduino not found")
+		return op.NewRunArduinoNotFound().WithPayload("Arduino not found")
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewRunArduinoInternalServerError()
@@ -682,7 +682,7 @@ func (svc *service) getVolume(params op.VolumeArduinoParams) op.VolumeArduinoRes
 		return op.NewVolumeArduinoOK().WithPayload(&op.VolumeArduinoOKBody{Volume: &znach})
 	case app.ErrNotFound:
 		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewVolumeArduinoNotFound().WithPayload("program or Arduino not found")
+		return op.NewVolumeArduinoNotFound().WithPayload("Volume from Arduino not found")
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewVolumeArduinoInternalServerError()
