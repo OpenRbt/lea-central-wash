@@ -2,6 +2,7 @@ package xgrpc
 
 import (
 	"context"
+	"fmt"
 	"hal/internal/app"
 
 	"github.com/golang/protobuf/ptypes/empty"
@@ -28,13 +29,15 @@ func (h HalHandler) RunProgram(ctx context.Context, in *Options) (*empty.Empty, 
 	return nil, nil
 }
 
-func (h HalHandler) Command(ctx context.Context, in *Opti) (*empty.Empty, error) {
+func (h HalHandler) Command(ctx context.Context, in *Opti) (*Int, error) {
 	err := h.hal.Command(int(in.Cmd))
+	fmt.Println("Server-hal: ", err)
 	if err != nil {
-		return nil, err
+		fmt.Println("Not NIL")
+		return &Int{Ans: 1}, err
 	}
-
-	return nil, nil
+	fmt.Println("NIL")
+	return &Int{Ans: 1}, nil
 }
 
 func (h HalHandler) Volume(ctx context.Context, in *emptypb.Empty) (*Answer, error) {

@@ -25,7 +25,7 @@ var (
 	ErrWrongAnswer = errors.New("wrong answer from the board")
 )
 
-var lastValue int64
+var lastValue string = "0"
 
 // PostError describes an error happened to a post
 type PostError struct {
@@ -143,13 +143,24 @@ func (r *Rev1DispencerBoard) workingLoop() {
 }
 
 func (h *HardwareAccessLayer) Volume() int64 {
-	return lastValue
+	l, err := strconv.ParseInt(lastValue, 10, 10)
+	if err != nil {
+		fmt.Println("err: ", err)
+	}
+	fmt.Println("LasVolume = ", l)
+	return l
 }
 
 // Run command for Arduino
 func (h *HardwareAccessLayer) Command(cmd int) error {
 	r := h.dispencer
-	cmdd := "S" + string(cmd)
+	go r.runCom(cmd)
+	return nil
+}
+
+func (r *Rev1DispencerBoard) runCom(cmd int) error {
+	lastValue = "0"
+	cmdd := "S" + strconv.Itoa(cmd)
 	_, err := r.openPort.Write([]byte(cmdd))
 	if err != nil {
 		fmt.Println("Error in command ", cmd)
@@ -164,8 +175,8 @@ func (h *HardwareAccessLayer) Command(cmd int) error {
 				N, err := r.openPort.Read(buf)
 				if err != io.EOF {
 					if err == nil {
-						ans := string(buf[1:N])
-						lastValue, _ := strconv.ParseInt(ans, 10, 10)
+						ans := string(buf[0 : N-2])
+						lastValue = ans[1 : N-2]
 						fmt.Println("Answer Arduino", lastValue)
 						if ans[0] == 'F' {
 							fmt.Println("Finish command ", cmd, " Successfully!")

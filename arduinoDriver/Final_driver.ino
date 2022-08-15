@@ -38,13 +38,13 @@ void loop() {
             l_minute = (flow_frequency / 7.5);
             l_minute = l_minute/60;
             vol = vol +l_minute;
-            Serial.println("P" + (String)(vol*1000));
+            Serial.println("P" + (String)(int)(vol*1000 + (vol*1000*0.27)));
             flow_frequency = 0; // resetting the counter
           }
         }
       }
       delay(100);
-      Serial.println("F" + (String)d);
+      Serial.println("F" + (String)(int)d);
     }
     else {
       if (str == "UID;") {

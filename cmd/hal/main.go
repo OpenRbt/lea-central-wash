@@ -34,6 +34,10 @@ func main() {
 
 	hardware.Start()
 
+	// var chil int
+	// fmt.Scan(&chil)
+	// hardware.Command(chil)
+
 	s := grpc.NewServer()
 
 	xgrpc.RegisterHardwareAccessLayerServer(s, halHandler)

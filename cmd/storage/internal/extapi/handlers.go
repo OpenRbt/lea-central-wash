@@ -1,6 +1,7 @@
 package extapi
 
 import (
+	"fmt"
 	"net"
 	"strings"
 	"time"
@@ -660,6 +661,7 @@ func (svc *service) runDespenser(params op.RunDespenserParams) op.RunDespenserRe
 	err := svc.app.RunDespenserBoard(*params.Args.Volume)
 
 	log.Info("runArduino", "Volume", *params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
+	fmt.Println("ERROR: ", err)
 
 	switch errors.Cause(err) {
 	case nil:

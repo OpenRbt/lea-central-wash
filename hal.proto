@@ -6,7 +6,7 @@ import "google/protobuf/empty.proto";
 
 service HardwareAccessLayer{
     rpc RunProgram(Options) returns(google.protobuf.Empty);
-    rpc Command(Opti) returns(google.protobuf.Empty);
+    rpc Command(Opti) returns(Int);
     rpc Volume(google.protobuf.Empty) returns(Answer);
 }
 
@@ -23,4 +23,8 @@ message Opti{
 
 message Answer{
     int64 ans = 1;
+}
+
+message Int{
+    int64 ans = 1; 
 }
