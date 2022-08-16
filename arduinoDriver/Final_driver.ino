@@ -1,13 +1,24 @@
+#define IDL 1
+#define LIQUID_ON 2
+#define SENDING_FINISH 3
+
 volatile int flow_frequency; // with this variable, we will count the pulses from the water flow sensor
-// Calculated litres/hour
- float vol = 0.0,l_minute;
+float vol = 0.0,l_minute, requiredVol, requiredVoln;
+int stat = IDL;
 unsigned char flowsensor = 2; // Sensor Input
-unsigned long currentTime;
-unsigned long cloopTime;
+unsigned long currentTime, cloopTime;
+int timer = 200;
 
 void flow () // interrupt handling function
 {
    flow_frequency++;
+}
+
+void checkVolume () {
+  l_minute = (flow_frequency / 7.5);
+  l_minute = l_minute/60;
+  vol = vol + l_minute;
+  flow_frequency = 0; // resetting the counter
 }
 
 void setup()
@@ -22,39 +33,50 @@ void setup()
 }
 
 void loop() {
+  if (stat == LIQUID_ON) {
+        checkVolume();
+        currentTime = millis();
+        if (requiredVol > vol) {
+          if(currentTime >= (cloopTime + timer)) {
+            cloopTime = currentTime;
+            Serial.println("P" + (String)(int)(vol*1000 + (vol*1000*0.27)));
+          } 
+        } else {
+          stat = SENDING_FINISH;
+        }
+  }
+  if (stat == SENDING_FINISH) {
+    currentTime = millis();
+    if (currentTime >= (cloopTime + timer)) {
+      cloopTime = currentTime;
+      Serial.println("F" + (String)(int)requiredVoln);
+    }
+  }
   if (Serial.available() > 0) {
     String str = Serial.readString();
     Serial.setTimeout(5);
     if (str[0] == 'S') {
-      flow_frequency = 0;
+      Serial.println("SOK");
       str.remove(0,1);
-      float d = (float)str.toInt();
-      float dd = (d - d*0.27) / 1000;
-      while (vol < dd) {
-        currentTime = millis();
-        if(currentTime >= (cloopTime + 100)) {
-          cloopTime = currentTime;
-          if(flow_frequency != 0) {
-            l_minute = (flow_frequency / 7.5);
-            l_minute = l_minute/60;
-            vol = vol +l_minute;
-            Serial.println("P" + (String)(int)(vol*1000 + (vol*1000*0.27)));
-            flow_frequency = 0; // resetting the counter
-          }
-        }
-      }
-      delay(100);
-      Serial.println("F" + (String)(int)d);
-    }
-    else {
+      stat = LIQUID_ON;
+      vol = 0.0;
+      requiredVoln = (float)str.toInt();
+      requiredVol = (requiredVoln - requiredVoln*0.27) / 1000;
+    } else {
       if (str == "UID;") {
         Serial.print("YF-S201");
       }
       if (str == "PING;") {
-        Serial.print("OK-1");
+        Serial.println("OK-PING");
+      }
+      if (str == "ERR") {
+        stat = IDL;
+        Serial.println("FOK");
+      }
+      if (str == "FOK") {
+        stat = IDL;
       }
     }
-    vol = 0.0;
     str = "";
     Serial.flush();
   }

@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type HardwareAccessLayerClient interface {
 	RunProgram(ctx context.Context, in *Options, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Command(ctx context.Context, in *Opti, opts ...grpc.CallOption) (*Int, error)
+	Command(ctx context.Context, in *OptionsCommand, opts ...grpc.CallOption) (*AnswerCommand, error)
 	Volume(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Answer, error)
 }
 
@@ -41,8 +41,8 @@ func (c *hardwareAccessLayerClient) RunProgram(ctx context.Context, in *Options,
 	return out, nil
 }
 
-func (c *hardwareAccessLayerClient) Command(ctx context.Context, in *Opti, opts ...grpc.CallOption) (*Int, error) {
-	out := new(Int)
+func (c *hardwareAccessLayerClient) Command(ctx context.Context, in *OptionsCommand, opts ...grpc.CallOption) (*AnswerCommand, error) {
+	out := new(AnswerCommand)
 	err := c.cc.Invoke(ctx, "/xgrpc.HardwareAccessLayer/Command", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func (c *hardwareAccessLayerClient) Volume(ctx context.Context, in *emptypb.Empt
 // for forward compatibility
 type HardwareAccessLayerServer interface {
 	RunProgram(context.Context, *Options) (*emptypb.Empty, error)
-	Command(context.Context, *Opti) (*Int, error)
+	Command(context.Context, *OptionsCommand) (*AnswerCommand, error)
 	Volume(context.Context, *emptypb.Empty) (*Answer, error)
 	mustEmbedUnimplementedHardwareAccessLayerServer()
 }
@@ -76,7 +76,7 @@ type UnimplementedHardwareAccessLayerServer struct {
 func (UnimplementedHardwareAccessLayerServer) RunProgram(context.Context, *Options) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RunProgram not implemented")
 }
-func (UnimplementedHardwareAccessLayerServer) Command(context.Context, *Opti) (*Int, error) {
+func (UnimplementedHardwareAccessLayerServer) Command(context.Context, *OptionsCommand) (*AnswerCommand, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Command not implemented")
 }
 func (UnimplementedHardwareAccessLayerServer) Volume(context.Context, *emptypb.Empty) (*Answer, error) {
@@ -114,7 +114,7 @@ func _HardwareAccessLayer_RunProgram_Handler(srv interface{}, ctx context.Contex
 }
 
 func _HardwareAccessLayer_Command_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Opti)
+	in := new(OptionsCommand)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -126,7 +126,7 @@ func _HardwareAccessLayer_Command_Handler(srv interface{}, ctx context.Context, 
 		FullMethod: "/xgrpc.HardwareAccessLayer/Command",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HardwareAccessLayerServer).Command(ctx, req.(*Opti))
+		return srv.(HardwareAccessLayerServer).Command(ctx, req.(*OptionsCommand))
 	}
 	return interceptor(ctx, in, info, handler)
 }

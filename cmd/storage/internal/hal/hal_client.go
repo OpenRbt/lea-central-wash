@@ -44,8 +44,8 @@ func (c *Client) RunProgram(id int32, cfg app.RelayConfig) (err error) {
 }
 
 func (c *Client) Command(volume int64) (err error) {
-	com := xgrpc.Opti{
-		Cmd: int32(volume),
+	com := xgrpc.OptionsCommand{
+		Command: int32(volume),
 	}
 
 	ctx := context.Background()
@@ -54,7 +54,7 @@ func (c *Client) Command(volume int64) (err error) {
 	return err
 }
 
-func (c *Client) Volume() (int64, error) {
+func (c *Client) Volume() (int64, int64, error) {
 
 	ctx := context.Background()
 
@@ -62,5 +62,5 @@ func (c *Client) Volume() (int64, error) {
 
 	com, err := c.hal.Volume(ctx, &ss)
 
-	return com.Ans, err
+	return com.Answer, com.Status, err
 }

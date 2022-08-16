@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"hal/internal/app"
-	"io"
 	"io/ioutil"
 	"log"
 	"regexp"
@@ -26,6 +25,8 @@ var (
 )
 
 var lastValue string = "0"
+
+var flag int64 = 0
 
 // PostError describes an error happened to a post
 type PostError struct {
@@ -142,13 +143,13 @@ func (r *Rev1DispencerBoard) workingLoop() {
 	}
 }
 
-func (h *HardwareAccessLayer) Volume() int64 {
+func (h *HardwareAccessLayer) Volume() (int64, int64) {
 	l, err := strconv.ParseInt(lastValue, 10, 10)
 	if err != nil {
 		fmt.Println("err: ", err)
 	}
 	fmt.Println("LasVolume = ", l)
-	return l
+	return l, flag
 }
 
 // Run command for Arduino
@@ -160,37 +161,81 @@ func (h *HardwareAccessLayer) Command(cmd int) error {
 
 func (r *Rev1DispencerBoard) runCom(cmd int) error {
 	lastValue = "0"
+	buf := make([]byte, 32)
 	cmdd := "S" + strconv.Itoa(cmd)
-	_, err := r.openPort.Write([]byte(cmdd))
-	if err != nil {
-		fmt.Println("Error in command ", cmd)
-		return err
-	} else {
-		fmt.Println("Start command ", cmd)
-		tick := time.Tick(100 * time.Millisecond)
-		buf := make([]byte, 32)
-		for {
-			select {
-			case <-tick:
-				N, err := r.openPort.Read(buf)
-				if err != io.EOF {
-					if err == nil {
-						ans := string(buf[0 : N-2])
-						lastValue = ans[1 : N-2]
-						fmt.Println("Answer Arduino", lastValue)
-						if ans[0] == 'F' {
-							fmt.Println("Finish command ", cmd, " Successfully!")
-							return nil
-						}
-					} else {
-						fmt.Println(err)
-						fmt.Println("Error in command ", cmd)
-						return err
-					}
+	exi := false
+	flag = 1
+	for i := 0; i < 10; i++ {
+		_, err := r.openPort.Write([]byte(cmdd))
+		if err != nil {
+			fmt.Println("Error in command ", cmd)
+			flag = 0
+			return err
+		} else {
+			N, err := r.openPort.Read(buf)
+			if err == nil {
+				ans := string(buf[0 : N-2])
+				if ans == "SOK" {
+					fmt.Println("Start command ", cmd)
+					flag = 1
+					exi = true
+					break
 				}
 			}
 		}
 	}
+	if exi {
+		tick := time.Tick(200 * time.Millisecond)
+		var countErr int
+		for {
+			select {
+			case <-tick:
+				N, err := r.openPort.Read(buf)
+				if err == nil {
+					ans := string(buf[0 : N-2])
+					l, _ := strconv.ParseInt(lastValue, 10, 10)
+					v, _ := strconv.ParseInt(ans[1:N-2], 10, 10)
+					if v-l < 1 {
+						countErr += 1
+						if countErr >= 100 {
+							_, err = r.openPort.Write([]byte("ERR"))
+							N, err = r.openPort.Read(buf)
+							ans = string(buf[0 : N-2])
+							if ans == "FOK" {
+								flag = 0
+								fmt.Println("The non-freezing is over")
+								return nil
+							}
+						}
+					}
+					fmt.Println("Answer: ", ans)
+					if ans[0:N-2] != "OK-PING" {
+						lastValue = ans[1 : N-2]
+					}
+					fmt.Println("Answer Arduino", lastValue)
+					if ans[0] == 'F' {
+						fmt.Println("Finish command ", cmd, " Successfully!")
+						flag = 0
+						countErr = 0
+						_, err = r.openPort.Write([]byte("FOK"))
+						if err != nil {
+							fmt.Println("Error in command FOK")
+							return err
+						}
+						return nil
+					}
+				} else {
+					flag = 0
+					fmt.Println(err)
+					fmt.Println("Error in command ", cmd)
+					return err
+				}
+			}
+		}
+	}
+	flag = 0
+	fmt.Println("Arduino is not responding ")
+	return nil
 }
 
 // Run just runs a goroutine which controls a device
@@ -315,10 +360,11 @@ func (r *Rev1DispencerBoard) SendPing() error {
 	if err != nil {
 		return err
 	}
-	st := string(buf[0:2])
-	if st != "OK-1" {
+	st := string(buf[0:7])
+	if st != "OK-PING" {
 		return err
 	}
+	fmt.Println("Ping-OK")
 	return nil
 }
 

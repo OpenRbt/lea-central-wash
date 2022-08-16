@@ -92,7 +92,7 @@ func (a *app) RunDespenserBoard(volume int64) (err error) {
 	return a.hardware.Command(volume)
 }
 
-func (a *app) GetVolumeDespenser() (znach int64, err error) {
-	zhach, err := a.hardware.Volume()
-	return zhach, err
+func (a *app) GetVolumeDespenser() (znach int64, status int64, err error) {
+	zhach, status, err := a.hardware.Volume()
+	return zhach, status, err
 }

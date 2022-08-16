@@ -12,7 +12,7 @@ type HardwareAccessLayer interface {
 	ControlBoard(key int32) (ControlBoard, error)
 	RunProgram(id int32, cfg RelayConfig) (err error)
 	Command(cmd int) error
-	Volume() int64
+	Volume() (int64, int64)
 }
 
 // ControlBoard represents one board (even virtual) to control relays

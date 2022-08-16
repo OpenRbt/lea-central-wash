@@ -98,7 +98,7 @@ type (
 		RunProgram(id StationID, programID int64, preflight bool) (err error)
 		Run2Program(id StationID, programID int64, programID2 int64, preflight bool) (err error)
 		RunDespenserBoard(volume int64) (err error)
-		GetVolumeDespenser() (volume int64, err error) //
+		GetVolumeDespenser() (volume int64, status int64, err error) //
 		PressButton(id StationID, buttonID int64) (err error)
 
 		Station(StationID) (SetStation, error)
@@ -201,7 +201,7 @@ type (
 	HardwareAccessLayer interface {
 		RunProgram(id int32, cfg RelayConfig) (err error)
 		Command(volume int64) (err error)
-		Volume() (volume int64, err error)
+		Volume() (volume int64, status int64, err error)
 	}
 	// ControlBoard represents one board (even virtual) to control relays
 	ControlBoard interface {

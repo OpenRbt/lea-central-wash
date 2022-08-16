@@ -2370,9 +2370,13 @@ func init() {
               "type": "object",
               "title": "ResponseVolumeDespenser",
               "required": [
-                "volume"
+                "volume",
+                "status"
               ],
               "properties": {
+                "status": {
+                  "type": "integer"
+                },
                 "volume": {
                   "type": "integer"
                 }
@@ -5420,9 +5424,13 @@ func init() {
               "type": "object",
               "title": "ResponseVolumeDespenser",
               "required": [
-                "volume"
+                "volume",
+                "status"
               ],
               "properties": {
+                "status": {
+                  "type": "integer"
+                },
                 "volume": {
                   "type": "integer"
                 }

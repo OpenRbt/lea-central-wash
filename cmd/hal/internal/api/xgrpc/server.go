@@ -29,20 +29,20 @@ func (h HalHandler) RunProgram(ctx context.Context, in *Options) (*empty.Empty, 
 	return nil, nil
 }
 
-func (h HalHandler) Command(ctx context.Context, in *Opti) (*Int, error) {
-	err := h.hal.Command(int(in.Cmd))
+func (h HalHandler) Command(ctx context.Context, in *OptionsCommand) (*AnswerCommand, error) {
+	err := h.hal.Command(int(in.Command))
 	fmt.Println("Server-hal: ", err)
 	if err != nil {
 		fmt.Println("Not NIL")
-		return &Int{Ans: 1}, err
+		return &AnswerCommand{Answer: 1}, err
 	}
 	fmt.Println("NIL")
-	return &Int{Ans: 1}, nil
+	return &AnswerCommand{Answer: 1}, nil
 }
 
 func (h HalHandler) Volume(ctx context.Context, in *emptypb.Empty) (*Answer, error) {
-	ans := h.hal.Volume()
-	return &Answer{Ans: ans}, nil
+	ans, status := h.hal.Volume()
+	return &Answer{Answer: ans, Status: status}, nil
 }
 
 func (h HalHandler) mustEmbedUnimplementedHardwareAccessLayerServer() {}

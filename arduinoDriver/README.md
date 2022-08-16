@@ -1,21 +1,19 @@
-# Подключение  датчика YF-S201 к arduino
+# Connecting the YF-S201 sensor to arduino
 ## Water Flow Sensor
 
-## Подключение к плате
+## Connecting to the board
 
-Датчик  оборудован 3 контактами:
-- Красный, питание 5v
-- Черный, земля
-- Желтый, прерывание
+The sensor is equipped with 3 contacts:
+- Red, power 5v
+- Black, earth
+- Yellow, interrupt
 
-Красный подключается к 5v
-Черный подключается к порту *GND*
-Желтый подключается к порту 2
+Red connects to 5v
+Black connects to the port *GND*
+Yellow connects to the port 2
 
-В заводской поставке датчик поставляется со штекером, но подключить его таким образом к плате не представляется возможным, по этому необходимы соединительные провода типа папа-мама.
+In the factory supply, the sensor is supplied with a plug, but it is not possible to connect it to the board in this way, so connecting wires of the papa-mama type are necessary.
 
-### Особенность датчика
+### Sensor Feature
 
-Если датчик будет показывать не точные показания, то необходимо изменить коэффициент *0.27* в строке 32, на 0. 
-
-Стоит обратить внимание на то, что у датчика есть направление течении воды.
+It is worth paying attention to the fact that the sensor has the direction of water flow.

@@ -400,6 +400,10 @@ swagger:model VolumeDespenserOKBody
 */
 type VolumeDespenserOKBody struct {
 
+	// status
+	// Required: true
+	Status *int64 `json:"status"`
+
 	// volume
 	// Required: true
 	Volume *int64 `json:"volume"`
@@ -408,6 +412,10 @@ type VolumeDespenserOKBody struct {
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
 func (o *VolumeDespenserOKBody) UnmarshalJSON(data []byte) error {
 	var props struct {
+
+		// status
+		// Required: true
+		Status *int64 `json:"status"`
 
 		// volume
 		// Required: true
@@ -420,6 +428,7 @@ func (o *VolumeDespenserOKBody) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
+	o.Status = props.Status
 	o.Volume = props.Volume
 	return nil
 }
@@ -428,6 +437,10 @@ func (o *VolumeDespenserOKBody) UnmarshalJSON(data []byte) error {
 func (o *VolumeDespenserOKBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := o.validateStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validateVolume(formats); err != nil {
 		res = append(res, err)
 	}
@@ -435,6 +448,15 @@ func (o *VolumeDespenserOKBody) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (o *VolumeDespenserOKBody) validateStatus(formats strfmt.Registry) error {
+
+	if err := validate.Required("volumeDespenserOK"+"."+"status", "body", o.Status); err != nil {
+		return err
+	}
+
 	return nil
 }
 

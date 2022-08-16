@@ -1952,8 +1952,11 @@ paths:
             type: object
             required:
               - volume
+              - status
             properties:
               volume: 
+                type: integer
+              status:
                 type: integer
         204:
           description: OK

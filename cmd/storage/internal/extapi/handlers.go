@@ -677,13 +677,13 @@ func (svc *service) runDespenser(params op.RunDespenserParams) op.RunDespenserRe
 
 func (svc *service) VolumeDespenser(params op.VolumeDespenserParams) op.VolumeDespenserResponder {
 
-	znach, err := svc.app.GetVolumeDespenser()
+	znach, status, err := svc.app.GetVolumeDespenser()
 
 	log.Info("Get Volume", "ip", params.HTTPRequest.RemoteAddr)
 
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewVolumeDespenserOK().WithPayload(&op.VolumeDespenserOKBody{Volume: &znach})
+		return op.NewVolumeDespenserOK().WithPayload(&op.VolumeDespenserOKBody{Status: &status, Volume: &znach})
 	case app.ErrNotFound:
 		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewVolumeDespenserNotFound().WithPayload("Volume from Arduino not found")
