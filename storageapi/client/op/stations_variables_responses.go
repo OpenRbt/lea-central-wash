@@ -53,9 +53,39 @@ type StationsVariablesOK struct {
 	Payload []*model.StationsVariables
 }
 
+// IsSuccess returns true when this stations variables o k response has a 2xx status code
+func (o *StationsVariablesOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this stations variables o k response has a 3xx status code
+func (o *StationsVariablesOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stations variables o k response has a 4xx status code
+func (o *StationsVariablesOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this stations variables o k response has a 5xx status code
+func (o *StationsVariablesOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stations variables o k response a status code equal to that given
+func (o *StationsVariablesOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *StationsVariablesOK) Error() string {
 	return fmt.Sprintf("[POST /stations-variables][%d] stationsVariablesOK  %+v", 200, o.Payload)
 }
+
+func (o *StationsVariablesOK) String() string {
+	return fmt.Sprintf("[POST /stations-variables][%d] stationsVariablesOK  %+v", 200, o.Payload)
+}
+
 func (o *StationsVariablesOK) GetPayload() []*model.StationsVariables {
 	return o.Payload
 }
@@ -82,7 +112,36 @@ internal error
 type StationsVariablesInternalServerError struct {
 }
 
+// IsSuccess returns true when this stations variables internal server error response has a 2xx status code
+func (o *StationsVariablesInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this stations variables internal server error response has a 3xx status code
+func (o *StationsVariablesInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stations variables internal server error response has a 4xx status code
+func (o *StationsVariablesInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this stations variables internal server error response has a 5xx status code
+func (o *StationsVariablesInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this stations variables internal server error response a status code equal to that given
+func (o *StationsVariablesInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *StationsVariablesInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /stations-variables][%d] stationsVariablesInternalServerError ", 500)
+}
+
+func (o *StationsVariablesInternalServerError) String() string {
 	return fmt.Sprintf("[POST /stations-variables][%d] stationsVariablesInternalServerError ", 500)
 }
 

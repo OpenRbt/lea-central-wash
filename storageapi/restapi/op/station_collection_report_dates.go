@@ -53,7 +53,7 @@ type StationCollectionReportDates struct {
 func (o *StationCollectionReportDates) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewStationCollectionReportDatesParams()
 	uprinc, aCtx, err := o.Context.Authorize(r, route)
@@ -62,7 +62,7 @@ func (o *StationCollectionReportDates) ServeHTTP(rw http.ResponseWriter, r *http
 		return
 	}
 	if aCtx != nil {
-		r = aCtx
+		*r = *aCtx
 	}
 	var principal *storageapi.Profile
 	if uprinc != nil {
@@ -206,6 +206,8 @@ func (o *StationCollectionReportDatesOKBody) validateCollectionReports(formats s
 			if err := o.CollectionReports[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stationCollectionReportDatesOK" + "." + "collectionReports" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("stationCollectionReportDatesOK" + "." + "collectionReports" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -238,6 +240,8 @@ func (o *StationCollectionReportDatesOKBody) contextValidateCollectionReports(ct
 			if err := o.CollectionReports[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stationCollectionReportDatesOK" + "." + "collectionReports" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("stationCollectionReportDatesOK" + "." + "collectionReports" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

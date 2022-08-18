@@ -65,9 +65,39 @@ type CardReaderConfigOK struct {
 	Payload *model.CardReaderConfig
 }
 
+// IsSuccess returns true when this card reader config o k response has a 2xx status code
+func (o *CardReaderConfigOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this card reader config o k response has a 3xx status code
+func (o *CardReaderConfigOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this card reader config o k response has a 4xx status code
+func (o *CardReaderConfigOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this card reader config o k response has a 5xx status code
+func (o *CardReaderConfigOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this card reader config o k response a status code equal to that given
+func (o *CardReaderConfigOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *CardReaderConfigOK) Error() string {
 	return fmt.Sprintf("[POST /card-reader-config][%d] cardReaderConfigOK  %+v", 200, o.Payload)
 }
+
+func (o *CardReaderConfigOK) String() string {
+	return fmt.Sprintf("[POST /card-reader-config][%d] cardReaderConfigOK  %+v", 200, o.Payload)
+}
+
 func (o *CardReaderConfigOK) GetPayload() *model.CardReaderConfig {
 	return o.Payload
 }
@@ -96,7 +126,36 @@ not found
 type CardReaderConfigNotFound struct {
 }
 
+// IsSuccess returns true when this card reader config not found response has a 2xx status code
+func (o *CardReaderConfigNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this card reader config not found response has a 3xx status code
+func (o *CardReaderConfigNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this card reader config not found response has a 4xx status code
+func (o *CardReaderConfigNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this card reader config not found response has a 5xx status code
+func (o *CardReaderConfigNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this card reader config not found response a status code equal to that given
+func (o *CardReaderConfigNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *CardReaderConfigNotFound) Error() string {
+	return fmt.Sprintf("[POST /card-reader-config][%d] cardReaderConfigNotFound ", 404)
+}
+
+func (o *CardReaderConfigNotFound) String() string {
 	return fmt.Sprintf("[POST /card-reader-config][%d] cardReaderConfigNotFound ", 404)
 }
 
@@ -117,7 +176,36 @@ internal error
 type CardReaderConfigInternalServerError struct {
 }
 
+// IsSuccess returns true when this card reader config internal server error response has a 2xx status code
+func (o *CardReaderConfigInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this card reader config internal server error response has a 3xx status code
+func (o *CardReaderConfigInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this card reader config internal server error response has a 4xx status code
+func (o *CardReaderConfigInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this card reader config internal server error response has a 5xx status code
+func (o *CardReaderConfigInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this card reader config internal server error response a status code equal to that given
+func (o *CardReaderConfigInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *CardReaderConfigInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /card-reader-config][%d] cardReaderConfigInternalServerError ", 500)
+}
+
+func (o *CardReaderConfigInternalServerError) String() string {
 	return fmt.Sprintf("[POST /card-reader-config][%d] cardReaderConfigInternalServerError ", 500)
 }
 

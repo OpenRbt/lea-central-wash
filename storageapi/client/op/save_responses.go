@@ -63,7 +63,36 @@ OK
 type SaveNoContent struct {
 }
 
+// IsSuccess returns true when this save no content response has a 2xx status code
+func (o *SaveNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this save no content response has a 3xx status code
+func (o *SaveNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this save no content response has a 4xx status code
+func (o *SaveNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this save no content response has a 5xx status code
+func (o *SaveNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this save no content response a status code equal to that given
+func (o *SaveNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
 func (o *SaveNoContent) Error() string {
+	return fmt.Sprintf("[POST /save][%d] saveNoContent ", 204)
+}
+
+func (o *SaveNoContent) String() string {
 	return fmt.Sprintf("[POST /save][%d] saveNoContent ", 204)
 }
 
@@ -84,7 +113,36 @@ not found
 type SaveNotFound struct {
 }
 
+// IsSuccess returns true when this save not found response has a 2xx status code
+func (o *SaveNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this save not found response has a 3xx status code
+func (o *SaveNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this save not found response has a 4xx status code
+func (o *SaveNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this save not found response has a 5xx status code
+func (o *SaveNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this save not found response a status code equal to that given
+func (o *SaveNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *SaveNotFound) Error() string {
+	return fmt.Sprintf("[POST /save][%d] saveNotFound ", 404)
+}
+
+func (o *SaveNotFound) String() string {
 	return fmt.Sprintf("[POST /save][%d] saveNotFound ", 404)
 }
 
@@ -105,7 +163,36 @@ internal error
 type SaveInternalServerError struct {
 }
 
+// IsSuccess returns true when this save internal server error response has a 2xx status code
+func (o *SaveInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this save internal server error response has a 3xx status code
+func (o *SaveInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this save internal server error response has a 4xx status code
+func (o *SaveInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this save internal server error response has a 5xx status code
+func (o *SaveInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this save internal server error response a status code equal to that given
+func (o *SaveInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *SaveInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /save][%d] saveInternalServerError ", 500)
+}
+
+func (o *SaveInternalServerError) String() string {
 	return fmt.Sprintf("[POST /save][%d] saveInternalServerError ", 500)
 }
 
@@ -184,6 +271,8 @@ func (o *SaveBody) validateHash(formats strfmt.Registry) error {
 		if err := o.Hash.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
@@ -202,6 +291,8 @@ func (o *SaveBody) validateKeyPair(formats strfmt.Registry) error {
 		if err := o.KeyPair.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "keyPair")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "keyPair")
 			}
 			return err
 		}
@@ -234,6 +325,8 @@ func (o *SaveBody) contextValidateHash(ctx context.Context, formats strfmt.Regis
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
@@ -248,6 +341,8 @@ func (o *SaveBody) contextValidateKeyPair(ctx context.Context, formats strfmt.Re
 		if err := o.KeyPair.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "keyPair")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "keyPair")
 			}
 			return err
 		}

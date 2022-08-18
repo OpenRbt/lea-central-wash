@@ -65,9 +65,39 @@ type LoadFromStationOK struct {
 	Payload string
 }
 
+// IsSuccess returns true when this load from station o k response has a 2xx status code
+func (o *LoadFromStationOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this load from station o k response has a 3xx status code
+func (o *LoadFromStationOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this load from station o k response has a 4xx status code
+func (o *LoadFromStationOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this load from station o k response has a 5xx status code
+func (o *LoadFromStationOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this load from station o k response a status code equal to that given
+func (o *LoadFromStationOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *LoadFromStationOK) Error() string {
 	return fmt.Sprintf("[POST /load-from-station][%d] loadFromStationOK  %+v", 200, o.Payload)
 }
+
+func (o *LoadFromStationOK) String() string {
+	return fmt.Sprintf("[POST /load-from-station][%d] loadFromStationOK  %+v", 200, o.Payload)
+}
+
 func (o *LoadFromStationOK) GetPayload() string {
 	return o.Payload
 }
@@ -94,7 +124,36 @@ not found
 type LoadFromStationNotFound struct {
 }
 
+// IsSuccess returns true when this load from station not found response has a 2xx status code
+func (o *LoadFromStationNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this load from station not found response has a 3xx status code
+func (o *LoadFromStationNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this load from station not found response has a 4xx status code
+func (o *LoadFromStationNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this load from station not found response has a 5xx status code
+func (o *LoadFromStationNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this load from station not found response a status code equal to that given
+func (o *LoadFromStationNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *LoadFromStationNotFound) Error() string {
+	return fmt.Sprintf("[POST /load-from-station][%d] loadFromStationNotFound ", 404)
+}
+
+func (o *LoadFromStationNotFound) String() string {
 	return fmt.Sprintf("[POST /load-from-station][%d] loadFromStationNotFound ", 404)
 }
 
@@ -115,7 +174,36 @@ internal error
 type LoadFromStationInternalServerError struct {
 }
 
+// IsSuccess returns true when this load from station internal server error response has a 2xx status code
+func (o *LoadFromStationInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this load from station internal server error response has a 3xx status code
+func (o *LoadFromStationInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this load from station internal server error response has a 4xx status code
+func (o *LoadFromStationInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this load from station internal server error response has a 5xx status code
+func (o *LoadFromStationInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this load from station internal server error response a status code equal to that given
+func (o *LoadFromStationInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *LoadFromStationInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /load-from-station][%d] loadFromStationInternalServerError ", 500)
+}
+
+func (o *LoadFromStationInternalServerError) String() string {
 	return fmt.Sprintf("[POST /load-from-station][%d] loadFromStationInternalServerError ", 500)
 }
 
@@ -209,6 +297,8 @@ func (o *LoadFromStationBody) validateHash(formats strfmt.Registry) error {
 		if err := o.Hash.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
@@ -259,6 +349,8 @@ func (o *LoadFromStationBody) contextValidateHash(ctx context.Context, formats s
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}

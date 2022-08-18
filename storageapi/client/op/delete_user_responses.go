@@ -76,7 +76,36 @@ OK
 type DeleteUserNoContent struct {
 }
 
+// IsSuccess returns true when this delete user no content response has a 2xx status code
+func (o *DeleteUserNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this delete user no content response has a 3xx status code
+func (o *DeleteUserNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete user no content response has a 4xx status code
+func (o *DeleteUserNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this delete user no content response has a 5xx status code
+func (o *DeleteUserNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete user no content response a status code equal to that given
+func (o *DeleteUserNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
 func (o *DeleteUserNoContent) Error() string {
+	return fmt.Sprintf("[DELETE /user][%d] deleteUserNoContent ", 204)
+}
+
+func (o *DeleteUserNoContent) String() string {
 	return fmt.Sprintf("[DELETE /user][%d] deleteUserNoContent ", 204)
 }
 
@@ -97,7 +126,36 @@ PIN is missing or invalid
 type DeleteUserUnauthorized struct {
 }
 
+// IsSuccess returns true when this delete user unauthorized response has a 2xx status code
+func (o *DeleteUserUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete user unauthorized response has a 3xx status code
+func (o *DeleteUserUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete user unauthorized response has a 4xx status code
+func (o *DeleteUserUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete user unauthorized response has a 5xx status code
+func (o *DeleteUserUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete user unauthorized response a status code equal to that given
+func (o *DeleteUserUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *DeleteUserUnauthorized) Error() string {
+	return fmt.Sprintf("[DELETE /user][%d] deleteUserUnauthorized ", 401)
+}
+
+func (o *DeleteUserUnauthorized) String() string {
 	return fmt.Sprintf("[DELETE /user][%d] deleteUserUnauthorized ", 401)
 }
 
@@ -118,7 +176,36 @@ Access forbidden
 type DeleteUserForbidden struct {
 }
 
+// IsSuccess returns true when this delete user forbidden response has a 2xx status code
+func (o *DeleteUserForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete user forbidden response has a 3xx status code
+func (o *DeleteUserForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete user forbidden response has a 4xx status code
+func (o *DeleteUserForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete user forbidden response has a 5xx status code
+func (o *DeleteUserForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete user forbidden response a status code equal to that given
+func (o *DeleteUserForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
 func (o *DeleteUserForbidden) Error() string {
+	return fmt.Sprintf("[DELETE /user][%d] deleteUserForbidden ", 403)
+}
+
+func (o *DeleteUserForbidden) String() string {
 	return fmt.Sprintf("[DELETE /user][%d] deleteUserForbidden ", 403)
 }
 
@@ -140,9 +227,39 @@ type DeleteUserConflict struct {
 	Payload *DeleteUserConflictBody
 }
 
+// IsSuccess returns true when this delete user conflict response has a 2xx status code
+func (o *DeleteUserConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete user conflict response has a 3xx status code
+func (o *DeleteUserConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete user conflict response has a 4xx status code
+func (o *DeleteUserConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete user conflict response has a 5xx status code
+func (o *DeleteUserConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete user conflict response a status code equal to that given
+func (o *DeleteUserConflict) IsCode(code int) bool {
+	return code == 409
+}
+
 func (o *DeleteUserConflict) Error() string {
 	return fmt.Sprintf("[DELETE /user][%d] deleteUserConflict  %+v", 409, o.Payload)
 }
+
+func (o *DeleteUserConflict) String() string {
+	return fmt.Sprintf("[DELETE /user][%d] deleteUserConflict  %+v", 409, o.Payload)
+}
+
 func (o *DeleteUserConflict) GetPayload() *DeleteUserConflictBody {
 	return o.Payload
 }
@@ -171,7 +288,36 @@ internal error
 type DeleteUserInternalServerError struct {
 }
 
+// IsSuccess returns true when this delete user internal server error response has a 2xx status code
+func (o *DeleteUserInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete user internal server error response has a 3xx status code
+func (o *DeleteUserInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete user internal server error response has a 4xx status code
+func (o *DeleteUserInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this delete user internal server error response has a 5xx status code
+func (o *DeleteUserInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this delete user internal server error response a status code equal to that given
+func (o *DeleteUserInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *DeleteUserInternalServerError) Error() string {
+	return fmt.Sprintf("[DELETE /user][%d] deleteUserInternalServerError ", 500)
+}
+
+func (o *DeleteUserInternalServerError) String() string {
 	return fmt.Sprintf("[DELETE /user][%d] deleteUserInternalServerError ", 500)
 }
 
@@ -237,6 +383,8 @@ func (o *DeleteUserBody) validateLogin(formats strfmt.Registry) error {
 		if err := o.Login.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "login")
 			}
 			return err
 		}
@@ -265,6 +413,8 @@ func (o *DeleteUserBody) contextValidateLogin(ctx context.Context, formats strfm
 		if err := o.Login.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "login")
 			}
 			return err
 		}

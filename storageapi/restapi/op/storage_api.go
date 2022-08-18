@@ -44,6 +44,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		VolumeDispenserHandler: VolumeDispenserHandlerFunc(func(params VolumeDispenserParams) VolumeDispenserResponder {
+			return VolumeDispenserNotImplemented()
+		}),
 		AddAdvertisingCampaignHandler: AddAdvertisingCampaignHandlerFunc(func(params AddAdvertisingCampaignParams, principal *storageapi.Profile) AddAdvertisingCampaignResponder {
 			return AddAdvertisingCampaignNotImplemented()
 		}),
@@ -116,6 +119,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		LoadRelayHandler: LoadRelayHandlerFunc(func(params LoadRelayParams) LoadRelayResponder {
 			return LoadRelayNotImplemented()
 		}),
+		MeasureVolumeMillilitersHandler: MeasureVolumeMillilitersHandlerFunc(func(params MeasureVolumeMillilitersParams) MeasureVolumeMillilitersResponder {
+			return MeasureVolumeMillilitersNotImplemented()
+		}),
 		OpenStationHandler: OpenStationHandlerFunc(func(params OpenStationParams) OpenStationResponder {
 			return OpenStationNotImplemented()
 		}),
@@ -130,6 +136,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		ResetStationStatHandler: ResetStationStatHandlerFunc(func(params ResetStationStatParams, principal *storageapi.Profile) ResetStationStatResponder {
 			return ResetStationStatNotImplemented()
+		}),
+		Run2ProgramHandler: Run2ProgramHandlerFunc(func(params Run2ProgramParams) Run2ProgramResponder {
+			return Run2ProgramNotImplemented()
 		}),
 		RunProgramHandler: RunProgramHandlerFunc(func(params RunProgramParams) RunProgramResponder {
 			return RunProgramNotImplemented()
@@ -265,6 +274,8 @@ type StorageAPI struct {
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
 
+	// VolumeDispenserHandler sets the operation handler for the volume dispenser operation
+	VolumeDispenserHandler VolumeDispenserHandler
 	// AddAdvertisingCampaignHandler sets the operation handler for the add advertising campaign operation
 	AddAdvertisingCampaignHandler AddAdvertisingCampaignHandler
 	// AddServiceAmountHandler sets the operation handler for the add service amount operation
@@ -313,6 +324,8 @@ type StorageAPI struct {
 	LoadMoneyHandler LoadMoneyHandler
 	// LoadRelayHandler sets the operation handler for the load relay operation
 	LoadRelayHandler LoadRelayHandler
+	// MeasureVolumeMillilitersHandler sets the operation handler for the measure volume milliliters operation
+	MeasureVolumeMillilitersHandler MeasureVolumeMillilitersHandler
 	// OpenStationHandler sets the operation handler for the open station operation
 	OpenStationHandler OpenStationHandler
 	// PingHandler sets the operation handler for the ping operation
@@ -323,6 +336,8 @@ type StorageAPI struct {
 	ProgramsHandler ProgramsHandler
 	// ResetStationStatHandler sets the operation handler for the reset station stat operation
 	ResetStationStatHandler ResetStationStatHandler
+	// Run2ProgramHandler sets the operation handler for the run2 program operation
+	Run2ProgramHandler Run2ProgramHandler
 	// RunProgramHandler sets the operation handler for the run program operation
 	RunProgramHandler RunProgramHandler
 	// SaveHandler sets the operation handler for the save operation
@@ -460,6 +475,9 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "PinAuth")
 	}
 
+	if o.VolumeDispenserHandler == nil {
+		unregistered = append(unregistered, "VolumeDispenserHandler")
+	}
 	if o.AddAdvertisingCampaignHandler == nil {
 		unregistered = append(unregistered, "AddAdvertisingCampaignHandler")
 	}
@@ -532,6 +550,9 @@ func (o *StorageAPI) Validate() error {
 	if o.LoadRelayHandler == nil {
 		unregistered = append(unregistered, "LoadRelayHandler")
 	}
+	if o.MeasureVolumeMillilitersHandler == nil {
+		unregistered = append(unregistered, "MeasureVolumeMillilitersHandler")
+	}
 	if o.OpenStationHandler == nil {
 		unregistered = append(unregistered, "OpenStationHandler")
 	}
@@ -546,6 +567,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.ResetStationStatHandler == nil {
 		unregistered = append(unregistered, "ResetStationStatHandler")
+	}
+	if o.Run2ProgramHandler == nil {
+		unregistered = append(unregistered, "Run2ProgramHandler")
 	}
 	if o.RunProgramHandler == nil {
 		unregistered = append(unregistered, "RunProgramHandler")
@@ -733,6 +757,10 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/volume-dispenser"] = NewVolumeDispenser(o.context, o.VolumeDispenserHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/add-advertising-campaign"] = NewAddAdvertisingCampaign(o.context, o.AddAdvertisingCampaignHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -829,6 +857,10 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/run-dispenser"] = NewMeasureVolumeMilliliters(o.context, o.MeasureVolumeMillilitersHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/open-station"] = NewOpenStation(o.context, o.OpenStationHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -846,6 +878,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/reset-station-stat"] = NewResetStationStat(o.context, o.ResetStationStatHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/run-2program"] = NewRun2Program(o.context, o.Run2ProgramHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

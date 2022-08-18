@@ -1866,6 +1866,106 @@ paths:
             type: string
         500:
           description: internal error
+  
+  /run-2program:
+    post:
+      operationId: "run2Program"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgRun2Program"
+            type: object
+            required:
+              - hash
+              - programID
+              - programID2
+              - preflight
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+              programID:
+                type: integer
+              programID2:
+                type: integer
+              preflight:
+                type: boolean
+      responses:
+        204:
+          description: OK
+        404:
+          description: not found
+          schema:
+            type: string
+        500:
+          description: internal error
+  
+  /run-dispenser:
+    post:
+      operationId: "measureVolumeMilliliters"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgMeasureVolumeMilliliters"
+            type: object
+            required:
+              - hash
+              - volume
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+              volume:
+                type: integer
+      responses:
+        204:
+          description: OK
+        404:
+          description: not found
+          schema:
+            type: string
+        500:
+          description: internal error
+
+  /volume-dispenser:
+    post:
+      operationId: "VolumeDispenser"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "VolumeDispenser"
+            type: object
+            required:
+              - hash
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+      responses:
+        200:
+          description: OK
+          schema:
+            title: "ResponseVolumeDispenser"
+            type: object
+            required:
+              - volume
+              - status
+            properties:
+              volume: 
+                type: integer
+              status:
+                type: string
+        204:
+          description: OK
+        404:
+          description: not found
+          schema:
+            type: string
+        500:
+          description: internal error
 
   /press-button:
     post:

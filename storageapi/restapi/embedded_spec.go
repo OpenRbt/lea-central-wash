@@ -966,6 +966,98 @@ func init() {
         }
       }
     },
+    "/run-2program": {
+      "post": {
+        "operationId": "run2Program",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgRun2Program",
+              "required": [
+                "hash",
+                "programID",
+                "programID2",
+                "preflight"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "preflight": {
+                  "type": "boolean"
+                },
+                "programID": {
+                  "type": "integer"
+                },
+                "programID2": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/run-dispenser": {
+      "post": {
+        "operationId": "measureVolumeMilliliters",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgMeasureVolumeMilliliters",
+              "required": [
+                "hash",
+                "volume"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "volume": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/run-program": {
       "post": {
         "operationId": "runProgram",
@@ -2242,6 +2334,63 @@ func init() {
           },
           "403": {
             "description": "Access forbidden"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/volume-dispenser": {
+      "post": {
+        "operationId": "VolumeDispenser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "VolumeDispenser",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "title": "ResponseVolumeDispenser",
+              "required": [
+                "volume",
+                "status"
+              ],
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "volume": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"
@@ -3887,6 +4036,98 @@ func init() {
         }
       }
     },
+    "/run-2program": {
+      "post": {
+        "operationId": "run2Program",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgRun2Program",
+              "required": [
+                "hash",
+                "programID",
+                "programID2",
+                "preflight"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "preflight": {
+                  "type": "boolean"
+                },
+                "programID": {
+                  "type": "integer"
+                },
+                "programID2": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/run-dispenser": {
+      "post": {
+        "operationId": "measureVolumeMilliliters",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgMeasureVolumeMilliliters",
+              "required": [
+                "hash",
+                "volume"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "volume": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/run-program": {
       "post": {
         "operationId": "runProgram",
@@ -5147,6 +5388,63 @@ func init() {
           },
           "403": {
             "description": "Access forbidden"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/volume-dispenser": {
+      "post": {
+        "operationId": "VolumeDispenser",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "VolumeDispenser",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "title": "ResponseVolumeDispenser",
+              "required": [
+                "volume",
+                "status"
+              ],
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "volume": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"

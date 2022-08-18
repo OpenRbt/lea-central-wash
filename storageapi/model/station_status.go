@@ -124,6 +124,8 @@ func (m *StationStatus) validateHash(formats strfmt.Registry) error {
 	if err := m.Hash.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("hash")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("hash")
 		}
 		return err
 	}
@@ -139,6 +141,8 @@ func (m *StationStatus) validateStatus(formats strfmt.Registry) error {
 	if err := m.Status.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("status")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("status")
 		}
 		return err
 	}
@@ -169,6 +173,8 @@ func (m *StationStatus) contextValidateHash(ctx context.Context, formats strfmt.
 	if err := m.Hash.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("hash")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("hash")
 		}
 		return err
 	}
@@ -181,6 +187,8 @@ func (m *StationStatus) contextValidateStatus(ctx context.Context, formats strfm
 	if err := m.Status.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("status")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("status")
 		}
 		return err
 	}

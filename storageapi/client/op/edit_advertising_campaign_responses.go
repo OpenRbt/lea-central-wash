@@ -61,7 +61,36 @@ OK
 type EditAdvertisingCampaignNoContent struct {
 }
 
+// IsSuccess returns true when this edit advertising campaign no content response has a 2xx status code
+func (o *EditAdvertisingCampaignNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this edit advertising campaign no content response has a 3xx status code
+func (o *EditAdvertisingCampaignNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this edit advertising campaign no content response has a 4xx status code
+func (o *EditAdvertisingCampaignNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this edit advertising campaign no content response has a 5xx status code
+func (o *EditAdvertisingCampaignNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this edit advertising campaign no content response a status code equal to that given
+func (o *EditAdvertisingCampaignNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
 func (o *EditAdvertisingCampaignNoContent) Error() string {
+	return fmt.Sprintf("[POST /edit-advertising-campaign][%d] editAdvertisingCampaignNoContent ", 204)
+}
+
+func (o *EditAdvertisingCampaignNoContent) String() string {
 	return fmt.Sprintf("[POST /edit-advertising-campaign][%d] editAdvertisingCampaignNoContent ", 204)
 }
 
@@ -82,7 +111,36 @@ PIN is missing or invalid
 type EditAdvertisingCampaignUnauthorized struct {
 }
 
+// IsSuccess returns true when this edit advertising campaign unauthorized response has a 2xx status code
+func (o *EditAdvertisingCampaignUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this edit advertising campaign unauthorized response has a 3xx status code
+func (o *EditAdvertisingCampaignUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this edit advertising campaign unauthorized response has a 4xx status code
+func (o *EditAdvertisingCampaignUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this edit advertising campaign unauthorized response has a 5xx status code
+func (o *EditAdvertisingCampaignUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this edit advertising campaign unauthorized response a status code equal to that given
+func (o *EditAdvertisingCampaignUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *EditAdvertisingCampaignUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /edit-advertising-campaign][%d] editAdvertisingCampaignUnauthorized ", 401)
+}
+
+func (o *EditAdvertisingCampaignUnauthorized) String() string {
 	return fmt.Sprintf("[POST /edit-advertising-campaign][%d] editAdvertisingCampaignUnauthorized ", 401)
 }
 
@@ -103,7 +161,36 @@ Access forbiddenn
 type EditAdvertisingCampaignForbidden struct {
 }
 
+// IsSuccess returns true when this edit advertising campaign forbidden response has a 2xx status code
+func (o *EditAdvertisingCampaignForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this edit advertising campaign forbidden response has a 3xx status code
+func (o *EditAdvertisingCampaignForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this edit advertising campaign forbidden response has a 4xx status code
+func (o *EditAdvertisingCampaignForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this edit advertising campaign forbidden response has a 5xx status code
+func (o *EditAdvertisingCampaignForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this edit advertising campaign forbidden response a status code equal to that given
+func (o *EditAdvertisingCampaignForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
 func (o *EditAdvertisingCampaignForbidden) Error() string {
+	return fmt.Sprintf("[POST /edit-advertising-campaign][%d] editAdvertisingCampaignForbidden ", 403)
+}
+
+func (o *EditAdvertisingCampaignForbidden) String() string {
 	return fmt.Sprintf("[POST /edit-advertising-campaign][%d] editAdvertisingCampaignForbidden ", 403)
 }
 
@@ -124,7 +211,36 @@ internal error
 type EditAdvertisingCampaignInternalServerError struct {
 }
 
+// IsSuccess returns true when this edit advertising campaign internal server error response has a 2xx status code
+func (o *EditAdvertisingCampaignInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this edit advertising campaign internal server error response has a 3xx status code
+func (o *EditAdvertisingCampaignInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this edit advertising campaign internal server error response has a 4xx status code
+func (o *EditAdvertisingCampaignInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this edit advertising campaign internal server error response has a 5xx status code
+func (o *EditAdvertisingCampaignInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this edit advertising campaign internal server error response a status code equal to that given
+func (o *EditAdvertisingCampaignInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *EditAdvertisingCampaignInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /edit-advertising-campaign][%d] editAdvertisingCampaignInternalServerError ", 500)
+}
+
+func (o *EditAdvertisingCampaignInternalServerError) String() string {
 	return fmt.Sprintf("[POST /edit-advertising-campaign][%d] editAdvertisingCampaignInternalServerError ", 500)
 }
 

@@ -61,7 +61,36 @@ OK
 type DelStationNoContent struct {
 }
 
+// IsSuccess returns true when this del station no content response has a 2xx status code
+func (o *DelStationNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this del station no content response has a 3xx status code
+func (o *DelStationNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this del station no content response has a 4xx status code
+func (o *DelStationNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this del station no content response has a 5xx status code
+func (o *DelStationNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this del station no content response a status code equal to that given
+func (o *DelStationNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
 func (o *DelStationNoContent) Error() string {
+	return fmt.Sprintf("[POST /del-station][%d] delStationNoContent ", 204)
+}
+
+func (o *DelStationNoContent) String() string {
 	return fmt.Sprintf("[POST /del-station][%d] delStationNoContent ", 204)
 }
 
@@ -82,7 +111,36 @@ not found
 type DelStationNotFound struct {
 }
 
+// IsSuccess returns true when this del station not found response has a 2xx status code
+func (o *DelStationNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this del station not found response has a 3xx status code
+func (o *DelStationNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this del station not found response has a 4xx status code
+func (o *DelStationNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this del station not found response has a 5xx status code
+func (o *DelStationNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this del station not found response a status code equal to that given
+func (o *DelStationNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *DelStationNotFound) Error() string {
+	return fmt.Sprintf("[POST /del-station][%d] delStationNotFound ", 404)
+}
+
+func (o *DelStationNotFound) String() string {
 	return fmt.Sprintf("[POST /del-station][%d] delStationNotFound ", 404)
 }
 
@@ -103,7 +161,36 @@ internal error
 type DelStationInternalServerError struct {
 }
 
+// IsSuccess returns true when this del station internal server error response has a 2xx status code
+func (o *DelStationInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this del station internal server error response has a 3xx status code
+func (o *DelStationInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this del station internal server error response has a 4xx status code
+func (o *DelStationInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this del station internal server error response has a 5xx status code
+func (o *DelStationInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this del station internal server error response a status code equal to that given
+func (o *DelStationInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *DelStationInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /del-station][%d] delStationInternalServerError ", 500)
+}
+
+func (o *DelStationInternalServerError) String() string {
 	return fmt.Sprintf("[POST /del-station][%d] delStationInternalServerError ", 500)
 }
 

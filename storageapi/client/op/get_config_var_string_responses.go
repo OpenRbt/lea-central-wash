@@ -63,9 +63,39 @@ type GetConfigVarStringOK struct {
 	Payload *model.ConfigVarString
 }
 
+// IsSuccess returns true when this get config var string o k response has a 2xx status code
+func (o *GetConfigVarStringOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get config var string o k response has a 3xx status code
+func (o *GetConfigVarStringOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get config var string o k response has a 4xx status code
+func (o *GetConfigVarStringOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get config var string o k response has a 5xx status code
+func (o *GetConfigVarStringOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get config var string o k response a status code equal to that given
+func (o *GetConfigVarStringOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *GetConfigVarStringOK) Error() string {
 	return fmt.Sprintf("[POST /get-config-var-string][%d] getConfigVarStringOK  %+v", 200, o.Payload)
 }
+
+func (o *GetConfigVarStringOK) String() string {
+	return fmt.Sprintf("[POST /get-config-var-string][%d] getConfigVarStringOK  %+v", 200, o.Payload)
+}
+
 func (o *GetConfigVarStringOK) GetPayload() *model.ConfigVarString {
 	return o.Payload
 }
@@ -94,7 +124,36 @@ Not found
 type GetConfigVarStringNotFound struct {
 }
 
+// IsSuccess returns true when this get config var string not found response has a 2xx status code
+func (o *GetConfigVarStringNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get config var string not found response has a 3xx status code
+func (o *GetConfigVarStringNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get config var string not found response has a 4xx status code
+func (o *GetConfigVarStringNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get config var string not found response has a 5xx status code
+func (o *GetConfigVarStringNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get config var string not found response a status code equal to that given
+func (o *GetConfigVarStringNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *GetConfigVarStringNotFound) Error() string {
+	return fmt.Sprintf("[POST /get-config-var-string][%d] getConfigVarStringNotFound ", 404)
+}
+
+func (o *GetConfigVarStringNotFound) String() string {
 	return fmt.Sprintf("[POST /get-config-var-string][%d] getConfigVarStringNotFound ", 404)
 }
 
@@ -115,7 +174,36 @@ Internal error
 type GetConfigVarStringInternalServerError struct {
 }
 
+// IsSuccess returns true when this get config var string internal server error response has a 2xx status code
+func (o *GetConfigVarStringInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get config var string internal server error response has a 3xx status code
+func (o *GetConfigVarStringInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get config var string internal server error response has a 4xx status code
+func (o *GetConfigVarStringInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get config var string internal server error response has a 5xx status code
+func (o *GetConfigVarStringInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this get config var string internal server error response a status code equal to that given
+func (o *GetConfigVarStringInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *GetConfigVarStringInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /get-config-var-string][%d] getConfigVarStringInternalServerError ", 500)
+}
+
+func (o *GetConfigVarStringInternalServerError) String() string {
 	return fmt.Sprintf("[POST /get-config-var-string][%d] getConfigVarStringInternalServerError ", 500)
 }
 

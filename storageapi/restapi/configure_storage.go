@@ -50,6 +50,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	// Example:
 	// api.APIAuthorizer = security.Authorized()
 
+	if api.VolumeDispenserHandler == nil {
+		api.VolumeDispenserHandler = op.VolumeDispenserHandlerFunc(func(params op.VolumeDispenserParams) op.VolumeDispenserResponder {
+			return op.VolumeDispenserNotImplemented()
+		})
+	}
 	if api.AddAdvertisingCampaignHandler == nil {
 		api.AddAdvertisingCampaignHandler = op.AddAdvertisingCampaignHandlerFunc(func(params op.AddAdvertisingCampaignParams, principal *storageapi.Profile) op.AddAdvertisingCampaignResponder {
 			return op.AddAdvertisingCampaignNotImplemented()
@@ -170,6 +175,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.LoadRelayNotImplemented()
 		})
 	}
+	if api.MeasureVolumeMillilitersHandler == nil {
+		api.MeasureVolumeMillilitersHandler = op.MeasureVolumeMillilitersHandlerFunc(func(params op.MeasureVolumeMillilitersParams) op.MeasureVolumeMillilitersResponder {
+			return op.MeasureVolumeMillilitersNotImplemented()
+		})
+	}
 	if api.OpenStationHandler == nil {
 		api.OpenStationHandler = op.OpenStationHandlerFunc(func(params op.OpenStationParams) op.OpenStationResponder {
 			return op.OpenStationNotImplemented()
@@ -193,6 +203,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.ResetStationStatHandler == nil {
 		api.ResetStationStatHandler = op.ResetStationStatHandlerFunc(func(params op.ResetStationStatParams, principal *storageapi.Profile) op.ResetStationStatResponder {
 			return op.ResetStationStatNotImplemented()
+		})
+	}
+	if api.Run2ProgramHandler == nil {
+		api.Run2ProgramHandler = op.Run2ProgramHandlerFunc(func(params op.Run2ProgramParams) op.Run2ProgramResponder {
+			return op.Run2ProgramNotImplemented()
 		})
 	}
 	if api.RunProgramHandler == nil {

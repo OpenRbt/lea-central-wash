@@ -64,7 +64,36 @@ OK
 type RunProgramNoContent struct {
 }
 
+// IsSuccess returns true when this run program no content response has a 2xx status code
+func (o *RunProgramNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this run program no content response has a 3xx status code
+func (o *RunProgramNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this run program no content response has a 4xx status code
+func (o *RunProgramNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this run program no content response has a 5xx status code
+func (o *RunProgramNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this run program no content response a status code equal to that given
+func (o *RunProgramNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
 func (o *RunProgramNoContent) Error() string {
+	return fmt.Sprintf("[POST /run-program][%d] runProgramNoContent ", 204)
+}
+
+func (o *RunProgramNoContent) String() string {
 	return fmt.Sprintf("[POST /run-program][%d] runProgramNoContent ", 204)
 }
 
@@ -86,9 +115,39 @@ type RunProgramNotFound struct {
 	Payload string
 }
 
+// IsSuccess returns true when this run program not found response has a 2xx status code
+func (o *RunProgramNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this run program not found response has a 3xx status code
+func (o *RunProgramNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this run program not found response has a 4xx status code
+func (o *RunProgramNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this run program not found response has a 5xx status code
+func (o *RunProgramNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this run program not found response a status code equal to that given
+func (o *RunProgramNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *RunProgramNotFound) Error() string {
 	return fmt.Sprintf("[POST /run-program][%d] runProgramNotFound  %+v", 404, o.Payload)
 }
+
+func (o *RunProgramNotFound) String() string {
+	return fmt.Sprintf("[POST /run-program][%d] runProgramNotFound  %+v", 404, o.Payload)
+}
+
 func (o *RunProgramNotFound) GetPayload() string {
 	return o.Payload
 }
@@ -115,7 +174,36 @@ internal error
 type RunProgramInternalServerError struct {
 }
 
+// IsSuccess returns true when this run program internal server error response has a 2xx status code
+func (o *RunProgramInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this run program internal server error response has a 3xx status code
+func (o *RunProgramInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this run program internal server error response has a 4xx status code
+func (o *RunProgramInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this run program internal server error response has a 5xx status code
+func (o *RunProgramInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this run program internal server error response a status code equal to that given
+func (o *RunProgramInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *RunProgramInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /run-program][%d] runProgramInternalServerError ", 500)
+}
+
+func (o *RunProgramInternalServerError) String() string {
 	return fmt.Sprintf("[POST /run-program][%d] runProgramInternalServerError ", 500)
 }
 
@@ -207,6 +295,8 @@ func (o *RunProgramBody) validateHash(formats strfmt.Registry) error {
 		if err := o.Hash.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
@@ -253,6 +343,8 @@ func (o *RunProgramBody) contextValidateHash(ctx context.Context, formats strfmt
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}

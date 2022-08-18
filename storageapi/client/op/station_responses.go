@@ -71,9 +71,39 @@ type StationOK struct {
 	Payload *model.StationConfig
 }
 
+// IsSuccess returns true when this station o k response has a 2xx status code
+func (o *StationOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this station o k response has a 3xx status code
+func (o *StationOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station o k response has a 4xx status code
+func (o *StationOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station o k response has a 5xx status code
+func (o *StationOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station o k response a status code equal to that given
+func (o *StationOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *StationOK) Error() string {
 	return fmt.Sprintf("[POST /station][%d] stationOK  %+v", 200, o.Payload)
 }
+
+func (o *StationOK) String() string {
+	return fmt.Sprintf("[POST /station][%d] stationOK  %+v", 200, o.Payload)
+}
+
 func (o *StationOK) GetPayload() *model.StationConfig {
 	return o.Payload
 }
@@ -102,7 +132,36 @@ Access denied. It will happen when you try to change the ID at the station onlin
 type StationUnauthorized struct {
 }
 
+// IsSuccess returns true when this station unauthorized response has a 2xx status code
+func (o *StationUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station unauthorized response has a 3xx status code
+func (o *StationUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station unauthorized response has a 4xx status code
+func (o *StationUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this station unauthorized response has a 5xx status code
+func (o *StationUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station unauthorized response a status code equal to that given
+func (o *StationUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *StationUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /station][%d] stationUnauthorized ", 401)
+}
+
+func (o *StationUnauthorized) String() string {
 	return fmt.Sprintf("[POST /station][%d] stationUnauthorized ", 401)
 }
 
@@ -123,7 +182,36 @@ not found
 type StationNotFound struct {
 }
 
+// IsSuccess returns true when this station not found response has a 2xx status code
+func (o *StationNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station not found response has a 3xx status code
+func (o *StationNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station not found response has a 4xx status code
+func (o *StationNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this station not found response has a 5xx status code
+func (o *StationNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station not found response a status code equal to that given
+func (o *StationNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *StationNotFound) Error() string {
+	return fmt.Sprintf("[POST /station][%d] stationNotFound ", 404)
+}
+
+func (o *StationNotFound) String() string {
 	return fmt.Sprintf("[POST /station][%d] stationNotFound ", 404)
 }
 
@@ -144,7 +232,36 @@ internal error
 type StationInternalServerError struct {
 }
 
+// IsSuccess returns true when this station internal server error response has a 2xx status code
+func (o *StationInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station internal server error response has a 3xx status code
+func (o *StationInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station internal server error response has a 4xx status code
+func (o *StationInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station internal server error response has a 5xx status code
+func (o *StationInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this station internal server error response a status code equal to that given
+func (o *StationInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *StationInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /station][%d] stationInternalServerError ", 500)
+}
+
+func (o *StationInternalServerError) String() string {
 	return fmt.Sprintf("[POST /station][%d] stationInternalServerError ", 500)
 }
 

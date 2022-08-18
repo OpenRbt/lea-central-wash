@@ -90,6 +90,8 @@ func (m *StatusReport) validateKasseStatus(formats strfmt.Registry) error {
 	if err := m.KasseStatus.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("kasse_status")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("kasse_status")
 		}
 		return err
 	}
@@ -111,6 +113,8 @@ func (m *StatusReport) validateStations(formats strfmt.Registry) error {
 			if err := m.Stations[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stations" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("stations" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -144,6 +148,8 @@ func (m *StatusReport) contextValidateKasseStatus(ctx context.Context, formats s
 	if err := m.KasseStatus.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("kasse_status")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("kasse_status")
 		}
 		return err
 	}
@@ -159,6 +165,8 @@ func (m *StatusReport) contextValidateStations(ctx context.Context, formats strf
 			if err := m.Stations[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stations" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("stations" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

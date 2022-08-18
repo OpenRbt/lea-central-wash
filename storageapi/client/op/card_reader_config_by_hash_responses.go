@@ -65,9 +65,39 @@ type CardReaderConfigByHashOK struct {
 	Payload *model.CardReaderConfig
 }
 
+// IsSuccess returns true when this card reader config by hash o k response has a 2xx status code
+func (o *CardReaderConfigByHashOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this card reader config by hash o k response has a 3xx status code
+func (o *CardReaderConfigByHashOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this card reader config by hash o k response has a 4xx status code
+func (o *CardReaderConfigByHashOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this card reader config by hash o k response has a 5xx status code
+func (o *CardReaderConfigByHashOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this card reader config by hash o k response a status code equal to that given
+func (o *CardReaderConfigByHashOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *CardReaderConfigByHashOK) Error() string {
 	return fmt.Sprintf("[POST /card-reader-config-by-hash][%d] cardReaderConfigByHashOK  %+v", 200, o.Payload)
 }
+
+func (o *CardReaderConfigByHashOK) String() string {
+	return fmt.Sprintf("[POST /card-reader-config-by-hash][%d] cardReaderConfigByHashOK  %+v", 200, o.Payload)
+}
+
 func (o *CardReaderConfigByHashOK) GetPayload() *model.CardReaderConfig {
 	return o.Payload
 }
@@ -96,7 +126,36 @@ not found
 type CardReaderConfigByHashNotFound struct {
 }
 
+// IsSuccess returns true when this card reader config by hash not found response has a 2xx status code
+func (o *CardReaderConfigByHashNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this card reader config by hash not found response has a 3xx status code
+func (o *CardReaderConfigByHashNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this card reader config by hash not found response has a 4xx status code
+func (o *CardReaderConfigByHashNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this card reader config by hash not found response has a 5xx status code
+func (o *CardReaderConfigByHashNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this card reader config by hash not found response a status code equal to that given
+func (o *CardReaderConfigByHashNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *CardReaderConfigByHashNotFound) Error() string {
+	return fmt.Sprintf("[POST /card-reader-config-by-hash][%d] cardReaderConfigByHashNotFound ", 404)
+}
+
+func (o *CardReaderConfigByHashNotFound) String() string {
 	return fmt.Sprintf("[POST /card-reader-config-by-hash][%d] cardReaderConfigByHashNotFound ", 404)
 }
 
@@ -117,7 +176,36 @@ internal error
 type CardReaderConfigByHashInternalServerError struct {
 }
 
+// IsSuccess returns true when this card reader config by hash internal server error response has a 2xx status code
+func (o *CardReaderConfigByHashInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this card reader config by hash internal server error response has a 3xx status code
+func (o *CardReaderConfigByHashInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this card reader config by hash internal server error response has a 4xx status code
+func (o *CardReaderConfigByHashInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this card reader config by hash internal server error response has a 5xx status code
+func (o *CardReaderConfigByHashInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this card reader config by hash internal server error response a status code equal to that given
+func (o *CardReaderConfigByHashInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *CardReaderConfigByHashInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /card-reader-config-by-hash][%d] cardReaderConfigByHashInternalServerError ", 500)
+}
+
+func (o *CardReaderConfigByHashInternalServerError) String() string {
 	return fmt.Sprintf("[POST /card-reader-config-by-hash][%d] cardReaderConfigByHashInternalServerError ", 500)
 }
 
@@ -183,6 +271,8 @@ func (o *CardReaderConfigByHashBody) validateHash(formats strfmt.Registry) error
 		if err := o.Hash.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}
@@ -211,6 +301,8 @@ func (o *CardReaderConfigByHashBody) contextValidateHash(ctx context.Context, fo
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "hash")
 			}
 			return err
 		}

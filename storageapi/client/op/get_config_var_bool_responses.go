@@ -63,9 +63,39 @@ type GetConfigVarBoolOK struct {
 	Payload *model.ConfigVarBool
 }
 
+// IsSuccess returns true when this get config var bool o k response has a 2xx status code
+func (o *GetConfigVarBoolOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get config var bool o k response has a 3xx status code
+func (o *GetConfigVarBoolOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get config var bool o k response has a 4xx status code
+func (o *GetConfigVarBoolOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get config var bool o k response has a 5xx status code
+func (o *GetConfigVarBoolOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get config var bool o k response a status code equal to that given
+func (o *GetConfigVarBoolOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *GetConfigVarBoolOK) Error() string {
 	return fmt.Sprintf("[POST /get-config-var-bool][%d] getConfigVarBoolOK  %+v", 200, o.Payload)
 }
+
+func (o *GetConfigVarBoolOK) String() string {
+	return fmt.Sprintf("[POST /get-config-var-bool][%d] getConfigVarBoolOK  %+v", 200, o.Payload)
+}
+
 func (o *GetConfigVarBoolOK) GetPayload() *model.ConfigVarBool {
 	return o.Payload
 }
@@ -94,7 +124,36 @@ Not found
 type GetConfigVarBoolNotFound struct {
 }
 
+// IsSuccess returns true when this get config var bool not found response has a 2xx status code
+func (o *GetConfigVarBoolNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get config var bool not found response has a 3xx status code
+func (o *GetConfigVarBoolNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get config var bool not found response has a 4xx status code
+func (o *GetConfigVarBoolNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get config var bool not found response has a 5xx status code
+func (o *GetConfigVarBoolNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get config var bool not found response a status code equal to that given
+func (o *GetConfigVarBoolNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *GetConfigVarBoolNotFound) Error() string {
+	return fmt.Sprintf("[POST /get-config-var-bool][%d] getConfigVarBoolNotFound ", 404)
+}
+
+func (o *GetConfigVarBoolNotFound) String() string {
 	return fmt.Sprintf("[POST /get-config-var-bool][%d] getConfigVarBoolNotFound ", 404)
 }
 
@@ -115,7 +174,36 @@ Internal error
 type GetConfigVarBoolInternalServerError struct {
 }
 
+// IsSuccess returns true when this get config var bool internal server error response has a 2xx status code
+func (o *GetConfigVarBoolInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get config var bool internal server error response has a 3xx status code
+func (o *GetConfigVarBoolInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get config var bool internal server error response has a 4xx status code
+func (o *GetConfigVarBoolInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get config var bool internal server error response has a 5xx status code
+func (o *GetConfigVarBoolInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this get config var bool internal server error response a status code equal to that given
+func (o *GetConfigVarBoolInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *GetConfigVarBoolInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /get-config-var-bool][%d] getConfigVarBoolInternalServerError ", 500)
+}
+
+func (o *GetConfigVarBoolInternalServerError) String() string {
 	return fmt.Sprintf("[POST /get-config-var-bool][%d] getConfigVarBoolInternalServerError ", 500)
 }
 

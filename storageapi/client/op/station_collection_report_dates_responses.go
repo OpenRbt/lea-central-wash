@@ -78,9 +78,39 @@ type StationCollectionReportDatesOK struct {
 	Payload *StationCollectionReportDatesOKBody
 }
 
+// IsSuccess returns true when this station collection report dates o k response has a 2xx status code
+func (o *StationCollectionReportDatesOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this station collection report dates o k response has a 3xx status code
+func (o *StationCollectionReportDatesOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station collection report dates o k response has a 4xx status code
+func (o *StationCollectionReportDatesOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station collection report dates o k response has a 5xx status code
+func (o *StationCollectionReportDatesOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station collection report dates o k response a status code equal to that given
+func (o *StationCollectionReportDatesOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *StationCollectionReportDatesOK) Error() string {
 	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesOK  %+v", 200, o.Payload)
 }
+
+func (o *StationCollectionReportDatesOK) String() string {
+	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesOK  %+v", 200, o.Payload)
+}
+
 func (o *StationCollectionReportDatesOK) GetPayload() *StationCollectionReportDatesOKBody {
 	return o.Payload
 }
@@ -109,7 +139,36 @@ PIN is missing or invalid
 type StationCollectionReportDatesUnauthorized struct {
 }
 
+// IsSuccess returns true when this station collection report dates unauthorized response has a 2xx status code
+func (o *StationCollectionReportDatesUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station collection report dates unauthorized response has a 3xx status code
+func (o *StationCollectionReportDatesUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station collection report dates unauthorized response has a 4xx status code
+func (o *StationCollectionReportDatesUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this station collection report dates unauthorized response has a 5xx status code
+func (o *StationCollectionReportDatesUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station collection report dates unauthorized response a status code equal to that given
+func (o *StationCollectionReportDatesUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *StationCollectionReportDatesUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesUnauthorized ", 401)
+}
+
+func (o *StationCollectionReportDatesUnauthorized) String() string {
 	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesUnauthorized ", 401)
 }
 
@@ -130,7 +189,36 @@ Access forbiddenn
 type StationCollectionReportDatesForbidden struct {
 }
 
+// IsSuccess returns true when this station collection report dates forbidden response has a 2xx status code
+func (o *StationCollectionReportDatesForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station collection report dates forbidden response has a 3xx status code
+func (o *StationCollectionReportDatesForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station collection report dates forbidden response has a 4xx status code
+func (o *StationCollectionReportDatesForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this station collection report dates forbidden response has a 5xx status code
+func (o *StationCollectionReportDatesForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station collection report dates forbidden response a status code equal to that given
+func (o *StationCollectionReportDatesForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
 func (o *StationCollectionReportDatesForbidden) Error() string {
+	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesForbidden ", 403)
+}
+
+func (o *StationCollectionReportDatesForbidden) String() string {
 	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesForbidden ", 403)
 }
 
@@ -151,7 +239,36 @@ not found
 type StationCollectionReportDatesNotFound struct {
 }
 
+// IsSuccess returns true when this station collection report dates not found response has a 2xx status code
+func (o *StationCollectionReportDatesNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station collection report dates not found response has a 3xx status code
+func (o *StationCollectionReportDatesNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station collection report dates not found response has a 4xx status code
+func (o *StationCollectionReportDatesNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this station collection report dates not found response has a 5xx status code
+func (o *StationCollectionReportDatesNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this station collection report dates not found response a status code equal to that given
+func (o *StationCollectionReportDatesNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *StationCollectionReportDatesNotFound) Error() string {
+	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesNotFound ", 404)
+}
+
+func (o *StationCollectionReportDatesNotFound) String() string {
 	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesNotFound ", 404)
 }
 
@@ -172,7 +289,36 @@ internal error
 type StationCollectionReportDatesInternalServerError struct {
 }
 
+// IsSuccess returns true when this station collection report dates internal server error response has a 2xx status code
+func (o *StationCollectionReportDatesInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this station collection report dates internal server error response has a 3xx status code
+func (o *StationCollectionReportDatesInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this station collection report dates internal server error response has a 4xx status code
+func (o *StationCollectionReportDatesInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this station collection report dates internal server error response has a 5xx status code
+func (o *StationCollectionReportDatesInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this station collection report dates internal server error response a status code equal to that given
+func (o *StationCollectionReportDatesInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *StationCollectionReportDatesInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesInternalServerError ", 500)
+}
+
+func (o *StationCollectionReportDatesInternalServerError) String() string {
 	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesInternalServerError ", 500)
 }
 
@@ -308,6 +454,8 @@ func (o *StationCollectionReportDatesOKBody) validateCollectionReports(formats s
 			if err := o.CollectionReports[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stationCollectionReportDatesOK" + "." + "collectionReports" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("stationCollectionReportDatesOK" + "." + "collectionReports" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -340,6 +488,8 @@ func (o *StationCollectionReportDatesOKBody) contextValidateCollectionReports(ct
 			if err := o.CollectionReports[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stationCollectionReportDatesOK" + "." + "collectionReports" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("stationCollectionReportDatesOK" + "." + "collectionReports" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

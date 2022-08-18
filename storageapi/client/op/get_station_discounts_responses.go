@@ -63,9 +63,39 @@ type GetStationDiscountsOK struct {
 	Payload model.StationDiscounts
 }
 
+// IsSuccess returns true when this get station discounts o k response has a 2xx status code
+func (o *GetStationDiscountsOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get station discounts o k response has a 3xx status code
+func (o *GetStationDiscountsOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get station discounts o k response has a 4xx status code
+func (o *GetStationDiscountsOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get station discounts o k response has a 5xx status code
+func (o *GetStationDiscountsOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get station discounts o k response a status code equal to that given
+func (o *GetStationDiscountsOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *GetStationDiscountsOK) Error() string {
 	return fmt.Sprintf("[POST /get-station-discounts][%d] getStationDiscountsOK  %+v", 200, o.Payload)
 }
+
+func (o *GetStationDiscountsOK) String() string {
+	return fmt.Sprintf("[POST /get-station-discounts][%d] getStationDiscountsOK  %+v", 200, o.Payload)
+}
+
 func (o *GetStationDiscountsOK) GetPayload() model.StationDiscounts {
 	return o.Payload
 }
@@ -92,7 +122,36 @@ Not found
 type GetStationDiscountsNotFound struct {
 }
 
+// IsSuccess returns true when this get station discounts not found response has a 2xx status code
+func (o *GetStationDiscountsNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get station discounts not found response has a 3xx status code
+func (o *GetStationDiscountsNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get station discounts not found response has a 4xx status code
+func (o *GetStationDiscountsNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get station discounts not found response has a 5xx status code
+func (o *GetStationDiscountsNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get station discounts not found response a status code equal to that given
+func (o *GetStationDiscountsNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *GetStationDiscountsNotFound) Error() string {
+	return fmt.Sprintf("[POST /get-station-discounts][%d] getStationDiscountsNotFound ", 404)
+}
+
+func (o *GetStationDiscountsNotFound) String() string {
 	return fmt.Sprintf("[POST /get-station-discounts][%d] getStationDiscountsNotFound ", 404)
 }
 
@@ -113,7 +172,36 @@ Internal error
 type GetStationDiscountsInternalServerError struct {
 }
 
+// IsSuccess returns true when this get station discounts internal server error response has a 2xx status code
+func (o *GetStationDiscountsInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get station discounts internal server error response has a 3xx status code
+func (o *GetStationDiscountsInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get station discounts internal server error response has a 4xx status code
+func (o *GetStationDiscountsInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get station discounts internal server error response has a 5xx status code
+func (o *GetStationDiscountsInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this get station discounts internal server error response a status code equal to that given
+func (o *GetStationDiscountsInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *GetStationDiscountsInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /get-station-discounts][%d] getStationDiscountsInternalServerError ", 500)
+}
+
+func (o *GetStationDiscountsInternalServerError) String() string {
 	return fmt.Sprintf("[POST /get-station-discounts][%d] getStationDiscountsInternalServerError ", 500)
 }
 

@@ -59,9 +59,39 @@ type StatusCollectionOK struct {
 	Payload *model.StatusCollectionReport
 }
 
+// IsSuccess returns true when this status collection o k response has a 2xx status code
+func (o *StatusCollectionOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this status collection o k response has a 3xx status code
+func (o *StatusCollectionOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this status collection o k response has a 4xx status code
+func (o *StatusCollectionOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this status collection o k response has a 5xx status code
+func (o *StatusCollectionOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this status collection o k response a status code equal to that given
+func (o *StatusCollectionOK) IsCode(code int) bool {
+	return code == 200
+}
+
 func (o *StatusCollectionOK) Error() string {
 	return fmt.Sprintf("[GET /status-collection][%d] statusCollectionOK  %+v", 200, o.Payload)
 }
+
+func (o *StatusCollectionOK) String() string {
+	return fmt.Sprintf("[GET /status-collection][%d] statusCollectionOK  %+v", 200, o.Payload)
+}
+
 func (o *StatusCollectionOK) GetPayload() *model.StatusCollectionReport {
 	return o.Payload
 }
@@ -90,7 +120,36 @@ PIN is missing or invalid
 type StatusCollectionUnauthorized struct {
 }
 
+// IsSuccess returns true when this status collection unauthorized response has a 2xx status code
+func (o *StatusCollectionUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this status collection unauthorized response has a 3xx status code
+func (o *StatusCollectionUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this status collection unauthorized response has a 4xx status code
+func (o *StatusCollectionUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this status collection unauthorized response has a 5xx status code
+func (o *StatusCollectionUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this status collection unauthorized response a status code equal to that given
+func (o *StatusCollectionUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *StatusCollectionUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /status-collection][%d] statusCollectionUnauthorized ", 401)
+}
+
+func (o *StatusCollectionUnauthorized) String() string {
 	return fmt.Sprintf("[GET /status-collection][%d] statusCollectionUnauthorized ", 401)
 }
 
@@ -111,7 +170,36 @@ internal error
 type StatusCollectionInternalServerError struct {
 }
 
+// IsSuccess returns true when this status collection internal server error response has a 2xx status code
+func (o *StatusCollectionInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this status collection internal server error response has a 3xx status code
+func (o *StatusCollectionInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this status collection internal server error response has a 4xx status code
+func (o *StatusCollectionInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this status collection internal server error response has a 5xx status code
+func (o *StatusCollectionInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this status collection internal server error response a status code equal to that given
+func (o *StatusCollectionInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *StatusCollectionInternalServerError) Error() string {
+	return fmt.Sprintf("[GET /status-collection][%d] statusCollectionInternalServerError ", 500)
+}
+
+func (o *StatusCollectionInternalServerError) String() string {
 	return fmt.Sprintf("[GET /status-collection][%d] statusCollectionInternalServerError ", 500)
 }
 

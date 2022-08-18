@@ -108,6 +108,8 @@ func (m *StationConfig) validateRelayBoard(formats strfmt.Registry) error {
 	if err := m.RelayBoard.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("relayBoard")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("relayBoard")
 		}
 		return err
 	}
@@ -134,6 +136,8 @@ func (m *StationConfig) contextValidateRelayBoard(ctx context.Context, formats s
 	if err := m.RelayBoard.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("relayBoard")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("relayBoard")
 		}
 		return err
 	}

@@ -59,7 +59,36 @@ OK
 type AddServiceAmountNoContent struct {
 }
 
+// IsSuccess returns true when this add service amount no content response has a 2xx status code
+func (o *AddServiceAmountNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this add service amount no content response has a 3xx status code
+func (o *AddServiceAmountNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this add service amount no content response has a 4xx status code
+func (o *AddServiceAmountNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this add service amount no content response has a 5xx status code
+func (o *AddServiceAmountNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this add service amount no content response a status code equal to that given
+func (o *AddServiceAmountNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
 func (o *AddServiceAmountNoContent) Error() string {
+	return fmt.Sprintf("[POST /add-service-amount][%d] addServiceAmountNoContent ", 204)
+}
+
+func (o *AddServiceAmountNoContent) String() string {
 	return fmt.Sprintf("[POST /add-service-amount][%d] addServiceAmountNoContent ", 204)
 }
 
@@ -80,7 +109,36 @@ not found
 type AddServiceAmountNotFound struct {
 }
 
+// IsSuccess returns true when this add service amount not found response has a 2xx status code
+func (o *AddServiceAmountNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this add service amount not found response has a 3xx status code
+func (o *AddServiceAmountNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this add service amount not found response has a 4xx status code
+func (o *AddServiceAmountNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this add service amount not found response has a 5xx status code
+func (o *AddServiceAmountNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this add service amount not found response a status code equal to that given
+func (o *AddServiceAmountNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
 func (o *AddServiceAmountNotFound) Error() string {
+	return fmt.Sprintf("[POST /add-service-amount][%d] addServiceAmountNotFound ", 404)
+}
+
+func (o *AddServiceAmountNotFound) String() string {
 	return fmt.Sprintf("[POST /add-service-amount][%d] addServiceAmountNotFound ", 404)
 }
 
@@ -101,7 +159,36 @@ internal error
 type AddServiceAmountInternalServerError struct {
 }
 
+// IsSuccess returns true when this add service amount internal server error response has a 2xx status code
+func (o *AddServiceAmountInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this add service amount internal server error response has a 3xx status code
+func (o *AddServiceAmountInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this add service amount internal server error response has a 4xx status code
+func (o *AddServiceAmountInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this add service amount internal server error response has a 5xx status code
+func (o *AddServiceAmountInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this add service amount internal server error response a status code equal to that given
+func (o *AddServiceAmountInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *AddServiceAmountInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /add-service-amount][%d] addServiceAmountInternalServerError ", 500)
+}
+
+func (o *AddServiceAmountInternalServerError) String() string {
 	return fmt.Sprintf("[POST /add-service-amount][%d] addServiceAmountInternalServerError ", 500)
 }
 

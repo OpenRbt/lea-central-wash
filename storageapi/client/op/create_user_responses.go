@@ -77,9 +77,39 @@ type CreateUserCreated struct {
 	Payload *CreateUserCreatedBody
 }
 
+// IsSuccess returns true when this create user created response has a 2xx status code
+func (o *CreateUserCreated) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this create user created response has a 3xx status code
+func (o *CreateUserCreated) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create user created response has a 4xx status code
+func (o *CreateUserCreated) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this create user created response has a 5xx status code
+func (o *CreateUserCreated) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this create user created response a status code equal to that given
+func (o *CreateUserCreated) IsCode(code int) bool {
+	return code == 201
+}
+
 func (o *CreateUserCreated) Error() string {
 	return fmt.Sprintf("[POST /user][%d] createUserCreated  %+v", 201, o.Payload)
 }
+
+func (o *CreateUserCreated) String() string {
+	return fmt.Sprintf("[POST /user][%d] createUserCreated  %+v", 201, o.Payload)
+}
+
 func (o *CreateUserCreated) GetPayload() *CreateUserCreatedBody {
 	return o.Payload
 }
@@ -108,7 +138,36 @@ PIN is missing or invalid
 type CreateUserUnauthorized struct {
 }
 
+// IsSuccess returns true when this create user unauthorized response has a 2xx status code
+func (o *CreateUserUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this create user unauthorized response has a 3xx status code
+func (o *CreateUserUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create user unauthorized response has a 4xx status code
+func (o *CreateUserUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this create user unauthorized response has a 5xx status code
+func (o *CreateUserUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this create user unauthorized response a status code equal to that given
+func (o *CreateUserUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
 func (o *CreateUserUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /user][%d] createUserUnauthorized ", 401)
+}
+
+func (o *CreateUserUnauthorized) String() string {
 	return fmt.Sprintf("[POST /user][%d] createUserUnauthorized ", 401)
 }
 
@@ -129,7 +188,36 @@ Access forbidden
 type CreateUserForbidden struct {
 }
 
+// IsSuccess returns true when this create user forbidden response has a 2xx status code
+func (o *CreateUserForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this create user forbidden response has a 3xx status code
+func (o *CreateUserForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create user forbidden response has a 4xx status code
+func (o *CreateUserForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this create user forbidden response has a 5xx status code
+func (o *CreateUserForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this create user forbidden response a status code equal to that given
+func (o *CreateUserForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
 func (o *CreateUserForbidden) Error() string {
+	return fmt.Sprintf("[POST /user][%d] createUserForbidden ", 403)
+}
+
+func (o *CreateUserForbidden) String() string {
 	return fmt.Sprintf("[POST /user][%d] createUserForbidden ", 403)
 }
 
@@ -151,9 +239,39 @@ type CreateUserConflict struct {
 	Payload *CreateUserConflictBody
 }
 
+// IsSuccess returns true when this create user conflict response has a 2xx status code
+func (o *CreateUserConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this create user conflict response has a 3xx status code
+func (o *CreateUserConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create user conflict response has a 4xx status code
+func (o *CreateUserConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this create user conflict response has a 5xx status code
+func (o *CreateUserConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this create user conflict response a status code equal to that given
+func (o *CreateUserConflict) IsCode(code int) bool {
+	return code == 409
+}
+
 func (o *CreateUserConflict) Error() string {
 	return fmt.Sprintf("[POST /user][%d] createUserConflict  %+v", 409, o.Payload)
 }
+
+func (o *CreateUserConflict) String() string {
+	return fmt.Sprintf("[POST /user][%d] createUserConflict  %+v", 409, o.Payload)
+}
+
 func (o *CreateUserConflict) GetPayload() *CreateUserConflictBody {
 	return o.Payload
 }
@@ -182,7 +300,36 @@ internal error
 type CreateUserInternalServerError struct {
 }
 
+// IsSuccess returns true when this create user internal server error response has a 2xx status code
+func (o *CreateUserInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this create user internal server error response has a 3xx status code
+func (o *CreateUserInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create user internal server error response has a 4xx status code
+func (o *CreateUserInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this create user internal server error response has a 5xx status code
+func (o *CreateUserInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this create user internal server error response a status code equal to that given
+func (o *CreateUserInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *CreateUserInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /user][%d] createUserInternalServerError ", 500)
+}
+
+func (o *CreateUserInternalServerError) String() string {
 	return fmt.Sprintf("[POST /user][%d] createUserInternalServerError ", 500)
 }
 
@@ -310,6 +457,8 @@ func (o *CreateUserBody) validateFirstName(formats strfmt.Registry) error {
 		if err := o.FirstName.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "firstName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "firstName")
 			}
 			return err
 		}
@@ -327,6 +476,8 @@ func (o *CreateUserBody) validateLastName(formats strfmt.Registry) error {
 		if err := o.LastName.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "lastName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "lastName")
 			}
 			return err
 		}
@@ -349,6 +500,8 @@ func (o *CreateUserBody) validateLogin(formats strfmt.Registry) error {
 		if err := o.Login.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "login")
 			}
 			return err
 		}
@@ -366,6 +519,8 @@ func (o *CreateUserBody) validateMiddleName(formats strfmt.Registry) error {
 		if err := o.MiddleName.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "middleName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "middleName")
 			}
 			return err
 		}
@@ -388,6 +543,8 @@ func (o *CreateUserBody) validatePassword(formats strfmt.Registry) error {
 		if err := o.Password.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "password")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "password")
 			}
 			return err
 		}
@@ -444,6 +601,8 @@ func (o *CreateUserBody) contextValidateFirstName(ctx context.Context, formats s
 		if err := o.FirstName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "firstName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "firstName")
 			}
 			return err
 		}
@@ -458,6 +617,8 @@ func (o *CreateUserBody) contextValidateIsAdmin(ctx context.Context, formats str
 		if err := o.IsAdmin.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "isAdmin")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "isAdmin")
 			}
 			return err
 		}
@@ -472,6 +633,8 @@ func (o *CreateUserBody) contextValidateIsEngineer(ctx context.Context, formats 
 		if err := o.IsEngineer.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "isEngineer")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "isEngineer")
 			}
 			return err
 		}
@@ -486,6 +649,8 @@ func (o *CreateUserBody) contextValidateIsOperator(ctx context.Context, formats 
 		if err := o.IsOperator.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "isOperator")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "isOperator")
 			}
 			return err
 		}
@@ -500,6 +665,8 @@ func (o *CreateUserBody) contextValidateLastName(ctx context.Context, formats st
 		if err := o.LastName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "lastName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "lastName")
 			}
 			return err
 		}
@@ -514,6 +681,8 @@ func (o *CreateUserBody) contextValidateLogin(ctx context.Context, formats strfm
 		if err := o.Login.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "login")
 			}
 			return err
 		}
@@ -528,6 +697,8 @@ func (o *CreateUserBody) contextValidateMiddleName(ctx context.Context, formats 
 		if err := o.MiddleName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "middleName")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "middleName")
 			}
 			return err
 		}
@@ -542,6 +713,8 @@ func (o *CreateUserBody) contextValidatePassword(ctx context.Context, formats st
 		if err := o.Password.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "password")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "password")
 			}
 			return err
 		}

@@ -201,6 +201,8 @@ func (m *Program) validatePreflightRelays(formats strfmt.Registry) error {
 			if err := m.PreflightRelays[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("preflightRelays" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("preflightRelays" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -225,6 +227,8 @@ func (m *Program) validateRelays(formats strfmt.Registry) error {
 			if err := m.Relays[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relays" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("relays" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -261,6 +265,8 @@ func (m *Program) contextValidatePreflightRelays(ctx context.Context, formats st
 			if err := m.PreflightRelays[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("preflightRelays" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("preflightRelays" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -279,6 +285,8 @@ func (m *Program) contextValidateRelays(ctx context.Context, formats strfmt.Regi
 			if err := m.Relays[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relays" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("relays" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

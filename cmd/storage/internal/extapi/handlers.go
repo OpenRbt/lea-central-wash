@@ -1,6 +1,7 @@
 package extapi
 
 import (
+	"fmt"
 	"net"
 	"strings"
 	"time"
@@ -629,6 +630,70 @@ func (svc *service) runProgram(params op.RunProgramParams) op.RunProgramResponde
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewRunProgramInternalServerError()
+	}
+}
+
+func (svc *service) run2Program(params op.Run2ProgramParams) op.Run2ProgramResponder {
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		log.Info("runProgram: not found", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewRun2ProgramNotFound().WithPayload("station not found")
+	}
+	err = svc.app.Run2Program(stationID, *params.Args.ProgramID, *params.Args.ProgramID2, *params.Args.Preflight)
+	log.Info("Error run2programm is - ", err)
+
+	log.Info("runProgram", "programID", *params.Args.ProgramID, "programID2", *params.Args.ProgramID2, "stationID", stationID, "preflight", *params.Args.Preflight, "ip", params.HTTPRequest.RemoteAddr)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewRun2ProgramNoContent()
+	case app.ErrNotFound:
+		log.PrintErr(err, "hash", params.Args.Hash, "stationID", stationID, "programID", *params.Args.ProgramID, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewRun2ProgramNotFound().WithPayload("program or relay board not found")
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewRun2ProgramInternalServerError()
+	}
+}
+
+func (svc *service) measureVolumeMilliliters(params op.MeasureVolumeMillilitersParams) op.MeasureVolumeMillilitersResponder {
+
+	err := svc.app.MeasureVolumeMilliliters(*params.Args.Volume)
+
+	log.Info("Run Command Dispenser ", "Volume", *params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
+	fmt.Println("ERROR: ", err)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewMeasureVolumeMillilitersNoContent()
+	case app.ErrNotFound:
+		log.PrintErr(err, "hash", params.Args.Hash, "Volume", params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewMeasureVolumeMillilitersNotFound().WithPayload("Arduino not found")
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewMeasureVolumeMillilitersInternalServerError()
+	}
+}
+
+func (svc *service) VolumeDispenser(params op.VolumeDispenserParams) op.VolumeDispenserResponder {
+
+	znach, status, err := svc.app.GetVolumeDispenser()
+
+	log.Info("Get Volume", "ip", params.HTTPRequest.RemoteAddr)
+
+	if status != "" {
+		log.Err("Error execution command from Dispenser: ", status)
+	}
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewVolumeDispenserOK().WithPayload(&op.VolumeDispenserOKBody{Status: &status, Volume: &znach})
+	case app.ErrNotFound:
+		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewVolumeDispenserNotFound().WithPayload("Volume from Arduino not found")
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewVolumeDispenserInternalServerError()
 	}
 }
 

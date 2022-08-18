@@ -52,7 +52,7 @@ type UpdateUserPassword struct {
 func (o *UpdateUserPassword) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewUpdateUserPasswordParams()
 	uprinc, aCtx, err := o.Context.Authorize(r, route)
@@ -61,7 +61,7 @@ func (o *UpdateUserPassword) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 		return
 	}
 	if aCtx != nil {
-		r = aCtx
+		*r = *aCtx
 	}
 	var principal *storageapi.Profile
 	if uprinc != nil {
@@ -161,6 +161,8 @@ func (o *UpdateUserPasswordBody) validateLogin(formats strfmt.Registry) error {
 		if err := o.Login.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "login")
 			}
 			return err
 		}
@@ -183,6 +185,8 @@ func (o *UpdateUserPasswordBody) validateNewPassword(formats strfmt.Registry) er
 		if err := o.NewPassword.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "newPassword")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "newPassword")
 			}
 			return err
 		}
@@ -205,6 +209,8 @@ func (o *UpdateUserPasswordBody) validateOldPassword(formats strfmt.Registry) er
 		if err := o.OldPassword.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "oldPassword")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "oldPassword")
 			}
 			return err
 		}
@@ -241,6 +247,8 @@ func (o *UpdateUserPasswordBody) contextValidateLogin(ctx context.Context, forma
 		if err := o.Login.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "login")
 			}
 			return err
 		}
@@ -255,6 +263,8 @@ func (o *UpdateUserPasswordBody) contextValidateNewPassword(ctx context.Context,
 		if err := o.NewPassword.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "newPassword")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "newPassword")
 			}
 			return err
 		}
@@ -269,6 +279,8 @@ func (o *UpdateUserPasswordBody) contextValidateOldPassword(ctx context.Context,
 		if err := o.OldPassword.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "oldPassword")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("args" + "." + "oldPassword")
 			}
 			return err
 		}

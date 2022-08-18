@@ -96,6 +96,9 @@ type (
 		SetCardReaderConfig(CardReaderConfig) error
 
 		RunProgram(id StationID, programID int64, preflight bool) (err error)
+		Run2Program(id StationID, programID int64, programID2 int64, preflight bool) (err error)
+		MeasureVolumeMilliliters(volume int64) (err error)
+		GetVolumeDispenser() (volume int64, status string, err error)
 		PressButton(id StationID, buttonID int64) (err error)
 
 		Station(StationID) (SetStation, error)
@@ -196,9 +199,9 @@ type (
 	}
 	// HardwareAccessLayer describes an interface to access hardware control modules
 	HardwareAccessLayer interface {
-		Start()
-		ControlBoard(key int) (ControlBoard, error)
-		RunProgram(id int, config RelayConfig) (err error)
+		RunProgram(id int32, cfg RelayConfig) (err error)
+		MeasureVolumeMilliliters(volume int64) (err error)
+		Volume() (volume int64, status string, err error)
 	}
 	// ControlBoard represents one board (even virtual) to control relays
 	ControlBoard interface {
@@ -214,7 +217,7 @@ type (
 		// If anything happens with the whole system, the control board will stop all after this time
 		// NOT MORE THAN 3600 SECONDS!!!
 		TimeoutSec int
-		// Timings are settigns for actual relays
+		// Timings are settings for actual relays
 		Timings []Relay
 	}
 )

@@ -63,7 +63,36 @@ OK
 type SetStationButtonNoContent struct {
 }
 
+// IsSuccess returns true when this set station button no content response has a 2xx status code
+func (o *SetStationButtonNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this set station button no content response has a 3xx status code
+func (o *SetStationButtonNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this set station button no content response has a 4xx status code
+func (o *SetStationButtonNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this set station button no content response has a 5xx status code
+func (o *SetStationButtonNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this set station button no content response a status code equal to that given
+func (o *SetStationButtonNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
 func (o *SetStationButtonNoContent) Error() string {
+	return fmt.Sprintf("[POST /set-station-button][%d] setStationButtonNoContent ", 204)
+}
+
+func (o *SetStationButtonNoContent) String() string {
 	return fmt.Sprintf("[POST /set-station-button][%d] setStationButtonNoContent ", 204)
 }
 
@@ -85,9 +114,39 @@ type SetStationButtonUnprocessableEntity struct {
 	Payload string
 }
 
+// IsSuccess returns true when this set station button unprocessable entity response has a 2xx status code
+func (o *SetStationButtonUnprocessableEntity) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this set station button unprocessable entity response has a 3xx status code
+func (o *SetStationButtonUnprocessableEntity) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this set station button unprocessable entity response has a 4xx status code
+func (o *SetStationButtonUnprocessableEntity) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this set station button unprocessable entity response has a 5xx status code
+func (o *SetStationButtonUnprocessableEntity) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this set station button unprocessable entity response a status code equal to that given
+func (o *SetStationButtonUnprocessableEntity) IsCode(code int) bool {
+	return code == 422
+}
+
 func (o *SetStationButtonUnprocessableEntity) Error() string {
 	return fmt.Sprintf("[POST /set-station-button][%d] setStationButtonUnprocessableEntity  %+v", 422, o.Payload)
 }
+
+func (o *SetStationButtonUnprocessableEntity) String() string {
+	return fmt.Sprintf("[POST /set-station-button][%d] setStationButtonUnprocessableEntity  %+v", 422, o.Payload)
+}
+
 func (o *SetStationButtonUnprocessableEntity) GetPayload() string {
 	return o.Payload
 }
@@ -114,7 +173,36 @@ internal error
 type SetStationButtonInternalServerError struct {
 }
 
+// IsSuccess returns true when this set station button internal server error response has a 2xx status code
+func (o *SetStationButtonInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this set station button internal server error response has a 3xx status code
+func (o *SetStationButtonInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this set station button internal server error response has a 4xx status code
+func (o *SetStationButtonInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this set station button internal server error response has a 5xx status code
+func (o *SetStationButtonInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this set station button internal server error response a status code equal to that given
+func (o *SetStationButtonInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
 func (o *SetStationButtonInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /set-station-button][%d] setStationButtonInternalServerError ", 500)
+}
+
+func (o *SetStationButtonInternalServerError) String() string {
 	return fmt.Sprintf("[POST /set-station-button][%d] setStationButtonInternalServerError ", 500)
 }
 
@@ -193,6 +281,8 @@ func (o *SetStationButtonBody) validateButtons(formats strfmt.Registry) error {
 			if err := o.Buttons[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("args" + "." + "buttons" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("args" + "." + "buttons" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -238,6 +328,8 @@ func (o *SetStationButtonBody) contextValidateButtons(ctx context.Context, forma
 			if err := o.Buttons[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("args" + "." + "buttons" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("args" + "." + "buttons" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

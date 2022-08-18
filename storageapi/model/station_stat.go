@@ -96,6 +96,8 @@ func (m *StationStat) validateProgramStats(formats strfmt.Registry) error {
 			if err := m.ProgramStats[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("programStats" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("programStats" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -120,6 +122,8 @@ func (m *StationStat) validateRelayStats(formats strfmt.Registry) error {
 			if err := m.RelayStats[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relayStats" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("relayStats" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -156,6 +160,8 @@ func (m *StationStat) contextValidateProgramStats(ctx context.Context, formats s
 			if err := m.ProgramStats[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("programStats" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("programStats" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -174,6 +180,8 @@ func (m *StationStat) contextValidateRelayStats(ctx context.Context, formats str
 			if err := m.RelayStats[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relayStats" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("relayStats" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

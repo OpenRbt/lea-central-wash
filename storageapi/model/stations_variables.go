@@ -92,6 +92,8 @@ func (m *StationsVariables) validateKeyPairs(formats strfmt.Registry) error {
 			if err := m.KeyPairs[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("keyPairs" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("keyPairs" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -124,6 +126,8 @@ func (m *StationsVariables) contextValidateKeyPairs(ctx context.Context, formats
 			if err := m.KeyPairs[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("keyPairs" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("keyPairs" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
