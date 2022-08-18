@@ -30,7 +30,7 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	VolumeDespenser(params *VolumeDespenserParams, opts ...ClientOption) (*VolumeDespenserOK, *VolumeDespenserNoContent, error)
+	VolumeDispenser(params *VolumeDispenserParams, opts ...ClientOption) (*VolumeDispenserOK, *VolumeDispenserNoContent, error)
 
 	AddAdvertisingCampaign(params *AddAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*AddAdvertisingCampaignNoContent, error)
 
@@ -92,7 +92,7 @@ type ClientService interface {
 
 	Run2Program(params *Run2ProgramParams, opts ...ClientOption) (*Run2ProgramNoContent, error)
 
-	RunDespenser(params *RunDespenserParams, opts ...ClientOption) (*RunDespenserNoContent, error)
+	RunDispenser(params *RunDispenserParams, opts ...ClientOption) (*RunDispenserNoContent, error)
 
 	RunProgram(params *RunProgramParams, opts ...ClientOption) (*RunProgramNoContent, error)
 
@@ -154,22 +154,22 @@ type ClientService interface {
 }
 
 /*
-  VolumeDespenser volume despenser API
+  VolumeDispenser volume dispenser API
 */
-func (a *Client) VolumeDespenser(params *VolumeDespenserParams, opts ...ClientOption) (*VolumeDespenserOK, *VolumeDespenserNoContent, error) {
+func (a *Client) VolumeDispenser(params *VolumeDispenserParams, opts ...ClientOption) (*VolumeDispenserOK, *VolumeDispenserNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewVolumeDespenserParams()
+		params = NewVolumeDispenserParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "VolumeDespenser",
+		ID:                 "VolumeDispenser",
 		Method:             "POST",
-		PathPattern:        "/volume-despenser",
+		PathPattern:        "/volume-dispenser",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http"},
 		Params:             params,
-		Reader:             &VolumeDespenserReader{formats: a.formats},
+		Reader:             &VolumeDispenserReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
@@ -182,9 +182,9 @@ func (a *Client) VolumeDespenser(params *VolumeDespenserParams, opts ...ClientOp
 		return nil, nil, err
 	}
 	switch value := result.(type) {
-	case *VolumeDespenserOK:
+	case *VolumeDispenserOK:
 		return value, nil, nil
-	case *VolumeDespenserNoContent:
+	case *VolumeDispenserNoContent:
 		return nil, value, nil
 	}
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
@@ -1346,22 +1346,22 @@ func (a *Client) Run2Program(params *Run2ProgramParams, opts ...ClientOption) (*
 }
 
 /*
-  RunDespenser run despenser API
+  RunDispenser run dispenser API
 */
-func (a *Client) RunDespenser(params *RunDespenserParams, opts ...ClientOption) (*RunDespenserNoContent, error) {
+func (a *Client) RunDispenser(params *RunDispenserParams, opts ...ClientOption) (*RunDispenserNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewRunDespenserParams()
+		params = NewRunDispenserParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "runDespenser",
+		ID:                 "runDispenser",
 		Method:             "POST",
-		PathPattern:        "/run-despenser",
+		PathPattern:        "/run-dispenser",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http"},
 		Params:             params,
-		Reader:             &RunDespenserReader{formats: a.formats},
+		Reader:             &RunDispenserReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
@@ -1373,13 +1373,13 @@ func (a *Client) RunDespenser(params *RunDespenserParams, opts ...ClientOption) 
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*RunDespenserNoContent)
+	success, ok := result.(*RunDispenserNoContent)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for runDespenser: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for runDispenser: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

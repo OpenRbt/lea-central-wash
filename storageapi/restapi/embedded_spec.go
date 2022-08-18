@@ -1016,9 +1016,9 @@ func init() {
         }
       }
     },
-    "/run-despenser": {
+    "/run-dispenser": {
       "post": {
-        "operationId": "runDespenser",
+        "operationId": "runDispenser",
         "parameters": [
           {
             "name": "args",
@@ -1026,7 +1026,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgRunDespenser",
+              "title": "ArgRunDispenser",
               "required": [
                 "hash",
                 "volume"
@@ -2341,9 +2341,9 @@ func init() {
         }
       }
     },
-    "/volume-despenser": {
+    "/volume-dispenser": {
       "post": {
-        "operationId": "VolumeDespenser",
+        "operationId": "VolumeDispenser",
         "parameters": [
           {
             "name": "args",
@@ -2351,7 +2351,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "VolumeDespenser",
+              "title": "VolumeDispenser",
               "required": [
                 "hash"
               ],
@@ -2368,7 +2368,7 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
-              "title": "ResponseVolumeDespenser",
+              "title": "ResponseVolumeDispenser",
               "required": [
                 "volume",
                 "status"
@@ -4086,9 +4086,9 @@ func init() {
         }
       }
     },
-    "/run-despenser": {
+    "/run-dispenser": {
       "post": {
-        "operationId": "runDespenser",
+        "operationId": "runDispenser",
         "parameters": [
           {
             "name": "args",
@@ -4096,7 +4096,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgRunDespenser",
+              "title": "ArgRunDispenser",
               "required": [
                 "hash",
                 "volume"
@@ -5395,9 +5395,9 @@ func init() {
         }
       }
     },
-    "/volume-despenser": {
+    "/volume-dispenser": {
       "post": {
-        "operationId": "VolumeDespenser",
+        "operationId": "VolumeDispenser",
         "parameters": [
           {
             "name": "args",
@@ -5405,7 +5405,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "VolumeDespenser",
+              "title": "VolumeDispenser",
               "required": [
                 "hash"
               ],
@@ -5422,7 +5422,7 @@ func init() {
             "description": "OK",
             "schema": {
               "type": "object",
-              "title": "ResponseVolumeDespenser",
+              "title": "ResponseVolumeDispenser",
               "required": [
                 "volume",
                 "status"

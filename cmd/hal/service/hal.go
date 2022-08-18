@@ -17,7 +17,7 @@ import (
 
 const uidAnswerRegex = "UID\\s([0-9A-F]*);"
 
-const despenserAnswer = "YF-S201"
+const dispenserAnswer = "YF-S201;"
 
 // Errors ...
 var (
@@ -175,7 +175,7 @@ func (r *Rev1DispencerBoard) runCom(cmd int) error {
 			N, err := r.openPort.Read(buf)
 			if err == nil {
 				ans := string(buf[0 : N-2])
-				if ans == "SOK" {
+				if ans == "SOK;" {
 					fmt.Println("Start command ", cmd)
 					flag = 1
 					exi = true
@@ -194,14 +194,14 @@ func (r *Rev1DispencerBoard) runCom(cmd int) error {
 				if err == nil {
 					ans := string(buf[0 : N-2])
 					l, _ := strconv.ParseInt(lastValue, 10, 10)
-					v, _ := strconv.ParseInt(ans[1:N-2], 10, 10)
+					v, _ := strconv.ParseInt(ans[1:N-3], 10, 10)
 					if v-l < 1 {
 						countErr += 1
 						if countErr >= 100 {
-							_, err = r.openPort.Write([]byte("ERR"))
+							_, err = r.openPort.Write([]byte("ERR;"))
 							N, err = r.openPort.Read(buf)
 							ans = string(buf[0 : N-2])
-							if ans == "FOK" {
+							if ans == "FOK;" {
 								flag = 0
 								fmt.Println("The non-freezing is over")
 								return nil
@@ -209,15 +209,15 @@ func (r *Rev1DispencerBoard) runCom(cmd int) error {
 						}
 					}
 					fmt.Println("Answer: ", ans)
-					if ans[0:N-2] != "OK-PING" {
-						lastValue = ans[1 : N-2]
+					if ans[0:N-2] != "OK-PING;" {
+						lastValue = ans[1 : N-3]
 					}
 					fmt.Println("Answer Arduino", lastValue)
 					if ans[0] == 'F' {
 						fmt.Println("Finish command ", cmd, " Successfully!")
 						flag = 0
 						countErr = 0
-						_, err = r.openPort.Write([]byte("FOK"))
+						_, err = r.openPort.Write([]byte("FOK;"))
 						if err != nil {
 							fmt.Println("Error in command FOK")
 							return err
@@ -360,8 +360,8 @@ func (r *Rev1DispencerBoard) SendPing() error {
 	if err != nil {
 		return err
 	}
-	st := string(buf[0:7])
-	if st != "OK-PING" {
+	st := string(buf[0:8])
+	if st != "OK-PING;" {
 		return err
 	}
 	fmt.Println("Ping-OK")
@@ -454,7 +454,7 @@ func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
 	}
 	ans := string(buf[0:N])
 	fmt.Printf("answer is [%s]\n", ans)
-	if despenserAnswer == ans {
+	if dispenserAnswer == ans {
 		sensor := NewDispencerBoard(key, s)
 		port := NewPorts(key, s)
 		h.addDispencerBoard(key, sensor)

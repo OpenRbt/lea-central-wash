@@ -656,40 +656,40 @@ func (svc *service) run2Program(params op.Run2ProgramParams) op.Run2ProgramRespo
 	}
 }
 
-func (svc *service) runDespenser(params op.RunDespenserParams) op.RunDespenserResponder {
+func (svc *service) runDispenser(params op.RunDispenserParams) op.RunDispenserResponder {
 
-	err := svc.app.RunDespenserBoard(*params.Args.Volume)
+	err := svc.app.RunDispenserBoard(*params.Args.Volume)
 
 	log.Info("runArduino", "Volume", *params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
 	fmt.Println("ERROR: ", err)
 
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewRunDespenserNoContent()
+		return op.NewRunDispenserNoContent()
 	case app.ErrNotFound:
 		log.PrintErr(err, "hash", params.Args.Hash, "Volume", params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewRunDespenserNotFound().WithPayload("Arduino not found")
+		return op.NewRunDispenserNotFound().WithPayload("Arduino not found")
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewRunDespenserInternalServerError()
+		return op.NewRunDispenserInternalServerError()
 	}
 }
 
-func (svc *service) VolumeDespenser(params op.VolumeDespenserParams) op.VolumeDespenserResponder {
+func (svc *service) VolumeDispenser(params op.VolumeDispenserParams) op.VolumeDispenserResponder {
 
-	znach, status, err := svc.app.GetVolumeDespenser()
+	znach, status, err := svc.app.GetVolumeDispenser()
 
 	log.Info("Get Volume", "ip", params.HTTPRequest.RemoteAddr)
 
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewVolumeDespenserOK().WithPayload(&op.VolumeDespenserOKBody{Status: &status, Volume: &znach})
+		return op.NewVolumeDispenserOK().WithPayload(&op.VolumeDispenserOKBody{Status: &status, Volume: &znach})
 	case app.ErrNotFound:
 		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewVolumeDespenserNotFound().WithPayload("Volume from Arduino not found")
+		return op.NewVolumeDispenserNotFound().WithPayload("Volume from Arduino not found")
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewVolumeDespenserInternalServerError()
+		return op.NewVolumeDispenserInternalServerError()
 	}
 }
 

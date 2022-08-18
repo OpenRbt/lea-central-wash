@@ -1901,15 +1901,15 @@ paths:
         500:
           description: internal error
   
-  /run-despenser:
+  /run-dispenser:
     post:
-      operationId: "runDespenser"
+      operationId: "runDispenser"
       parameters:
         - name: args
           required: true
           in: body
           schema:
-            title: "ArgRunDespenser"
+            title: "ArgRunDispenser"
             type: object
             required:
               - hash
@@ -1929,15 +1929,15 @@ paths:
         500:
           description: internal error
 
-  /volume-despenser:
+  /volume-dispenser:
     post:
-      operationId: "VolumeDespenser"
+      operationId: "VolumeDispenser"
       parameters:
         - name: args
           required: true
           in: body
           schema:
-            title: "VolumeDespenser"
+            title: "VolumeDispenser"
             type: object
             required:
               - hash
@@ -1948,7 +1948,7 @@ paths:
         200:
           description: OK
           schema:
-            title: "ResponseVolumeDespenser"
+            title: "ResponseVolumeDispenser"
             type: object
             required:
               - volume

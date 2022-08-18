@@ -39,7 +39,7 @@ void loop() {
         if (requiredVol > vol) {
           if(currentTime >= (cloopTime + timer)) {
             cloopTime = currentTime;
-            Serial.println("P" + (String)(int)(vol*1000 + (vol*1000*0.27)));
+            Serial.println("P" + (String)(int)(vol*1000 + (vol*1000*0.27)) + ";");
           } 
         } else {
           stat = SENDING_FINISH;
@@ -49,7 +49,7 @@ void loop() {
     currentTime = millis();
     if (currentTime >= (cloopTime + timer)) {
       cloopTime = currentTime;
-      Serial.println("F" + (String)(int)requiredVoln);
+      Serial.println("F" + (String)(int)requiredVoln + ";");
     }
   }
   if (Serial.available() > 0) {
@@ -64,16 +64,16 @@ void loop() {
       requiredVol = (requiredVoln - requiredVoln*0.27) / 1000;
     } else {
       if (str == "UID;") {
-        Serial.print("YF-S201");
+        Serial.print("YF-S201;");
       }
       if (str == "PING;") {
-        Serial.println("OK-PING");
+        Serial.println("OK-PING;");
       }
-      if (str == "ERR") {
+      if (str == "ERR;") {
         stat = IDL;
-        Serial.println("FOK");
+        Serial.println("FOK;");
       }
-      if (str == "FOK") {
+      if (str == "FOK;") {
         stat = IDL;
       }
     }

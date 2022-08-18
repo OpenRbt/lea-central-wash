@@ -50,9 +50,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	// Example:
 	// api.APIAuthorizer = security.Authorized()
 
-	if api.VolumeDespenserHandler == nil {
-		api.VolumeDespenserHandler = op.VolumeDespenserHandlerFunc(func(params op.VolumeDespenserParams) op.VolumeDespenserResponder {
-			return op.VolumeDespenserNotImplemented()
+	if api.VolumeDispenserHandler == nil {
+		api.VolumeDispenserHandler = op.VolumeDispenserHandlerFunc(func(params op.VolumeDispenserParams) op.VolumeDispenserResponder {
+			return op.VolumeDispenserNotImplemented()
 		})
 	}
 	if api.AddAdvertisingCampaignHandler == nil {
@@ -205,9 +205,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.Run2ProgramNotImplemented()
 		})
 	}
-	if api.RunDespenserHandler == nil {
-		api.RunDespenserHandler = op.RunDespenserHandlerFunc(func(params op.RunDespenserParams) op.RunDespenserResponder {
-			return op.RunDespenserNotImplemented()
+	if api.RunDispenserHandler == nil {
+		api.RunDispenserHandler = op.RunDispenserHandlerFunc(func(params op.RunDispenserParams) op.RunDispenserResponder {
+			return op.RunDispenserNotImplemented()
 		})
 	}
 	if api.RunProgramHandler == nil {

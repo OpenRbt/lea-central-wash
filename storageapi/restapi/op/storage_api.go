@@ -44,8 +44,8 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
-		VolumeDespenserHandler: VolumeDespenserHandlerFunc(func(params VolumeDespenserParams) VolumeDespenserResponder {
-			return VolumeDespenserNotImplemented()
+		VolumeDispenserHandler: VolumeDispenserHandlerFunc(func(params VolumeDispenserParams) VolumeDispenserResponder {
+			return VolumeDispenserNotImplemented()
 		}),
 		AddAdvertisingCampaignHandler: AddAdvertisingCampaignHandlerFunc(func(params AddAdvertisingCampaignParams, principal *storageapi.Profile) AddAdvertisingCampaignResponder {
 			return AddAdvertisingCampaignNotImplemented()
@@ -137,8 +137,8 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		Run2ProgramHandler: Run2ProgramHandlerFunc(func(params Run2ProgramParams) Run2ProgramResponder {
 			return Run2ProgramNotImplemented()
 		}),
-		RunDespenserHandler: RunDespenserHandlerFunc(func(params RunDespenserParams) RunDespenserResponder {
-			return RunDespenserNotImplemented()
+		RunDispenserHandler: RunDispenserHandlerFunc(func(params RunDispenserParams) RunDispenserResponder {
+			return RunDispenserNotImplemented()
 		}),
 		RunProgramHandler: RunProgramHandlerFunc(func(params RunProgramParams) RunProgramResponder {
 			return RunProgramNotImplemented()
@@ -274,8 +274,8 @@ type StorageAPI struct {
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
 
-	// VolumeDespenserHandler sets the operation handler for the volume despenser operation
-	VolumeDespenserHandler VolumeDespenserHandler
+	// VolumeDispenserHandler sets the operation handler for the volume dispenser operation
+	VolumeDispenserHandler VolumeDispenserHandler
 	// AddAdvertisingCampaignHandler sets the operation handler for the add advertising campaign operation
 	AddAdvertisingCampaignHandler AddAdvertisingCampaignHandler
 	// AddServiceAmountHandler sets the operation handler for the add service amount operation
@@ -336,8 +336,8 @@ type StorageAPI struct {
 	ResetStationStatHandler ResetStationStatHandler
 	// Run2ProgramHandler sets the operation handler for the run2 program operation
 	Run2ProgramHandler Run2ProgramHandler
-	// RunDespenserHandler sets the operation handler for the run despenser operation
-	RunDespenserHandler RunDespenserHandler
+	// RunDispenserHandler sets the operation handler for the run dispenser operation
+	RunDispenserHandler RunDispenserHandler
 	// RunProgramHandler sets the operation handler for the run program operation
 	RunProgramHandler RunProgramHandler
 	// SaveHandler sets the operation handler for the save operation
@@ -475,8 +475,8 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "PinAuth")
 	}
 
-	if o.VolumeDespenserHandler == nil {
-		unregistered = append(unregistered, "VolumeDespenserHandler")
+	if o.VolumeDispenserHandler == nil {
+		unregistered = append(unregistered, "VolumeDispenserHandler")
 	}
 	if o.AddAdvertisingCampaignHandler == nil {
 		unregistered = append(unregistered, "AddAdvertisingCampaignHandler")
@@ -568,8 +568,8 @@ func (o *StorageAPI) Validate() error {
 	if o.Run2ProgramHandler == nil {
 		unregistered = append(unregistered, "Run2ProgramHandler")
 	}
-	if o.RunDespenserHandler == nil {
-		unregistered = append(unregistered, "RunDespenserHandler")
+	if o.RunDispenserHandler == nil {
+		unregistered = append(unregistered, "RunDispenserHandler")
 	}
 	if o.RunProgramHandler == nil {
 		unregistered = append(unregistered, "RunProgramHandler")
@@ -757,7 +757,7 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/volume-despenser"] = NewVolumeDespenser(o.context, o.VolumeDespenserHandler)
+	o.handlers["POST"]["/volume-dispenser"] = NewVolumeDispenser(o.context, o.VolumeDispenserHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
@@ -881,7 +881,7 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/run-despenser"] = NewRunDespenser(o.context, o.RunDespenserHandler)
+	o.handlers["POST"]["/run-dispenser"] = NewRunDispenser(o.context, o.RunDispenserHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
