@@ -98,7 +98,7 @@ type (
 		RunProgram(id StationID, programID int64, preflight bool) (err error)
 		Run2Program(id StationID, programID int64, programID2 int64, preflight bool) (err error)
 		MeasureVolumeMilliliters(volume int64) (err error)
-		GetVolumeDispenser() (volume int64, status int64, err error)
+		GetVolumeDispenser() (volume int64, status string, err error)
 		PressButton(id StationID, buttonID int64) (err error)
 
 		Station(StationID) (SetStation, error)
@@ -200,8 +200,8 @@ type (
 	// HardwareAccessLayer describes an interface to access hardware control modules
 	HardwareAccessLayer interface {
 		RunProgram(id int32, cfg RelayConfig) (err error)
-		Command(volume int64) (err error)
-		Volume() (volume int64, status int64, err error)
+		MeasureVolumeMilliliters(volume int64) (err error)
+		Volume() (volume int64, status string, err error)
 	}
 	// ControlBoard represents one board (even virtual) to control relays
 	ControlBoard interface {

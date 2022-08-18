@@ -89,10 +89,10 @@ func (a *app) Run2Program(id StationID, programID int64, programID2 int64, prefl
 }
 
 func (a *app) MeasureVolumeMilliliters(volume int64) (err error) {
-	return a.hardware.Command(volume)
+	return a.hardware.MeasureVolumeMilliliters(volume)
 }
 
-func (a *app) GetVolumeDispenser() (znach int64, status int64, err error) {
+func (a *app) GetVolumeDispenser() (znach int64, status string, err error) {
 	zhach, status, err := a.hardware.Volume()
 	return zhach, status, err
 }

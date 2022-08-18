@@ -402,7 +402,7 @@ type VolumeDispenserOKBody struct {
 
 	// status
 	// Required: true
-	Status *int64 `json:"status"`
+	Status *string `json:"status"`
 
 	// volume
 	// Required: true
@@ -415,7 +415,7 @@ func (o *VolumeDispenserOKBody) UnmarshalJSON(data []byte) error {
 
 		// status
 		// Required: true
-		Status *int64 `json:"status"`
+		Status *string `json:"status"`
 
 		// volume
 		// Required: true

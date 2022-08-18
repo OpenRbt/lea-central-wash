@@ -1,6 +1,8 @@
 package app
 
-import "errors"
+import (
+	"errors"
+)
 
 var (
 	ErrNotFound = errors.New("not found")
@@ -11,8 +13,8 @@ type HardwareAccessLayer interface {
 	Start()
 	ControlBoard(key int32) (ControlBoard, error)
 	RunProgram(id int32, cfg RelayConfig) (err error)
-	Command(cmd int) error
-	Volume() (int64, int64)
+	MeasureVolumeMilliliters(cmd int) error
+	Volume() DispenserStatus
 }
 
 // ControlBoard represents one board (even virtual) to control relays
@@ -39,4 +41,9 @@ type Relay struct {
 	ID      int
 	TimeOn  int
 	TimeOff int
+}
+
+type DispenserStatus struct {
+	Milliliters    int64
+	IsSensorActive error
 }

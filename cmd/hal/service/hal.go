@@ -26,7 +26,7 @@ var (
 
 var lastValue string = "0"
 
-var flag int64 = 0
+var ErrorCommandDispenser error = nil
 
 // PostError describes an error happened to a post
 type PostError struct {
@@ -143,41 +143,39 @@ func (r *Rev1DispencerBoard) workingLoop() {
 	}
 }
 
-func (h *HardwareAccessLayer) Volume() (int64, int64) {
-	l, err := strconv.ParseInt(lastValue, 10, 10)
-	if err != nil {
-		fmt.Println("err: ", err)
+func (h *HardwareAccessLayer) Volume() app.DispenserStatus {
+	l, _ := strconv.ParseInt(lastValue, 10, 10)
+	return app.DispenserStatus{
+		Milliliters:    l,
+		IsSensorActive: ErrorCommandDispenser,
 	}
-	fmt.Println("LasVolume = ", l)
-	return l, flag
 }
 
 // Run command for Arduino
-func (h *HardwareAccessLayer) Command(cmd int) error {
+func (h *HardwareAccessLayer) MeasureVolumeMilliliters(cmd int) error {
 	r := h.dispencer
-	go r.runCom(cmd)
+	go r.measureVolumeMilliliters(cmd)
 	return nil
 }
 
-func (r *Rev1DispencerBoard) runCom(cmd int) error {
+func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
+	ErrorCommandDispenser = nil
 	lastValue = "0"
 	buf := make([]byte, 32)
 	cmdd := "S" + strconv.Itoa(cmd)
 	exi := false
-	flag = 1
 	for i := 0; i < 10; i++ {
 		_, err := r.openPort.Write([]byte(cmdd))
 		if err != nil {
 			fmt.Println("Error in command ", cmd)
-			flag = 0
-			return err
+			ErrorCommandDispenser = err
 		} else {
 			N, err := r.openPort.Read(buf)
 			if err == nil {
 				ans := string(buf[0 : N-2])
 				if ans == "SOK;" {
 					fmt.Println("Start command ", cmd)
-					flag = 1
+					ErrorCommandDispenser = nil
 					exi = true
 					break
 				}
@@ -186,7 +184,7 @@ func (r *Rev1DispencerBoard) runCom(cmd int) error {
 	}
 	if exi {
 		tick := time.Tick(200 * time.Millisecond)
-		var countErr int
+		var countErr int = 0
 		for {
 			select {
 			case <-tick:
@@ -197,45 +195,42 @@ func (r *Rev1DispencerBoard) runCom(cmd int) error {
 					v, _ := strconv.ParseInt(ans[1:N-3], 10, 10)
 					if v-l < 1 {
 						countErr += 1
-						if countErr >= 100 {
+						if countErr >= 50 {
 							_, err = r.openPort.Write([]byte("ERR;"))
 							N, err = r.openPort.Read(buf)
 							ans = string(buf[0 : N-2])
 							if ans == "FOK;" {
-								flag = 0
+								ErrorCommandDispenser = errors.New("The non-freezing is over")
 								fmt.Println("The non-freezing is over")
-								return nil
+								return ErrorCommandDispenser
 							}
 						}
 					}
-					fmt.Println("Answer: ", ans)
 					if ans[0:N-2] != "OK-PING;" {
 						lastValue = ans[1 : N-3]
 					}
-					fmt.Println("Answer Arduino", lastValue)
 					if ans[0] == 'F' {
 						fmt.Println("Finish command ", cmd, " Successfully!")
-						flag = 0
 						countErr = 0
 						_, err = r.openPort.Write([]byte("FOK;"))
 						if err != nil {
 							fmt.Println("Error in command FOK")
-							return err
+							ErrorCommandDispenser = errors.New("Error in command FOK")
+							return ErrorCommandDispenser
 						}
 						return nil
 					}
 				} else {
-					flag = 0
-					fmt.Println(err)
+					ErrorCommandDispenser = errors.New("Error in read answer from Dispenser")
 					fmt.Println("Error in command ", cmd)
 					return err
 				}
 			}
 		}
 	}
-	flag = 0
-	fmt.Println("Arduino is not responding ")
-	return nil
+	ErrorCommandDispenser = errors.New("Dispenser is not responding")
+	fmt.Println("Dispenser is not responding")
+	return ErrorCommandDispenser
 }
 
 // Run just runs a goroutine which controls a device
@@ -323,7 +318,11 @@ func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
 	buf := make([]byte, 32)
 	N, err := r.openPort.Read(buf)
 	if err != nil {
-		return err
+		fmt.Println(err)
+		if err != errors.New("EOF") {
+			return err
+		}
+
 	}
 	if N < 2 {
 		return ErrWrongAnswer

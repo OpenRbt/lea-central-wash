@@ -660,7 +660,7 @@ func (svc *service) measureVolumeMilliliters(params op.MeasureVolumeMillilitersP
 
 	err := svc.app.MeasureVolumeMilliliters(*params.Args.Volume)
 
-	log.Info("runArduino", "Volume", *params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
+	log.Info("Run Command Dispenser ", "Volume", *params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
 	fmt.Println("ERROR: ", err)
 
 	switch errors.Cause(err) {
@@ -680,6 +680,10 @@ func (svc *service) VolumeDispenser(params op.VolumeDispenserParams) op.VolumeDi
 	znach, status, err := svc.app.GetVolumeDispenser()
 
 	log.Info("Get Volume", "ip", params.HTTPRequest.RemoteAddr)
+
+	if status != "" {
+		log.Err("Error execution command from Dispenser: ", status)
+	}
 
 	switch errors.Cause(err) {
 	case nil:

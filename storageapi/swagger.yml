@@ -1957,7 +1957,7 @@ paths:
               volume: 
                 type: integer
               status:
-                type: integer
+                type: string
         204:
           description: OK
         404:

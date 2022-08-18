@@ -43,18 +43,18 @@ func (c *Client) RunProgram(id int32, cfg app.RelayConfig) (err error) {
 	return err
 }
 
-func (c *Client) Command(volume int64) (err error) {
+func (c *Client) MeasureVolumeMilliliters(volume int64) (err error) {
 	com := xgrpc.OptionsCommand{
 		Command: int32(volume),
 	}
 
 	ctx := context.Background()
 
-	_, err = c.hal.Command(ctx, &com)
+	_, err = c.hal.MeasureVolumeMilliliters(ctx, &com)
 	return err
 }
 
-func (c *Client) Volume() (int64, int64, error) {
+func (c *Client) Volume() (int64, string, error) {
 
 	ctx := context.Background()
 

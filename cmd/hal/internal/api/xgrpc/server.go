@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"hal/internal/app"
 
-	"github.com/golang/protobuf/ptypes/empty"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -17,20 +16,20 @@ func New(hal app.HardwareAccessLayer) *HalHandler {
 	return &HalHandler{hal: hal}
 }
 
-func (h HalHandler) RunProgram(ctx context.Context, in *Options) (*empty.Empty, error) {
+func (h HalHandler) RunProgram(ctx context.Context, in *Options) (*AnswerProgram, error) {
 	err := h.hal.RunProgram(in.ProgramId, app.RelayConfig{
 		MotorSpeedPercent: in.MotorSpeedPercent,
 		TimeoutSec:        in.TimeoutSec,
 	})
 	if err != nil {
-		return nil, err
+		return &AnswerProgram{Answer: 1}, err
 	}
 
-	return nil, nil
+	return &AnswerProgram{Answer: 1}, nil
 }
 
-func (h HalHandler) Command(ctx context.Context, in *OptionsCommand) (*AnswerCommand, error) {
-	err := h.hal.Command(int(in.Command))
+func (h HalHandler) MeasureVolumeMilliliters(ctx context.Context, in *OptionsCommand) (*AnswerCommand, error) {
+	err := h.hal.MeasureVolumeMilliliters(int(in.Command))
 	fmt.Println("Server-hal: ", err)
 	if err != nil {
 		fmt.Println("Not NIL")
@@ -41,8 +40,11 @@ func (h HalHandler) Command(ctx context.Context, in *OptionsCommand) (*AnswerCom
 }
 
 func (h HalHandler) Volume(ctx context.Context, in *emptypb.Empty) (*Answer, error) {
-	ans, status := h.hal.Volume()
-	return &Answer{Answer: ans, Status: status}, nil
+	status := h.hal.Volume()
+	if status.IsSensorActive != nil {
+		return &Answer{Answer: status.Milliliters, Status: fmt.Sprint(status.IsSensorActive)}, nil
+	}
+	return &Answer{Answer: status.Milliliters, Status: ""}, nil
 }
 
 func (h HalHandler) mustEmbedUnimplementedHardwareAccessLayerServer() {}

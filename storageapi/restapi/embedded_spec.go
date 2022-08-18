@@ -2375,7 +2375,7 @@ func init() {
               ],
               "properties": {
                 "status": {
-                  "type": "integer"
+                  "type": "string"
                 },
                 "volume": {
                   "type": "integer"
@@ -5429,7 +5429,7 @@ func init() {
               ],
               "properties": {
                 "status": {
-                  "type": "integer"
+                  "type": "string"
                 },
                 "volume": {
                   "type": "integer"
