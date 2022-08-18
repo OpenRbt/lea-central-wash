@@ -56,7 +56,7 @@ void loop() {
     String str = Serial.readString();
     Serial.setTimeout(5);
     if (str[0] == 'S') {
-      Serial.println("SOK");
+      Serial.println("SOK;");
       str.remove(0,1);
       stat = LIQUID_ON;
       vol = 0.0;
