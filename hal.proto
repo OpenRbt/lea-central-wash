@@ -11,10 +11,16 @@ service HardwareAccessLayer{
 }
 
 message Options{
-    int32 program_id = 1;
-    int32 second_program_id = 2;
-    int32 timeoutSec = 3;
-    int32 motorSpeedPercent = 4;
+    int32 station_id = 1;
+    int32 timeoutSec = 2;
+    int32 motorSpeedPercent = 3;
+    repeated Relay relays = 4;
+}
+
+message Relay{
+    int32 ID = 1;
+	int32 TimeOn = 2;
+	int32 TimeOff = 3;
 }
 
 message OptionsCommand{

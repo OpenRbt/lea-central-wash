@@ -17,9 +17,20 @@ func New(hal app.HardwareAccessLayer) *HalHandler {
 }
 
 func (h HalHandler) RunProgram(ctx context.Context, in *Options) (*AnswerProgram, error) {
-	err := h.hal.RunProgram(in.ProgramId, app.RelayConfig{
+	relay := []app.Relay{}
+	for _, entry := range in.Relays {
+		z := app.Relay{
+			ID:      int(entry.ID),
+			TimeOn:  int(entry.TimeOn),
+			TimeOff: int(entry.TimeOff),
+		}
+		relay = append(relay, z)
+	}
+
+	err := h.hal.RunProgram(in.StationId, app.RelayConfig{
 		MotorSpeedPercent: in.MotorSpeedPercent,
 		TimeoutSec:        in.TimeoutSec,
+		Timings:           relay,
 	})
 	if err != nil {
 		return &AnswerProgram{Answer: 1}, err
@@ -30,19 +41,16 @@ func (h HalHandler) RunProgram(ctx context.Context, in *Options) (*AnswerProgram
 
 func (h HalHandler) MeasureVolumeMilliliters(ctx context.Context, in *OptionsCommand) (*AnswerCommand, error) {
 	err := h.hal.MeasureVolumeMilliliters(int(in.Command))
-	fmt.Println("Server-hal: ", err)
 	if err != nil {
-		fmt.Println("Not NIL")
 		return &AnswerCommand{Answer: 1}, err
 	}
-	fmt.Println("NIL")
 	return &AnswerCommand{Answer: 1}, nil
 }
 
 func (h HalHandler) Volume(ctx context.Context, in *emptypb.Empty) (*Answer, error) {
 	status := h.hal.Volume()
-	if status.IsSensorActive != nil {
-		return &Answer{Answer: status.Milliliters, Status: fmt.Sprint(status.IsSensorActive)}, nil
+	if status.ErrorCommandDispenser != nil {
+		return &Answer{Answer: status.Milliliters, Status: fmt.Sprint(status.ErrorCommandDispenser)}, nil
 	}
 	return &Answer{Answer: status.Milliliters, Status: ""}, nil
 }

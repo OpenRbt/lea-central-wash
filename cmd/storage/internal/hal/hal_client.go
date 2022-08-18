@@ -30,10 +30,23 @@ func NewClient() (*Client, error) {
 }
 
 func (c *Client) RunProgram(id int32, cfg app.RelayConfig) (err error) {
+
+	rel := []*xgrpc.Relay{}
+
+	for _, entry := range cfg.Timings {
+		z := &xgrpc.Relay{
+			ID:      int32(entry.ID),
+			TimeOn:  int32(entry.TimeOn),
+			TimeOff: int32(entry.TimeOff),
+		}
+		rel = append(rel, z)
+	}
+
 	opt := xgrpc.Options{
-		ProgramId:         id,
+		StationId:         id,
 		TimeoutSec:        int32(cfg.TimeoutSec),
 		MotorSpeedPercent: int32(cfg.MotorSpeedPercent),
+		Relays:            rel,
 	}
 
 	ctx := context.Background()

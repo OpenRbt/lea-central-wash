@@ -44,6 +44,6 @@ type Relay struct {
 }
 
 type DispenserStatus struct {
-	Milliliters    int64
-	IsSensorActive error
+	Milliliters           int64
+	ErrorCommandDispenser error
 }

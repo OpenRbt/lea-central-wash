@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"hal/internal/app"
+	"io"
 	"io/ioutil"
 	"log"
 	"regexp"
@@ -146,8 +147,8 @@ func (r *Rev1DispencerBoard) workingLoop() {
 func (h *HardwareAccessLayer) Volume() app.DispenserStatus {
 	l, _ := strconv.ParseInt(lastValue, 10, 10)
 	return app.DispenserStatus{
-		Milliliters:    l,
-		IsSensorActive: ErrorCommandDispenser,
+		Milliliters:           l,
+		ErrorCommandDispenser: ErrorCommandDispenser,
 	}
 }
 
@@ -319,8 +320,9 @@ func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
 	N, err := r.openPort.Read(buf)
 	if err != nil {
 		fmt.Println(err)
-		if err != errors.New("EOF") {
-			return err
+		if err == io.EOF {
+			fmt.Println("EOF ")
+			// return err
 		}
 
 	}
@@ -483,7 +485,7 @@ func (r *Rev2Board) RunConfig(config app.RelayConfig) {
 func (h *HardwareAccessLayer) ControlBoard(wantedPosition int32) (app.ControlBoard, error) {
 	h.portsMu.Lock()
 	defer h.portsMu.Unlock()
-	for key := range h.ports {
+	for key := range h.portRev2Board {
 		if h.portRev2Board[key].stationNumber == int(wantedPosition) {
 			return h.portRev2Board[key], nil
 		}
