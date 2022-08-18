@@ -88,7 +88,7 @@ func (a *app) Run2Program(id StationID, programID int64, programID2 int64, prefl
 	return a.hardware.RunProgram(int32(id), cfg)
 }
 
-func (a *app) RunDispenserBoard(volume int64) (err error) {
+func (a *app) MeasureVolumeMilliliters(volume int64) (err error) {
 	return a.hardware.Command(volume)
 }
 

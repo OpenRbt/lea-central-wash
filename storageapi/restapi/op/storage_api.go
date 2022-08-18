@@ -119,6 +119,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		LoadRelayHandler: LoadRelayHandlerFunc(func(params LoadRelayParams) LoadRelayResponder {
 			return LoadRelayNotImplemented()
 		}),
+		MeasureVolumeMillilitersHandler: MeasureVolumeMillilitersHandlerFunc(func(params MeasureVolumeMillilitersParams) MeasureVolumeMillilitersResponder {
+			return MeasureVolumeMillilitersNotImplemented()
+		}),
 		OpenStationHandler: OpenStationHandlerFunc(func(params OpenStationParams) OpenStationResponder {
 			return OpenStationNotImplemented()
 		}),
@@ -136,9 +139,6 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		Run2ProgramHandler: Run2ProgramHandlerFunc(func(params Run2ProgramParams) Run2ProgramResponder {
 			return Run2ProgramNotImplemented()
-		}),
-		RunDispenserHandler: RunDispenserHandlerFunc(func(params RunDispenserParams) RunDispenserResponder {
-			return RunDispenserNotImplemented()
 		}),
 		RunProgramHandler: RunProgramHandlerFunc(func(params RunProgramParams) RunProgramResponder {
 			return RunProgramNotImplemented()
@@ -324,6 +324,8 @@ type StorageAPI struct {
 	LoadMoneyHandler LoadMoneyHandler
 	// LoadRelayHandler sets the operation handler for the load relay operation
 	LoadRelayHandler LoadRelayHandler
+	// MeasureVolumeMillilitersHandler sets the operation handler for the measure volume milliliters operation
+	MeasureVolumeMillilitersHandler MeasureVolumeMillilitersHandler
 	// OpenStationHandler sets the operation handler for the open station operation
 	OpenStationHandler OpenStationHandler
 	// PingHandler sets the operation handler for the ping operation
@@ -336,8 +338,6 @@ type StorageAPI struct {
 	ResetStationStatHandler ResetStationStatHandler
 	// Run2ProgramHandler sets the operation handler for the run2 program operation
 	Run2ProgramHandler Run2ProgramHandler
-	// RunDispenserHandler sets the operation handler for the run dispenser operation
-	RunDispenserHandler RunDispenserHandler
 	// RunProgramHandler sets the operation handler for the run program operation
 	RunProgramHandler RunProgramHandler
 	// SaveHandler sets the operation handler for the save operation
@@ -550,6 +550,9 @@ func (o *StorageAPI) Validate() error {
 	if o.LoadRelayHandler == nil {
 		unregistered = append(unregistered, "LoadRelayHandler")
 	}
+	if o.MeasureVolumeMillilitersHandler == nil {
+		unregistered = append(unregistered, "MeasureVolumeMillilitersHandler")
+	}
 	if o.OpenStationHandler == nil {
 		unregistered = append(unregistered, "OpenStationHandler")
 	}
@@ -567,9 +570,6 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.Run2ProgramHandler == nil {
 		unregistered = append(unregistered, "Run2ProgramHandler")
-	}
-	if o.RunDispenserHandler == nil {
-		unregistered = append(unregistered, "RunDispenserHandler")
 	}
 	if o.RunProgramHandler == nil {
 		unregistered = append(unregistered, "RunProgramHandler")
@@ -857,6 +857,10 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/run-dispenser"] = NewMeasureVolumeMilliliters(o.context, o.MeasureVolumeMillilitersHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/open-station"] = NewOpenStation(o.context, o.OpenStationHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -878,10 +882,6 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/run-2program"] = NewRun2Program(o.context, o.Run2ProgramHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/run-dispenser"] = NewRunDispenser(o.context, o.RunDispenserHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

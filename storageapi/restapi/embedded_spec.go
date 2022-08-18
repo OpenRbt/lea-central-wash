@@ -1018,7 +1018,7 @@ func init() {
     },
     "/run-dispenser": {
       "post": {
-        "operationId": "runDispenser",
+        "operationId": "measureVolumeMilliliters",
         "parameters": [
           {
             "name": "args",
@@ -1026,7 +1026,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgRunDispenser",
+              "title": "ArgMeasureVolumeMilliliters",
               "required": [
                 "hash",
                 "volume"
@@ -4088,7 +4088,7 @@ func init() {
     },
     "/run-dispenser": {
       "post": {
-        "operationId": "runDispenser",
+        "operationId": "measureVolumeMilliliters",
         "parameters": [
           {
             "name": "args",
@@ -4096,7 +4096,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgRunDispenser",
+              "title": "ArgMeasureVolumeMilliliters",
               "required": [
                 "hash",
                 "volume"

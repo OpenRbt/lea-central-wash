@@ -80,6 +80,8 @@ type ClientService interface {
 
 	LoadRelay(params *LoadRelayParams, opts ...ClientOption) (*LoadRelayOK, error)
 
+	MeasureVolumeMilliliters(params *MeasureVolumeMillilitersParams, opts ...ClientOption) (*MeasureVolumeMillilitersNoContent, error)
+
 	OpenStation(params *OpenStationParams, opts ...ClientOption) (*OpenStationNoContent, error)
 
 	Ping(params *PingParams, opts ...ClientOption) (*PingOK, error)
@@ -91,8 +93,6 @@ type ClientService interface {
 	ResetStationStat(params *ResetStationStatParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResetStationStatNoContent, error)
 
 	Run2Program(params *Run2ProgramParams, opts ...ClientOption) (*Run2ProgramNoContent, error)
-
-	RunDispenser(params *RunDispenserParams, opts ...ClientOption) (*RunDispenserNoContent, error)
 
 	RunProgram(params *RunProgramParams, opts ...ClientOption) (*RunProgramNoContent, error)
 
@@ -1117,6 +1117,44 @@ func (a *Client) LoadRelay(params *LoadRelayParams, opts ...ClientOption) (*Load
 }
 
 /*
+  MeasureVolumeMilliliters measure volume milliliters API
+*/
+func (a *Client) MeasureVolumeMilliliters(params *MeasureVolumeMillilitersParams, opts ...ClientOption) (*MeasureVolumeMillilitersNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewMeasureVolumeMillilitersParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "measureVolumeMilliliters",
+		Method:             "POST",
+		PathPattern:        "/run-dispenser",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &MeasureVolumeMillilitersReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*MeasureVolumeMillilitersNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for measureVolumeMilliliters: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   OpenStation open station API
 */
 func (a *Client) OpenStation(params *OpenStationParams, opts ...ClientOption) (*OpenStationNoContent, error) {
@@ -1342,44 +1380,6 @@ func (a *Client) Run2Program(params *Run2ProgramParams, opts ...ClientOption) (*
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for run2Program: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
-  RunDispenser run dispenser API
-*/
-func (a *Client) RunDispenser(params *RunDispenserParams, opts ...ClientOption) (*RunDispenserNoContent, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewRunDispenserParams()
-	}
-	op := &runtime.ClientOperation{
-		ID:                 "runDispenser",
-		Method:             "POST",
-		PathPattern:        "/run-dispenser",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &RunDispenserReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*RunDispenserNoContent)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for runDispenser: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

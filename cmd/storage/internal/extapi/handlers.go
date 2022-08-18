@@ -656,22 +656,22 @@ func (svc *service) run2Program(params op.Run2ProgramParams) op.Run2ProgramRespo
 	}
 }
 
-func (svc *service) runDispenser(params op.RunDispenserParams) op.RunDispenserResponder {
+func (svc *service) measureVolumeMilliliters(params op.MeasureVolumeMillilitersParams) op.MeasureVolumeMillilitersResponder {
 
-	err := svc.app.RunDispenserBoard(*params.Args.Volume)
+	err := svc.app.MeasureVolumeMilliliters(*params.Args.Volume)
 
 	log.Info("runArduino", "Volume", *params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
 	fmt.Println("ERROR: ", err)
 
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewRunDispenserNoContent()
+		return op.NewMeasureVolumeMillilitersNoContent()
 	case app.ErrNotFound:
 		log.PrintErr(err, "hash", params.Args.Hash, "Volume", params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewRunDispenserNotFound().WithPayload("Arduino not found")
+		return op.NewMeasureVolumeMillilitersNotFound().WithPayload("Arduino not found")
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewRunDispenserInternalServerError()
+		return op.NewMeasureVolumeMillilitersInternalServerError()
 	}
 }
 
