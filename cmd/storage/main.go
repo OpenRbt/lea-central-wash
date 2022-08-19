@@ -64,6 +64,7 @@ var (
 		gooseDir   string
 		extapi     extapi.Config
 		kasse      svckasse.Config
+		hal        hal.Config
 		testBoards bool
 	}
 )
@@ -87,6 +88,7 @@ func init() { //nolint:gochecknoinits
 	flag.StringVar(&cfg.extapi.Host, "extapi.host", def.ExtAPIHost, "serve external API on `host`")
 	flag.IntVar(&cfg.extapi.Port, "extapi.port", def.ExtAPIPort, "serve external API on `port` (>0)")
 	flag.StringVar(&cfg.extapi.BasePath, "extapi.basepath", def.ExtAPIBasePath, "serve external API on `path`")
+	flag.StringVar(&cfg.hal.Endpoint, "hal.endpoint", def.HALEndpoint, "endpoint online kasse")
 	flag.StringVar(&cfg.kasse.Endpoint, "kasse.endpoint", def.KasseEndpoint, "endpoint online kasse")
 	flag.BoolVar(&useMemDB, "d", false, "change database from postgres to memdb")
 	flag.BoolVar(&checkSysTime, "t", false, "check time")
@@ -232,7 +234,7 @@ func run(db *sqlx.DB, errc chan<- error) {
 	}
 
 	//hal client creation
-	client, err := hal.NewClient()
+	client, err := hal.NewClient(cfg.hal)
 	if err != nil {
 		errc <- err
 		return

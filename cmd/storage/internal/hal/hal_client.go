@@ -10,14 +10,18 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+type Config struct {
+	Endpoint string
+}
+
 type Client struct {
 	hal xgrpc.HardwareAccessLayerClient
 }
 
-func NewClient() (*Client, error) {
+func NewClient(config Config) (*Client, error) {
 	opt := grpc.WithTransportCredentials(insecure.NewCredentials())
 
-	conn, err := grpc.Dial(":8099", opt)
+	conn, err := grpc.Dial(config.Endpoint, opt)
 	if err != nil {
 		return nil, err
 	}

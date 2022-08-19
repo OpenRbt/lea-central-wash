@@ -45,6 +45,7 @@ var (
 	ExtAPIPort         = intGetenv("STORAGE_EXT_PORT", 8020)
 	ExtAPIBasePath     = strGetenv("STORAGE_EXT_BASEPATH", oapiBasePath)
 	KasseEndpoint      = strGetenv("STORAGE_KASSE_ENDPOINT", "https://localhost:8443")
+	HALEndpoint        = strGetenv("STORAGE_HAL_ENDPOINT", ":8099")
 	MeteoInfoBaseURL   = "https://meteoinfo.ru/pogoda"
 	OpenWeatherBaseURL = "http://api.openweathermap.org/data/2.5/weather"
 	OpenWeatherAPIKey  = strGetenv("OPENWEATHER_API_KEY", "")
