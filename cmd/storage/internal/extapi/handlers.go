@@ -700,7 +700,7 @@ func (svc *service) VolumeDispenser(params op.VolumeDispenserParams) op.VolumeDi
 func (svc *service) GetLevel(params op.GetLevelParams) op.GetLevelResponder {
 	answer, err := svc.app.GetLevel()
 
-	log.Info("Get Level water", "IP", params.HTTPRequest.RemoteAddr)
+	log.Info("Get water level", "IP", params.HTTPRequest.RemoteAddr)
 
 	switch errors.Cause(err) {
 	case nil:

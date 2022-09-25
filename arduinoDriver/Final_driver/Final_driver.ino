@@ -5,13 +5,9 @@
 HCSR04 hc(4, 5);
 
 volatile int flow_frequency; // with this variable, we will count the pulses from the water flow sensor
-float vol = 0.0,l_minute, requiredVol, requiredVoln, itog;
+float vol = 0.0,l_minute, requiredVol, requiredVoln, resultDistance;
 int stat = IDL;
 unsigned char flowsensor = 2; // Sensor Input
-//long duration, cm, itog;
-
-//unsigned char PIN_TRIG = 4; // Sensor Input
-//unsigned char PIN_ECHO = 5; // Sensor Input
 unsigned long currentTime, cloopTime;
 int timer = 200;
 
@@ -29,11 +25,11 @@ void checkVolume () {
 
 void CheckDistance () {
   float v = hc.dist();
-    if (itog == 0) {
-      itog = v;
+    if (resultDistance == 0) {
+      resultDistance = v;
     }
     if (v != 0) {
-      itog = itog * 0.9 + v * 0.1;
+      resultDistance = resultDistance * 0.9 + v * 0.1;
     }
 }
 
