@@ -17,7 +17,8 @@ import (
 // StationStatCurrentOKCode is the HTTP code returned for type StationStatCurrentOK
 const StationStatCurrentOKCode int = 200
 
-/*StationStatCurrentOK OK
+/*
+StationStatCurrentOK OK
 
 swagger:response stationStatCurrentOK
 */
@@ -66,7 +67,8 @@ func (o *StationStatCurrentOK) StationStatCurrentResponder() {}
 // StationStatCurrentUnauthorizedCode is the HTTP code returned for type StationStatCurrentUnauthorized
 const StationStatCurrentUnauthorizedCode int = 401
 
-/*StationStatCurrentUnauthorized PIN is missing or invalid
+/*
+StationStatCurrentUnauthorized PIN is missing or invalid
 
 swagger:response stationStatCurrentUnauthorized
 */
@@ -92,7 +94,8 @@ func (o *StationStatCurrentUnauthorized) StationStatCurrentResponder() {}
 // StationStatCurrentForbiddenCode is the HTTP code returned for type StationStatCurrentForbidden
 const StationStatCurrentForbiddenCode int = 403
 
-/*StationStatCurrentForbidden Access forbiddenn
+/*
+StationStatCurrentForbidden Access forbiddenn
 
 swagger:response stationStatCurrentForbidden
 */
@@ -118,7 +121,8 @@ func (o *StationStatCurrentForbidden) StationStatCurrentResponder() {}
 // StationStatCurrentInternalServerErrorCode is the HTTP code returned for type StationStatCurrentInternalServerError
 const StationStatCurrentInternalServerErrorCode int = 500
 
-/*StationStatCurrentInternalServerError internal error
+/*
+StationStatCurrentInternalServerError internal error
 
 swagger:response stationStatCurrentInternalServerError
 */

@@ -52,10 +52,12 @@ func NewRun2ProgramParamsWithHTTPClient(client *http.Client) *Run2ProgramParams 
 	}
 }
 
-/* Run2ProgramParams contains all the parameters to send to the API endpoint
-   for the run2 program operation.
+/*
+Run2ProgramParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the run2 program operation.
+
+	Typically these are written to a http.Request.
 */
 type Run2ProgramParams struct {
 

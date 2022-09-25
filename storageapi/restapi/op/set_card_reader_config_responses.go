@@ -15,7 +15,8 @@ import (
 // SetCardReaderConfigNoContentCode is the HTTP code returned for type SetCardReaderConfigNoContent
 const SetCardReaderConfigNoContentCode int = 204
 
-/*SetCardReaderConfigNoContent OK
+/*
+SetCardReaderConfigNoContent OK
 
 swagger:response setCardReaderConfigNoContent
 */
@@ -41,7 +42,8 @@ func (o *SetCardReaderConfigNoContent) SetCardReaderConfigResponder() {}
 // SetCardReaderConfigNotFoundCode is the HTTP code returned for type SetCardReaderConfigNotFound
 const SetCardReaderConfigNotFoundCode int = 404
 
-/*SetCardReaderConfigNotFound not found
+/*
+SetCardReaderConfigNotFound not found
 
 swagger:response setCardReaderConfigNotFound
 */
@@ -67,7 +69,8 @@ func (o *SetCardReaderConfigNotFound) SetCardReaderConfigResponder() {}
 // SetCardReaderConfigUnprocessableEntityCode is the HTTP code returned for type SetCardReaderConfigUnprocessableEntity
 const SetCardReaderConfigUnprocessableEntityCode int = 422
 
-/*SetCardReaderConfigUnprocessableEntity validation error
+/*
+SetCardReaderConfigUnprocessableEntity validation error
 
 swagger:response setCardReaderConfigUnprocessableEntity
 */
@@ -111,7 +114,8 @@ func (o *SetCardReaderConfigUnprocessableEntity) SetCardReaderConfigResponder() 
 // SetCardReaderConfigInternalServerErrorCode is the HTTP code returned for type SetCardReaderConfigInternalServerError
 const SetCardReaderConfigInternalServerErrorCode int = 500
 
-/*SetCardReaderConfigInternalServerError internal error
+/*
+SetCardReaderConfigInternalServerError internal error
 
 swagger:response setCardReaderConfigInternalServerError
 */

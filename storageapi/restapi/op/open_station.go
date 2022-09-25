@@ -36,10 +36,10 @@ func NewOpenStation(ctx *middleware.Context, handler OpenStationHandler) *OpenSt
 	return &OpenStation{Context: ctx, Handler: handler}
 }
 
-/* OpenStation swagger:route POST /open-station openStation
+/*
+	OpenStation swagger:route POST /open-station openStation
 
 OpenStation open station API
-
 */
 type OpenStation struct {
 	Context *middleware.Context

@@ -15,7 +15,8 @@ import (
 // LoadOKCode is the HTTP code returned for type LoadOK
 const LoadOKCode int = 200
 
-/*LoadOK OK
+/*
+LoadOK OK
 
 swagger:response loadOK
 */
@@ -59,7 +60,8 @@ func (o *LoadOK) LoadResponder() {}
 // LoadNotFoundCode is the HTTP code returned for type LoadNotFound
 const LoadNotFoundCode int = 404
 
-/*LoadNotFound not found
+/*
+LoadNotFound not found
 
 swagger:response loadNotFound
 */
@@ -85,7 +87,8 @@ func (o *LoadNotFound) LoadResponder() {}
 // LoadInternalServerErrorCode is the HTTP code returned for type LoadInternalServerError
 const LoadInternalServerErrorCode int = 500
 
-/*LoadInternalServerError internal error
+/*
+LoadInternalServerError internal error
 
 swagger:response loadInternalServerError
 */

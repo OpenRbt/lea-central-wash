@@ -15,7 +15,8 @@ import (
 // SetStationNoContentCode is the HTTP code returned for type SetStationNoContent
 const SetStationNoContentCode int = 204
 
-/*SetStationNoContent OK
+/*
+SetStationNoContent OK
 
 swagger:response setStationNoContent
 */
@@ -41,7 +42,8 @@ func (o *SetStationNoContent) SetStationResponder() {}
 // SetStationUnauthorizedCode is the HTTP code returned for type SetStationUnauthorized
 const SetStationUnauthorizedCode int = 401
 
-/*SetStationUnauthorized Access denied. It will happen when you try to change the ID at the station online.
+/*
+SetStationUnauthorized Access denied. It will happen when you try to change the ID at the station online.
 
 swagger:response setStationUnauthorized
 */
@@ -67,7 +69,8 @@ func (o *SetStationUnauthorized) SetStationResponder() {}
 // SetStationNotFoundCode is the HTTP code returned for type SetStationNotFound
 const SetStationNotFoundCode int = 404
 
-/*SetStationNotFound not found
+/*
+SetStationNotFound not found
 
 swagger:response setStationNotFound
 */
@@ -93,7 +96,8 @@ func (o *SetStationNotFound) SetStationResponder() {}
 // SetStationUnprocessableEntityCode is the HTTP code returned for type SetStationUnprocessableEntity
 const SetStationUnprocessableEntityCode int = 422
 
-/*SetStationUnprocessableEntity validation error
+/*
+SetStationUnprocessableEntity validation error
 
 swagger:response setStationUnprocessableEntity
 */
@@ -119,7 +123,8 @@ func (o *SetStationUnprocessableEntity) SetStationResponder() {}
 // SetStationInternalServerErrorCode is the HTTP code returned for type SetStationInternalServerError
 const SetStationInternalServerErrorCode int = 500
 
-/*SetStationInternalServerError internal error
+/*
+SetStationInternalServerError internal error
 
 swagger:response setStationInternalServerError
 */

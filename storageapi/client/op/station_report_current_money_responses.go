@@ -57,7 +57,8 @@ func NewStationReportCurrentMoneyOK() *StationReportCurrentMoneyOK {
 	return &StationReportCurrentMoneyOK{}
 }
 
-/* StationReportCurrentMoneyOK describes a response with status code 200, with default header values.
+/*
+StationReportCurrentMoneyOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -119,7 +120,8 @@ func NewStationReportCurrentMoneyNotFound() *StationReportCurrentMoneyNotFound {
 	return &StationReportCurrentMoneyNotFound{}
 }
 
-/* StationReportCurrentMoneyNotFound describes a response with status code 404, with default header values.
+/*
+StationReportCurrentMoneyNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -169,7 +171,8 @@ func NewStationReportCurrentMoneyInternalServerError() *StationReportCurrentMone
 	return &StationReportCurrentMoneyInternalServerError{}
 }
 
-/* StationReportCurrentMoneyInternalServerError describes a response with status code 500, with default header values.
+/*
+StationReportCurrentMoneyInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -214,7 +217,8 @@ func (o *StationReportCurrentMoneyInternalServerError) readResponse(response run
 	return nil
 }
 
-/*StationReportCurrentMoneyBody ArgStationReportCurrentMoney
+/*
+StationReportCurrentMoneyBody ArgStationReportCurrentMoney
 swagger:model StationReportCurrentMoneyBody
 */
 type StationReportCurrentMoneyBody struct {

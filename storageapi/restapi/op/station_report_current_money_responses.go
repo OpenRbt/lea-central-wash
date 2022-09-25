@@ -17,7 +17,8 @@ import (
 // StationReportCurrentMoneyOKCode is the HTTP code returned for type StationReportCurrentMoneyOK
 const StationReportCurrentMoneyOKCode int = 200
 
-/*StationReportCurrentMoneyOK OK
+/*
+StationReportCurrentMoneyOK OK
 
 swagger:response stationReportCurrentMoneyOK
 */
@@ -63,7 +64,8 @@ func (o *StationReportCurrentMoneyOK) StationReportCurrentMoneyResponder() {}
 // StationReportCurrentMoneyNotFoundCode is the HTTP code returned for type StationReportCurrentMoneyNotFound
 const StationReportCurrentMoneyNotFoundCode int = 404
 
-/*StationReportCurrentMoneyNotFound not found
+/*
+StationReportCurrentMoneyNotFound not found
 
 swagger:response stationReportCurrentMoneyNotFound
 */
@@ -89,7 +91,8 @@ func (o *StationReportCurrentMoneyNotFound) StationReportCurrentMoneyResponder()
 // StationReportCurrentMoneyInternalServerErrorCode is the HTTP code returned for type StationReportCurrentMoneyInternalServerError
 const StationReportCurrentMoneyInternalServerErrorCode int = 500
 
-/*StationReportCurrentMoneyInternalServerError internal error
+/*
+StationReportCurrentMoneyInternalServerError internal error
 
 swagger:response stationReportCurrentMoneyInternalServerError
 */

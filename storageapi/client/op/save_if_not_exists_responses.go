@@ -56,7 +56,8 @@ func NewSaveIfNotExistsNoContent() *SaveIfNotExistsNoContent {
 	return &SaveIfNotExistsNoContent{}
 }
 
-/* SaveIfNotExistsNoContent describes a response with status code 204, with default header values.
+/*
+SaveIfNotExistsNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -106,7 +107,8 @@ func NewSaveIfNotExistsNotFound() *SaveIfNotExistsNotFound {
 	return &SaveIfNotExistsNotFound{}
 }
 
-/* SaveIfNotExistsNotFound describes a response with status code 404, with default header values.
+/*
+SaveIfNotExistsNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -156,7 +158,8 @@ func NewSaveIfNotExistsInternalServerError() *SaveIfNotExistsInternalServerError
 	return &SaveIfNotExistsInternalServerError{}
 }
 
-/* SaveIfNotExistsInternalServerError describes a response with status code 500, with default header values.
+/*
+SaveIfNotExistsInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -201,7 +204,8 @@ func (o *SaveIfNotExistsInternalServerError) readResponse(response runtime.Clien
 	return nil
 }
 
-/*SaveIfNotExistsBody ArgSaveIfNotExists
+/*
+SaveIfNotExistsBody ArgSaveIfNotExists
 swagger:model SaveIfNotExistsBody
 */
 type SaveIfNotExistsBody struct {

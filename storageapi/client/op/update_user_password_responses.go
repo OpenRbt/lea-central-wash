@@ -69,7 +69,8 @@ func NewUpdateUserPasswordCreated() *UpdateUserPasswordCreated {
 	return &UpdateUserPasswordCreated{}
 }
 
-/* UpdateUserPasswordCreated describes a response with status code 201, with default header values.
+/*
+UpdateUserPasswordCreated describes a response with status code 201, with default header values.
 
 OK
 */
@@ -131,7 +132,8 @@ func NewUpdateUserPasswordUnauthorized() *UpdateUserPasswordUnauthorized {
 	return &UpdateUserPasswordUnauthorized{}
 }
 
-/* UpdateUserPasswordUnauthorized describes a response with status code 401, with default header values.
+/*
+UpdateUserPasswordUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -181,7 +183,8 @@ func NewUpdateUserPasswordForbidden() *UpdateUserPasswordForbidden {
 	return &UpdateUserPasswordForbidden{}
 }
 
-/* UpdateUserPasswordForbidden describes a response with status code 403, with default header values.
+/*
+UpdateUserPasswordForbidden describes a response with status code 403, with default header values.
 
 Access forbidden
 */
@@ -231,7 +234,8 @@ func NewUpdateUserPasswordNotFound() *UpdateUserPasswordNotFound {
 	return &UpdateUserPasswordNotFound{}
 }
 
-/* UpdateUserPasswordNotFound describes a response with status code 404, with default header values.
+/*
+UpdateUserPasswordNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -281,7 +285,8 @@ func NewUpdateUserPasswordInternalServerError() *UpdateUserPasswordInternalServe
 	return &UpdateUserPasswordInternalServerError{}
 }
 
-/* UpdateUserPasswordInternalServerError describes a response with status code 500, with default header values.
+/*
+UpdateUserPasswordInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -326,7 +331,8 @@ func (o *UpdateUserPasswordInternalServerError) readResponse(response runtime.Cl
 	return nil
 }
 
-/*UpdateUserPasswordBody ArgUserPassword
+/*
+UpdateUserPasswordBody ArgUserPassword
 swagger:model UpdateUserPasswordBody
 */
 type UpdateUserPasswordBody struct {
@@ -555,7 +561,8 @@ func (o *UpdateUserPasswordBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*UpdateUserPasswordCreatedBody ResponseUserPassword
+/*
+UpdateUserPasswordCreatedBody ResponseUserPassword
 swagger:model UpdateUserPasswordCreatedBody
 */
 type UpdateUserPasswordCreatedBody struct {

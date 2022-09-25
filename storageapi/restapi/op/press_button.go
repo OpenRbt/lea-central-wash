@@ -38,10 +38,10 @@ func NewPressButton(ctx *middleware.Context, handler PressButtonHandler) *PressB
 	return &PressButton{Context: ctx, Handler: handler}
 }
 
-/* PressButton swagger:route POST /press-button pressButton
+/*
+	PressButton swagger:route POST /press-button pressButton
 
 PressButton press button API
-
 */
 type PressButton struct {
 	Context *middleware.Context

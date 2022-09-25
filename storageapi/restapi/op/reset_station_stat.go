@@ -38,10 +38,10 @@ func NewResetStationStat(ctx *middleware.Context, handler ResetStationStatHandle
 	return &ResetStationStat{Context: ctx, Handler: handler}
 }
 
-/* ResetStationStat swagger:route POST /reset-station-stat resetStationStat
+/*
+	ResetStationStat swagger:route POST /reset-station-stat resetStationStat
 
 ResetStationStat reset station stat API
-
 */
 type ResetStationStat struct {
 	Context *middleware.Context

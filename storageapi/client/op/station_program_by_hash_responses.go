@@ -51,7 +51,8 @@ func NewStationProgramByHashOK() *StationProgramByHashOK {
 	return &StationProgramByHashOK{}
 }
 
-/* StationProgramByHashOK describes a response with status code 200, with default header values.
+/*
+StationProgramByHashOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -113,7 +114,8 @@ func NewStationProgramByHashInternalServerError() *StationProgramByHashInternalS
 	return &StationProgramByHashInternalServerError{}
 }
 
-/* StationProgramByHashInternalServerError describes a response with status code 500, with default header values.
+/*
+StationProgramByHashInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -158,7 +160,8 @@ func (o *StationProgramByHashInternalServerError) readResponse(response runtime.
 	return nil
 }
 
-/*StationProgramByHashBody ArgStationProgramByHash
+/*
+StationProgramByHashBody ArgStationProgramByHash
 swagger:model StationProgramByHashBody
 */
 type StationProgramByHashBody struct {

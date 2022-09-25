@@ -124,6 +124,7 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.Run2ProgramHandler = op.Run2ProgramHandlerFunc(svc.run2Program)
 	api.MeasureVolumeMillilitersHandler = op.MeasureVolumeMillilitersHandlerFunc(svc.measureVolumeMilliliters)
 	api.VolumeDispenserHandler = op.VolumeDispenserHandlerFunc(svc.VolumeDispenser)
+	api.GetLevelHandler = op.GetLevelHandlerFunc(svc.GetLevel)
 	api.PressButtonHandler = op.PressButtonHandlerFunc(svc.pressButton)
 
 	api.StationStatCurrentHandler = op.StationStatCurrentHandlerFunc(svc.stationStatCurrent)

@@ -96,3 +96,8 @@ func (a *app) GetVolumeDispenser() (znach int64, status string, err error) {
 	zhach, status, err := a.hardware.Volume()
 	return zhach, status, err
 }
+
+func (a *app) GetLevel() (level int64, err error) {
+	level, err = a.hardware.GetLevel()
+	return level, nil
+}

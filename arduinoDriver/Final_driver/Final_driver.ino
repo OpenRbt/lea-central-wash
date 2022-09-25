@@ -1,11 +1,17 @@
 #define IDL 1
 #define LIQUID_ON 2
 #define SENDING_FINISH 3
+#include <HCSR04.h>
+HCSR04 hc(4, 5);
 
 volatile int flow_frequency; // with this variable, we will count the pulses from the water flow sensor
-float vol = 0.0,l_minute, requiredVol, requiredVoln;
+float vol = 0.0,l_minute, requiredVol, requiredVoln, itog;
 int stat = IDL;
 unsigned char flowsensor = 2; // Sensor Input
+//long duration, cm, itog;
+
+//unsigned char PIN_TRIG = 4; // Sensor Input
+//unsigned char PIN_ECHO = 5; // Sensor Input
 unsigned long currentTime, cloopTime;
 int timer = 200;
 
@@ -21,6 +27,16 @@ void checkVolume () {
   flow_frequency = 0; // resetting the counter
 }
 
+void check () {
+  float v = hc.dist();
+    if (itog == 0) {
+      itog = v;
+    }
+    if (v != 0) {
+      itog = itog * 0.9 + v * 0.1;
+    }
+}
+
 void setup()
 {
    pinMode(flowsensor, INPUT);
@@ -32,7 +48,7 @@ void setup()
    cloopTime = currentTime;
 }
 
-void loop() {
+void loop() {  
   if (stat == LIQUID_ON) {
         checkVolume();
         currentTime = millis();
@@ -55,6 +71,8 @@ void loop() {
   if (Serial.available() > 0) {
     String str = Serial.readString();
     Serial.setTimeout(5);
+//    Serial.println(str);
+//    Serial.println(str.length());
     if (str[0] == 'S') {
       Serial.println("SOK;");
       str.remove(0,1);
@@ -63,10 +81,14 @@ void loop() {
       requiredVoln = (float)str.toInt();
       requiredVol = (requiredVoln - requiredVoln*0.27) / 1000;
     } else {
+      if (str == "L;") {
+        Serial.println(int(itog));
+      }
       if (str == "UID;") {
         Serial.print("YF-S201;");
       }
       if (str == "PING;") {
+        check();
         Serial.println("OK-PING;");
       }
       if (str == "ERR;") {

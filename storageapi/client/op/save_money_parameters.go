@@ -54,10 +54,12 @@ func NewSaveMoneyParamsWithHTTPClient(client *http.Client) *SaveMoneyParams {
 	}
 }
 
-/* SaveMoneyParams contains all the parameters to send to the API endpoint
-   for the save money operation.
+/*
+SaveMoneyParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the save money operation.
+
+	Typically these are written to a http.Request.
 */
 type SaveMoneyParams struct {
 

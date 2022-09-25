@@ -63,7 +63,8 @@ func NewStationOK() *StationOK {
 	return &StationOK{}
 }
 
-/* StationOK describes a response with status code 200, with default header values.
+/*
+StationOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -125,7 +126,8 @@ func NewStationUnauthorized() *StationUnauthorized {
 	return &StationUnauthorized{}
 }
 
-/* StationUnauthorized describes a response with status code 401, with default header values.
+/*
+StationUnauthorized describes a response with status code 401, with default header values.
 
 Access denied. It will happen when you try to change the ID at the station online.
 */
@@ -175,7 +177,8 @@ func NewStationNotFound() *StationNotFound {
 	return &StationNotFound{}
 }
 
-/* StationNotFound describes a response with status code 404, with default header values.
+/*
+StationNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -225,7 +228,8 @@ func NewStationInternalServerError() *StationInternalServerError {
 	return &StationInternalServerError{}
 }
 
-/* StationInternalServerError describes a response with status code 500, with default header values.
+/*
+StationInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -270,7 +274,8 @@ func (o *StationInternalServerError) readResponse(response runtime.ClientRespons
 	return nil
 }
 
-/*StationBody station body
+/*
+StationBody station body
 swagger:model StationBody
 */
 type StationBody struct {

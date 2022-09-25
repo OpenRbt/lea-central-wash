@@ -69,7 +69,8 @@ func NewCreateUserCreated() *CreateUserCreated {
 	return &CreateUserCreated{}
 }
 
-/* CreateUserCreated describes a response with status code 201, with default header values.
+/*
+CreateUserCreated describes a response with status code 201, with default header values.
 
 OK
 */
@@ -131,7 +132,8 @@ func NewCreateUserUnauthorized() *CreateUserUnauthorized {
 	return &CreateUserUnauthorized{}
 }
 
-/* CreateUserUnauthorized describes a response with status code 401, with default header values.
+/*
+CreateUserUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -181,7 +183,8 @@ func NewCreateUserForbidden() *CreateUserForbidden {
 	return &CreateUserForbidden{}
 }
 
-/* CreateUserForbidden describes a response with status code 403, with default header values.
+/*
+CreateUserForbidden describes a response with status code 403, with default header values.
 
 Access forbidden
 */
@@ -231,7 +234,8 @@ func NewCreateUserConflict() *CreateUserConflict {
 	return &CreateUserConflict{}
 }
 
-/* CreateUserConflict describes a response with status code 409, with default header values.
+/*
+CreateUserConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
@@ -293,7 +297,8 @@ func NewCreateUserInternalServerError() *CreateUserInternalServerError {
 	return &CreateUserInternalServerError{}
 }
 
-/* CreateUserInternalServerError describes a response with status code 500, with default header values.
+/*
+CreateUserInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -338,7 +343,8 @@ func (o *CreateUserInternalServerError) readResponse(response runtime.ClientResp
 	return nil
 }
 
-/*CreateUserBody ArgUserCreate
+/*
+CreateUserBody ArgUserCreate
 swagger:model CreateUserBody
 */
 type CreateUserBody struct {
@@ -741,7 +747,8 @@ func (o *CreateUserBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*CreateUserConflictBody ResponseUserCreateConflict
+/*
+CreateUserConflictBody ResponseUserCreateConflict
 swagger:model CreateUserConflictBody
 */
 type CreateUserConflictBody struct {
@@ -838,7 +845,8 @@ func (o *CreateUserConflictBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*CreateUserCreatedBody ResponseUserCreate
+/*
+CreateUserCreatedBody ResponseUserCreate
 swagger:model CreateUserCreatedBody
 */
 type CreateUserCreatedBody struct {

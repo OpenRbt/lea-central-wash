@@ -134,6 +134,7 @@ func (r *Rev1DispencerBoard) workingLoop() {
 			if err != nil {
 				r.errorCount++
 				if r.errorCount >= 5 {
+					fmt.Println("Del")
 					r.toRemove = true
 					return
 				}
@@ -142,6 +143,33 @@ func (r *Rev1DispencerBoard) workingLoop() {
 			}
 		}
 	}
+}
+
+func (h *HardwareAccessLayer) GetLevel() int {
+	r := h.dispencer
+	return r.getLevel()
+}
+
+func (r *Rev1DispencerBoard) getLevel() int {
+	cmd := "L;"
+	_, err := r.openPort.Write([]byte(cmd))
+	if err != nil {
+		fmt.Println("Error in command", cmd)
+		return -1
+	}
+	buf := make([]byte, 32)
+	N, err := r.openPort.Read(buf)
+	if err != nil {
+		fmt.Println("Error in read answer")
+		return -1
+	}
+	ans := string(buf[0 : N-2])
+	n, err := strconv.Atoi(ans)
+	if err != nil {
+		fmt.Println("Error in convert string in int")
+		return -1
+	}
+	return n
 }
 
 func (h *HardwareAccessLayer) Volume() app.DispenserStatus {

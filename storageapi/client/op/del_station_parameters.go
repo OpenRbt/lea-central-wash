@@ -52,10 +52,12 @@ func NewDelStationParamsWithHTTPClient(client *http.Client) *DelStationParams {
 	}
 }
 
-/* DelStationParams contains all the parameters to send to the API endpoint
-   for the del station operation.
+/*
+DelStationParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the del station operation.
+
+	Typically these are written to a http.Request.
 */
 type DelStationParams struct {
 

@@ -69,7 +69,8 @@ func NewUpdateUserCreated() *UpdateUserCreated {
 	return &UpdateUserCreated{}
 }
 
-/* UpdateUserCreated describes a response with status code 201, with default header values.
+/*
+UpdateUserCreated describes a response with status code 201, with default header values.
 
 OK
 */
@@ -131,7 +132,8 @@ func NewUpdateUserUnauthorized() *UpdateUserUnauthorized {
 	return &UpdateUserUnauthorized{}
 }
 
-/* UpdateUserUnauthorized describes a response with status code 401, with default header values.
+/*
+UpdateUserUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -181,7 +183,8 @@ func NewUpdateUserForbidden() *UpdateUserForbidden {
 	return &UpdateUserForbidden{}
 }
 
-/* UpdateUserForbidden describes a response with status code 403, with default header values.
+/*
+UpdateUserForbidden describes a response with status code 403, with default header values.
 
 Access forbidden
 */
@@ -231,7 +234,8 @@ func NewUpdateUserNotFound() *UpdateUserNotFound {
 	return &UpdateUserNotFound{}
 }
 
-/* UpdateUserNotFound describes a response with status code 404, with default header values.
+/*
+UpdateUserNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -281,7 +285,8 @@ func NewUpdateUserInternalServerError() *UpdateUserInternalServerError {
 	return &UpdateUserInternalServerError{}
 }
 
-/* UpdateUserInternalServerError describes a response with status code 500, with default header values.
+/*
+UpdateUserInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -326,7 +331,8 @@ func (o *UpdateUserInternalServerError) readResponse(response runtime.ClientResp
 	return nil
 }
 
-/*UpdateUserBody ArgUserUpdate
+/*
+UpdateUserBody ArgUserUpdate
 swagger:model UpdateUserBody
 */
 type UpdateUserBody struct {
@@ -672,7 +678,8 @@ func (o *UpdateUserBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*UpdateUserCreatedBody ResponseUserUpdate
+/*
+UpdateUserCreatedBody ResponseUserUpdate
 swagger:model UpdateUserCreatedBody
 */
 type UpdateUserCreatedBody struct {

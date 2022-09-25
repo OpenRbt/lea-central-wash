@@ -29,10 +29,10 @@ func NewSetCardReaderConfig(ctx *middleware.Context, handler SetCardReaderConfig
 	return &SetCardReaderConfig{Context: ctx, Handler: handler}
 }
 
-/* SetCardReaderConfig swagger:route POST /set-card-reader-config setCardReaderConfig
+/*
+	SetCardReaderConfig swagger:route POST /set-card-reader-config setCardReaderConfig
 
 SetCardReaderConfig set card reader config API
-
 */
 type SetCardReaderConfig struct {
 	Context *middleware.Context

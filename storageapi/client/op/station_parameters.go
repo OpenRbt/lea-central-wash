@@ -52,10 +52,12 @@ func NewStationParamsWithHTTPClient(client *http.Client) *StationParams {
 	}
 }
 
-/* StationParams contains all the parameters to send to the API endpoint
-   for the station operation.
+/*
+StationParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the station operation.
+
+	Typically these are written to a http.Request.
 */
 type StationParams struct {
 

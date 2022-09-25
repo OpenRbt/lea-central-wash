@@ -54,7 +54,8 @@ func NewAddAdvertisingCampaignNoContent() *AddAdvertisingCampaignNoContent {
 	return &AddAdvertisingCampaignNoContent{}
 }
 
-/* AddAdvertisingCampaignNoContent describes a response with status code 204, with default header values.
+/*
+AddAdvertisingCampaignNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -104,7 +105,8 @@ func NewAddAdvertisingCampaignUnauthorized() *AddAdvertisingCampaignUnauthorized
 	return &AddAdvertisingCampaignUnauthorized{}
 }
 
-/* AddAdvertisingCampaignUnauthorized describes a response with status code 401, with default header values.
+/*
+AddAdvertisingCampaignUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -154,7 +156,8 @@ func NewAddAdvertisingCampaignForbidden() *AddAdvertisingCampaignForbidden {
 	return &AddAdvertisingCampaignForbidden{}
 }
 
-/* AddAdvertisingCampaignForbidden describes a response with status code 403, with default header values.
+/*
+AddAdvertisingCampaignForbidden describes a response with status code 403, with default header values.
 
 Access forbiddenn
 */
@@ -204,7 +207,8 @@ func NewAddAdvertisingCampaignInternalServerError() *AddAdvertisingCampaignInter
 	return &AddAdvertisingCampaignInternalServerError{}
 }
 
-/* AddAdvertisingCampaignInternalServerError describes a response with status code 500, with default header values.
+/*
+AddAdvertisingCampaignInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

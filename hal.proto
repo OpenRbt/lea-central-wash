@@ -8,6 +8,7 @@ service HardwareAccessLayer{
     rpc RunProgram(Options) returns(AnswerProgram);
     rpc MeasureVolumeMilliliters(OptionsCommand) returns(AnswerCommand);
     rpc Volume(google.protobuf.Empty) returns(Answer);
+    rpc GetLevel(google.protobuf.Empty) returns(AnswerLevel);
 }
 
 message Options{
@@ -37,5 +38,9 @@ message AnswerCommand{
 }
 
 message AnswerProgram{
+    int64 answer = 1;
+}
+
+message AnswerLevel{
     int64 answer = 1;
 }
