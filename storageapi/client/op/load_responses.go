@@ -57,7 +57,8 @@ func NewLoadOK() *LoadOK {
 	return &LoadOK{}
 }
 
-/* LoadOK describes a response with status code 200, with default header values.
+/*
+LoadOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -117,7 +118,8 @@ func NewLoadNotFound() *LoadNotFound {
 	return &LoadNotFound{}
 }
 
-/* LoadNotFound describes a response with status code 404, with default header values.
+/*
+LoadNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -167,7 +169,8 @@ func NewLoadInternalServerError() *LoadInternalServerError {
 	return &LoadInternalServerError{}
 }
 
-/* LoadInternalServerError describes a response with status code 500, with default header values.
+/*
+LoadInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -212,7 +215,8 @@ func (o *LoadInternalServerError) readResponse(response runtime.ClientResponse, 
 	return nil
 }
 
-/*LoadBody ArgLoad
+/*
+LoadBody ArgLoad
 swagger:model LoadBody
 */
 type LoadBody struct {

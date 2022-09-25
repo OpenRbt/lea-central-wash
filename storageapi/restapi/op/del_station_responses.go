@@ -15,7 +15,8 @@ import (
 // DelStationNoContentCode is the HTTP code returned for type DelStationNoContent
 const DelStationNoContentCode int = 204
 
-/*DelStationNoContent OK
+/*
+DelStationNoContent OK
 
 swagger:response delStationNoContent
 */
@@ -41,7 +42,8 @@ func (o *DelStationNoContent) DelStationResponder() {}
 // DelStationNotFoundCode is the HTTP code returned for type DelStationNotFound
 const DelStationNotFoundCode int = 404
 
-/*DelStationNotFound not found
+/*
+DelStationNotFound not found
 
 swagger:response delStationNotFound
 */
@@ -67,7 +69,8 @@ func (o *DelStationNotFound) DelStationResponder() {}
 // DelStationInternalServerErrorCode is the HTTP code returned for type DelStationInternalServerError
 const DelStationInternalServerErrorCode int = 500
 
-/*DelStationInternalServerError internal error
+/*
+DelStationInternalServerError internal error
 
 swagger:response delStationInternalServerError
 */

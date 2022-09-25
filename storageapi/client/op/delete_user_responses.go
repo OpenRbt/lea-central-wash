@@ -69,7 +69,8 @@ func NewDeleteUserNoContent() *DeleteUserNoContent {
 	return &DeleteUserNoContent{}
 }
 
-/* DeleteUserNoContent describes a response with status code 204, with default header values.
+/*
+DeleteUserNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -119,7 +120,8 @@ func NewDeleteUserUnauthorized() *DeleteUserUnauthorized {
 	return &DeleteUserUnauthorized{}
 }
 
-/* DeleteUserUnauthorized describes a response with status code 401, with default header values.
+/*
+DeleteUserUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -169,7 +171,8 @@ func NewDeleteUserForbidden() *DeleteUserForbidden {
 	return &DeleteUserForbidden{}
 }
 
-/* DeleteUserForbidden describes a response with status code 403, with default header values.
+/*
+DeleteUserForbidden describes a response with status code 403, with default header values.
 
 Access forbidden
 */
@@ -219,7 +222,8 @@ func NewDeleteUserConflict() *DeleteUserConflict {
 	return &DeleteUserConflict{}
 }
 
-/* DeleteUserConflict describes a response with status code 409, with default header values.
+/*
+DeleteUserConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
@@ -281,7 +285,8 @@ func NewDeleteUserInternalServerError() *DeleteUserInternalServerError {
 	return &DeleteUserInternalServerError{}
 }
 
-/* DeleteUserInternalServerError describes a response with status code 500, with default header values.
+/*
+DeleteUserInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -326,7 +331,8 @@ func (o *DeleteUserInternalServerError) readResponse(response runtime.ClientResp
 	return nil
 }
 
-/*DeleteUserBody ArgUserDelete
+/*
+DeleteUserBody ArgUserDelete
 swagger:model DeleteUserBody
 */
 type DeleteUserBody struct {
@@ -441,7 +447,8 @@ func (o *DeleteUserBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*DeleteUserConflictBody delete user conflict body
+/*
+DeleteUserConflictBody delete user conflict body
 swagger:model DeleteUserConflictBody
 */
 type DeleteUserConflictBody struct {

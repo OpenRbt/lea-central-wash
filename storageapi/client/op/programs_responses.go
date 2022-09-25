@@ -51,7 +51,8 @@ func NewProgramsOK() *ProgramsOK {
 	return &ProgramsOK{}
 }
 
-/* ProgramsOK describes a response with status code 200, with default header values.
+/*
+ProgramsOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -111,7 +112,8 @@ func NewProgramsInternalServerError() *ProgramsInternalServerError {
 	return &ProgramsInternalServerError{}
 }
 
-/* ProgramsInternalServerError describes a response with status code 500, with default header values.
+/*
+ProgramsInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -156,7 +158,8 @@ func (o *ProgramsInternalServerError) readResponse(response runtime.ClientRespon
 	return nil
 }
 
-/*ProgramsBody ArgPrograms
+/*
+ProgramsBody ArgPrograms
 swagger:model ProgramsBody
 */
 type ProgramsBody struct {

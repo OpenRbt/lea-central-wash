@@ -1,9 +1,11 @@
 #define IDL 1
 #define LIQUID_ON 2
 #define SENDING_FINISH 3
+#include <HCSR04.h>
+HCSR04 hc(4, 5);
 
 volatile int flow_frequency; // with this variable, we will count the pulses from the water flow sensor
-float vol = 0.0,l_minute, requiredVol, requiredVoln;
+float vol = 0.0,l_minute, requiredVol, requiredVoln, resultDistance;
 int stat = IDL;
 unsigned char flowsensor = 2; // Sensor Input
 unsigned long currentTime, cloopTime;
@@ -21,6 +23,16 @@ void checkVolume () {
   flow_frequency = 0; // resetting the counter
 }
 
+void CheckDistance () {
+  float v = hc.dist();
+    if (resultDistance == 0) {
+      resultDistance = v;
+    }
+    if (v != 0) {
+      resultDistance = resultDistance * 0.9 + v * 0.1;
+    }
+}
+
 void setup()
 {
    pinMode(flowsensor, INPUT);
@@ -32,7 +44,7 @@ void setup()
    cloopTime = currentTime;
 }
 
-void loop() {
+void loop() {  
   if (stat == LIQUID_ON) {
         checkVolume();
         currentTime = millis();
@@ -63,10 +75,14 @@ void loop() {
       requiredVoln = (float)str.toInt();
       requiredVol = (requiredVoln - requiredVoln*0.27) / 1000;
     } else {
+      if (str == "L;") {
+        Serial.println(int(itog));
+      }
       if (str == "UID;") {
         Serial.print("YF-S201;");
       }
       if (str == "PING;") {
+        CheckDistance();
         Serial.println("OK-PING;");
       }
       if (str == "ERR;") {

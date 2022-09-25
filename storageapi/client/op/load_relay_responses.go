@@ -57,7 +57,8 @@ func NewLoadRelayOK() *LoadRelayOK {
 	return &LoadRelayOK{}
 }
 
-/* LoadRelayOK describes a response with status code 200, with default header values.
+/*
+LoadRelayOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -119,7 +120,8 @@ func NewLoadRelayNotFound() *LoadRelayNotFound {
 	return &LoadRelayNotFound{}
 }
 
-/* LoadRelayNotFound describes a response with status code 404, with default header values.
+/*
+LoadRelayNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -169,7 +171,8 @@ func NewLoadRelayInternalServerError() *LoadRelayInternalServerError {
 	return &LoadRelayInternalServerError{}
 }
 
-/* LoadRelayInternalServerError describes a response with status code 500, with default header values.
+/*
+LoadRelayInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -214,7 +217,8 @@ func (o *LoadRelayInternalServerError) readResponse(response runtime.ClientRespo
 	return nil
 }
 
-/*LoadRelayBody load relay body
+/*
+LoadRelayBody load relay body
 swagger:model LoadRelayBody
 */
 type LoadRelayBody struct {

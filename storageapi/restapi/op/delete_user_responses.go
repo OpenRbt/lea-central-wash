@@ -15,7 +15,8 @@ import (
 // DeleteUserNoContentCode is the HTTP code returned for type DeleteUserNoContent
 const DeleteUserNoContentCode int = 204
 
-/*DeleteUserNoContent OK
+/*
+DeleteUserNoContent OK
 
 swagger:response deleteUserNoContent
 */
@@ -41,7 +42,8 @@ func (o *DeleteUserNoContent) DeleteUserResponder() {}
 // DeleteUserUnauthorizedCode is the HTTP code returned for type DeleteUserUnauthorized
 const DeleteUserUnauthorizedCode int = 401
 
-/*DeleteUserUnauthorized PIN is missing or invalid
+/*
+DeleteUserUnauthorized PIN is missing or invalid
 
 swagger:response deleteUserUnauthorized
 */
@@ -67,7 +69,8 @@ func (o *DeleteUserUnauthorized) DeleteUserResponder() {}
 // DeleteUserForbiddenCode is the HTTP code returned for type DeleteUserForbidden
 const DeleteUserForbiddenCode int = 403
 
-/*DeleteUserForbidden Access forbidden
+/*
+DeleteUserForbidden Access forbidden
 
 swagger:response deleteUserForbidden
 */
@@ -93,7 +96,8 @@ func (o *DeleteUserForbidden) DeleteUserResponder() {}
 // DeleteUserConflictCode is the HTTP code returned for type DeleteUserConflict
 const DeleteUserConflictCode int = 409
 
-/*DeleteUserConflict Conflict
+/*
+DeleteUserConflict Conflict
 
 swagger:response deleteUserConflict
 */
@@ -139,7 +143,8 @@ func (o *DeleteUserConflict) DeleteUserResponder() {}
 // DeleteUserInternalServerErrorCode is the HTTP code returned for type DeleteUserInternalServerError
 const DeleteUserInternalServerErrorCode int = 500
 
-/*DeleteUserInternalServerError internal error
+/*
+DeleteUserInternalServerError internal error
 
 swagger:response deleteUserInternalServerError
 */

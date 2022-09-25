@@ -52,10 +52,12 @@ func NewSaveIfNotExistsParamsWithHTTPClient(client *http.Client) *SaveIfNotExist
 	}
 }
 
-/* SaveIfNotExistsParams contains all the parameters to send to the API endpoint
-   for the save if not exists operation.
+/*
+SaveIfNotExistsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the save if not exists operation.
+
+	Typically these are written to a http.Request.
 */
 type SaveIfNotExistsParams struct {
 

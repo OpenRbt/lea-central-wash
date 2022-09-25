@@ -50,6 +50,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	// Example:
 	// api.APIAuthorizer = security.Authorized()
 
+	if api.GetLevelHandler == nil {
+		api.GetLevelHandler = op.GetLevelHandlerFunc(func(params op.GetLevelParams) op.GetLevelResponder {
+			return op.GetLevelNotImplemented()
+		})
+	}
 	if api.VolumeDispenserHandler == nil {
 		api.VolumeDispenserHandler = op.VolumeDispenserHandlerFunc(func(params op.VolumeDispenserParams) op.VolumeDispenserResponder {
 			return op.VolumeDispenserNotImplemented()

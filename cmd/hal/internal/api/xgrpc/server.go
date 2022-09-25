@@ -55,4 +55,9 @@ func (h HalHandler) Volume(ctx context.Context, in *emptypb.Empty) (*Answer, err
 	return &Answer{Answer: status.Milliliters, Status: ""}, nil
 }
 
+func (h HalHandler) GetLevel(ctx context.Context, in *emptypb.Empty) (*AnswerLevel, error) {
+	level := h.hal.GetLevel()
+	return &AnswerLevel{Answer: int64(level)}, nil
+}
+
 func (h HalHandler) mustEmbedUnimplementedHardwareAccessLayerServer() {}

@@ -545,6 +545,59 @@ func init() {
         }
       }
     },
+    "/getLevel": {
+      "post": {
+        "operationId": "GetLevel",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetLevel",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "title": "ResponseGetLevel",
+              "required": [
+                "level"
+              ],
+              "properties": {
+                "level": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/info": {
       "get": {
         "operationId": "info",
@@ -3611,6 +3664,59 @@ func init() {
           },
           "500": {
             "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/getLevel": {
+      "post": {
+        "operationId": "GetLevel",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetLevel",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "title": "ResponseGetLevel",
+              "required": [
+                "level"
+              ],
+              "properties": {
+                "level": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "internal error"
           }
         }
       }

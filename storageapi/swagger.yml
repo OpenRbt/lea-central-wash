@@ -1929,6 +1929,41 @@ paths:
         500:
           description: internal error
 
+  /getLevel:
+    post:
+      operationId: "GetLevel"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetLevel"
+            type: object
+            required:
+              - hash
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+      responses:
+        200:
+          description: OK
+          schema:
+            title: "ResponseGetLevel"
+            type: object
+            required:
+              - level
+            properties:
+              level: 
+                type: integer
+        204:
+          description: OK
+        404:
+          description: not found
+          schema:
+            type: string
+        500:
+          description: internal error
+
   /volume-dispenser:
     post:
       operationId: "VolumeDispenser"

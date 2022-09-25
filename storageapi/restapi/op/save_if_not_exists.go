@@ -38,10 +38,10 @@ func NewSaveIfNotExists(ctx *middleware.Context, handler SaveIfNotExistsHandler)
 	return &SaveIfNotExists{Context: ctx, Handler: handler}
 }
 
-/* SaveIfNotExists swagger:route POST /save-if-not-exists saveIfNotExists
+/*
+	SaveIfNotExists swagger:route POST /save-if-not-exists saveIfNotExists
 
 SaveIfNotExists save if not exists API
-
 */
 type SaveIfNotExists struct {
 	Context *middleware.Context

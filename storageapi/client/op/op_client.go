@@ -30,6 +30,8 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
+	GetLevel(params *GetLevelParams, opts ...ClientOption) (*GetLevelOK, *GetLevelNoContent, error)
+
 	VolumeDispenser(params *VolumeDispenserParams, opts ...ClientOption) (*VolumeDispenserOK, *VolumeDispenserNoContent, error)
 
 	AddAdvertisingCampaign(params *AddAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*AddAdvertisingCampaignNoContent, error)
@@ -154,7 +156,46 @@ type ClientService interface {
 }
 
 /*
-  VolumeDispenser volume dispenser API
+GetLevel get level API
+*/
+func (a *Client) GetLevel(params *GetLevelParams, opts ...ClientOption) (*GetLevelOK, *GetLevelNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetLevelParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "GetLevel",
+		Method:             "POST",
+		PathPattern:        "/getLevel",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetLevelReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, nil, err
+	}
+	switch value := result.(type) {
+	case *GetLevelOK:
+		return value, nil, nil
+	case *GetLevelNoContent:
+		return nil, value, nil
+	}
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for op: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+VolumeDispenser volume dispenser API
 */
 func (a *Client) VolumeDispenser(params *VolumeDispenserParams, opts ...ClientOption) (*VolumeDispenserOK, *VolumeDispenserNoContent, error) {
 	// TODO: Validate the params before sending
@@ -193,7 +234,7 @@ func (a *Client) VolumeDispenser(params *VolumeDispenserParams, opts ...ClientOp
 }
 
 /*
-  AddAdvertisingCampaign add advertising campaign API
+AddAdvertisingCampaign add advertising campaign API
 */
 func (a *Client) AddAdvertisingCampaign(params *AddAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*AddAdvertisingCampaignNoContent, error) {
 	// TODO: Validate the params before sending
@@ -232,7 +273,7 @@ func (a *Client) AddAdvertisingCampaign(params *AddAdvertisingCampaignParams, au
 }
 
 /*
-  AddServiceAmount add service amount API
+AddServiceAmount add service amount API
 */
 func (a *Client) AddServiceAmount(params *AddServiceAmountParams, opts ...ClientOption) (*AddServiceAmountNoContent, error) {
 	// TODO: Validate the params before sending
@@ -270,7 +311,7 @@ func (a *Client) AddServiceAmount(params *AddServiceAmountParams, opts ...Client
 }
 
 /*
-  AdvertisingCampaign advertising campaign API
+AdvertisingCampaign advertising campaign API
 */
 func (a *Client) AdvertisingCampaign(params *AdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*AdvertisingCampaignOK, error) {
 	// TODO: Validate the params before sending
@@ -309,7 +350,7 @@ func (a *Client) AdvertisingCampaign(params *AdvertisingCampaignParams, authInfo
 }
 
 /*
-  AdvertisingCampaignByID advertising campaign by ID API
+AdvertisingCampaignByID advertising campaign by ID API
 */
 func (a *Client) AdvertisingCampaignByID(params *AdvertisingCampaignByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*AdvertisingCampaignByIDOK, error) {
 	// TODO: Validate the params before sending
@@ -348,7 +389,7 @@ func (a *Client) AdvertisingCampaignByID(params *AdvertisingCampaignByIDParams, 
 }
 
 /*
-  CardReaderConfig card reader config API
+CardReaderConfig card reader config API
 */
 func (a *Client) CardReaderConfig(params *CardReaderConfigParams, opts ...ClientOption) (*CardReaderConfigOK, error) {
 	// TODO: Validate the params before sending
@@ -386,7 +427,7 @@ func (a *Client) CardReaderConfig(params *CardReaderConfigParams, opts ...Client
 }
 
 /*
-  CardReaderConfigByHash card reader config by hash API
+CardReaderConfigByHash card reader config by hash API
 */
 func (a *Client) CardReaderConfigByHash(params *CardReaderConfigByHashParams, opts ...ClientOption) (*CardReaderConfigByHashOK, error) {
 	// TODO: Validate the params before sending
@@ -424,7 +465,7 @@ func (a *Client) CardReaderConfigByHash(params *CardReaderConfigByHashParams, op
 }
 
 /*
-  CreateUser create user API
+CreateUser create user API
 */
 func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateUserCreated, error) {
 	// TODO: Validate the params before sending
@@ -463,7 +504,7 @@ func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAut
 }
 
 /*
-  DelAdvertisingCampaign del advertising campaign API
+DelAdvertisingCampaign del advertising campaign API
 */
 func (a *Client) DelAdvertisingCampaign(params *DelAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DelAdvertisingCampaignNoContent, error) {
 	// TODO: Validate the params before sending
@@ -502,7 +543,7 @@ func (a *Client) DelAdvertisingCampaign(params *DelAdvertisingCampaignParams, au
 }
 
 /*
-  DelStation del station API
+DelStation del station API
 */
 func (a *Client) DelStation(params *DelStationParams, opts ...ClientOption) (*DelStationNoContent, error) {
 	// TODO: Validate the params before sending
@@ -540,7 +581,7 @@ func (a *Client) DelStation(params *DelStationParams, opts ...ClientOption) (*De
 }
 
 /*
-  DeleteUser delete user API
+DeleteUser delete user API
 */
 func (a *Client) DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteUserNoContent, error) {
 	// TODO: Validate the params before sending
@@ -579,7 +620,7 @@ func (a *Client) DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAut
 }
 
 /*
-  EditAdvertisingCampaign edit advertising campaign API
+EditAdvertisingCampaign edit advertising campaign API
 */
 func (a *Client) EditAdvertisingCampaign(params *EditAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EditAdvertisingCampaignNoContent, error) {
 	// TODO: Validate the params before sending
@@ -618,7 +659,7 @@ func (a *Client) EditAdvertisingCampaign(params *EditAdvertisingCampaignParams, 
 }
 
 /*
-  GetConfigVarBool get config var bool API
+GetConfigVarBool get config var bool API
 */
 func (a *Client) GetConfigVarBool(params *GetConfigVarBoolParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetConfigVarBoolOK, error) {
 	// TODO: Validate the params before sending
@@ -657,7 +698,7 @@ func (a *Client) GetConfigVarBool(params *GetConfigVarBoolParams, authInfo runti
 }
 
 /*
-  GetConfigVarInt get config var int API
+GetConfigVarInt get config var int API
 */
 func (a *Client) GetConfigVarInt(params *GetConfigVarIntParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetConfigVarIntOK, error) {
 	// TODO: Validate the params before sending
@@ -696,7 +737,7 @@ func (a *Client) GetConfigVarInt(params *GetConfigVarIntParams, authInfo runtime
 }
 
 /*
-  GetConfigVarString get config var string API
+GetConfigVarString get config var string API
 */
 func (a *Client) GetConfigVarString(params *GetConfigVarStringParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetConfigVarStringOK, error) {
 	// TODO: Validate the params before sending
@@ -735,7 +776,7 @@ func (a *Client) GetConfigVarString(params *GetConfigVarStringParams, authInfo r
 }
 
 /*
-  GetPing get ping API
+GetPing get ping API
 */
 func (a *Client) GetPing(params *GetPingParams, opts ...ClientOption) (*GetPingOK, error) {
 	// TODO: Validate the params before sending
@@ -773,7 +814,7 @@ func (a *Client) GetPing(params *GetPingParams, opts ...ClientOption) (*GetPingO
 }
 
 /*
-  GetStationDiscounts get station discounts API
+GetStationDiscounts get station discounts API
 */
 func (a *Client) GetStationDiscounts(params *GetStationDiscountsParams, opts ...ClientOption) (*GetStationDiscountsOK, error) {
 	// TODO: Validate the params before sending
@@ -811,7 +852,7 @@ func (a *Client) GetStationDiscounts(params *GetStationDiscountsParams, opts ...
 }
 
 /*
-  GetUser get user API
+GetUser get user API
 */
 func (a *Client) GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetUserOK, error) {
 	// TODO: Validate the params before sending
@@ -850,7 +891,7 @@ func (a *Client) GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoW
 }
 
 /*
-  GetUsers get users API
+GetUsers get users API
 */
 func (a *Client) GetUsers(params *GetUsersParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetUsersOK, error) {
 	// TODO: Validate the params before sending
@@ -889,7 +930,7 @@ func (a *Client) GetUsers(params *GetUsersParams, authInfo runtime.ClientAuthInf
 }
 
 /*
-  Info info API
+Info info API
 */
 func (a *Client) Info(params *InfoParams, opts ...ClientOption) (*InfoOK, error) {
 	// TODO: Validate the params before sending
@@ -927,7 +968,7 @@ func (a *Client) Info(params *InfoParams, opts ...ClientOption) (*InfoOK, error)
 }
 
 /*
-  Kasse kasse API
+Kasse kasse API
 */
 func (a *Client) Kasse(params *KasseParams, opts ...ClientOption) (*KasseOK, error) {
 	// TODO: Validate the params before sending
@@ -965,7 +1006,7 @@ func (a *Client) Kasse(params *KasseParams, opts ...ClientOption) (*KasseOK, err
 }
 
 /*
-  Load load API
+Load load API
 */
 func (a *Client) Load(params *LoadParams, opts ...ClientOption) (*LoadOK, error) {
 	// TODO: Validate the params before sending
@@ -1003,7 +1044,7 @@ func (a *Client) Load(params *LoadParams, opts ...ClientOption) (*LoadOK, error)
 }
 
 /*
-  LoadFromStation load from station API
+LoadFromStation load from station API
 */
 func (a *Client) LoadFromStation(params *LoadFromStationParams, opts ...ClientOption) (*LoadFromStationOK, error) {
 	// TODO: Validate the params before sending
@@ -1041,7 +1082,7 @@ func (a *Client) LoadFromStation(params *LoadFromStationParams, opts ...ClientOp
 }
 
 /*
-  LoadMoney load money API
+LoadMoney load money API
 */
 func (a *Client) LoadMoney(params *LoadMoneyParams, opts ...ClientOption) (*LoadMoneyOK, error) {
 	// TODO: Validate the params before sending
@@ -1079,7 +1120,7 @@ func (a *Client) LoadMoney(params *LoadMoneyParams, opts ...ClientOption) (*Load
 }
 
 /*
-  LoadRelay load relay API
+LoadRelay load relay API
 */
 func (a *Client) LoadRelay(params *LoadRelayParams, opts ...ClientOption) (*LoadRelayOK, error) {
 	// TODO: Validate the params before sending
@@ -1117,7 +1158,7 @@ func (a *Client) LoadRelay(params *LoadRelayParams, opts ...ClientOption) (*Load
 }
 
 /*
-  MeasureVolumeMilliliters measure volume milliliters API
+MeasureVolumeMilliliters measure volume milliliters API
 */
 func (a *Client) MeasureVolumeMilliliters(params *MeasureVolumeMillilitersParams, opts ...ClientOption) (*MeasureVolumeMillilitersNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1155,7 +1196,7 @@ func (a *Client) MeasureVolumeMilliliters(params *MeasureVolumeMillilitersParams
 }
 
 /*
-  OpenStation open station API
+OpenStation open station API
 */
 func (a *Client) OpenStation(params *OpenStationParams, opts ...ClientOption) (*OpenStationNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1193,7 +1234,7 @@ func (a *Client) OpenStation(params *OpenStationParams, opts ...ClientOption) (*
 }
 
 /*
-  Ping ping API
+Ping ping API
 */
 func (a *Client) Ping(params *PingParams, opts ...ClientOption) (*PingOK, error) {
 	// TODO: Validate the params before sending
@@ -1231,7 +1272,7 @@ func (a *Client) Ping(params *PingParams, opts ...ClientOption) (*PingOK, error)
 }
 
 /*
-  PressButton press button API
+PressButton press button API
 */
 func (a *Client) PressButton(params *PressButtonParams, opts ...ClientOption) (*PressButtonNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1269,7 +1310,7 @@ func (a *Client) PressButton(params *PressButtonParams, opts ...ClientOption) (*
 }
 
 /*
-  Programs programs API
+Programs programs API
 */
 func (a *Client) Programs(params *ProgramsParams, opts ...ClientOption) (*ProgramsOK, error) {
 	// TODO: Validate the params before sending
@@ -1307,7 +1348,7 @@ func (a *Client) Programs(params *ProgramsParams, opts ...ClientOption) (*Progra
 }
 
 /*
-  ResetStationStat reset station stat API
+ResetStationStat reset station stat API
 */
 func (a *Client) ResetStationStat(params *ResetStationStatParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResetStationStatNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1346,7 +1387,7 @@ func (a *Client) ResetStationStat(params *ResetStationStatParams, authInfo runti
 }
 
 /*
-  Run2Program run2 program API
+Run2Program run2 program API
 */
 func (a *Client) Run2Program(params *Run2ProgramParams, opts ...ClientOption) (*Run2ProgramNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1384,7 +1425,7 @@ func (a *Client) Run2Program(params *Run2ProgramParams, opts ...ClientOption) (*
 }
 
 /*
-  RunProgram run program API
+RunProgram run program API
 */
 func (a *Client) RunProgram(params *RunProgramParams, opts ...ClientOption) (*RunProgramNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1422,7 +1463,7 @@ func (a *Client) RunProgram(params *RunProgramParams, opts ...ClientOption) (*Ru
 }
 
 /*
-  Save save API
+Save save API
 */
 func (a *Client) Save(params *SaveParams, opts ...ClientOption) (*SaveNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1460,7 +1501,7 @@ func (a *Client) Save(params *SaveParams, opts ...ClientOption) (*SaveNoContent,
 }
 
 /*
-  SaveCollection save collection API
+SaveCollection save collection API
 */
 func (a *Client) SaveCollection(params *SaveCollectionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SaveCollectionNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1499,7 +1540,7 @@ func (a *Client) SaveCollection(params *SaveCollectionParams, authInfo runtime.C
 }
 
 /*
-  SaveIfNotExists save if not exists API
+SaveIfNotExists save if not exists API
 */
 func (a *Client) SaveIfNotExists(params *SaveIfNotExistsParams, opts ...ClientOption) (*SaveIfNotExistsNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1537,7 +1578,7 @@ func (a *Client) SaveIfNotExists(params *SaveIfNotExistsParams, opts ...ClientOp
 }
 
 /*
-  SaveMoney save money API
+SaveMoney save money API
 */
 func (a *Client) SaveMoney(params *SaveMoneyParams, opts ...ClientOption) (*SaveMoneyNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1575,7 +1616,7 @@ func (a *Client) SaveMoney(params *SaveMoneyParams, opts ...ClientOption) (*Save
 }
 
 /*
-  SaveRelay save relay API
+SaveRelay save relay API
 */
 func (a *Client) SaveRelay(params *SaveRelayParams, opts ...ClientOption) (*SaveRelayNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1613,7 +1654,7 @@ func (a *Client) SaveRelay(params *SaveRelayParams, opts ...ClientOption) (*Save
 }
 
 /*
-  SetCardReaderConfig set card reader config API
+SetCardReaderConfig set card reader config API
 */
 func (a *Client) SetCardReaderConfig(params *SetCardReaderConfigParams, opts ...ClientOption) (*SetCardReaderConfigNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1651,7 +1692,7 @@ func (a *Client) SetCardReaderConfig(params *SetCardReaderConfigParams, opts ...
 }
 
 /*
-  SetConfigVarBool set config var bool API
+SetConfigVarBool set config var bool API
 */
 func (a *Client) SetConfigVarBool(params *SetConfigVarBoolParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SetConfigVarBoolNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1690,7 +1731,7 @@ func (a *Client) SetConfigVarBool(params *SetConfigVarBoolParams, authInfo runti
 }
 
 /*
-  SetConfigVarInt set config var int API
+SetConfigVarInt set config var int API
 */
 func (a *Client) SetConfigVarInt(params *SetConfigVarIntParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SetConfigVarIntNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1729,7 +1770,7 @@ func (a *Client) SetConfigVarInt(params *SetConfigVarIntParams, authInfo runtime
 }
 
 /*
-  SetConfigVarString set config var string API
+SetConfigVarString set config var string API
 */
 func (a *Client) SetConfigVarString(params *SetConfigVarStringParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SetConfigVarStringNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1768,7 +1809,7 @@ func (a *Client) SetConfigVarString(params *SetConfigVarStringParams, authInfo r
 }
 
 /*
-  SetKasse set kasse API
+SetKasse set kasse API
 */
 func (a *Client) SetKasse(params *SetKasseParams, opts ...ClientOption) (*SetKasseNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1806,7 +1847,7 @@ func (a *Client) SetKasse(params *SetKasseParams, opts ...ClientOption) (*SetKas
 }
 
 /*
-  SetProgram set program API
+SetProgram set program API
 */
 func (a *Client) SetProgram(params *SetProgramParams, opts ...ClientOption) (*SetProgramNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1844,7 +1885,7 @@ func (a *Client) SetProgram(params *SetProgramParams, opts ...ClientOption) (*Se
 }
 
 /*
-  SetStation set station API
+SetStation set station API
 */
 func (a *Client) SetStation(params *SetStationParams, opts ...ClientOption) (*SetStationNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1882,7 +1923,7 @@ func (a *Client) SetStation(params *SetStationParams, opts ...ClientOption) (*Se
 }
 
 /*
-  SetStationButton set station button API
+SetStationButton set station button API
 */
 func (a *Client) SetStationButton(params *SetStationButtonParams, opts ...ClientOption) (*SetStationButtonNoContent, error) {
 	// TODO: Validate the params before sending
@@ -1920,7 +1961,7 @@ func (a *Client) SetStationButton(params *SetStationButtonParams, opts ...Client
 }
 
 /*
-  Station station API
+Station station API
 */
 func (a *Client) Station(params *StationParams, opts ...ClientOption) (*StationOK, error) {
 	// TODO: Validate the params before sending
@@ -1958,7 +1999,7 @@ func (a *Client) Station(params *StationParams, opts ...ClientOption) (*StationO
 }
 
 /*
-  StationButton station button API
+StationButton station button API
 */
 func (a *Client) StationButton(params *StationButtonParams, opts ...ClientOption) (*StationButtonOK, error) {
 	// TODO: Validate the params before sending
@@ -1996,7 +2037,7 @@ func (a *Client) StationButton(params *StationButtonParams, opts ...ClientOption
 }
 
 /*
-  StationByHash station by hash API
+StationByHash station by hash API
 */
 func (a *Client) StationByHash(params *StationByHashParams, opts ...ClientOption) (*StationByHashOK, error) {
 	// TODO: Validate the params before sending
@@ -2034,7 +2075,7 @@ func (a *Client) StationByHash(params *StationByHashParams, opts ...ClientOption
 }
 
 /*
-  StationCollectionReportDates station collection report dates API
+StationCollectionReportDates station collection report dates API
 */
 func (a *Client) StationCollectionReportDates(params *StationCollectionReportDatesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationCollectionReportDatesOK, error) {
 	// TODO: Validate the params before sending
@@ -2073,7 +2114,7 @@ func (a *Client) StationCollectionReportDates(params *StationCollectionReportDat
 }
 
 /*
-  StationProgramByHash station program by hash API
+StationProgramByHash station program by hash API
 */
 func (a *Client) StationProgramByHash(params *StationProgramByHashParams, opts ...ClientOption) (*StationProgramByHashOK, error) {
 	// TODO: Validate the params before sending
@@ -2111,7 +2152,7 @@ func (a *Client) StationProgramByHash(params *StationProgramByHashParams, opts .
 }
 
 /*
-  StationReportCurrentMoney station report current money API
+StationReportCurrentMoney station report current money API
 */
 func (a *Client) StationReportCurrentMoney(params *StationReportCurrentMoneyParams, opts ...ClientOption) (*StationReportCurrentMoneyOK, error) {
 	// TODO: Validate the params before sending
@@ -2149,7 +2190,7 @@ func (a *Client) StationReportCurrentMoney(params *StationReportCurrentMoneyPara
 }
 
 /*
-  StationReportDates station report dates API
+StationReportDates station report dates API
 */
 func (a *Client) StationReportDates(params *StationReportDatesParams, opts ...ClientOption) (*StationReportDatesOK, error) {
 	// TODO: Validate the params before sending
@@ -2187,7 +2228,7 @@ func (a *Client) StationReportDates(params *StationReportDatesParams, opts ...Cl
 }
 
 /*
-  StationStatCurrent station stat current API
+StationStatCurrent station stat current API
 */
 func (a *Client) StationStatCurrent(params *StationStatCurrentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationStatCurrentOK, error) {
 	// TODO: Validate the params before sending
@@ -2226,7 +2267,7 @@ func (a *Client) StationStatCurrent(params *StationStatCurrentParams, authInfo r
 }
 
 /*
-  StationStatDates station stat dates API
+StationStatDates station stat dates API
 */
 func (a *Client) StationStatDates(params *StationStatDatesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StationStatDatesOK, error) {
 	// TODO: Validate the params before sending
@@ -2265,7 +2306,7 @@ func (a *Client) StationStatDates(params *StationStatDatesParams, authInfo runti
 }
 
 /*
-  StationsVariables stations variables API
+StationsVariables stations variables API
 */
 func (a *Client) StationsVariables(params *StationsVariablesParams, opts ...ClientOption) (*StationsVariablesOK, error) {
 	// TODO: Validate the params before sending
@@ -2303,7 +2344,7 @@ func (a *Client) StationsVariables(params *StationsVariablesParams, opts ...Clie
 }
 
 /*
-  Status status API
+Status status API
 */
 func (a *Client) Status(params *StatusParams, opts ...ClientOption) (*StatusOK, error) {
 	// TODO: Validate the params before sending
@@ -2341,7 +2382,7 @@ func (a *Client) Status(params *StatusParams, opts ...ClientOption) (*StatusOK, 
 }
 
 /*
-  StatusCollection status collection API
+StatusCollection status collection API
 */
 func (a *Client) StatusCollection(params *StatusCollectionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StatusCollectionOK, error) {
 	// TODO: Validate the params before sending
@@ -2380,7 +2421,7 @@ func (a *Client) StatusCollection(params *StatusCollectionParams, authInfo runti
 }
 
 /*
-  UpdateUser update user API
+UpdateUser update user API
 */
 func (a *Client) UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateUserCreated, error) {
 	// TODO: Validate the params before sending
@@ -2419,7 +2460,7 @@ func (a *Client) UpdateUser(params *UpdateUserParams, authInfo runtime.ClientAut
 }
 
 /*
-  UpdateUserPassword update user password API
+UpdateUserPassword update user password API
 */
 func (a *Client) UpdateUserPassword(params *UpdateUserPasswordParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateUserPasswordCreated, error) {
 	// TODO: Validate the params before sending

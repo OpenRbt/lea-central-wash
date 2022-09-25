@@ -38,10 +38,10 @@ func NewVolumeDispenser(ctx *middleware.Context, handler VolumeDispenserHandler)
 	return &VolumeDispenser{Context: ctx, Handler: handler}
 }
 
-/* VolumeDispenser swagger:route POST /volume-dispenser volumeDispenser
+/*
+	VolumeDispenser swagger:route POST /volume-dispenser volumeDispenser
 
 VolumeDispenser volume dispenser API
-
 */
 type VolumeDispenser struct {
 	Context *middleware.Context

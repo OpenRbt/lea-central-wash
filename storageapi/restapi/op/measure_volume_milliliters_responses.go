@@ -15,7 +15,8 @@ import (
 // MeasureVolumeMillilitersNoContentCode is the HTTP code returned for type MeasureVolumeMillilitersNoContent
 const MeasureVolumeMillilitersNoContentCode int = 204
 
-/*MeasureVolumeMillilitersNoContent OK
+/*
+MeasureVolumeMillilitersNoContent OK
 
 swagger:response measureVolumeMillilitersNoContent
 */
@@ -41,7 +42,8 @@ func (o *MeasureVolumeMillilitersNoContent) MeasureVolumeMillilitersResponder() 
 // MeasureVolumeMillilitersNotFoundCode is the HTTP code returned for type MeasureVolumeMillilitersNotFound
 const MeasureVolumeMillilitersNotFoundCode int = 404
 
-/*MeasureVolumeMillilitersNotFound not found
+/*
+MeasureVolumeMillilitersNotFound not found
 
 swagger:response measureVolumeMillilitersNotFound
 */
@@ -85,7 +87,8 @@ func (o *MeasureVolumeMillilitersNotFound) MeasureVolumeMillilitersResponder() {
 // MeasureVolumeMillilitersInternalServerErrorCode is the HTTP code returned for type MeasureVolumeMillilitersInternalServerError
 const MeasureVolumeMillilitersInternalServerErrorCode int = 500
 
-/*MeasureVolumeMillilitersInternalServerError internal error
+/*
+MeasureVolumeMillilitersInternalServerError internal error
 
 swagger:response measureVolumeMillilitersInternalServerError
 */

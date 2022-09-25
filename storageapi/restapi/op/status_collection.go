@@ -31,10 +31,10 @@ func NewStatusCollection(ctx *middleware.Context, handler StatusCollectionHandle
 	return &StatusCollection{Context: ctx, Handler: handler}
 }
 
-/* StatusCollection swagger:route GET /status-collection statusCollection
+/*
+	StatusCollection swagger:route GET /status-collection statusCollection
 
 StatusCollection status collection API
-
 */
 type StatusCollection struct {
 	Context *middleware.Context

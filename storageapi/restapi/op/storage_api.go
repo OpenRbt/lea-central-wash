@@ -44,6 +44,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		GetLevelHandler: GetLevelHandlerFunc(func(params GetLevelParams) GetLevelResponder {
+			return GetLevelNotImplemented()
+		}),
 		VolumeDispenserHandler: VolumeDispenserHandlerFunc(func(params VolumeDispenserParams) VolumeDispenserResponder {
 			return VolumeDispenserNotImplemented()
 		}),
@@ -274,6 +277,8 @@ type StorageAPI struct {
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
 
+	// GetLevelHandler sets the operation handler for the get level operation
+	GetLevelHandler GetLevelHandler
 	// VolumeDispenserHandler sets the operation handler for the volume dispenser operation
 	VolumeDispenserHandler VolumeDispenserHandler
 	// AddAdvertisingCampaignHandler sets the operation handler for the add advertising campaign operation
@@ -475,6 +480,9 @@ func (o *StorageAPI) Validate() error {
 		unregistered = append(unregistered, "PinAuth")
 	}
 
+	if o.GetLevelHandler == nil {
+		unregistered = append(unregistered, "GetLevelHandler")
+	}
 	if o.VolumeDispenserHandler == nil {
 		unregistered = append(unregistered, "VolumeDispenserHandler")
 	}
@@ -754,6 +762,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
 
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/getLevel"] = NewGetLevel(o.context, o.GetLevelHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

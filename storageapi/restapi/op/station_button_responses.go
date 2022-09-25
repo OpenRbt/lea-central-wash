@@ -15,7 +15,8 @@ import (
 // StationButtonOKCode is the HTTP code returned for type StationButtonOK
 const StationButtonOKCode int = 200
 
-/*StationButtonOK OK
+/*
+StationButtonOK OK
 
 swagger:response stationButtonOK
 */
@@ -61,7 +62,8 @@ func (o *StationButtonOK) StationButtonResponder() {}
 // StationButtonInternalServerErrorCode is the HTTP code returned for type StationButtonInternalServerError
 const StationButtonInternalServerErrorCode int = 500
 
-/*StationButtonInternalServerError internal error
+/*
+StationButtonInternalServerError internal error
 
 swagger:response stationButtonInternalServerError
 */

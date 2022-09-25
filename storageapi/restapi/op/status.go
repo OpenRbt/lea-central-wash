@@ -29,10 +29,10 @@ func NewStatus(ctx *middleware.Context, handler StatusHandler) *Status {
 	return &Status{Context: ctx, Handler: handler}
 }
 
-/* Status swagger:route GET /status status
+/*
+	Status swagger:route GET /status status
 
 Status status API
-
 */
 type Status struct {
 	Context *middleware.Context

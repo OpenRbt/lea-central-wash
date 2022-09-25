@@ -81,3 +81,13 @@ func (c *Client) Volume() (int64, string, error) {
 
 	return com.Answer, com.Status, err
 }
+
+func (c *Client) GetLevel() (int64, error) {
+	ctx := context.Background()
+
+	ss := emptypb.Empty{}
+
+	com, err := c.hal.GetLevel(ctx, &ss)
+
+	return com.Answer, err
+}

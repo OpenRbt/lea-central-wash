@@ -38,10 +38,10 @@ func NewRunProgram(ctx *middleware.Context, handler RunProgramHandler) *RunProgr
 	return &RunProgram{Context: ctx, Handler: handler}
 }
 
-/* RunProgram swagger:route POST /run-program runProgram
+/*
+	RunProgram swagger:route POST /run-program runProgram
 
 RunProgram run program API
-
 */
 type RunProgram struct {
 	Context *middleware.Context

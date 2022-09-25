@@ -15,7 +15,8 @@ import (
 // StationCollectionReportDatesOKCode is the HTTP code returned for type StationCollectionReportDatesOK
 const StationCollectionReportDatesOKCode int = 200
 
-/*StationCollectionReportDatesOK OK
+/*
+StationCollectionReportDatesOK OK
 
 swagger:response stationCollectionReportDatesOK
 */
@@ -61,7 +62,8 @@ func (o *StationCollectionReportDatesOK) StationCollectionReportDatesResponder()
 // StationCollectionReportDatesUnauthorizedCode is the HTTP code returned for type StationCollectionReportDatesUnauthorized
 const StationCollectionReportDatesUnauthorizedCode int = 401
 
-/*StationCollectionReportDatesUnauthorized PIN is missing or invalid
+/*
+StationCollectionReportDatesUnauthorized PIN is missing or invalid
 
 swagger:response stationCollectionReportDatesUnauthorized
 */
@@ -87,7 +89,8 @@ func (o *StationCollectionReportDatesUnauthorized) StationCollectionReportDatesR
 // StationCollectionReportDatesForbiddenCode is the HTTP code returned for type StationCollectionReportDatesForbidden
 const StationCollectionReportDatesForbiddenCode int = 403
 
-/*StationCollectionReportDatesForbidden Access forbiddenn
+/*
+StationCollectionReportDatesForbidden Access forbiddenn
 
 swagger:response stationCollectionReportDatesForbidden
 */
@@ -113,7 +116,8 @@ func (o *StationCollectionReportDatesForbidden) StationCollectionReportDatesResp
 // StationCollectionReportDatesNotFoundCode is the HTTP code returned for type StationCollectionReportDatesNotFound
 const StationCollectionReportDatesNotFoundCode int = 404
 
-/*StationCollectionReportDatesNotFound not found
+/*
+StationCollectionReportDatesNotFound not found
 
 swagger:response stationCollectionReportDatesNotFound
 */
@@ -139,7 +143,8 @@ func (o *StationCollectionReportDatesNotFound) StationCollectionReportDatesRespo
 // StationCollectionReportDatesInternalServerErrorCode is the HTTP code returned for type StationCollectionReportDatesInternalServerError
 const StationCollectionReportDatesInternalServerErrorCode int = 500
 
-/*StationCollectionReportDatesInternalServerError internal error
+/*
+StationCollectionReportDatesInternalServerError internal error
 
 swagger:response stationCollectionReportDatesInternalServerError
 */

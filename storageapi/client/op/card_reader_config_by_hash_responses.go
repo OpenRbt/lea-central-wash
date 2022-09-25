@@ -57,7 +57,8 @@ func NewCardReaderConfigByHashOK() *CardReaderConfigByHashOK {
 	return &CardReaderConfigByHashOK{}
 }
 
-/* CardReaderConfigByHashOK describes a response with status code 200, with default header values.
+/*
+CardReaderConfigByHashOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -119,7 +120,8 @@ func NewCardReaderConfigByHashNotFound() *CardReaderConfigByHashNotFound {
 	return &CardReaderConfigByHashNotFound{}
 }
 
-/* CardReaderConfigByHashNotFound describes a response with status code 404, with default header values.
+/*
+CardReaderConfigByHashNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -169,7 +171,8 @@ func NewCardReaderConfigByHashInternalServerError() *CardReaderConfigByHashInter
 	return &CardReaderConfigByHashInternalServerError{}
 }
 
-/* CardReaderConfigByHashInternalServerError describes a response with status code 500, with default header values.
+/*
+CardReaderConfigByHashInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -214,7 +217,8 @@ func (o *CardReaderConfigByHashInternalServerError) readResponse(response runtim
 	return nil
 }
 
-/*CardReaderConfigByHashBody ArgCardReaderConfigByCash
+/*
+CardReaderConfigByHashBody ArgCardReaderConfigByCash
 swagger:model CardReaderConfigByHashBody
 */
 type CardReaderConfigByHashBody struct {

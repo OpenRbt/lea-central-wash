@@ -697,6 +697,23 @@ func (svc *service) VolumeDispenser(params op.VolumeDispenserParams) op.VolumeDi
 	}
 }
 
+func (svc *service) GetLevel(params op.GetLevelParams) op.GetLevelResponder {
+	answer, err := svc.app.GetLevel()
+
+	log.Info("Get water level", "IP", params.HTTPRequest.RemoteAddr)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetLevelOK().WithPayload(&op.GetLevelOKBody{Level: &answer})
+	case app.ErrNotFound:
+		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewGetLevelNotFound().WithPayload("Level from Arduino not found")
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewGetLevelInternalServerError()
+	}
+}
+
 func (svc *service) pressButton(params op.PressButtonParams) op.PressButtonResponder {
 	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {

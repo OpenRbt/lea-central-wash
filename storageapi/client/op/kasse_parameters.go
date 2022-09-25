@@ -52,10 +52,12 @@ func NewKasseParamsWithHTTPClient(client *http.Client) *KasseParams {
 	}
 }
 
-/* KasseParams contains all the parameters to send to the API endpoint
-   for the kasse operation.
+/*
+KasseParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the kasse operation.
+
+	Typically these are written to a http.Request.
 */
 type KasseParams struct {
 	timeout    time.Duration

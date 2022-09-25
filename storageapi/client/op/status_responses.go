@@ -45,7 +45,8 @@ func NewStatusOK() *StatusOK {
 	return &StatusOK{}
 }
 
-/* StatusOK describes a response with status code 200, with default header values.
+/*
+StatusOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -107,7 +108,8 @@ func NewStatusInternalServerError() *StatusInternalServerError {
 	return &StatusInternalServerError{}
 }
 
-/* StatusInternalServerError describes a response with status code 500, with default header values.
+/*
+StatusInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

@@ -57,7 +57,8 @@ func NewLoadFromStationOK() *LoadFromStationOK {
 	return &LoadFromStationOK{}
 }
 
-/* LoadFromStationOK describes a response with status code 200, with default header values.
+/*
+LoadFromStationOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -117,7 +118,8 @@ func NewLoadFromStationNotFound() *LoadFromStationNotFound {
 	return &LoadFromStationNotFound{}
 }
 
-/* LoadFromStationNotFound describes a response with status code 404, with default header values.
+/*
+LoadFromStationNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -167,7 +169,8 @@ func NewLoadFromStationInternalServerError() *LoadFromStationInternalServerError
 	return &LoadFromStationInternalServerError{}
 }
 
-/* LoadFromStationInternalServerError describes a response with status code 500, with default header values.
+/*
+LoadFromStationInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -212,7 +215,8 @@ func (o *LoadFromStationInternalServerError) readResponse(response runtime.Clien
 	return nil
 }
 
-/*LoadFromStationBody ArgLoadFromStation
+/*
+LoadFromStationBody ArgLoadFromStation
 swagger:model LoadFromStationBody
 */
 type LoadFromStationBody struct {

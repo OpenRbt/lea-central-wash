@@ -57,7 +57,8 @@ func NewPressButtonNoContent() *PressButtonNoContent {
 	return &PressButtonNoContent{}
 }
 
-/* PressButtonNoContent describes a response with status code 204, with default header values.
+/*
+PressButtonNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -107,7 +108,8 @@ func NewPressButtonNotFound() *PressButtonNotFound {
 	return &PressButtonNotFound{}
 }
 
-/* PressButtonNotFound describes a response with status code 404, with default header values.
+/*
+PressButtonNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -167,7 +169,8 @@ func NewPressButtonInternalServerError() *PressButtonInternalServerError {
 	return &PressButtonInternalServerError{}
 }
 
-/* PressButtonInternalServerError describes a response with status code 500, with default header values.
+/*
+PressButtonInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -212,7 +215,8 @@ func (o *PressButtonInternalServerError) readResponse(response runtime.ClientRes
 	return nil
 }
 
-/*PressButtonBody ArgPressButton
+/*
+PressButtonBody ArgPressButton
 swagger:model PressButtonBody
 */
 type PressButtonBody struct {

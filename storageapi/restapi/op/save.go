@@ -38,10 +38,10 @@ func NewSave(ctx *middleware.Context, handler SaveHandler) *Save {
 	return &Save{Context: ctx, Handler: handler}
 }
 
-/* Save swagger:route POST /save save
+/*
+	Save swagger:route POST /save save
 
 Save save API
-
 */
 type Save struct {
 	Context *middleware.Context

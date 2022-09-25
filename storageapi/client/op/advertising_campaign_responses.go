@@ -61,7 +61,8 @@ func NewAdvertisingCampaignOK() *AdvertisingCampaignOK {
 	return &AdvertisingCampaignOK{}
 }
 
-/* AdvertisingCampaignOK describes a response with status code 200, with default header values.
+/*
+AdvertisingCampaignOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -121,7 +122,8 @@ func NewAdvertisingCampaignUnauthorized() *AdvertisingCampaignUnauthorized {
 	return &AdvertisingCampaignUnauthorized{}
 }
 
-/* AdvertisingCampaignUnauthorized describes a response with status code 401, with default header values.
+/*
+AdvertisingCampaignUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -171,7 +173,8 @@ func NewAdvertisingCampaignForbidden() *AdvertisingCampaignForbidden {
 	return &AdvertisingCampaignForbidden{}
 }
 
-/* AdvertisingCampaignForbidden describes a response with status code 403, with default header values.
+/*
+AdvertisingCampaignForbidden describes a response with status code 403, with default header values.
 
 Access forbiddenn
 */
@@ -221,7 +224,8 @@ func NewAdvertisingCampaignInternalServerError() *AdvertisingCampaignInternalSer
 	return &AdvertisingCampaignInternalServerError{}
 }
 
-/* AdvertisingCampaignInternalServerError describes a response with status code 500, with default header values.
+/*
+AdvertisingCampaignInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -266,7 +270,8 @@ func (o *AdvertisingCampaignInternalServerError) readResponse(response runtime.C
 	return nil
 }
 
-/*AdvertisingCampaignBody ArgAdvertisingCampagin
+/*
+AdvertisingCampaignBody ArgAdvertisingCampagin
 swagger:model AdvertisingCampaignBody
 */
 type AdvertisingCampaignBody struct {

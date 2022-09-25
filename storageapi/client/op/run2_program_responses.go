@@ -57,7 +57,8 @@ func NewRun2ProgramNoContent() *Run2ProgramNoContent {
 	return &Run2ProgramNoContent{}
 }
 
-/* Run2ProgramNoContent describes a response with status code 204, with default header values.
+/*
+Run2ProgramNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -107,7 +108,8 @@ func NewRun2ProgramNotFound() *Run2ProgramNotFound {
 	return &Run2ProgramNotFound{}
 }
 
-/* Run2ProgramNotFound describes a response with status code 404, with default header values.
+/*
+Run2ProgramNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -167,7 +169,8 @@ func NewRun2ProgramInternalServerError() *Run2ProgramInternalServerError {
 	return &Run2ProgramInternalServerError{}
 }
 
-/* Run2ProgramInternalServerError describes a response with status code 500, with default header values.
+/*
+Run2ProgramInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -212,7 +215,8 @@ func (o *Run2ProgramInternalServerError) readResponse(response runtime.ClientRes
 	return nil
 }
 
-/*Run2ProgramBody ArgRun2Program
+/*
+Run2ProgramBody ArgRun2Program
 swagger:model Run2ProgramBody
 */
 type Run2ProgramBody struct {

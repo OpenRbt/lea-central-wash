@@ -36,7 +36,8 @@ func NewGetPingOK() *GetPingOK {
 	return &GetPingOK{}
 }
 
-/* GetPingOK describes a response with status code 200, with default header values.
+/*
+GetPingOK describes a response with status code 200, with default header values.
 
 OK
 */
