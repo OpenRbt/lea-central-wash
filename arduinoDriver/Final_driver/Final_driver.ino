@@ -27,7 +27,7 @@ void checkVolume () {
   flow_frequency = 0; // resetting the counter
 }
 
-void check () {
+void CheckDistance () {
   float v = hc.dist();
     if (itog == 0) {
       itog = v;
@@ -71,8 +71,6 @@ void loop() {
   if (Serial.available() > 0) {
     String str = Serial.readString();
     Serial.setTimeout(5);
-//    Serial.println(str);
-//    Serial.println(str.length());
     if (str[0] == 'S') {
       Serial.println("SOK;");
       str.remove(0,1);
@@ -88,7 +86,7 @@ void loop() {
         Serial.print("YF-S201;");
       }
       if (str == "PING;") {
-        check();
+        CheckDistance();
         Serial.println("OK-PING;");
       }
       if (str == "ERR;") {
