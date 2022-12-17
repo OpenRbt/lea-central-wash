@@ -65,16 +65,16 @@ func (o *EndhSession) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // swagger:model EndhSessionBody
 type EndhSessionBody struct {
 
-	// key
+	// hash
 	// Required: true
-	Key *string `json:"key"`
+	Hash *string `json:"hash"`
 }
 
 // Validate validates this endh session body
 func (o *EndhSessionBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateKey(formats); err != nil {
+	if err := o.validateHash(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -84,9 +84,9 @@ func (o *EndhSessionBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *EndhSessionBody) validateKey(formats strfmt.Registry) error {
+func (o *EndhSessionBody) validateHash(formats strfmt.Registry) error {
 
-	if err := validate.Required("args"+"."+"key", "body", o.Key); err != nil {
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
 	}
 

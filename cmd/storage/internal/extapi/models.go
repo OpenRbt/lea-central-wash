@@ -526,3 +526,17 @@ func apiStationConfigString(a *app.StationConfigString) *model.StationConfigVarS
 		StationID:   &stID,
 	}
 }
+
+func apiCreateSession(sessionID string, QR string) *model.Session {
+	return &model.Session{
+		ID: sessionID,
+		QR: QR,
+	}
+}
+
+func apiRefreshSession(UserID string, receiveAmount int) *model.SessionRefresh {
+	return &model.SessionRefresh{
+		UserID:        UserID,
+		ReceiveAmount: int64(receiveAmount),
+	}
+}
