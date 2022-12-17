@@ -68,6 +68,22 @@ definitions:
       - name
       - value
       - stationID
+
+  SesseionQRCode:
+    type: object
+    properties:
+      sessionID:
+        type: string
+      QR:
+        type: string
+
+  RefreshData:
+    type: object
+    properties:
+      userID:
+        type: string
+      receiveAmount:
+        type: integer
   
   ConfigVarInt:
     type: object
@@ -2396,3 +2412,64 @@ paths:
         500:
           description: internal error
 
+  /create-session:
+    post:
+      operationId: "createSession"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgCreateSession"
+            type: object
+            required:
+              - key
+            properties:
+              key:
+                type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/SesseionQRCode'
+
+  /refresh-session:
+    post:
+      operationId: "refreshSession"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgRefreshSession"
+            type: object
+            required:
+              - key
+            properties:
+              key:
+                type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/RefreshData'
+
+  /end-session:
+    post:
+      operationId: "endhSession"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgEndSession"
+            type: object
+            required:
+              - key
+            properties:
+              key:
+                type: string
+      responses:
+        204:
+          description: OK
+  
