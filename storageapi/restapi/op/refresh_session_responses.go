@@ -27,7 +27,7 @@ type RefreshSessionOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *model.RefreshData `json:"body,omitempty"`
+	Payload *model.SessionRefresh `json:"body,omitempty"`
 }
 
 // NewRefreshSessionOK creates RefreshSessionOK with default headers values
@@ -37,13 +37,13 @@ func NewRefreshSessionOK() *RefreshSessionOK {
 }
 
 // WithPayload adds the payload to the refresh session o k response
-func (o *RefreshSessionOK) WithPayload(payload *model.RefreshData) *RefreshSessionOK {
+func (o *RefreshSessionOK) WithPayload(payload *model.SessionRefresh) *RefreshSessionOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the refresh session o k response
-func (o *RefreshSessionOK) SetPayload(payload *model.RefreshData) {
+func (o *RefreshSessionOK) SetPayload(payload *model.SessionRefresh) {
 	o.Payload = payload
 }
 
@@ -60,6 +60,60 @@ func (o *RefreshSessionOK) WriteResponse(rw http.ResponseWriter, producer runtim
 }
 
 func (o *RefreshSessionOK) RefreshSessionResponder() {}
+
+// RefreshSessionNotFoundCode is the HTTP code returned for type RefreshSessionNotFound
+const RefreshSessionNotFoundCode int = 404
+
+/*
+RefreshSessionNotFound hash not found
+
+swagger:response refreshSessionNotFound
+*/
+type RefreshSessionNotFound struct {
+}
+
+// NewRefreshSessionNotFound creates RefreshSessionNotFound with default headers values
+func NewRefreshSessionNotFound() *RefreshSessionNotFound {
+
+	return &RefreshSessionNotFound{}
+}
+
+// WriteResponse to the client
+func (o *RefreshSessionNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(404)
+}
+
+func (o *RefreshSessionNotFound) RefreshSessionResponder() {}
+
+// RefreshSessionInternalServerErrorCode is the HTTP code returned for type RefreshSessionInternalServerError
+const RefreshSessionInternalServerErrorCode int = 500
+
+/*
+RefreshSessionInternalServerError Internal error
+
+swagger:response refreshSessionInternalServerError
+*/
+type RefreshSessionInternalServerError struct {
+}
+
+// NewRefreshSessionInternalServerError creates RefreshSessionInternalServerError with default headers values
+func NewRefreshSessionInternalServerError() *RefreshSessionInternalServerError {
+
+	return &RefreshSessionInternalServerError{}
+}
+
+// WriteResponse to the client
+func (o *RefreshSessionInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(500)
+}
+
+func (o *RefreshSessionInternalServerError) RefreshSessionResponder() {}
 
 type RefreshSessionNotImplementedResponder struct {
 	middleware.Responder

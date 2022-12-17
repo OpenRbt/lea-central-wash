@@ -60,21 +60,21 @@ func (o *CreateSession) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// CreateSessionBody ArgCreateSession
+// CreateSessionBody CreateSession
 //
 // swagger:model CreateSessionBody
 type CreateSessionBody struct {
 
-	// key
+	// hash
 	// Required: true
-	Key *string `json:"key"`
+	Hash *string `json:"hash"`
 }
 
 // Validate validates this create session body
 func (o *CreateSessionBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateKey(formats); err != nil {
+	if err := o.validateHash(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -84,9 +84,9 @@ func (o *CreateSessionBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *CreateSessionBody) validateKey(formats strfmt.Registry) error {
+func (o *CreateSessionBody) validateHash(formats strfmt.Registry) error {
 
-	if err := validate.Required("args"+"."+"key", "body", o.Key); err != nil {
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
 	}
 

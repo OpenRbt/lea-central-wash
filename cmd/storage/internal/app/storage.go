@@ -808,3 +808,13 @@ func isValidDayOfWeek(dayOfWeek int, weekDay []string) bool {
 	}
 	return false
 }
+
+func (a *app) CreateSession(stationID StationID) (string, string, error) {
+	panic("Not implemented")
+}
+func (a *app) RefreshSession(stationID StationID) (string, int64, error) {
+	panic("Not implemented")
+}
+func (a *app) EndSession(stationID StationID) error {
+	panic("Not implemented")
+}

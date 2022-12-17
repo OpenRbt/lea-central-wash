@@ -32,6 +32,18 @@ func (o *EndhSessionReader) ReadResponse(response runtime.ClientResponse, consum
 			return nil, err
 		}
 		return result, nil
+	case 404:
+		result := NewEndhSessionNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 500:
+		result := NewEndhSessionInternalServerError()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -88,24 +100,126 @@ func (o *EndhSessionNoContent) readResponse(response runtime.ClientResponse, con
 	return nil
 }
 
+// NewEndhSessionNotFound creates a EndhSessionNotFound with default headers values
+func NewEndhSessionNotFound() *EndhSessionNotFound {
+	return &EndhSessionNotFound{}
+}
+
+/*
+EndhSessionNotFound describes a response with status code 404, with default header values.
+
+hash not found
+*/
+type EndhSessionNotFound struct {
+}
+
+// IsSuccess returns true when this endh session not found response has a 2xx status code
+func (o *EndhSessionNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this endh session not found response has a 3xx status code
+func (o *EndhSessionNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this endh session not found response has a 4xx status code
+func (o *EndhSessionNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this endh session not found response has a 5xx status code
+func (o *EndhSessionNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this endh session not found response a status code equal to that given
+func (o *EndhSessionNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+func (o *EndhSessionNotFound) Error() string {
+	return fmt.Sprintf("[POST /end-session][%d] endhSessionNotFound ", 404)
+}
+
+func (o *EndhSessionNotFound) String() string {
+	return fmt.Sprintf("[POST /end-session][%d] endhSessionNotFound ", 404)
+}
+
+func (o *EndhSessionNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewEndhSessionInternalServerError creates a EndhSessionInternalServerError with default headers values
+func NewEndhSessionInternalServerError() *EndhSessionInternalServerError {
+	return &EndhSessionInternalServerError{}
+}
+
+/*
+EndhSessionInternalServerError describes a response with status code 500, with default header values.
+
+Internal error
+*/
+type EndhSessionInternalServerError struct {
+}
+
+// IsSuccess returns true when this endh session internal server error response has a 2xx status code
+func (o *EndhSessionInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this endh session internal server error response has a 3xx status code
+func (o *EndhSessionInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this endh session internal server error response has a 4xx status code
+func (o *EndhSessionInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this endh session internal server error response has a 5xx status code
+func (o *EndhSessionInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this endh session internal server error response a status code equal to that given
+func (o *EndhSessionInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+func (o *EndhSessionInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /end-session][%d] endhSessionInternalServerError ", 500)
+}
+
+func (o *EndhSessionInternalServerError) String() string {
+	return fmt.Sprintf("[POST /end-session][%d] endhSessionInternalServerError ", 500)
+}
+
+func (o *EndhSessionInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
 /*
 EndhSessionBody ArgEndSession
 swagger:model EndhSessionBody
 */
 type EndhSessionBody struct {
 
-	// key
+	// hash
 	// Required: true
-	Key *string `json:"key"`
+	Hash *string `json:"hash"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
 func (o *EndhSessionBody) UnmarshalJSON(data []byte) error {
 	var props struct {
 
-		// key
+		// hash
 		// Required: true
-		Key *string `json:"key"`
+		Hash *string `json:"hash"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -114,7 +228,7 @@ func (o *EndhSessionBody) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	o.Key = props.Key
+	o.Hash = props.Hash
 	return nil
 }
 
@@ -122,7 +236,7 @@ func (o *EndhSessionBody) UnmarshalJSON(data []byte) error {
 func (o *EndhSessionBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateKey(formats); err != nil {
+	if err := o.validateHash(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -132,9 +246,9 @@ func (o *EndhSessionBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *EndhSessionBody) validateKey(formats strfmt.Registry) error {
+func (o *EndhSessionBody) validateHash(formats strfmt.Registry) error {
 
-	if err := validate.Required("args"+"."+"key", "body", o.Key); err != nil {
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
 	}
 

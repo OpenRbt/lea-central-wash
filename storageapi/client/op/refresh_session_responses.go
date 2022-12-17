@@ -35,6 +35,18 @@ func (o *RefreshSessionReader) ReadResponse(response runtime.ClientResponse, con
 			return nil, err
 		}
 		return result, nil
+	case 404:
+		result := NewRefreshSessionNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 500:
+		result := NewRefreshSessionInternalServerError()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -51,7 +63,7 @@ RefreshSessionOK describes a response with status code 200, with default header 
 OK
 */
 type RefreshSessionOK struct {
-	Payload *model.RefreshData
+	Payload *model.SessionRefresh
 }
 
 // IsSuccess returns true when this refresh session o k response has a 2xx status code
@@ -87,13 +99,13 @@ func (o *RefreshSessionOK) String() string {
 	return fmt.Sprintf("[POST /refresh-session][%d] refreshSessionOK  %+v", 200, o.Payload)
 }
 
-func (o *RefreshSessionOK) GetPayload() *model.RefreshData {
+func (o *RefreshSessionOK) GetPayload() *model.SessionRefresh {
 	return o.Payload
 }
 
 func (o *RefreshSessionOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(model.RefreshData)
+	o.Payload = new(model.SessionRefresh)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -103,24 +115,126 @@ func (o *RefreshSessionOK) readResponse(response runtime.ClientResponse, consume
 	return nil
 }
 
+// NewRefreshSessionNotFound creates a RefreshSessionNotFound with default headers values
+func NewRefreshSessionNotFound() *RefreshSessionNotFound {
+	return &RefreshSessionNotFound{}
+}
+
 /*
-RefreshSessionBody ArgRefreshSession
+RefreshSessionNotFound describes a response with status code 404, with default header values.
+
+hash not found
+*/
+type RefreshSessionNotFound struct {
+}
+
+// IsSuccess returns true when this refresh session not found response has a 2xx status code
+func (o *RefreshSessionNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this refresh session not found response has a 3xx status code
+func (o *RefreshSessionNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this refresh session not found response has a 4xx status code
+func (o *RefreshSessionNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this refresh session not found response has a 5xx status code
+func (o *RefreshSessionNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this refresh session not found response a status code equal to that given
+func (o *RefreshSessionNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+func (o *RefreshSessionNotFound) Error() string {
+	return fmt.Sprintf("[POST /refresh-session][%d] refreshSessionNotFound ", 404)
+}
+
+func (o *RefreshSessionNotFound) String() string {
+	return fmt.Sprintf("[POST /refresh-session][%d] refreshSessionNotFound ", 404)
+}
+
+func (o *RefreshSessionNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewRefreshSessionInternalServerError creates a RefreshSessionInternalServerError with default headers values
+func NewRefreshSessionInternalServerError() *RefreshSessionInternalServerError {
+	return &RefreshSessionInternalServerError{}
+}
+
+/*
+RefreshSessionInternalServerError describes a response with status code 500, with default header values.
+
+Internal error
+*/
+type RefreshSessionInternalServerError struct {
+}
+
+// IsSuccess returns true when this refresh session internal server error response has a 2xx status code
+func (o *RefreshSessionInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this refresh session internal server error response has a 3xx status code
+func (o *RefreshSessionInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this refresh session internal server error response has a 4xx status code
+func (o *RefreshSessionInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this refresh session internal server error response has a 5xx status code
+func (o *RefreshSessionInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this refresh session internal server error response a status code equal to that given
+func (o *RefreshSessionInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+func (o *RefreshSessionInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /refresh-session][%d] refreshSessionInternalServerError ", 500)
+}
+
+func (o *RefreshSessionInternalServerError) String() string {
+	return fmt.Sprintf("[POST /refresh-session][%d] refreshSessionInternalServerError ", 500)
+}
+
+func (o *RefreshSessionInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+/*
+RefreshSessionBody RefreshSession
 swagger:model RefreshSessionBody
 */
 type RefreshSessionBody struct {
 
-	// key
+	// hash
 	// Required: true
-	Key *string `json:"key"`
+	Hash *string `json:"hash"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
 func (o *RefreshSessionBody) UnmarshalJSON(data []byte) error {
 	var props struct {
 
-		// key
+		// hash
 		// Required: true
-		Key *string `json:"key"`
+		Hash *string `json:"hash"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -129,7 +243,7 @@ func (o *RefreshSessionBody) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	o.Key = props.Key
+	o.Hash = props.Hash
 	return nil
 }
 
@@ -137,7 +251,7 @@ func (o *RefreshSessionBody) UnmarshalJSON(data []byte) error {
 func (o *RefreshSessionBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateKey(formats); err != nil {
+	if err := o.validateHash(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -147,9 +261,9 @@ func (o *RefreshSessionBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *RefreshSessionBody) validateKey(formats strfmt.Registry) error {
+func (o *RefreshSessionBody) validateHash(formats strfmt.Registry) error {
 
-	if err := validate.Required("args"+"."+"key", "body", o.Key); err != nil {
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
 	}
 

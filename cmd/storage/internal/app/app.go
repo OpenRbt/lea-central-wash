@@ -133,6 +133,10 @@ type (
 		SetStationConfigInt(auth *Auth, config StationConfigInt) error
 		SetStationConfigBool(auth *Auth, config StationConfigBool) error
 		SetStationConfigString(auth *Auth, config StationConfigString) error
+		
+		CreateSession(stationID StationID) (string, string, error)
+		RefreshSession(stationID StationID) (string, int64, error)
+		EndSession(stationID StationID) error
 	}
 
 	// Repo is a DAL interface.
@@ -211,10 +215,6 @@ type (
 		SetStationConfigString(config StationConfigString) error
 
 		SetConfigIntIfNotExists(ConfigInt) error
-
-		CreateSession(key string) (string, string, error)
-		RefreshSession(key string) (string, int64, error)
-		EndSession(key string) error
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
