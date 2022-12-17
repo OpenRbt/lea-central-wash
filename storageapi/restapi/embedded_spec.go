@@ -288,12 +288,12 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgCreateSession",
+              "title": "CreateSession",
               "required": [
-                "key"
+                "hash"
               ],
               "properties": {
-                "key": {
+                "hash": {
                   "type": "string"
                 }
               }
@@ -304,8 +304,14 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/SesseionQRCode"
+              "$ref": "#/definitions/Session"
             }
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -434,10 +440,10 @@ func init() {
               "type": "object",
               "title": "ArgEndSession",
               "required": [
-                "key"
+                "hash"
               ],
               "properties": {
-                "key": {
+                "hash": {
                   "type": "string"
                 }
               }
@@ -447,6 +453,12 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -1048,12 +1060,12 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgRefreshSession",
+              "title": "RefreshSession",
               "required": [
-                "key"
+                "hash"
               ],
               "properties": {
-                "key": {
+                "hash": {
                   "type": "string"
                 }
               }
@@ -1064,8 +1076,14 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/RefreshData"
+              "$ref": "#/definitions/SessionRefresh"
             }
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -2933,17 +2951,6 @@ func init() {
         }
       }
     },
-    "RefreshData": {
-      "type": "object",
-      "properties": {
-        "receiveAmount": {
-          "type": "integer"
-        },
-        "userID": {
-          "type": "string"
-        }
-      }
-    },
     "RelayBoard": {
       "type": "string",
       "enum": [
@@ -2998,13 +3005,24 @@ func init() {
         }
       }
     },
-    "SesseionQRCode": {
+    "Session": {
       "type": "object",
       "properties": {
-        "QR": {
+        "ID": {
           "type": "string"
         },
-        "sessionID": {
+        "QR": {
+          "type": "string"
+        }
+      }
+    },
+    "SessionRefresh": {
+      "type": "object",
+      "properties": {
+        "receiveAmount": {
+          "type": "integer"
+        },
+        "userID": {
           "type": "string"
         }
       }
@@ -3526,12 +3544,12 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgCreateSession",
+              "title": "CreateSession",
               "required": [
-                "key"
+                "hash"
               ],
               "properties": {
-                "key": {
+                "hash": {
                   "type": "string"
                 }
               }
@@ -3542,8 +3560,14 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/SesseionQRCode"
+              "$ref": "#/definitions/Session"
             }
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -3672,10 +3696,10 @@ func init() {
               "type": "object",
               "title": "ArgEndSession",
               "required": [
-                "key"
+                "hash"
               ],
               "properties": {
-                "key": {
+                "hash": {
                   "type": "string"
                 }
               }
@@ -3685,6 +3709,12 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -4286,12 +4316,12 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgRefreshSession",
+              "title": "RefreshSession",
               "required": [
-                "key"
+                "hash"
               ],
               "properties": {
-                "key": {
+                "hash": {
                   "type": "string"
                 }
               }
@@ -4302,8 +4332,14 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/RefreshData"
+              "$ref": "#/definitions/SessionRefresh"
             }
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -6170,17 +6206,6 @@ func init() {
         }
       }
     },
-    "RefreshData": {
-      "type": "object",
-      "properties": {
-        "receiveAmount": {
-          "type": "integer"
-        },
-        "userID": {
-          "type": "string"
-        }
-      }
-    },
     "RelayBoard": {
       "type": "string",
       "enum": [
@@ -6235,13 +6260,24 @@ func init() {
         }
       }
     },
-    "SesseionQRCode": {
+    "Session": {
       "type": "object",
       "properties": {
-        "QR": {
+        "ID": {
           "type": "string"
         },
-        "sessionID": {
+        "QR": {
+          "type": "string"
+        }
+      }
+    },
+    "SessionRefresh": {
+      "type": "object",
+      "properties": {
+        "receiveAmount": {
+          "type": "integer"
+        },
+        "userID": {
           "type": "string"
         }
       }

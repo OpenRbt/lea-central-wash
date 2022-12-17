@@ -16,15 +16,15 @@ securityDefinitions:
 
 definitions:
 
-  SesseionQRCode:
+  Session:
     type: object
     properties:
-      sessionID:
+      ID:
         type: string
       QR:
         type: string
 
-  RefreshData:
+  SessionRefresh:
     type: object
     properties:
       userID:
@@ -2101,18 +2101,22 @@ paths:
           required: true
           in: body
           schema:
-            title: "ArgCreateSession"
+            title: "CreateSession"
             type: object
             required:
-              - key
+              - hash
             properties:
-              key:
+              hash:
                 type: string
       responses:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/SesseionQRCode'
+            $ref: '#/definitions/Session'
+        404:
+          description: hash not found
+        500:
+            description: Internal error
 
   /refresh-session:
     post:
@@ -2122,18 +2126,22 @@ paths:
           required: true
           in: body
           schema:
-            title: "ArgRefreshSession"
+            title: "RefreshSession"
             type: object
             required:
-              - key
+              - hash
             properties:
-              key:
+              hash:
                 type: string
       responses:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/RefreshData'
+            $ref: '#/definitions/SessionRefresh'
+        404:
+          description: hash not found
+        500:
+            description: Internal error
 
   /end-session:
     post:
@@ -2146,11 +2154,15 @@ paths:
             title: "ArgEndSession"
             type: object
             required:
-              - key
+              - hash
             properties:
-              key:
+              hash:
                 type: string
       responses:
         204:
           description: OK
+        404:
+          description: hash not found
+        500:
+            description: Internal error
   

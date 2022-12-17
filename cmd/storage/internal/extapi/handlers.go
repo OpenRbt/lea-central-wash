@@ -1062,13 +1062,46 @@ func (svc *service) getStationDiscount(params op.GetStationDiscountsParams) op.G
 }
 
 func (svc *service) createSession(params op.CreateSessionParams) op.CreateSessionResponder {
-	return op.CreateSessionNotImplemented()
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		return op.NewCreateSessionNotFound()
+	}
+
+	sessionId, QR, err := svc.app.CreateSession(stationID)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewCreateSessionOK().WithPayload(apiCreateSession(sessionId, QR))
+	default:
+		return op.NewCreateSessionInternalServerError()
+	}
 }
 
 func (svc *service) refreshSession(params op.RefreshSessionParams) op.RefreshSessionResponder {
-	return op.RefreshSessionNotImplemented()
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		return op.NewRefreshSessionNotFound()
+	}
+
+	sessionId, receiveAmount, err := svc.app.RefreshSession(stationID)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewRefreshSessionOK().WithPayload(apiRefreshSession(sessionId, int(receiveAmount)))
+	default:
+		return op.NewRefreshSessionInternalServerError()
+	}
 }
 
 func (svc *service) endSession(params op.EndhSessionParams) op.EndhSessionResponder {
-	return op.EndhSessionNotImplemented()
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		return op.NewEndhSessionNotFound()
+	}
+
+	err = svc.app.EndSession(stationID)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewEndhSessionNoContent()
+	default:
+		return op.NewEndhSessionInternalServerError()
+	}
 }

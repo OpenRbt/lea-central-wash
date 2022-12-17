@@ -60,21 +60,21 @@ func (o *RefreshSession) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// RefreshSessionBody ArgRefreshSession
+// RefreshSessionBody RefreshSession
 //
 // swagger:model RefreshSessionBody
 type RefreshSessionBody struct {
 
-	// key
+	// hash
 	// Required: true
-	Key *string `json:"key"`
+	Hash *string `json:"hash"`
 }
 
 // Validate validates this refresh session body
 func (o *RefreshSessionBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateKey(formats); err != nil {
+	if err := o.validateHash(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -84,9 +84,9 @@ func (o *RefreshSessionBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *RefreshSessionBody) validateKey(formats strfmt.Registry) error {
+func (o *RefreshSessionBody) validateHash(formats strfmt.Registry) error {
 
-	if err := validate.Required("args"+"."+"key", "body", o.Key); err != nil {
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
 	}
 

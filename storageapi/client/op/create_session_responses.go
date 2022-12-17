@@ -35,6 +35,18 @@ func (o *CreateSessionReader) ReadResponse(response runtime.ClientResponse, cons
 			return nil, err
 		}
 		return result, nil
+	case 404:
+		result := NewCreateSessionNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 500:
+		result := NewCreateSessionInternalServerError()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -51,7 +63,7 @@ CreateSessionOK describes a response with status code 200, with default header v
 OK
 */
 type CreateSessionOK struct {
-	Payload *model.SesseionQRCode
+	Payload *model.Session
 }
 
 // IsSuccess returns true when this create session o k response has a 2xx status code
@@ -87,13 +99,13 @@ func (o *CreateSessionOK) String() string {
 	return fmt.Sprintf("[POST /create-session][%d] createSessionOK  %+v", 200, o.Payload)
 }
 
-func (o *CreateSessionOK) GetPayload() *model.SesseionQRCode {
+func (o *CreateSessionOK) GetPayload() *model.Session {
 	return o.Payload
 }
 
 func (o *CreateSessionOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(model.SesseionQRCode)
+	o.Payload = new(model.Session)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -103,24 +115,126 @@ func (o *CreateSessionOK) readResponse(response runtime.ClientResponse, consumer
 	return nil
 }
 
+// NewCreateSessionNotFound creates a CreateSessionNotFound with default headers values
+func NewCreateSessionNotFound() *CreateSessionNotFound {
+	return &CreateSessionNotFound{}
+}
+
 /*
-CreateSessionBody ArgCreateSession
+CreateSessionNotFound describes a response with status code 404, with default header values.
+
+hash not found
+*/
+type CreateSessionNotFound struct {
+}
+
+// IsSuccess returns true when this create session not found response has a 2xx status code
+func (o *CreateSessionNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this create session not found response has a 3xx status code
+func (o *CreateSessionNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create session not found response has a 4xx status code
+func (o *CreateSessionNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this create session not found response has a 5xx status code
+func (o *CreateSessionNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this create session not found response a status code equal to that given
+func (o *CreateSessionNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+func (o *CreateSessionNotFound) Error() string {
+	return fmt.Sprintf("[POST /create-session][%d] createSessionNotFound ", 404)
+}
+
+func (o *CreateSessionNotFound) String() string {
+	return fmt.Sprintf("[POST /create-session][%d] createSessionNotFound ", 404)
+}
+
+func (o *CreateSessionNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewCreateSessionInternalServerError creates a CreateSessionInternalServerError with default headers values
+func NewCreateSessionInternalServerError() *CreateSessionInternalServerError {
+	return &CreateSessionInternalServerError{}
+}
+
+/*
+CreateSessionInternalServerError describes a response with status code 500, with default header values.
+
+Internal error
+*/
+type CreateSessionInternalServerError struct {
+}
+
+// IsSuccess returns true when this create session internal server error response has a 2xx status code
+func (o *CreateSessionInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this create session internal server error response has a 3xx status code
+func (o *CreateSessionInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create session internal server error response has a 4xx status code
+func (o *CreateSessionInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this create session internal server error response has a 5xx status code
+func (o *CreateSessionInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this create session internal server error response a status code equal to that given
+func (o *CreateSessionInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+func (o *CreateSessionInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /create-session][%d] createSessionInternalServerError ", 500)
+}
+
+func (o *CreateSessionInternalServerError) String() string {
+	return fmt.Sprintf("[POST /create-session][%d] createSessionInternalServerError ", 500)
+}
+
+func (o *CreateSessionInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+/*
+CreateSessionBody CreateSession
 swagger:model CreateSessionBody
 */
 type CreateSessionBody struct {
 
-	// key
+	// hash
 	// Required: true
-	Key *string `json:"key"`
+	Hash *string `json:"hash"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
 func (o *CreateSessionBody) UnmarshalJSON(data []byte) error {
 	var props struct {
 
-		// key
+		// hash
 		// Required: true
-		Key *string `json:"key"`
+		Hash *string `json:"hash"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -129,7 +243,7 @@ func (o *CreateSessionBody) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	o.Key = props.Key
+	o.Hash = props.Hash
 	return nil
 }
 
@@ -137,7 +251,7 @@ func (o *CreateSessionBody) UnmarshalJSON(data []byte) error {
 func (o *CreateSessionBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateKey(formats); err != nil {
+	if err := o.validateHash(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -147,9 +261,9 @@ func (o *CreateSessionBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *CreateSessionBody) validateKey(formats strfmt.Registry) error {
+func (o *CreateSessionBody) validateHash(formats strfmt.Registry) error {
 
-	if err := validate.Required("args"+"."+"key", "body", o.Key); err != nil {
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
 		return err
 	}
 
