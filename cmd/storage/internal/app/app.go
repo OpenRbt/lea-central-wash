@@ -189,6 +189,10 @@ type (
 		SetConfigBool(config ConfigBool) error
 		SetConfigString(config ConfigString) error
 		SetConfigIntIfNotExists(ConfigInt) error
+
+		CreateSession(key string) (string, string, error)
+		RefreshSession(key string) (string, int64, error)
+		EndSession(key string) error
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {

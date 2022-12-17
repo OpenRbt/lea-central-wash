@@ -1060,3 +1060,15 @@ func (svc *service) getStationDiscount(params op.GetStationDiscountsParams) op.G
 		return op.NewGetStationDiscountsInternalServerError()
 	}
 }
+
+func (svc *service) createSession(params op.CreateSessionParams) op.CreateSessionResponder {
+	return op.CreateSessionNotImplemented()
+}
+
+func (svc *service) refreshSession(params op.RefreshSessionParams) op.RefreshSessionResponder {
+	return op.RefreshSessionNotImplemented()
+}
+
+func (svc *service) endSession(params op.EndhSessionParams) op.EndhSessionResponder {
+	return op.EndhSessionNotImplemented()
+}
