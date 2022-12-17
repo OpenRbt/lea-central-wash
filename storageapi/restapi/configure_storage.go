@@ -90,6 +90,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.CardReaderConfigByHashNotImplemented()
 		})
 	}
+	if api.CreateSessionHandler == nil {
+		api.CreateSessionHandler = op.CreateSessionHandlerFunc(func(params op.CreateSessionParams) op.CreateSessionResponder {
+			return op.CreateSessionNotImplemented()
+		})
+	}
 	if api.CreateUserHandler == nil {
 		api.CreateUserHandler = op.CreateUserHandlerFunc(func(params op.CreateUserParams, principal *storageapi.Profile) op.CreateUserResponder {
 			return op.CreateUserNotImplemented()
@@ -113,6 +118,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.EditAdvertisingCampaignHandler == nil {
 		api.EditAdvertisingCampaignHandler = op.EditAdvertisingCampaignHandlerFunc(func(params op.EditAdvertisingCampaignParams, principal *storageapi.Profile) op.EditAdvertisingCampaignResponder {
 			return op.EditAdvertisingCampaignNotImplemented()
+		})
+	}
+	if api.EndhSessionHandler == nil {
+		api.EndhSessionHandler = op.EndhSessionHandlerFunc(func(params op.EndhSessionParams) op.EndhSessionResponder {
+			return op.EndhSessionNotImplemented()
 		})
 	}
 	if api.GetConfigVarBoolHandler == nil {
@@ -203,6 +213,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.ProgramsHandler == nil {
 		api.ProgramsHandler = op.ProgramsHandlerFunc(func(params op.ProgramsParams) op.ProgramsResponder {
 			return op.ProgramsNotImplemented()
+		})
+	}
+	if api.RefreshSessionHandler == nil {
+		api.RefreshSessionHandler = op.RefreshSessionHandlerFunc(func(params op.RefreshSessionParams) op.RefreshSessionResponder {
+			return op.RefreshSessionNotImplemented()
 		})
 	}
 	if api.ResetStationStatHandler == nil {

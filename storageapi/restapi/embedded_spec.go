@@ -278,6 +278,38 @@ func init() {
         }
       }
     },
+    "/create-session": {
+      "post": {
+        "operationId": "createSession",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgCreateSession",
+              "required": [
+                "key"
+              ],
+              "properties": {
+                "key": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/SesseionQRCode"
+            }
+          }
+        }
+      }
+    },
     "/del-advertising-campaign": {
       "post": {
         "security": [
@@ -386,6 +418,35 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/end-session": {
+      "post": {
+        "operationId": "endhSession",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgEndSession",
+              "required": [
+                "key"
+              ],
+              "properties": {
+                "key": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
           }
         }
       }
@@ -973,6 +1034,38 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/refresh-session": {
+      "post": {
+        "operationId": "refreshSession",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgRefreshSession",
+              "required": [
+                "key"
+              ],
+              "properties": {
+                "key": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RefreshData"
+            }
           }
         }
       }
@@ -2840,6 +2933,17 @@ func init() {
         }
       }
     },
+    "RefreshData": {
+      "type": "object",
+      "properties": {
+        "receiveAmount": {
+          "type": "integer"
+        },
+        "userID": {
+          "type": "string"
+        }
+      }
+    },
     "RelayBoard": {
       "type": "string",
       "enum": [
@@ -2891,6 +2995,17 @@ func init() {
         },
         "totalTimeOn": {
           "type": "integer"
+        }
+      }
+    },
+    "SesseionQRCode": {
+      "type": "object",
+      "properties": {
+        "QR": {
+          "type": "string"
+        },
+        "sessionID": {
+          "type": "string"
         }
       }
     },
@@ -3401,6 +3516,38 @@ func init() {
         }
       }
     },
+    "/create-session": {
+      "post": {
+        "operationId": "createSession",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgCreateSession",
+              "required": [
+                "key"
+              ],
+              "properties": {
+                "key": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/SesseionQRCode"
+            }
+          }
+        }
+      }
+    },
     "/del-advertising-campaign": {
       "post": {
         "security": [
@@ -3509,6 +3656,35 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/end-session": {
+      "post": {
+        "operationId": "endhSession",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgEndSession",
+              "required": [
+                "key"
+              ],
+              "properties": {
+                "key": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
           }
         }
       }
@@ -4096,6 +4272,38 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/refresh-session": {
+      "post": {
+        "operationId": "refreshSession",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgRefreshSession",
+              "required": [
+                "key"
+              ],
+              "properties": {
+                "key": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RefreshData"
+            }
           }
         }
       }
@@ -5962,6 +6170,17 @@ func init() {
         }
       }
     },
+    "RefreshData": {
+      "type": "object",
+      "properties": {
+        "receiveAmount": {
+          "type": "integer"
+        },
+        "userID": {
+          "type": "string"
+        }
+      }
+    },
     "RelayBoard": {
       "type": "string",
       "enum": [
@@ -6013,6 +6232,17 @@ func init() {
         },
         "totalTimeOn": {
           "type": "integer"
+        }
+      }
+    },
+    "SesseionQRCode": {
+      "type": "object",
+      "properties": {
+        "QR": {
+          "type": "string"
+        },
+        "sessionID": {
+          "type": "string"
         }
       }
     },

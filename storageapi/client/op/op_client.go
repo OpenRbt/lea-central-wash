@@ -46,6 +46,8 @@ type ClientService interface {
 
 	CardReaderConfigByHash(params *CardReaderConfigByHashParams, opts ...ClientOption) (*CardReaderConfigByHashOK, error)
 
+	CreateSession(params *CreateSessionParams, opts ...ClientOption) (*CreateSessionOK, error)
+
 	CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateUserCreated, error)
 
 	DelAdvertisingCampaign(params *DelAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DelAdvertisingCampaignNoContent, error)
@@ -55,6 +57,8 @@ type ClientService interface {
 	DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteUserNoContent, error)
 
 	EditAdvertisingCampaign(params *EditAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EditAdvertisingCampaignNoContent, error)
+
+	EndhSession(params *EndhSessionParams, opts ...ClientOption) (*EndhSessionNoContent, error)
 
 	GetConfigVarBool(params *GetConfigVarBoolParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetConfigVarBoolOK, error)
 
@@ -91,6 +95,8 @@ type ClientService interface {
 	PressButton(params *PressButtonParams, opts ...ClientOption) (*PressButtonNoContent, error)
 
 	Programs(params *ProgramsParams, opts ...ClientOption) (*ProgramsOK, error)
+
+	RefreshSession(params *RefreshSessionParams, opts ...ClientOption) (*RefreshSessionOK, error)
 
 	ResetStationStat(params *ResetStationStatParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResetStationStatNoContent, error)
 
@@ -465,6 +471,44 @@ func (a *Client) CardReaderConfigByHash(params *CardReaderConfigByHashParams, op
 }
 
 /*
+CreateSession create session API
+*/
+func (a *Client) CreateSession(params *CreateSessionParams, opts ...ClientOption) (*CreateSessionOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewCreateSessionParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "createSession",
+		Method:             "POST",
+		PathPattern:        "/create-session",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &CreateSessionReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*CreateSessionOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for createSession: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
 CreateUser create user API
 */
 func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateUserCreated, error) {
@@ -655,6 +699,44 @@ func (a *Client) EditAdvertisingCampaign(params *EditAdvertisingCampaignParams, 
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for editAdvertisingCampaign: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+EndhSession endh session API
+*/
+func (a *Client) EndhSession(params *EndhSessionParams, opts ...ClientOption) (*EndhSessionNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewEndhSessionParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "endhSession",
+		Method:             "POST",
+		PathPattern:        "/end-session",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &EndhSessionReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*EndhSessionNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for endhSession: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -1344,6 +1426,44 @@ func (a *Client) Programs(params *ProgramsParams, opts ...ClientOption) (*Progra
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for programs: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+RefreshSession refresh session API
+*/
+func (a *Client) RefreshSession(params *RefreshSessionParams, opts ...ClientOption) (*RefreshSessionOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewRefreshSessionParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "refreshSession",
+		Method:             "POST",
+		PathPattern:        "/refresh-session",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &RefreshSessionReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*RefreshSessionOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for refreshSession: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

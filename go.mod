@@ -23,7 +23,6 @@ require (
 	github.com/powerman/sqlxx v0.2.0
 	github.com/powerman/structlog v0.7.1
 	github.com/pressly/goose v2.7.0+incompatible
-	github.com/tarm/serial v0.0.0-20180830185346-98f6abe2eb07
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
 	golang.org/x/net v0.0.0-20220802222814-0bcc04d9c69b
 )
@@ -31,15 +30,15 @@ require (
 require (
 	github.com/golang/protobuf v1.5.2
 	google.golang.org/grpc v1.48.0
-	google.golang.org/protobuf v1.28.0 // indirect
+	google.golang.org/protobuf v1.28.0
 )
 
 require (
-	github.com/felixge/httpsnoop v1.0.3 // indirect
 	github.com/go-openapi/analysis v0.21.4 // indirect
-	github.com/go-swagger/go-swagger v0.29.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.2 // indirect
+	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/spf13/afero v1.9.2 // indirect
+	github.com/spf13/cobra v1.3.0 // indirect
 	github.com/spf13/viper v1.12.0 // indirect
 	github.com/subosito/gotenv v1.4.0 // indirect
 	go.mongodb.org/mongo-driver v1.10.1 // indirect
