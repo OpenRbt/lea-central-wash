@@ -6,9 +6,7 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -30,33 +28,6 @@ type RelayStat struct {
 
 	// total time on
 	TotalTimeOn int64 `json:"totalTimeOn,omitempty"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (m *RelayStat) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// relay ID
-		// Minimum: 1
-		RelayID int64 `json:"relayID,omitempty"`
-
-		// switched count
-		SwitchedCount int64 `json:"switchedCount,omitempty"`
-
-		// total time on
-		TotalTimeOn int64 `json:"totalTimeOn,omitempty"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	m.RelayID = props.RelayID
-	m.SwitchedCount = props.SwitchedCount
-	m.TotalTimeOn = props.TotalTimeOn
-	return nil
 }
 
 // Validate validates this relay stat
