@@ -8,6 +8,8 @@ import (
 
 	"github.com/powerman/structlog"
 	"golang.org/x/crypto/bcrypt"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 var log = structlog.New() //nolint:gochecknoglobals
@@ -810,11 +812,15 @@ func isValidDayOfWeek(dayOfWeek int, weekDay []string) bool {
 }
 
 func (a *app) CreateSession(stationID StationID) (string, string, error) {
-	panic("Not implemented")
+	id := uuid.NewV4().String()
+
+	return id, fmt.Sprintf("http://bonus.com/%d/%s", stationID, id), nil
 }
+
 func (a *app) RefreshSession(stationID StationID) (string, int64, error) {
 	panic("Not implemented")
 }
+
 func (a *app) EndSession(stationID StationID) error {
 	panic("Not implemented")
 }
