@@ -93,6 +93,11 @@ func (o *SetStationNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the set station no content response
+func (o *SetStationNoContent) Code() int {
+	return 204
+}
+
 func (o *SetStationNoContent) Error() string {
 	return fmt.Sprintf("[POST /set-station][%d] setStationNoContent ", 204)
 }
@@ -142,6 +147,11 @@ func (o *SetStationUnauthorized) IsServerError() bool {
 // IsCode returns true when this set station unauthorized response a status code equal to that given
 func (o *SetStationUnauthorized) IsCode(code int) bool {
 	return code == 401
+}
+
+// Code gets the status code for the set station unauthorized response
+func (o *SetStationUnauthorized) Code() int {
+	return 401
 }
 
 func (o *SetStationUnauthorized) Error() string {
@@ -195,6 +205,11 @@ func (o *SetStationNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the set station not found response
+func (o *SetStationNotFound) Code() int {
+	return 404
+}
+
 func (o *SetStationNotFound) Error() string {
 	return fmt.Sprintf("[POST /set-station][%d] setStationNotFound ", 404)
 }
@@ -246,6 +261,11 @@ func (o *SetStationUnprocessableEntity) IsCode(code int) bool {
 	return code == 422
 }
 
+// Code gets the status code for the set station unprocessable entity response
+func (o *SetStationUnprocessableEntity) Code() int {
+	return 422
+}
+
 func (o *SetStationUnprocessableEntity) Error() string {
 	return fmt.Sprintf("[POST /set-station][%d] setStationUnprocessableEntity ", 422)
 }
@@ -295,6 +315,11 @@ func (o *SetStationInternalServerError) IsServerError() bool {
 // IsCode returns true when this set station internal server error response a status code equal to that given
 func (o *SetStationInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the set station internal server error response
+func (o *SetStationInternalServerError) Code() int {
+	return 500
 }
 
 func (o *SetStationInternalServerError) Error() string {

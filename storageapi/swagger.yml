@@ -157,6 +157,7 @@ definitions:
         type: integer
       user:
         type: string
+  
   MoneyReport:
     type: object
     required:
@@ -171,6 +172,8 @@ definitions:
         electronical:
           type: integer
         service:
+          type: integer
+        bonuses:
           type: integer
         hash:
           $ref: '#/definitions/Hash'

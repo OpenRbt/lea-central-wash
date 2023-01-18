@@ -75,6 +75,11 @@ func (o *SetProgramNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the set program no content response
+func (o *SetProgramNoContent) Code() int {
+	return 204
+}
+
 func (o *SetProgramNoContent) Error() string {
 	return fmt.Sprintf("[POST /set-program][%d] setProgramNoContent ", 204)
 }
@@ -124,6 +129,11 @@ func (o *SetProgramInternalServerError) IsServerError() bool {
 // IsCode returns true when this set program internal server error response a status code equal to that given
 func (o *SetProgramInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the set program internal server error response
+func (o *SetProgramInternalServerError) Code() int {
+	return 500
 }
 
 func (o *SetProgramInternalServerError) Error() string {

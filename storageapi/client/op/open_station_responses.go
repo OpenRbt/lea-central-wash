@@ -87,6 +87,11 @@ func (o *OpenStationNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the open station no content response
+func (o *OpenStationNoContent) Code() int {
+	return 204
+}
+
 func (o *OpenStationNoContent) Error() string {
 	return fmt.Sprintf("[POST /open-station][%d] openStationNoContent ", 204)
 }
@@ -138,6 +143,11 @@ func (o *OpenStationNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the open station not found response
+func (o *OpenStationNotFound) Code() int {
+	return 404
+}
+
 func (o *OpenStationNotFound) Error() string {
 	return fmt.Sprintf("[POST /open-station][%d] openStationNotFound ", 404)
 }
@@ -187,6 +197,11 @@ func (o *OpenStationInternalServerError) IsServerError() bool {
 // IsCode returns true when this open station internal server error response a status code equal to that given
 func (o *OpenStationInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the open station internal server error response
+func (o *OpenStationInternalServerError) Code() int {
+	return 500
 }
 
 func (o *OpenStationInternalServerError) Error() string {

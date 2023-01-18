@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -106,6 +108,54 @@ type CreateUserBody struct {
 	// password
 	// Required: true
 	Password *model.Password `json:"password"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *CreateUserBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// first name
+		FirstName *model.FirstName `json:"firstName,omitempty"`
+
+		// is admin
+		IsAdmin *model.IsAdmin `json:"isAdmin,omitempty"`
+
+		// is engineer
+		IsEngineer *model.IsEngineer `json:"isEngineer,omitempty"`
+
+		// is operator
+		IsOperator *model.IsOperator `json:"isOperator,omitempty"`
+
+		// last name
+		LastName *model.LastName `json:"lastName,omitempty"`
+
+		// login
+		// Required: true
+		Login *model.Login `json:"login"`
+
+		// middle name
+		MiddleName *model.MiddleName `json:"middleName,omitempty"`
+
+		// password
+		// Required: true
+		Password *model.Password `json:"password"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.FirstName = props.FirstName
+	o.IsAdmin = props.IsAdmin
+	o.IsEngineer = props.IsEngineer
+	o.IsOperator = props.IsOperator
+	o.LastName = props.LastName
+	o.Login = props.Login
+	o.MiddleName = props.MiddleName
+	o.Password = props.Password
+	return nil
 }
 
 // Validate validates this create user body
@@ -445,6 +495,30 @@ type CreateUserConflictBody struct {
 	Message *string `json:"message"`
 }
 
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *CreateUserConflictBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// code
+		// Required: true
+		Code *int64 `json:"code"`
+
+		// message
+		// Required: true
+		Message *string `json:"message"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Code = props.Code
+	o.Message = props.Message
+	return nil
+}
+
 // Validate validates this create user conflict body
 func (o *CreateUserConflictBody) Validate(formats strfmt.Registry) error {
 	var res []error
@@ -512,6 +586,25 @@ type CreateUserCreatedBody struct {
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *CreateUserCreatedBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// id
+		// Required: true
+		ID *int64 `json:"id"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ID = props.ID
+	return nil
 }
 
 // Validate validates this create user created body

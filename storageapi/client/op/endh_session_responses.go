@@ -87,6 +87,11 @@ func (o *EndhSessionNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the endh session no content response
+func (o *EndhSessionNoContent) Code() int {
+	return 204
+}
+
 func (o *EndhSessionNoContent) Error() string {
 	return fmt.Sprintf("[POST /end-session][%d] endhSessionNoContent ", 204)
 }
@@ -138,6 +143,11 @@ func (o *EndhSessionNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the endh session not found response
+func (o *EndhSessionNotFound) Code() int {
+	return 404
+}
+
 func (o *EndhSessionNotFound) Error() string {
 	return fmt.Sprintf("[POST /end-session][%d] endhSessionNotFound ", 404)
 }
@@ -187,6 +197,11 @@ func (o *EndhSessionInternalServerError) IsServerError() bool {
 // IsCode returns true when this endh session internal server error response a status code equal to that given
 func (o *EndhSessionInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the endh session internal server error response
+func (o *EndhSessionInternalServerError) Code() int {
+	return 500
 }
 
 func (o *EndhSessionInternalServerError) Error() string {

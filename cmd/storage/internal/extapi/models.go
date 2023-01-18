@@ -128,6 +128,7 @@ func apiMoneyReport(data *app.MoneyReport) *model.MoneyReport {
 		Coins:        int64(data.Coins),
 		Electronical: int64(data.Electronical),
 		Service:      int64(data.Service),
+		Bonuses:      int64(data.Bonuses),
 	}
 }
 

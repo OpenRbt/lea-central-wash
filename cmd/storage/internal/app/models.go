@@ -57,6 +57,7 @@ type MoneyReport struct {
 	Coins        int
 	Electronical int
 	Service      int
+	Bonuses      int
 }
 
 // CollectionReport is how much was collected from a station + when

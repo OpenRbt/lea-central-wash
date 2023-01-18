@@ -2871,6 +2871,9 @@ func init() {
         "banknotes": {
           "type": "integer"
         },
+        "bonuses": {
+          "type": "integer"
+        },
         "carsTotal": {
           "type": "integer"
         },
@@ -6122,6 +6125,9 @@ func init() {
       ],
       "properties": {
         "banknotes": {
+          "type": "integer"
+        },
+        "bonuses": {
           "type": "integer"
         },
         "carsTotal": {
