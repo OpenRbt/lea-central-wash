@@ -205,6 +205,7 @@ func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 		Coins:        int(params.Args.Coins),
 		Electronical: int(params.Args.Electronical),
 		Service:      int(params.Args.Service),
+		Bonuses:      int(params.Args.Bonuses),
 	}
 
 	err = svc.app.SaveMoneyReport(toSave)

@@ -164,8 +164,8 @@ SET deleted = true, hash = null
 WHERE id = :id
 	`
 	sqlAddMoneyReport = `
-INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, ctime)  
-VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :ctime)
+INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, bonuses, ctime)  
+VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :bonuses, :ctime)
 	`
 	sqlAddCollectionReport = `
 	INSERT INTO money_collection (station_id, user_id, banknotes, cars_total, coins, electronical, service, last_money_report_id, ctime) 
@@ -189,7 +189,7 @@ VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, 
 	)	
 	`
 	sqlLastMoneyReport = `
-SELECT station_id, banknotes, cars_total, coins, electronical, service FROM money_report WHERE station_id = :station_id
+SELECT station_id, banknotes, cars_total, coins, electronical, service, bonuses FROM money_report WHERE station_id = :station_id
 ORDER BY id DESC
 LIMIT 1
 	`
@@ -279,7 +279,8 @@ ORDER BY r.station_id,r.program_id
 		   sum(cars_total) as cars_total, 
 		   sum(coins) as coins, 
 		   sum(electronical) as electronical, 
-		   sum(service) as service 
+		   sum(service) as service,
+		   sum(bonuses) as bonuses
 	FROM money_report
 	WHERE :start_date < ctime AND ctime <= :end_date AND station_id = :station_id
 	GROUP BY station_id
@@ -290,7 +291,8 @@ ORDER BY r.station_id,r.program_id
 		   sum(cars_total) as cars_total, 
 		   sum(coins) as coins, 
 		   sum(electronical) as electronical, 
-		   sum(service) as service 
+		   sum(service) as service,
+		   sum(bonuses) as bonuses
 	FROM money_report
 	WHERE id > coalesce(
 		(SELECT last_money_report_id FROM money_collection WHERE station_id = :station_id
@@ -932,6 +934,7 @@ type (
 		Coins        int
 		Electronical int
 		Service      int
+		Bonuses      int
 		Ctime        time.Time
 	}
 	argAdvertisingCampaign struct {

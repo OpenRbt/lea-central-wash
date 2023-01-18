@@ -327,6 +327,7 @@ func (r *repo) SaveMoneyReport(report app.MoneyReport) (err error) {
 			Coins:        report.Coins,
 			Electronical: report.Electronical,
 			Service:      report.Service,
+			Bonuses:      report.Bonuses,
 			Ctime:        time.Now().UTC(),
 		})
 		return err
