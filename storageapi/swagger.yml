@@ -175,6 +175,8 @@ definitions:
           type: integer
         bonuses:
           type: integer
+        bonus:
+          type: integer
         hash:
           $ref: '#/definitions/Hash'
 
@@ -1303,6 +1305,12 @@ paths:
             properties:
               serviceAmount:
                 type: integer
+              sessionID:
+                type: string
+              bonusAmount:
+                type: integer
+              bonusSystemActive:
+                type: boolean
               openStation:
                 type: boolean
               lastUpdate:

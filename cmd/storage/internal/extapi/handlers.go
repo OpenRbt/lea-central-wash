@@ -247,14 +247,17 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		})
 	}
 
-	station := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP)
+	station, bonusActive := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP)
 
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
 		ServiceAmount:      newInt64(int64(station.ServiceMoney)),
+		BonusAmount:        int64(station.BonusMoney),
 		OpenStation:        &station.OpenStation,
 		ButtonID:           int64(station.ButtonID),
 		LastUpdate:         int64(station.LastUpdate),
 		LastDiscountUpdate: int64(station.LastDiscountUpdate),
+		SessionID:          station.SessionID,
+		BonusSystemActive:  bonusActive,
 	})
 }
 

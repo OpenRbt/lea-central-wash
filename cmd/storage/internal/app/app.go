@@ -59,7 +59,7 @@ type (
 
 		Set(station StationData) error
 		Get(stationID StationID) (StationData, error)
-		Ping(id StationID, balance, program int, stationIP string) StationData
+		Ping(id StationID, balance, program int, stationIP string) (StationData, bool)
 
 		SaveMoneyReport(report MoneyReport) error
 		SaveRelayReport(report RelayReport) error
@@ -124,6 +124,13 @@ type (
 		CreateSession(stationID StationID) (string, string, error)
 		RefreshSession(stationID StationID) (string, int64, error)
 		EndSession(stationID StationID) error
+
+		AssignRabbitPub(func(msg any, service string, target string, messageType int) error)
+		SetNextSession(stationID StationID) error
+		RequestSessionsFromService(count int) error
+		AddSessionsToPool(sessionsIDs ...string) error
+		AssignSessionUser(sessionID string, userID string) error
+		AssignSessionBonuses(sessionID string, amount int) error
 	}
 
 	// Repo is a DAL interface.
@@ -243,6 +250,10 @@ type app struct {
 	lastDiscountUpdate    int64
 	cfg                   AppConfig
 	cfgMutex              sync.Mutex
+
+	bonusSvcActive        bool
+	bonusSessionsPool     chan string
+	bonusSvcPublisherFunc func(msg any, service string, target string, messageType int) error
 }
 
 // New creates and returns new App.
@@ -376,4 +387,8 @@ type StationConfig struct {
 	RelayBoard   string
 	LastUpdate   int
 	Programs     []Program
+}
+
+type SessionsRequest struct {
+	Count int `json:"new_sessions_amount"`
 }

@@ -42,6 +42,7 @@ require (
 	github.com/spf13/cobra v1.3.0 // indirect
 	github.com/spf13/viper v1.12.0 // indirect
 	github.com/subosito/gotenv v1.4.0 // indirect
+	github.com/wagslane/go-rabbitmq v0.11.1 // indirect
 	go.mongodb.org/mongo-driver v1.10.1 // indirect
 	golang.org/x/sys v0.0.0-20220803195053-6e608f9ce704 // indirect
 	golang.org/x/tools v0.1.12 // indirect

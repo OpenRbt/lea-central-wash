@@ -36,8 +36,11 @@ type UpdatePasswordData struct {
 // StationData represents current status of a station
 type StationData struct {
 	ID                 StationID
+	SessionID          string
+	UserID             string
 	Name               string
 	ServiceMoney       int
+	BonusMoney         int
 	LastPing           time.Time
 	RunProgram         time.Time
 	OpenStation        bool

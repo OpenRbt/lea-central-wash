@@ -1,6 +1,7 @@
 package app
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strconv"
@@ -106,7 +107,7 @@ func (a *app) Set(station StationData) error {
 }
 
 // Ping sets the time of the last ping and returns service money.
-func (a *app) Ping(id StationID, balance, program int, stationIP string) StationData {
+func (a *app) Ping(id StationID, balance, program int, stationIP string) (StationData, bool) {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 	var station StationData
@@ -118,6 +119,7 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) Station
 	oldStation := station
 	station.LastPing = time.Now()
 	station.ServiceMoney = 0
+	station.BonusMoney = 0
 	station.OpenStation = false
 	station.CurrentBalance = balance
 	station.CurrentProgram = program
@@ -133,7 +135,7 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) Station
 	a.stations[id] = station
 	oldStation.LastUpdate = a.lastUpdate
 	oldStation.LastDiscountUpdate = a.lastDiscountUpdate
-	return oldStation
+	return oldStation, false
 }
 
 func (a *app) checkStationOnline() {
@@ -823,4 +825,71 @@ func (a *app) RefreshSession(stationID StationID) (string, int64, error) {
 
 func (a *app) EndSession(stationID StationID) error {
 	panic("Not implemented")
+}
+
+func (a *app) AssignRabbitPub(publishFunc func(msg any, service string, target string, messageType int) error) {
+	a.bonusSvcPublisherFunc = publishFunc
+}
+
+func (a *app) SetNextSession(stationID StationID) error {
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+
+	if station, ok := a.stations[stationID]; ok {
+		sessions := len(a.bonusSessionsPool)
+		switch {
+		case sessions == 0:
+			return errors.New("no sessions available")
+		case sessions > 0:
+			station.SessionID = <-a.bonusSessionsPool
+			fallthrough
+		case sessions < 5:
+			a.RequestSessionsFromService(5)
+		}
+	}
+
+	return nil
+}
+
+func (a *app) RequestSessionsFromService(count int) error {
+	msg := SessionsRequest{Count: count}
+	return a.bonusSvcPublisherFunc(msg, "bonus_svc", "sessions", 0)
+}
+
+func (a *app) AddSessionsToPool(sessionsIDs ...string) error {
+	for _, session := range sessionsIDs {
+		a.bonusSessionsPool <- session
+	}
+
+	return nil
+}
+
+func (a *app) AssignSessionUser(sessionID string, userID string) error {
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+
+	//TODO: add a better way for station search?
+	for _, v := range a.stations {
+		if v.SessionID == sessionID {
+			v.UserID = userID
+			break
+		}
+	}
+
+	return nil
+}
+
+func (a *app) AssignSessionBonuses(sessionID string, amount int) error {
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+
+	//TODO: add a better way for station search?
+	for _, v := range a.stations {
+		if v.SessionID == sessionID {
+			v.BonusMoney += amount
+			break
+		}
+	}
+	//TODO: add bonus return
+	return nil
 }
