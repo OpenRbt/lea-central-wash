@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit"
 	"os"
 	"os/user"
 	"path"
@@ -64,6 +65,7 @@ var (
 		gooseDir   string
 		extapi     extapi.Config
 		kasse      svckasse.Config
+		rabbit     rabbit.Config
 		hal        hal.Config
 		testBoards bool
 	}
@@ -241,6 +243,13 @@ func run(db *sqlx.DB, errc chan<- error) {
 	}
 
 	appl := app.New(repo, kasse, weather, client)
+
+	rabbitWorker, err := rabbit.NewClient(cfg.rabbit, appl)
+	if err != nil {
+		errc <- err
+		return
+	}
+	appl.AssignRabbit(rabbitWorker.SendMessage)
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
 	if err != nil {
