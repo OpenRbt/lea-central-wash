@@ -9,8 +9,6 @@ import (
 
 	"github.com/powerman/structlog"
 	"golang.org/x/crypto/bcrypt"
-
-	uuid "github.com/satori/go.uuid"
 )
 
 var log = structlog.New() //nolint:gochecknoglobals
@@ -814,9 +812,21 @@ func isValidDayOfWeek(dayOfWeek int, weekDay []string) bool {
 }
 
 func (a *app) CreateSession(stationID StationID) (string, string, error) {
-	id := uuid.NewV4().String()
+	err := a.SetNextSession(stationID)
+	if err != nil {
+		return "", "", err
+	}
 
-	return id, fmt.Sprintf("http://bonus.com/%d/%s", stationID, id), nil
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+
+	sessionID := ""
+
+	if station, ok := a.stations[stationID]; ok {
+		sessionID = station.SessionID
+	}
+
+	return sessionID, fmt.Sprintf("http://bonus.com/%d/%s", stationID, sessionID), nil
 }
 
 func (a *app) RefreshSession(stationID StationID) (string, int64, error) {
@@ -831,7 +841,7 @@ func (a *app) AssignRabbitPub(publishFunc func(msg interface{}, service string, 
 	a.bonusSvcPublisherFunc = publishFunc
 }
 
-func (a *app) SetNextSession(stationID StationID) error {
+func (a *app) SetNextSession(stationID StationID) error { // Создаем новую сессию для указанной станции? Устанавливает сессию из очереди, если нет сессии, то ошибка
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
@@ -851,12 +861,12 @@ func (a *app) SetNextSession(stationID StationID) error {
 	return nil
 }
 
-func (a *app) RequestSessionsFromService(count int) error {
+func (a *app) RequestSessionsFromService(count int) error { // Запрашивает новые бонусные сессии
 	msg := SessionsRequest{Count: count}
 	return a.bonusSvcPublisherFunc(msg, "bonus_svc", "sessions", 0)
 }
 
-func (a *app) AddSessionsToPool(sessionsIDs ...string) error {
+func (a *app) AddSessionsToPool(sessionsIDs ...string) error { // обрабатывает ответ сообщения с функции выше
 	for _, session := range sessionsIDs {
 		a.bonusSessionsPool <- session
 	}
@@ -864,7 +874,7 @@ func (a *app) AddSessionsToPool(sessionsIDs ...string) error {
 	return nil
 }
 
-func (a *app) AssignSessionUser(sessionID string, userID string) error {
+func (a *app) AssignSessionUser(sessionID string, userID string) error { // Записавыем указанного юзера в указанную сессию
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
@@ -879,7 +889,7 @@ func (a *app) AssignSessionUser(sessionID string, userID string) error {
 	return nil
 }
 
-func (a *app) AssignSessionBonuses(sessionID string, amount int) error {
+func (a *app) AssignSessionBonuses(sessionID string, amount int) error { // Записываем бонусы в указанную сессию
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
