@@ -1109,3 +1109,37 @@ func (svc *service) endSession(params op.EndhSessionParams) op.EndhSessionRespon
 		return op.NewEndhSessionInternalServerError()
 	}
 }
+
+func (svc *service) setBonuses(params op.SetBonusesParams) op.SetBonusesResponder {
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		return op.NewSetBonusesNotFound()
+	}
+
+	err = svc.app.SetBonuses(stationID, int(params.Args.Bonuses))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSetBonusesNoContent()
+	default:
+		return op.NewSetBonusesInternalServerError()
+	}
+}
+
+func (svc *service) isAuthorized(params op.IsAuthorizedParams) op.IsAuthorizedResponder {
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		return op.NewIsAuthorizedNotFound()
+	}
+
+	err = svc.app.IsAuthorized(stationID)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewIsAuthorizedOK().WithPayload(&model.IsAuthorized{
+			Authorized: true,
+		})
+	default:
+		return op.NewIsAuthorizedInternalServerError()
+	}
+}

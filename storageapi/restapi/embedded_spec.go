@@ -684,6 +684,44 @@ func init() {
         }
       }
     },
+    "/is-authorized": {
+      "post": {
+        "operationId": "isAuthorized",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgIsAuthorized",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/IsAuthorized"
+            }
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/kasse": {
       "post": {
         "operationId": "kasse",
@@ -953,6 +991,12 @@ func init() {
                 "ButtonID": {
                   "type": "integer"
                 },
+                "bonusAmount": {
+                  "type": "integer"
+                },
+                "bonusSystemActive": {
+                  "type": "boolean"
+                },
                 "lastDiscountUpdate": {
                   "type": "integer"
                 },
@@ -964,6 +1008,9 @@ func init() {
                 },
                 "serviceAmount": {
                   "type": "integer"
+                },
+                "sessionID": {
+                  "type": "string"
                 }
               }
             }
@@ -1436,6 +1483,44 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-bonuses": {
+      "post": {
+        "operationId": "setBonuses",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgSetBonuses",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "bonuses": {
+                  "type": "integer"
+                },
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -2796,6 +2881,14 @@ func init() {
       "type": "boolean",
       "x-nullable": true
     },
+    "IsAuthorized": {
+      "type": "object",
+      "properties": {
+        "authorized": {
+          "type": "boolean"
+        }
+      }
+    },
     "IsEngineer": {
       "type": "boolean",
       "x-nullable": true
@@ -3943,6 +4036,44 @@ func init() {
         }
       }
     },
+    "/is-authorized": {
+      "post": {
+        "operationId": "isAuthorized",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgIsAuthorized",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/IsAuthorized"
+            }
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/kasse": {
       "post": {
         "operationId": "kasse",
@@ -4212,6 +4343,12 @@ func init() {
                 "ButtonID": {
                   "type": "integer"
                 },
+                "bonusAmount": {
+                  "type": "integer"
+                },
+                "bonusSystemActive": {
+                  "type": "boolean"
+                },
                 "lastDiscountUpdate": {
                   "type": "integer"
                 },
@@ -4223,6 +4360,9 @@ func init() {
                 },
                 "serviceAmount": {
                   "type": "integer"
+                },
+                "sessionID": {
+                  "type": "string"
                 }
               }
             }
@@ -4695,6 +4835,44 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-bonuses": {
+      "post": {
+        "operationId": "setBonuses",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgSetBonuses",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "bonuses": {
+                  "type": "integer"
+                },
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -6051,6 +6229,14 @@ func init() {
     "IsAdmin": {
       "type": "boolean",
       "x-nullable": true
+    },
+    "IsAuthorized": {
+      "type": "object",
+      "properties": {
+        "authorized": {
+          "type": "boolean"
+        }
+      }
     },
     "IsEngineer": {
       "type": "boolean",

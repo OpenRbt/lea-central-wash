@@ -837,6 +837,20 @@ func (a *app) EndSession(stationID StationID) error {
 	panic("Not implemented")
 }
 
+func (a *app) SetBonuses(stationID StationID, bonuses int) error {
+
+	// ...
+
+	return nil
+}
+
+func (a *app) IsAuthorized(stationID StationID) error {
+
+	// ...
+
+	return nil
+}
+
 func (a *app) AssignRabbitPub(publishFunc func(msg interface{}, service string, target string, messageType int) error) {
 	a.bonusSvcPublisherFunc = publishFunc
 }

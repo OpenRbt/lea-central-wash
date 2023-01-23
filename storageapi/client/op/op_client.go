@@ -76,6 +76,8 @@ type ClientService interface {
 
 	Info(params *InfoParams, opts ...ClientOption) (*InfoOK, error)
 
+	IsAuthorized(params *IsAuthorizedParams, opts ...ClientOption) (*IsAuthorizedOK, error)
+
 	Kasse(params *KasseParams, opts ...ClientOption) (*KasseOK, error)
 
 	Load(params *LoadParams, opts ...ClientOption) (*LoadOK, error)
@@ -113,6 +115,8 @@ type ClientService interface {
 	SaveMoney(params *SaveMoneyParams, opts ...ClientOption) (*SaveMoneyNoContent, error)
 
 	SaveRelay(params *SaveRelayParams, opts ...ClientOption) (*SaveRelayNoContent, error)
+
+	SetBonuses(params *SetBonusesParams, opts ...ClientOption) (*SetBonusesNoContent, error)
 
 	SetCardReaderConfig(params *SetCardReaderConfigParams, opts ...ClientOption) (*SetCardReaderConfigNoContent, error)
 
@@ -1050,6 +1054,44 @@ func (a *Client) Info(params *InfoParams, opts ...ClientOption) (*InfoOK, error)
 }
 
 /*
+IsAuthorized is authorized API
+*/
+func (a *Client) IsAuthorized(params *IsAuthorizedParams, opts ...ClientOption) (*IsAuthorizedOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIsAuthorizedParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "isAuthorized",
+		Method:             "POST",
+		PathPattern:        "/is-authorized",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &IsAuthorizedReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IsAuthorizedOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for isAuthorized: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
 Kasse kasse API
 */
 func (a *Client) Kasse(params *KasseParams, opts ...ClientOption) (*KasseOK, error) {
@@ -1770,6 +1812,44 @@ func (a *Client) SaveRelay(params *SaveRelayParams, opts ...ClientOption) (*Save
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for saveRelay: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+SetBonuses set bonuses API
+*/
+func (a *Client) SetBonuses(params *SetBonusesParams, opts ...ClientOption) (*SetBonusesNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetBonusesParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "setBonuses",
+		Method:             "POST",
+		PathPattern:        "/set-bonuses",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetBonusesReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*SetBonusesNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setBonuses: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

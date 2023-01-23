@@ -113,6 +113,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		InfoHandler: InfoHandlerFunc(func(params InfoParams) InfoResponder {
 			return InfoNotImplemented()
 		}),
+		IsAuthorizedHandler: IsAuthorizedHandlerFunc(func(params IsAuthorizedParams) IsAuthorizedResponder {
+			return IsAuthorizedNotImplemented()
+		}),
 		KasseHandler: KasseHandlerFunc(func(params KasseParams) KasseResponder {
 			return KasseNotImplemented()
 		}),
@@ -169,6 +172,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		SaveRelayHandler: SaveRelayHandlerFunc(func(params SaveRelayParams) SaveRelayResponder {
 			return SaveRelayNotImplemented()
+		}),
+		SetBonusesHandler: SetBonusesHandlerFunc(func(params SetBonusesParams) SetBonusesResponder {
+			return SetBonusesNotImplemented()
 		}),
 		SetCardReaderConfigHandler: SetCardReaderConfigHandlerFunc(func(params SetCardReaderConfigParams) SetCardReaderConfigResponder {
 			return SetCardReaderConfigNotImplemented()
@@ -332,6 +338,8 @@ type StorageAPI struct {
 	GetUsersHandler GetUsersHandler
 	// InfoHandler sets the operation handler for the info operation
 	InfoHandler InfoHandler
+	// IsAuthorizedHandler sets the operation handler for the is authorized operation
+	IsAuthorizedHandler IsAuthorizedHandler
 	// KasseHandler sets the operation handler for the kasse operation
 	KasseHandler KasseHandler
 	// LoadHandler sets the operation handler for the load operation
@@ -370,6 +378,8 @@ type StorageAPI struct {
 	SaveMoneyHandler SaveMoneyHandler
 	// SaveRelayHandler sets the operation handler for the save relay operation
 	SaveRelayHandler SaveRelayHandler
+	// SetBonusesHandler sets the operation handler for the set bonuses operation
+	SetBonusesHandler SetBonusesHandler
 	// SetCardReaderConfigHandler sets the operation handler for the set card reader config operation
 	SetCardReaderConfigHandler SetCardReaderConfigHandler
 	// SetConfigVarBoolHandler sets the operation handler for the set config var bool operation
@@ -564,6 +574,9 @@ func (o *StorageAPI) Validate() error {
 	if o.InfoHandler == nil {
 		unregistered = append(unregistered, "InfoHandler")
 	}
+	if o.IsAuthorizedHandler == nil {
+		unregistered = append(unregistered, "IsAuthorizedHandler")
+	}
 	if o.KasseHandler == nil {
 		unregistered = append(unregistered, "KasseHandler")
 	}
@@ -620,6 +633,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.SaveRelayHandler == nil {
 		unregistered = append(unregistered, "SaveRelayHandler")
+	}
+	if o.SetBonusesHandler == nil {
+		unregistered = append(unregistered, "SetBonusesHandler")
 	}
 	if o.SetCardReaderConfigHandler == nil {
 		unregistered = append(unregistered, "SetCardReaderConfigHandler")
@@ -881,6 +897,10 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/is-authorized"] = NewIsAuthorized(o.context, o.IsAuthorizedHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/kasse"] = NewKasse(o.context, o.KasseHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -954,6 +974,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/save-relay"] = NewSaveRelay(o.context, o.SaveRelayHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-bonuses"] = NewSetBonuses(o.context, o.SetBonusesHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

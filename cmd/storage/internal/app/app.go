@@ -124,6 +124,8 @@ type (
 		CreateSession(stationID StationID) (string, string, error)
 		RefreshSession(stationID StationID) (string, int64, error)
 		EndSession(stationID StationID) error
+		IsAuthorized(stationID StationID) error
+		SetBonuses(stationID StationID, bonuses int) error
 
 		AssignRabbitPub(func(msg interface{}, service string, target string, messageType int) error)
 		SetNextSession(stationID StationID) error

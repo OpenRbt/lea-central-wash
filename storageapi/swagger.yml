@@ -32,6 +32,12 @@ definitions:
       receiveAmount:
         type: integer
   
+  IsAuthorized:
+    type: object
+    properties:
+      authorized:
+        type: boolean
+  
   ConfigVarInt:
     type: object
     properties:
@@ -174,8 +180,6 @@ definitions:
         service:
           type: integer
         bonuses:
-          type: integer
-        bonus:
           type: integer
         hash:
           $ref: '#/definitions/Hash'
@@ -2177,3 +2181,52 @@ paths:
         500:
             description: Internal error
   
+  /set-bonuses:
+    post:
+      operationId: "setBonuses"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgSetBonuses"
+            type: object
+            required:
+              - hash
+            properties:
+              hash:
+                type: string
+              bonuses:
+                type: integer
+      responses:
+        204:
+          description: OK
+        404:
+          description: hash not found
+        500:
+            description: Internal error
+
+  /is-authorized:
+    post:
+      operationId: "isAuthorized"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgIsAuthorized"
+            type: object
+            required:
+              - hash
+            properties:
+              hash:
+                type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/IsAuthorized'
+        404:
+          description: hash not found
+        500:
+            description: Internal error
