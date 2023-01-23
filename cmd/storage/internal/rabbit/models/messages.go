@@ -11,9 +11,9 @@ type SessionRequest struct {
 }
 
 type SessionStateChange struct {
-	SessionID      string         `json:"session_id"`
-	State          int            `json:"state"`
-	AdditionalData map[string]any `json:"additional_data,omitempty"`
+	SessionID      string                 `json:"session_id"`
+	State          int                    `json:"state"`
+	AdditionalData map[string]interface{} `json:"additional_data,omitempty"`
 }
 
 type SessionUserAssign struct {
@@ -27,8 +27,8 @@ type SessionBonusCharge struct {
 }
 
 type SessionEventLog struct {
-	SessionID string         `json:"session_id"`
-	Date      time.Time      `json:"date"`
-	EventType int64          `json:"event_type"`
-	Payload   map[string]any `json:"payload"`
+	SessionID string                 `json:"session_id"`
+	Date      time.Time              `json:"date"`
+	EventType int64                  `json:"event_type"`
+	Payload   map[string]interface{} `json:"payload"`
 }

@@ -138,7 +138,7 @@ type (
 		RefreshSession(stationID StationID) (string, int64, error)
 		EndSession(stationID StationID) error
 
-		AssignRabbitPub(func(msg any, service string, target string, messageType int) error)
+		AssignRabbitPub(func(msg interface{}, service string, target string, messageType int) error)
 		SetNextSession(stationID StationID) error
 		RequestSessionsFromService(count int) error
 		AddSessionsToPool(sessionsIDs ...string) error
@@ -277,7 +277,7 @@ type app struct {
 
 	bonusSvcActive        bool
 	bonusSessionsPool     chan string
-	bonusSvcPublisherFunc func(msg any, service string, target string, messageType int) error
+	bonusSvcPublisherFunc func(msg interface{}, service string, target string, messageType int) error
 }
 
 // New creates and returns new App.
