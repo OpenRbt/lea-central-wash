@@ -9,6 +9,8 @@ import (
 
 	"github.com/powerman/structlog"
 	"golang.org/x/crypto/bcrypt"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 var log = structlog.New() //nolint:gochecknoglobals
@@ -812,19 +814,7 @@ func isValidDayOfWeek(dayOfWeek int, weekDay []string) bool {
 }
 
 func (a *app) CreateSession(stationID StationID) (string, string, error) {
-	err := a.SetNextSession(stationID)
-	if err != nil {
-		return "", "", err
-	}
-
-	a.stationsMutex.Lock()
-	defer a.stationsMutex.Unlock()
-
-	sessionID := ""
-
-	if station, ok := a.stations[stationID]; ok {
-		sessionID = station.SessionID
-	}
+	sessionID := uuid.NewV4().String()
 
 	return sessionID, fmt.Sprintf("http://bonus.com/%d/%s", stationID, sessionID), nil
 }
@@ -875,12 +865,12 @@ func (a *app) SetNextSession(stationID StationID) error { // Создаем но
 	return nil
 }
 
-func (a *app) RequestSessionsFromService(count int) error { // Запрашивает новые бонусные сессии
+func (a *app) RequestSessionsFromService(count int) error {
 	msg := SessionsRequest{Count: count}
 	return a.bonusSvcPublisherFunc(msg, "bonus_svc", "sessions", 0)
 }
 
-func (a *app) AddSessionsToPool(sessionsIDs ...string) error { // обрабатывает ответ сообщения с функции выше
+func (a *app) AddSessionsToPool(sessionsIDs ...string) error {
 	for _, session := range sessionsIDs {
 		a.bonusSessionsPool <- session
 	}
@@ -888,7 +878,7 @@ func (a *app) AddSessionsToPool(sessionsIDs ...string) error { // обрабат
 	return nil
 }
 
-func (a *app) AssignSessionUser(sessionID string, userID string) error { // Записавыем указанного юзера в указанную сессию
+func (a *app) AssignSessionUser(sessionID string, userID string) error {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
@@ -903,7 +893,7 @@ func (a *app) AssignSessionUser(sessionID string, userID string) error { // За
 	return nil
 }
 
-func (a *app) AssignSessionBonuses(sessionID string, amount int) error { // Записываем бонусы в указанную сессию
+func (a *app) AssignSessionBonuses(sessionID string, amount int) error {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
