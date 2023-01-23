@@ -71,6 +71,9 @@ func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 		rabbitmq.WithConnectionOptionsLogging,
 		rabbitmq.WithConnectionOptionsConfig(rabbitConf),
 	)
+	if err != nil {
+		return nil, err
+	}
 
 	svc = &Service{
 		conn: conn,
@@ -93,4 +96,8 @@ func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 	)
 
 	return
+}
+
+func (s *Service) Stop() error {
+	return s.conn.Close()
 }

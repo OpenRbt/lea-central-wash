@@ -100,6 +100,11 @@ func init() { //nolint:gochecknoinits
 	flag.IntVar(&cfg.extapi.WriteTimeout, "extapi.write-timeout", def.WriteTimeout, "server timeout for writing in seconds")
 	flag.IntVar(&startDelaySec, "delay", def.StartDelaySec, "startup delay in seconds")
 
+	flag.StringVar(&cfg.rabbit.Url, "rabbit.host", def.RabbitHost, "host for service connections")
+	flag.StringVar(&cfg.rabbit.Port, "rabbit.port", def.RabbitPort, "port for service connections")
+	flag.StringVar(&cfg.rabbit.User, "rabbit.user", def.RabbitUser, "user for service connections")
+	flag.StringVar(&cfg.rabbit.Password, "rabbit.password", def.RabbitPassword, "password for service connections")
+
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",
 	)
@@ -249,7 +254,7 @@ func run(db *sqlx.DB, errc chan<- error) {
 		errc <- err
 		return
 	}
-	appl.AssignRabbit(rabbitWorker.SendMessage)
+	appl.AssignRabbitPub(rabbitWorker.SendMessage)
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
 	if err != nil {

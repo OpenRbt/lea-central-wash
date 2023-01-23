@@ -827,7 +827,7 @@ func (a *app) EndSession(stationID StationID) error {
 	panic("Not implemented")
 }
 
-func (a *app) AssignRabbitPub(publishFunc func(msg any, service string, target string, messageType int) error) {
+func (a *app) AssignRabbitPub(publishFunc func(msg interface{}, service string, target string, messageType int) error) {
 	a.bonusSvcPublisherFunc = publishFunc
 }
 

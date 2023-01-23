@@ -39,7 +39,7 @@ func (s *Service) ProcessBonusMessage(d rabbitmq.Delivery) (action rabbitmq.Acti
 	return
 }
 
-func (s *Service) SendMessage(msg any, service string, target string, messageType int) (err error) {
+func (s *Service) SendMessage(msg interface{}, service string, target string, messageType int) (err error) {
 	jsonMsg, err := json.Marshal(msg)
 	if err != nil {
 		return
