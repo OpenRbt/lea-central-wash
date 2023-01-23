@@ -3,12 +3,13 @@ package rabbit
 import (
 	"encoding/json"
 	"errors"
+
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/models"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/models/vo"
 	"github.com/wagslane/go-rabbitmq"
 )
 
-func (s *Service) ProcessBonusMessage(d rabbitmq.Delivery) (action rabbitmq.Action) {
+func (s *Service) ProcessBonusMessage(d rabbitmq.Delivery) (action rabbitmq.Action) { // Обработка сообщения на основе типа. В зависимости от типа происходят нужные действия
 	messageType := vo.MessageTypeFromString(d.Type)
 	switch messageType {
 	case vo.BonusSessionCreated:
