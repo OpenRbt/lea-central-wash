@@ -91,11 +91,6 @@ func (o *CardReaderConfigOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the card reader config o k response
-func (o *CardReaderConfigOK) Code() int {
-	return 200
-}
-
 func (o *CardReaderConfigOK) Error() string {
 	return fmt.Sprintf("[POST /card-reader-config][%d] cardReaderConfigOK  %+v", 200, o.Payload)
 }
@@ -158,11 +153,6 @@ func (o *CardReaderConfigNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
-// Code gets the status code for the card reader config not found response
-func (o *CardReaderConfigNotFound) Code() int {
-	return 404
-}
-
 func (o *CardReaderConfigNotFound) Error() string {
 	return fmt.Sprintf("[POST /card-reader-config][%d] cardReaderConfigNotFound ", 404)
 }
@@ -212,11 +202,6 @@ func (o *CardReaderConfigInternalServerError) IsServerError() bool {
 // IsCode returns true when this card reader config internal server error response a status code equal to that given
 func (o *CardReaderConfigInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the card reader config internal server error response
-func (o *CardReaderConfigInternalServerError) Code() int {
-	return 500
 }
 
 func (o *CardReaderConfigInternalServerError) Error() string {

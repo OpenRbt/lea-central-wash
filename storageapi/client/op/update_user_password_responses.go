@@ -103,11 +103,6 @@ func (o *UpdateUserPasswordCreated) IsCode(code int) bool {
 	return code == 201
 }
 
-// Code gets the status code for the update user password created response
-func (o *UpdateUserPasswordCreated) Code() int {
-	return 201
-}
-
 func (o *UpdateUserPasswordCreated) Error() string {
 	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordCreated  %+v", 201, o.Payload)
 }
@@ -170,11 +165,6 @@ func (o *UpdateUserPasswordUnauthorized) IsCode(code int) bool {
 	return code == 401
 }
 
-// Code gets the status code for the update user password unauthorized response
-func (o *UpdateUserPasswordUnauthorized) Code() int {
-	return 401
-}
-
 func (o *UpdateUserPasswordUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordUnauthorized ", 401)
 }
@@ -224,11 +214,6 @@ func (o *UpdateUserPasswordForbidden) IsServerError() bool {
 // IsCode returns true when this update user password forbidden response a status code equal to that given
 func (o *UpdateUserPasswordForbidden) IsCode(code int) bool {
 	return code == 403
-}
-
-// Code gets the status code for the update user password forbidden response
-func (o *UpdateUserPasswordForbidden) Code() int {
-	return 403
 }
 
 func (o *UpdateUserPasswordForbidden) Error() string {
@@ -282,11 +267,6 @@ func (o *UpdateUserPasswordNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
-// Code gets the status code for the update user password not found response
-func (o *UpdateUserPasswordNotFound) Code() int {
-	return 404
-}
-
 func (o *UpdateUserPasswordNotFound) Error() string {
 	return fmt.Sprintf("[POST /user-password][%d] updateUserPasswordNotFound ", 404)
 }
@@ -336,11 +316,6 @@ func (o *UpdateUserPasswordInternalServerError) IsServerError() bool {
 // IsCode returns true when this update user password internal server error response a status code equal to that given
 func (o *UpdateUserPasswordInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the update user password internal server error response
-func (o *UpdateUserPasswordInternalServerError) Code() int {
-	return 500
 }
 
 func (o *UpdateUserPasswordInternalServerError) Error() string {

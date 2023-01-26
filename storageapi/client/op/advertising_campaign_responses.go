@@ -95,11 +95,6 @@ func (o *AdvertisingCampaignOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the advertising campaign o k response
-func (o *AdvertisingCampaignOK) Code() int {
-	return 200
-}
-
 func (o *AdvertisingCampaignOK) Error() string {
 	return fmt.Sprintf("[POST /advertising-campaign][%d] advertisingCampaignOK  %+v", 200, o.Payload)
 }
@@ -160,11 +155,6 @@ func (o *AdvertisingCampaignUnauthorized) IsCode(code int) bool {
 	return code == 401
 }
 
-// Code gets the status code for the advertising campaign unauthorized response
-func (o *AdvertisingCampaignUnauthorized) Code() int {
-	return 401
-}
-
 func (o *AdvertisingCampaignUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /advertising-campaign][%d] advertisingCampaignUnauthorized ", 401)
 }
@@ -216,11 +206,6 @@ func (o *AdvertisingCampaignForbidden) IsCode(code int) bool {
 	return code == 403
 }
 
-// Code gets the status code for the advertising campaign forbidden response
-func (o *AdvertisingCampaignForbidden) Code() int {
-	return 403
-}
-
 func (o *AdvertisingCampaignForbidden) Error() string {
 	return fmt.Sprintf("[POST /advertising-campaign][%d] advertisingCampaignForbidden ", 403)
 }
@@ -270,11 +255,6 @@ func (o *AdvertisingCampaignInternalServerError) IsServerError() bool {
 // IsCode returns true when this advertising campaign internal server error response a status code equal to that given
 func (o *AdvertisingCampaignInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the advertising campaign internal server error response
-func (o *AdvertisingCampaignInternalServerError) Code() int {
-	return 500
 }
 
 func (o *AdvertisingCampaignInternalServerError) Error() string {

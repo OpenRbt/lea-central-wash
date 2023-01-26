@@ -79,11 +79,6 @@ func (o *PingOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the ping o k response
-func (o *PingOK) Code() int {
-	return 200
-}
-
 func (o *PingOK) Error() string {
 	return fmt.Sprintf("[POST /ping][%d] pingOK  %+v", 200, o.Payload)
 }

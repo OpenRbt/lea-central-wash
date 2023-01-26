@@ -175,3 +175,8 @@ type ConfigString struct {
 	Description string
 	Note        string
 }
+
+type RabbitConfig struct {
+	ServerID  string
+	ServerKey string
+}

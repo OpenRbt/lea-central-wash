@@ -104,11 +104,6 @@ func (o *StationCollectionReportDatesOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the station collection report dates o k response
-func (o *StationCollectionReportDatesOK) Code() int {
-	return 200
-}
-
 func (o *StationCollectionReportDatesOK) Error() string {
 	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesOK  %+v", 200, o.Payload)
 }
@@ -171,11 +166,6 @@ func (o *StationCollectionReportDatesUnauthorized) IsCode(code int) bool {
 	return code == 401
 }
 
-// Code gets the status code for the station collection report dates unauthorized response
-func (o *StationCollectionReportDatesUnauthorized) Code() int {
-	return 401
-}
-
 func (o *StationCollectionReportDatesUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesUnauthorized ", 401)
 }
@@ -225,11 +215,6 @@ func (o *StationCollectionReportDatesForbidden) IsServerError() bool {
 // IsCode returns true when this station collection report dates forbidden response a status code equal to that given
 func (o *StationCollectionReportDatesForbidden) IsCode(code int) bool {
 	return code == 403
-}
-
-// Code gets the status code for the station collection report dates forbidden response
-func (o *StationCollectionReportDatesForbidden) Code() int {
-	return 403
 }
 
 func (o *StationCollectionReportDatesForbidden) Error() string {
@@ -283,11 +268,6 @@ func (o *StationCollectionReportDatesNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
-// Code gets the status code for the station collection report dates not found response
-func (o *StationCollectionReportDatesNotFound) Code() int {
-	return 404
-}
-
 func (o *StationCollectionReportDatesNotFound) Error() string {
 	return fmt.Sprintf("[POST /station-collection-report-dates][%d] stationCollectionReportDatesNotFound ", 404)
 }
@@ -337,11 +317,6 @@ func (o *StationCollectionReportDatesInternalServerError) IsServerError() bool {
 // IsCode returns true when this station collection report dates internal server error response a status code equal to that given
 func (o *StationCollectionReportDatesInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the station collection report dates internal server error response
-func (o *StationCollectionReportDatesInternalServerError) Code() int {
-	return 500
 }
 
 func (o *StationCollectionReportDatesInternalServerError) Error() string {

@@ -165,6 +165,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.InfoNotImplemented()
 		})
 	}
+	if api.IsAuthorizedHandler == nil {
+		api.IsAuthorizedHandler = op.IsAuthorizedHandlerFunc(func(params op.IsAuthorizedParams) op.IsAuthorizedResponder {
+			return op.IsAuthorizedNotImplemented()
+		})
+	}
 	if api.KasseHandler == nil {
 		api.KasseHandler = op.KasseHandlerFunc(func(params op.KasseParams) op.KasseResponder {
 			return op.KasseNotImplemented()
@@ -258,6 +263,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.SaveRelayHandler == nil {
 		api.SaveRelayHandler = op.SaveRelayHandlerFunc(func(params op.SaveRelayParams) op.SaveRelayResponder {
 			return op.SaveRelayNotImplemented()
+		})
+	}
+	if api.SetBonusesHandler == nil {
+		api.SetBonusesHandler = op.SetBonusesHandlerFunc(func(params op.SetBonusesParams) op.SetBonusesResponder {
+			return op.SetBonusesNotImplemented()
 		})
 	}
 	if api.SetCardReaderConfigHandler == nil {

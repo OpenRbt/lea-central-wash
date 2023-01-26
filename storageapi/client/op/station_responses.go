@@ -97,11 +97,6 @@ func (o *StationOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the station o k response
-func (o *StationOK) Code() int {
-	return 200
-}
-
 func (o *StationOK) Error() string {
 	return fmt.Sprintf("[POST /station][%d] stationOK  %+v", 200, o.Payload)
 }
@@ -164,11 +159,6 @@ func (o *StationUnauthorized) IsCode(code int) bool {
 	return code == 401
 }
 
-// Code gets the status code for the station unauthorized response
-func (o *StationUnauthorized) Code() int {
-	return 401
-}
-
 func (o *StationUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /station][%d] stationUnauthorized ", 401)
 }
@@ -220,11 +210,6 @@ func (o *StationNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
-// Code gets the status code for the station not found response
-func (o *StationNotFound) Code() int {
-	return 404
-}
-
 func (o *StationNotFound) Error() string {
 	return fmt.Sprintf("[POST /station][%d] stationNotFound ", 404)
 }
@@ -274,11 +259,6 @@ func (o *StationInternalServerError) IsServerError() bool {
 // IsCode returns true when this station internal server error response a status code equal to that given
 func (o *StationInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the station internal server error response
-func (o *StationInternalServerError) Code() int {
-	return 500
 }
 
 func (o *StationInternalServerError) Error() string {

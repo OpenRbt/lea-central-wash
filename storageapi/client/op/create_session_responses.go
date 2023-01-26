@@ -91,11 +91,6 @@ func (o *CreateSessionOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the create session o k response
-func (o *CreateSessionOK) Code() int {
-	return 200
-}
-
 func (o *CreateSessionOK) Error() string {
 	return fmt.Sprintf("[POST /create-session][%d] createSessionOK  %+v", 200, o.Payload)
 }
@@ -158,11 +153,6 @@ func (o *CreateSessionNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
-// Code gets the status code for the create session not found response
-func (o *CreateSessionNotFound) Code() int {
-	return 404
-}
-
 func (o *CreateSessionNotFound) Error() string {
 	return fmt.Sprintf("[POST /create-session][%d] createSessionNotFound ", 404)
 }
@@ -212,11 +202,6 @@ func (o *CreateSessionInternalServerError) IsServerError() bool {
 // IsCode returns true when this create session internal server error response a status code equal to that given
 func (o *CreateSessionInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the create session internal server error response
-func (o *CreateSessionInternalServerError) Code() int {
-	return 500
 }
 
 func (o *CreateSessionInternalServerError) Error() string {

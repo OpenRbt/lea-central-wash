@@ -103,11 +103,6 @@ func (o *CreateUserCreated) IsCode(code int) bool {
 	return code == 201
 }
 
-// Code gets the status code for the create user created response
-func (o *CreateUserCreated) Code() int {
-	return 201
-}
-
 func (o *CreateUserCreated) Error() string {
 	return fmt.Sprintf("[POST /user][%d] createUserCreated  %+v", 201, o.Payload)
 }
@@ -170,11 +165,6 @@ func (o *CreateUserUnauthorized) IsCode(code int) bool {
 	return code == 401
 }
 
-// Code gets the status code for the create user unauthorized response
-func (o *CreateUserUnauthorized) Code() int {
-	return 401
-}
-
 func (o *CreateUserUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /user][%d] createUserUnauthorized ", 401)
 }
@@ -224,11 +214,6 @@ func (o *CreateUserForbidden) IsServerError() bool {
 // IsCode returns true when this create user forbidden response a status code equal to that given
 func (o *CreateUserForbidden) IsCode(code int) bool {
 	return code == 403
-}
-
-// Code gets the status code for the create user forbidden response
-func (o *CreateUserForbidden) Code() int {
-	return 403
 }
 
 func (o *CreateUserForbidden) Error() string {
@@ -281,11 +266,6 @@ func (o *CreateUserConflict) IsServerError() bool {
 // IsCode returns true when this create user conflict response a status code equal to that given
 func (o *CreateUserConflict) IsCode(code int) bool {
 	return code == 409
-}
-
-// Code gets the status code for the create user conflict response
-func (o *CreateUserConflict) Code() int {
-	return 409
 }
 
 func (o *CreateUserConflict) Error() string {
@@ -348,11 +328,6 @@ func (o *CreateUserInternalServerError) IsServerError() bool {
 // IsCode returns true when this create user internal server error response a status code equal to that given
 func (o *CreateUserInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the create user internal server error response
-func (o *CreateUserInternalServerError) Code() int {
-	return 500
 }
 
 func (o *CreateUserInternalServerError) Error() string {

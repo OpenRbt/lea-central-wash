@@ -97,11 +97,6 @@ func (o *VolumeDispenserOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the volume dispenser o k response
-func (o *VolumeDispenserOK) Code() int {
-	return 200
-}
-
 func (o *VolumeDispenserOK) Error() string {
 	return fmt.Sprintf("[POST /volume-dispenser][%d] volumeDispenserOK  %+v", 200, o.Payload)
 }
@@ -164,11 +159,6 @@ func (o *VolumeDispenserNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
-// Code gets the status code for the volume dispenser no content response
-func (o *VolumeDispenserNoContent) Code() int {
-	return 204
-}
-
 func (o *VolumeDispenserNoContent) Error() string {
 	return fmt.Sprintf("[POST /volume-dispenser][%d] volumeDispenserNoContent ", 204)
 }
@@ -219,11 +209,6 @@ func (o *VolumeDispenserNotFound) IsServerError() bool {
 // IsCode returns true when this volume dispenser not found response a status code equal to that given
 func (o *VolumeDispenserNotFound) IsCode(code int) bool {
 	return code == 404
-}
-
-// Code gets the status code for the volume dispenser not found response
-func (o *VolumeDispenserNotFound) Code() int {
-	return 404
 }
 
 func (o *VolumeDispenserNotFound) Error() string {
@@ -284,11 +269,6 @@ func (o *VolumeDispenserInternalServerError) IsServerError() bool {
 // IsCode returns true when this volume dispenser internal server error response a status code equal to that given
 func (o *VolumeDispenserInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the volume dispenser internal server error response
-func (o *VolumeDispenserInternalServerError) Code() int {
-	return 500
 }
 
 func (o *VolumeDispenserInternalServerError) Error() string {

@@ -38,6 +38,8 @@ var (
 	ErrUnknownProgram           = errors.New("unknown program")
 	ErrUnknownStation           = errors.New("unknown station")
 	ErrStationProgramMustUnique = errors.New("programID and buttonID must be unique")
+
+	ErrServiceNotConfigured = errors.New("service not configured")
 )
 
 var testApp = false
@@ -127,10 +129,12 @@ type (
 		IsAuthorized(stationID StationID) error
 		SetBonuses(stationID StationID, bonuses int) error
 
+		GetRabbitConfig() (RabbitConfig, error)
+		SetExternalServicesActive(active bool)
 		AssignRabbitPub(func(msg interface{}, service string, target string, messageType int) error)
 		SetNextSession(stationID StationID) error
 		RequestSessionsFromService(count int) error
-		AddSessionsToPool(sessionsIDs ...string) error
+		AddSessionsToPool(stationID StationID, sessionsIDs ...string) error
 		AssignSessionUser(sessionID string, userID string) error
 		AssignSessionBonuses(sessionID string, amount int) error
 	}
@@ -240,6 +244,8 @@ type (
 type app struct {
 	repo                  Repo
 	stations              map[StationID]StationData
+	stationsSessionsPool  map[StationID]chan string
+	stationsSessions      map[BonusSessionID]StationID
 	stationsMutex         sync.Mutex
 	programs              map[int64]Program
 	programsMutex         sync.Mutex
@@ -253,9 +259,8 @@ type app struct {
 	cfg                   AppConfig
 	cfgMutex              sync.Mutex
 
-	bonusSvcActive        bool
-	bonusSessionsPool     chan string
-	bonusSvcPublisherFunc func(msg interface{}, service string, target string, messageType int) error
+	extServicesActive     bool
+	servicesPublisherFunc func(msg interface{}, service string, target string, messageType int) error
 }
 
 // New creates and returns new App.
@@ -295,6 +300,9 @@ type Status int
 
 // StationID car wash station number
 type StationID int
+
+// BonusSessionID external bonus session uuid
+type BonusSessionID string
 
 // Status.
 const (
