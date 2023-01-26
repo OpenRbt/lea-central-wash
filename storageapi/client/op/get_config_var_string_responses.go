@@ -89,11 +89,6 @@ func (o *GetConfigVarStringOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the get config var string o k response
-func (o *GetConfigVarStringOK) Code() int {
-	return 200
-}
-
 func (o *GetConfigVarStringOK) Error() string {
 	return fmt.Sprintf("[POST /get-config-var-string][%d] getConfigVarStringOK  %+v", 200, o.Payload)
 }
@@ -156,11 +151,6 @@ func (o *GetConfigVarStringNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
-// Code gets the status code for the get config var string not found response
-func (o *GetConfigVarStringNotFound) Code() int {
-	return 404
-}
-
 func (o *GetConfigVarStringNotFound) Error() string {
 	return fmt.Sprintf("[POST /get-config-var-string][%d] getConfigVarStringNotFound ", 404)
 }
@@ -210,11 +200,6 @@ func (o *GetConfigVarStringInternalServerError) IsServerError() bool {
 // IsCode returns true when this get config var string internal server error response a status code equal to that given
 func (o *GetConfigVarStringInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the get config var string internal server error response
-func (o *GetConfigVarStringInternalServerError) Code() int {
-	return 500
 }
 
 func (o *GetConfigVarStringInternalServerError) Error() string {

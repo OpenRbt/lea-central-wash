@@ -12,12 +12,20 @@ func (m MessageType) String() string {
 		return "bonus_svc/session_start"
 	case BonusSessionFinish:
 		return "bonus_svc/session_finish"
+	case BonusSessionBonusCharge:
+		return "bonus_svc/session_bonus_charge"
+	case BonusSessionBonusConfirm:
+		return "bonus_svc/session_bonus_confirm"
+	case BonusSessionBonusDiscard:
+		return "bonus_svc/session_bonus_discard"
 	case BonusSessionUserAssign:
 		return "bonus_svc/user_assign"
-	case BonusSessionBonusCharge:
-		return "bonus_svc/bonus_charge"
 	case BonusSessionEventLog:
 		return "bonus_svc/event_log"
+	case WashAdminServerRegistered:
+		return "wash_admin/server_registered"
+	case WashAdminServerUpdated:
+		return "wash_admin/server_updated"
 	default:
 		return "unknown"
 	}
@@ -29,16 +37,24 @@ func MessageTypeFromString(contentType string) MessageType {
 		return BonusSessionRequest
 	case "bonus_svc/session_created":
 		return BonusSessionCreated
+	case "bonus_svc/session_bonus_charge":
+		return BonusSessionBonusCharge
+	case "bonus_svc/session_bonus_confirm":
+		return BonusSessionBonusConfirm
+	case "bonus_svc/session_bonus_discard":
+		return BonusSessionBonusDiscard
 	case "bonus_svc/session_start":
 		return BonusSessionStart
 	case "bonus_svc/session_finish":
 		return BonusSessionFinish
 	case "bonus_svc/user_assign":
 		return BonusSessionUserAssign
-	case "bonus_svc/bonus_charge":
-		return BonusSessionBonusCharge
 	case "bonus_svc/event_log":
 		return BonusSessionEventLog
+	case "wash_admin/server_registered":
+		return WashAdminServerRegistered
+	case "wash_admin/server_updated":
+		return WashAdminServerUpdated
 	default:
 		return MessageTypeUnknown
 	}
@@ -53,4 +69,12 @@ const (
 	BonusSessionBonusCharge
 	BonusSessionFinish
 	BonusSessionEventLog
+
+	BonusSessionStateChange
+
+	BonusSessionBonusConfirm
+	BonusSessionBonusDiscard
+
+	WashAdminServerRegistered
+	WashAdminServerUpdated
 )

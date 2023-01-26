@@ -197,3 +197,8 @@ type StationConfigString struct {
 	Note        string
 	StationID   StationID
 }
+
+type RabbitConfig struct {
+	ServerID  string
+	ServerKey string
+}

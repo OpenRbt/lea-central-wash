@@ -69,11 +69,6 @@ func (o *GetPingOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the get ping o k response
-func (o *GetPingOK) Code() int {
-	return 200
-}
-
 func (o *GetPingOK) Error() string {
 	return fmt.Sprintf("[GET /ping][%d] getPingOK ", 200)
 }

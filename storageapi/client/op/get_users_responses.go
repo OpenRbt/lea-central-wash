@@ -91,11 +91,6 @@ func (o *GetUsersOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the get users o k response
-func (o *GetUsersOK) Code() int {
-	return 200
-}
-
 func (o *GetUsersOK) Error() string {
 	return fmt.Sprintf("[GET /users][%d] getUsersOK  %+v", 200, o.Payload)
 }
@@ -158,11 +153,6 @@ func (o *GetUsersUnauthorized) IsCode(code int) bool {
 	return code == 401
 }
 
-// Code gets the status code for the get users unauthorized response
-func (o *GetUsersUnauthorized) Code() int {
-	return 401
-}
-
 func (o *GetUsersUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /users][%d] getUsersUnauthorized ", 401)
 }
@@ -214,11 +204,6 @@ func (o *GetUsersForbidden) IsCode(code int) bool {
 	return code == 403
 }
 
-// Code gets the status code for the get users forbidden response
-func (o *GetUsersForbidden) Code() int {
-	return 403
-}
-
 func (o *GetUsersForbidden) Error() string {
 	return fmt.Sprintf("[GET /users][%d] getUsersForbidden ", 403)
 }
@@ -268,11 +253,6 @@ func (o *GetUsersInternalServerError) IsServerError() bool {
 // IsCode returns true when this get users internal server error response a status code equal to that given
 func (o *GetUsersInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the get users internal server error response
-func (o *GetUsersInternalServerError) Code() int {
-	return 500
 }
 
 func (o *GetUsersInternalServerError) Error() string {

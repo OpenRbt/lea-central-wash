@@ -11,11 +11,10 @@ import (
 )
 
 type Config struct {
-	Url      string
-	Port     string
-	User     string
-	Password string
-	ServerID string
+	Url       string
+	Port      string
+	ServerID  string
+	ServerKey string
 }
 
 var (
@@ -53,7 +52,7 @@ func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 
 	//TODO: add rabbit variables extraction from repo
 
-	connString := fmt.Sprintf("amqps://%s:%s@%s:%s/", cfg.User, cfg.Password, cfg.Url, cfg.Port)
+	connString := fmt.Sprintf("amqps://%s:%s@%s:%s/", cfg.ServerID, cfg.ServerKey, cfg.Url, cfg.Port)
 	rabbitConf := rabbitmq.Config{
 		SASL:            nil,
 		Vhost:           "",
@@ -82,7 +81,7 @@ func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 
 	svc.bonusSvcPub, err = rabbitmq.NewPublisher(conn,
 		rabbitmq.WithPublisherOptionsLogging,
-		rabbitmq.WithPublisherOptionsExchangeName(vo.BonusService),
+		rabbitmq.WithPublisherOptionsExchangeName(vo.WashBonusService),
 	)
 	if err != nil {
 		return
@@ -91,7 +90,7 @@ func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 	svc.bonusSvcSub, err = rabbitmq.NewConsumer(conn,
 		svc.ProcessBonusMessage,
 		cfg.ServerID,
-		rabbitmq.WithConsumerOptionsExchangeName(vo.BonusService),
+		rabbitmq.WithConsumerOptionsExchangeName(vo.WashBonusService),
 		rabbitmq.WithConsumerOptionsConsumerExclusive,
 	)
 

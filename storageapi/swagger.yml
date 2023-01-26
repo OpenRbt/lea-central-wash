@@ -9,10 +9,10 @@ schemes:
   - http
 
 securityDefinitions:
-   pinCode:
-     type: apiKey
-     in: header
-     name: Pin
+  pinCode:
+    type: apiKey
+    in: header
+    name: Pin
 
 definitions:
   StationConfigVarInt:
@@ -161,15 +161,15 @@ definitions:
       currentProgramName:
         type: string
       ip:
-        type: string  
+        type: string
 
   Status:
     type: string
-    enum: ["offline", "online"]
+    enum: [ "offline", "online" ]
 
   RelayBoard:
     type: string
-    enum: ["localGPIO", "danBoard"]
+    enum: [ "localGPIO", "danBoard" ]
 
   StatusCollectionReport:
     type: object
@@ -220,55 +220,55 @@ definitions:
   MoneyReport:
     type: object
     required:
-        - hash
+      - hash
     properties:
-        carsTotal:
-          type: integer
-        coins:
-          type: integer
-        banknotes:
-          type: integer
-        electronical:
-          type: integer
-        service:
-          type: integer
-        bonuses:
-          type: integer
-        hash:
-          $ref: '#/definitions/Hash'
+      carsTotal:
+        type: integer
+      coins:
+        type: integer
+      banknotes:
+        type: integer
+      electronical:
+        type: integer
+      service:
+        type: integer
+      bonuses:
+        type: integer
+      hash:
+        $ref: '#/definitions/Hash'
 
   RelayReport:
     type: object
     required:
       - hash
     properties:
-        hash:
-          $ref: '#/definitions/Hash'
-        relayStats:
-          type: array
-          items:
-            $ref: '#/definitions/RelayStat'
+      hash:
+        $ref: '#/definitions/Hash'
+      relayStats:
+        type: array
+        items:
+          $ref: '#/definitions/RelayStat'
 
   StationReport:
     type: object
     properties:
-        moneyReport:
-          $ref: '#/definitions/MoneyReport'
-        relayStats:
-          type: array
-          items:
-            $ref: '#/definitions/RelayStat'
+      moneyReport:
+        $ref: '#/definitions/MoneyReport'
+      relayStats:
+        type: array
+        items:
+          $ref: '#/definitions/RelayStat'
 
   RelayStat:
     type: object
     properties:
       relayID:
-          type: integer
-          minimum: 1
+        type: integer
+        minimum: 1
       switchedCount:
-          type: integer
+        type: integer
       totalTimeOn:
-          type: integer
+        type: integer
 
   Hash:
     type: string
@@ -277,14 +277,14 @@ definitions:
   KeyPair:
     type: object
     required:
-        - key
-        - value
+      - key
+      - value
     properties:
-        key:    
-          type: string
-          minLength: 1
-        value:
-          type: string
+      key:
+        type: string
+        minLength: 1
+      value:
+        type: string
 
   StationsVariables:
     type: object
@@ -319,7 +319,7 @@ definitions:
         type: string
         enum:
           - TAX_VAT110
-          - TAX_VAT0 
+          - TAX_VAT0
           - TAX_NO
           - TAX_VAT120
       receiptItemName:
@@ -337,13 +337,13 @@ definitions:
   CardReaderConfig:
     type: object
     required:
-        - stationID
+      - stationID
     properties:
       stationID:
         type: integer
       cardReaderType:
         type: string
-        enum: ["NOT_USED","VENDOTEK","PAYMENT_WORLD"]
+        enum: [ "NOT_USED","VENDOTEK","PAYMENT_WORLD" ]
       host:
         type: string
       port:
@@ -388,7 +388,7 @@ definitions:
   UserConfig:
     type: object
     required:
-        - login
+      - login
     properties:
       login:
         $ref: '#/definitions/Login'
@@ -409,9 +409,9 @@ definitions:
     type: object
     properties:
       users:
-          type: array
-          items:
-            $ref: '#/definitions/UserConfig'
+        type: array
+        items:
+          $ref: '#/definitions/UserConfig'
 
   Program:
     type: object
@@ -488,27 +488,27 @@ definitions:
     type: object
     properties:
       programID:
-          type: integer
+        type: integer
       programName:
-          type: string
+        type: string
       timeOn:
-          type: integer
+        type: integer
 
   StationStat:
     type: object
     properties:
-        stationID:
-          type: integer
-        pumpTimeOn:
-          type: integer
-        relayStats:
-          type: array
-          items:
-            $ref: '#/definitions/RelayStat'
-        programStats:
-          type: array
-          items:
-            $ref: '#/definitions/ProgramStat'
+      stationID:
+        type: integer
+      pumpTimeOn:
+        type: integer
+      relayStats:
+        type: array
+        items:
+          $ref: '#/definitions/RelayStat'
+      programStats:
+        type: array
+        items:
+          $ref: '#/definitions/ProgramStat'
   StationsStat:
     type: array
     items:
@@ -518,9 +518,9 @@ definitions:
     type: object
     properties:
       programID:
-          type: integer
+        type: integer
       discount:
-          type: integer
+        type: integer
 
   AdvertisingCampaign:
     type: object
@@ -528,46 +528,46 @@ definitions:
       - startDate
       - endDate
     properties:
-        id:
-          type: integer
-        name:
+      id:
+        type: integer
+      name:
+        type: string
+      startDate:
+        description: Unix time local
+        type: integer
+      endDate:
+        description: Unix time local
+        type: integer
+      enabled:
+        type: boolean
+      startMinute:
+        type: integer
+        default: 0
+        maximum: 1440
+        minimum: 0
+      endMinute:
+        type: integer
+        default: 0
+        maximum: 1440
+        minimum: 0
+      defaultDiscount:
+        type: integer
+      discountPrograms:
+        type: array
+        items:
+          $ref: '#/definitions/DiscountProgram'
+      weekday:
+        type: array
+        items:
           type: string
-        startDate:
-          description: Unix time local
-          type: integer
-        endDate:
-          description: Unix time local
-          type: integer
-        enabled:
-          type: boolean
-        startMinute:
-          type: integer
-          default: 0
-          maximum: 1440
-          minimum: 0
-        endMinute:
-          type: integer
-          default: 0
-          maximum: 1440
-          minimum: 0
-        defaultDiscount:
-          type: integer
-        discountPrograms:
-          type: array
-          items:
-            $ref: '#/definitions/DiscountProgram'
-        weekday:
-          type: array
-          items:
-            type: string
-            enum: 
-              - sunday
-              - monday
-              - tuesday
-              - wednesday
-              - thursday
-              - friday
-              - saturday
+          enum:
+            - sunday
+            - monday
+            - tuesday
+            - wednesday
+            - thursday
+            - friday
+            - saturday
   AdvertisingCampaigns:
     type: array
     items:
@@ -578,19 +578,19 @@ definitions:
     type: object
     properties:
       buttonID:
-          type: integer
+        type: integer
       discount:
-          type: integer
-    
+        type: integer
+
   StationDiscounts:
     type: array
     items:
       $ref: '#/definitions/ButtonDiscount'
-      
+
 consumes:
   - application/json
 produces:
-  - application/json          
+  - application/json
 
 paths:
   /get-wash-config-var-int:
@@ -829,7 +829,7 @@ paths:
     post:
       operationId: "getConfigVarInt"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           required: true
@@ -841,20 +841,20 @@ paths:
               name:
                 type: string
       responses:
-          200:
-            description: OK
-            schema:
-              $ref:  '#/definitions/ConfigVarInt'
-          404:
-            description: Not found
-          500:
-            description: Internal error
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ConfigVarInt'
+        404:
+          description: Not found
+        500:
+          description: Internal error
 
   /get-config-var-bool:
     post:
       operationId: "getConfigVarBool"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           required: true
@@ -866,20 +866,20 @@ paths:
               name:
                 type: string
       responses:
-          200:
-            description: OK
-            schema:
-              $ref:  '#/definitions/ConfigVarBool'
-          404:
-            description: Not found
-          500:
-            description: Internal error
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ConfigVarBool'
+        404:
+          description: Not found
+        500:
+          description: Internal error
 
   /get-config-var-string:
     post:
       operationId: "getConfigVarString"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           required: true
@@ -891,65 +891,65 @@ paths:
               name:
                 type: string
       responses:
-          200:
-            description: OK
-            schema:
-              $ref:  '#/definitions/ConfigVarString'
-          404:
-            description: Not found
-          500:
-            description: Internal error
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ConfigVarString'
+        404:
+          description: Not found
+        500:
+          description: Internal error
 
   /set-config-var-int:
     post:
       operationId: "setConfigVarInt"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           required: true
           in: body
           schema:
-            $ref:  '#/definitions/ConfigVarInt'
+            $ref: '#/definitions/ConfigVarInt'
       responses:
-          204:
-            description: OK
-          500:
-            description: Internal error
+        204:
+          description: OK
+        500:
+          description: Internal error
 
   /set-config-var-bool:
     post:
       operationId: "setConfigVarBool"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           required: true
           in: body
           schema:
-            $ref:  '#/definitions/ConfigVarBool'
+            $ref: '#/definitions/ConfigVarBool'
       responses:
-          204:
-            description: OK
-          500:
-            description: Internal error
+        204:
+          description: OK
+        500:
+          description: Internal error
 
   /set-config-var-string:
     post:
       operationId: "setConfigVarString"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           required: true
           in: body
           schema:
-            $ref:  '#/definitions/ConfigVarString'
+            $ref: '#/definitions/ConfigVarString'
       responses:
-          204:
-            description: OK
-          500:
-            description: Internal error
+        204:
+          description: OK
+        500:
+          description: Internal error
 
   /get-station-discounts:
     post:
@@ -968,7 +968,7 @@ paths:
         200:
           description: OK
           schema:
-            $ref:  '#/definitions/StationDiscounts'
+            $ref: '#/definitions/StationDiscounts'
         404:
           description: Not found
         500:
@@ -978,7 +978,7 @@ paths:
     post:
       operationId: "addAdvertisingCampaign"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           required: true
@@ -998,7 +998,7 @@ paths:
     post:
       operationId: "editAdvertisingCampaign"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           required: true
@@ -1019,7 +1019,7 @@ paths:
     post:
       operationId: "advertisingCampaign"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           in: body
@@ -1051,7 +1051,7 @@ paths:
     post:
       operationId: "advertisingCampaignByID"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           required: true
@@ -1082,7 +1082,7 @@ paths:
     post:
       operationId: "delAdvertisingCampaign"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           required: true
@@ -1109,7 +1109,7 @@ paths:
     post:
       operationId: "stationStatCurrent"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           in: body
@@ -1136,7 +1136,7 @@ paths:
     post:
       operationId: "stationStatDates"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           in: body
@@ -1172,7 +1172,7 @@ paths:
     post:
       operationId: "resetStationStat"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           in: body
@@ -1266,7 +1266,7 @@ paths:
     get:
       operationId: "statusCollection"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       responses:
         200:
           description: OK
@@ -1369,7 +1369,7 @@ paths:
           description: not found
         500:
           description: internal error
-            
+
   /save-relay:
     post:
       operationId: "saveRelay"
@@ -1386,7 +1386,7 @@ paths:
           description: not found
         500:
           description: internal error
-          
+
   /load-relay:
     post:
       operationId: "loadRelay"
@@ -1432,7 +1432,7 @@ paths:
     post:
       operationId: "saveCollection"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           required: true
@@ -1445,7 +1445,7 @@ paths:
               id:
                 type: integer
       responses:
-        204: 
+        204:
           description: OK
         404:
           description: not found
@@ -1608,7 +1608,7 @@ paths:
                 type: integer
               ButtonID:
                 type: integer
-                
+
     get:
       operationId: "getPing"
       responses:
@@ -1766,7 +1766,7 @@ paths:
             $ref: '#/definitions/StationPrograms'
         500:
           description: internal error
-          
+
   /station-button:
     post:
       operationId: "stationButton"
@@ -1938,7 +1938,7 @@ paths:
     get:
       operationId: "getUsers"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       responses:
         200:
           description: OK
@@ -1955,7 +1955,7 @@ paths:
     post:
       operationId: "updateUserPassword"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           required: true
@@ -1998,7 +1998,7 @@ paths:
     get:
       operationId: "getUser"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       responses:
         200:
           description: OK
@@ -2009,7 +2009,7 @@ paths:
     post:
       operationId: "createUser"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           required: true
@@ -2070,7 +2070,7 @@ paths:
     put:
       operationId: "updateUser"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           required: true
@@ -2117,7 +2117,7 @@ paths:
     delete:
       operationId: "deleteUser"
       security:
-        - pinCode: []
+        - pinCode: [ ]
       parameters:
         - name: args
           required: true
@@ -2303,7 +2303,7 @@ paths:
             required:
               - level
             properties:
-              level: 
+              level:
                 type: integer
         204:
           description: OK
@@ -2339,7 +2339,7 @@ paths:
               - volume
               - status
             properties:
-              volume: 
+              volume:
                 type: integer
               status:
                 type: string
@@ -2379,11 +2379,11 @@ paths:
             type: string
         500:
           description: internal error
-          
+
   /station-collection-report-dates:
     post:
       security:
-        - pinCode: []
+        - pinCode: [ ]
       operationId: "stationCollectionReportDates"
       parameters:
         - name: args
@@ -2450,7 +2450,7 @@ paths:
         404:
           description: hash not found
         500:
-            description: Internal error
+          description: Internal error
 
   /refresh-session:
     post:
@@ -2475,7 +2475,7 @@ paths:
         404:
           description: hash not found
         500:
-            description: Internal error
+          description: Internal error
 
   /end-session:
     post:
@@ -2498,7 +2498,7 @@ paths:
         404:
           description: hash not found
         500:
-            description: Internal error
+          description: Internal error
   
   /set-bonuses:
     post:
@@ -2523,7 +2523,7 @@ paths:
         404:
           description: hash not found
         500:
-            description: Internal error
+          description: Internal error
 
   /is-authorized:
     post:
@@ -2548,4 +2548,4 @@ paths:
         404:
           description: hash not found
         500:
-            description: Internal error
+          description: Internal error

@@ -90,11 +90,6 @@ func (o *PressButtonNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
-// Code gets the status code for the press button no content response
-func (o *PressButtonNoContent) Code() int {
-	return 204
-}
-
 func (o *PressButtonNoContent) Error() string {
 	return fmt.Sprintf("[POST /press-button][%d] pressButtonNoContent ", 204)
 }
@@ -145,11 +140,6 @@ func (o *PressButtonNotFound) IsServerError() bool {
 // IsCode returns true when this press button not found response a status code equal to that given
 func (o *PressButtonNotFound) IsCode(code int) bool {
 	return code == 404
-}
-
-// Code gets the status code for the press button not found response
-func (o *PressButtonNotFound) Code() int {
-	return 404
 }
 
 func (o *PressButtonNotFound) Error() string {
@@ -210,11 +200,6 @@ func (o *PressButtonInternalServerError) IsServerError() bool {
 // IsCode returns true when this press button internal server error response a status code equal to that given
 func (o *PressButtonInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the press button internal server error response
-func (o *PressButtonInternalServerError) Code() int {
-	return 500
 }
 
 func (o *PressButtonInternalServerError) Error() string {

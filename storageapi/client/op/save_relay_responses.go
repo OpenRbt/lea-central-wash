@@ -81,11 +81,6 @@ func (o *SaveRelayNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
-// Code gets the status code for the save relay no content response
-func (o *SaveRelayNoContent) Code() int {
-	return 204
-}
-
 func (o *SaveRelayNoContent) Error() string {
 	return fmt.Sprintf("[POST /save-relay][%d] saveRelayNoContent ", 204)
 }
@@ -137,11 +132,6 @@ func (o *SaveRelayNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
-// Code gets the status code for the save relay not found response
-func (o *SaveRelayNotFound) Code() int {
-	return 404
-}
-
 func (o *SaveRelayNotFound) Error() string {
 	return fmt.Sprintf("[POST /save-relay][%d] saveRelayNotFound ", 404)
 }
@@ -191,11 +181,6 @@ func (o *SaveRelayInternalServerError) IsServerError() bool {
 // IsCode returns true when this save relay internal server error response a status code equal to that given
 func (o *SaveRelayInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the save relay internal server error response
-func (o *SaveRelayInternalServerError) Code() int {
-	return 500
 }
 
 func (o *SaveRelayInternalServerError) Error() string {

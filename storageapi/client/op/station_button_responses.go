@@ -84,11 +84,6 @@ func (o *StationButtonOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the station button o k response
-func (o *StationButtonOK) Code() int {
-	return 200
-}
-
 func (o *StationButtonOK) Error() string {
 	return fmt.Sprintf("[POST /station-button][%d] stationButtonOK  %+v", 200, o.Payload)
 }
@@ -149,11 +144,6 @@ func (o *StationButtonInternalServerError) IsServerError() bool {
 // IsCode returns true when this station button internal server error response a status code equal to that given
 func (o *StationButtonInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the station button internal server error response
-func (o *StationButtonInternalServerError) Code() int {
-	return 500
 }
 
 func (o *StationButtonInternalServerError) Error() string {

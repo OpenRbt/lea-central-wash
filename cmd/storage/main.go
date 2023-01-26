@@ -102,8 +102,6 @@ func init() { //nolint:gochecknoinits
 
 	flag.StringVar(&cfg.rabbit.Url, "rabbit.host", def.RabbitHost, "host for service connections")
 	flag.StringVar(&cfg.rabbit.Port, "rabbit.port", def.RabbitPort, "port for service connections")
-	flag.StringVar(&cfg.rabbit.User, "rabbit.user", def.RabbitUser, "user for service connections")
-	flag.StringVar(&cfg.rabbit.Password, "rabbit.password", def.RabbitPassword, "password for service connections")
 
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",
@@ -249,12 +247,17 @@ func run(db *sqlx.DB, errc chan<- error) {
 
 	appl := app.New(repo, kasse, weather, client)
 
-	rabbitWorker, err := rabbit.NewClient(cfg.rabbit, appl)
-	if err != nil {
-		errc <- err
-		return
+	rabbitCfg, err := appl.GetRabbitConfig()
+	if err == nil {
+		cfg.rabbit.ServerID = rabbitCfg.ServerID
+		cfg.rabbit.ServerKey = rabbitCfg.ServerKey
+		rabbitWorker, err := rabbit.NewClient(cfg.rabbit, appl)
+		if err != nil {
+			errc <- err
+			return
+		}
+		appl.AssignRabbitPub(rabbitWorker.SendMessage)
 	}
-	appl.AssignRabbitPub(rabbitWorker.SendMessage)
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
 	if err != nil {
