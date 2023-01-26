@@ -79,11 +79,6 @@ func (o *GetUserOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the get user o k response
-func (o *GetUserOK) Code() int {
-	return 200
-}
-
 func (o *GetUserOK) Error() string {
 	return fmt.Sprintf("[GET /user][%d] getUserOK  %+v", 200, o.Payload)
 }
@@ -144,11 +139,6 @@ func (o *GetUserUnauthorized) IsServerError() bool {
 // IsCode returns true when this get user unauthorized response a status code equal to that given
 func (o *GetUserUnauthorized) IsCode(code int) bool {
 	return code == 401
-}
-
-// Code gets the status code for the get user unauthorized response
-func (o *GetUserUnauthorized) Code() int {
-	return 401
 }
 
 func (o *GetUserUnauthorized) Error() string {

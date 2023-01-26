@@ -97,11 +97,6 @@ func (o *StationStatDatesOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the station stat dates o k response
-func (o *StationStatDatesOK) Code() int {
-	return 200
-}
-
 func (o *StationStatDatesOK) Error() string {
 	return fmt.Sprintf("[POST /station-stat-dates][%d] stationStatDatesOK  %+v", 200, o.Payload)
 }
@@ -162,11 +157,6 @@ func (o *StationStatDatesUnauthorized) IsCode(code int) bool {
 	return code == 401
 }
 
-// Code gets the status code for the station stat dates unauthorized response
-func (o *StationStatDatesUnauthorized) Code() int {
-	return 401
-}
-
 func (o *StationStatDatesUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /station-stat-dates][%d] stationStatDatesUnauthorized ", 401)
 }
@@ -218,11 +208,6 @@ func (o *StationStatDatesForbidden) IsCode(code int) bool {
 	return code == 403
 }
 
-// Code gets the status code for the station stat dates forbidden response
-func (o *StationStatDatesForbidden) Code() int {
-	return 403
-}
-
 func (o *StationStatDatesForbidden) Error() string {
 	return fmt.Sprintf("[POST /station-stat-dates][%d] stationStatDatesForbidden ", 403)
 }
@@ -272,11 +257,6 @@ func (o *StationStatDatesInternalServerError) IsServerError() bool {
 // IsCode returns true when this station stat dates internal server error response a status code equal to that given
 func (o *StationStatDatesInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the station stat dates internal server error response
-func (o *StationStatDatesInternalServerError) Code() int {
-	return 500
 }
 
 func (o *StationStatDatesInternalServerError) Error() string {

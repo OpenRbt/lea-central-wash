@@ -93,11 +93,6 @@ func (o *DelAdvertisingCampaignNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
-// Code gets the status code for the del advertising campaign no content response
-func (o *DelAdvertisingCampaignNoContent) Code() int {
-	return 204
-}
-
 func (o *DelAdvertisingCampaignNoContent) Error() string {
 	return fmt.Sprintf("[POST /del-advertising-campaign][%d] delAdvertisingCampaignNoContent ", 204)
 }
@@ -147,11 +142,6 @@ func (o *DelAdvertisingCampaignUnauthorized) IsServerError() bool {
 // IsCode returns true when this del advertising campaign unauthorized response a status code equal to that given
 func (o *DelAdvertisingCampaignUnauthorized) IsCode(code int) bool {
 	return code == 401
-}
-
-// Code gets the status code for the del advertising campaign unauthorized response
-func (o *DelAdvertisingCampaignUnauthorized) Code() int {
-	return 401
 }
 
 func (o *DelAdvertisingCampaignUnauthorized) Error() string {
@@ -205,11 +195,6 @@ func (o *DelAdvertisingCampaignForbidden) IsCode(code int) bool {
 	return code == 403
 }
 
-// Code gets the status code for the del advertising campaign forbidden response
-func (o *DelAdvertisingCampaignForbidden) Code() int {
-	return 403
-}
-
 func (o *DelAdvertisingCampaignForbidden) Error() string {
 	return fmt.Sprintf("[POST /del-advertising-campaign][%d] delAdvertisingCampaignForbidden ", 403)
 }
@@ -259,11 +244,6 @@ func (o *DelAdvertisingCampaignInternalServerError) IsServerError() bool {
 // IsCode returns true when this del advertising campaign internal server error response a status code equal to that given
 func (o *DelAdvertisingCampaignInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the del advertising campaign internal server error response
-func (o *DelAdvertisingCampaignInternalServerError) Code() int {
-	return 500
 }
 
 func (o *DelAdvertisingCampaignInternalServerError) Error() string {

@@ -97,11 +97,6 @@ func (o *GetLevelOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the get level o k response
-func (o *GetLevelOK) Code() int {
-	return 200
-}
-
 func (o *GetLevelOK) Error() string {
 	return fmt.Sprintf("[POST /getLevel][%d] getLevelOK  %+v", 200, o.Payload)
 }
@@ -164,11 +159,6 @@ func (o *GetLevelNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
-// Code gets the status code for the get level no content response
-func (o *GetLevelNoContent) Code() int {
-	return 204
-}
-
 func (o *GetLevelNoContent) Error() string {
 	return fmt.Sprintf("[POST /getLevel][%d] getLevelNoContent ", 204)
 }
@@ -219,11 +209,6 @@ func (o *GetLevelNotFound) IsServerError() bool {
 // IsCode returns true when this get level not found response a status code equal to that given
 func (o *GetLevelNotFound) IsCode(code int) bool {
 	return code == 404
-}
-
-// Code gets the status code for the get level not found response
-func (o *GetLevelNotFound) Code() int {
-	return 404
 }
 
 func (o *GetLevelNotFound) Error() string {
@@ -284,11 +269,6 @@ func (o *GetLevelInternalServerError) IsServerError() bool {
 // IsCode returns true when this get level internal server error response a status code equal to that given
 func (o *GetLevelInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the get level internal server error response
-func (o *GetLevelInternalServerError) Code() int {
-	return 500
 }
 
 func (o *GetLevelInternalServerError) Error() string {

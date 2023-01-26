@@ -47,7 +47,7 @@ func (s *Service) SendMessage(msg interface{}, service string, target string, me
 	}
 
 	switch service {
-	case vo.BonusService:
+	case vo.WashBonusService:
 		return s.bonusSvcPub.Publish(
 			jsonMsg,
 			[]string{target},

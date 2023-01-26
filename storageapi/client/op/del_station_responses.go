@@ -87,11 +87,6 @@ func (o *DelStationNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
-// Code gets the status code for the del station no content response
-func (o *DelStationNoContent) Code() int {
-	return 204
-}
-
 func (o *DelStationNoContent) Error() string {
 	return fmt.Sprintf("[POST /del-station][%d] delStationNoContent ", 204)
 }
@@ -143,11 +138,6 @@ func (o *DelStationNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
-// Code gets the status code for the del station not found response
-func (o *DelStationNotFound) Code() int {
-	return 404
-}
-
 func (o *DelStationNotFound) Error() string {
 	return fmt.Sprintf("[POST /del-station][%d] delStationNotFound ", 404)
 }
@@ -197,11 +187,6 @@ func (o *DelStationInternalServerError) IsServerError() bool {
 // IsCode returns true when this del station internal server error response a status code equal to that given
 func (o *DelStationInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the del station internal server error response
-func (o *DelStationInternalServerError) Code() int {
-	return 500
 }
 
 func (o *DelStationInternalServerError) Error() string {

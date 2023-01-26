@@ -842,37 +842,71 @@ func (a *app) IsAuthorized(stationID StationID) error {
 }
 
 func (a *app) AssignRabbitPub(publishFunc func(msg interface{}, service string, target string, messageType int) error) {
-	a.bonusSvcPublisherFunc = publishFunc
+	a.servicesPublisherFunc = publishFunc
+}
+func (a *app) SetExternalServicesActive(active bool) {
+	a.extServicesActive = active
 }
 
-func (a *app) SetNextSession(stationID StationID) error { // Создаем новую сессию для указанной станции? Устанавливает сессию из очереди, если нет сессии, то ошибка
+func (a *app) GetRabbitConfig() (cfg RabbitConfig, err error) {
+	serverID, err := a.repo.GetConfigString("server_id")
+	if err != nil {
+		err = ErrServiceNotConfigured
+		return
+	}
+
+	serverKey, err := a.repo.GetConfigString("server_key")
+	if err != nil {
+		err = ErrServiceNotConfigured
+		return
+	}
+
+	cfg.ServerID = serverID.Value
+	cfg.ServerKey = serverKey.Value
+
+	if err != nil {
+		err = ErrServiceNotConfigured
+		return
+	}
+	return
+}
+
+func (a *app) SetNextSession(stationID StationID) (err error) { // Создаем новую сессию для указанной станции? Устанавливает сессию из очереди, если нет сессии, то ошибка
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
 	if station, ok := a.stations[stationID]; ok {
-		sessions := len(a.bonusSessionsPool)
+		sessionsPool := a.stationsSessionsPool[stationID]
+
+		sessionsCount := len(sessionsPool)
 		switch {
-		case sessions == 0:
+		case sessionsCount == 0:
 			return errors.New("no sessions available")
-		case sessions > 0:
-			station.SessionID = <-a.bonusSessionsPool
+		case sessionsCount > 0:
+			station.SessionID = <-sessionsPool
 			fallthrough
-		case sessions < 5:
-			a.RequestSessionsFromService(5)
+		case sessionsCount < 5:
+			err = a.RequestSessionsFromService(5)
 		}
 	}
 
-	return nil
+	return
 }
 
 func (a *app) RequestSessionsFromService(count int) error {
 	msg := SessionsRequest{Count: count}
-	return a.bonusSvcPublisherFunc(msg, "bonus_svc", "sessions", 0)
+	return a.servicesPublisherFunc(msg, "bonus_svc", "sessions", 0)
 }
 
-func (a *app) AddSessionsToPool(sessionsIDs ...string) error {
-	for _, session := range sessionsIDs {
-		a.bonusSessionsPool <- session
+func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) error {
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+
+	val, ok := a.stationsSessionsPool[stationID]
+	if ok {
+		for _, session := range sessionsIDs {
+			val <- session
+		}
 	}
 
 	return nil

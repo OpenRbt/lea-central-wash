@@ -91,11 +91,6 @@ func (o *CardReaderConfigByHashOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the card reader config by hash o k response
-func (o *CardReaderConfigByHashOK) Code() int {
-	return 200
-}
-
 func (o *CardReaderConfigByHashOK) Error() string {
 	return fmt.Sprintf("[POST /card-reader-config-by-hash][%d] cardReaderConfigByHashOK  %+v", 200, o.Payload)
 }
@@ -158,11 +153,6 @@ func (o *CardReaderConfigByHashNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
-// Code gets the status code for the card reader config by hash not found response
-func (o *CardReaderConfigByHashNotFound) Code() int {
-	return 404
-}
-
 func (o *CardReaderConfigByHashNotFound) Error() string {
 	return fmt.Sprintf("[POST /card-reader-config-by-hash][%d] cardReaderConfigByHashNotFound ", 404)
 }
@@ -212,11 +202,6 @@ func (o *CardReaderConfigByHashInternalServerError) IsServerError() bool {
 // IsCode returns true when this card reader config by hash internal server error response a status code equal to that given
 func (o *CardReaderConfigByHashInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the card reader config by hash internal server error response
-func (o *CardReaderConfigByHashInternalServerError) Code() int {
-	return 500
 }
 
 func (o *CardReaderConfigByHashInternalServerError) Error() string {

@@ -87,11 +87,6 @@ func (o *SetBonusesNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
-// Code gets the status code for the set bonuses no content response
-func (o *SetBonusesNoContent) Code() int {
-	return 204
-}
-
 func (o *SetBonusesNoContent) Error() string {
 	return fmt.Sprintf("[POST /set-bonuses][%d] setBonusesNoContent ", 204)
 }
@@ -143,11 +138,6 @@ func (o *SetBonusesNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
-// Code gets the status code for the set bonuses not found response
-func (o *SetBonusesNotFound) Code() int {
-	return 404
-}
-
 func (o *SetBonusesNotFound) Error() string {
 	return fmt.Sprintf("[POST /set-bonuses][%d] setBonusesNotFound ", 404)
 }
@@ -197,11 +187,6 @@ func (o *SetBonusesInternalServerError) IsServerError() bool {
 // IsCode returns true when this set bonuses internal server error response a status code equal to that given
 func (o *SetBonusesInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the set bonuses internal server error response
-func (o *SetBonusesInternalServerError) Code() int {
-	return 500
 }
 
 func (o *SetBonusesInternalServerError) Error() string {

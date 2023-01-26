@@ -85,11 +85,6 @@ func (o *StatusCollectionOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the status collection o k response
-func (o *StatusCollectionOK) Code() int {
-	return 200
-}
-
 func (o *StatusCollectionOK) Error() string {
 	return fmt.Sprintf("[GET /status-collection][%d] statusCollectionOK  %+v", 200, o.Payload)
 }
@@ -152,11 +147,6 @@ func (o *StatusCollectionUnauthorized) IsCode(code int) bool {
 	return code == 401
 }
 
-// Code gets the status code for the status collection unauthorized response
-func (o *StatusCollectionUnauthorized) Code() int {
-	return 401
-}
-
 func (o *StatusCollectionUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /status-collection][%d] statusCollectionUnauthorized ", 401)
 }
@@ -206,11 +196,6 @@ func (o *StatusCollectionInternalServerError) IsServerError() bool {
 // IsCode returns true when this status collection internal server error response a status code equal to that given
 func (o *StatusCollectionInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the status collection internal server error response
-func (o *StatusCollectionInternalServerError) Code() int {
-	return 500
 }
 
 func (o *StatusCollectionInternalServerError) Error() string {
