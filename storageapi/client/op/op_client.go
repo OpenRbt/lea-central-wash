@@ -62,6 +62,12 @@ type ClientService interface {
 
 	GetConfigVarString(params *GetConfigVarStringParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetConfigVarStringOK, error)
 
+	GetLocalConfigVarBool(params *GetLocalConfigVarBoolParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetLocalConfigVarBoolOK, error)
+
+	GetLocalConfigVarInt(params *GetLocalConfigVarIntParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetLocalConfigVarIntOK, error)
+
+	GetLocalConfigVarString(params *GetLocalConfigVarStringParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetLocalConfigVarStringOK, error)
+
 	GetPing(params *GetPingParams, opts ...ClientOption) (*GetPingOK, error)
 
 	GetStationDiscounts(params *GetStationDiscountsParams, opts ...ClientOption) (*GetStationDiscountsOK, error)
@@ -117,6 +123,12 @@ type ClientService interface {
 	SetConfigVarString(params *SetConfigVarStringParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SetConfigVarStringNoContent, error)
 
 	SetKasse(params *SetKasseParams, opts ...ClientOption) (*SetKasseNoContent, error)
+
+	SetLocalConfigVarBool(params *SetLocalConfigVarBoolParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SetLocalConfigVarBoolNoContent, error)
+
+	SetLocalConfigVarInt(params *SetLocalConfigVarIntParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SetLocalConfigVarIntNoContent, error)
+
+	SetLocalConfigVarString(params *SetLocalConfigVarStringParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SetLocalConfigVarStringNoContent, error)
 
 	SetProgram(params *SetProgramParams, opts ...ClientOption) (*SetProgramNoContent, error)
 
@@ -772,6 +784,123 @@ func (a *Client) GetConfigVarString(params *GetConfigVarStringParams, authInfo r
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getConfigVarString: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+GetLocalConfigVarBool get local config var bool API
+*/
+func (a *Client) GetLocalConfigVarBool(params *GetLocalConfigVarBoolParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetLocalConfigVarBoolOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetLocalConfigVarBoolParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getLocalConfigVarBool",
+		Method:             "POST",
+		PathPattern:        "/get-local-config-var-bool",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetLocalConfigVarBoolReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetLocalConfigVarBoolOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getLocalConfigVarBool: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+GetLocalConfigVarInt get local config var int API
+*/
+func (a *Client) GetLocalConfigVarInt(params *GetLocalConfigVarIntParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetLocalConfigVarIntOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetLocalConfigVarIntParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getLocalConfigVarInt",
+		Method:             "POST",
+		PathPattern:        "/get-local-config-var-int",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetLocalConfigVarIntReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetLocalConfigVarIntOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getLocalConfigVarInt: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+GetLocalConfigVarString get local config var string API
+*/
+func (a *Client) GetLocalConfigVarString(params *GetLocalConfigVarStringParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetLocalConfigVarStringOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetLocalConfigVarStringParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getLocalConfigVarString",
+		Method:             "POST",
+		PathPattern:        "/get-local-config-var-string",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetLocalConfigVarStringReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetLocalConfigVarStringOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getLocalConfigVarString: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -1843,6 +1972,123 @@ func (a *Client) SetKasse(params *SetKasseParams, opts ...ClientOption) (*SetKas
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for setKasse: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+SetLocalConfigVarBool set local config var bool API
+*/
+func (a *Client) SetLocalConfigVarBool(params *SetLocalConfigVarBoolParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SetLocalConfigVarBoolNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetLocalConfigVarBoolParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "setLocalConfigVarBool",
+		Method:             "POST",
+		PathPattern:        "/set-local-config-var-bool",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetLocalConfigVarBoolReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*SetLocalConfigVarBoolNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setLocalConfigVarBool: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+SetLocalConfigVarInt set local config var int API
+*/
+func (a *Client) SetLocalConfigVarInt(params *SetLocalConfigVarIntParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SetLocalConfigVarIntNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetLocalConfigVarIntParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "setLocalConfigVarInt",
+		Method:             "POST",
+		PathPattern:        "/set-local-config-var-int",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetLocalConfigVarIntReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*SetLocalConfigVarIntNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setLocalConfigVarInt: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+SetLocalConfigVarString set local config var string API
+*/
+func (a *Client) SetLocalConfigVarString(params *SetLocalConfigVarStringParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SetLocalConfigVarStringNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetLocalConfigVarStringParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "setLocalConfigVarString",
+		Method:             "POST",
+		PathPattern:        "/set-local-config-var-string",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetLocalConfigVarStringReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*SetLocalConfigVarStringNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setLocalConfigVarString: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

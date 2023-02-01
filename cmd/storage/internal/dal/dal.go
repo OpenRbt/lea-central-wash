@@ -970,3 +970,87 @@ func (r *repo) SetConfigString(config app.ConfigString) (err error) {
 	})
 	return
 }
+
+func (r *repo) GetLocalConfigInt(name string) (cfg *app.LocalConfigInt, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		res := resGetLocalConfigInt{}
+		err := tx.NamedGetContext(ctx, &res, sqlGetLocalConfigInt, argGetConfig{
+			Name: name,
+		})
+		if err != nil {
+			return err
+		}
+		cfg = appLocalConfigInt(res)
+		return nil
+	})
+	return
+}
+func (r *repo) GetLocalConfigBool(name string) (cfg *app.LocalConfigBool, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		res := resGetLocalConfigBool{}
+		err := tx.NamedGetContext(ctx, &res, sqlGetLocalConfigBool, argGetConfig{
+			Name: name,
+		})
+		if err != nil {
+			return err
+		}
+		cfg = appLocalConfigBool(res)
+		return nil
+	})
+	return
+}
+func (r *repo) GetLocalConfigString(name string) (cfg *app.LocalConfigString, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		res := resGetLocalConfigString{}
+		err := tx.NamedGetContext(ctx, &res, sqlGetLocalConfigString, argGetConfig{
+			Name: name,
+		})
+		if err != nil {
+			return err
+		}
+		cfg = appLocalConfigString(res)
+		return nil
+	})
+	return
+}
+
+func (r *repo) SetLocalConfigInt(config app.LocalConfigInt) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlSetLocalConfigInt, argSetLocalConfigInt{
+			Name:        config.Name,
+			Value:       config.Value,
+			Description: config.Description,
+			Note:        config.Note,
+			StationId:   config.StationID,
+		})
+		return err
+	})
+	return
+}
+
+func (r *repo) SetLocalConfigBool(config app.LocalConfigBool) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlSetLocalConfigInt, argSetLocalConfigBool{
+			Name:        config.Name,
+			Value:       config.Value,
+			Description: config.Description,
+			Note:        config.Note,
+			StationId:   config.StationID,
+		})
+		return err
+	})
+	return
+}
+func (r *repo) SetLocalConfigString(config app.LocalConfigString) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlSetLocalConfigInt, argSetLocalConfigString{
+			Name:        config.Name,
+			Value:       config.Value,
+			Description: config.Description,
+			Note:        config.Note,
+			StationId:   config.StationID,
+		})
+		return err
+	})
+	return
+}

@@ -171,3 +171,25 @@ type ConfigString struct {
 	Description string
 	Note        string
 }
+
+type LocalConfigInt struct {
+	Name        string
+	Value       int64
+	Description string
+	Note        string
+	StationID   string
+}
+type LocalConfigBool struct {
+	Name        string
+	Value       bool
+	Description string
+	Note        string
+	StationID   string
+}
+type LocalConfigString struct {
+	Name        string
+	Value       string
+	Description string
+	Note        string
+	StationID   string
+}

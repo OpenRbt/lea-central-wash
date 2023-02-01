@@ -573,6 +573,53 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 			description = :description,
 			note = :note
 	`
+
+	sqlGetLocalConfigInt = `
+	SELECT name, value, description, note, stationId
+	FROM config_vars_int
+	WHERE name = UPPER(:name)
+	`
+	sqlGetLocalConfigBool = `
+	SELECT name, value, description, note, stationId
+	FROM config_vars_bool
+	WHERE name = UPPER(:name)
+	`
+	sqlGetLocalConfigString = `
+	SELECT name, value, description, note, stationId
+	FROM config_vars_string
+	WHERE name = UPPER(:name)
+	`
+
+	sqlSetLocalConfigInt = `
+	INSERT INTO config_vars_int (name, value, description, note, stationId)
+		VALUES (UPPER(:name), :value, :description, :note, :stationId)
+	ON CONFLICT (name)
+	DO
+		UPDATE 
+			SET value = :value,
+			description = :description,
+			note = :note
+	`
+	sqlSetLocalConfigBool = `
+	INSERT INTO config_vars_bool (name, value, description, note, stationId)
+		VALUES (UPPER(:name), :value, :description, :note, :stationId)
+	ON CONFLICT (name)
+	DO
+		UPDATE 
+			SET value = :value,
+			description = :description,
+			note = :note
+	`
+	sqlSetLocalConfigString = `
+	INSERT INTO config_vars_string (name, value, description, note, stationId)
+		VALUES (UPPER(:name), :value, :description, :note, :stationId)
+	ON CONFLICT (name)
+	DO
+		UPDATE 
+			SET value = :value,
+			description = :description,
+			note = :note
+	`
 )
 
 type (
@@ -961,5 +1008,48 @@ type (
 		Value       string
 		Description string
 		Note        string
+	}
+
+	argSetLocalConfigInt struct {
+		Name        string
+		Value       int64
+		Description string
+		Note        string
+		StationId   string
+	}
+	argSetLocalConfigBool struct {
+		Name        string
+		Value       bool
+		Description string
+		Note        string
+		StationId   string
+	}
+	argSetLocalConfigString struct {
+		Name        string
+		Value       string
+		Description string
+		Note        string
+		StationId   string
+	}
+	resGetLocalConfigInt struct {
+		Name        string
+		Value       int64
+		Description string
+		Note        string
+		StationId   string
+	}
+	resGetLocalConfigBool struct {
+		Name        string
+		Value       bool
+		Description string
+		Note        string
+		StationId   string
+	}
+	resGetLocalConfigString struct {
+		Name        string
+		Value       string
+		Description string
+		Note        string
+		StationId   string
 	}
 )

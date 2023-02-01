@@ -15,6 +15,47 @@ securityDefinitions:
      name: Pin
 
 definitions:
+  LocalConfigVarInt:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: integer
+      description:
+        type: string
+      note:
+        type: string
+      stationId:
+        type: string
+  
+  LocalConfigVarBool:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: boolean
+      description:
+        type: string
+      note:
+        type: string
+      stationId:
+        type: string
+  
+  LocalConfigVarString:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+      description:
+        type: string
+      note:
+        type: string
+      stationId:
+        type: string
   
   ConfigVarInt:
     type: object
@@ -515,6 +556,133 @@ produces:
   - application/json          
 
 paths:
+  /get-local-config-var-int:
+    post:
+      operationId: "getLocalConfigVarInt"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetLocalConfigVar"
+            type: object
+            properties:
+              name:
+                type: string
+      responses:
+          200:
+            description: OK
+            schema:
+              $ref:  '#/definitions/LocalConfigVarInt'
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /get-local-config-var-bool:
+    post:
+      operationId: "getLocalConfigVarBool"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetLocalConfigVar"
+            type: object
+            properties:
+              name:
+                type: string
+      responses:
+          200:
+            description: OK
+            schema:
+              $ref:  '#/definitions/LocalConfigVarBool'
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /get-local-config-var-string:
+    post:
+      operationId: "getLocalConfigVarString"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetLocalConfigVar"
+            type: object
+            properties:
+              name:
+                type: string
+      responses:
+          200:
+            description: OK
+            schema:
+              $ref:  '#/definitions/LocalConfigVarString'
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /set-local-config-var-int:
+    post:
+      operationId: "setLocalConfigVarInt"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref:  '#/definitions/LocalConfigVarInt'
+      responses:
+          204:
+            description: OK
+          500:
+            description: Internal error
+
+  /set-local-config-var-bool:
+    post:
+      operationId: "setLocalConfigVarBool"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref:  '#/definitions/LocalConfigVarBool'
+      responses:
+          204:
+            description: OK
+          500:
+            description: Internal error
+
+  /set-local-config-var-string:
+    post:
+      operationId: "setLocalConfigVarString"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref:  '#/definitions/LocalConfigVarString'
+      responses:
+          204:
+            description: OK
+          500:
+            description: Internal error
+
+
   /get-config-var-int:
     post:
       operationId: "getConfigVarInt"

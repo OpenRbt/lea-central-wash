@@ -130,6 +130,21 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.GetConfigVarStringNotImplemented()
 		})
 	}
+	if api.GetLocalConfigVarBoolHandler == nil {
+		api.GetLocalConfigVarBoolHandler = op.GetLocalConfigVarBoolHandlerFunc(func(params op.GetLocalConfigVarBoolParams, principal *storageapi.Profile) op.GetLocalConfigVarBoolResponder {
+			return op.GetLocalConfigVarBoolNotImplemented()
+		})
+	}
+	if api.GetLocalConfigVarIntHandler == nil {
+		api.GetLocalConfigVarIntHandler = op.GetLocalConfigVarIntHandlerFunc(func(params op.GetLocalConfigVarIntParams, principal *storageapi.Profile) op.GetLocalConfigVarIntResponder {
+			return op.GetLocalConfigVarIntNotImplemented()
+		})
+	}
+	if api.GetLocalConfigVarStringHandler == nil {
+		api.GetLocalConfigVarStringHandler = op.GetLocalConfigVarStringHandlerFunc(func(params op.GetLocalConfigVarStringParams, principal *storageapi.Profile) op.GetLocalConfigVarStringResponder {
+			return op.GetLocalConfigVarStringNotImplemented()
+		})
+	}
 	if api.GetPingHandler == nil {
 		api.GetPingHandler = op.GetPingHandlerFunc(func(params op.GetPingParams) op.GetPingResponder {
 			return op.GetPingNotImplemented()
@@ -268,6 +283,21 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.SetKasseHandler == nil {
 		api.SetKasseHandler = op.SetKasseHandlerFunc(func(params op.SetKasseParams) op.SetKasseResponder {
 			return op.SetKasseNotImplemented()
+		})
+	}
+	if api.SetLocalConfigVarBoolHandler == nil {
+		api.SetLocalConfigVarBoolHandler = op.SetLocalConfigVarBoolHandlerFunc(func(params op.SetLocalConfigVarBoolParams, principal *storageapi.Profile) op.SetLocalConfigVarBoolResponder {
+			return op.SetLocalConfigVarBoolNotImplemented()
+		})
+	}
+	if api.SetLocalConfigVarIntHandler == nil {
+		api.SetLocalConfigVarIntHandler = op.SetLocalConfigVarIntHandlerFunc(func(params op.SetLocalConfigVarIntParams, principal *storageapi.Profile) op.SetLocalConfigVarIntResponder {
+			return op.SetLocalConfigVarIntNotImplemented()
+		})
+	}
+	if api.SetLocalConfigVarStringHandler == nil {
+		api.SetLocalConfigVarStringHandler = op.SetLocalConfigVarStringHandlerFunc(func(params op.SetLocalConfigVarStringParams, principal *storageapi.Profile) op.SetLocalConfigVarStringResponder {
+			return op.SetLocalConfigVarStringNotImplemented()
 		})
 	}
 	if api.SetProgramHandler == nil {

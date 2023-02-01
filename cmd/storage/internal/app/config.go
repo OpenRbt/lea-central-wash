@@ -65,3 +65,27 @@ func (a *app) SetConfigBool(auth *Auth, config ConfigBool) error {
 func (a *app) SetConfigString(auth *Auth, config ConfigString) error {
 	return a.repo.SetConfigString(config)
 }
+
+func (a *app) GetLocalConfigInt(auth *Auth, name string) (*LocalConfigInt, error) {
+	return a.repo.GetLocalConfigInt(name)
+}
+
+func (a *app) GetLocalConfigBool(auth *Auth, name string) (*LocalConfigBool, error) {
+	return a.repo.GetLocalConfigBool(name)
+}
+
+func (a *app) GetLocalConfigString(auth *Auth, name string) (*LocalConfigString, error) {
+	return a.repo.GetLocalConfigString(name)
+}
+
+func (a *app) SetLocalConfigInt(auth *Auth, config LocalConfigInt) error {
+	return a.repo.SetLocalConfigInt(config)
+}
+
+func (a *app) SetLocalConfigBool(auth *Auth, config LocalConfigBool) error {
+	return a.repo.SetLocalConfigBool(config)
+}
+
+func (a *app) SetLocalConfigString(auth *Auth, config LocalConfigString) error {
+	return a.repo.SetLocalConfigString(config)
+}

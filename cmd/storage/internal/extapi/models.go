@@ -463,3 +463,63 @@ func apiConfigString(a *app.ConfigString) *model.ConfigVarString {
 		Note:        a.Note,
 	}
 }
+
+func appLocalConfigInt(a *model.LocalConfigVarInt) app.LocalConfigInt {
+	return app.LocalConfigInt{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+		StationID:   a.StationID,
+	}
+}
+
+func appLocalConfigBool(a *model.LocalConfigVarBool) app.LocalConfigBool {
+	return app.LocalConfigBool{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+		StationID:   a.StationID,
+	}
+}
+
+func appLocalConfigString(a *model.LocalConfigVarString) app.LocalConfigString {
+	return app.LocalConfigString{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+		StationID:   a.StationID,
+	}
+}
+
+func apiLocalConfigBool(a *app.LocalConfigBool) *model.LocalConfigVarBool {
+	return &model.LocalConfigVarBool{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+		StationID:   a.StationID,
+	}
+}
+
+func apiLocalConfigInt(a *app.LocalConfigInt) *model.LocalConfigVarInt {
+	return &model.LocalConfigVarInt{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+		StationID:   a.StationID,
+	}
+}
+
+func apiLocalConfigString(a *app.LocalConfigString) *model.LocalConfigVarString {
+	return &model.LocalConfigVarString{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+		StationID:   a.StationID,
+	}
+}

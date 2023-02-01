@@ -147,6 +147,14 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.GetConfigVarStringHandler = op.GetConfigVarStringHandlerFunc(svc.getConfigVarString)
 	api.GetConfigVarIntHandler = op.GetConfigVarIntHandlerFunc(svc.getConfigVarInt)
 
+	api.SetLocalConfigVarBoolHandler = op.SetLocalConfigVarBoolHandlerFunc(svc.setLocalConfigVarBool)
+	api.SetLocalConfigVarStringHandler = op.SetLocalConfigVarStringHandlerFunc(svc.setLocalConfigVarString)
+	api.SetLocalConfigVarIntHandler = op.SetLocalConfigVarIntHandlerFunc(svc.setLocalConfigVarInt)
+
+	api.GetLocalConfigVarBoolHandler = op.GetLocalConfigVarBoolHandlerFunc(svc.getLocalConfigVarBool)
+	api.GetLocalConfigVarStringHandler = op.GetLocalConfigVarStringHandlerFunc(svc.getLocalConfigVarString)
+	api.GetLocalConfigVarIntHandler = op.GetLocalConfigVarIntHandlerFunc(svc.getLocalConfigVarInt)
+
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port

@@ -280,3 +280,33 @@ func appConfigString(a resGetConfigString) *app.ConfigString {
 		Note:        a.Note,
 	}
 }
+
+func appLocalConfigInt(a resGetLocalConfigInt) *app.LocalConfigInt {
+	return &app.LocalConfigInt{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+		StationID:   a.StationId,
+	}
+}
+
+func appLocalConfigBool(a resGetLocalConfigBool) *app.LocalConfigBool {
+	return &app.LocalConfigBool{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+		StationID:   a.StationId,
+	}
+}
+
+func appLocalConfigString(a resGetLocalConfigString) *app.LocalConfigString {
+	return &app.LocalConfigString{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+		StationID:   a.StationId,
+	}
+}

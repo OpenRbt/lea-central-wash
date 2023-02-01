@@ -92,6 +92,15 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		GetConfigVarStringHandler: GetConfigVarStringHandlerFunc(func(params GetConfigVarStringParams, principal *storageapi.Profile) GetConfigVarStringResponder {
 			return GetConfigVarStringNotImplemented()
 		}),
+		GetLocalConfigVarBoolHandler: GetLocalConfigVarBoolHandlerFunc(func(params GetLocalConfigVarBoolParams, principal *storageapi.Profile) GetLocalConfigVarBoolResponder {
+			return GetLocalConfigVarBoolNotImplemented()
+		}),
+		GetLocalConfigVarIntHandler: GetLocalConfigVarIntHandlerFunc(func(params GetLocalConfigVarIntParams, principal *storageapi.Profile) GetLocalConfigVarIntResponder {
+			return GetLocalConfigVarIntNotImplemented()
+		}),
+		GetLocalConfigVarStringHandler: GetLocalConfigVarStringHandlerFunc(func(params GetLocalConfigVarStringParams, principal *storageapi.Profile) GetLocalConfigVarStringResponder {
+			return GetLocalConfigVarStringNotImplemented()
+		}),
 		GetPingHandler: GetPingHandlerFunc(func(params GetPingParams) GetPingResponder {
 			return GetPingNotImplemented()
 		}),
@@ -175,6 +184,15 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		SetKasseHandler: SetKasseHandlerFunc(func(params SetKasseParams) SetKasseResponder {
 			return SetKasseNotImplemented()
+		}),
+		SetLocalConfigVarBoolHandler: SetLocalConfigVarBoolHandlerFunc(func(params SetLocalConfigVarBoolParams, principal *storageapi.Profile) SetLocalConfigVarBoolResponder {
+			return SetLocalConfigVarBoolNotImplemented()
+		}),
+		SetLocalConfigVarIntHandler: SetLocalConfigVarIntHandlerFunc(func(params SetLocalConfigVarIntParams, principal *storageapi.Profile) SetLocalConfigVarIntResponder {
+			return SetLocalConfigVarIntNotImplemented()
+		}),
+		SetLocalConfigVarStringHandler: SetLocalConfigVarStringHandlerFunc(func(params SetLocalConfigVarStringParams, principal *storageapi.Profile) SetLocalConfigVarStringResponder {
+			return SetLocalConfigVarStringNotImplemented()
 		}),
 		SetProgramHandler: SetProgramHandlerFunc(func(params SetProgramParams) SetProgramResponder {
 			return SetProgramNotImplemented()
@@ -309,6 +327,12 @@ type StorageAPI struct {
 	GetConfigVarIntHandler GetConfigVarIntHandler
 	// GetConfigVarStringHandler sets the operation handler for the get config var string operation
 	GetConfigVarStringHandler GetConfigVarStringHandler
+	// GetLocalConfigVarBoolHandler sets the operation handler for the get local config var bool operation
+	GetLocalConfigVarBoolHandler GetLocalConfigVarBoolHandler
+	// GetLocalConfigVarIntHandler sets the operation handler for the get local config var int operation
+	GetLocalConfigVarIntHandler GetLocalConfigVarIntHandler
+	// GetLocalConfigVarStringHandler sets the operation handler for the get local config var string operation
+	GetLocalConfigVarStringHandler GetLocalConfigVarStringHandler
 	// GetPingHandler sets the operation handler for the get ping operation
 	GetPingHandler GetPingHandler
 	// GetStationDiscountsHandler sets the operation handler for the get station discounts operation
@@ -365,6 +389,12 @@ type StorageAPI struct {
 	SetConfigVarStringHandler SetConfigVarStringHandler
 	// SetKasseHandler sets the operation handler for the set kasse operation
 	SetKasseHandler SetKasseHandler
+	// SetLocalConfigVarBoolHandler sets the operation handler for the set local config var bool operation
+	SetLocalConfigVarBoolHandler SetLocalConfigVarBoolHandler
+	// SetLocalConfigVarIntHandler sets the operation handler for the set local config var int operation
+	SetLocalConfigVarIntHandler SetLocalConfigVarIntHandler
+	// SetLocalConfigVarStringHandler sets the operation handler for the set local config var string operation
+	SetLocalConfigVarStringHandler SetLocalConfigVarStringHandler
 	// SetProgramHandler sets the operation handler for the set program operation
 	SetProgramHandler SetProgramHandler
 	// SetStationHandler sets the operation handler for the set station operation
@@ -528,6 +558,15 @@ func (o *StorageAPI) Validate() error {
 	if o.GetConfigVarStringHandler == nil {
 		unregistered = append(unregistered, "GetConfigVarStringHandler")
 	}
+	if o.GetLocalConfigVarBoolHandler == nil {
+		unregistered = append(unregistered, "GetLocalConfigVarBoolHandler")
+	}
+	if o.GetLocalConfigVarIntHandler == nil {
+		unregistered = append(unregistered, "GetLocalConfigVarIntHandler")
+	}
+	if o.GetLocalConfigVarStringHandler == nil {
+		unregistered = append(unregistered, "GetLocalConfigVarStringHandler")
+	}
 	if o.GetPingHandler == nil {
 		unregistered = append(unregistered, "GetPingHandler")
 	}
@@ -611,6 +650,15 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.SetKasseHandler == nil {
 		unregistered = append(unregistered, "SetKasseHandler")
+	}
+	if o.SetLocalConfigVarBoolHandler == nil {
+		unregistered = append(unregistered, "SetLocalConfigVarBoolHandler")
+	}
+	if o.SetLocalConfigVarIntHandler == nil {
+		unregistered = append(unregistered, "SetLocalConfigVarIntHandler")
+	}
+	if o.SetLocalConfigVarStringHandler == nil {
+		unregistered = append(unregistered, "SetLocalConfigVarStringHandler")
 	}
 	if o.SetProgramHandler == nil {
 		unregistered = append(unregistered, "SetProgramHandler")
@@ -826,6 +874,18 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/get-config-var-string"] = NewGetConfigVarString(o.context, o.GetConfigVarStringHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-local-config-var-bool"] = NewGetLocalConfigVarBool(o.context, o.GetLocalConfigVarBoolHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-local-config-var-int"] = NewGetLocalConfigVarInt(o.context, o.GetLocalConfigVarIntHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-local-config-var-string"] = NewGetLocalConfigVarString(o.context, o.GetLocalConfigVarStringHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -938,6 +998,18 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/set-kasse"] = NewSetKasse(o.context, o.SetKasseHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-local-config-var-bool"] = NewSetLocalConfigVarBool(o.context, o.SetLocalConfigVarBoolHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-local-config-var-int"] = NewSetLocalConfigVarInt(o.context, o.SetLocalConfigVarIntHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-local-config-var-string"] = NewSetLocalConfigVarString(o.context, o.SetLocalConfigVarStringHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
