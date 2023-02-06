@@ -464,8 +464,8 @@ func apiConfigString(a *app.ConfigString) *model.ConfigVarString {
 	}
 }
 
-func appLocalConfigInt(a *model.LocalConfigVarInt) app.LocalConfigInt {
-	return app.LocalConfigInt{
+func appStationConfigInt(a *model.StationConfigVarInt) app.StationConfigInt {
+	return app.StationConfigInt{
 		Name:        a.Name,
 		Value:       a.Value,
 		Description: a.Description,
@@ -474,8 +474,8 @@ func appLocalConfigInt(a *model.LocalConfigVarInt) app.LocalConfigInt {
 	}
 }
 
-func appLocalConfigBool(a *model.LocalConfigVarBool) app.LocalConfigBool {
-	return app.LocalConfigBool{
+func appStationConfigBool(a *model.StationConfigVarBool) app.StationConfigBool {
+	return app.StationConfigBool{
 		Name:        a.Name,
 		Value:       a.Value,
 		Description: a.Description,
@@ -484,8 +484,8 @@ func appLocalConfigBool(a *model.LocalConfigVarBool) app.LocalConfigBool {
 	}
 }
 
-func appLocalConfigString(a *model.LocalConfigVarString) app.LocalConfigString {
-	return app.LocalConfigString{
+func appStationConfigString(a *model.StationConfigVarString) app.StationConfigString {
+	return app.StationConfigString{
 		Name:        a.Name,
 		Value:       a.Value,
 		Description: a.Description,
@@ -494,8 +494,8 @@ func appLocalConfigString(a *model.LocalConfigVarString) app.LocalConfigString {
 	}
 }
 
-func apiLocalConfigBool(a *app.LocalConfigBool) *model.LocalConfigVarBool {
-	return &model.LocalConfigVarBool{
+func apiStationConfigBool(a *app.StationConfigBool) *model.StationConfigVarBool {
+	return &model.StationConfigVarBool{
 		Name:        a.Name,
 		Value:       a.Value,
 		Description: a.Description,
@@ -504,8 +504,8 @@ func apiLocalConfigBool(a *app.LocalConfigBool) *model.LocalConfigVarBool {
 	}
 }
 
-func apiLocalConfigInt(a *app.LocalConfigInt) *model.LocalConfigVarInt {
-	return &model.LocalConfigVarInt{
+func apiStationConfigInt(a *app.StationConfigInt) *model.StationConfigVarInt {
+	return &model.StationConfigVarInt{
 		Name:        a.Name,
 		Value:       a.Value,
 		Description: a.Description,
@@ -514,8 +514,8 @@ func apiLocalConfigInt(a *app.LocalConfigInt) *model.LocalConfigVarInt {
 	}
 }
 
-func apiLocalConfigString(a *app.LocalConfigString) *model.LocalConfigVarString {
-	return &model.LocalConfigVarString{
+func apiStationConfigString(a *app.StationConfigString) *model.StationConfigVarString {
+	return &model.StationConfigVarString{
 		Name:        a.Name,
 		Value:       a.Value,
 		Description: a.Description,

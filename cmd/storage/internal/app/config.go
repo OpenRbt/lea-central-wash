@@ -66,26 +66,26 @@ func (a *app) SetConfigString(auth *Auth, config ConfigString) error {
 	return a.repo.SetConfigString(config)
 }
 
-func (a *app) GetLocalConfigInt(auth *Auth, name string) (*LocalConfigInt, error) {
-	return a.repo.GetLocalConfigInt(name)
+func (a *app) GetStationConfigInt(auth *Auth, name string, stationID StationID) (*StationConfigInt, error) {
+	return a.repo.GetStationConfigInt(name, stationID)
 }
 
-func (a *app) GetLocalConfigBool(auth *Auth, name string) (*LocalConfigBool, error) {
-	return a.repo.GetLocalConfigBool(name)
+func (a *app) GetStationConfigBool(auth *Auth, name string, stationID StationID) (*StationConfigBool, error) {
+	return a.repo.GetStationConfigBool(name, stationID)
 }
 
-func (a *app) GetLocalConfigString(auth *Auth, name string) (*LocalConfigString, error) {
-	return a.repo.GetLocalConfigString(name)
+func (a *app) GetStationConfigString(auth *Auth, name string, stationID StationID) (*StationConfigString, error) {
+	return a.repo.GetStationConfigString(name, stationID)
 }
 
-func (a *app) SetLocalConfigInt(auth *Auth, config LocalConfigInt) error {
-	return a.repo.SetLocalConfigInt(config)
+func (a *app) SetStationConfigInt(auth *Auth, config StationConfigInt) error {
+	return a.repo.SetStationConfigInt(config)
 }
 
-func (a *app) SetLocalConfigBool(auth *Auth, config LocalConfigBool) error {
-	return a.repo.SetLocalConfigBool(config)
+func (a *app) SetStationConfigBool(auth *Auth, config StationConfigBool) error {
+	return a.repo.SetStationConfigBool(config)
 }
 
-func (a *app) SetLocalConfigString(auth *Auth, config LocalConfigString) error {
-	return a.repo.SetLocalConfigString(config)
+func (a *app) SetStationConfigString(auth *Auth, config StationConfigString) error {
+	return a.repo.SetStationConfigString(config)
 }

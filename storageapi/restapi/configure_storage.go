@@ -130,24 +130,24 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.GetConfigVarStringNotImplemented()
 		})
 	}
-	if api.GetLocalConfigVarBoolHandler == nil {
-		api.GetLocalConfigVarBoolHandler = op.GetLocalConfigVarBoolHandlerFunc(func(params op.GetLocalConfigVarBoolParams, principal *storageapi.Profile) op.GetLocalConfigVarBoolResponder {
-			return op.GetLocalConfigVarBoolNotImplemented()
-		})
-	}
-	if api.GetLocalConfigVarIntHandler == nil {
-		api.GetLocalConfigVarIntHandler = op.GetLocalConfigVarIntHandlerFunc(func(params op.GetLocalConfigVarIntParams, principal *storageapi.Profile) op.GetLocalConfigVarIntResponder {
-			return op.GetLocalConfigVarIntNotImplemented()
-		})
-	}
-	if api.GetLocalConfigVarStringHandler == nil {
-		api.GetLocalConfigVarStringHandler = op.GetLocalConfigVarStringHandlerFunc(func(params op.GetLocalConfigVarStringParams, principal *storageapi.Profile) op.GetLocalConfigVarStringResponder {
-			return op.GetLocalConfigVarStringNotImplemented()
-		})
-	}
 	if api.GetPingHandler == nil {
 		api.GetPingHandler = op.GetPingHandlerFunc(func(params op.GetPingParams) op.GetPingResponder {
 			return op.GetPingNotImplemented()
+		})
+	}
+	if api.GetStationConfigVarBoolHandler == nil {
+		api.GetStationConfigVarBoolHandler = op.GetStationConfigVarBoolHandlerFunc(func(params op.GetStationConfigVarBoolParams, principal *storageapi.Profile) op.GetStationConfigVarBoolResponder {
+			return op.GetStationConfigVarBoolNotImplemented()
+		})
+	}
+	if api.GetStationConfigVarIntHandler == nil {
+		api.GetStationConfigVarIntHandler = op.GetStationConfigVarIntHandlerFunc(func(params op.GetStationConfigVarIntParams, principal *storageapi.Profile) op.GetStationConfigVarIntResponder {
+			return op.GetStationConfigVarIntNotImplemented()
+		})
+	}
+	if api.GetStationConfigVarStringHandler == nil {
+		api.GetStationConfigVarStringHandler = op.GetStationConfigVarStringHandlerFunc(func(params op.GetStationConfigVarStringParams, principal *storageapi.Profile) op.GetStationConfigVarStringResponder {
+			return op.GetStationConfigVarStringNotImplemented()
 		})
 	}
 	if api.GetStationDiscountsHandler == nil {
@@ -285,21 +285,6 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.SetKasseNotImplemented()
 		})
 	}
-	if api.SetLocalConfigVarBoolHandler == nil {
-		api.SetLocalConfigVarBoolHandler = op.SetLocalConfigVarBoolHandlerFunc(func(params op.SetLocalConfigVarBoolParams, principal *storageapi.Profile) op.SetLocalConfigVarBoolResponder {
-			return op.SetLocalConfigVarBoolNotImplemented()
-		})
-	}
-	if api.SetLocalConfigVarIntHandler == nil {
-		api.SetLocalConfigVarIntHandler = op.SetLocalConfigVarIntHandlerFunc(func(params op.SetLocalConfigVarIntParams, principal *storageapi.Profile) op.SetLocalConfigVarIntResponder {
-			return op.SetLocalConfigVarIntNotImplemented()
-		})
-	}
-	if api.SetLocalConfigVarStringHandler == nil {
-		api.SetLocalConfigVarStringHandler = op.SetLocalConfigVarStringHandlerFunc(func(params op.SetLocalConfigVarStringParams, principal *storageapi.Profile) op.SetLocalConfigVarStringResponder {
-			return op.SetLocalConfigVarStringNotImplemented()
-		})
-	}
 	if api.SetProgramHandler == nil {
 		api.SetProgramHandler = op.SetProgramHandlerFunc(func(params op.SetProgramParams) op.SetProgramResponder {
 			return op.SetProgramNotImplemented()
@@ -313,6 +298,21 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.SetStationButtonHandler == nil {
 		api.SetStationButtonHandler = op.SetStationButtonHandlerFunc(func(params op.SetStationButtonParams) op.SetStationButtonResponder {
 			return op.SetStationButtonNotImplemented()
+		})
+	}
+	if api.SetStationConfigVarBoolHandler == nil {
+		api.SetStationConfigVarBoolHandler = op.SetStationConfigVarBoolHandlerFunc(func(params op.SetStationConfigVarBoolParams, principal *storageapi.Profile) op.SetStationConfigVarBoolResponder {
+			return op.SetStationConfigVarBoolNotImplemented()
+		})
+	}
+	if api.SetStationConfigVarIntHandler == nil {
+		api.SetStationConfigVarIntHandler = op.SetStationConfigVarIntHandlerFunc(func(params op.SetStationConfigVarIntParams, principal *storageapi.Profile) op.SetStationConfigVarIntResponder {
+			return op.SetStationConfigVarIntNotImplemented()
+		})
+	}
+	if api.SetStationConfigVarStringHandler == nil {
+		api.SetStationConfigVarStringHandler = op.SetStationConfigVarStringHandlerFunc(func(params op.SetStationConfigVarStringParams, principal *storageapi.Profile) op.SetStationConfigVarStringResponder {
+			return op.SetStationConfigVarStringNotImplemented()
 		})
 	}
 	if api.StationHandler == nil {

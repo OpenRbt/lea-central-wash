@@ -78,74 +78,95 @@ func (svc *service) getConfigVarString(params op.GetConfigVarStringParams, auth 
 	}
 }
 
-func (svc *service) setLocalConfigVarInt(params op.SetLocalConfigVarIntParams, auth *app.Auth) op.SetLocalConfigVarIntResponder {
-	err := svc.app.SetLocalConfigInt(auth, appLocalConfigInt(params.Args))
+func (svc *service) setStationConfigVarInt(params op.SetStationConfigVarIntParams, auth *app.Auth) op.SetStationConfigVarIntResponder {
+	err := svc.app.SetStationConfigInt(auth, appStationConfigInt(params.Args))
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewSetLocalConfigVarIntNoContent()
+		return op.NewSetStationConfigVarIntNoContent()
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSetLocalConfigVarIntInternalServerError()
+		return op.NewSetStationConfigVarIntInternalServerError()
 	}
 }
 
-func (svc *service) setLocalConfigVarBool(params op.SetLocalConfigVarBoolParams, auth *app.Auth) op.SetLocalConfigVarBoolResponder {
-	err := svc.app.SetLocalConfigBool(auth, appLocalConfigBool(params.Args))
+func (svc *service) setStationConfigVarBool(params op.SetStationConfigVarBoolParams, auth *app.Auth) op.SetStationConfigVarBoolResponder {
+	err := svc.app.SetStationConfigBool(auth, appStationConfigBool(params.Args))
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewSetLocalConfigVarBoolNoContent()
+		return op.NewSetStationConfigVarBoolNoContent()
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSetLocalConfigVarBoolInternalServerError()
+		return op.NewSetStationConfigVarBoolInternalServerError()
 	}
 }
 
-func (svc *service) setLocalConfigVarString(params op.SetLocalConfigVarStringParams, auth *app.Auth) op.SetLocalConfigVarStringResponder {
-	err := svc.app.SetLocalConfigString(auth, appLocalConfigString(params.Args))
+func (svc *service) setStationConfigVarString(params op.SetStationConfigVarStringParams, auth *app.Auth) op.SetStationConfigVarStringResponder {
+	err := svc.app.SetStationConfigString(auth, appStationConfigString(params.Args))
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewSetLocalConfigVarStringNoContent()
+		return op.NewSetStationConfigVarStringNoContent()
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewSetLocalConfigVarStringInternalServerError()
+		return op.NewSetStationConfigVarStringInternalServerError()
 	}
 }
 
-func (svc *service) getLocalConfigVarBool(params op.GetLocalConfigVarBoolParams, auth *app.Auth) op.GetLocalConfigVarBoolResponder {
-	res, err := svc.app.GetLocalConfigBool(auth, params.Args.Name)
+func (svc *service) getStationConfigVarBool(params op.GetStationConfigVarBoolParams, auth *app.Auth) op.GetStationConfigVarBoolResponder {
+
+	stationID, err := svc.getID(params.Args.Hash)
+	if err != nil {
+		log.Info("getStationConfigVarBool: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewGetStationConfigVarBoolNotFound()
+	}
+
+	res, err := svc.app.GetStationConfigBool(auth, params.Args.Name, stationID)
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewGetLocalConfigVarBoolOK().WithPayload(apiLocalConfigBool(res))
+		return op.NewGetStationConfigVarBoolOK().WithPayload(apiStationConfigBool(res))
 	case app.ErrNotFound:
-		return op.NewGetLocalConfigVarBoolNotFound()
+		return op.NewGetStationConfigVarBoolNotFound()
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewGetLocalConfigVarBoolInternalServerError()
+		return op.NewGetStationConfigVarBoolInternalServerError()
 	}
 }
 
-func (svc *service) getLocalConfigVarInt(params op.GetLocalConfigVarIntParams, auth *app.Auth) op.GetLocalConfigVarIntResponder {
-	res, err := svc.app.GetLocalConfigInt(auth, params.Args.Name)
+func (svc *service) getStationConfigVarInt(params op.GetStationConfigVarIntParams, auth *app.Auth) op.GetStationConfigVarIntResponder {
+
+	stationID, err := svc.getID(params.Args.Hash)
+	if err != nil {
+		log.Info("getStationConfigVarInt: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewGetStationConfigVarIntNotFound()
+	}
+
+	res, err := svc.app.GetStationConfigInt(auth, params.Args.Name, stationID)
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewGetLocalConfigVarIntOK().WithPayload(apiLocalConfigInt(res))
+		return op.NewGetStationConfigVarIntOK().WithPayload(apiStationConfigInt(res))
 	case app.ErrNotFound:
-		return op.NewGetLocalConfigVarIntNotFound()
+		return op.NewGetStationConfigVarIntNotFound()
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewGetLocalConfigVarIntInternalServerError()
+		return op.NewGetStationConfigVarIntInternalServerError()
 	}
 }
 
-func (svc *service) getLocalConfigVarString(params op.GetLocalConfigVarStringParams, auth *app.Auth) op.GetLocalConfigVarStringResponder {
-	res, err := svc.app.GetLocalConfigString(auth, params.Args.Name)
+func (svc *service) getStationConfigVarString(params op.GetStationConfigVarStringParams, auth *app.Auth) op.GetStationConfigVarStringResponder {
+
+	stationID, err := svc.getID(params.Args.Hash)
+	if err != nil {
+		log.Info("getStationConfigVarString: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewGetStationConfigVarStringNotFound()
+	}
+
+	res, err := svc.app.GetStationConfigString(auth, params.Args.Name, stationID)
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewGetLocalConfigVarStringOK().WithPayload(apiLocalConfigString(res))
+		return op.NewGetStationConfigVarStringOK().WithPayload(apiStationConfigString(res))
 	case app.ErrNotFound:
-		return op.NewGetLocalConfigVarStringNotFound()
+		return op.NewGetStationConfigVarStringNotFound()
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewGetLocalConfigVarStringInternalServerError()
+		return op.NewGetStationConfigVarStringInternalServerError()
 	}
 }

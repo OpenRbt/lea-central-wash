@@ -15,7 +15,7 @@ securityDefinitions:
      name: Pin
 
 definitions:
-  LocalConfigVarInt:
+  StationConfigVarInt:
     type: object
     properties:
       name:
@@ -26,10 +26,10 @@ definitions:
         type: string
       note:
         type: string
-      stationId:
+      stationID:
         type: string
   
-  LocalConfigVarBool:
+  StationConfigVarBool:
     type: object
     properties:
       name:
@@ -40,10 +40,10 @@ definitions:
         type: string
       note:
         type: string
-      stationId:
+      stationID:
         type: string
   
-  LocalConfigVarString:
+  StationConfigVarString:
     type: object
     properties:
       name:
@@ -54,7 +54,7 @@ definitions:
         type: string
       note:
         type: string
-      stationId:
+      stationID:
         type: string
   
   ConfigVarInt:
@@ -556,9 +556,9 @@ produces:
   - application/json          
 
 paths:
-  /get-local-config-var-int:
+  /get-station-config-var-int:
     post:
-      operationId: "getLocalConfigVarInt"
+      operationId: "getStationConfigVarInt"
       security:
         - pinCode: []
       parameters:
@@ -566,24 +566,26 @@ paths:
           required: true
           in: body
           schema:
-            title: "ArgGetLocalConfigVar"
+            title: "ArgGetStationConfigVar"
             type: object
             properties:
               name:
+                type: string
+              hash:
                 type: string
       responses:
           200:
             description: OK
             schema:
-              $ref:  '#/definitions/LocalConfigVarInt'
+              $ref:  '#/definitions/StationConfigVarInt'
           404:
             description: Not found
           500:
             description: Internal error
 
-  /get-local-config-var-bool:
+  /get-lstation-config-var-bool:
     post:
-      operationId: "getLocalConfigVarBool"
+      operationId: "getStationConfigVarBool"
       security:
         - pinCode: []
       parameters:
@@ -591,24 +593,26 @@ paths:
           required: true
           in: body
           schema:
-            title: "ArgGetLocalConfigVar"
+            title: "ArgGetStationConfigVar"
             type: object
             properties:
               name:
+                type: string
+              hash:
                 type: string
       responses:
           200:
             description: OK
             schema:
-              $ref:  '#/definitions/LocalConfigVarBool'
+              $ref:  '#/definitions/StationConfigVarBool'
           404:
             description: Not found
           500:
             description: Internal error
 
-  /get-local-config-var-string:
+  /get-station-config-var-string:
     post:
-      operationId: "getLocalConfigVarString"
+      operationId: "getStationConfigVarString"
       security:
         - pinCode: []
       parameters:
@@ -616,24 +620,26 @@ paths:
           required: true
           in: body
           schema:
-            title: "ArgGetLocalConfigVar"
+            title: "ArgGetStationConfigVar"
             type: object
             properties:
               name:
+                type: string
+              hash:
                 type: string
       responses:
           200:
             description: OK
             schema:
-              $ref:  '#/definitions/LocalConfigVarString'
+              $ref:  '#/definitions/StationConfigVarString'
           404:
             description: Not found
           500:
             description: Internal error
 
-  /set-local-config-var-int:
+  /set-station-config-var-int:
     post:
-      operationId: "setLocalConfigVarInt"
+      operationId: "setStationConfigVarInt"
       security:
         - pinCode: []
       parameters:
@@ -641,16 +647,16 @@ paths:
           required: true
           in: body
           schema:
-            $ref:  '#/definitions/LocalConfigVarInt'
+            $ref:  '#/definitions/StationConfigVarInt'
       responses:
           204:
             description: OK
           500:
             description: Internal error
 
-  /set-local-config-var-bool:
+  /set-station-config-var-bool:
     post:
-      operationId: "setLocalConfigVarBool"
+      operationId: "setStationConfigVarBool"
       security:
         - pinCode: []
       parameters:
@@ -658,16 +664,16 @@ paths:
           required: true
           in: body
           schema:
-            $ref:  '#/definitions/LocalConfigVarBool'
+            $ref:  '#/definitions/StationConfigVarBool'
       responses:
           204:
             description: OK
           500:
             description: Internal error
 
-  /set-local-config-var-string:
+  /set-station-config-var-string:
     post:
-      operationId: "setLocalConfigVarString"
+      operationId: "setStationConfigVarString"
       security:
         - pinCode: []
       parameters:
@@ -675,7 +681,7 @@ paths:
           required: true
           in: body
           schema:
-            $ref:  '#/definitions/LocalConfigVarString'
+            $ref:  '#/definitions/StationConfigVarString'
       responses:
           204:
             description: OK

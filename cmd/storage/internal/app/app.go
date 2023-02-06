@@ -121,13 +121,13 @@ type (
 		SetConfigBool(auth *Auth, config ConfigBool) error
 		SetConfigString(auth *Auth, config ConfigString) error
 
-		GetLocalConfigInt(auth *Auth, name string) (*LocalConfigInt, error)
-		GetLocalConfigBool(auth *Auth, name string) (*LocalConfigBool, error)
-		GetLocalConfigString(auth *Auth, name string) (*LocalConfigString, error)
+		GetStationConfigInt(auth *Auth, name string, stationID StationID) (*StationConfigInt, error)
+		GetStationConfigBool(auth *Auth, name string, stationID StationID) (*StationConfigBool, error)
+		GetStationConfigString(auth *Auth, name string, stationID StationID) (*StationConfigString, error)
 
-		SetLocalConfigInt(auth *Auth, config LocalConfigInt) error
-		SetLocalConfigBool(auth *Auth, config LocalConfigBool) error
-		SetLocalConfigString(auth *Auth, config LocalConfigString) error
+		SetStationConfigInt(auth *Auth, config StationConfigInt) error
+		SetStationConfigBool(auth *Auth, config StationConfigBool) error
+		SetStationConfigString(auth *Auth, config StationConfigString) error
 	}
 
 	// Repo is a DAL interface.
@@ -197,13 +197,13 @@ type (
 		SetConfigBool(config ConfigBool) error
 		SetConfigString(config ConfigString) error
 
-		GetLocalConfigInt(name string) (*LocalConfigInt, error)
-		GetLocalConfigBool(name string) (*LocalConfigBool, error)
-		GetLocalConfigString(name string) (*LocalConfigString, error)
+		GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error)
+		GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error)
+		GetStationConfigString(name string, stationID StationID) (*StationConfigString, error)
 
-		SetLocalConfigInt(config LocalConfigInt) error
-		SetLocalConfigBool(config LocalConfigBool) error
-		SetLocalConfigString(config LocalConfigString) error
+		SetStationConfigInt(config StationConfigInt) error
+		SetStationConfigBool(config StationConfigBool) error
+		SetStationConfigString(config StationConfigString) error
 
 		SetConfigIntIfNotExists(ConfigInt) error
 	}

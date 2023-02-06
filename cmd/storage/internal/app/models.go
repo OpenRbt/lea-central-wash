@@ -172,21 +172,21 @@ type ConfigString struct {
 	Note        string
 }
 
-type LocalConfigInt struct {
+type StationConfigInt struct {
 	Name        string
 	Value       int64
 	Description string
 	Note        string
 	StationID   string
 }
-type LocalConfigBool struct {
+type StationConfigBool struct {
 	Name        string
 	Value       bool
 	Description string
 	Note        string
 	StationID   string
 }
-type LocalConfigString struct {
+type StationConfigString struct {
 	Name        string
 	Value       string
 	Description string

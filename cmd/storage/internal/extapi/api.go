@@ -147,13 +147,13 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.GetConfigVarStringHandler = op.GetConfigVarStringHandlerFunc(svc.getConfigVarString)
 	api.GetConfigVarIntHandler = op.GetConfigVarIntHandlerFunc(svc.getConfigVarInt)
 
-	api.SetLocalConfigVarBoolHandler = op.SetLocalConfigVarBoolHandlerFunc(svc.setLocalConfigVarBool)
-	api.SetLocalConfigVarStringHandler = op.SetLocalConfigVarStringHandlerFunc(svc.setLocalConfigVarString)
-	api.SetLocalConfigVarIntHandler = op.SetLocalConfigVarIntHandlerFunc(svc.setLocalConfigVarInt)
+	api.SetStationConfigVarBoolHandler = op.SetStationConfigVarBoolHandlerFunc(svc.setStationConfigVarBool)
+	api.SetStationConfigVarStringHandler = op.SetStationConfigVarStringHandlerFunc(svc.setStationConfigVarString)
+	api.SetStationConfigVarIntHandler = op.SetStationConfigVarIntHandlerFunc(svc.setStationConfigVarInt)
 
-	api.GetLocalConfigVarBoolHandler = op.GetLocalConfigVarBoolHandlerFunc(svc.getLocalConfigVarBool)
-	api.GetLocalConfigVarStringHandler = op.GetLocalConfigVarStringHandlerFunc(svc.getLocalConfigVarString)
-	api.GetLocalConfigVarIntHandler = op.GetLocalConfigVarIntHandlerFunc(svc.getLocalConfigVarInt)
+	api.GetStationConfigVarBoolHandler = op.GetStationConfigVarBoolHandlerFunc(svc.getStationConfigVarBool)
+	api.GetStationConfigVarStringHandler = op.GetStationConfigVarStringHandlerFunc(svc.getStationConfigVarString)
+	api.GetStationConfigVarIntHandler = op.GetStationConfigVarIntHandlerFunc(svc.getStationConfigVarInt)
 
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host

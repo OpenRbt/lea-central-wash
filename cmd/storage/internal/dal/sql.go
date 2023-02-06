@@ -574,24 +574,24 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 			note = :note
 	`
 
-	sqlGetLocalConfigInt = `
+	sqlGetStationConfigInt = `
 	SELECT name, value, description, note, stationId
-	FROM config_vars_int
+	FROM station_config_vars_int
 	WHERE name = UPPER(:name)
 	`
-	sqlGetLocalConfigBool = `
+	sqlGetStationConfigBool = `
 	SELECT name, value, description, note, stationId
-	FROM config_vars_bool
+	FROM station_config_vars_bool
 	WHERE name = UPPER(:name)
 	`
-	sqlGetLocalConfigString = `
+	sqlGetStationConfigString = `
 	SELECT name, value, description, note, stationId
-	FROM config_vars_string
+	FROM station_config_vars_string
 	WHERE name = UPPER(:name)
 	`
 
-	sqlSetLocalConfigInt = `
-	INSERT INTO config_vars_int (name, value, description, note, stationId)
+	sqlSetStationConfigInt = `
+	INSERT INTO station_config_vars_int (name, value, description, note, stationId)
 		VALUES (UPPER(:name), :value, :description, :note, :stationId)
 	ON CONFLICT (name)
 	DO
@@ -600,8 +600,8 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 			description = :description,
 			note = :note
 	`
-	sqlSetLocalConfigBool = `
-	INSERT INTO config_vars_bool (name, value, description, note, stationId)
+	sqlSetStationConfigBool = `
+	INSERT INTO station_config_vars_bool (name, value, description, note, stationId)
 		VALUES (UPPER(:name), :value, :description, :note, :stationId)
 	ON CONFLICT (name)
 	DO
@@ -610,8 +610,8 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 			description = :description,
 			note = :note
 	`
-	sqlSetLocalConfigString = `
-	INSERT INTO config_vars_string (name, value, description, note, stationId)
+	sqlSetStationConfigString = `
+	INSERT INTO station_config_vars_string (name, value, description, note, stationId)
 		VALUES (UPPER(:name), :value, :description, :note, :stationId)
 	ON CONFLICT (name)
 	DO
@@ -973,6 +973,10 @@ type (
 	argGetConfig struct {
 		Name string
 	}
+	argGetStationConfig struct {
+		Name      string
+		StationID int
+	}
 	argSetConfigInt struct {
 		Name        string
 		Value       int64
@@ -1010,42 +1014,42 @@ type (
 		Note        string
 	}
 
-	argSetLocalConfigInt struct {
+	argSetStationConfigInt struct {
 		Name        string
 		Value       int64
 		Description string
 		Note        string
 		StationId   string
 	}
-	argSetLocalConfigBool struct {
+	argSetStationConfigBool struct {
 		Name        string
 		Value       bool
 		Description string
 		Note        string
 		StationId   string
 	}
-	argSetLocalConfigString struct {
+	argSetStationConfigString struct {
 		Name        string
 		Value       string
 		Description string
 		Note        string
 		StationId   string
 	}
-	resGetLocalConfigInt struct {
+	resGetStationConfigInt struct {
 		Name        string
 		Value       int64
 		Description string
 		Note        string
 		StationId   string
 	}
-	resGetLocalConfigBool struct {
+	resGetStationConfigBool struct {
 		Name        string
 		Value       bool
 		Description string
 		Note        string
 		StationId   string
 	}
-	resGetLocalConfigString struct {
+	resGetStationConfigString struct {
 		Name        string
 		Value       string
 		Description string

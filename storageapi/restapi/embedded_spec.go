@@ -510,14 +510,14 @@ func init() {
         }
       }
     },
-    "/get-local-config-var-bool": {
+    "/get-lstation-config-var-bool": {
       "post": {
         "security": [
           {
             "pinCode": []
           }
         ],
-        "operationId": "getLocalConfigVarBool",
+        "operationId": "getStationConfigVarBool",
         "parameters": [
           {
             "name": "args",
@@ -525,8 +525,11 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgGetLocalConfigVar",
+              "title": "ArgGetStationConfigVar",
               "properties": {
+                "hash": {
+                  "type": "string"
+                },
                 "name": {
                   "type": "string"
                 }
@@ -538,7 +541,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/LocalConfigVarBool"
+              "$ref": "#/definitions/StationConfigVarBool"
             }
           },
           "404": {
@@ -550,14 +553,14 @@ func init() {
         }
       }
     },
-    "/get-local-config-var-int": {
+    "/get-station-config-var-int": {
       "post": {
         "security": [
           {
             "pinCode": []
           }
         ],
-        "operationId": "getLocalConfigVarInt",
+        "operationId": "getStationConfigVarInt",
         "parameters": [
           {
             "name": "args",
@@ -565,8 +568,11 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgGetLocalConfigVar",
+              "title": "ArgGetStationConfigVar",
               "properties": {
+                "hash": {
+                  "type": "string"
+                },
                 "name": {
                   "type": "string"
                 }
@@ -578,7 +584,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/LocalConfigVarInt"
+              "$ref": "#/definitions/StationConfigVarInt"
             }
           },
           "404": {
@@ -590,14 +596,14 @@ func init() {
         }
       }
     },
-    "/get-local-config-var-string": {
+    "/get-station-config-var-string": {
       "post": {
         "security": [
           {
             "pinCode": []
           }
         ],
-        "operationId": "getLocalConfigVarString",
+        "operationId": "getStationConfigVarString",
         "parameters": [
           {
             "name": "args",
@@ -605,8 +611,11 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgGetLocalConfigVar",
+              "title": "ArgGetStationConfigVar",
               "properties": {
+                "hash": {
+                  "type": "string"
+                },
                 "name": {
                   "type": "string"
                 }
@@ -618,7 +627,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/LocalConfigVarString"
+              "$ref": "#/definitions/StationConfigVarString"
             }
           },
           "404": {
@@ -1588,90 +1597,6 @@ func init() {
         }
       }
     },
-    "/set-local-config-var-bool": {
-      "post": {
-        "security": [
-          {
-            "pinCode": []
-          }
-        ],
-        "operationId": "setLocalConfigVarBool",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/LocalConfigVarBool"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
-      }
-    },
-    "/set-local-config-var-int": {
-      "post": {
-        "security": [
-          {
-            "pinCode": []
-          }
-        ],
-        "operationId": "setLocalConfigVarInt",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/LocalConfigVarInt"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
-      }
-    },
-    "/set-local-config-var-string": {
-      "post": {
-        "security": [
-          {
-            "pinCode": []
-          }
-        ],
-        "operationId": "setLocalConfigVarString",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/LocalConfigVarString"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
-      }
-    },
     "/set-program": {
       "post": {
         "operationId": "setProgram",
@@ -1776,6 +1701,90 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-station-config-var-bool": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setStationConfigVarBool",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarBool"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/set-station-config-var-int": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setStationConfigVarInt",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarInt"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/set-station-config-var-string": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setStationConfigVarString",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarString"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -2946,66 +2955,6 @@ func init() {
       "minLength": 1,
       "x-nullable": true
     },
-    "LocalConfigVarBool": {
-      "type": "object",
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "note": {
-          "type": "string"
-        },
-        "stationId": {
-          "type": "string"
-        },
-        "value": {
-          "type": "boolean"
-        }
-      }
-    },
-    "LocalConfigVarInt": {
-      "type": "object",
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "note": {
-          "type": "string"
-        },
-        "stationId": {
-          "type": "string"
-        },
-        "value": {
-          "type": "integer"
-        }
-      }
-    },
-    "LocalConfigVarString": {
-      "type": "object",
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "note": {
-          "type": "string"
-        },
-        "stationId": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string"
-        }
-      }
-    },
     "Login": {
       "type": "string",
       "minLength": 4
@@ -3178,6 +3127,66 @@ func init() {
         },
         "relayBoard": {
           "$ref": "#/definitions/RelayBoard"
+        }
+      }
+    },
+    "StationConfigVarBool": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "string"
+        },
+        "value": {
+          "type": "boolean"
+        }
+      }
+    },
+    "StationConfigVarInt": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "string"
+        },
+        "value": {
+          "type": "integer"
+        }
+      }
+    },
+    "StationConfigVarString": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
         }
       }
     },
@@ -3897,14 +3906,14 @@ func init() {
         }
       }
     },
-    "/get-local-config-var-bool": {
+    "/get-lstation-config-var-bool": {
       "post": {
         "security": [
           {
             "pinCode": []
           }
         ],
-        "operationId": "getLocalConfigVarBool",
+        "operationId": "getStationConfigVarBool",
         "parameters": [
           {
             "name": "args",
@@ -3912,8 +3921,11 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgGetLocalConfigVar",
+              "title": "ArgGetStationConfigVar",
               "properties": {
+                "hash": {
+                  "type": "string"
+                },
                 "name": {
                   "type": "string"
                 }
@@ -3925,7 +3937,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/LocalConfigVarBool"
+              "$ref": "#/definitions/StationConfigVarBool"
             }
           },
           "404": {
@@ -3937,14 +3949,14 @@ func init() {
         }
       }
     },
-    "/get-local-config-var-int": {
+    "/get-station-config-var-int": {
       "post": {
         "security": [
           {
             "pinCode": []
           }
         ],
-        "operationId": "getLocalConfigVarInt",
+        "operationId": "getStationConfigVarInt",
         "parameters": [
           {
             "name": "args",
@@ -3952,8 +3964,11 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgGetLocalConfigVar",
+              "title": "ArgGetStationConfigVar",
               "properties": {
+                "hash": {
+                  "type": "string"
+                },
                 "name": {
                   "type": "string"
                 }
@@ -3965,7 +3980,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/LocalConfigVarInt"
+              "$ref": "#/definitions/StationConfigVarInt"
             }
           },
           "404": {
@@ -3977,14 +3992,14 @@ func init() {
         }
       }
     },
-    "/get-local-config-var-string": {
+    "/get-station-config-var-string": {
       "post": {
         "security": [
           {
             "pinCode": []
           }
         ],
-        "operationId": "getLocalConfigVarString",
+        "operationId": "getStationConfigVarString",
         "parameters": [
           {
             "name": "args",
@@ -3992,8 +4007,11 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgGetLocalConfigVar",
+              "title": "ArgGetStationConfigVar",
               "properties": {
+                "hash": {
+                  "type": "string"
+                },
                 "name": {
                   "type": "string"
                 }
@@ -4005,7 +4023,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/LocalConfigVarString"
+              "$ref": "#/definitions/StationConfigVarString"
             }
           },
           "404": {
@@ -4975,90 +4993,6 @@ func init() {
         }
       }
     },
-    "/set-local-config-var-bool": {
-      "post": {
-        "security": [
-          {
-            "pinCode": []
-          }
-        ],
-        "operationId": "setLocalConfigVarBool",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/LocalConfigVarBool"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
-      }
-    },
-    "/set-local-config-var-int": {
-      "post": {
-        "security": [
-          {
-            "pinCode": []
-          }
-        ],
-        "operationId": "setLocalConfigVarInt",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/LocalConfigVarInt"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
-      }
-    },
-    "/set-local-config-var-string": {
-      "post": {
-        "security": [
-          {
-            "pinCode": []
-          }
-        ],
-        "operationId": "setLocalConfigVarString",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/LocalConfigVarString"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
-      }
-    },
     "/set-program": {
       "post": {
         "operationId": "setProgram",
@@ -5155,6 +5089,90 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-station-config-var-bool": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setStationConfigVarBool",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarBool"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/set-station-config-var-int": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setStationConfigVarInt",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarInt"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/set-station-config-var-string": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setStationConfigVarString",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarString"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -6330,66 +6348,6 @@ func init() {
       "minLength": 1,
       "x-nullable": true
     },
-    "LocalConfigVarBool": {
-      "type": "object",
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "note": {
-          "type": "string"
-        },
-        "stationId": {
-          "type": "string"
-        },
-        "value": {
-          "type": "boolean"
-        }
-      }
-    },
-    "LocalConfigVarInt": {
-      "type": "object",
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "note": {
-          "type": "string"
-        },
-        "stationId": {
-          "type": "string"
-        },
-        "value": {
-          "type": "integer"
-        }
-      }
-    },
-    "LocalConfigVarString": {
-      "type": "object",
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "note": {
-          "type": "string"
-        },
-        "stationId": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string"
-        }
-      }
-    },
     "Login": {
       "type": "string",
       "minLength": 4
@@ -6564,6 +6522,66 @@ func init() {
         },
         "relayBoard": {
           "$ref": "#/definitions/RelayBoard"
+        }
+      }
+    },
+    "StationConfigVarBool": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "string"
+        },
+        "value": {
+          "type": "boolean"
+        }
+      }
+    },
+    "StationConfigVarInt": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "string"
+        },
+        "value": {
+          "type": "integer"
+        }
+      }
+    },
+    "StationConfigVarString": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
         }
       }
     },
