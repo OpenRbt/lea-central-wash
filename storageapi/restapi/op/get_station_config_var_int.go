@@ -80,22 +80,22 @@ func (o *GetStationConfigVarInt) ServeHTTP(rw http.ResponseWriter, r *http.Reque
 // swagger:model GetStationConfigVarIntBody
 type GetStationConfigVarIntBody struct {
 
-	// hash
-	Hash string `json:"hash,omitempty"`
-
 	// name
 	Name string `json:"name,omitempty"`
+
+	// station ID
+	StationID string `json:"stationID,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
 func (o *GetStationConfigVarIntBody) UnmarshalJSON(data []byte) error {
 	var props struct {
 
-		// hash
-		Hash string `json:"hash,omitempty"`
-
 		// name
 		Name string `json:"name,omitempty"`
+
+		// station ID
+		StationID string `json:"stationID,omitempty"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -104,8 +104,8 @@ func (o *GetStationConfigVarIntBody) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	o.Hash = props.Hash
 	o.Name = props.Name
+	o.StationID = props.StationID
 	return nil
 }
 

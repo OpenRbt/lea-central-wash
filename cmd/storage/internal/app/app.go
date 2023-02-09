@@ -121,9 +121,9 @@ type (
 		SetConfigBool(auth *Auth, config ConfigBool) error
 		SetConfigString(auth *Auth, config ConfigString) error
 
-		GetStationConfigInt(auth *Auth, name string, stationID StationID) (*StationConfigInt, error)
-		GetStationConfigBool(auth *Auth, name string, stationID StationID) (*StationConfigBool, error)
-		GetStationConfigString(auth *Auth, name string, stationID StationID) (*StationConfigString, error)
+		GetStationConfigInt(name string, stationID int) (*StationConfigInt, error)
+		GetStationConfigBool(name string, stationID int) (*StationConfigBool, error)
+		GetStationConfigString(name string, stationID int) (*StationConfigString, error)
 
 		SetStationConfigInt(auth *Auth, config StationConfigInt) error
 		SetStationConfigBool(auth *Auth, config StationConfigBool) error
@@ -197,9 +197,9 @@ type (
 		SetConfigBool(config ConfigBool) error
 		SetConfigString(config ConfigString) error
 
-		GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error)
-		GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error)
-		GetStationConfigString(name string, stationID StationID) (*StationConfigString, error)
+		GetStationConfigInt(name string, stationID int) (*StationConfigInt, error)
+		GetStationConfigBool(name string, stationID int) (*StationConfigBool, error)
+		GetStationConfigString(name string, stationID int) (*StationConfigString, error)
 
 		SetStationConfigInt(config StationConfigInt) error
 		SetStationConfigBool(config StationConfigBool) error

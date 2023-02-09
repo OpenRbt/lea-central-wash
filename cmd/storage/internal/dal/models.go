@@ -287,7 +287,7 @@ func appStationConfigInt(a resGetStationConfigInt) *app.StationConfigInt {
 		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
-		StationID:   a.StationId,
+		StationID:   a.StationID,
 	}
 }
 
@@ -297,7 +297,7 @@ func appStationConfigBool(a resGetStationConfigBool) *app.StationConfigBool {
 		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
-		StationID:   a.StationId,
+		StationID:   a.StationID,
 	}
 }
 
@@ -307,6 +307,6 @@ func appStationConfigString(a resGetStationConfigString) *app.StationConfigStrin
 		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
-		StationID:   a.StationId,
+		StationID:   a.StationID,
 	}
 }

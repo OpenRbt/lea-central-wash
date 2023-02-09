@@ -575,24 +575,24 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 	`
 
 	sqlGetStationConfigInt = `
-	SELECT name, value, description, note, stationId
+	SELECT name, value, description, note, stationID
 	FROM station_config_vars_int
 	WHERE name = UPPER(:name)
 	`
 	sqlGetStationConfigBool = `
-	SELECT name, value, description, note, stationId
+	SELECT name, value, description, note, stationID
 	FROM station_config_vars_bool
 	WHERE name = UPPER(:name)
 	`
 	sqlGetStationConfigString = `
-	SELECT name, value, description, note, stationId
+	SELECT name, value, description, note, stationID
 	FROM station_config_vars_string
 	WHERE name = UPPER(:name)
 	`
 
 	sqlSetStationConfigInt = `
-	INSERT INTO station_config_vars_int (name, value, description, note, stationId)
-		VALUES (UPPER(:name), :value, :description, :note, :stationId)
+	INSERT INTO station_config_vars_int (name, value, description, note, stationID)
+		VALUES (UPPER(:name), :value, :description, :note, :stationID)
 	ON CONFLICT (name)
 	DO
 		UPDATE 
@@ -601,8 +601,8 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 			note = :note
 	`
 	sqlSetStationConfigBool = `
-	INSERT INTO station_config_vars_bool (name, value, description, note, stationId)
-		VALUES (UPPER(:name), :value, :description, :note, :stationId)
+	INSERT INTO station_config_vars_bool (name, value, description, note, stationID)
+		VALUES (UPPER(:name), :value, :description, :note, :stationID)
 	ON CONFLICT (name)
 	DO
 		UPDATE 
@@ -611,8 +611,8 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 			note = :note
 	`
 	sqlSetStationConfigString = `
-	INSERT INTO station_config_vars_string (name, value, description, note, stationId)
-		VALUES (UPPER(:name), :value, :description, :note, :stationId)
+	INSERT INTO station_config_vars_string (name, value, description, note, stationID)
+		VALUES (UPPER(:name), :value, :description, :note, :stationID)
 	ON CONFLICT (name)
 	DO
 		UPDATE 
@@ -1019,41 +1019,41 @@ type (
 		Value       int64
 		Description string
 		Note        string
-		StationId   string
+		StationID   string
 	}
 	argSetStationConfigBool struct {
 		Name        string
 		Value       bool
 		Description string
 		Note        string
-		StationId   string
+		StationID   string
 	}
 	argSetStationConfigString struct {
 		Name        string
 		Value       string
 		Description string
 		Note        string
-		StationId   string
+		StationID   string
 	}
 	resGetStationConfigInt struct {
 		Name        string
 		Value       int64
 		Description string
 		Note        string
-		StationId   string
+		StationID   string
 	}
 	resGetStationConfigBool struct {
 		Name        string
 		Value       bool
 		Description string
 		Note        string
-		StationId   string
+		StationID   string
 	}
 	resGetStationConfigString struct {
 		Name        string
 		Value       string
 		Description string
 		Note        string
-		StationId   string
+		StationID   string
 	}
 )

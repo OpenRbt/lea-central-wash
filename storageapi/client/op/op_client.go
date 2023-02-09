@@ -72,6 +72,12 @@ type ClientService interface {
 
 	GetStationDiscounts(params *GetStationDiscountsParams, opts ...ClientOption) (*GetStationDiscountsOK, error)
 
+	GetStationWashConfigVarBool(params *GetStationWashConfigVarBoolParams, opts ...ClientOption) (*GetStationWashConfigVarBoolOK, error)
+
+	GetStationWashConfigVarInt(params *GetStationWashConfigVarIntParams, opts ...ClientOption) (*GetStationWashConfigVarIntOK, error)
+
+	GetStationWashConfigVarString(params *GetStationWashConfigVarStringParams, opts ...ClientOption) (*GetStationWashConfigVarStringOK, error)
+
 	GetUser(params *GetUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetUserOK, error)
 
 	GetUsers(params *GetUsersParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetUsersOK, error)
@@ -836,7 +842,7 @@ func (a *Client) GetStationConfigVarBool(params *GetStationConfigVarBoolParams, 
 	op := &runtime.ClientOperation{
 		ID:                 "getStationConfigVarBool",
 		Method:             "POST",
-		PathPattern:        "/get-lstation-config-var-bool",
+		PathPattern:        "/get-station-config-var-bool",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http"},
@@ -977,6 +983,120 @@ func (a *Client) GetStationDiscounts(params *GetStationDiscountsParams, opts ...
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getStationDiscounts: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+GetStationWashConfigVarBool get station wash config var bool API
+*/
+func (a *Client) GetStationWashConfigVarBool(params *GetStationWashConfigVarBoolParams, opts ...ClientOption) (*GetStationWashConfigVarBoolOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetStationWashConfigVarBoolParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getStationWashConfigVarBool",
+		Method:             "POST",
+		PathPattern:        "/get-wash-config-var-bool",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetStationWashConfigVarBoolReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetStationWashConfigVarBoolOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getStationWashConfigVarBool: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+GetStationWashConfigVarInt get station wash config var int API
+*/
+func (a *Client) GetStationWashConfigVarInt(params *GetStationWashConfigVarIntParams, opts ...ClientOption) (*GetStationWashConfigVarIntOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetStationWashConfigVarIntParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getStationWashConfigVarInt",
+		Method:             "POST",
+		PathPattern:        "/get-wash-config-var-int",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetStationWashConfigVarIntReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetStationWashConfigVarIntOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getStationWashConfigVarInt: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+GetStationWashConfigVarString get station wash config var string API
+*/
+func (a *Client) GetStationWashConfigVarString(params *GetStationWashConfigVarStringParams, opts ...ClientOption) (*GetStationWashConfigVarStringOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetStationWashConfigVarStringParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getStationWashConfigVarString",
+		Method:             "POST",
+		PathPattern:        "/get-wash-config-var-string",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &GetStationWashConfigVarStringReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetStationWashConfigVarStringOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getStationWashConfigVarString: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

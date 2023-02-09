@@ -155,6 +155,21 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.GetStationDiscountsNotImplemented()
 		})
 	}
+	if api.GetStationWashConfigVarBoolHandler == nil {
+		api.GetStationWashConfigVarBoolHandler = op.GetStationWashConfigVarBoolHandlerFunc(func(params op.GetStationWashConfigVarBoolParams) op.GetStationWashConfigVarBoolResponder {
+			return op.GetStationWashConfigVarBoolNotImplemented()
+		})
+	}
+	if api.GetStationWashConfigVarIntHandler == nil {
+		api.GetStationWashConfigVarIntHandler = op.GetStationWashConfigVarIntHandlerFunc(func(params op.GetStationWashConfigVarIntParams) op.GetStationWashConfigVarIntResponder {
+			return op.GetStationWashConfigVarIntNotImplemented()
+		})
+	}
+	if api.GetStationWashConfigVarStringHandler == nil {
+		api.GetStationWashConfigVarStringHandler = op.GetStationWashConfigVarStringHandlerFunc(func(params op.GetStationWashConfigVarStringParams) op.GetStationWashConfigVarStringResponder {
+			return op.GetStationWashConfigVarStringNotImplemented()
+		})
+	}
 	if api.GetUserHandler == nil {
 		api.GetUserHandler = op.GetUserHandlerFunc(func(params op.GetUserParams, principal *storageapi.Profile) op.GetUserResponder {
 			return op.GetUserNotImplemented()

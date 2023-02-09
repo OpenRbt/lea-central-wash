@@ -35,7 +35,7 @@ func (o *GetStationConfigVarBoolURL) SetBasePath(bp string) {
 func (o *GetStationConfigVarBoolURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/get-lstation-config-var-bool"
+	var _path = "/get-station-config-var-bool"
 
 	_basePath := o._basePath
 	if _basePath == "" {

@@ -107,6 +107,15 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		GetStationDiscountsHandler: GetStationDiscountsHandlerFunc(func(params GetStationDiscountsParams) GetStationDiscountsResponder {
 			return GetStationDiscountsNotImplemented()
 		}),
+		GetStationWashConfigVarBoolHandler: GetStationWashConfigVarBoolHandlerFunc(func(params GetStationWashConfigVarBoolParams) GetStationWashConfigVarBoolResponder {
+			return GetStationWashConfigVarBoolNotImplemented()
+		}),
+		GetStationWashConfigVarIntHandler: GetStationWashConfigVarIntHandlerFunc(func(params GetStationWashConfigVarIntParams) GetStationWashConfigVarIntResponder {
+			return GetStationWashConfigVarIntNotImplemented()
+		}),
+		GetStationWashConfigVarStringHandler: GetStationWashConfigVarStringHandlerFunc(func(params GetStationWashConfigVarStringParams) GetStationWashConfigVarStringResponder {
+			return GetStationWashConfigVarStringNotImplemented()
+		}),
 		GetUserHandler: GetUserHandlerFunc(func(params GetUserParams, principal *storageapi.Profile) GetUserResponder {
 			return GetUserNotImplemented()
 		}),
@@ -337,6 +346,12 @@ type StorageAPI struct {
 	GetStationConfigVarStringHandler GetStationConfigVarStringHandler
 	// GetStationDiscountsHandler sets the operation handler for the get station discounts operation
 	GetStationDiscountsHandler GetStationDiscountsHandler
+	// GetStationWashConfigVarBoolHandler sets the operation handler for the get station wash config var bool operation
+	GetStationWashConfigVarBoolHandler GetStationWashConfigVarBoolHandler
+	// GetStationWashConfigVarIntHandler sets the operation handler for the get station wash config var int operation
+	GetStationWashConfigVarIntHandler GetStationWashConfigVarIntHandler
+	// GetStationWashConfigVarStringHandler sets the operation handler for the get station wash config var string operation
+	GetStationWashConfigVarStringHandler GetStationWashConfigVarStringHandler
 	// GetUserHandler sets the operation handler for the get user operation
 	GetUserHandler GetUserHandler
 	// GetUsersHandler sets the operation handler for the get users operation
@@ -572,6 +587,15 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.GetStationDiscountsHandler == nil {
 		unregistered = append(unregistered, "GetStationDiscountsHandler")
+	}
+	if o.GetStationWashConfigVarBoolHandler == nil {
+		unregistered = append(unregistered, "GetStationWashConfigVarBoolHandler")
+	}
+	if o.GetStationWashConfigVarIntHandler == nil {
+		unregistered = append(unregistered, "GetStationWashConfigVarIntHandler")
+	}
+	if o.GetStationWashConfigVarStringHandler == nil {
+		unregistered = append(unregistered, "GetStationWashConfigVarStringHandler")
 	}
 	if o.GetUserHandler == nil {
 		unregistered = append(unregistered, "GetUserHandler")
@@ -881,7 +905,7 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/get-lstation-config-var-bool"] = NewGetStationConfigVarBool(o.context, o.GetStationConfigVarBoolHandler)
+	o.handlers["POST"]["/get-station-config-var-bool"] = NewGetStationConfigVarBool(o.context, o.GetStationConfigVarBoolHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
@@ -894,6 +918,18 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/get-station-discounts"] = NewGetStationDiscounts(o.context, o.GetStationDiscountsHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-wash-config-var-bool"] = NewGetStationWashConfigVarBool(o.context, o.GetStationWashConfigVarBoolHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-wash-config-var-int"] = NewGetStationWashConfigVarInt(o.context, o.GetStationWashConfigVarIntHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-wash-config-var-string"] = NewGetStationWashConfigVarString(o.context, o.GetStationWashConfigVarStringHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

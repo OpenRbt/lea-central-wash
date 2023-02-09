@@ -1,6 +1,8 @@
 package extapi
 
 import (
+	"strconv"
+
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
 	"github.com/pkg/errors"
@@ -112,14 +114,8 @@ func (svc *service) setStationConfigVarString(params op.SetStationConfigVarStrin
 }
 
 func (svc *service) getStationConfigVarBool(params op.GetStationConfigVarBoolParams, auth *app.Auth) op.GetStationConfigVarBoolResponder {
-
-	stationID, err := svc.getID(params.Args.Hash)
-	if err != nil {
-		log.Info("getStationConfigVarBool: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewGetStationConfigVarBoolNotFound()
-	}
-
-	res, err := svc.app.GetStationConfigBool(auth, params.Args.Name, stationID)
+	st, _ := strconv.Atoi(params.Args.StationID)
+	res, err := svc.app.GetStationConfigBool(params.Args.Name, st)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewGetStationConfigVarBoolOK().WithPayload(apiStationConfigBool(res))
@@ -132,14 +128,8 @@ func (svc *service) getStationConfigVarBool(params op.GetStationConfigVarBoolPar
 }
 
 func (svc *service) getStationConfigVarInt(params op.GetStationConfigVarIntParams, auth *app.Auth) op.GetStationConfigVarIntResponder {
-
-	stationID, err := svc.getID(params.Args.Hash)
-	if err != nil {
-		log.Info("getStationConfigVarInt: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewGetStationConfigVarIntNotFound()
-	}
-
-	res, err := svc.app.GetStationConfigInt(auth, params.Args.Name, stationID)
+	st, _ := strconv.Atoi(params.Args.StationID)
+	res, err := svc.app.GetStationConfigInt(params.Args.Name, st)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewGetStationConfigVarIntOK().WithPayload(apiStationConfigInt(res))
@@ -152,14 +142,8 @@ func (svc *service) getStationConfigVarInt(params op.GetStationConfigVarIntParam
 }
 
 func (svc *service) getStationConfigVarString(params op.GetStationConfigVarStringParams, auth *app.Auth) op.GetStationConfigVarStringResponder {
-
-	stationID, err := svc.getID(params.Args.Hash)
-	if err != nil {
-		log.Info("getStationConfigVarString: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewGetStationConfigVarStringNotFound()
-	}
-
-	res, err := svc.app.GetStationConfigString(auth, params.Args.Name, stationID)
+	st, _ := strconv.Atoi(params.Args.StationID)
+	res, err := svc.app.GetStationConfigString(params.Args.Name, st)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewGetStationConfigVarStringOK().WithPayload(apiStationConfigString(res))
@@ -168,5 +152,65 @@ func (svc *service) getStationConfigVarString(params op.GetStationConfigVarStrin
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewGetStationConfigVarStringInternalServerError()
+	}
+}
+
+func (svc *service) getStationWashConfigVarInt(params op.GetStationWashConfigVarIntParams) op.GetStationWashConfigVarIntResponder {
+
+	stationID, err := svc.getID(params.Args.Hash)
+	if err != nil {
+		log.Info("getStationWashConfigVarInt: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewGetStationWashConfigVarIntNotFound()
+	}
+
+	res, err := svc.app.GetStationConfigInt(params.Args.Name, int(stationID))
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetStationWashConfigVarIntOK().WithPayload(apiStationConfigInt(res))
+	case app.ErrNotFound:
+		return op.NewGetStationWashConfigVarIntNotFound()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewGetStationWashConfigVarIntInternalServerError()
+	}
+}
+
+func (svc *service) getStationWashConfigVarBool(params op.GetStationWashConfigVarBoolParams) op.GetStationWashConfigVarBoolResponder {
+
+	stationID, err := svc.getID(params.Args.Hash)
+	if err != nil {
+		log.Info("getStationWashConfigVarBool: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewGetStationWashConfigVarBoolNotFound()
+	}
+
+	res, err := svc.app.GetStationConfigBool(params.Args.Name, int(stationID))
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetStationWashConfigVarBoolOK().WithPayload(apiStationConfigBool(res))
+	case app.ErrNotFound:
+		return op.NewGetStationWashConfigVarBoolNotFound()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewGetStationWashConfigVarBoolInternalServerError()
+	}
+}
+
+func (svc *service) getStationWashConfigVarString(params op.GetStationWashConfigVarStringParams) op.GetStationWashConfigVarStringResponder {
+
+	stationID, err := svc.getID(params.Args.Hash)
+	if err != nil {
+		log.Info("getStationWashConfigVarString: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewGetStationWashConfigVarStringNotFound()
+	}
+
+	res, err := svc.app.GetStationConfigString(params.Args.Name, int(stationID))
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetStationWashConfigVarStringOK().WithPayload(apiStationConfigString(res))
+	case app.ErrNotFound:
+		return op.NewGetStationWashConfigVarStringNotFound()
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewGetStationWashConfigVarStringInternalServerError()
 	}
 }

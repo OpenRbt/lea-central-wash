@@ -90,11 +90,11 @@ func (o *GetStationConfigVarBoolOK) IsCode(code int) bool {
 }
 
 func (o *GetStationConfigVarBoolOK) Error() string {
-	return fmt.Sprintf("[POST /get-lstation-config-var-bool][%d] getStationConfigVarBoolOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[POST /get-station-config-var-bool][%d] getStationConfigVarBoolOK  %+v", 200, o.Payload)
 }
 
 func (o *GetStationConfigVarBoolOK) String() string {
-	return fmt.Sprintf("[POST /get-lstation-config-var-bool][%d] getStationConfigVarBoolOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[POST /get-station-config-var-bool][%d] getStationConfigVarBoolOK  %+v", 200, o.Payload)
 }
 
 func (o *GetStationConfigVarBoolOK) GetPayload() *model.StationConfigVarBool {
@@ -152,11 +152,11 @@ func (o *GetStationConfigVarBoolNotFound) IsCode(code int) bool {
 }
 
 func (o *GetStationConfigVarBoolNotFound) Error() string {
-	return fmt.Sprintf("[POST /get-lstation-config-var-bool][%d] getStationConfigVarBoolNotFound ", 404)
+	return fmt.Sprintf("[POST /get-station-config-var-bool][%d] getStationConfigVarBoolNotFound ", 404)
 }
 
 func (o *GetStationConfigVarBoolNotFound) String() string {
-	return fmt.Sprintf("[POST /get-lstation-config-var-bool][%d] getStationConfigVarBoolNotFound ", 404)
+	return fmt.Sprintf("[POST /get-station-config-var-bool][%d] getStationConfigVarBoolNotFound ", 404)
 }
 
 func (o *GetStationConfigVarBoolNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -203,11 +203,11 @@ func (o *GetStationConfigVarBoolInternalServerError) IsCode(code int) bool {
 }
 
 func (o *GetStationConfigVarBoolInternalServerError) Error() string {
-	return fmt.Sprintf("[POST /get-lstation-config-var-bool][%d] getStationConfigVarBoolInternalServerError ", 500)
+	return fmt.Sprintf("[POST /get-station-config-var-bool][%d] getStationConfigVarBoolInternalServerError ", 500)
 }
 
 func (o *GetStationConfigVarBoolInternalServerError) String() string {
-	return fmt.Sprintf("[POST /get-lstation-config-var-bool][%d] getStationConfigVarBoolInternalServerError ", 500)
+	return fmt.Sprintf("[POST /get-station-config-var-bool][%d] getStationConfigVarBoolInternalServerError ", 500)
 }
 
 func (o *GetStationConfigVarBoolInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -221,22 +221,22 @@ swagger:model GetStationConfigVarBoolBody
 */
 type GetStationConfigVarBoolBody struct {
 
-	// hash
-	Hash string `json:"hash,omitempty"`
-
 	// name
 	Name string `json:"name,omitempty"`
+
+	// station ID
+	StationID string `json:"stationID,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
 func (o *GetStationConfigVarBoolBody) UnmarshalJSON(data []byte) error {
 	var props struct {
 
-		// hash
-		Hash string `json:"hash,omitempty"`
-
 		// name
 		Name string `json:"name,omitempty"`
+
+		// station ID
+		StationID string `json:"stationID,omitempty"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -245,8 +245,8 @@ func (o *GetStationConfigVarBoolBody) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	o.Hash = props.Hash
 	o.Name = props.Name
+	o.StationID = props.StationID
 	return nil
 }
 

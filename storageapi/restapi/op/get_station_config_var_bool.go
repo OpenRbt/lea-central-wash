@@ -37,7 +37,7 @@ func NewGetStationConfigVarBool(ctx *middleware.Context, handler GetStationConfi
 }
 
 /*
-	GetStationConfigVarBool swagger:route POST /get-lstation-config-var-bool getStationConfigVarBool
+	GetStationConfigVarBool swagger:route POST /get-station-config-var-bool getStationConfigVarBool
 
 GetStationConfigVarBool get station config var bool API
 */
@@ -80,22 +80,22 @@ func (o *GetStationConfigVarBool) ServeHTTP(rw http.ResponseWriter, r *http.Requ
 // swagger:model GetStationConfigVarBoolBody
 type GetStationConfigVarBoolBody struct {
 
-	// hash
-	Hash string `json:"hash,omitempty"`
-
 	// name
 	Name string `json:"name,omitempty"`
+
+	// station ID
+	StationID string `json:"stationID,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
 func (o *GetStationConfigVarBoolBody) UnmarshalJSON(data []byte) error {
 	var props struct {
 
-		// hash
-		Hash string `json:"hash,omitempty"`
-
 		// name
 		Name string `json:"name,omitempty"`
+
+		// station ID
+		StationID string `json:"stationID,omitempty"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -104,8 +104,8 @@ func (o *GetStationConfigVarBoolBody) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	o.Hash = props.Hash
 	o.Name = props.Name
+	o.StationID = props.StationID
 	return nil
 }
 

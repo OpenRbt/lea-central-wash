@@ -510,7 +510,7 @@ func init() {
         }
       }
     },
-    "/get-lstation-config-var-bool": {
+    "/get-station-config-var-bool": {
       "post": {
         "security": [
           {
@@ -527,10 +527,10 @@ func init() {
               "type": "object",
               "title": "ArgGetStationConfigVar",
               "properties": {
-                "hash": {
+                "name": {
                   "type": "string"
                 },
-                "name": {
+                "stationID": {
                   "type": "string"
                 }
               }
@@ -570,10 +570,10 @@ func init() {
               "type": "object",
               "title": "ArgGetStationConfigVar",
               "properties": {
-                "hash": {
+                "name": {
                   "type": "string"
                 },
-                "name": {
+                "stationID": {
                   "type": "string"
                 }
               }
@@ -613,10 +613,10 @@ func init() {
               "type": "object",
               "title": "ArgGetStationConfigVar",
               "properties": {
-                "hash": {
+                "name": {
                   "type": "string"
                 },
-                "name": {
+                "stationID": {
                   "type": "string"
                 }
               }
@@ -663,6 +663,120 @@ func init() {
             "description": "OK",
             "schema": {
               "$ref": "#/definitions/StationDiscounts"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-wash-config-var-bool": {
+      "post": {
+        "operationId": "getStationWashConfigVarBool",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarBool"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-wash-config-var-int": {
+      "post": {
+        "operationId": "getStationWashConfigVarInt",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarInt"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-wash-config-var-string": {
+      "post": {
+        "operationId": "getStationWashConfigVarString",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarString"
             }
           },
           "404": {
@@ -3906,7 +4020,7 @@ func init() {
         }
       }
     },
-    "/get-lstation-config-var-bool": {
+    "/get-station-config-var-bool": {
       "post": {
         "security": [
           {
@@ -3923,10 +4037,10 @@ func init() {
               "type": "object",
               "title": "ArgGetStationConfigVar",
               "properties": {
-                "hash": {
+                "name": {
                   "type": "string"
                 },
-                "name": {
+                "stationID": {
                   "type": "string"
                 }
               }
@@ -3966,10 +4080,10 @@ func init() {
               "type": "object",
               "title": "ArgGetStationConfigVar",
               "properties": {
-                "hash": {
+                "name": {
                   "type": "string"
                 },
-                "name": {
+                "stationID": {
                   "type": "string"
                 }
               }
@@ -4009,10 +4123,10 @@ func init() {
               "type": "object",
               "title": "ArgGetStationConfigVar",
               "properties": {
-                "hash": {
+                "name": {
                   "type": "string"
                 },
-                "name": {
+                "stationID": {
                   "type": "string"
                 }
               }
@@ -4059,6 +4173,120 @@ func init() {
             "description": "OK",
             "schema": {
               "$ref": "#/definitions/StationDiscounts"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-wash-config-var-bool": {
+      "post": {
+        "operationId": "getStationWashConfigVarBool",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarBool"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-wash-config-var-int": {
+      "post": {
+        "operationId": "getStationWashConfigVarInt",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarInt"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-wash-config-var-string": {
+      "post": {
+        "operationId": "getStationWashConfigVarString",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarString"
             }
           },
           "404": {

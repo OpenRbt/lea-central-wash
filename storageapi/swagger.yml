@@ -556,11 +556,9 @@ produces:
   - application/json          
 
 paths:
-  /get-station-config-var-int:
+  /get-wash-config-var-int:
     post:
-      operationId: "getStationConfigVarInt"
-      security:
-        - pinCode: []
+      operationId: "getStationWashConfigVarInt"
       parameters:
         - name: args
           required: true
@@ -583,7 +581,84 @@ paths:
           500:
             description: Internal error
 
-  /get-lstation-config-var-bool:
+  /get-wash-config-var-bool:
+    post:
+      operationId: "getStationWashConfigVarBool"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetStationConfigVar"
+            type: object
+            properties:
+              name:
+                type: string
+              hash:
+                type: string
+      responses:
+          200:
+            description: OK
+            schema:
+              $ref:  '#/definitions/StationConfigVarBool'
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /get-wash-config-var-string:
+    post:
+      operationId: "getStationWashConfigVarString"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetStationConfigVar"
+            type: object
+            properties:
+              name:
+                type: string
+              hash:
+                type: string
+      responses:
+          200:
+            description: OK
+            schema:
+              $ref:  '#/definitions/StationConfigVarString'
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /get-station-config-var-int:
+    post:
+      operationId: "getStationConfigVarInt"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetStationConfigVar"
+            type: object
+            properties:
+              name:
+                type: string
+              stationID:
+                type: string
+      responses:
+          200:
+            description: OK
+            schema:
+              $ref:  '#/definitions/StationConfigVarInt'
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /get-station-config-var-bool:
     post:
       operationId: "getStationConfigVarBool"
       security:
@@ -598,7 +673,7 @@ paths:
             properties:
               name:
                 type: string
-              hash:
+              stationID:
                 type: string
       responses:
           200:
@@ -625,7 +700,7 @@ paths:
             properties:
               name:
                 type: string
-              hash:
+              stationID:
                 type: string
       responses:
           200:
