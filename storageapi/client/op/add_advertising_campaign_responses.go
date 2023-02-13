@@ -87,6 +87,11 @@ func (o *AddAdvertisingCampaignNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the add advertising campaign no content response
+func (o *AddAdvertisingCampaignNoContent) Code() int {
+	return 204
+}
+
 func (o *AddAdvertisingCampaignNoContent) Error() string {
 	return fmt.Sprintf("[POST /add-advertising-campaign][%d] addAdvertisingCampaignNoContent ", 204)
 }
@@ -136,6 +141,11 @@ func (o *AddAdvertisingCampaignUnauthorized) IsServerError() bool {
 // IsCode returns true when this add advertising campaign unauthorized response a status code equal to that given
 func (o *AddAdvertisingCampaignUnauthorized) IsCode(code int) bool {
 	return code == 401
+}
+
+// Code gets the status code for the add advertising campaign unauthorized response
+func (o *AddAdvertisingCampaignUnauthorized) Code() int {
+	return 401
 }
 
 func (o *AddAdvertisingCampaignUnauthorized) Error() string {
@@ -189,6 +199,11 @@ func (o *AddAdvertisingCampaignForbidden) IsCode(code int) bool {
 	return code == 403
 }
 
+// Code gets the status code for the add advertising campaign forbidden response
+func (o *AddAdvertisingCampaignForbidden) Code() int {
+	return 403
+}
+
 func (o *AddAdvertisingCampaignForbidden) Error() string {
 	return fmt.Sprintf("[POST /add-advertising-campaign][%d] addAdvertisingCampaignForbidden ", 403)
 }
@@ -238,6 +253,11 @@ func (o *AddAdvertisingCampaignInternalServerError) IsServerError() bool {
 // IsCode returns true when this add advertising campaign internal server error response a status code equal to that given
 func (o *AddAdvertisingCampaignInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the add advertising campaign internal server error response
+func (o *AddAdvertisingCampaignInternalServerError) Code() int {
+	return 500
 }
 
 func (o *AddAdvertisingCampaignInternalServerError) Error() string {

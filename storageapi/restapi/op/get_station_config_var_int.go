@@ -84,7 +84,7 @@ type GetStationConfigVarIntBody struct {
 	Name string `json:"name,omitempty"`
 
 	// station ID
-	StationID string `json:"stationID,omitempty"`
+	StationID int64 `json:"stationID,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
@@ -95,7 +95,7 @@ func (o *GetStationConfigVarIntBody) UnmarshalJSON(data []byte) error {
 		Name string `json:"name,omitempty"`
 
 		// station ID
-		StationID string `json:"stationID,omitempty"`
+		StationID int64 `json:"stationID,omitempty"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))

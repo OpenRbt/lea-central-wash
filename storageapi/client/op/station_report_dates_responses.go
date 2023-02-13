@@ -91,6 +91,11 @@ func (o *StationReportDatesOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the station report dates o k response
+func (o *StationReportDatesOK) Code() int {
+	return 200
+}
+
 func (o *StationReportDatesOK) Error() string {
 	return fmt.Sprintf("[POST /station-report-dates][%d] stationReportDatesOK  %+v", 200, o.Payload)
 }
@@ -153,6 +158,11 @@ func (o *StationReportDatesNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the station report dates not found response
+func (o *StationReportDatesNotFound) Code() int {
+	return 404
+}
+
 func (o *StationReportDatesNotFound) Error() string {
 	return fmt.Sprintf("[POST /station-report-dates][%d] stationReportDatesNotFound ", 404)
 }
@@ -202,6 +212,11 @@ func (o *StationReportDatesInternalServerError) IsServerError() bool {
 // IsCode returns true when this station report dates internal server error response a status code equal to that given
 func (o *StationReportDatesInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the station report dates internal server error response
+func (o *StationReportDatesInternalServerError) Code() int {
+	return 500
 }
 
 func (o *StationReportDatesInternalServerError) Error() string {

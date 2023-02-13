@@ -75,6 +75,11 @@ func (o *SetStationConfigVarBoolNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the set station config var bool no content response
+func (o *SetStationConfigVarBoolNoContent) Code() int {
+	return 204
+}
+
 func (o *SetStationConfigVarBoolNoContent) Error() string {
 	return fmt.Sprintf("[POST /set-station-config-var-bool][%d] setStationConfigVarBoolNoContent ", 204)
 }
@@ -124,6 +129,11 @@ func (o *SetStationConfigVarBoolInternalServerError) IsServerError() bool {
 // IsCode returns true when this set station config var bool internal server error response a status code equal to that given
 func (o *SetStationConfigVarBoolInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the set station config var bool internal server error response
+func (o *SetStationConfigVarBoolInternalServerError) Code() int {
+	return 500
 }
 
 func (o *SetStationConfigVarBoolInternalServerError) Error() string {

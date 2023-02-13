@@ -66,15 +66,15 @@ func (a *app) SetConfigString(auth *Auth, config ConfigString) error {
 	return a.repo.SetConfigString(config)
 }
 
-func (a *app) GetStationConfigInt(name string, stationID int) (*StationConfigInt, error) {
+func (a *app) GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error) {
 	return a.repo.GetStationConfigInt(name, stationID)
 }
 
-func (a *app) GetStationConfigBool(name string, stationID int) (*StationConfigBool, error) {
+func (a *app) GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error) {
 	return a.repo.GetStationConfigBool(name, stationID)
 }
 
-func (a *app) GetStationConfigString(name string, stationID int) (*StationConfigString, error) {
+func (a *app) GetStationConfigString(name string, stationID StationID) (*StationConfigString, error) {
 	return a.repo.GetStationConfigString(name, stationID)
 }
 

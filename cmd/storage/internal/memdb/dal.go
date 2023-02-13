@@ -280,13 +280,13 @@ func (t *DB) SetConfigIntIfNotExists(config app.ConfigInt) error {
 	return nil
 }
 
-func (t *DB) GetStationConfigInt(name string, stationID int) (*app.StationConfigInt, error) {
+func (t *DB) GetStationConfigInt(name string, stationID app.StationID) (*app.StationConfigInt, error) {
 	return nil, nil
 }
-func (t *DB) GetStationConfigBool(name string, stationID int) (*app.StationConfigBool, error) {
+func (t *DB) GetStationConfigBool(name string, stationID app.StationID) (*app.StationConfigBool, error) {
 	return nil, nil
 }
-func (t *DB) GetStationConfigString(name string, stationID int) (*app.StationConfigString, error) {
+func (t *DB) GetStationConfigString(name string, stationID app.StationID) (*app.StationConfigString, error) {
 	return nil, nil
 }
 

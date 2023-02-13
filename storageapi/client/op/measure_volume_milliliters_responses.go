@@ -90,6 +90,11 @@ func (o *MeasureVolumeMillilitersNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the measure volume milliliters no content response
+func (o *MeasureVolumeMillilitersNoContent) Code() int {
+	return 204
+}
+
 func (o *MeasureVolumeMillilitersNoContent) Error() string {
 	return fmt.Sprintf("[POST /run-dispenser][%d] measureVolumeMillilitersNoContent ", 204)
 }
@@ -140,6 +145,11 @@ func (o *MeasureVolumeMillilitersNotFound) IsServerError() bool {
 // IsCode returns true when this measure volume milliliters not found response a status code equal to that given
 func (o *MeasureVolumeMillilitersNotFound) IsCode(code int) bool {
 	return code == 404
+}
+
+// Code gets the status code for the measure volume milliliters not found response
+func (o *MeasureVolumeMillilitersNotFound) Code() int {
+	return 404
 }
 
 func (o *MeasureVolumeMillilitersNotFound) Error() string {
@@ -200,6 +210,11 @@ func (o *MeasureVolumeMillilitersInternalServerError) IsServerError() bool {
 // IsCode returns true when this measure volume milliliters internal server error response a status code equal to that given
 func (o *MeasureVolumeMillilitersInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the measure volume milliliters internal server error response
+func (o *MeasureVolumeMillilitersInternalServerError) Code() int {
+	return 500
 }
 
 func (o *MeasureVolumeMillilitersInternalServerError) Error() string {

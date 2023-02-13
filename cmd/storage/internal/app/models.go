@@ -177,19 +177,19 @@ type StationConfigInt struct {
 	Value       int64
 	Description string
 	Note        string
-	StationID   string
+	StationID   int
 }
 type StationConfigBool struct {
 	Name        string
 	Value       bool
 	Description string
 	Note        string
-	StationID   string
+	StationID   int
 }
 type StationConfigString struct {
 	Name        string
 	Value       string
 	Description string
 	Note        string
-	StationID   string
+	StationID   int
 }

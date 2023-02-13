@@ -89,6 +89,11 @@ func (o *GetStationWashConfigVarStringOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the get station wash config var string o k response
+func (o *GetStationWashConfigVarStringOK) Code() int {
+	return 200
+}
+
 func (o *GetStationWashConfigVarStringOK) Error() string {
 	return fmt.Sprintf("[POST /get-wash-config-var-string][%d] getStationWashConfigVarStringOK  %+v", 200, o.Payload)
 }
@@ -151,6 +156,11 @@ func (o *GetStationWashConfigVarStringNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the get station wash config var string not found response
+func (o *GetStationWashConfigVarStringNotFound) Code() int {
+	return 404
+}
+
 func (o *GetStationWashConfigVarStringNotFound) Error() string {
 	return fmt.Sprintf("[POST /get-wash-config-var-string][%d] getStationWashConfigVarStringNotFound ", 404)
 }
@@ -200,6 +210,11 @@ func (o *GetStationWashConfigVarStringInternalServerError) IsServerError() bool 
 // IsCode returns true when this get station wash config var string internal server error response a status code equal to that given
 func (o *GetStationWashConfigVarStringInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the get station wash config var string internal server error response
+func (o *GetStationWashConfigVarStringInternalServerError) Code() int {
+	return 500
 }
 
 func (o *GetStationWashConfigVarStringInternalServerError) Error() string {

@@ -1,8 +1,6 @@
 package extapi
 
 import (
-	"strconv"
-
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
 	"github.com/pkg/errors"
@@ -114,8 +112,8 @@ func (svc *service) setStationConfigVarString(params op.SetStationConfigVarStrin
 }
 
 func (svc *service) getStationConfigVarBool(params op.GetStationConfigVarBoolParams, auth *app.Auth) op.GetStationConfigVarBoolResponder {
-	st, _ := strconv.Atoi(params.Args.StationID)
-	res, err := svc.app.GetStationConfigBool(params.Args.Name, st)
+	// st, _ := strconv.Atoi(params.Args.StationID)
+	res, err := svc.app.GetStationConfigBool(params.Args.Name, app.StationID(params.Args.StationID))
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewGetStationConfigVarBoolOK().WithPayload(apiStationConfigBool(res))
@@ -128,8 +126,8 @@ func (svc *service) getStationConfigVarBool(params op.GetStationConfigVarBoolPar
 }
 
 func (svc *service) getStationConfigVarInt(params op.GetStationConfigVarIntParams, auth *app.Auth) op.GetStationConfigVarIntResponder {
-	st, _ := strconv.Atoi(params.Args.StationID)
-	res, err := svc.app.GetStationConfigInt(params.Args.Name, st)
+	// st, _ := strconv.Atoi(params.Args.StationID)
+	res, err := svc.app.GetStationConfigInt(params.Args.Name, app.StationID(params.Args.StationID))
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewGetStationConfigVarIntOK().WithPayload(apiStationConfigInt(res))
@@ -142,8 +140,8 @@ func (svc *service) getStationConfigVarInt(params op.GetStationConfigVarIntParam
 }
 
 func (svc *service) getStationConfigVarString(params op.GetStationConfigVarStringParams, auth *app.Auth) op.GetStationConfigVarStringResponder {
-	st, _ := strconv.Atoi(params.Args.StationID)
-	res, err := svc.app.GetStationConfigString(params.Args.Name, st)
+	// st, _ := strconv.Atoi(params.Args.StationID)
+	res, err := svc.app.GetStationConfigString(params.Args.Name, app.StationID(params.Args.StationID))
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewGetStationConfigVarStringOK().WithPayload(apiStationConfigString(res))
@@ -163,7 +161,7 @@ func (svc *service) getStationWashConfigVarInt(params op.GetStationWashConfigVar
 		return op.NewGetStationWashConfigVarIntNotFound()
 	}
 
-	res, err := svc.app.GetStationConfigInt(params.Args.Name, int(stationID))
+	res, err := svc.app.GetStationConfigInt(params.Args.Name, stationID)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewGetStationWashConfigVarIntOK().WithPayload(apiStationConfigInt(res))
@@ -183,7 +181,7 @@ func (svc *service) getStationWashConfigVarBool(params op.GetStationWashConfigVa
 		return op.NewGetStationWashConfigVarBoolNotFound()
 	}
 
-	res, err := svc.app.GetStationConfigBool(params.Args.Name, int(stationID))
+	res, err := svc.app.GetStationConfigBool(params.Args.Name, stationID)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewGetStationWashConfigVarBoolOK().WithPayload(apiStationConfigBool(res))
@@ -203,7 +201,7 @@ func (svc *service) getStationWashConfigVarString(params op.GetStationWashConfig
 		return op.NewGetStationWashConfigVarStringNotFound()
 	}
 
-	res, err := svc.app.GetStationConfigString(params.Args.Name, int(stationID))
+	res, err := svc.app.GetStationConfigString(params.Args.Name, stationID)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewGetStationWashConfigVarStringOK().WithPayload(apiStationConfigString(res))

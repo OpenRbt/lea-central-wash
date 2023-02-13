@@ -90,6 +90,11 @@ func (o *RunProgramNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the run program no content response
+func (o *RunProgramNoContent) Code() int {
+	return 204
+}
+
 func (o *RunProgramNoContent) Error() string {
 	return fmt.Sprintf("[POST /run-program][%d] runProgramNoContent ", 204)
 }
@@ -140,6 +145,11 @@ func (o *RunProgramNotFound) IsServerError() bool {
 // IsCode returns true when this run program not found response a status code equal to that given
 func (o *RunProgramNotFound) IsCode(code int) bool {
 	return code == 404
+}
+
+// Code gets the status code for the run program not found response
+func (o *RunProgramNotFound) Code() int {
+	return 404
 }
 
 func (o *RunProgramNotFound) Error() string {
@@ -200,6 +210,11 @@ func (o *RunProgramInternalServerError) IsServerError() bool {
 // IsCode returns true when this run program internal server error response a status code equal to that given
 func (o *RunProgramInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the run program internal server error response
+func (o *RunProgramInternalServerError) Code() int {
+	return 500
 }
 
 func (o *RunProgramInternalServerError) Error() string {

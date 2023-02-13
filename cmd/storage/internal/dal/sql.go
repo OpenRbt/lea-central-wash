@@ -575,23 +575,23 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 	`
 
 	sqlGetStationConfigInt = `
-	SELECT name, value, description, note, stationID
+	SELECT name, value, description, note, station_id
 	FROM station_config_vars_int
-	WHERE name = UPPER(:name) and stationID = :stationID
+	WHERE name = UPPER(:name) and station_id = :stationID
 	`
 	sqlGetStationConfigBool = `
-	SELECT name, value, description, note, stationID
+	SELECT name, value, description, note, station_id
 	FROM station_config_vars_bool
-	WHERE name = UPPER(:name) and stationID = :stationID
+	WHERE name = UPPER(:name) and station_id = :stationID
 	`
 	sqlGetStationConfigString = `
-	SELECT name, value, description, note, stationID
+	SELECT name, value, description, note, station_id
 	FROM station_config_vars_string
-	WHERE name = UPPER(:name) and stationID = :stationID
+	WHERE name = UPPER(:name) and station_id = :stationID
 	`
 
 	sqlSetStationConfigInt = `
-	INSERT INTO station_config_vars_int (name, value, description, note, stationID)
+	INSERT INTO station_config_vars_int (name, value, description, note, station_id)
 		VALUES (UPPER(:name), :value, :description, :note, :stationID)
 	ON CONFLICT (name)
 	DO
@@ -601,7 +601,7 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 			note = :note
 	`
 	sqlSetStationConfigBool = `
-	INSERT INTO station_config_vars_bool (name, value, description, note, stationID)
+	INSERT INTO station_config_vars_bool (name, value, description, note, station_id)
 		VALUES (UPPER(:name), :value, :description, :note, :stationID)
 	ON CONFLICT (name)
 	DO
@@ -611,7 +611,7 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 			note = :note
 	`
 	sqlSetStationConfigString = `
-	INSERT INTO station_config_vars_string (name, value, description, note, stationID)
+	INSERT INTO station_config_vars_string (name, value, description, note, station_id)
 		VALUES (UPPER(:name), :value, :description, :note, :stationID)
 	ON CONFLICT (name)
 	DO
@@ -1019,41 +1019,41 @@ type (
 		Value       int64
 		Description string
 		Note        string
-		StationID   string
+		StationID   int
 	}
 	argSetStationConfigBool struct {
 		Name        string
 		Value       bool
 		Description string
 		Note        string
-		StationID   string
+		StationID   int
 	}
 	argSetStationConfigString struct {
 		Name        string
 		Value       string
 		Description string
 		Note        string
-		StationID   string
+		StationID   int
 	}
 	resGetStationConfigInt struct {
 		Name        string
 		Value       int64
 		Description string
 		Note        string
-		StationID   string
+		StationID   int
 	}
 	resGetStationConfigBool struct {
 		Name        string
 		Value       bool
 		Description string
 		Note        string
-		StationID   string
+		StationID   int
 	}
 	resGetStationConfigString struct {
 		Name        string
 		Value       string
 		Description string
 		Note        string
-		StationID   string
+		StationID   int
 	}
 )

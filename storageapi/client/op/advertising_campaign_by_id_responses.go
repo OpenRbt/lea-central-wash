@@ -103,6 +103,11 @@ func (o *AdvertisingCampaignByIDOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the advertising campaign by Id o k response
+func (o *AdvertisingCampaignByIDOK) Code() int {
+	return 200
+}
+
 func (o *AdvertisingCampaignByIDOK) Error() string {
 	return fmt.Sprintf("[POST /advertising-campaign-by-id][%d] advertisingCampaignByIdOK  %+v", 200, o.Payload)
 }
@@ -165,6 +170,11 @@ func (o *AdvertisingCampaignByIDUnauthorized) IsCode(code int) bool {
 	return code == 401
 }
 
+// Code gets the status code for the advertising campaign by Id unauthorized response
+func (o *AdvertisingCampaignByIDUnauthorized) Code() int {
+	return 401
+}
+
 func (o *AdvertisingCampaignByIDUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /advertising-campaign-by-id][%d] advertisingCampaignByIdUnauthorized ", 401)
 }
@@ -214,6 +224,11 @@ func (o *AdvertisingCampaignByIDForbidden) IsServerError() bool {
 // IsCode returns true when this advertising campaign by Id forbidden response a status code equal to that given
 func (o *AdvertisingCampaignByIDForbidden) IsCode(code int) bool {
 	return code == 403
+}
+
+// Code gets the status code for the advertising campaign by Id forbidden response
+func (o *AdvertisingCampaignByIDForbidden) Code() int {
+	return 403
 }
 
 func (o *AdvertisingCampaignByIDForbidden) Error() string {
@@ -267,6 +282,11 @@ func (o *AdvertisingCampaignByIDNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the advertising campaign by Id not found response
+func (o *AdvertisingCampaignByIDNotFound) Code() int {
+	return 404
+}
+
 func (o *AdvertisingCampaignByIDNotFound) Error() string {
 	return fmt.Sprintf("[POST /advertising-campaign-by-id][%d] advertisingCampaignByIdNotFound ", 404)
 }
@@ -316,6 +336,11 @@ func (o *AdvertisingCampaignByIDInternalServerError) IsServerError() bool {
 // IsCode returns true when this advertising campaign by Id internal server error response a status code equal to that given
 func (o *AdvertisingCampaignByIDInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the advertising campaign by Id internal server error response
+func (o *AdvertisingCampaignByIDInternalServerError) Code() int {
+	return 500
 }
 
 func (o *AdvertisingCampaignByIDInternalServerError) Error() string {

@@ -27,7 +27,7 @@ definitions:
       note:
         type: string
       stationID:
-        type: string
+        type: integer
   
   StationConfigVarBool:
     type: object
@@ -41,7 +41,7 @@ definitions:
       note:
         type: string
       stationID:
-        type: string
+        type: integer
   
   StationConfigVarString:
     type: object
@@ -55,7 +55,7 @@ definitions:
       note:
         type: string
       stationID:
-        type: string
+        type: integer
   
   ConfigVarInt:
     type: object
@@ -647,7 +647,7 @@ paths:
               name:
                 type: string
               stationID:
-                type: string
+                type: integer
       responses:
           200:
             description: OK
@@ -674,7 +674,7 @@ paths:
               name:
                 type: string
               stationID:
-                type: string
+                type: integer
       responses:
           200:
             description: OK
@@ -701,7 +701,7 @@ paths:
               name:
                 type: string
               stationID:
-                type: string
+                type: integer
       responses:
           200:
             description: OK

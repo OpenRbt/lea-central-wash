@@ -470,7 +470,7 @@ func appStationConfigInt(a *model.StationConfigVarInt) app.StationConfigInt {
 		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
-		StationID:   a.StationID,
+		StationID:   int(a.StationID),
 	}
 }
 
@@ -480,7 +480,7 @@ func appStationConfigBool(a *model.StationConfigVarBool) app.StationConfigBool {
 		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
-		StationID:   a.StationID,
+		StationID:   int(a.StationID),
 	}
 }
 
@@ -490,7 +490,7 @@ func appStationConfigString(a *model.StationConfigVarString) app.StationConfigSt
 		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
-		StationID:   a.StationID,
+		StationID:   int(a.StationID),
 	}
 }
 
@@ -500,7 +500,7 @@ func apiStationConfigBool(a *app.StationConfigBool) *model.StationConfigVarBool 
 		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
-		StationID:   a.StationID,
+		StationID:   int64(a.StationID),
 	}
 }
 
@@ -510,7 +510,7 @@ func apiStationConfigInt(a *app.StationConfigInt) *model.StationConfigVarInt {
 		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
-		StationID:   a.StationID,
+		StationID:   int64(a.StationID),
 	}
 }
 
@@ -520,6 +520,6 @@ func apiStationConfigString(a *app.StationConfigString) *model.StationConfigVarS
 		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
-		StationID:   a.StationID,
+		StationID:   int64(a.StationID),
 	}
 }

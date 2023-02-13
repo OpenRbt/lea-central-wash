@@ -103,6 +103,11 @@ func (o *UpdateUserCreated) IsCode(code int) bool {
 	return code == 201
 }
 
+// Code gets the status code for the update user created response
+func (o *UpdateUserCreated) Code() int {
+	return 201
+}
+
 func (o *UpdateUserCreated) Error() string {
 	return fmt.Sprintf("[PUT /user][%d] updateUserCreated  %+v", 201, o.Payload)
 }
@@ -165,6 +170,11 @@ func (o *UpdateUserUnauthorized) IsCode(code int) bool {
 	return code == 401
 }
 
+// Code gets the status code for the update user unauthorized response
+func (o *UpdateUserUnauthorized) Code() int {
+	return 401
+}
+
 func (o *UpdateUserUnauthorized) Error() string {
 	return fmt.Sprintf("[PUT /user][%d] updateUserUnauthorized ", 401)
 }
@@ -214,6 +224,11 @@ func (o *UpdateUserForbidden) IsServerError() bool {
 // IsCode returns true when this update user forbidden response a status code equal to that given
 func (o *UpdateUserForbidden) IsCode(code int) bool {
 	return code == 403
+}
+
+// Code gets the status code for the update user forbidden response
+func (o *UpdateUserForbidden) Code() int {
+	return 403
 }
 
 func (o *UpdateUserForbidden) Error() string {
@@ -267,6 +282,11 @@ func (o *UpdateUserNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the update user not found response
+func (o *UpdateUserNotFound) Code() int {
+	return 404
+}
+
 func (o *UpdateUserNotFound) Error() string {
 	return fmt.Sprintf("[PUT /user][%d] updateUserNotFound ", 404)
 }
@@ -316,6 +336,11 @@ func (o *UpdateUserInternalServerError) IsServerError() bool {
 // IsCode returns true when this update user internal server error response a status code equal to that given
 func (o *UpdateUserInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the update user internal server error response
+func (o *UpdateUserInternalServerError) Code() int {
+	return 500
 }
 
 func (o *UpdateUserInternalServerError) Error() string {

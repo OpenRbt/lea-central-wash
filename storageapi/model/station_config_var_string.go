@@ -29,7 +29,7 @@ type StationConfigVarString struct {
 	Note string `json:"note,omitempty"`
 
 	// station ID
-	StationID string `json:"stationID,omitempty"`
+	StationID int64 `json:"stationID,omitempty"`
 
 	// value
 	Value string `json:"value,omitempty"`
@@ -49,7 +49,7 @@ func (m *StationConfigVarString) UnmarshalJSON(data []byte) error {
 		Note string `json:"note,omitempty"`
 
 		// station ID
-		StationID string `json:"stationID,omitempty"`
+		StationID int64 `json:"stationID,omitempty"`
 
 		// value
 		Value string `json:"value,omitempty"`

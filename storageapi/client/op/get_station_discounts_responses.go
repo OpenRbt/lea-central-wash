@@ -89,6 +89,11 @@ func (o *GetStationDiscountsOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the get station discounts o k response
+func (o *GetStationDiscountsOK) Code() int {
+	return 200
+}
+
 func (o *GetStationDiscountsOK) Error() string {
 	return fmt.Sprintf("[POST /get-station-discounts][%d] getStationDiscountsOK  %+v", 200, o.Payload)
 }
@@ -149,6 +154,11 @@ func (o *GetStationDiscountsNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the get station discounts not found response
+func (o *GetStationDiscountsNotFound) Code() int {
+	return 404
+}
+
 func (o *GetStationDiscountsNotFound) Error() string {
 	return fmt.Sprintf("[POST /get-station-discounts][%d] getStationDiscountsNotFound ", 404)
 }
@@ -198,6 +208,11 @@ func (o *GetStationDiscountsInternalServerError) IsServerError() bool {
 // IsCode returns true when this get station discounts internal server error response a status code equal to that given
 func (o *GetStationDiscountsInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the get station discounts internal server error response
+func (o *GetStationDiscountsInternalServerError) Code() int {
+	return 500
 }
 
 func (o *GetStationDiscountsInternalServerError) Error() string {

@@ -89,6 +89,11 @@ func (o *GetStationConfigVarBoolOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the get station config var bool o k response
+func (o *GetStationConfigVarBoolOK) Code() int {
+	return 200
+}
+
 func (o *GetStationConfigVarBoolOK) Error() string {
 	return fmt.Sprintf("[POST /get-station-config-var-bool][%d] getStationConfigVarBoolOK  %+v", 200, o.Payload)
 }
@@ -151,6 +156,11 @@ func (o *GetStationConfigVarBoolNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the get station config var bool not found response
+func (o *GetStationConfigVarBoolNotFound) Code() int {
+	return 404
+}
+
 func (o *GetStationConfigVarBoolNotFound) Error() string {
 	return fmt.Sprintf("[POST /get-station-config-var-bool][%d] getStationConfigVarBoolNotFound ", 404)
 }
@@ -202,6 +212,11 @@ func (o *GetStationConfigVarBoolInternalServerError) IsCode(code int) bool {
 	return code == 500
 }
 
+// Code gets the status code for the get station config var bool internal server error response
+func (o *GetStationConfigVarBoolInternalServerError) Code() int {
+	return 500
+}
+
 func (o *GetStationConfigVarBoolInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /get-station-config-var-bool][%d] getStationConfigVarBoolInternalServerError ", 500)
 }
@@ -225,7 +240,7 @@ type GetStationConfigVarBoolBody struct {
 	Name string `json:"name,omitempty"`
 
 	// station ID
-	StationID string `json:"stationID,omitempty"`
+	StationID int64 `json:"stationID,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
@@ -236,7 +251,7 @@ func (o *GetStationConfigVarBoolBody) UnmarshalJSON(data []byte) error {
 		Name string `json:"name,omitempty"`
 
 		// station ID
-		StationID string `json:"stationID,omitempty"`
+		StationID int64 `json:"stationID,omitempty"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))

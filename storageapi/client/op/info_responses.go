@@ -71,6 +71,11 @@ func (o *InfoOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the info o k response
+func (o *InfoOK) Code() int {
+	return 200
+}
+
 func (o *InfoOK) Error() string {
 	return fmt.Sprintf("[GET /info][%d] infoOK  %+v", 200, o.Payload)
 }

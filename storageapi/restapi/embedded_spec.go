@@ -531,7 +531,7 @@ func init() {
                   "type": "string"
                 },
                 "stationID": {
-                  "type": "string"
+                  "type": "integer"
                 }
               }
             }
@@ -574,7 +574,7 @@ func init() {
                   "type": "string"
                 },
                 "stationID": {
-                  "type": "string"
+                  "type": "integer"
                 }
               }
             }
@@ -617,7 +617,7 @@ func init() {
                   "type": "string"
                 },
                 "stationID": {
-                  "type": "string"
+                  "type": "integer"
                 }
               }
             }
@@ -3257,7 +3257,7 @@ func init() {
           "type": "string"
         },
         "stationID": {
-          "type": "string"
+          "type": "integer"
         },
         "value": {
           "type": "boolean"
@@ -3277,7 +3277,7 @@ func init() {
           "type": "string"
         },
         "stationID": {
-          "type": "string"
+          "type": "integer"
         },
         "value": {
           "type": "integer"
@@ -3297,7 +3297,7 @@ func init() {
           "type": "string"
         },
         "stationID": {
-          "type": "string"
+          "type": "integer"
         },
         "value": {
           "type": "string"
@@ -4041,7 +4041,7 @@ func init() {
                   "type": "string"
                 },
                 "stationID": {
-                  "type": "string"
+                  "type": "integer"
                 }
               }
             }
@@ -4084,7 +4084,7 @@ func init() {
                   "type": "string"
                 },
                 "stationID": {
-                  "type": "string"
+                  "type": "integer"
                 }
               }
             }
@@ -4127,7 +4127,7 @@ func init() {
                   "type": "string"
                 },
                 "stationID": {
-                  "type": "string"
+                  "type": "integer"
                 }
               }
             }
@@ -6766,7 +6766,7 @@ func init() {
           "type": "string"
         },
         "stationID": {
-          "type": "string"
+          "type": "integer"
         },
         "value": {
           "type": "boolean"
@@ -6786,7 +6786,7 @@ func init() {
           "type": "string"
         },
         "stationID": {
-          "type": "string"
+          "type": "integer"
         },
         "value": {
           "type": "integer"
@@ -6806,7 +6806,7 @@ func init() {
           "type": "string"
         },
         "stationID": {
-          "type": "string"
+          "type": "integer"
         },
         "value": {
           "type": "string"

@@ -971,12 +971,12 @@ func (r *repo) SetConfigString(config app.ConfigString) (err error) {
 	return
 }
 
-func (r *repo) GetStationConfigInt(name string, stationID int) (cfg *app.StationConfigInt, err error) {
+func (r *repo) GetStationConfigInt(name string, stationID app.StationID) (cfg *app.StationConfigInt, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		res := resGetStationConfigInt{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetStationConfigInt, argGetStationConfig{
 			Name:      name,
-			StationID: stationID,
+			StationID: int(stationID),
 		})
 		if err != nil {
 			return err
@@ -986,7 +986,7 @@ func (r *repo) GetStationConfigInt(name string, stationID int) (cfg *app.Station
 	})
 	return
 }
-func (r *repo) GetStationConfigBool(name string, stationID int) (cfg *app.StationConfigBool, err error) {
+func (r *repo) GetStationConfigBool(name string, stationID app.StationID) (cfg *app.StationConfigBool, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		res := resGetStationConfigBool{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetStationConfigBool, argGetStationConfig{
@@ -1001,12 +1001,12 @@ func (r *repo) GetStationConfigBool(name string, stationID int) (cfg *app.Statio
 	})
 	return
 }
-func (r *repo) GetStationConfigString(name string, stationID int) (cfg *app.StationConfigString, err error) {
+func (r *repo) GetStationConfigString(name string, stationID app.StationID) (cfg *app.StationConfigString, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		res := resGetStationConfigString{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetStationConfigString, argGetStationConfig{
 			Name:      name,
-			StationID: stationID,
+			StationID: int(stationID),
 		})
 		if err != nil {
 			return err
