@@ -577,17 +577,17 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 	sqlGetStationConfigInt = `
 	SELECT name, value, description, note, stationID
 	FROM station_config_vars_int
-	WHERE name = UPPER(:name)
+	WHERE name = UPPER(:name) and stationID = :stationID
 	`
 	sqlGetStationConfigBool = `
 	SELECT name, value, description, note, stationID
 	FROM station_config_vars_bool
-	WHERE name = UPPER(:name)
+	WHERE name = UPPER(:name) and stationID = :stationID
 	`
 	sqlGetStationConfigString = `
 	SELECT name, value, description, note, stationID
 	FROM station_config_vars_string
-	WHERE name = UPPER(:name)
+	WHERE name = UPPER(:name) and stationID = :stationID
 	`
 
 	sqlSetStationConfigInt = `
