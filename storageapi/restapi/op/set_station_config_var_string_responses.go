@@ -39,6 +39,33 @@ func (o *SetStationConfigVarStringNoContent) WriteResponse(rw http.ResponseWrite
 
 func (o *SetStationConfigVarStringNoContent) SetStationConfigVarStringResponder() {}
 
+// SetStationConfigVarStringNotFoundCode is the HTTP code returned for type SetStationConfigVarStringNotFound
+const SetStationConfigVarStringNotFoundCode int = 404
+
+/*
+SetStationConfigVarStringNotFound Not found
+
+swagger:response setStationConfigVarStringNotFound
+*/
+type SetStationConfigVarStringNotFound struct {
+}
+
+// NewSetStationConfigVarStringNotFound creates SetStationConfigVarStringNotFound with default headers values
+func NewSetStationConfigVarStringNotFound() *SetStationConfigVarStringNotFound {
+
+	return &SetStationConfigVarStringNotFound{}
+}
+
+// WriteResponse to the client
+func (o *SetStationConfigVarStringNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(404)
+}
+
+func (o *SetStationConfigVarStringNotFound) SetStationConfigVarStringResponder() {}
+
 // SetStationConfigVarStringInternalServerErrorCode is the HTTP code returned for type SetStationConfigVarStringInternalServerError
 const SetStationConfigVarStringInternalServerErrorCode int = 500
 

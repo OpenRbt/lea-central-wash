@@ -11,9 +11,11 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
@@ -81,10 +83,12 @@ func (o *GetStationConfigVarBool) ServeHTTP(rw http.ResponseWriter, r *http.Requ
 type GetStationConfigVarBoolBody struct {
 
 	// name
-	Name string `json:"name,omitempty"`
+	// Required: true
+	Name *string `json:"name"`
 
 	// station ID
-	StationID int64 `json:"stationID,omitempty"`
+	// Required: true
+	StationID *int64 `json:"stationID"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
@@ -92,10 +96,12 @@ func (o *GetStationConfigVarBoolBody) UnmarshalJSON(data []byte) error {
 	var props struct {
 
 		// name
-		Name string `json:"name,omitempty"`
+		// Required: true
+		Name *string `json:"name"`
 
 		// station ID
-		StationID int64 `json:"stationID,omitempty"`
+		// Required: true
+		StationID *int64 `json:"stationID"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -111,6 +117,37 @@ func (o *GetStationConfigVarBoolBody) UnmarshalJSON(data []byte) error {
 
 // Validate validates this get station config var bool body
 func (o *GetStationConfigVarBoolBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateStationID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetStationConfigVarBoolBody) validateName(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"name", "body", o.Name); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *GetStationConfigVarBoolBody) validateStationID(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"stationID", "body", o.StationID); err != nil {
+		return err
+	}
+
 	return nil
 }
 

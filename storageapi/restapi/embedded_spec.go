@@ -526,6 +526,10 @@ func init() {
             "schema": {
               "type": "object",
               "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
               "properties": {
                 "name": {
                   "type": "string"
@@ -569,6 +573,10 @@ func init() {
             "schema": {
               "type": "object",
               "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
               "properties": {
                 "name": {
                   "type": "string"
@@ -612,6 +620,10 @@ func init() {
             "schema": {
               "type": "object",
               "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
               "properties": {
                 "name": {
                   "type": "string"
@@ -685,6 +697,10 @@ func init() {
             "schema": {
               "type": "object",
               "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
               "properties": {
                 "hash": {
                   "type": "string"
@@ -723,6 +739,10 @@ func init() {
             "schema": {
               "type": "object",
               "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
               "properties": {
                 "hash": {
                   "type": "string"
@@ -761,6 +781,10 @@ func init() {
             "schema": {
               "type": "object",
               "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
               "properties": {
                 "hash": {
                   "type": "string"
@@ -1841,6 +1865,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "Not found"
+          },
           "500": {
             "description": "Internal error"
           }
@@ -1869,6 +1896,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "Not found"
+          },
           "500": {
             "description": "Internal error"
           }
@@ -1896,6 +1926,9 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
           },
           "500": {
             "description": "Internal error"
@@ -3246,6 +3279,11 @@ func init() {
     },
     "StationConfigVarBool": {
       "type": "object",
+      "required": [
+        "name",
+        "value",
+        "stationID"
+      ],
       "properties": {
         "description": {
           "type": "string"
@@ -3266,6 +3304,11 @@ func init() {
     },
     "StationConfigVarInt": {
       "type": "object",
+      "required": [
+        "name",
+        "value",
+        "stationID"
+      ],
       "properties": {
         "description": {
           "type": "string"
@@ -3286,6 +3329,11 @@ func init() {
     },
     "StationConfigVarString": {
       "type": "object",
+      "required": [
+        "name",
+        "value",
+        "stationID"
+      ],
       "properties": {
         "description": {
           "type": "string"
@@ -4036,6 +4084,10 @@ func init() {
             "schema": {
               "type": "object",
               "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
               "properties": {
                 "name": {
                   "type": "string"
@@ -4079,6 +4131,10 @@ func init() {
             "schema": {
               "type": "object",
               "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
               "properties": {
                 "name": {
                   "type": "string"
@@ -4122,6 +4178,10 @@ func init() {
             "schema": {
               "type": "object",
               "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
               "properties": {
                 "name": {
                   "type": "string"
@@ -4195,6 +4255,10 @@ func init() {
             "schema": {
               "type": "object",
               "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
               "properties": {
                 "hash": {
                   "type": "string"
@@ -4233,6 +4297,10 @@ func init() {
             "schema": {
               "type": "object",
               "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
               "properties": {
                 "hash": {
                   "type": "string"
@@ -4271,6 +4339,10 @@ func init() {
             "schema": {
               "type": "object",
               "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
               "properties": {
                 "hash": {
                   "type": "string"
@@ -5343,6 +5415,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "Not found"
+          },
           "500": {
             "description": "Internal error"
           }
@@ -5371,6 +5446,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "404": {
+            "description": "Not found"
+          },
           "500": {
             "description": "Internal error"
           }
@@ -5398,6 +5476,9 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
           },
           "500": {
             "description": "Internal error"
@@ -6755,6 +6836,11 @@ func init() {
     },
     "StationConfigVarBool": {
       "type": "object",
+      "required": [
+        "name",
+        "value",
+        "stationID"
+      ],
       "properties": {
         "description": {
           "type": "string"
@@ -6775,6 +6861,11 @@ func init() {
     },
     "StationConfigVarInt": {
       "type": "object",
+      "required": [
+        "name",
+        "value",
+        "stationID"
+      ],
       "properties": {
         "description": {
           "type": "string"
@@ -6795,6 +6886,11 @@ func init() {
     },
     "StationConfigVarString": {
       "type": "object",
+      "required": [
+        "name",
+        "value",
+        "stationID"
+      ],
       "properties": {
         "description": {
           "type": "string"

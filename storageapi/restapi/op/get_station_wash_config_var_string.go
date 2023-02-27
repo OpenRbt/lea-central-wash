@@ -11,9 +11,11 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // GetStationWashConfigVarStringHandlerFunc turns a function with the right signature into a get station wash config var string handler
@@ -69,7 +71,8 @@ type GetStationWashConfigVarStringBody struct {
 	Hash string `json:"hash,omitempty"`
 
 	// name
-	Name string `json:"name,omitempty"`
+	// Required: true
+	Name *string `json:"name"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
@@ -80,7 +83,8 @@ func (o *GetStationWashConfigVarStringBody) UnmarshalJSON(data []byte) error {
 		Hash string `json:"hash,omitempty"`
 
 		// name
-		Name string `json:"name,omitempty"`
+		// Required: true
+		Name *string `json:"name"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -96,6 +100,24 @@ func (o *GetStationWashConfigVarStringBody) UnmarshalJSON(data []byte) error {
 
 // Validate validates this get station wash config var string body
 func (o *GetStationWashConfigVarStringBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetStationWashConfigVarStringBody) validateName(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"name", "body", o.Name); err != nil {
+		return err
+	}
+
 	return nil
 }
 

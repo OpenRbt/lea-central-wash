@@ -26,6 +26,12 @@ func (o *SetStationConfigVarStringReader) ReadResponse(response runtime.ClientRe
 			return nil, err
 		}
 		return result, nil
+	case 404:
+		result := NewSetStationConfigVarStringNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewSetStationConfigVarStringInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -89,6 +95,62 @@ func (o *SetStationConfigVarStringNoContent) String() string {
 }
 
 func (o *SetStationConfigVarStringNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewSetStationConfigVarStringNotFound creates a SetStationConfigVarStringNotFound with default headers values
+func NewSetStationConfigVarStringNotFound() *SetStationConfigVarStringNotFound {
+	return &SetStationConfigVarStringNotFound{}
+}
+
+/*
+SetStationConfigVarStringNotFound describes a response with status code 404, with default header values.
+
+Not found
+*/
+type SetStationConfigVarStringNotFound struct {
+}
+
+// IsSuccess returns true when this set station config var string not found response has a 2xx status code
+func (o *SetStationConfigVarStringNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this set station config var string not found response has a 3xx status code
+func (o *SetStationConfigVarStringNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this set station config var string not found response has a 4xx status code
+func (o *SetStationConfigVarStringNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this set station config var string not found response has a 5xx status code
+func (o *SetStationConfigVarStringNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this set station config var string not found response a status code equal to that given
+func (o *SetStationConfigVarStringNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the set station config var string not found response
+func (o *SetStationConfigVarStringNotFound) Code() int {
+	return 404
+}
+
+func (o *SetStationConfigVarStringNotFound) Error() string {
+	return fmt.Sprintf("[POST /set-station-config-var-string][%d] setStationConfigVarStringNotFound ", 404)
+}
+
+func (o *SetStationConfigVarStringNotFound) String() string {
+	return fmt.Sprintf("[POST /set-station-config-var-string][%d] setStationConfigVarStringNotFound ", 404)
+}
+
+func (o *SetStationConfigVarStringNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

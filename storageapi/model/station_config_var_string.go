@@ -10,8 +10,10 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // StationConfigVarString station config var string
@@ -23,16 +25,19 @@ type StationConfigVarString struct {
 	Description string `json:"description,omitempty"`
 
 	// name
-	Name string `json:"name,omitempty"`
+	// Required: true
+	Name *string `json:"name"`
 
 	// note
 	Note string `json:"note,omitempty"`
 
 	// station ID
-	StationID int64 `json:"stationID,omitempty"`
+	// Required: true
+	StationID *int64 `json:"stationID"`
 
 	// value
-	Value string `json:"value,omitempty"`
+	// Required: true
+	Value *string `json:"value"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
@@ -43,16 +48,19 @@ func (m *StationConfigVarString) UnmarshalJSON(data []byte) error {
 		Description string `json:"description,omitempty"`
 
 		// name
-		Name string `json:"name,omitempty"`
+		// Required: true
+		Name *string `json:"name"`
 
 		// note
 		Note string `json:"note,omitempty"`
 
 		// station ID
-		StationID int64 `json:"stationID,omitempty"`
+		// Required: true
+		StationID *int64 `json:"stationID"`
 
 		// value
-		Value string `json:"value,omitempty"`
+		// Required: true
+		Value *string `json:"value"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -71,6 +79,50 @@ func (m *StationConfigVarString) UnmarshalJSON(data []byte) error {
 
 // Validate validates this station config var string
 func (m *StationConfigVarString) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateStationID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateValue(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *StationConfigVarString) validateName(formats strfmt.Registry) error {
+
+	if err := validate.Required("name", "body", m.Name); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *StationConfigVarString) validateStationID(formats strfmt.Registry) error {
+
+	if err := validate.Required("stationID", "body", m.StationID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *StationConfigVarString) validateValue(formats strfmt.Registry) error {
+
+	if err := validate.Required("value", "body", m.Value); err != nil {
+		return err
+	}
+
 	return nil
 }
 

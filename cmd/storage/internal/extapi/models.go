@@ -466,60 +466,63 @@ func apiConfigString(a *app.ConfigString) *model.ConfigVarString {
 
 func appStationConfigInt(a *model.StationConfigVarInt) app.StationConfigInt {
 	return app.StationConfigInt{
-		Name:        a.Name,
-		Value:       a.Value,
+		Name:        *a.Name,
+		Value:       *a.Value,
 		Description: a.Description,
 		Note:        a.Note,
-		StationID:   int(a.StationID),
+		StationID:   app.StationID(*a.StationID),
 	}
 }
 
 func appStationConfigBool(a *model.StationConfigVarBool) app.StationConfigBool {
 	return app.StationConfigBool{
-		Name:        a.Name,
-		Value:       a.Value,
+		Name:        *a.Name,
+		Value:       *a.Value,
 		Description: a.Description,
 		Note:        a.Note,
-		StationID:   int(a.StationID),
+		StationID:   app.StationID(*a.StationID),
 	}
 }
 
 func appStationConfigString(a *model.StationConfigVarString) app.StationConfigString {
 	return app.StationConfigString{
-		Name:        a.Name,
-		Value:       a.Value,
+		Name:        *a.Name,
+		Value:       *a.Value,
 		Description: a.Description,
 		Note:        a.Note,
-		StationID:   int(a.StationID),
+		StationID:   app.StationID(*a.StationID),
 	}
 }
 
 func apiStationConfigBool(a *app.StationConfigBool) *model.StationConfigVarBool {
+	stID := int64(a.StationID)
 	return &model.StationConfigVarBool{
-		Name:        a.Name,
-		Value:       a.Value,
+		Name:        &a.Name,
+		Value:       &a.Value,
 		Description: a.Description,
 		Note:        a.Note,
-		StationID:   int64(a.StationID),
+		StationID:   &stID,
 	}
 }
 
 func apiStationConfigInt(a *app.StationConfigInt) *model.StationConfigVarInt {
+	stID := int64(a.StationID)
 	return &model.StationConfigVarInt{
-		Name:        a.Name,
-		Value:       a.Value,
+		Name:        &a.Name,
+		Value:       &a.Value,
 		Description: a.Description,
 		Note:        a.Note,
-		StationID:   int64(a.StationID),
+		StationID:   &stID,
 	}
 }
 
 func apiStationConfigString(a *app.StationConfigString) *model.StationConfigVarString {
+	stID := int64(a.StationID)
 	return &model.StationConfigVarString{
-		Name:        a.Name,
-		Value:       a.Value,
+		Name:        &a.Name,
+		Value:       &a.Value,
 		Description: a.Description,
 		Note:        a.Note,
-		StationID:   int64(a.StationID),
+		StationID:   &stID,
 	}
 }

@@ -28,6 +28,10 @@ definitions:
         type: string
       stationID:
         type: integer
+    required:
+      - name
+      - value
+      - stationID
   
   StationConfigVarBool:
     type: object
@@ -42,6 +46,10 @@ definitions:
         type: string
       stationID:
         type: integer
+    required:
+      - name
+      - value
+      - stationID
   
   StationConfigVarString:
     type: object
@@ -56,6 +64,10 @@ definitions:
         type: string
       stationID:
         type: integer
+    required:
+      - name
+      - value
+      - stationID
   
   ConfigVarInt:
     type: object
@@ -566,6 +578,9 @@ paths:
           schema:
             title: "ArgGetStationConfigVar"
             type: object
+            required:
+              - name
+              - stationID
             properties:
               name:
                 type: string
@@ -591,6 +606,9 @@ paths:
           schema:
             title: "ArgGetStationConfigVar"
             type: object
+            required:
+              - name
+              - stationID
             properties:
               name:
                 type: string
@@ -616,6 +634,9 @@ paths:
           schema:
             title: "ArgGetStationConfigVar"
             type: object
+            required:
+              - name
+              - stationID
             properties:
               name:
                 type: string
@@ -643,6 +664,9 @@ paths:
           schema:
             title: "ArgGetStationConfigVar"
             type: object
+            required:
+              - name
+              - stationID
             properties:
               name:
                 type: string
@@ -670,6 +694,9 @@ paths:
           schema:
             title: "ArgGetStationConfigVar"
             type: object
+            required:
+              - name
+              - stationID
             properties:
               name:
                 type: string
@@ -697,6 +724,9 @@ paths:
           schema:
             title: "ArgGetStationConfigVar"
             type: object
+            required:
+              - name
+              - stationID
             properties:
               name:
                 type: string
@@ -726,6 +756,8 @@ paths:
       responses:
           204:
             description: OK
+          404:
+            description: Not found
           500:
             description: Internal error
 
@@ -743,6 +775,8 @@ paths:
       responses:
           204:
             description: OK
+          404:
+            description: Not found
           500:
             description: Internal error
 
@@ -760,6 +794,8 @@ paths:
       responses:
           204:
             description: OK
+          404:
+            description: Not found
           500:
             description: Internal error
 

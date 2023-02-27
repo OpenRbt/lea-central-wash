@@ -26,6 +26,12 @@ func (o *SetStationConfigVarBoolReader) ReadResponse(response runtime.ClientResp
 			return nil, err
 		}
 		return result, nil
+	case 404:
+		result := NewSetStationConfigVarBoolNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewSetStationConfigVarBoolInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -89,6 +95,62 @@ func (o *SetStationConfigVarBoolNoContent) String() string {
 }
 
 func (o *SetStationConfigVarBoolNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewSetStationConfigVarBoolNotFound creates a SetStationConfigVarBoolNotFound with default headers values
+func NewSetStationConfigVarBoolNotFound() *SetStationConfigVarBoolNotFound {
+	return &SetStationConfigVarBoolNotFound{}
+}
+
+/*
+SetStationConfigVarBoolNotFound describes a response with status code 404, with default header values.
+
+Not found
+*/
+type SetStationConfigVarBoolNotFound struct {
+}
+
+// IsSuccess returns true when this set station config var bool not found response has a 2xx status code
+func (o *SetStationConfigVarBoolNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this set station config var bool not found response has a 3xx status code
+func (o *SetStationConfigVarBoolNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this set station config var bool not found response has a 4xx status code
+func (o *SetStationConfigVarBoolNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this set station config var bool not found response has a 5xx status code
+func (o *SetStationConfigVarBoolNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this set station config var bool not found response a status code equal to that given
+func (o *SetStationConfigVarBoolNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the set station config var bool not found response
+func (o *SetStationConfigVarBoolNotFound) Code() int {
+	return 404
+}
+
+func (o *SetStationConfigVarBoolNotFound) Error() string {
+	return fmt.Sprintf("[POST /set-station-config-var-bool][%d] setStationConfigVarBoolNotFound ", 404)
+}
+
+func (o *SetStationConfigVarBoolNotFound) String() string {
+	return fmt.Sprintf("[POST /set-station-config-var-bool][%d] setStationConfigVarBoolNotFound ", 404)
+}
+
+func (o *SetStationConfigVarBoolNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }
