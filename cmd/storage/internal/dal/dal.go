@@ -976,7 +976,7 @@ func (r *repo) GetStationConfigInt(name string, stationID app.StationID) (cfg *a
 		res := resGetStationConfigInt{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetStationConfigInt, argGetStationConfig{
 			Name:      name,
-			StationID: int(stationID),
+			StationID: stationID,
 		})
 		if err != nil {
 			if err == sql.ErrNoRows {
@@ -994,7 +994,7 @@ func (r *repo) GetStationConfigBool(name string, stationID app.StationID) (cfg *
 		res := resGetStationConfigBool{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetStationConfigBool, argGetStationConfig{
 			Name:      name,
-			StationID: int(stationID),
+			StationID: stationID,
 		})
 		if err != nil {
 			if err == sql.ErrNoRows {
@@ -1012,7 +1012,7 @@ func (r *repo) GetStationConfigString(name string, stationID app.StationID) (cfg
 		res := resGetStationConfigString{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetStationConfigString, argGetStationConfig{
 			Name:      name,
-			StationID: int(stationID),
+			StationID: stationID,
 		})
 		if err != nil {
 			if err == sql.ErrNoRows {

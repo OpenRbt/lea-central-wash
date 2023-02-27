@@ -157,7 +157,7 @@ func (svc *service) getStationConfigVarString(params op.GetStationConfigVarStrin
 }
 
 func (svc *service) getStationWashConfigVarInt(params op.GetStationWashConfigVarIntParams) op.GetStationWashConfigVarIntResponder {
-	stationID, err := svc.getID(params.Args.Hash)
+	stationID, err := svc.getID(*params.Args.Hash)
 	if err != nil {
 		log.Info("getStationWashConfigVarInt: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewGetStationWashConfigVarIntNotFound()
@@ -176,7 +176,7 @@ func (svc *service) getStationWashConfigVarInt(params op.GetStationWashConfigVar
 }
 
 func (svc *service) getStationWashConfigVarBool(params op.GetStationWashConfigVarBoolParams) op.GetStationWashConfigVarBoolResponder {
-	stationID, err := svc.getID(params.Args.Hash)
+	stationID, err := svc.getID(*params.Args.Hash)
 	if err != nil {
 		log.Info("getStationWashConfigVarBool: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewGetStationWashConfigVarBoolNotFound()
@@ -195,7 +195,7 @@ func (svc *service) getStationWashConfigVarBool(params op.GetStationWashConfigVa
 }
 
 func (svc *service) getStationWashConfigVarString(params op.GetStationWashConfigVarStringParams) op.GetStationWashConfigVarStringResponder {
-	stationID, err := svc.getID(params.Args.Hash)
+	stationID, err := svc.getID(*params.Args.Hash)
 	if err != nil {
 		log.Info("getStationWashConfigVarString: not found", "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewGetStationWashConfigVarStringNotFound()

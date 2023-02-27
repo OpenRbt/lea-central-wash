@@ -975,7 +975,7 @@ type (
 	}
 	argGetStationConfig struct {
 		Name      string
-		StationID int
+		StationID app.StationID
 	}
 	argSetConfigInt struct {
 		Name        string
