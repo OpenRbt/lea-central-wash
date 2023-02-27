@@ -699,7 +699,7 @@ func init() {
               "title": "ArgGetStationConfigVar",
               "required": [
                 "name",
-                "stationID"
+                "hash"
               ],
               "properties": {
                 "hash": {
@@ -741,7 +741,7 @@ func init() {
               "title": "ArgGetStationConfigVar",
               "required": [
                 "name",
-                "stationID"
+                "hash"
               ],
               "properties": {
                 "hash": {
@@ -783,7 +783,7 @@ func init() {
               "title": "ArgGetStationConfigVar",
               "required": [
                 "name",
-                "stationID"
+                "hash"
               ],
               "properties": {
                 "hash": {
@@ -4257,7 +4257,7 @@ func init() {
               "title": "ArgGetStationConfigVar",
               "required": [
                 "name",
-                "stationID"
+                "hash"
               ],
               "properties": {
                 "hash": {
@@ -4299,7 +4299,7 @@ func init() {
               "title": "ArgGetStationConfigVar",
               "required": [
                 "name",
-                "stationID"
+                "hash"
               ],
               "properties": {
                 "hash": {
@@ -4341,7 +4341,7 @@ func init() {
               "title": "ArgGetStationConfigVar",
               "required": [
                 "name",
-                "stationID"
+                "hash"
               ],
               "properties": {
                 "hash": {

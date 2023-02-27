@@ -580,7 +580,7 @@ paths:
             type: object
             required:
               - name
-              - stationID
+              - hash
             properties:
               name:
                 type: string
@@ -608,7 +608,7 @@ paths:
             type: object
             required:
               - name
-              - stationID
+              - hash
             properties:
               name:
                 type: string
@@ -636,7 +636,7 @@ paths:
             type: object
             required:
               - name
-              - stationID
+              - hash
             properties:
               name:
                 type: string

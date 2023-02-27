@@ -239,7 +239,8 @@ swagger:model GetStationWashConfigVarBoolBody
 type GetStationWashConfigVarBoolBody struct {
 
 	// hash
-	Hash string `json:"hash,omitempty"`
+	// Required: true
+	Hash *string `json:"hash"`
 
 	// name
 	// Required: true
@@ -251,7 +252,8 @@ func (o *GetStationWashConfigVarBoolBody) UnmarshalJSON(data []byte) error {
 	var props struct {
 
 		// hash
-		Hash string `json:"hash,omitempty"`
+		// Required: true
+		Hash *string `json:"hash"`
 
 		// name
 		// Required: true
@@ -273,6 +275,10 @@ func (o *GetStationWashConfigVarBoolBody) UnmarshalJSON(data []byte) error {
 func (o *GetStationWashConfigVarBoolBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := o.validateHash(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validateName(formats); err != nil {
 		res = append(res, err)
 	}
@@ -280,6 +286,15 @@ func (o *GetStationWashConfigVarBoolBody) Validate(formats strfmt.Registry) erro
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (o *GetStationWashConfigVarBoolBody) validateHash(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
+		return err
+	}
+
 	return nil
 }
 
