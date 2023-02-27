@@ -7,12 +7,15 @@ import (
 )
 
 const (
-	constraintCardReaderStationID  = "card_reader_station_id_fkey"
-	constraintUserLogin            = "users_unique_lower_login_idx"
-	constraintMoneyCollection      = "money_collection_user_id_fkey"
-	constraintStationProgramID     = "station_program_program_id_fkey"
-	constraintStationStationID     = "station_program_station_id_fkey"
-	constraintStationProgramUnique = "station_program_pkey"
+	constraintCardReaderStationID    = "card_reader_station_id_fkey"
+	constraintUserLogin              = "users_unique_lower_login_idx"
+	constraintMoneyCollection        = "money_collection_user_id_fkey"
+	constraintStationProgramID       = "station_program_program_id_fkey"
+	constraintStationStationID       = "station_program_station_id_fkey"
+	constraintStationProgramUnique   = "station_program_pkey"
+	constraintStationIntStationID    = "station_config_vars_int_station_id_fkey"
+	constraintStationBoolStationID   = "station_config_vars_bool_station_id_fkey"
+	constraintStationStringStationID = "station_config_vars_string_station_id_fkey"
 )
 
 const (
