@@ -1027,6 +1027,10 @@ func (r *repo) GetStationConfigString(name string, stationID app.StationID) (cfg
 }
 
 func (r *repo) SetStationConfigInt(config app.StationConfigInt) (err error) {
+	_, err = r.Station(config.StationID)
+	if err != nil {
+		return err
+	}
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlSetStationConfigInt, argSetStationConfigInt{
 			Name:        config.Name,
@@ -1041,6 +1045,10 @@ func (r *repo) SetStationConfigInt(config app.StationConfigInt) (err error) {
 }
 
 func (r *repo) SetStationConfigBool(config app.StationConfigBool) (err error) {
+	_, err = r.Station(config.StationID)
+	if err != nil {
+		return err
+	}
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlSetStationConfigBool, argSetStationConfigBool{
 			Name:        config.Name,
@@ -1054,6 +1062,10 @@ func (r *repo) SetStationConfigBool(config app.StationConfigBool) (err error) {
 	return
 }
 func (r *repo) SetStationConfigString(config app.StationConfigString) (err error) {
+	_, err = r.Station(config.StationID)
+	if err != nil {
+		return err
+	}
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err := tx.NamedExec(sqlSetStationConfigString, argSetStationConfigString{
 			Name:        config.Name,
