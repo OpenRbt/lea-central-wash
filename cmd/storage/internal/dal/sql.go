@@ -7,12 +7,15 @@ import (
 )
 
 const (
-	constraintCardReaderStationID  = "card_reader_station_id_fkey"
-	constraintUserLogin            = "users_unique_lower_login_idx"
-	constraintMoneyCollection      = "money_collection_user_id_fkey"
-	constraintStationProgramID     = "station_program_program_id_fkey"
-	constraintStationStationID     = "station_program_station_id_fkey"
-	constraintStationProgramUnique = "station_program_pkey"
+	constraintCardReaderStationID    = "card_reader_station_id_fkey"
+	constraintUserLogin              = "users_unique_lower_login_idx"
+	constraintMoneyCollection        = "money_collection_user_id_fkey"
+	constraintStationProgramID       = "station_program_program_id_fkey"
+	constraintStationStationID       = "station_program_station_id_fkey"
+	constraintStationProgramUnique   = "station_program_pkey"
+	constraintStationIntStationID    = "station_config_vars_int_station_id_fkey"
+	constraintStationBoolStationID   = "station_config_vars_bool_station_id_fkey"
+	constraintStationStringStationID = "station_config_vars_string_station_id_fkey"
 )
 
 const (
@@ -573,6 +576,53 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 			description = :description,
 			note = :note
 	`
+
+	sqlGetStationConfigInt = `
+	SELECT name, value, description, note, station_id
+	FROM station_config_vars_int
+	WHERE name = UPPER(:name) and station_id = :station_id
+	`
+	sqlGetStationConfigBool = `
+	SELECT name, value, description, note, station_id
+	FROM station_config_vars_bool
+	WHERE name = UPPER(:name) and station_id = :station_id
+	`
+	sqlGetStationConfigString = `
+	SELECT name, value, description, note, station_id
+	FROM station_config_vars_string
+	WHERE name = UPPER(:name) and station_id = :station_id
+	`
+
+	sqlSetStationConfigInt = `
+	INSERT INTO station_config_vars_int (name, value, description, note, station_id)
+		VALUES (UPPER(:name), :value, :description, :note, :station_id)
+	ON CONFLICT (name, station_id)
+	DO
+		UPDATE 
+			SET value = :value,
+			description = :description,
+			note = :note
+	`
+	sqlSetStationConfigBool = `
+	INSERT INTO station_config_vars_bool (name, value, description, note, station_id)
+		VALUES (UPPER(:name), :value, :description, :note, :station_id)
+	ON CONFLICT (name, station_id)
+	DO
+		UPDATE 
+			SET value = :value,
+			description = :description,
+			note = :note
+	`
+	sqlSetStationConfigString = `
+	INSERT INTO station_config_vars_string (name, value, description, note, station_id)
+		VALUES (UPPER(:name), :value, :description, :note, :station_id)
+	ON CONFLICT (name, station_id)
+	DO
+		UPDATE 
+			SET value = :value,
+			description = :description,
+			note = :note
+	`
 )
 
 type (
@@ -926,6 +976,10 @@ type (
 	argGetConfig struct {
 		Name string
 	}
+	argGetStationConfig struct {
+		Name      string
+		StationID app.StationID
+	}
 	argSetConfigInt struct {
 		Name        string
 		Value       int64
@@ -961,5 +1015,48 @@ type (
 		Value       string
 		Description string
 		Note        string
+	}
+
+	argSetStationConfigInt struct {
+		Name        string
+		Value       int64
+		Description string
+		Note        string
+		StationID   app.StationID
+	}
+	argSetStationConfigBool struct {
+		Name        string
+		Value       bool
+		Description string
+		Note        string
+		StationID   app.StationID
+	}
+	argSetStationConfigString struct {
+		Name        string
+		Value       string
+		Description string
+		Note        string
+		StationID   app.StationID
+	}
+	resGetStationConfigInt struct {
+		Name        string
+		Value       int64
+		Description string
+		Note        string
+		StationID   app.StationID
+	}
+	resGetStationConfigBool struct {
+		Name        string
+		Value       bool
+		Description string
+		Note        string
+		StationID   app.StationID
+	}
+	resGetStationConfigString struct {
+		Name        string
+		Value       string
+		Description string
+		Note        string
+		StationID   app.StationID
 	}
 )

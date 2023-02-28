@@ -280,3 +280,33 @@ func appConfigString(a resGetConfigString) *app.ConfigString {
 		Note:        a.Note,
 	}
 }
+
+func appStationConfigInt(a resGetStationConfigInt) *app.StationConfigInt {
+	return &app.StationConfigInt{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+		StationID:   a.StationID,
+	}
+}
+
+func appStationConfigBool(a resGetStationConfigBool) *app.StationConfigBool {
+	return &app.StationConfigBool{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+		StationID:   a.StationID,
+	}
+}
+
+func appStationConfigString(a resGetStationConfigString) *app.StationConfigString {
+	return &app.StationConfigString{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+		StationID:   a.StationID,
+	}
+}

@@ -79,6 +79,11 @@ func (o *StationsVariablesOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the stations variables o k response
+func (o *StationsVariablesOK) Code() int {
+	return 200
+}
+
 func (o *StationsVariablesOK) Error() string {
 	return fmt.Sprintf("[POST /stations-variables][%d] stationsVariablesOK  %+v", 200, o.Payload)
 }
@@ -137,6 +142,11 @@ func (o *StationsVariablesInternalServerError) IsServerError() bool {
 // IsCode returns true when this stations variables internal server error response a status code equal to that given
 func (o *StationsVariablesInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the stations variables internal server error response
+func (o *StationsVariablesInternalServerError) Code() int {
+	return 500
 }
 
 func (o *StationsVariablesInternalServerError) Error() string {

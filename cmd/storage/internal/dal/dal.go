@@ -970,3 +970,108 @@ func (r *repo) SetConfigString(config app.ConfigString) (err error) {
 	})
 	return
 }
+
+func (r *repo) GetStationConfigInt(name string, stationID app.StationID) (cfg *app.StationConfigInt, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		res := resGetStationConfigInt{}
+		err := tx.NamedGetContext(ctx, &res, sqlGetStationConfigInt, argGetStationConfig{
+			Name:      name,
+			StationID: stationID,
+		})
+		if err != nil {
+			if err == sql.ErrNoRows {
+				return app.ErrNotFound
+			}
+			return err
+		}
+		cfg = appStationConfigInt(res)
+		return nil
+	})
+	return
+}
+func (r *repo) GetStationConfigBool(name string, stationID app.StationID) (cfg *app.StationConfigBool, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		res := resGetStationConfigBool{}
+		err := tx.NamedGetContext(ctx, &res, sqlGetStationConfigBool, argGetStationConfig{
+			Name:      name,
+			StationID: stationID,
+		})
+		if err != nil {
+			if err == sql.ErrNoRows {
+				return app.ErrNotFound
+			}
+			return err
+		}
+		cfg = appStationConfigBool(res)
+		return nil
+	})
+	return
+}
+func (r *repo) GetStationConfigString(name string, stationID app.StationID) (cfg *app.StationConfigString, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		res := resGetStationConfigString{}
+		err := tx.NamedGetContext(ctx, &res, sqlGetStationConfigString, argGetStationConfig{
+			Name:      name,
+			StationID: stationID,
+		})
+		if err != nil {
+			if err == sql.ErrNoRows {
+				return app.ErrNotFound
+			}
+			return err
+		}
+		cfg = appStationConfigString(res)
+		return nil
+	})
+	return
+}
+
+func (r *repo) SetStationConfigInt(config app.StationConfigInt) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlSetStationConfigInt, argSetStationConfigInt{
+			Name:        config.Name,
+			Value:       config.Value,
+			Description: config.Description,
+			Note:        config.Note,
+			StationID:   config.StationID,
+		})
+		if pqErrConflictIn(err, constraintStationIntStationID) {
+			return app.ErrNotFound
+		}
+		return err
+	})
+	return
+}
+
+func (r *repo) SetStationConfigBool(config app.StationConfigBool) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlSetStationConfigBool, argSetStationConfigBool{
+			Name:        config.Name,
+			Value:       config.Value,
+			Description: config.Description,
+			Note:        config.Note,
+			StationID:   config.StationID,
+		})
+		if pqErrConflictIn(err, constraintStationBoolStationID) {
+			return app.ErrNotFound
+		}
+		return err
+	})
+	return
+}
+func (r *repo) SetStationConfigString(config app.StationConfigString) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlSetStationConfigString, argSetStationConfigString{
+			Name:        config.Name,
+			Value:       config.Value,
+			Description: config.Description,
+			Note:        config.Note,
+			StationID:   config.StationID,
+		})
+		if pqErrConflictIn(err, constraintStationStringStationID) {
+			return app.ErrNotFound
+		}
+		return err
+	})
+	return
+}

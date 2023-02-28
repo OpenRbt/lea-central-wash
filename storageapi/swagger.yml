@@ -15,6 +15,59 @@ securityDefinitions:
      name: Pin
 
 definitions:
+  StationConfigVarInt:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: integer
+      description:
+        type: string
+      note:
+        type: string
+      stationID:
+        type: integer
+    required:
+      - name
+      - value
+      - stationID
+  
+  StationConfigVarBool:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: boolean
+      description:
+        type: string
+      note:
+        type: string
+      stationID:
+        type: integer
+    required:
+      - name
+      - value
+      - stationID
+  
+  StationConfigVarString:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+      description:
+        type: string
+      note:
+        type: string
+      stationID:
+        type: integer
+    required:
+      - name
+      - value
+      - stationID
   
   ConfigVarInt:
     type: object
@@ -515,6 +568,238 @@ produces:
   - application/json          
 
 paths:
+  /get-wash-config-var-int:
+    post:
+      operationId: "getStationWashConfigVarInt"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetStationConfigVar"
+            type: object
+            required:
+              - name
+              - hash
+            properties:
+              name:
+                type: string
+              hash:
+                type: string
+      responses:
+          200:
+            description: OK
+            schema:
+              $ref:  '#/definitions/StationConfigVarInt'
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /get-wash-config-var-bool:
+    post:
+      operationId: "getStationWashConfigVarBool"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetStationConfigVar"
+            type: object
+            required:
+              - name
+              - hash
+            properties:
+              name:
+                type: string
+              hash:
+                type: string
+      responses:
+          200:
+            description: OK
+            schema:
+              $ref:  '#/definitions/StationConfigVarBool'
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /get-wash-config-var-string:
+    post:
+      operationId: "getStationWashConfigVarString"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetStationConfigVar"
+            type: object
+            required:
+              - name
+              - hash
+            properties:
+              name:
+                type: string
+              hash:
+                type: string
+      responses:
+          200:
+            description: OK
+            schema:
+              $ref:  '#/definitions/StationConfigVarString'
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /get-station-config-var-int:
+    post:
+      operationId: "getStationConfigVarInt"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetStationConfigVar"
+            type: object
+            required:
+              - name
+              - stationID
+            properties:
+              name:
+                type: string
+              stationID:
+                type: integer
+      responses:
+          200:
+            description: OK
+            schema:
+              $ref:  '#/definitions/StationConfigVarInt'
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /get-station-config-var-bool:
+    post:
+      operationId: "getStationConfigVarBool"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetStationConfigVar"
+            type: object
+            required:
+              - name
+              - stationID
+            properties:
+              name:
+                type: string
+              stationID:
+                type: integer
+      responses:
+          200:
+            description: OK
+            schema:
+              $ref:  '#/definitions/StationConfigVarBool'
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /get-station-config-var-string:
+    post:
+      operationId: "getStationConfigVarString"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgGetStationConfigVar"
+            type: object
+            required:
+              - name
+              - stationID
+            properties:
+              name:
+                type: string
+              stationID:
+                type: integer
+      responses:
+          200:
+            description: OK
+            schema:
+              $ref:  '#/definitions/StationConfigVarString'
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /set-station-config-var-int:
+    post:
+      operationId: "setStationConfigVarInt"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref:  '#/definitions/StationConfigVarInt'
+      responses:
+          204:
+            description: OK
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /set-station-config-var-bool:
+    post:
+      operationId: "setStationConfigVarBool"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref:  '#/definitions/StationConfigVarBool'
+      responses:
+          204:
+            description: OK
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+  /set-station-config-var-string:
+    post:
+      operationId: "setStationConfigVarString"
+      security:
+        - pinCode: []
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref:  '#/definitions/StationConfigVarString'
+      responses:
+          204:
+            description: OK
+          404:
+            description: Not found
+          500:
+            description: Internal error
+
+
   /get-config-var-int:
     post:
       operationId: "getConfigVarInt"

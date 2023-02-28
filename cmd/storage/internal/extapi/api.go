@@ -147,6 +147,18 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.GetConfigVarStringHandler = op.GetConfigVarStringHandlerFunc(svc.getConfigVarString)
 	api.GetConfigVarIntHandler = op.GetConfigVarIntHandlerFunc(svc.getConfigVarInt)
 
+	api.SetStationConfigVarBoolHandler = op.SetStationConfigVarBoolHandlerFunc(svc.setStationConfigVarBool)
+	api.SetStationConfigVarStringHandler = op.SetStationConfigVarStringHandlerFunc(svc.setStationConfigVarString)
+	api.SetStationConfigVarIntHandler = op.SetStationConfigVarIntHandlerFunc(svc.setStationConfigVarInt)
+
+	api.GetStationConfigVarBoolHandler = op.GetStationConfigVarBoolHandlerFunc(svc.getStationConfigVarBool)
+	api.GetStationConfigVarStringHandler = op.GetStationConfigVarStringHandlerFunc(svc.getStationConfigVarString)
+	api.GetStationConfigVarIntHandler = op.GetStationConfigVarIntHandlerFunc(svc.getStationConfigVarInt)
+
+	api.GetStationWashConfigVarIntHandler = op.GetStationWashConfigVarIntHandlerFunc(svc.getStationWashConfigVarInt)
+	api.GetStationWashConfigVarBoolHandler = op.GetStationWashConfigVarBoolHandlerFunc(svc.getStationWashConfigVarBool)
+	api.GetStationWashConfigVarStringHandler = op.GetStationWashConfigVarStringHandlerFunc(svc.getStationWashConfigVarString)
+
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port

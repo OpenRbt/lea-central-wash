@@ -120,6 +120,14 @@ type (
 		SetConfigInt(auth *Auth, config ConfigInt) error
 		SetConfigBool(auth *Auth, config ConfigBool) error
 		SetConfigString(auth *Auth, config ConfigString) error
+
+		GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error)
+		GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error)
+		GetStationConfigString(name string, stationID StationID) (*StationConfigString, error)
+
+		SetStationConfigInt(auth *Auth, config StationConfigInt) error
+		SetStationConfigBool(auth *Auth, config StationConfigBool) error
+		SetStationConfigString(auth *Auth, config StationConfigString) error
 	}
 
 	// Repo is a DAL interface.
@@ -188,6 +196,15 @@ type (
 		SetConfigInt(config ConfigInt) error
 		SetConfigBool(config ConfigBool) error
 		SetConfigString(config ConfigString) error
+
+		GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error)
+		GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error)
+		GetStationConfigString(name string, stationID StationID) (*StationConfigString, error)
+
+		SetStationConfigInt(config StationConfigInt) error
+		SetStationConfigBool(config StationConfigBool) error
+		SetStationConfigString(config StationConfigString) error
+
 		SetConfigIntIfNotExists(ConfigInt) error
 	}
 	// KasseSvc is an interface for kasse service.

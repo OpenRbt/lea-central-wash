@@ -95,8 +95,26 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		GetPingHandler: GetPingHandlerFunc(func(params GetPingParams) GetPingResponder {
 			return GetPingNotImplemented()
 		}),
+		GetStationConfigVarBoolHandler: GetStationConfigVarBoolHandlerFunc(func(params GetStationConfigVarBoolParams, principal *storageapi.Profile) GetStationConfigVarBoolResponder {
+			return GetStationConfigVarBoolNotImplemented()
+		}),
+		GetStationConfigVarIntHandler: GetStationConfigVarIntHandlerFunc(func(params GetStationConfigVarIntParams, principal *storageapi.Profile) GetStationConfigVarIntResponder {
+			return GetStationConfigVarIntNotImplemented()
+		}),
+		GetStationConfigVarStringHandler: GetStationConfigVarStringHandlerFunc(func(params GetStationConfigVarStringParams, principal *storageapi.Profile) GetStationConfigVarStringResponder {
+			return GetStationConfigVarStringNotImplemented()
+		}),
 		GetStationDiscountsHandler: GetStationDiscountsHandlerFunc(func(params GetStationDiscountsParams) GetStationDiscountsResponder {
 			return GetStationDiscountsNotImplemented()
+		}),
+		GetStationWashConfigVarBoolHandler: GetStationWashConfigVarBoolHandlerFunc(func(params GetStationWashConfigVarBoolParams) GetStationWashConfigVarBoolResponder {
+			return GetStationWashConfigVarBoolNotImplemented()
+		}),
+		GetStationWashConfigVarIntHandler: GetStationWashConfigVarIntHandlerFunc(func(params GetStationWashConfigVarIntParams) GetStationWashConfigVarIntResponder {
+			return GetStationWashConfigVarIntNotImplemented()
+		}),
+		GetStationWashConfigVarStringHandler: GetStationWashConfigVarStringHandlerFunc(func(params GetStationWashConfigVarStringParams) GetStationWashConfigVarStringResponder {
+			return GetStationWashConfigVarStringNotImplemented()
 		}),
 		GetUserHandler: GetUserHandlerFunc(func(params GetUserParams, principal *storageapi.Profile) GetUserResponder {
 			return GetUserNotImplemented()
@@ -184,6 +202,15 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		SetStationButtonHandler: SetStationButtonHandlerFunc(func(params SetStationButtonParams) SetStationButtonResponder {
 			return SetStationButtonNotImplemented()
+		}),
+		SetStationConfigVarBoolHandler: SetStationConfigVarBoolHandlerFunc(func(params SetStationConfigVarBoolParams, principal *storageapi.Profile) SetStationConfigVarBoolResponder {
+			return SetStationConfigVarBoolNotImplemented()
+		}),
+		SetStationConfigVarIntHandler: SetStationConfigVarIntHandlerFunc(func(params SetStationConfigVarIntParams, principal *storageapi.Profile) SetStationConfigVarIntResponder {
+			return SetStationConfigVarIntNotImplemented()
+		}),
+		SetStationConfigVarStringHandler: SetStationConfigVarStringHandlerFunc(func(params SetStationConfigVarStringParams, principal *storageapi.Profile) SetStationConfigVarStringResponder {
+			return SetStationConfigVarStringNotImplemented()
 		}),
 		StationHandler: StationHandlerFunc(func(params StationParams) StationResponder {
 			return StationNotImplemented()
@@ -311,8 +338,20 @@ type StorageAPI struct {
 	GetConfigVarStringHandler GetConfigVarStringHandler
 	// GetPingHandler sets the operation handler for the get ping operation
 	GetPingHandler GetPingHandler
+	// GetStationConfigVarBoolHandler sets the operation handler for the get station config var bool operation
+	GetStationConfigVarBoolHandler GetStationConfigVarBoolHandler
+	// GetStationConfigVarIntHandler sets the operation handler for the get station config var int operation
+	GetStationConfigVarIntHandler GetStationConfigVarIntHandler
+	// GetStationConfigVarStringHandler sets the operation handler for the get station config var string operation
+	GetStationConfigVarStringHandler GetStationConfigVarStringHandler
 	// GetStationDiscountsHandler sets the operation handler for the get station discounts operation
 	GetStationDiscountsHandler GetStationDiscountsHandler
+	// GetStationWashConfigVarBoolHandler sets the operation handler for the get station wash config var bool operation
+	GetStationWashConfigVarBoolHandler GetStationWashConfigVarBoolHandler
+	// GetStationWashConfigVarIntHandler sets the operation handler for the get station wash config var int operation
+	GetStationWashConfigVarIntHandler GetStationWashConfigVarIntHandler
+	// GetStationWashConfigVarStringHandler sets the operation handler for the get station wash config var string operation
+	GetStationWashConfigVarStringHandler GetStationWashConfigVarStringHandler
 	// GetUserHandler sets the operation handler for the get user operation
 	GetUserHandler GetUserHandler
 	// GetUsersHandler sets the operation handler for the get users operation
@@ -371,6 +410,12 @@ type StorageAPI struct {
 	SetStationHandler SetStationHandler
 	// SetStationButtonHandler sets the operation handler for the set station button operation
 	SetStationButtonHandler SetStationButtonHandler
+	// SetStationConfigVarBoolHandler sets the operation handler for the set station config var bool operation
+	SetStationConfigVarBoolHandler SetStationConfigVarBoolHandler
+	// SetStationConfigVarIntHandler sets the operation handler for the set station config var int operation
+	SetStationConfigVarIntHandler SetStationConfigVarIntHandler
+	// SetStationConfigVarStringHandler sets the operation handler for the set station config var string operation
+	SetStationConfigVarStringHandler SetStationConfigVarStringHandler
 	// StationHandler sets the operation handler for the station operation
 	StationHandler StationHandler
 	// StationButtonHandler sets the operation handler for the station button operation
@@ -531,8 +576,26 @@ func (o *StorageAPI) Validate() error {
 	if o.GetPingHandler == nil {
 		unregistered = append(unregistered, "GetPingHandler")
 	}
+	if o.GetStationConfigVarBoolHandler == nil {
+		unregistered = append(unregistered, "GetStationConfigVarBoolHandler")
+	}
+	if o.GetStationConfigVarIntHandler == nil {
+		unregistered = append(unregistered, "GetStationConfigVarIntHandler")
+	}
+	if o.GetStationConfigVarStringHandler == nil {
+		unregistered = append(unregistered, "GetStationConfigVarStringHandler")
+	}
 	if o.GetStationDiscountsHandler == nil {
 		unregistered = append(unregistered, "GetStationDiscountsHandler")
+	}
+	if o.GetStationWashConfigVarBoolHandler == nil {
+		unregistered = append(unregistered, "GetStationWashConfigVarBoolHandler")
+	}
+	if o.GetStationWashConfigVarIntHandler == nil {
+		unregistered = append(unregistered, "GetStationWashConfigVarIntHandler")
+	}
+	if o.GetStationWashConfigVarStringHandler == nil {
+		unregistered = append(unregistered, "GetStationWashConfigVarStringHandler")
 	}
 	if o.GetUserHandler == nil {
 		unregistered = append(unregistered, "GetUserHandler")
@@ -620,6 +683,15 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.SetStationButtonHandler == nil {
 		unregistered = append(unregistered, "SetStationButtonHandler")
+	}
+	if o.SetStationConfigVarBoolHandler == nil {
+		unregistered = append(unregistered, "SetStationConfigVarBoolHandler")
+	}
+	if o.SetStationConfigVarIntHandler == nil {
+		unregistered = append(unregistered, "SetStationConfigVarIntHandler")
+	}
+	if o.SetStationConfigVarStringHandler == nil {
+		unregistered = append(unregistered, "SetStationConfigVarStringHandler")
 	}
 	if o.StationHandler == nil {
 		unregistered = append(unregistered, "StationHandler")
@@ -833,7 +905,31 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/get-station-config-var-bool"] = NewGetStationConfigVarBool(o.context, o.GetStationConfigVarBoolHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-station-config-var-int"] = NewGetStationConfigVarInt(o.context, o.GetStationConfigVarIntHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-station-config-var-string"] = NewGetStationConfigVarString(o.context, o.GetStationConfigVarStringHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/get-station-discounts"] = NewGetStationDiscounts(o.context, o.GetStationDiscountsHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-wash-config-var-bool"] = NewGetStationWashConfigVarBool(o.context, o.GetStationWashConfigVarBoolHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-wash-config-var-int"] = NewGetStationWashConfigVarInt(o.context, o.GetStationWashConfigVarIntHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/get-wash-config-var-string"] = NewGetStationWashConfigVarString(o.context, o.GetStationWashConfigVarStringHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -950,6 +1046,18 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/set-station-button"] = NewSetStationButton(o.context, o.SetStationButtonHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-station-config-var-bool"] = NewSetStationConfigVarBool(o.context, o.SetStationConfigVarBoolHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-station-config-var-int"] = NewSetStationConfigVarInt(o.context, o.SetStationConfigVarIntHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-station-config-var-string"] = NewSetStationConfigVarString(o.context, o.SetStationConfigVarStringHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

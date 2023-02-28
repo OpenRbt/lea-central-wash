@@ -510,6 +510,147 @@ func init() {
         }
       }
     },
+    "/get-station-config-var-bool": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getStationConfigVarBool",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarBool"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-station-config-var-int": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getStationConfigVarInt",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarInt"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-station-config-var-string": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getStationConfigVarString",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarString"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/get-station-discounts": {
       "post": {
         "operationId": "getStationDiscounts",
@@ -534,6 +675,132 @@ func init() {
             "description": "OK",
             "schema": {
               "$ref": "#/definitions/StationDiscounts"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-wash-config-var-bool": {
+      "post": {
+        "operationId": "getStationWashConfigVarBool",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarBool"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-wash-config-var-int": {
+      "post": {
+        "operationId": "getStationWashConfigVarInt",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarInt"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-wash-config-var-string": {
+      "post": {
+        "operationId": "getStationWashConfigVarString",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarString"
             }
           },
           "404": {
@@ -1572,6 +1839,99 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-station-config-var-bool": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setStationConfigVarBool",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarBool"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/set-station-config-var-int": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setStationConfigVarInt",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarInt"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/set-station-config-var-string": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setStationConfigVarString",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarString"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -2917,6 +3277,81 @@ func init() {
         }
       }
     },
+    "StationConfigVarBool": {
+      "type": "object",
+      "required": [
+        "name",
+        "value",
+        "stationID"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "integer"
+        },
+        "value": {
+          "type": "boolean"
+        }
+      }
+    },
+    "StationConfigVarInt": {
+      "type": "object",
+      "required": [
+        "name",
+        "value",
+        "stationID"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "integer"
+        },
+        "value": {
+          "type": "integer"
+        }
+      }
+    },
+    "StationConfigVarString": {
+      "type": "object",
+      "required": [
+        "name",
+        "value",
+        "stationID"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "integer"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
     "StationDiscounts": {
       "type": "array",
       "items": {
@@ -3633,6 +4068,147 @@ func init() {
         }
       }
     },
+    "/get-station-config-var-bool": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getStationConfigVarBool",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarBool"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-station-config-var-int": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getStationConfigVarInt",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarInt"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-station-config-var-string": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getStationConfigVarString",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "stationID"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "stationID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarString"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/get-station-discounts": {
       "post": {
         "operationId": "getStationDiscounts",
@@ -3657,6 +4233,132 @@ func init() {
             "description": "OK",
             "schema": {
               "$ref": "#/definitions/StationDiscounts"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-wash-config-var-bool": {
+      "post": {
+        "operationId": "getStationWashConfigVarBool",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarBool"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-wash-config-var-int": {
+      "post": {
+        "operationId": "getStationWashConfigVarInt",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarInt"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/get-wash-config-var-string": {
+      "post": {
+        "operationId": "getStationWashConfigVarString",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgGetStationConfigVar",
+              "required": [
+                "name",
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarString"
             }
           },
           "404": {
@@ -4687,6 +5389,99 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-station-config-var-bool": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setStationConfigVarBool",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarBool"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/set-station-config-var-int": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setStationConfigVarInt",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarInt"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/set-station-config-var-string": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setStationConfigVarString",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StationConfigVarString"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -6036,6 +6831,81 @@ func init() {
         },
         "relayBoard": {
           "$ref": "#/definitions/RelayBoard"
+        }
+      }
+    },
+    "StationConfigVarBool": {
+      "type": "object",
+      "required": [
+        "name",
+        "value",
+        "stationID"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "integer"
+        },
+        "value": {
+          "type": "boolean"
+        }
+      }
+    },
+    "StationConfigVarInt": {
+      "type": "object",
+      "required": [
+        "name",
+        "value",
+        "stationID"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "integer"
+        },
+        "value": {
+          "type": "integer"
+        }
+      }
+    },
+    "StationConfigVarString": {
+      "type": "object",
+      "required": [
+        "name",
+        "value",
+        "stationID"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "integer"
+        },
+        "value": {
+          "type": "string"
         }
       }
     },

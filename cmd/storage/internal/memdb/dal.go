@@ -279,3 +279,23 @@ func (t *DB) SetConfigString(config app.ConfigString) error {
 func (t *DB) SetConfigIntIfNotExists(config app.ConfigInt) error {
 	return nil
 }
+
+func (t *DB) GetStationConfigInt(name string, stationID app.StationID) (*app.StationConfigInt, error) {
+	return nil, nil
+}
+func (t *DB) GetStationConfigBool(name string, stationID app.StationID) (*app.StationConfigBool, error) {
+	return nil, nil
+}
+func (t *DB) GetStationConfigString(name string, stationID app.StationID) (*app.StationConfigString, error) {
+	return nil, nil
+}
+
+func (t *DB) SetStationConfigInt(config app.StationConfigInt) error {
+	return nil
+}
+func (t *DB) SetStationConfigBool(config app.StationConfigBool) error {
+	return nil
+}
+func (t *DB) SetStationConfigString(config app.StationConfigString) error {
+	return nil
+}

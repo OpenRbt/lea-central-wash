@@ -65,3 +65,27 @@ func (a *app) SetConfigBool(auth *Auth, config ConfigBool) error {
 func (a *app) SetConfigString(auth *Auth, config ConfigString) error {
 	return a.repo.SetConfigString(config)
 }
+
+func (a *app) GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error) {
+	return a.repo.GetStationConfigInt(name, stationID)
+}
+
+func (a *app) GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error) {
+	return a.repo.GetStationConfigBool(name, stationID)
+}
+
+func (a *app) GetStationConfigString(name string, stationID StationID) (*StationConfigString, error) {
+	return a.repo.GetStationConfigString(name, stationID)
+}
+
+func (a *app) SetStationConfigInt(auth *Auth, config StationConfigInt) error {
+	return a.repo.SetStationConfigInt(config)
+}
+
+func (a *app) SetStationConfigBool(auth *Auth, config StationConfigBool) error {
+	return a.repo.SetStationConfigBool(config)
+}
+
+func (a *app) SetStationConfigString(auth *Auth, config StationConfigString) error {
+	return a.repo.SetStationConfigString(config)
+}
