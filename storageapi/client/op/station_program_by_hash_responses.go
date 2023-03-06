@@ -85,6 +85,11 @@ func (o *StationProgramByHashOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the station program by hash o k response
+func (o *StationProgramByHashOK) Code() int {
+	return 200
+}
+
 func (o *StationProgramByHashOK) Error() string {
 	return fmt.Sprintf("[POST /station-program-by-hash][%d] stationProgramByHashOK  %+v", 200, o.Payload)
 }
@@ -145,6 +150,11 @@ func (o *StationProgramByHashInternalServerError) IsServerError() bool {
 // IsCode returns true when this station program by hash internal server error response a status code equal to that given
 func (o *StationProgramByHashInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the station program by hash internal server error response
+func (o *StationProgramByHashInternalServerError) Code() int {
+	return 500
 }
 
 func (o *StationProgramByHashInternalServerError) Error() string {

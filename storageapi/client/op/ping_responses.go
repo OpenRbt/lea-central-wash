@@ -79,6 +79,11 @@ func (o *PingOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the ping o k response
+func (o *PingOK) Code() int {
+	return 200
+}
+
 func (o *PingOK) Error() string {
 	return fmt.Sprintf("[POST /ping][%d] pingOK  %+v", 200, o.Payload)
 }
@@ -242,6 +247,12 @@ type PingOKBody struct {
 	// button ID
 	ButtonID int64 `json:"ButtonID,omitempty"`
 
+	// bonus amount
+	BonusAmount int64 `json:"bonusAmount,omitempty"`
+
+	// bonus system active
+	BonusSystemActive bool `json:"bonusSystemActive,omitempty"`
+
 	// last discount update
 	LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
 
@@ -255,6 +266,9 @@ type PingOKBody struct {
 	// service amount
 	// Required: true
 	ServiceAmount *int64 `json:"serviceAmount"`
+
+	// session ID
+	SessionID string `json:"sessionID,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
@@ -263,6 +277,12 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 
 		// button ID
 		ButtonID int64 `json:"ButtonID,omitempty"`
+
+		// bonus amount
+		BonusAmount int64 `json:"bonusAmount,omitempty"`
+
+		// bonus system active
+		BonusSystemActive bool `json:"bonusSystemActive,omitempty"`
 
 		// last discount update
 		LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
@@ -277,6 +297,9 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 		// service amount
 		// Required: true
 		ServiceAmount *int64 `json:"serviceAmount"`
+
+		// session ID
+		SessionID string `json:"sessionID,omitempty"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -286,10 +309,13 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 	}
 
 	o.ButtonID = props.ButtonID
+	o.BonusAmount = props.BonusAmount
+	o.BonusSystemActive = props.BonusSystemActive
 	o.LastDiscountUpdate = props.LastDiscountUpdate
 	o.LastUpdate = props.LastUpdate
 	o.OpenStation = props.OpenStation
 	o.ServiceAmount = props.ServiceAmount
+	o.SessionID = props.SessionID
 	return nil
 }
 

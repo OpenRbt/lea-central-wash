@@ -91,6 +91,11 @@ func (o *StationReportCurrentMoneyOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the station report current money o k response
+func (o *StationReportCurrentMoneyOK) Code() int {
+	return 200
+}
+
 func (o *StationReportCurrentMoneyOK) Error() string {
 	return fmt.Sprintf("[POST /station-report-current-money][%d] stationReportCurrentMoneyOK  %+v", 200, o.Payload)
 }
@@ -153,6 +158,11 @@ func (o *StationReportCurrentMoneyNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the station report current money not found response
+func (o *StationReportCurrentMoneyNotFound) Code() int {
+	return 404
+}
+
 func (o *StationReportCurrentMoneyNotFound) Error() string {
 	return fmt.Sprintf("[POST /station-report-current-money][%d] stationReportCurrentMoneyNotFound ", 404)
 }
@@ -202,6 +212,11 @@ func (o *StationReportCurrentMoneyInternalServerError) IsServerError() bool {
 // IsCode returns true when this station report current money internal server error response a status code equal to that given
 func (o *StationReportCurrentMoneyInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the station report current money internal server error response
+func (o *StationReportCurrentMoneyInternalServerError) Code() int {
+	return 500
 }
 
 func (o *StationReportCurrentMoneyInternalServerError) Error() string {

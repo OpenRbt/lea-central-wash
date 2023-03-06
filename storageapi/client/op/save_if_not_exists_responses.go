@@ -89,6 +89,11 @@ func (o *SaveIfNotExistsNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the save if not exists no content response
+func (o *SaveIfNotExistsNoContent) Code() int {
+	return 204
+}
+
 func (o *SaveIfNotExistsNoContent) Error() string {
 	return fmt.Sprintf("[POST /save-if-not-exists][%d] saveIfNotExistsNoContent ", 204)
 }
@@ -140,6 +145,11 @@ func (o *SaveIfNotExistsNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the save if not exists not found response
+func (o *SaveIfNotExistsNotFound) Code() int {
+	return 404
+}
+
 func (o *SaveIfNotExistsNotFound) Error() string {
 	return fmt.Sprintf("[POST /save-if-not-exists][%d] saveIfNotExistsNotFound ", 404)
 }
@@ -189,6 +199,11 @@ func (o *SaveIfNotExistsInternalServerError) IsServerError() bool {
 // IsCode returns true when this save if not exists internal server error response a status code equal to that given
 func (o *SaveIfNotExistsInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the save if not exists internal server error response
+func (o *SaveIfNotExistsInternalServerError) Code() int {
+	return 500
 }
 
 func (o *SaveIfNotExistsInternalServerError) Error() string {

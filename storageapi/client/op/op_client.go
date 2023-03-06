@@ -46,6 +46,8 @@ type ClientService interface {
 
 	CardReaderConfigByHash(params *CardReaderConfigByHashParams, opts ...ClientOption) (*CardReaderConfigByHashOK, error)
 
+	CreateSession(params *CreateSessionParams, opts ...ClientOption) (*CreateSessionOK, error)
+
 	CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateUserCreated, error)
 
 	DelAdvertisingCampaign(params *DelAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DelAdvertisingCampaignNoContent, error)
@@ -55,6 +57,8 @@ type ClientService interface {
 	DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteUserNoContent, error)
 
 	EditAdvertisingCampaign(params *EditAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EditAdvertisingCampaignNoContent, error)
+
+	EndhSession(params *EndhSessionParams, opts ...ClientOption) (*EndhSessionNoContent, error)
 
 	GetConfigVarBool(params *GetConfigVarBoolParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetConfigVarBoolOK, error)
 
@@ -71,6 +75,8 @@ type ClientService interface {
 	GetUsers(params *GetUsersParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetUsersOK, error)
 
 	Info(params *InfoParams, opts ...ClientOption) (*InfoOK, error)
+
+	IsAuthorized(params *IsAuthorizedParams, opts ...ClientOption) (*IsAuthorizedOK, error)
 
 	Kasse(params *KasseParams, opts ...ClientOption) (*KasseOK, error)
 
@@ -90,7 +96,11 @@ type ClientService interface {
 
 	PressButton(params *PressButtonParams, opts ...ClientOption) (*PressButtonNoContent, error)
 
+	ProgramPause(params *ProgramPauseParams, opts ...ClientOption) (*ProgramPauseNoContent, error)
+
 	Programs(params *ProgramsParams, opts ...ClientOption) (*ProgramsOK, error)
+
+	RefreshSession(params *RefreshSessionParams, opts ...ClientOption) (*RefreshSessionOK, error)
 
 	ResetStationStat(params *ResetStationStatParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResetStationStatNoContent, error)
 
@@ -107,6 +117,8 @@ type ClientService interface {
 	SaveMoney(params *SaveMoneyParams, opts ...ClientOption) (*SaveMoneyNoContent, error)
 
 	SaveRelay(params *SaveRelayParams, opts ...ClientOption) (*SaveRelayNoContent, error)
+
+	SetBonuses(params *SetBonusesParams, opts ...ClientOption) (*SetBonusesNoContent, error)
 
 	SetCardReaderConfig(params *SetCardReaderConfigParams, opts ...ClientOption) (*SetCardReaderConfigNoContent, error)
 
@@ -465,6 +477,44 @@ func (a *Client) CardReaderConfigByHash(params *CardReaderConfigByHashParams, op
 }
 
 /*
+CreateSession create session API
+*/
+func (a *Client) CreateSession(params *CreateSessionParams, opts ...ClientOption) (*CreateSessionOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewCreateSessionParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "createSession",
+		Method:             "POST",
+		PathPattern:        "/create-session",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &CreateSessionReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*CreateSessionOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for createSession: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
 CreateUser create user API
 */
 func (a *Client) CreateUser(params *CreateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateUserCreated, error) {
@@ -655,6 +705,44 @@ func (a *Client) EditAdvertisingCampaign(params *EditAdvertisingCampaignParams, 
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for editAdvertisingCampaign: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+EndhSession endh session API
+*/
+func (a *Client) EndhSession(params *EndhSessionParams, opts ...ClientOption) (*EndhSessionNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewEndhSessionParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "endhSession",
+		Method:             "POST",
+		PathPattern:        "/end-session",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &EndhSessionReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*EndhSessionNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for endhSession: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -964,6 +1052,44 @@ func (a *Client) Info(params *InfoParams, opts ...ClientOption) (*InfoOK, error)
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for info: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+IsAuthorized is authorized API
+*/
+func (a *Client) IsAuthorized(params *IsAuthorizedParams, opts ...ClientOption) (*IsAuthorizedOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIsAuthorizedParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "isAuthorized",
+		Method:             "POST",
+		PathPattern:        "/is-authorized",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &IsAuthorizedReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IsAuthorizedOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for isAuthorized: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -1310,6 +1436,44 @@ func (a *Client) PressButton(params *PressButtonParams, opts ...ClientOption) (*
 }
 
 /*
+ProgramPause program pause API
+*/
+func (a *Client) ProgramPause(params *ProgramPauseParams, opts ...ClientOption) (*ProgramPauseNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewProgramPauseParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "programPause",
+		Method:             "POST",
+		PathPattern:        "/pause-program",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &ProgramPauseReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*ProgramPauseNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for programPause: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
 Programs programs API
 */
 func (a *Client) Programs(params *ProgramsParams, opts ...ClientOption) (*ProgramsOK, error) {
@@ -1344,6 +1508,44 @@ func (a *Client) Programs(params *ProgramsParams, opts ...ClientOption) (*Progra
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for programs: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+RefreshSession refresh session API
+*/
+func (a *Client) RefreshSession(params *RefreshSessionParams, opts ...ClientOption) (*RefreshSessionOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewRefreshSessionParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "refreshSession",
+		Method:             "POST",
+		PathPattern:        "/refresh-session",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &RefreshSessionReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*RefreshSessionOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for refreshSession: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -1650,6 +1852,44 @@ func (a *Client) SaveRelay(params *SaveRelayParams, opts ...ClientOption) (*Save
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for saveRelay: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+SetBonuses set bonuses API
+*/
+func (a *Client) SetBonuses(params *SetBonusesParams, opts ...ClientOption) (*SetBonusesNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewSetBonusesParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "setBonuses",
+		Method:             "POST",
+		PathPattern:        "/set-bonuses",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &SetBonusesReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*SetBonusesNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for setBonuses: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

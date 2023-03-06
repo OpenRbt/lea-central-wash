@@ -101,3 +101,7 @@ func (a *app) GetLevel() (level int64, err error) {
 	level, err = a.hardware.GetLevel()
 	return level, nil
 }
+
+func (a *app) ProgramPause(active bool) (err error) {
+	return a.hardware.ProgramPause(active)
+}
