@@ -19,6 +19,8 @@ const (
 // Auth describes user profile.
 type Auth = storageapi.Profile
 
+const NameCoef = "VOLUME_COEF"
+
 // Key aliases
 const (
 	TemperatureCurrent    = "curr_temp"
@@ -269,11 +271,13 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 		hardware:         hardware,
 		volumeCorrection: 1000,
 	}
-	stationConfig, err := appl.repo.GetStationConfigInt("VOLUME_COEF", 1)
+	appl.stationsMutex.Lock()
+	stationConfig, err := appl.repo.GetStationConfigInt(NameCoef, 1)
 	if err != nil {
 		log.PrintErr(err)
 	}
 	appl.volumeCorrection = int(stationConfig.Value)
+	appl.stationsMutex.Unlock()
 	err = appl.setDefaultConfig()
 	if err != nil {
 		log.PrintErr(err)

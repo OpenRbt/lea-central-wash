@@ -89,8 +89,10 @@ func (a *app) Run2Program(id StationID, programID int64, programID2 int64, prefl
 }
 
 func (a *app) MeasureVolumeMilliliters(volume int64, stationID StationID) (err error) {
+	a.stationsMutex.Lock()
 	vCorr := a.volumeCorrection
-	v := volume * int64(vCorr) / 100
+	a.stationsMutex.Unlock()
+	v := volume * int64(vCorr) / 1000
 	return a.hardware.MeasureVolumeMilliliters(v)
 }
 
