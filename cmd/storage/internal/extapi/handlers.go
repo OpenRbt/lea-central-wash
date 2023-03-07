@@ -238,8 +238,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		stationIP = ""
 	}
 	log.Info("post ping", "time", time.Now(), "hash", *params.Args.Hash, "ip", stationIP)
-	// stationID, err := svc.getIDAndAddHash(string(*params.Args.Hash))
-	stationID, err := svc.getID(string(*params.Args.Hash))
+	stationID, err := svc.getIDAndAddHash(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("post ping: not found", "hash", params.Args.Hash, "ip", stationIP)
 		return op.NewPingOK().WithPayload(&op.PingOKBody{
