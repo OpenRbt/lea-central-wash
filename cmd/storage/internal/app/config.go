@@ -79,7 +79,7 @@ func (a *app) GetStationConfigString(name string, stationID StationID) (*Station
 }
 
 func (a *app) SetStationConfigInt(auth *Auth, config StationConfigInt) error {
-	if config.Name == NameCoef {
+	if config.Name == ParameterNameVolumeCoef {
 		a.stationsMutex.Lock()
 		a.volumeCorrection = int(config.Value)
 		a.stationsMutex.Unlock()
