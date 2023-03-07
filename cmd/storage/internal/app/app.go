@@ -267,7 +267,7 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 		kasseSvc:         kasseSvc,
 		weatherSvc:       weatherSvc,
 		hardware:         hardware,
-		volumeCorrection: 100,
+		volumeCorrection: 1000,
 	}
 	stationConfig, err := appl.repo.GetStationConfigInt("VOLUME_COEF", 1)
 	if err != nil {
