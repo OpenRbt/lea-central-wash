@@ -97,7 +97,7 @@ type (
 
 		RunProgram(id StationID, programID int64, preflight bool) (err error)
 		Run2Program(id StationID, programID int64, programID2 int64, preflight bool) (err error)
-		MeasureVolumeMilliliters(volume int64) (err error)
+		MeasureVolumeMilliliters(volume int64, stationID StationID) (err error)
 		GetVolumeDispenser() (volume int64, status string, err error)
 		GetLevel() (level int64, err error)
 		PressButton(id StationID, buttonID int64) (err error)
@@ -256,18 +256,25 @@ type app struct {
 	lastDiscountUpdate    int64
 	cfg                   AppConfig
 	cfgMutex              sync.Mutex
+	volumeCorrection      int
 }
 
 // New creates and returns new App.
 func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareAccessLayer) App {
 	appl := &app{
-		repo:       repo,
-		stations:   make(map[StationID]StationData),
-		kasseSvc:   kasseSvc,
-		weatherSvc: weatherSvc,
-		hardware:   hardware,
+		repo:             repo,
+		stations:         make(map[StationID]StationData),
+		kasseSvc:         kasseSvc,
+		weatherSvc:       weatherSvc,
+		hardware:         hardware,
+		volumeCorrection: 100,
 	}
-	err := appl.setDefaultConfig()
+	stationConfig, err := appl.repo.GetStationConfigInt("VOLUME_COEF", 1)
+	if err != nil {
+		log.PrintErr(err)
+	}
+	appl.volumeCorrection = int(stationConfig.Value)
+	err = appl.setDefaultConfig()
 	if err != nil {
 		log.PrintErr(err)
 	}

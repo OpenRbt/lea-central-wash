@@ -238,7 +238,8 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		stationIP = ""
 	}
 	log.Info("post ping", "time", time.Now(), "hash", *params.Args.Hash, "ip", stationIP)
-	stationID, err := svc.getIDAndAddHash(string(*params.Args.Hash))
+	// stationID, err := svc.getIDAndAddHash(string(*params.Args.Hash))
+	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("post ping: not found", "hash", params.Args.Hash, "ip", stationIP)
 		return op.NewPingOK().WithPayload(&op.PingOKBody{
@@ -657,8 +658,11 @@ func (svc *service) run2Program(params op.Run2ProgramParams) op.Run2ProgramRespo
 }
 
 func (svc *service) measureVolumeMilliliters(params op.MeasureVolumeMillilitersParams) op.MeasureVolumeMillilitersResponder {
-
-	err := svc.app.MeasureVolumeMilliliters(*params.Args.Volume)
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		return op.NewMeasureVolumeMillilitersNotFound().WithPayload("station not found")
+	}
+	err = svc.app.MeasureVolumeMilliliters(*params.Args.Volume, stationID)
 
 	log.Info("Run Command Dispenser ", "Volume", *params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
 	fmt.Println("ERROR: ", err)
