@@ -152,6 +152,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		PressButtonHandler: PressButtonHandlerFunc(func(params PressButtonParams) PressButtonResponder {
 			return PressButtonNotImplemented()
 		}),
+		ProgramPauseHandler: ProgramPauseHandlerFunc(func(params ProgramPauseParams) ProgramPauseResponder {
+			return ProgramPauseNotImplemented()
+		}),
 		ProgramsHandler: ProgramsHandlerFunc(func(params ProgramsParams) ProgramsResponder {
 			return ProgramsNotImplemented()
 		}),
@@ -376,6 +379,8 @@ type StorageAPI struct {
 	PingHandler PingHandler
 	// PressButtonHandler sets the operation handler for the press button operation
 	PressButtonHandler PressButtonHandler
+	// ProgramPauseHandler sets the operation handler for the program pause operation
+	ProgramPauseHandler ProgramPauseHandler
 	// ProgramsHandler sets the operation handler for the programs operation
 	ProgramsHandler ProgramsHandler
 	// ResetStationStatHandler sets the operation handler for the reset station stat operation
@@ -632,6 +637,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.PressButtonHandler == nil {
 		unregistered = append(unregistered, "PressButtonHandler")
+	}
+	if o.ProgramPauseHandler == nil {
+		unregistered = append(unregistered, "ProgramPauseHandler")
 	}
 	if o.ProgramsHandler == nil {
 		unregistered = append(unregistered, "ProgramsHandler")
@@ -978,6 +986,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/press-button"] = NewPressButton(o.context, o.PressButtonHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/pause-program"] = NewProgramPause(o.context, o.ProgramPauseHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

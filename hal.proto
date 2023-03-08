@@ -7,6 +7,7 @@ import "google/protobuf/empty.proto";
 service HardwareAccessLayer{
     rpc RunProgram(Options) returns(AnswerProgram);
     rpc MeasureVolumeMilliliters(OptionsCommand) returns(AnswerCommand);
+    rpc ProgramPause(PauseRequest) returns(AnswerCommand);
     rpc Volume(google.protobuf.Empty) returns(Answer);
     rpc GetLevel(google.protobuf.Empty) returns(AnswerLevel);
 }
@@ -43,4 +44,8 @@ message AnswerProgram{
 
 message AnswerLevel{
     int64 answer = 1;
+}
+
+message PauseRequest{
+    bool active = 1;
 }

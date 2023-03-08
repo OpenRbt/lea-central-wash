@@ -1097,6 +1097,48 @@ func init() {
         }
       }
     },
+    "/pause-program": {
+      "post": {
+        "operationId": "programPause",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgProgramPause",
+              "required": [
+                "hash",
+                "active"
+              ],
+              "properties": {
+                "active": {
+                  "type": "boolean"
+                },
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/ping": {
       "get": {
         "operationId": "getPing",
@@ -4648,6 +4690,48 @@ func init() {
           },
           "404": {
             "description": "not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/pause-program": {
+      "post": {
+        "operationId": "programPause",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgProgramPause",
+              "required": [
+                "hash",
+                "active"
+              ],
+              "properties": {
+                "active": {
+                  "type": "boolean"
+                },
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"

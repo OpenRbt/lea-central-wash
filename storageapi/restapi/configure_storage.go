@@ -230,6 +230,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.PressButtonNotImplemented()
 		})
 	}
+	if api.ProgramPauseHandler == nil {
+		api.ProgramPauseHandler = op.ProgramPauseHandlerFunc(func(params op.ProgramPauseParams) op.ProgramPauseResponder {
+			return op.ProgramPauseNotImplemented()
+		})
+	}
 	if api.ProgramsHandler == nil {
 		api.ProgramsHandler = op.ProgramsHandlerFunc(func(params op.ProgramsParams) op.ProgramsResponder {
 			return op.ProgramsNotImplemented()

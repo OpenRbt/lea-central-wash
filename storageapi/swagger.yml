@@ -2214,6 +2214,34 @@ paths:
         500:
           description: internal error
 
+  /pause-program:
+    post:
+      operationId: "programPause"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgProgramPause"
+            type: object
+            required:
+              - hash
+              - active
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+              active:
+                type: boolean
+      responses:
+        204:
+          description: OK
+        404:
+          description: not found
+          schema:
+            type: string
+        500:
+          description: internal error
+
   /getLevel:
     post:
       operationId: "GetLevel"

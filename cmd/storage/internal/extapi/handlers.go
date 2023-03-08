@@ -656,6 +656,28 @@ func (svc *service) run2Program(params op.Run2ProgramParams) op.Run2ProgramRespo
 	}
 }
 
+func (svc *service) programPause(params op.ProgramPauseParams) op.ProgramPauseResponder {
+	_, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		log.Info("programPause: StationID not found ", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	}
+
+	err = svc.app.ProgramPause(*params.Args.Active)
+
+	log.Info("Program Pause ", "Active: ", *params.Args.Active, "ip", params.HTTPRequest.RemoteAddr)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewProgramPauseNoContent()
+	case app.ErrNotFound:
+		log.PrintErr(err, "hash", params.Args.Hash, "Active", params.Args.Active, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewProgramPauseNotFound().WithPayload("Arduino not found")
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewProgramPauseInternalServerError()
+	}
+}
+
 func (svc *service) measureVolumeMilliliters(params op.MeasureVolumeMillilitersParams) op.MeasureVolumeMillilitersResponder {
 
 	err := svc.app.MeasureVolumeMilliliters(*params.Args.Volume)

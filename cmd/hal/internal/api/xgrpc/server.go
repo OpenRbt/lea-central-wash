@@ -60,4 +60,12 @@ func (h HalHandler) GetLevel(ctx context.Context, in *emptypb.Empty) (*AnswerLev
 	return &AnswerLevel{Answer: int64(level)}, nil
 }
 
+func (h HalHandler) ProgramPause(ctx context.Context, in *PauseRequest) (*AnswerCommand, error) {
+	err := h.hal.ProgramPause(in.Active)
+	if err != nil {
+		return &AnswerCommand{Answer: 1}, err
+	}
+	return &AnswerCommand{Answer: 1}, nil
+}
+
 func (h HalHandler) mustEmbedUnimplementedHardwareAccessLayerServer() {}
