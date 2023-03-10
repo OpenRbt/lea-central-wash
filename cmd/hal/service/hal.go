@@ -189,13 +189,14 @@ func (h *HardwareAccessLayer) MeasureVolumeMilliliters(cmd int) error {
 	return nil
 }
 
-func (h *HardwareAccessLayer) ProgramPause(active bool) error {
-	programPause = active
-	fmt.Println("Active: ", active)
+func (h *HardwareAccessLayer) ProgramPause(pause bool) error {
+	programPause = pause
+	fmt.Println("Pause: ", pause)
 	return nil
 }
 
 func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
+	programPause = false
 	ErrorCommandDispenser = nil
 	lastValue = "0"
 	countErrRead := 0
@@ -224,15 +225,15 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 		tick := time.Tick(210 * time.Millisecond)
 		var countErr int = 0
 		for {
-			if !programPause {
-				select {
-				case <-tick:
-					N, err := r.openPort.Read(buf)
-					if err == nil {
-						ans := string(buf[0 : N-2])
-						l, _ := strconv.ParseInt(lastValue, 10, 64)
-						v, _ := strconv.ParseInt(ans[1:N-3], 10, 64)
-						if v-l < 1 {
+			select {
+			case <-tick:
+				N, err := r.openPort.Read(buf)
+				if err == nil {
+					ans := string(buf[0 : N-2])
+					l, _ := strconv.ParseInt(lastValue, 10, 64)
+					v, _ := strconv.ParseInt(ans[1:N-3], 10, 64)
+					if v-l < 1 {
+						if !programPause { // If Pause = True, ignore Err Non-freezing
 							countErr += 1
 							if countErr >= 50 {
 								_, err = r.openPort.Write([]byte("ERR;"))
@@ -244,33 +245,33 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 									return ErrorCommandDispenser
 								}
 							}
-						} else {
-							countErr = 0
-							lastValue = ans[1 : N-3]
-						}
-						if ans[0] == 'F' {
-							fmt.Println("Finish command ", cmd, " Successfully!")
-							countErr = 0
-							lastValue = ans[1 : N-3]
-							_, err = r.openPort.Write([]byte("FOK;"))
-							if err != nil {
-								fmt.Println("Error in command FOK")
-								ErrorCommandDispenser = errors.New("Error in command FOK")
-								return ErrorCommandDispenser
-							}
-							return nil
 						}
 					} else {
-						countErrRead += 1
-						if countErrRead > 5 {
-							_, _ = r.openPort.Write([]byte("FOK;"))
-							fmt.Println("Error read answer")
-							ErrorCommandDispenser = errors.New("Error in read answer from Dispenser")
-							fmt.Println("Error in command ", cmd)
-							return err
-						} else {
-							countErrRead = 0
+						countErr = 0
+						lastValue = ans[1 : N-3]
+					}
+					if ans[0] == 'F' {
+						fmt.Println("Finish command ", cmd, " Successfully!")
+						countErr = 0
+						lastValue = ans[1 : N-3]
+						_, err = r.openPort.Write([]byte("FOK;"))
+						if err != nil {
+							fmt.Println("Error in command FOK")
+							ErrorCommandDispenser = errors.New("Error in command FOK")
+							return ErrorCommandDispenser
 						}
+						return nil
+					}
+				} else {
+					countErrRead += 1
+					if countErrRead > 5 {
+						_, _ = r.openPort.Write([]byte("FOK;"))
+						fmt.Println("Error read answer")
+						ErrorCommandDispenser = errors.New("Error in read answer from Dispenser")
+						fmt.Println("Error in command ", cmd)
+						return err
+					} else {
+						countErrRead = 0
 					}
 				}
 			}

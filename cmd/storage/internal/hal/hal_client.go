@@ -92,9 +92,9 @@ func (c *Client) GetLevel() (int64, error) {
 	return com.Answer, err
 }
 
-func (c *Client) ProgramPause(active bool) (err error) {
+func (c *Client) ProgramPause(pause bool) (err error) {
 	com := xgrpc.PauseRequest{
-		Active: active,
+		Pause: pause,
 	}
 
 	ctx := context.Background()

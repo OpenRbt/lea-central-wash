@@ -1110,14 +1110,14 @@ func init() {
               "title": "ArgProgramPause",
               "required": [
                 "hash",
-                "active"
+                "pause"
               ],
               "properties": {
-                "active": {
-                  "type": "boolean"
-                },
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "pause": {
+                  "type": "boolean"
                 }
               }
             }
@@ -4710,14 +4710,14 @@ func init() {
               "title": "ArgProgramPause",
               "required": [
                 "hash",
-                "active"
+                "pause"
               ],
               "properties": {
-                "active": {
-                  "type": "boolean"
-                },
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "pause": {
+                  "type": "boolean"
                 }
               }
             }

@@ -47,5 +47,5 @@ message AnswerLevel{
 }
 
 message PauseRequest{
-    bool active = 1;
+    bool pause = 1;
 }

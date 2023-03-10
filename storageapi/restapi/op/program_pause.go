@@ -69,26 +69,26 @@ func (o *ProgramPause) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // swagger:model ProgramPauseBody
 type ProgramPauseBody struct {
 
-	// active
-	// Required: true
-	Active *bool `json:"active"`
-
 	// hash
 	// Required: true
 	Hash *model.Hash `json:"hash"`
+
+	// pause
+	// Required: true
+	Pause *bool `json:"pause"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
 func (o *ProgramPauseBody) UnmarshalJSON(data []byte) error {
 	var props struct {
 
-		// active
-		// Required: true
-		Active *bool `json:"active"`
-
 		// hash
 		// Required: true
 		Hash *model.Hash `json:"hash"`
+
+		// pause
+		// Required: true
+		Pause *bool `json:"pause"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -97,8 +97,8 @@ func (o *ProgramPauseBody) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	o.Active = props.Active
 	o.Hash = props.Hash
+	o.Pause = props.Pause
 	return nil
 }
 
@@ -106,26 +106,17 @@ func (o *ProgramPauseBody) UnmarshalJSON(data []byte) error {
 func (o *ProgramPauseBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateActive(formats); err != nil {
+	if err := o.validateHash(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := o.validateHash(formats); err != nil {
+	if err := o.validatePause(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (o *ProgramPauseBody) validateActive(formats strfmt.Registry) error {
-
-	if err := validate.Required("args"+"."+"active", "body", o.Active); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -148,6 +139,15 @@ func (o *ProgramPauseBody) validateHash(formats strfmt.Registry) error {
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (o *ProgramPauseBody) validatePause(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"pause", "body", o.Pause); err != nil {
+		return err
 	}
 
 	return nil

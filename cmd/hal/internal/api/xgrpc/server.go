@@ -61,7 +61,7 @@ func (h HalHandler) GetLevel(ctx context.Context, in *emptypb.Empty) (*AnswerLev
 }
 
 func (h HalHandler) ProgramPause(ctx context.Context, in *PauseRequest) (*AnswerCommand, error) {
-	err := h.hal.ProgramPause(in.Active)
+	err := h.hal.ProgramPause(in.Pause)
 	if err != nil {
 		return &AnswerCommand{Answer: 1}, err
 	}

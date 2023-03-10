@@ -2226,11 +2226,11 @@ paths:
             type: object
             required:
               - hash
-              - active
+              - pause
             properties:
               hash:
                 $ref: '#/definitions/Hash'
-              active:
+              pause:
                 type: boolean
       responses:
         204:

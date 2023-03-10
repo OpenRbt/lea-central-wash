@@ -662,15 +662,15 @@ func (svc *service) programPause(params op.ProgramPauseParams) op.ProgramPauseRe
 		log.Info("programPause: StationID not found ", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 	}
 
-	err = svc.app.ProgramPause(*params.Args.Active)
+	err = svc.app.ProgramPause(*params.Args.Pause)
 
-	log.Info("Program Pause ", "Active: ", *params.Args.Active, "ip", params.HTTPRequest.RemoteAddr)
+	log.Info("Program Pause ", "Pause: ", *params.Args.Pause, "ip", params.HTTPRequest.RemoteAddr)
 
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewProgramPauseNoContent()
 	case app.ErrNotFound:
-		log.PrintErr(err, "hash", params.Args.Hash, "Active", params.Args.Active, "ip", params.HTTPRequest.RemoteAddr)
+		log.PrintErr(err, "hash", params.Args.Hash, "Pause", params.Args.Pause, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewProgramPauseNotFound().WithPayload("Arduino not found")
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
