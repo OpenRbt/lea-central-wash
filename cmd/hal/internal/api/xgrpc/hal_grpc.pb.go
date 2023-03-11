@@ -21,7 +21,7 @@ const _ = grpc.SupportPackageIsVersion7
 type HardwareAccessLayerClient interface {
 	RunProgram(ctx context.Context, in *Options, opts ...grpc.CallOption) (*AnswerProgram, error)
 	MeasureVolumeMilliliters(ctx context.Context, in *OptionsCommand, opts ...grpc.CallOption) (*AnswerCommand, error)
-	ProgramPause(ctx context.Context, in *PauseRequest, opts ...grpc.CallOption) (*AnswerCommand, error)
+	Stop(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AnswerCommand, error)
 	Volume(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Answer, error)
 	GetLevel(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AnswerLevel, error)
 }
@@ -52,9 +52,9 @@ func (c *hardwareAccessLayerClient) MeasureVolumeMilliliters(ctx context.Context
 	return out, nil
 }
 
-func (c *hardwareAccessLayerClient) ProgramPause(ctx context.Context, in *PauseRequest, opts ...grpc.CallOption) (*AnswerCommand, error) {
+func (c *hardwareAccessLayerClient) Stop(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AnswerCommand, error) {
 	out := new(AnswerCommand)
-	err := c.cc.Invoke(ctx, "/xgrpc.HardwareAccessLayer/ProgramPause", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/xgrpc.HardwareAccessLayer/Stop", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func (c *hardwareAccessLayerClient) GetLevel(ctx context.Context, in *emptypb.Em
 type HardwareAccessLayerServer interface {
 	RunProgram(context.Context, *Options) (*AnswerProgram, error)
 	MeasureVolumeMilliliters(context.Context, *OptionsCommand) (*AnswerCommand, error)
-	ProgramPause(context.Context, *PauseRequest) (*AnswerCommand, error)
+	Stop(context.Context, *emptypb.Empty) (*AnswerCommand, error)
 	Volume(context.Context, *emptypb.Empty) (*Answer, error)
 	GetLevel(context.Context, *emptypb.Empty) (*AnswerLevel, error)
 	mustEmbedUnimplementedHardwareAccessLayerServer()
@@ -101,8 +101,8 @@ func (UnimplementedHardwareAccessLayerServer) RunProgram(context.Context, *Optio
 func (UnimplementedHardwareAccessLayerServer) MeasureVolumeMilliliters(context.Context, *OptionsCommand) (*AnswerCommand, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MeasureVolumeMilliliters not implemented")
 }
-func (UnimplementedHardwareAccessLayerServer) ProgramPause(context.Context, *PauseRequest) (*AnswerCommand, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProgramPause not implemented")
+func (UnimplementedHardwareAccessLayerServer) Stop(context.Context, *emptypb.Empty) (*AnswerCommand, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Stop not implemented")
 }
 func (UnimplementedHardwareAccessLayerServer) Volume(context.Context, *emptypb.Empty) (*Answer, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Volume not implemented")
@@ -159,20 +159,20 @@ func _HardwareAccessLayer_MeasureVolumeMilliliters_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _HardwareAccessLayer_ProgramPause_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PauseRequest)
+func _HardwareAccessLayer_Stop_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HardwareAccessLayerServer).ProgramPause(ctx, in)
+		return srv.(HardwareAccessLayerServer).Stop(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/xgrpc.HardwareAccessLayer/ProgramPause",
+		FullMethod: "/xgrpc.HardwareAccessLayer/Stop",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HardwareAccessLayerServer).ProgramPause(ctx, req.(*PauseRequest))
+		return srv.(HardwareAccessLayerServer).Stop(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -229,8 +229,8 @@ var HardwareAccessLayer_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _HardwareAccessLayer_MeasureVolumeMilliliters_Handler,
 		},
 		{
-			MethodName: "ProgramPause",
-			Handler:    _HardwareAccessLayer_ProgramPause_Handler,
+			MethodName: "Stop",
+			Handler:    _HardwareAccessLayer_Stop_Handler,
 		},
 		{
 			MethodName: "Volume",

@@ -1097,48 +1097,6 @@ func init() {
         }
       }
     },
-    "/pause-program": {
-      "post": {
-        "operationId": "programPause",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "title": "ArgProgramPause",
-              "required": [
-                "hash",
-                "pause"
-              ],
-              "properties": {
-                "hash": {
-                  "$ref": "#/definitions/Hash"
-                },
-                "pause": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "not found",
-            "schema": {
-              "type": "string"
-            }
-          },
-          "500": {
-            "description": "internal error"
-          }
-        }
-      }
-    },
     "/ping": {
       "get": {
         "operationId": "getPing",
@@ -2448,6 +2406,44 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/stop-program": {
+      "post": {
+        "operationId": "programStop",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgProgramPause",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"
@@ -4697,48 +4693,6 @@ func init() {
         }
       }
     },
-    "/pause-program": {
-      "post": {
-        "operationId": "programPause",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "title": "ArgProgramPause",
-              "required": [
-                "hash",
-                "pause"
-              ],
-              "properties": {
-                "hash": {
-                  "$ref": "#/definitions/Hash"
-                },
-                "pause": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "not found",
-            "schema": {
-              "type": "string"
-            }
-          },
-          "500": {
-            "description": "internal error"
-          }
-        }
-      }
-    },
     "/ping": {
       "get": {
         "operationId": "getPing",
@@ -6032,6 +5986,44 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/stop-program": {
+      "post": {
+        "operationId": "programStop",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgProgramPause",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"

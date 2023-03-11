@@ -60,8 +60,8 @@ func (h HalHandler) GetLevel(ctx context.Context, in *emptypb.Empty) (*AnswerLev
 	return &AnswerLevel{Answer: int64(level)}, nil
 }
 
-func (h HalHandler) ProgramPause(ctx context.Context, in *PauseRequest) (*AnswerCommand, error) {
-	err := h.hal.ProgramPause(in.Pause)
+func (h HalHandler) Stop(ctx context.Context, in *emptypb.Empty) (*AnswerCommand, error) {
+	err := h.hal.ProgramStop()
 	if err != nil {
 		return &AnswerCommand{Answer: 1}, err
 	}

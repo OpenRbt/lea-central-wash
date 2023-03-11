@@ -2214,9 +2214,9 @@ paths:
         500:
           description: internal error
 
-  /pause-program:
+  /stop-program:
     post:
-      operationId: "programPause"
+      operationId: "programStop"
       parameters:
         - name: args
           required: true
@@ -2226,12 +2226,9 @@ paths:
             type: object
             required:
               - hash
-              - pause
             properties:
               hash:
                 $ref: '#/definitions/Hash'
-              pause:
-                type: boolean
       responses:
         204:
           description: OK

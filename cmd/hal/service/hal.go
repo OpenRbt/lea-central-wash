@@ -25,12 +25,6 @@ var (
 	ErrWrongAnswer = errors.New("wrong answer from the board")
 )
 
-var programPause bool = false
-
-var lastValue string = "0"
-
-var ErrorCommandDispenser error = nil
-
 // PostError describes an error happened to a post
 type PostError struct {
 	PostNumber    int
@@ -64,10 +58,15 @@ type ports struct {
 }
 
 type Rev1DispencerBoard struct {
-	osPath     string
-	openPort   *serial.Port
-	toRemove   bool
-	errorCount int
+	portsMu               sync.Mutex
+	osPath                string
+	openPort              *serial.Port
+	toRemove              bool
+	errorCount            int
+	lastVolume            string
+	allowedPing           bool
+	stopProgram           bool
+	ErrorCommandDispenser error
 }
 
 // NewRev2Board is a constructor
@@ -84,9 +83,12 @@ func NewRev2Board(osPath string, openPort *serial.Port) *Rev2Board {
 // NewRevSensor is a constructor
 func NewDispencerBoard(osPath string, openPort *serial.Port) *Rev1DispencerBoard {
 	return &Rev1DispencerBoard{
-		osPath:   osPath,
-		openPort: openPort,
-		toRemove: false,
+		osPath:                osPath,
+		openPort:              openPort,
+		toRemove:              false,
+		allowedPing:           true,
+		stopProgram:           false,
+		ErrorCommandDispenser: nil,
 	}
 }
 
@@ -132,17 +134,23 @@ func (r *Rev1DispencerBoard) workingLoop() {
 	for {
 		select {
 		case <-tick:
-			err := r.SendPing()
-			if err != nil {
-				r.errorCount++
-				if r.errorCount >= 5 {
-					fmt.Println("Del")
-					r.toRemove = true
-					return
+			r.portsMu.Lock()
+			if r.allowedPing {
+				err := r.SendPing()
+				if err != nil {
+					r.errorCount++
+					if r.errorCount >= 5 {
+						fmt.Println("Del")
+						r.toRemove = true
+						return
+					}
+				} else {
+					r.errorCount = 0
 				}
 			} else {
-				r.errorCount = 0
+				r.allowedPing = true
 			}
+			r.portsMu.Unlock()
 		}
 	}
 }
@@ -175,10 +183,12 @@ func (r *Rev1DispencerBoard) getLevel() int {
 }
 
 func (h *HardwareAccessLayer) Volume() app.DispenserStatus {
-	l, _ := strconv.ParseInt(lastValue, 10, 64)
+	h.dispencer.portsMu.Lock()
+	l, _ := strconv.ParseInt(h.dispencer.lastVolume, 10, 64)
+	defer h.dispencer.portsMu.Unlock()
 	return app.DispenserStatus{
 		Milliliters:           l,
-		ErrorCommandDispenser: ErrorCommandDispenser,
+		ErrorCommandDispenser: h.dispencer.ErrorCommandDispenser,
 	}
 }
 
@@ -189,16 +199,19 @@ func (h *HardwareAccessLayer) MeasureVolumeMilliliters(cmd int) error {
 	return nil
 }
 
-func (h *HardwareAccessLayer) ProgramPause(pause bool) error {
-	programPause = pause
-	fmt.Println("Pause: ", pause)
+func (h *HardwareAccessLayer) ProgramStop() error {
+	h.dispencer.portsMu.Lock()
+	defer h.dispencer.portsMu.Unlock()
+	h.dispencer.stopProgram = true
 	return nil
 }
 
 func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
-	programPause = false
-	ErrorCommandDispenser = nil
-	lastValue = "0"
+	r.portsMu.Lock()
+	defer r.portsMu.Unlock()
+	r.allowedPing = false
+	r.ErrorCommandDispenser = nil
+	r.lastVolume = "0"
 	countErrRead := 0
 	buf := make([]byte, 32)
 	cmdd := "S" + strconv.Itoa(cmd)
@@ -207,14 +220,14 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 		_, err := r.openPort.Write([]byte(cmdd))
 		if err != nil {
 			fmt.Println("Error in command ", cmd)
-			ErrorCommandDispenser = err
+			r.ErrorCommandDispenser = err
 		} else {
 			N, err := r.openPort.Read(buf)
 			if err == nil {
 				ans := string(buf[0 : N-2])
 				if ans == "SOK;" {
 					fmt.Println("Start command ", cmd)
-					ErrorCommandDispenser = nil
+					r.ErrorCommandDispenser = nil
 					exi = true
 					break
 				}
@@ -227,38 +240,46 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 		for {
 			select {
 			case <-tick:
+				r.allowedPing = false
+				if r.stopProgram {
+					_, err := r.openPort.Write([]byte("FOK;"))
+					if err != nil {
+						fmt.Println("Error in command FOK")
+						r.ErrorCommandDispenser = errors.New("Error in command FOK")
+						return r.ErrorCommandDispenser
+					}
+					return nil
+				}
 				N, err := r.openPort.Read(buf)
 				if err == nil {
 					ans := string(buf[0 : N-2])
-					l, _ := strconv.ParseInt(lastValue, 10, 64)
+					l, _ := strconv.ParseInt(r.lastVolume, 10, 64)
 					v, _ := strconv.ParseInt(ans[1:N-3], 10, 64)
 					if v-l < 1 {
-						if !programPause { // If Pause = True, ignore Err Non-freezing
-							countErr += 1
-							if countErr >= 50 {
-								_, err = r.openPort.Write([]byte("ERR;"))
-								N, err = r.openPort.Read(buf)
-								ans = string(buf[0 : N-2])
-								if ans == "FOK;" {
-									ErrorCommandDispenser = errors.New("The non-freezing is over")
-									fmt.Println("The non-freezing is over")
-									return ErrorCommandDispenser
-								}
+						countErr += 1
+						if countErr >= 50 {
+							_, err = r.openPort.Write([]byte("ERR;"))
+							N, err = r.openPort.Read(buf)
+							ans = string(buf[0 : N-2])
+							if ans == "FOK;" {
+								r.ErrorCommandDispenser = errors.New("The non-freezing is over")
+								fmt.Println("The non-freezing is over")
+								return r.ErrorCommandDispenser
 							}
 						}
 					} else {
 						countErr = 0
-						lastValue = ans[1 : N-3]
+						r.lastVolume = ans[1 : N-3]
 					}
 					if ans[0] == 'F' {
 						fmt.Println("Finish command ", cmd, " Successfully!")
 						countErr = 0
-						lastValue = ans[1 : N-3]
+						r.lastVolume = ans[1 : N-3]
 						_, err = r.openPort.Write([]byte("FOK;"))
 						if err != nil {
 							fmt.Println("Error in command FOK")
-							ErrorCommandDispenser = errors.New("Error in command FOK")
-							return ErrorCommandDispenser
+							r.ErrorCommandDispenser = errors.New("Error in command FOK")
+							return r.ErrorCommandDispenser
 						}
 						return nil
 					}
@@ -267,7 +288,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 					if countErrRead > 5 {
 						_, _ = r.openPort.Write([]byte("FOK;"))
 						fmt.Println("Error read answer")
-						ErrorCommandDispenser = errors.New("Error in read answer from Dispenser")
+						r.ErrorCommandDispenser = errors.New("Error in read answer from Dispenser")
 						fmt.Println("Error in command ", cmd)
 						return err
 					} else {
@@ -277,9 +298,9 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 			}
 		}
 	}
-	ErrorCommandDispenser = errors.New("Dispenser is not responding")
+	r.ErrorCommandDispenser = errors.New("Dispenser is not responding")
 	fmt.Println("Dispenser is not responding")
-	return ErrorCommandDispenser
+	return r.ErrorCommandDispenser
 }
 
 // Run just runs a goroutine which controls a device

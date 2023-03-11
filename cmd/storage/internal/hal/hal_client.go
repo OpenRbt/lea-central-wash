@@ -92,13 +92,11 @@ func (c *Client) GetLevel() (int64, error) {
 	return com.Answer, err
 }
 
-func (c *Client) ProgramPause(pause bool) (err error) {
-	com := xgrpc.PauseRequest{
-		Pause: pause,
-	}
+func (c *Client) ProgramStop() (err error) {
+	ss := emptypb.Empty{}
 
 	ctx := context.Background()
 
-	_, err = c.hal.ProgramPause(ctx, &com)
+	_, err = c.hal.Stop(ctx, &ss)
 	return err
 }
