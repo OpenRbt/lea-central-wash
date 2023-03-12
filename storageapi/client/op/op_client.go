@@ -54,6 +54,8 @@ type ClientService interface {
 
 	DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteUserNoContent, error)
 
+	DispenserStop(params *DispenserStopParams, opts ...ClientOption) (*DispenserStopNoContent, error)
+
 	EditAdvertisingCampaign(params *EditAdvertisingCampaignParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EditAdvertisingCampaignNoContent, error)
 
 	GetConfigVarBool(params *GetConfigVarBoolParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetConfigVarBoolOK, error)
@@ -101,8 +103,6 @@ type ClientService interface {
 	Ping(params *PingParams, opts ...ClientOption) (*PingOK, error)
 
 	PressButton(params *PressButtonParams, opts ...ClientOption) (*PressButtonNoContent, error)
-
-	ProgramStop(params *ProgramStopParams, opts ...ClientOption) (*ProgramStopNoContent, error)
 
 	Programs(params *ProgramsParams, opts ...ClientOption) (*ProgramsOK, error)
 
@@ -636,6 +636,44 @@ func (a *Client) DeleteUser(params *DeleteUserParams, authInfo runtime.ClientAut
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for deleteUser: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+DispenserStop dispenser stop API
+*/
+func (a *Client) DispenserStop(params *DispenserStopParams, opts ...ClientOption) (*DispenserStopNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewDispenserStopParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "dispenserStop",
+		Method:             "POST",
+		PathPattern:        "/stop-dispenser",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &DispenserStopReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*DispenserStopNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for dispenserStop: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -1557,44 +1595,6 @@ func (a *Client) PressButton(params *PressButtonParams, opts ...ClientOption) (*
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for pressButton: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
-ProgramStop program stop API
-*/
-func (a *Client) ProgramStop(params *ProgramStopParams, opts ...ClientOption) (*ProgramStopNoContent, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewProgramStopParams()
-	}
-	op := &runtime.ClientOperation{
-		ID:                 "programStop",
-		Method:             "POST",
-		PathPattern:        "/stop-program",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &ProgramStopReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*ProgramStopNoContent)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for programStop: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

@@ -92,7 +92,7 @@ func (c *Client) GetLevel() (int64, error) {
 	return com.Answer, err
 }
 
-func (c *Client) ProgramStop() (err error) {
+func (c *Client) DispenserStop() (err error) {
 	ss := emptypb.Empty{}
 
 	ctx := context.Background()

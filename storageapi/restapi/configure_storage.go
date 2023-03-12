@@ -110,6 +110,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.DeleteUserNotImplemented()
 		})
 	}
+	if api.DispenserStopHandler == nil {
+		api.DispenserStopHandler = op.DispenserStopHandlerFunc(func(params op.DispenserStopParams) op.DispenserStopResponder {
+			return op.DispenserStopNotImplemented()
+		})
+	}
 	if api.EditAdvertisingCampaignHandler == nil {
 		api.EditAdvertisingCampaignHandler = op.EditAdvertisingCampaignHandlerFunc(func(params op.EditAdvertisingCampaignParams, principal *storageapi.Profile) op.EditAdvertisingCampaignResponder {
 			return op.EditAdvertisingCampaignNotImplemented()
@@ -228,11 +233,6 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.PressButtonHandler == nil {
 		api.PressButtonHandler = op.PressButtonHandlerFunc(func(params op.PressButtonParams) op.PressButtonResponder {
 			return op.PressButtonNotImplemented()
-		})
-	}
-	if api.ProgramStopHandler == nil {
-		api.ProgramStopHandler = op.ProgramStopHandlerFunc(func(params op.ProgramStopParams) op.ProgramStopResponder {
-			return op.ProgramStopNotImplemented()
 		})
 	}
 	if api.ProgramsHandler == nil {

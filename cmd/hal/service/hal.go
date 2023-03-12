@@ -185,7 +185,7 @@ func (r *Rev1DispencerBoard) getLevel() int {
 func (h *HardwareAccessLayer) Volume() app.DispenserStatus {
 	h.dispencer.portsMu.Lock()
 	l, _ := strconv.ParseInt(h.dispencer.lastVolume, 10, 64)
-	defer h.dispencer.portsMu.Unlock()
+	h.dispencer.portsMu.Unlock()
 	return app.DispenserStatus{
 		Milliliters:           l,
 		ErrorCommandDispenser: h.dispencer.ErrorCommandDispenser,
@@ -199,19 +199,19 @@ func (h *HardwareAccessLayer) MeasureVolumeMilliliters(cmd int) error {
 	return nil
 }
 
-func (h *HardwareAccessLayer) ProgramStop() error {
+func (h *HardwareAccessLayer) DispenserStop() error {
 	h.dispencer.portsMu.Lock()
-	defer h.dispencer.portsMu.Unlock()
 	h.dispencer.stopProgram = true
+	h.dispencer.portsMu.Unlock()
 	return nil
 }
 
 func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 	r.portsMu.Lock()
-	defer r.portsMu.Unlock()
 	r.allowedPing = false
 	r.ErrorCommandDispenser = nil
 	r.lastVolume = "0"
+	r.portsMu.Unlock()
 	countErrRead := 0
 	buf := make([]byte, 32)
 	cmdd := "S" + strconv.Itoa(cmd)
@@ -220,14 +220,18 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 		_, err := r.openPort.Write([]byte(cmdd))
 		if err != nil {
 			fmt.Println("Error in command ", cmd)
+			r.portsMu.Lock()
 			r.ErrorCommandDispenser = err
+			r.portsMu.Unlock()
 		} else {
 			N, err := r.openPort.Read(buf)
 			if err == nil {
 				ans := string(buf[0 : N-2])
 				if ans == "SOK;" {
 					fmt.Println("Start command ", cmd)
+					r.portsMu.Lock()
 					r.ErrorCommandDispenser = nil
+					r.portsMu.Unlock()
 					exi = true
 					break
 				}
@@ -240,12 +244,16 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 		for {
 			select {
 			case <-tick:
+				r.portsMu.Lock()
 				r.allowedPing = false
+				r.portsMu.Unlock()
 				if r.stopProgram {
 					_, err := r.openPort.Write([]byte("FOK;"))
 					if err != nil {
 						fmt.Println("Error in command FOK")
+						r.portsMu.Lock()
 						r.ErrorCommandDispenser = errors.New("Error in command FOK")
+						r.portsMu.Unlock()
 						return r.ErrorCommandDispenser
 					}
 					return nil
@@ -253,7 +261,9 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 				N, err := r.openPort.Read(buf)
 				if err == nil {
 					ans := string(buf[0 : N-2])
+					r.portsMu.Lock()
 					l, _ := strconv.ParseInt(r.lastVolume, 10, 64)
+					r.portsMu.Unlock()
 					v, _ := strconv.ParseInt(ans[1:N-3], 10, 64)
 					if v-l < 1 {
 						countErr += 1
@@ -262,23 +272,31 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 							N, err = r.openPort.Read(buf)
 							ans = string(buf[0 : N-2])
 							if ans == "FOK;" {
+								r.portsMu.Lock()
 								r.ErrorCommandDispenser = errors.New("The non-freezing is over")
+								r.portsMu.Unlock()
 								fmt.Println("The non-freezing is over")
 								return r.ErrorCommandDispenser
 							}
 						}
 					} else {
 						countErr = 0
+						r.portsMu.Lock()
 						r.lastVolume = ans[1 : N-3]
+						r.portsMu.Unlock()
 					}
 					if ans[0] == 'F' {
 						fmt.Println("Finish command ", cmd, " Successfully!")
 						countErr = 0
+						r.portsMu.Lock()
 						r.lastVolume = ans[1 : N-3]
+						r.portsMu.Unlock()
 						_, err = r.openPort.Write([]byte("FOK;"))
 						if err != nil {
 							fmt.Println("Error in command FOK")
+							r.portsMu.Lock()
 							r.ErrorCommandDispenser = errors.New("Error in command FOK")
+							r.portsMu.Unlock()
 							return r.ErrorCommandDispenser
 						}
 						return nil
@@ -288,7 +306,9 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 					if countErrRead > 5 {
 						_, _ = r.openPort.Write([]byte("FOK;"))
 						fmt.Println("Error read answer")
+						r.portsMu.Lock()
 						r.ErrorCommandDispenser = errors.New("Error in read answer from Dispenser")
+						r.portsMu.Unlock()
 						fmt.Println("Error in command ", cmd)
 						return err
 					} else {
@@ -298,7 +318,9 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 			}
 		}
 	}
+	r.portsMu.Lock()
 	r.ErrorCommandDispenser = errors.New("Dispenser is not responding")
+	r.portsMu.Unlock()
 	fmt.Println("Dispenser is not responding")
 	return r.ErrorCommandDispenser
 }

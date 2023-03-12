@@ -102,6 +102,6 @@ func (a *app) GetLevel() (level int64, err error) {
 	return level, nil
 }
 
-func (a *app) ProgramStop() (err error) {
-	return a.hardware.ProgramStop()
+func (a *app) DispenserStop() (err error) {
+	return a.hardware.DispenserStop()
 }

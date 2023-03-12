@@ -2214,15 +2214,15 @@ paths:
         500:
           description: internal error
 
-  /stop-program:
+  /stop-dispenser:
     post:
-      operationId: "programStop"
+      operationId: "dispenserStop"
       parameters:
         - name: args
           required: true
           in: body
           schema:
-            title: "ArgProgramPause"
+            title: "ArgDispenserStop"
             type: object
             required:
               - hash

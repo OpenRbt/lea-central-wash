@@ -61,7 +61,7 @@ func (h HalHandler) GetLevel(ctx context.Context, in *emptypb.Empty) (*AnswerLev
 }
 
 func (h HalHandler) Stop(ctx context.Context, in *emptypb.Empty) (*AnswerCommand, error) {
-	err := h.hal.ProgramStop()
+	err := h.hal.DispenserStop()
 	if err != nil {
 		return &AnswerCommand{Answer: 1}, err
 	}

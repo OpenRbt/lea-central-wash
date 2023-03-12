@@ -16,7 +16,7 @@ type HardwareAccessLayer interface {
 	MeasureVolumeMilliliters(cmd int) error
 	Volume() DispenserStatus
 	GetLevel() int
-	ProgramStop() error
+	DispenserStop() error
 }
 
 // ControlBoard represents one board (even virtual) to control relays

@@ -656,25 +656,25 @@ func (svc *service) run2Program(params op.Run2ProgramParams) op.Run2ProgramRespo
 	}
 }
 
-func (svc *service) programStop(params op.ProgramStopParams) op.ProgramStopResponder {
+func (svc *service) dispenserStop(params op.DispenserStopParams) op.DispenserStopResponder {
 	_, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
-		log.Info("programPause: StationID not found ", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		log.Info("DispenserPause: StationID not found ", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 	}
 
-	err = svc.app.ProgramStop()
+	err = svc.app.DispenserStop()
 
 	log.Info("Program Pause ", "ip", params.HTTPRequest.RemoteAddr)
 
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewProgramStopNoContent()
+		return op.NewDispenserStopNoContent()
 	case app.ErrNotFound:
 		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewProgramStopNotFound().WithPayload("Arduino not found")
+		return op.NewDispenserStopNotFound().WithPayload("Arduino not found")
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
-		return op.NewProgramStopInternalServerError()
+		return op.NewDispenserStopInternalServerError()
 	}
 }
 

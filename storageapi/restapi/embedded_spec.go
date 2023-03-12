@@ -2413,9 +2413,9 @@ func init() {
         }
       }
     },
-    "/stop-program": {
+    "/stop-dispenser": {
       "post": {
-        "operationId": "programStop",
+        "operationId": "dispenserStop",
         "parameters": [
           {
             "name": "args",
@@ -2423,7 +2423,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgProgramPause",
+              "title": "ArgDispenserStop",
               "required": [
                 "hash"
               ],
@@ -5993,9 +5993,9 @@ func init() {
         }
       }
     },
-    "/stop-program": {
+    "/stop-dispenser": {
       "post": {
-        "operationId": "programStop",
+        "operationId": "dispenserStop",
         "parameters": [
           {
             "name": "args",
@@ -6003,7 +6003,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "ArgProgramPause",
+              "title": "ArgDispenserStop",
               "required": [
                 "hash"
               ],

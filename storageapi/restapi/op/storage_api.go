@@ -80,6 +80,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		DeleteUserHandler: DeleteUserHandlerFunc(func(params DeleteUserParams, principal *storageapi.Profile) DeleteUserResponder {
 			return DeleteUserNotImplemented()
 		}),
+		DispenserStopHandler: DispenserStopHandlerFunc(func(params DispenserStopParams) DispenserStopResponder {
+			return DispenserStopNotImplemented()
+		}),
 		EditAdvertisingCampaignHandler: EditAdvertisingCampaignHandlerFunc(func(params EditAdvertisingCampaignParams, principal *storageapi.Profile) EditAdvertisingCampaignResponder {
 			return EditAdvertisingCampaignNotImplemented()
 		}),
@@ -151,9 +154,6 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		PressButtonHandler: PressButtonHandlerFunc(func(params PressButtonParams) PressButtonResponder {
 			return PressButtonNotImplemented()
-		}),
-		ProgramStopHandler: ProgramStopHandlerFunc(func(params ProgramStopParams) ProgramStopResponder {
-			return ProgramStopNotImplemented()
 		}),
 		ProgramsHandler: ProgramsHandlerFunc(func(params ProgramsParams) ProgramsResponder {
 			return ProgramsNotImplemented()
@@ -331,6 +331,8 @@ type StorageAPI struct {
 	DelStationHandler DelStationHandler
 	// DeleteUserHandler sets the operation handler for the delete user operation
 	DeleteUserHandler DeleteUserHandler
+	// DispenserStopHandler sets the operation handler for the dispenser stop operation
+	DispenserStopHandler DispenserStopHandler
 	// EditAdvertisingCampaignHandler sets the operation handler for the edit advertising campaign operation
 	EditAdvertisingCampaignHandler EditAdvertisingCampaignHandler
 	// GetConfigVarBoolHandler sets the operation handler for the get config var bool operation
@@ -379,8 +381,6 @@ type StorageAPI struct {
 	PingHandler PingHandler
 	// PressButtonHandler sets the operation handler for the press button operation
 	PressButtonHandler PressButtonHandler
-	// ProgramStopHandler sets the operation handler for the program stop operation
-	ProgramStopHandler ProgramStopHandler
 	// ProgramsHandler sets the operation handler for the programs operation
 	ProgramsHandler ProgramsHandler
 	// ResetStationStatHandler sets the operation handler for the reset station stat operation
@@ -566,6 +566,9 @@ func (o *StorageAPI) Validate() error {
 	if o.DeleteUserHandler == nil {
 		unregistered = append(unregistered, "DeleteUserHandler")
 	}
+	if o.DispenserStopHandler == nil {
+		unregistered = append(unregistered, "DispenserStopHandler")
+	}
 	if o.EditAdvertisingCampaignHandler == nil {
 		unregistered = append(unregistered, "EditAdvertisingCampaignHandler")
 	}
@@ -637,9 +640,6 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.PressButtonHandler == nil {
 		unregistered = append(unregistered, "PressButtonHandler")
-	}
-	if o.ProgramStopHandler == nil {
-		unregistered = append(unregistered, "ProgramStopHandler")
 	}
 	if o.ProgramsHandler == nil {
 		unregistered = append(unregistered, "ProgramsHandler")
@@ -893,6 +893,10 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/stop-dispenser"] = NewDispenserStop(o.context, o.DispenserStopHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/edit-advertising-campaign"] = NewEditAdvertisingCampaign(o.context, o.EditAdvertisingCampaignHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -986,10 +990,6 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/press-button"] = NewPressButton(o.context, o.PressButtonHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/stop-program"] = NewProgramStop(o.context, o.ProgramStopHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
