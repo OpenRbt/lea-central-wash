@@ -101,8 +101,8 @@ func (a *app) GetVolumeDispenser() (znach int64, status string, err error) {
 	a.stationsMutex.Lock()
 	vCorr := a.volumeCorrection
 	a.stationsMutex.Unlock()
-	znach = zhach / int64(vCorr) * 1000
-	return znach, status, err
+	volume := int64(float64(zhach) / float64(vCorr) * 1000)
+	return volume, status, err
 }
 
 func (a *app) GetLevel() (level int64, err error) {
