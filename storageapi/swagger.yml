@@ -2199,10 +2199,16 @@ paths:
             required:
               - hash
               - volume
+              - StartProgramID
+              - StopProgramID
             properties:
               hash:
                 $ref: '#/definitions/Hash'
               volume:
+                type: integer
+              StartProgramID:
+                type: integer
+              StopProgramID:
                 type: integer
       responses:
         204:
@@ -2226,9 +2232,12 @@ paths:
             type: object
             required:
               - hash
+              - StopProgramID
             properties:
               hash:
                 $ref: '#/definitions/Hash'
+              StopProgramID:
+                type: integer
       responses:
         204:
           description: OK

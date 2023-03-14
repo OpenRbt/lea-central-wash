@@ -97,9 +97,9 @@ type (
 
 		RunProgram(id StationID, programID int64, preflight bool) (err error)
 		Run2Program(id StationID, programID int64, programID2 int64, preflight bool) (err error)
-		MeasureVolumeMilliliters(volume int64) (err error)
+		MeasureVolumeMilliliters(volume int64, id StationID, StartProgramID int64, StopProgramID int64) (err error)
 		GetVolumeDispenser() (volume int64, status string, err error)
-		DispenserStop() (err error)
+		DispenserStop(id StationID, StopProgramID int64) (err error)
 		GetLevel() (level int64, err error)
 		PressButton(id StationID, buttonID int64) (err error)
 
@@ -219,8 +219,8 @@ type (
 	// HardwareAccessLayer describes an interface to access hardware control modules
 	HardwareAccessLayer interface {
 		RunProgram(id int32, cfg RelayConfig) (err error)
-		MeasureVolumeMilliliters(volume int64) (err error)
-		DispenserStop() (err error)
+		MeasureVolumeMilliliters(volume int64, id StationID, StartCfg RelayConfig, StopCfg RelayConfig) (err error)
+		DispenserStop(id StationID, cfg RelayConfig) (err error)
 		Volume() (volume int64, status string, err error)
 		GetLevel() (level int64, err error)
 	}

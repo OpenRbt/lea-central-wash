@@ -69,6 +69,14 @@ func (o *MeasureVolumeMilliliters) ServeHTTP(rw http.ResponseWriter, r *http.Req
 // swagger:model MeasureVolumeMillilitersBody
 type MeasureVolumeMillilitersBody struct {
 
+	// start program ID
+	// Required: true
+	StartProgramID *int64 `json:"StartProgramID"`
+
+	// stop program ID
+	// Required: true
+	StopProgramID *int64 `json:"StopProgramID"`
+
 	// hash
 	// Required: true
 	Hash *model.Hash `json:"hash"`
@@ -81,6 +89,14 @@ type MeasureVolumeMillilitersBody struct {
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
 func (o *MeasureVolumeMillilitersBody) UnmarshalJSON(data []byte) error {
 	var props struct {
+
+		// start program ID
+		// Required: true
+		StartProgramID *int64 `json:"StartProgramID"`
+
+		// stop program ID
+		// Required: true
+		StopProgramID *int64 `json:"StopProgramID"`
 
 		// hash
 		// Required: true
@@ -97,6 +113,8 @@ func (o *MeasureVolumeMillilitersBody) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
+	o.StartProgramID = props.StartProgramID
+	o.StopProgramID = props.StopProgramID
 	o.Hash = props.Hash
 	o.Volume = props.Volume
 	return nil
@@ -105,6 +123,14 @@ func (o *MeasureVolumeMillilitersBody) UnmarshalJSON(data []byte) error {
 // Validate validates this measure volume milliliters body
 func (o *MeasureVolumeMillilitersBody) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := o.validateStartProgramID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateStopProgramID(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := o.validateHash(formats); err != nil {
 		res = append(res, err)
@@ -117,6 +143,24 @@ func (o *MeasureVolumeMillilitersBody) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (o *MeasureVolumeMillilitersBody) validateStartProgramID(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"StartProgramID", "body", o.StartProgramID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *MeasureVolumeMillilitersBody) validateStopProgramID(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"StopProgramID", "body", o.StopProgramID); err != nil {
+		return err
+	}
+
 	return nil
 }
 

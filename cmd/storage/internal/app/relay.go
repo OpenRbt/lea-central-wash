@@ -88,8 +88,36 @@ func (a *app) Run2Program(id StationID, programID int64, programID2 int64, prefl
 	return a.hardware.RunProgram(int32(id), cfg)
 }
 
-func (a *app) MeasureVolumeMilliliters(volume int64) (err error) {
-	return a.hardware.MeasureVolumeMilliliters(volume)
+func (a *app) MeasureVolumeMilliliters(volume int64, id StationID, StartProgramID int64, StopProgramID int64) (err error) {
+	cfg1 := RelayConfig{
+		TimeoutSec: relayTimeoutSec,
+	}
+	if StartProgramID > 0 {
+		a.programsMutex.Lock()
+		program, ok := a.programs[StartProgramID]
+		a.programsMutex.Unlock()
+		if !ok {
+			return ErrNotFound
+		}
+		cfg1.MotorSpeedPercent = int(program.MotorSpeedPercent)
+		cfg1.Timings = program.Relays
+	}
+
+	cfg2 := RelayConfig{
+		TimeoutSec: relayTimeoutSec,
+	}
+	if StopProgramID > 0 {
+		a.programsMutex.Lock()
+		program, ok := a.programs[StopProgramID]
+		a.programsMutex.Unlock()
+		if !ok {
+			return ErrNotFound
+		}
+		cfg2.MotorSpeedPercent = int(program.MotorSpeedPercent)
+		cfg2.Timings = program.Relays
+	}
+
+	return a.hardware.MeasureVolumeMilliliters(volume, id, cfg1, cfg2)
 }
 
 func (a *app) GetVolumeDispenser() (znach int64, status string, err error) {
@@ -102,6 +130,19 @@ func (a *app) GetLevel() (level int64, err error) {
 	return level, nil
 }
 
-func (a *app) DispenserStop() (err error) {
-	return a.hardware.DispenserStop()
+func (a *app) DispenserStop(id StationID, StopProgramID int64) (err error) {
+	cfg := RelayConfig{
+		TimeoutSec: relayTimeoutSec,
+	}
+	if StopProgramID > 0 {
+		a.programsMutex.Lock()
+		program, ok := a.programs[StopProgramID]
+		a.programsMutex.Unlock()
+		if !ok {
+			return ErrNotFound
+		}
+		cfg.MotorSpeedPercent = int(program.MotorSpeedPercent)
+		cfg.Timings = program.Relays
+	}
+	return a.hardware.DispenserStop(id, cfg)
 }

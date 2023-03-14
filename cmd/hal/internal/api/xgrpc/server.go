@@ -40,7 +40,35 @@ func (h HalHandler) RunProgram(ctx context.Context, in *Options) (*AnswerProgram
 }
 
 func (h HalHandler) MeasureVolumeMilliliters(ctx context.Context, in *OptionsCommand) (*AnswerCommand, error) {
-	err := h.hal.MeasureVolumeMilliliters(int(in.Command))
+	StartRelay := []app.Relay{}
+	for _, entry := range in.StartRelays {
+		z := app.Relay{
+			ID:      int(entry.ID),
+			TimeOn:  int(entry.TimeOn),
+			TimeOff: int(entry.TimeOff),
+		}
+		StartRelay = append(StartRelay, z)
+	}
+
+	StopRelay := []app.Relay{}
+	for _, entry := range in.StopRelays {
+		z := app.Relay{
+			ID:      int(entry.ID),
+			TimeOn:  int(entry.TimeOn),
+			TimeOff: int(entry.TimeOff),
+		}
+		StopRelay = append(StopRelay, z)
+	}
+
+	err := h.hal.MeasureVolumeMilliliters(int(in.Command), in.StationId, app.RelayConfig{
+		MotorSpeedPercent: in.StartMotorSpeedPercent,
+		TimeoutSec:        in.StartTimeoutSec,
+		Timings:           StartRelay,
+	}, app.RelayConfig{
+		MotorSpeedPercent: in.StopMotorSpeedPercent,
+		TimeoutSec:        in.StopTimeoutSec,
+		Timings:           StopRelay,
+	})
 	if err != nil {
 		return &AnswerCommand{Answer: 1}, err
 	}
@@ -60,8 +88,22 @@ func (h HalHandler) GetLevel(ctx context.Context, in *emptypb.Empty) (*AnswerLev
 	return &AnswerLevel{Answer: int64(level)}, nil
 }
 
-func (h HalHandler) Stop(ctx context.Context, in *emptypb.Empty) (*AnswerCommand, error) {
-	err := h.hal.DispenserStop()
+func (h HalHandler) Stop(ctx context.Context, in *RequestStopDispenser) (*AnswerCommand, error) {
+	relay := []app.Relay{}
+	for _, entry := range in.Relays {
+		z := app.Relay{
+			ID:      int(entry.ID),
+			TimeOn:  int(entry.TimeOn),
+			TimeOff: int(entry.TimeOff),
+		}
+		relay = append(relay, z)
+	}
+
+	err := h.hal.DispenserStop(app.RelayConfig{
+		MotorSpeedPercent: in.MotorSpeedPercent,
+		TimeoutSec:        in.TimeoutSec,
+		Timings:           relay,
+	})
 	if err != nil {
 		return &AnswerCommand{Answer: 1}, err
 	}

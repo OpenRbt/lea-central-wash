@@ -67,6 +67,7 @@ type Rev1DispencerBoard struct {
 	allowedPing           bool
 	stopDispenser         bool
 	ErrorCommandDispenser error
+	CommandStopRe2Board   app.RelayConfig
 }
 
 // NewRev2Board is a constructor
@@ -208,6 +209,10 @@ func (r *Rev1DispencerBoard) workingLoop() {
 
 func (h *HardwareAccessLayer) GetLevel() int {
 	r := h.dispencer
+	if r == nil {
+		fmt.Println("Dispenser is nil")
+		return -1
+	}
 	return r.getLevel()
 }
 
@@ -253,24 +258,47 @@ func (r *Rev1DispencerBoard) volume() app.DispenserStatus {
 }
 
 // Run command for Arduino
-func (h *HardwareAccessLayer) MeasureVolumeMilliliters(cmd int) error {
+func (h *HardwareAccessLayer) MeasureVolumeMilliliters(cmd int, id int32, StartCfg app.RelayConfig, StopCfg app.RelayConfig) error {
 	r := h.dispencer
-	go r.measureVolumeMilliliters(cmd)
+	if r == nil {
+		return app.ErrNotFoundDispenser
+	}
+
+	board, err := h.ControlBoard(id)
+	if err != nil {
+		return err
+	}
+
+	r.resourcesMu.Lock()
+	r.CommandStopRe2Board = StopCfg
+	r.resourcesMu.Unlock()
+	go r.measureVolumeMilliliters(cmd, board)
+	board.RunConfig(StartCfg)
 	return nil
 }
 
-func (h *HardwareAccessLayer) DispenserStop() error {
-	h.dispencer.resourcesMu.Lock()
-	h.dispencer.stopDispenser = true
-	h.dispencer.resourcesMu.Unlock()
+func (h *HardwareAccessLayer) DispenserStop(cfg app.RelayConfig) error {
+	r := h.dispencer
+	if r == nil {
+		return app.ErrNotFoundDispenser
+	}
+	return r.dispenserStop(cfg)
+}
+
+func (r *Rev1DispencerBoard) dispenserStop(cfg app.RelayConfig) error {
+	r.resourcesMu.Lock()
+	r.stopDispenser = true
+	r.CommandStopRe2Board = cfg
+	r.resourcesMu.Unlock()
 	return nil
 }
 
-func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
+func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int, board app.ControlBoard) error {
 	r.SetAllowedPing(false)
 	r.SetLastVolume("0")
 	r.SetErrComandDispenser(nil)
 	countErrRead := 0
+	stopDispenser := 0
 	buf := make([]byte, 32)
 	cmdd := "S" + strconv.Itoa(cmd)
 	exi := false
@@ -300,13 +328,20 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 			case <-tick:
 				r.SetAllowedPing(false)
 				if r.GetStopDispenser() {
+					r.resourcesMu.Lock()
+					z := r.CommandStopRe2Board
+					r.resourcesMu.Unlock()
+					board.RunConfig(z)
 					_, err := r.openPort.Write([]byte("FOK;"))
 					if err != nil {
 						fmt.Println("Error in command FOK")
 						r.SetErrComandDispenser(app.ErrInCommandFok)
-						return r.GetErrComandDispenser()
+						return app.ErrInCommandFok
 					}
-					return nil
+					if stopDispenser > 0 {
+						return nil
+					}
+					stopDispenser++
 				}
 				N, err := r.openPort.Read(buf)
 				if err == nil {
@@ -322,7 +357,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 							if ans == "FOK;" {
 								r.SetErrComandDispenser(app.ErrNonFreezing)
 								fmt.Println("The non-freezing is over")
-								return r.GetErrComandDispenser()
+								return app.ErrNonFreezing
 							}
 						}
 					} else {
@@ -337,8 +372,12 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 						if err != nil {
 							r.SetErrComandDispenser(app.ErrInCommandFok)
 							fmt.Println("Error in command FOK")
-							return r.GetErrComandDispenser()
+							return app.ErrInCommandFok
 						}
+						r.resourcesMu.Lock()
+						z := r.CommandStopRe2Board
+						r.resourcesMu.Unlock()
+						board.RunConfig(z)
 						return nil
 					}
 				} else {
@@ -358,7 +397,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int) error {
 	}
 	r.SetErrComandDispenser(app.ErrDispenserNotRespond)
 	fmt.Println("Dispenser is not responding")
-	return r.GetErrComandDispenser()
+	return app.ErrDispenserNotRespond
 }
 
 // Run just runs a goroutine which controls a device

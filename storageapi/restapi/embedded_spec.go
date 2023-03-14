@@ -1349,9 +1349,17 @@ func init() {
               "title": "ArgMeasureVolumeMilliliters",
               "required": [
                 "hash",
-                "volume"
+                "volume",
+                "StartProgramID",
+                "StopProgramID"
               ],
               "properties": {
+                "StartProgramID": {
+                  "type": "integer"
+                },
+                "StopProgramID": {
+                  "type": "integer"
+                },
                 "hash": {
                   "$ref": "#/definitions/Hash"
                 },
@@ -2425,9 +2433,13 @@ func init() {
               "type": "object",
               "title": "ArgDispenserStop",
               "required": [
-                "hash"
+                "hash",
+                "StopProgramID"
               ],
               "properties": {
+                "StopProgramID": {
+                  "type": "integer"
+                },
                 "hash": {
                   "$ref": "#/definitions/Hash"
                 }
@@ -4945,9 +4957,17 @@ func init() {
               "title": "ArgMeasureVolumeMilliliters",
               "required": [
                 "hash",
-                "volume"
+                "volume",
+                "StartProgramID",
+                "StopProgramID"
               ],
               "properties": {
+                "StartProgramID": {
+                  "type": "integer"
+                },
+                "StopProgramID": {
+                  "type": "integer"
+                },
                 "hash": {
                   "$ref": "#/definitions/Hash"
                 },
@@ -6005,9 +6025,13 @@ func init() {
               "type": "object",
               "title": "ArgDispenserStop",
               "required": [
-                "hash"
+                "hash",
+                "StopProgramID"
               ],
               "properties": {
+                "StopProgramID": {
+                  "type": "integer"
+                },
                 "hash": {
                   "$ref": "#/definitions/Hash"
                 }

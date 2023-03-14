@@ -18,10 +18,10 @@ type HardwareAccessLayer interface {
 	Start()
 	ControlBoard(key int32) (ControlBoard, error)
 	RunProgram(id int32, cfg RelayConfig) (err error)
-	MeasureVolumeMilliliters(cmd int) error
+	MeasureVolumeMilliliters(cmd int, id int32, StartCfg RelayConfig, StopCfg RelayConfig) error
 	Volume() DispenserStatus
 	GetLevel() int
-	DispenserStop() error
+	DispenserStop(cfg RelayConfig) error
 }
 
 // ControlBoard represents one board (even virtual) to control relays
