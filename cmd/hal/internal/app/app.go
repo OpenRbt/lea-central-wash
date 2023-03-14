@@ -5,7 +5,12 @@ import (
 )
 
 var (
-	ErrNotFound = errors.New("not found")
+	ErrNotFound            = errors.New("not found")
+	ErrNotFoundDispenser   = errors.New("Not found Dispenser")
+	ErrNonFreezing         = errors.New("The non-freezing is over")
+	ErrInCommandFok        = errors.New("Error in command FOK")
+	ErrReadAnswerDispenser = errors.New("Error in read answer from Dispenser")
+	ErrDispenserNotRespond = errors.New("Dispenser is not responding")
 )
 
 // HardwareAccessLayer describes an interface to access hardware control modules
