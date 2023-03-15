@@ -19,6 +19,8 @@ const (
 // Auth describes user profile.
 type Auth = storageapi.Profile
 
+const ParameterNameVolumeCoef = "VOLUME_COEF"
+
 // Key aliases
 const (
 	TemperatureCurrent    = "curr_temp"
@@ -260,18 +262,27 @@ type app struct {
 	lastDiscountUpdate    int64
 	cfg                   AppConfig
 	cfgMutex              sync.Mutex
+	volumeCorrection      int
 }
 
 // New creates and returns new App.
 func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareAccessLayer) App {
 	appl := &app{
-		repo:       repo,
-		stations:   make(map[StationID]StationData),
-		kasseSvc:   kasseSvc,
-		weatherSvc: weatherSvc,
-		hardware:   hardware,
+		repo:             repo,
+		stations:         make(map[StationID]StationData),
+		kasseSvc:         kasseSvc,
+		weatherSvc:       weatherSvc,
+		hardware:         hardware,
+		volumeCorrection: 1000,
 	}
-	err := appl.setDefaultConfig()
+	stationConfig, err := appl.repo.GetStationConfigInt(ParameterNameVolumeCoef, 1)
+	if err != nil {
+		log.PrintErr(err)
+	}
+	appl.stationsMutex.Lock()
+	appl.volumeCorrection = int(stationConfig.Value)
+	appl.stationsMutex.Unlock()
+	err = appl.setDefaultConfig()
 	if err != nil {
 		log.PrintErr(err)
 	}

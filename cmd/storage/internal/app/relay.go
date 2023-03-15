@@ -1,7 +1,5 @@
 package app
 
-import "fmt"
-
 func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err error) {
 	cfg := RelayConfig{
 		TimeoutSec: relayTimeoutSec,
@@ -119,15 +117,21 @@ func (a *app) MeasureVolumeMilliliters(volume int64, id StationID, StartProgramI
 		cfg2.Timings = program.Relays
 	}
 
-	fmt.Println(cfg1.Timings)
-	fmt.Println(cfg2.Timings)
+	a.stationsMutex.Lock()
+	vCorr := a.volumeCorrection
+	a.stationsMutex.Unlock()
+	v := volume * int64(vCorr) / 1000
 
-	return a.hardware.MeasureVolumeMilliliters(volume, id, cfg1, cfg2)
+	return a.hardware.MeasureVolumeMilliliters(v, id, cfg1, cfg2)
 }
 
 func (a *app) GetVolumeDispenser() (znach int64, status string, err error) {
 	zhach, status, err := a.hardware.Volume()
-	return zhach, status, err
+	a.stationsMutex.Lock()
+	vCorr := a.volumeCorrection
+	a.stationsMutex.Unlock()
+	volume := int64(float64(zhach) / float64(vCorr) * 1000)
+	return volume, status, err
 }
 
 func (a *app) GetLevel() (level int64, err error) {
