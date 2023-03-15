@@ -102,6 +102,12 @@ func NewPorts(osPath string, openPort *serial.Port) *ports {
 	}
 }
 
+func (r *Rev1DispencerBoard) SetStopDispenser(t bool) {
+	r.resourcesMu.Lock()
+	r.stopDispenser = t
+	r.resourcesMu.Unlock()
+}
+
 func (r *Rev1DispencerBoard) GetStopDispenser() bool {
 	r.resourcesMu.Lock()
 	t := r.stopDispenser
@@ -151,6 +157,13 @@ func (r *Rev1DispencerBoard) GetErrComandDispenser() error {
 func (r *Rev1DispencerBoard) GetCommandStartRev2Board() app.RelayConfig {
 	r.resourcesMu.Lock()
 	relay := r.commandStartRev2Board
+	r.resourcesMu.Unlock()
+	return relay
+}
+
+func (r *Rev1DispencerBoard) GetCommandStopRev2Board() app.RelayConfig {
+	r.resourcesMu.Lock()
+	relay := r.commandStopRev2Board
 	r.resourcesMu.Unlock()
 	return relay
 }
@@ -272,15 +285,16 @@ func (h *HardwareAccessLayer) MeasureVolumeMilliliters(cmd int, id int32, StartC
 		return app.ErrNotFoundDispenser
 	}
 
-	board, err := h.ControlBoard(id)
-	if err != nil {
-		return err
+	board, _ := h.ControlBoard(id)
+	if board == nil {
+		return app.ErrNotFoundBoard
 	}
 
 	r.resourcesMu.Lock()
 	r.commandStopRev2Board = StopCfg
 	r.commandStartRev2Board = StartCfg
 	r.resourcesMu.Unlock()
+	r.SetStopDispenser(false)
 	go r.measureVolumeMilliliters(cmd, board)
 	board.RunConfig(StartCfg)
 	return nil
@@ -295,8 +309,8 @@ func (h *HardwareAccessLayer) DispenserStop(cfg app.RelayConfig) error {
 }
 
 func (r *Rev1DispencerBoard) dispenserStop(cfg app.RelayConfig) error {
+	r.SetStopDispenser(true)
 	r.resourcesMu.Lock()
-	r.stopDispenser = true
 	r.commandStopRev2Board = cfg
 	r.resourcesMu.Unlock()
 	return nil
@@ -312,6 +326,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int, board app.Control
 	buf := make([]byte, 32)
 	cmdd := "S" + strconv.Itoa(cmd)
 	exi := false
+	fmt.Println("In measure")
 	for i := 0; i < 10; i++ {
 		_, err := r.openPort.Write([]byte(cmdd))
 		if err != nil {
@@ -339,21 +354,20 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int, board app.Control
 				if startFluid > 10 {
 					relay := r.GetCommandStartRev2Board()
 					board.RunConfig(relay)
+					startFluid = 0
 				}
 				startFluid++
 				r.SetAllowedPing(false)
 				if r.GetStopDispenser() {
-					r.resourcesMu.Lock()
-					relay := r.commandStopRev2Board
-					r.resourcesMu.Unlock()
+					relay := r.GetCommandStopRev2Board()
 					board.RunConfig(relay)
-					_, err := r.openPort.Write([]byte("FOK;"))
-					if err != nil {
-						fmt.Println("Error in command FOK")
-						r.SetErrComandDispenser(app.ErrInCommandFok)
-						return app.ErrInCommandFok
-					}
 					if stopDispenser > 0 {
+						_, err := r.openPort.Write([]byte("FOK;"))
+						if err != nil {
+							fmt.Println("Error in command FOK")
+							r.SetErrComandDispenser(app.ErrInCommandFok)
+							return app.ErrInCommandFok
+						}
 						return nil
 					}
 					stopDispenser++
@@ -372,6 +386,8 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int, board app.Control
 							if ans == "FOK;" {
 								r.SetErrComandDispenser(app.ErrNonFreezing)
 								fmt.Println("The non-freezing is over")
+								relay := r.GetCommandStopRev2Board()
+								board.RunConfig(relay)
 								return app.ErrNonFreezing
 							}
 						}
@@ -389,10 +405,8 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int, board app.Control
 							fmt.Println("Error in command FOK")
 							return app.ErrInCommandFok
 						}
-						r.resourcesMu.Lock()
-						z := r.commandStopRev2Board
-						r.resourcesMu.Unlock()
-						board.RunConfig(z)
+						relay := r.GetCommandStopRev2Board()
+						board.RunConfig(relay)
 						return nil
 					}
 				} else {
@@ -402,6 +416,8 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int, board app.Control
 						r.SetErrComandDispenser(app.ErrReadAnswerDispenser)
 						fmt.Println("Error read answer")
 						fmt.Println("Error in command ", cmd)
+						relay := r.GetCommandStopRev2Board()
+						board.RunConfig(relay)
 						return err
 					} else {
 						countErrRead = 0
@@ -412,6 +428,8 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int, board app.Control
 	}
 	r.SetErrComandDispenser(app.ErrDispenserNotRespond)
 	fmt.Println("Dispenser is not responding")
+	relay := r.GetCommandStopRev2Board()
+	board.RunConfig(relay)
 	return app.ErrDispenserNotRespond
 }
 

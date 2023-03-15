@@ -7,6 +7,7 @@ import (
 var (
 	ErrNotFound            = errors.New("not found")
 	ErrNotFoundDispenser   = errors.New("Not found Dispenser")
+	ErrNotFoundBoard       = errors.New("Not found Board")
 	ErrNonFreezing         = errors.New("The non-freezing is over")
 	ErrInCommandFok        = errors.New("Error in command FOK")
 	ErrReadAnswerDispenser = errors.New("Error in read answer from Dispenser")

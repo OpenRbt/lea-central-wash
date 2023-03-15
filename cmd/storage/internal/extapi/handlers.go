@@ -695,6 +695,12 @@ func (svc *service) measureVolumeMilliliters(params op.MeasureVolumeMillilitersP
 	case app.ErrNotFound:
 		log.PrintErr(err, "hash", params.Args.Hash, "Volume", params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewMeasureVolumeMillilitersNotFound().WithPayload("Arduino not found")
+	case app.ErrNotFoundDispenser:
+		log.PrintErr(err, "hash", params.Args.Hash, "Volume", params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewMeasureVolumeMillilitersNotFound().WithPayload("Arduino not found")
+	case app.ErrNotFoundBoard:
+		log.PrintErr(err, "hash", params.Args.Hash, "Volume", params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewMeasureVolumeMillilitersNotFound().WithPayload("Board not found")
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewMeasureVolumeMillilitersInternalServerError()

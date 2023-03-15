@@ -32,6 +32,8 @@ const (
 // Errors.
 var (
 	ErrNotFound                 = errors.New("not found")
+	ErrNotFoundDispenser        = errors.New("Not found Dispenser")
+	ErrNotFoundBoard            = errors.New("Not found Board")
 	ErrAccessDenied             = errors.New("access denied")
 	ErrLoginNotUnique           = errors.New("login is already in use")
 	ErrMoneyCollectionFkey      = errors.New("violates foreign key constraint on table money_collection")
