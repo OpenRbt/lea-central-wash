@@ -60,9 +60,9 @@ func (c *Client) RunProgram(id int32, cfg app.RelayConfig) (err error) {
 	return err
 }
 
-func (c *Client) MeasureVolumeMilliliters(volume int64, id app.StationID, StartCfg app.RelayConfig, StopCfg app.RelayConfig) (err error) {
+func (c *Client) MeasureVolumeMilliliters(volume int64, stationID app.StationID, startCfg app.RelayConfig, stopCfg app.RelayConfig) (err error) {
 	StartRel := []*xgrpc.Relay{}
-	for _, entry := range StartCfg.Timings {
+	for _, entry := range startCfg.Timings {
 		z := &xgrpc.Relay{
 			ID:      int32(entry.ID),
 			TimeOn:  int32(entry.TimeOn),
@@ -72,7 +72,7 @@ func (c *Client) MeasureVolumeMilliliters(volume int64, id app.StationID, StartC
 	}
 
 	StopRel := []*xgrpc.Relay{}
-	for _, entry := range StopCfg.Timings {
+	for _, entry := range stopCfg.Timings {
 		z := &xgrpc.Relay{
 			ID:      int32(entry.ID),
 			TimeOn:  int32(entry.TimeOn),
@@ -83,12 +83,12 @@ func (c *Client) MeasureVolumeMilliliters(volume int64, id app.StationID, StartC
 
 	com := xgrpc.OptionsCommand{
 		Volume:                 int32(volume),
-		StationId:              int32(id),
-		StartTimeoutSec:        int32(StartCfg.TimeoutSec),
-		StartMotorSpeedPercent: int32(StartCfg.MotorSpeedPercent),
+		StationId:              int32(stationID),
+		StartTimeoutSec:        int32(startCfg.TimeoutSec),
+		StartMotorSpeedPercent: int32(startCfg.MotorSpeedPercent),
 		StartRelays:            StartRel,
-		StopTimeoutSec:         int32(StopCfg.TimeoutSec),
-		StopMotorSpeedPercent:  int32(StopCfg.MotorSpeedPercent),
+		StopTimeoutSec:         int32(stopCfg.TimeoutSec),
+		StopMotorSpeedPercent:  int32(stopCfg.MotorSpeedPercent),
 		StopRelays:             StopRel,
 	}
 
@@ -119,7 +119,7 @@ func (c *Client) GetLevel() (int64, error) {
 	return com.Answer, err
 }
 
-func (c *Client) DispenserStop(id app.StationID, cfg app.RelayConfig) (err error) {
+func (c *Client) DispenserStop(stationID app.StationID, cfg app.RelayConfig) (err error) {
 	rel := []*xgrpc.Relay{}
 
 	for _, entry := range cfg.Timings {
@@ -132,7 +132,7 @@ func (c *Client) DispenserStop(id app.StationID, cfg app.RelayConfig) (err error
 	}
 
 	opt := xgrpc.RequestStopDispenser{
-		StationId:         int32(id),
+		StationId:         int32(stationID),
 		TimeoutSec:        int32(cfg.TimeoutSec),
 		MotorSpeedPercent: int32(cfg.MotorSpeedPercent),
 		Relays:            rel,

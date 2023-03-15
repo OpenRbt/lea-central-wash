@@ -657,12 +657,12 @@ func (svc *service) run2Program(params op.Run2ProgramParams) op.Run2ProgramRespo
 }
 
 func (svc *service) dispenserStop(params op.DispenserStopParams) op.DispenserStopResponder {
-	id, err := svc.getID(string(*params.Args.Hash))
+	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("DispenserPause: StationID not found ", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 	}
 
-	err = svc.app.DispenserStop(id, *params.Args.StopProgramID)
+	err = svc.app.DispenserStop(stationID, *params.Args.StopProgramID)
 
 	log.Info("Program Pause ", "ip", params.HTTPRequest.RemoteAddr)
 
@@ -679,12 +679,12 @@ func (svc *service) dispenserStop(params op.DispenserStopParams) op.DispenserSto
 }
 
 func (svc *service) measureVolumeMilliliters(params op.MeasureVolumeMillilitersParams) op.MeasureVolumeMillilitersResponder {
-	id, err := svc.getID(string(*params.Args.Hash))
+	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("measureVolumeMilliliters: StationID not found ", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 	}
 
-	err = svc.app.MeasureVolumeMilliliters(*params.Args.Volume, id, *params.Args.StartProgramID, *params.Args.StopProgramID)
+	err = svc.app.MeasureVolumeMilliliters(*params.Args.Volume, stationID, *params.Args.StartProgramID, *params.Args.StopProgramID)
 
 	log.Info("Run Command Dispenser ", "Volume", *params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
 	fmt.Println("ERROR: ", err)

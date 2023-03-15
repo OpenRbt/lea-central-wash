@@ -223,8 +223,8 @@ type (
 	// HardwareAccessLayer describes an interface to access hardware control modules
 	HardwareAccessLayer interface {
 		RunProgram(id int32, cfg RelayConfig) (err error)
-		MeasureVolumeMilliliters(volume int64, id StationID, StartCfg RelayConfig, StopCfg RelayConfig) (err error)
-		DispenserStop(id StationID, cfg RelayConfig) (err error)
+		MeasureVolumeMilliliters(volume int64, stationID StationID, startCfg RelayConfig, stopCfg RelayConfig) (err error)
+		DispenserStop(stationID StationID, cfg RelayConfig) (err error)
 		Volume() (volume int64, status string, err error)
 		GetLevel() (level int64, err error)
 	}
