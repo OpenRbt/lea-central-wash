@@ -387,14 +387,14 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 					if v-l < 1 {
 						countErr += 1
 						if countErr >= 50 {
+							relay := r.GetCommandStopRev2Board()
+							board.RunConfig(relay)
 							_, err = r.openPort.Write([]byte("ERR;"))
 							N, err = r.openPort.Read(buf)
 							ans = string(buf[0 : N-2])
 							if ans == "FOK;" {
 								r.SetErrComandDispenser(app.ErrNonFreezing)
 								fmt.Println("The non-freezing is over")
-								relay := r.GetCommandStopRev2Board()
-								board.RunConfig(relay)
 								return app.ErrNonFreezing
 							}
 						}
@@ -419,12 +419,12 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 				} else {
 					countErrRead += 1
 					if countErrRead > 5 {
+						relay := r.GetCommandStopRev2Board()
+						board.RunConfig(relay)
 						_, _ = r.openPort.Write([]byte("FOK;"))
 						r.SetErrComandDispenser(app.ErrReadAnswerDispenser)
 						fmt.Println("Error read answer")
 						fmt.Println("Error in command ", measureVolume)
-						relay := r.GetCommandStopRev2Board()
-						board.RunConfig(relay)
 						return err
 					} else {
 						countErrRead = 0
