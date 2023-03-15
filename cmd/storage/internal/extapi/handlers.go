@@ -709,7 +709,7 @@ func (svc *service) measureVolumeMilliliters(params op.MeasureVolumeMillilitersP
 
 func (svc *service) VolumeDispenser(params op.VolumeDispenserParams) op.VolumeDispenserResponder {
 
-	znach, status, err := svc.app.GetVolumeDispenser()
+	volume, status, err := svc.app.GetVolumeDispenser()
 
 	log.Info("Get Volume", "ip", params.HTTPRequest.RemoteAddr)
 
@@ -719,7 +719,7 @@ func (svc *service) VolumeDispenser(params op.VolumeDispenserParams) op.VolumeDi
 
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewVolumeDispenserOK().WithPayload(&op.VolumeDispenserOKBody{Status: &status, Volume: &znach})
+		return op.NewVolumeDispenserOK().WithPayload(&op.VolumeDispenserOKBody{Status: &status, Volume: &volume})
 	case app.ErrNotFound:
 		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewVolumeDispenserNotFound().WithPayload("Volume from Arduino not found")

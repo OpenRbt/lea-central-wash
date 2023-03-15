@@ -236,26 +236,26 @@ swagger:model DispenserStopBody
 */
 type DispenserStopBody struct {
 
-	// stop program ID
-	// Required: true
-	StopProgramID *int64 `json:"StopProgramID"`
-
 	// hash
 	// Required: true
 	Hash *model.Hash `json:"hash"`
+
+	// stop program ID
+	// Required: true
+	StopProgramID *int64 `json:"stopProgramID"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
 func (o *DispenserStopBody) UnmarshalJSON(data []byte) error {
 	var props struct {
 
-		// stop program ID
-		// Required: true
-		StopProgramID *int64 `json:"StopProgramID"`
-
 		// hash
 		// Required: true
 		Hash *model.Hash `json:"hash"`
+
+		// stop program ID
+		// Required: true
+		StopProgramID *int64 `json:"stopProgramID"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -264,8 +264,8 @@ func (o *DispenserStopBody) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	o.StopProgramID = props.StopProgramID
 	o.Hash = props.Hash
+	o.StopProgramID = props.StopProgramID
 	return nil
 }
 
@@ -273,26 +273,17 @@ func (o *DispenserStopBody) UnmarshalJSON(data []byte) error {
 func (o *DispenserStopBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateStopProgramID(formats); err != nil {
+	if err := o.validateHash(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := o.validateHash(formats); err != nil {
+	if err := o.validateStopProgramID(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (o *DispenserStopBody) validateStopProgramID(formats strfmt.Registry) error {
-
-	if err := validate.Required("args"+"."+"StopProgramID", "body", o.StopProgramID); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -315,6 +306,15 @@ func (o *DispenserStopBody) validateHash(formats strfmt.Registry) error {
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (o *DispenserStopBody) validateStopProgramID(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"stopProgramID", "body", o.StopProgramID); err != nil {
+		return err
 	}
 
 	return nil

@@ -1350,18 +1350,18 @@ func init() {
               "required": [
                 "hash",
                 "volume",
-                "StartProgramID",
-                "StopProgramID"
+                "startProgramID",
+                "stopProgramID"
               ],
               "properties": {
-                "StartProgramID": {
-                  "type": "integer"
-                },
-                "StopProgramID": {
-                  "type": "integer"
-                },
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "startProgramID": {
+                  "type": "integer"
+                },
+                "stopProgramID": {
+                  "type": "integer"
                 },
                 "volume": {
                   "type": "integer"
@@ -2434,14 +2434,14 @@ func init() {
               "title": "ArgDispenserStop",
               "required": [
                 "hash",
-                "StopProgramID"
+                "stopProgramID"
               ],
               "properties": {
-                "StopProgramID": {
-                  "type": "integer"
-                },
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "stopProgramID": {
+                  "type": "integer"
                 }
               }
             }
@@ -4958,18 +4958,18 @@ func init() {
               "required": [
                 "hash",
                 "volume",
-                "StartProgramID",
-                "StopProgramID"
+                "startProgramID",
+                "stopProgramID"
               ],
               "properties": {
-                "StartProgramID": {
-                  "type": "integer"
-                },
-                "StopProgramID": {
-                  "type": "integer"
-                },
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "startProgramID": {
+                  "type": "integer"
+                },
+                "stopProgramID": {
+                  "type": "integer"
                 },
                 "volume": {
                   "type": "integer"
@@ -6026,14 +6026,14 @@ func init() {
               "title": "ArgDispenserStop",
               "required": [
                 "hash",
-                "StopProgramID"
+                "stopProgramID"
               ],
               "properties": {
-                "StopProgramID": {
-                  "type": "integer"
-                },
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "stopProgramID": {
+                  "type": "integer"
                 }
               }
             }

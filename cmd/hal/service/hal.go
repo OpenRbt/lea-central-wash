@@ -69,6 +69,7 @@ type Rev1DispencerBoard struct {
 	ErrorCommandDispenser error
 	commandStopRev2Board  app.RelayConfig
 	commandStartRev2Board app.RelayConfig
+	timeOutSec            int
 }
 
 // NewRev2Board is a constructor
@@ -91,6 +92,7 @@ func NewDispencerBoard(osPath string, openPort *serial.Port) *Rev1DispencerBoard
 		allowedPing:           true,
 		stopDispenser:         false,
 		ErrorCommandDispenser: nil,
+		timeOutSec:            2,
 	}
 }
 
@@ -290,9 +292,15 @@ func (h *HardwareAccessLayer) MeasureVolumeMilliliters(measureVolume int, statio
 		return app.ErrNotFoundBoard
 	}
 
+	stCfg := app.RelayConfig{
+		MotorSpeedPercent: startCfg.MotorSpeedPercent,
+		TimeoutSec:        int32(r.timeOutSec),
+		Timings:           startCfg.Timings,
+	}
+
 	r.resourcesMu.Lock()
 	r.commandStopRev2Board = stopCfg
-	r.commandStartRev2Board = startCfg
+	r.commandStartRev2Board = stCfg
 	r.resourcesMu.Unlock()
 	r.SetStopDispenser(false)
 	go r.measureVolumeMilliliters(measureVolume, board)
@@ -396,6 +404,8 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 					}
 					if ans[0] == 'F' {
 						fmt.Println("Finish command ", measureVolume, " Successfully!")
+						relay := r.GetCommandStopRev2Board()
+						board.RunConfig(relay)
 						countErr = 0
 						r.SetLastVolume(ans[1 : N-3])
 						_, err = r.openPort.Write([]byte("FOK;"))
@@ -404,8 +414,6 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 							fmt.Println("Error in command FOK")
 							return app.ErrInCommandFok
 						}
-						relay := r.GetCommandStopRev2Board()
-						board.RunConfig(relay)
 						return nil
 					}
 				} else {

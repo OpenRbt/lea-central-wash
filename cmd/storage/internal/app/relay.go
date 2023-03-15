@@ -88,33 +88,33 @@ func (a *app) Run2Program(id StationID, programID int64, programID2 int64, prefl
 	return a.hardware.RunProgram(int32(id), cfg)
 }
 
-func (a *app) MeasureVolumeMilliliters(volume int64, id StationID, StartProgramID int64, StopProgramID int64) (err error) {
-	cfg1 := RelayConfig{
+func (a *app) MeasureVolumeMilliliters(volume int64, stationID StationID, startProgramID int64, stopProgramID int64) (err error) {
+	startCfg := RelayConfig{
 		TimeoutSec: relayTimeoutSec,
 	}
-	if StartProgramID > 0 {
+	if startProgramID > 0 {
 		a.programsMutex.Lock()
-		program, ok := a.programs[StartProgramID]
+		program, ok := a.programs[startProgramID]
 		a.programsMutex.Unlock()
 		if !ok {
 			return ErrNotFound
 		}
-		cfg1.MotorSpeedPercent = int(program.MotorSpeedPercent)
-		cfg1.Timings = program.Relays
+		startCfg.MotorSpeedPercent = int(program.MotorSpeedPercent)
+		startCfg.Timings = program.Relays
 	}
 
-	cfg2 := RelayConfig{
+	stopCfg := RelayConfig{
 		TimeoutSec: relayTimeoutSec,
 	}
-	if StopProgramID > 0 {
+	if stopProgramID > 0 {
 		a.programsMutex.Lock()
-		program, ok := a.programs[StopProgramID]
+		program, ok := a.programs[stopProgramID]
 		a.programsMutex.Unlock()
 		if !ok {
 			return ErrNotFound
 		}
-		cfg2.MotorSpeedPercent = int(program.MotorSpeedPercent)
-		cfg2.Timings = program.Relays
+		stopCfg.MotorSpeedPercent = int(program.MotorSpeedPercent)
+		stopCfg.Timings = program.Relays
 	}
 
 	a.stationsMutex.Lock()
@@ -122,15 +122,15 @@ func (a *app) MeasureVolumeMilliliters(volume int64, id StationID, StartProgramI
 	a.stationsMutex.Unlock()
 	v := volume * int64(vCorr) / 1000
 
-	return a.hardware.MeasureVolumeMilliliters(v, id, cfg1, cfg2)
+	return a.hardware.MeasureVolumeMilliliters(v, stationID, startCfg, stopCfg)
 }
 
-func (a *app) GetVolumeDispenser() (znach int64, status string, err error) {
-	zhach, status, err := a.hardware.Volume()
+func (a *app) GetVolumeDispenser() (volume int64, status string, err error) {
+	getVolume, status, err := a.hardware.Volume()
 	a.stationsMutex.Lock()
 	vCorr := a.volumeCorrection
 	a.stationsMutex.Unlock()
-	volume := int64(float64(zhach) / float64(vCorr) * 1000)
+	volume = int64(float64(getVolume) / float64(vCorr) * 1000)
 	return volume, status, err
 }
 
@@ -139,13 +139,13 @@ func (a *app) GetLevel() (level int64, err error) {
 	return level, nil
 }
 
-func (a *app) DispenserStop(id StationID, StopProgramID int64) (err error) {
+func (a *app) DispenserStop(stationID StationID, stopProgramID int64) (err error) {
 	cfg := RelayConfig{
 		TimeoutSec: relayTimeoutSec,
 	}
-	if StopProgramID > 0 {
+	if stopProgramID > 0 {
 		a.programsMutex.Lock()
-		program, ok := a.programs[StopProgramID]
+		program, ok := a.programs[stopProgramID]
 		a.programsMutex.Unlock()
 		if !ok {
 			return ErrNotFound
@@ -153,5 +153,5 @@ func (a *app) DispenserStop(id StationID, StopProgramID int64) (err error) {
 		cfg.MotorSpeedPercent = int(program.MotorSpeedPercent)
 		cfg.Timings = program.Relays
 	}
-	return a.hardware.DispenserStop(id, cfg)
+	return a.hardware.DispenserStop(stationID, cfg)
 }
