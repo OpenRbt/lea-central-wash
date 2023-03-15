@@ -67,7 +67,8 @@ type Rev1DispencerBoard struct {
 	allowedPing           bool
 	stopDispenser         bool
 	ErrorCommandDispenser error
-	CommandStopRe2Board   app.RelayConfig
+	commandStopRev2Board  app.RelayConfig
+	commandStartRev2Board app.RelayConfig
 }
 
 // NewRev2Board is a constructor
@@ -145,6 +146,13 @@ func (r *Rev1DispencerBoard) GetErrComandDispenser() error {
 	err := r.ErrorCommandDispenser
 	r.resourcesMu.Unlock()
 	return err
+}
+
+func (r *Rev1DispencerBoard) GetCommandStartRev2Board() app.RelayConfig {
+	r.resourcesMu.Lock()
+	relay := r.commandStartRev2Board
+	r.resourcesMu.Unlock()
+	return relay
 }
 
 // CollectAvailableSerialPorts reads /dev directory and find all ttyUSB* devices
@@ -270,7 +278,8 @@ func (h *HardwareAccessLayer) MeasureVolumeMilliliters(cmd int, id int32, StartC
 	}
 
 	r.resourcesMu.Lock()
-	r.CommandStopRe2Board = StopCfg
+	r.commandStopRev2Board = StopCfg
+	r.commandStartRev2Board = StartCfg
 	r.resourcesMu.Unlock()
 	go r.measureVolumeMilliliters(cmd, board)
 	board.RunConfig(StartCfg)
@@ -288,7 +297,7 @@ func (h *HardwareAccessLayer) DispenserStop(cfg app.RelayConfig) error {
 func (r *Rev1DispencerBoard) dispenserStop(cfg app.RelayConfig) error {
 	r.resourcesMu.Lock()
 	r.stopDispenser = true
-	r.CommandStopRe2Board = cfg
+	r.commandStopRev2Board = cfg
 	r.resourcesMu.Unlock()
 	return nil
 }
@@ -299,6 +308,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int, board app.Control
 	r.SetErrComandDispenser(nil)
 	countErrRead := 0
 	stopDispenser := 0
+	startFluid := 0
 	buf := make([]byte, 32)
 	cmdd := "S" + strconv.Itoa(cmd)
 	exi := false
@@ -326,12 +336,17 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int, board app.Control
 		for {
 			select {
 			case <-tick:
+				if startFluid > 10 {
+					relay := r.GetCommandStartRev2Board()
+					board.RunConfig(relay)
+				}
+				startFluid++
 				r.SetAllowedPing(false)
 				if r.GetStopDispenser() {
 					r.resourcesMu.Lock()
-					z := r.CommandStopRe2Board
+					relay := r.commandStopRev2Board
 					r.resourcesMu.Unlock()
-					board.RunConfig(z)
+					board.RunConfig(relay)
 					_, err := r.openPort.Write([]byte("FOK;"))
 					if err != nil {
 						fmt.Println("Error in command FOK")
@@ -375,7 +390,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int, board app.Control
 							return app.ErrInCommandFok
 						}
 						r.resourcesMu.Lock()
-						z := r.CommandStopRe2Board
+						z := r.commandStopRev2Board
 						r.resourcesMu.Unlock()
 						board.RunConfig(z)
 						return nil

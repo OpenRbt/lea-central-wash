@@ -1,5 +1,7 @@
 package app
 
+import "fmt"
+
 func (a *app) RunProgram(id StationID, programID int64, preflight bool) (err error) {
 	cfg := RelayConfig{
 		TimeoutSec: relayTimeoutSec,
@@ -116,6 +118,9 @@ func (a *app) MeasureVolumeMilliliters(volume int64, id StationID, StartProgramI
 		cfg2.MotorSpeedPercent = int(program.MotorSpeedPercent)
 		cfg2.Timings = program.Relays
 	}
+
+	fmt.Println(cfg1.Timings)
+	fmt.Println(cfg2.Timings)
 
 	return a.hardware.MeasureVolumeMilliliters(volume, id, cfg1, cfg2)
 }
