@@ -82,7 +82,7 @@ func (c *Client) MeasureVolumeMilliliters(volume int64, id app.StationID, StartC
 	}
 
 	com := xgrpc.OptionsCommand{
-		Command:                int32(volume),
+		Volume:                 int32(volume),
 		StationId:              int32(id),
 		StartTimeoutSec:        int32(StartCfg.TimeoutSec),
 		StartMotorSpeedPercent: int32(StartCfg.MotorSpeedPercent),

@@ -40,34 +40,34 @@ func (h HalHandler) RunProgram(ctx context.Context, in *Options) (*AnswerProgram
 }
 
 func (h HalHandler) MeasureVolumeMilliliters(ctx context.Context, in *OptionsCommand) (*AnswerCommand, error) {
-	StartRelay := []app.Relay{}
+	startRelay := []app.Relay{}
 	for _, entry := range in.StartRelays {
 		z := app.Relay{
 			ID:      int(entry.ID),
 			TimeOn:  int(entry.TimeOn),
 			TimeOff: int(entry.TimeOff),
 		}
-		StartRelay = append(StartRelay, z)
+		startRelay = append(startRelay, z)
 	}
 
-	StopRelay := []app.Relay{}
+	stopRelay := []app.Relay{}
 	for _, entry := range in.StopRelays {
 		z := app.Relay{
 			ID:      int(entry.ID),
 			TimeOn:  int(entry.TimeOn),
 			TimeOff: int(entry.TimeOff),
 		}
-		StopRelay = append(StopRelay, z)
+		stopRelay = append(stopRelay, z)
 	}
 
-	err := h.hal.MeasureVolumeMilliliters(int(in.Command), in.StationId, app.RelayConfig{
+	err := h.hal.MeasureVolumeMilliliters(int(in.Volume), in.StationId, app.RelayConfig{
 		MotorSpeedPercent: in.StartMotorSpeedPercent,
 		TimeoutSec:        in.StartTimeoutSec,
-		Timings:           StartRelay,
+		Timings:           startRelay,
 	}, app.RelayConfig{
 		MotorSpeedPercent: in.StopMotorSpeedPercent,
 		TimeoutSec:        in.StopTimeoutSec,
-		Timings:           StopRelay,
+		Timings:           stopRelay,
 	})
 	if err != nil {
 		return &AnswerCommand{Answer: 1}, err

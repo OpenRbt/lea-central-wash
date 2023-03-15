@@ -210,7 +210,7 @@ func (r *Rev1DispencerBoard) workingLoop() {
 					errCount := r.errorCount
 					r.resourcesMu.Unlock()
 					if errCount >= 5 {
-						fmt.Println("Delite Rev1DispenserBoard")
+						fmt.Println("Delete Rev1DispenserBoard")
 						r.resourcesMu.Lock()
 						r.toRemove = true
 						r.resourcesMu.Unlock()
@@ -279,24 +279,23 @@ func (r *Rev1DispencerBoard) volume() app.DispenserStatus {
 }
 
 // Run command for Arduino
-func (h *HardwareAccessLayer) MeasureVolumeMilliliters(cmd int, id int32, StartCfg app.RelayConfig, StopCfg app.RelayConfig) error {
+func (h *HardwareAccessLayer) MeasureVolumeMilliliters(measureVolume int, stationID int32, startCfg app.RelayConfig, stopCfg app.RelayConfig) error {
 	r := h.dispencer
 	if r == nil {
 		return app.ErrNotFoundDispenser
 	}
 
-	board, _ := h.ControlBoard(id)
+	board, _ := h.ControlBoard(stationID)
 	if board == nil {
 		return app.ErrNotFoundBoard
 	}
 
 	r.resourcesMu.Lock()
-	r.commandStopRev2Board = StopCfg
-	r.commandStartRev2Board = StartCfg
+	r.commandStopRev2Board = stopCfg
+	r.commandStartRev2Board = startCfg
 	r.resourcesMu.Unlock()
 	r.SetStopDispenser(false)
-	go r.measureVolumeMilliliters(cmd, board)
-	board.RunConfig(StartCfg)
+	go r.measureVolumeMilliliters(measureVolume, board)
 	return nil
 }
 
@@ -305,39 +304,39 @@ func (h *HardwareAccessLayer) DispenserStop(cfg app.RelayConfig) error {
 	if r == nil {
 		return app.ErrNotFoundDispenser
 	}
-	return r.dispenserStop(cfg)
-}
-
-func (r *Rev1DispencerBoard) dispenserStop(cfg app.RelayConfig) error {
-	r.SetStopDispenser(true)
 	r.resourcesMu.Lock()
 	r.commandStopRev2Board = cfg
 	r.resourcesMu.Unlock()
+	return r.dispenserStop()
+}
+
+func (r *Rev1DispencerBoard) dispenserStop() error {
+	r.SetStopDispenser(true)
 	return nil
 }
 
-func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int, board app.ControlBoard) error {
+func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board app.ControlBoard) error {
 	r.SetAllowedPing(false)
 	r.SetLastVolume("0")
 	r.SetErrComandDispenser(nil)
 	countErrRead := 0
 	stopDispenser := 0
-	startFluid := 0
+	startFluid := 20
 	buf := make([]byte, 32)
-	cmdd := "S" + strconv.Itoa(cmd)
+	cmdd := "S" + strconv.Itoa(measureVolume)
 	exi := false
 	fmt.Println("In measure")
 	for i := 0; i < 10; i++ {
 		_, err := r.openPort.Write([]byte(cmdd))
 		if err != nil {
-			fmt.Println("Error in command ", cmd)
+			fmt.Println("Error in command ", measureVolume)
 			r.SetErrComandDispenser(err)
 		} else {
 			N, err := r.openPort.Read(buf)
 			if err == nil {
 				ans := string(buf[0 : N-2])
 				if ans == "SOK;" {
-					fmt.Println("Start command ", cmd)
+					fmt.Println("Start command ", measureVolume)
 					r.SetErrComandDispenser(nil)
 					exi = true
 					break
@@ -396,7 +395,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int, board app.Control
 						r.SetLastVolume(ans[1 : N-3])
 					}
 					if ans[0] == 'F' {
-						fmt.Println("Finish command ", cmd, " Successfully!")
+						fmt.Println("Finish command ", measureVolume, " Successfully!")
 						countErr = 0
 						r.SetLastVolume(ans[1 : N-3])
 						_, err = r.openPort.Write([]byte("FOK;"))
@@ -415,7 +414,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(cmd int, board app.Control
 						_, _ = r.openPort.Write([]byte("FOK;"))
 						r.SetErrComandDispenser(app.ErrReadAnswerDispenser)
 						fmt.Println("Error read answer")
-						fmt.Println("Error in command ", cmd)
+						fmt.Println("Error in command ", measureVolume)
 						relay := r.GetCommandStopRev2Board()
 						board.RunConfig(relay)
 						return err
