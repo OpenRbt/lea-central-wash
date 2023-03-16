@@ -69,7 +69,7 @@ type Rev1DispencerBoard struct {
 	ErrorCommandDispenser error
 	commandStopRev2Board  app.RelayConfig
 	commandStartRev2Board app.RelayConfig
-	timeOutSec            int
+	timeoutSec            int
 }
 
 // NewRev2Board is a constructor
@@ -92,7 +92,7 @@ func NewDispencerBoard(osPath string, openPort *serial.Port) *Rev1DispencerBoard
 		allowedPing:           true,
 		stopDispenser:         false,
 		ErrorCommandDispenser: nil,
-		timeOutSec:            2,
+		timeoutSec:            2,
 	}
 }
 
@@ -294,7 +294,7 @@ func (h *HardwareAccessLayer) MeasureVolumeMilliliters(measureVolume int, statio
 
 	stCfg := app.RelayConfig{
 		MotorSpeedPercent: startCfg.MotorSpeedPercent,
-		TimeoutSec:        int32(r.timeOutSec),
+		TimeoutSec:        int32(r.timeoutSec),
 		Timings:           startCfg.Timings,
 	}
 
@@ -358,7 +358,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 		for {
 			select {
 			case <-tick:
-				if startFluid > 10 {
+				if startFluid > 9 {
 					relay := r.GetCommandStartRev2Board()
 					board.RunConfig(relay)
 					startFluid = 0
