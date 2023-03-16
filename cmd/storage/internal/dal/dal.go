@@ -961,7 +961,7 @@ func (r *repo) SetConfigBool(config app.ConfigBool) (err error) {
 }
 func (r *repo) SetConfigString(config app.ConfigString) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlSetConfigInt, argSetConfigString{
+		_, err := tx.NamedExec(sqlSetConfigString, argSetConfigString{
 			Name:        config.Name,
 			Value:       config.Value,
 			Description: config.Description,
