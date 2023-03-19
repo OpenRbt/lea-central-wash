@@ -91,6 +91,11 @@ func (o *LoadOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the load o k response
+func (o *LoadOK) Code() int {
+	return 200
+}
+
 func (o *LoadOK) Error() string {
 	return fmt.Sprintf("[POST /load][%d] loadOK  %+v", 200, o.Payload)
 }
@@ -151,6 +156,11 @@ func (o *LoadNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the load not found response
+func (o *LoadNotFound) Code() int {
+	return 404
+}
+
 func (o *LoadNotFound) Error() string {
 	return fmt.Sprintf("[POST /load][%d] loadNotFound ", 404)
 }
@@ -200,6 +210,11 @@ func (o *LoadInternalServerError) IsServerError() bool {
 // IsCode returns true when this load internal server error response a status code equal to that given
 func (o *LoadInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the load internal server error response
+func (o *LoadInternalServerError) Code() int {
+	return 500
 }
 
 func (o *LoadInternalServerError) Error() string {

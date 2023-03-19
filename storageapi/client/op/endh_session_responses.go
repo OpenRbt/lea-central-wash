@@ -87,6 +87,11 @@ func (o *EndhSessionNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the endh session no content response
+func (o *EndhSessionNoContent) Code() int {
+	return 204
+}
+
 func (o *EndhSessionNoContent) Error() string {
 	return fmt.Sprintf("[POST /end-session][%d] endhSessionNoContent ", 204)
 }
@@ -136,6 +141,11 @@ func (o *EndhSessionNotFound) IsServerError() bool {
 // IsCode returns true when this endh session not found response a status code equal to that given
 func (o *EndhSessionNotFound) IsCode(code int) bool {
 	return code == 404
+}
+
+// Code gets the status code for the endh session not found response
+func (o *EndhSessionNotFound) Code() int {
+	return 404
 }
 
 func (o *EndhSessionNotFound) Error() string {
@@ -189,6 +199,11 @@ func (o *EndhSessionInternalServerError) IsCode(code int) bool {
 	return code == 500
 }
 
+// Code gets the status code for the endh session internal server error response
+func (o *EndhSessionInternalServerError) Code() int {
+	return 500
+}
+
 func (o *EndhSessionInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /end-session][%d] endhSessionInternalServerError ", 500)
 }
@@ -211,6 +226,10 @@ type EndhSessionBody struct {
 	// hash
 	// Required: true
 	Hash *string `json:"hash"`
+
+	// session ID
+	// Required: true
+	SessionID *string `json:"sessionID"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
@@ -220,6 +239,10 @@ func (o *EndhSessionBody) UnmarshalJSON(data []byte) error {
 		// hash
 		// Required: true
 		Hash *string `json:"hash"`
+
+		// session ID
+		// Required: true
+		SessionID *string `json:"sessionID"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -229,6 +252,7 @@ func (o *EndhSessionBody) UnmarshalJSON(data []byte) error {
 	}
 
 	o.Hash = props.Hash
+	o.SessionID = props.SessionID
 	return nil
 }
 
@@ -237,6 +261,10 @@ func (o *EndhSessionBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateHash(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateSessionID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -249,6 +277,15 @@ func (o *EndhSessionBody) Validate(formats strfmt.Registry) error {
 func (o *EndhSessionBody) validateHash(formats strfmt.Registry) error {
 
 	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *EndhSessionBody) validateSessionID(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"sessionID", "body", o.SessionID); err != nil {
 		return err
 	}
 

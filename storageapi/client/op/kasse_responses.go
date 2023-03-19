@@ -85,6 +85,11 @@ func (o *KasseOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the kasse o k response
+func (o *KasseOK) Code() int {
+	return 200
+}
+
 func (o *KasseOK) Error() string {
 	return fmt.Sprintf("[POST /kasse][%d] kasseOK  %+v", 200, o.Payload)
 }
@@ -147,6 +152,11 @@ func (o *KasseNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the kasse not found response
+func (o *KasseNotFound) Code() int {
+	return 404
+}
+
 func (o *KasseNotFound) Error() string {
 	return fmt.Sprintf("[POST /kasse][%d] kasseNotFound ", 404)
 }
@@ -196,6 +206,11 @@ func (o *KasseInternalServerError) IsServerError() bool {
 // IsCode returns true when this kasse internal server error response a status code equal to that given
 func (o *KasseInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the kasse internal server error response
+func (o *KasseInternalServerError) Code() int {
+	return 500
 }
 
 func (o *KasseInternalServerError) Error() string {

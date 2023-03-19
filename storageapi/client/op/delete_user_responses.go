@@ -102,6 +102,11 @@ func (o *DeleteUserNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the delete user no content response
+func (o *DeleteUserNoContent) Code() int {
+	return 204
+}
+
 func (o *DeleteUserNoContent) Error() string {
 	return fmt.Sprintf("[DELETE /user][%d] deleteUserNoContent ", 204)
 }
@@ -151,6 +156,11 @@ func (o *DeleteUserUnauthorized) IsServerError() bool {
 // IsCode returns true when this delete user unauthorized response a status code equal to that given
 func (o *DeleteUserUnauthorized) IsCode(code int) bool {
 	return code == 401
+}
+
+// Code gets the status code for the delete user unauthorized response
+func (o *DeleteUserUnauthorized) Code() int {
+	return 401
 }
 
 func (o *DeleteUserUnauthorized) Error() string {
@@ -204,6 +214,11 @@ func (o *DeleteUserForbidden) IsCode(code int) bool {
 	return code == 403
 }
 
+// Code gets the status code for the delete user forbidden response
+func (o *DeleteUserForbidden) Code() int {
+	return 403
+}
+
 func (o *DeleteUserForbidden) Error() string {
 	return fmt.Sprintf("[DELETE /user][%d] deleteUserForbidden ", 403)
 }
@@ -254,6 +269,11 @@ func (o *DeleteUserConflict) IsServerError() bool {
 // IsCode returns true when this delete user conflict response a status code equal to that given
 func (o *DeleteUserConflict) IsCode(code int) bool {
 	return code == 409
+}
+
+// Code gets the status code for the delete user conflict response
+func (o *DeleteUserConflict) Code() int {
+	return 409
 }
 
 func (o *DeleteUserConflict) Error() string {
@@ -316,6 +336,11 @@ func (o *DeleteUserInternalServerError) IsServerError() bool {
 // IsCode returns true when this delete user internal server error response a status code equal to that given
 func (o *DeleteUserInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the delete user internal server error response
+func (o *DeleteUserInternalServerError) Code() int {
+	return 500
 }
 
 func (o *DeleteUserInternalServerError) Error() string {

@@ -10,7 +10,8 @@ import (
 	"github.com/powerman/structlog"
 	"golang.org/x/crypto/bcrypt"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/models"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/models/vo"
 )
 
 var log = structlog.New() //nolint:gochecknoglobals
@@ -54,6 +55,7 @@ func (a *app) loadStations() error {
 		return err
 	}
 	stations := map[StationID]StationData{}
+	sessionsPool := make(map[StationID]chan string)
 
 	// Calculate how many stations
 	createCount := 12 - len(res)
@@ -83,11 +85,13 @@ func (a *app) loadStations() error {
 			ID:   res[i].ID,
 			Name: res[i].Name,
 		}
+		sessionsPool[res[i].ID] = make(chan string, 10)
 	}
 
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 	a.stations = stations
+	a.stationsSessionsPool = sessionsPool
 
 	return nil
 }
@@ -813,18 +817,56 @@ func isValidDayOfWeek(dayOfWeek int, weekDay []string) bool {
 	return false
 }
 
-func (a *app) CreateSession(stationID StationID) (string, string, error) {
-	sessionID := uuid.NewV4().String()
+func (a *app) CreateSession(url string, stationID StationID) (string, string, error) {
+	station := a.stations[stationID]
+	sessionID := station.SessionID
 
-	return sessionID, fmt.Sprintf("http://bonus.com/%d/%s", stationID, sessionID), nil
+	QrUrl := "%s/#/?stationID=%d&sessionID=%s"
+
+	if len(sessionID) != 0 {
+		return sessionID, fmt.Sprintf(QrUrl, url, stationID, sessionID), nil
+	}
+
+	err := a.SetNextSession(stationID)
+	if err != nil {
+		return "", "", err
+	}
+
+	station = a.stations[stationID]
+	sessionID = station.SessionID
+
+	msg := models.SessionStateChange{
+		SessionID: sessionID,
+		State:     models.SessionStateStart,
+	}
+
+	err = a.servicesPublisherFunc(msg, vo.WashBonusService, vo.BonusSvc, int(vo.BonusSessionStateChange))
+	if err != nil {
+		return "", "", err
+	}
+
+	return sessionID, fmt.Sprintf(QrUrl, url, stationID, sessionID), nil
 }
 
 func (a *app) RefreshSession(stationID StationID) (string, int64, error) {
 	panic("Not implemented")
 }
 
-func (a *app) EndSession(stationID StationID) error {
-	panic("Not implemented")
+func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
+	station := a.stations[stationID]
+
+	if station.SessionID != string(sessionID) {
+		return errors.New("wrong session")
+	}
+
+	station.SessionID = ""
+	a.stations[stationID] = station
+	msg := models.SessionStateChange{
+		SessionID: string(sessionID),
+		State:     models.SessionStateFinish,
+	}
+
+	return a.servicesPublisherFunc(msg, vo.WashBonusService, vo.BonusSvc, int(vo.BonusSessionStateChange))
 }
 
 func (a *app) SetBonuses(stationID StationID, bonuses int) error {
@@ -874,28 +916,41 @@ func (a *app) GetRabbitConfig() (cfg RabbitConfig, err error) {
 func (a *app) SetNextSession(stationID StationID) (err error) { // Создаем новую сессию для указанной станции? Устанавливает сессию из очереди, если нет сессии, то ошибка
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
-
 	if station, ok := a.stations[stationID]; ok {
 		sessionsPool := a.stationsSessionsPool[stationID]
 
+		fmt.Println("Len ssPool: ", len(sessionsPool))
 		sessionsCount := len(sessionsPool)
 		switch {
-		case sessionsCount == 0:
-			return errors.New("no sessions available")
 		case sessionsCount > 0:
 			station.SessionID = <-sessionsPool
+
+			if sessionsCount >= 5 {
+				a.stations[stationID] = station
+				return nil
+			}
 			fallthrough
 		case sessionsCount < 5:
-			err = a.RequestSessionsFromService(5)
+			err = a.RequestSessionsFromService(5, int(stationID))
+			if err != nil {
+				return err
+			}
+
+			sessionsPool = a.stationsSessionsPool[stationID]
+			station.SessionID = <-sessionsPool
+
+			a.stations[stationID] = station
+			return nil
 		}
 	}
 
-	return
+	return errors.New("not found station with StationID")
 }
 
-func (a *app) RequestSessionsFromService(count int) error {
-	msg := SessionsRequest{Count: count}
-	return a.servicesPublisherFunc(msg, "bonus_svc", "sessions", 0)
+func (a *app) RequestSessionsFromService(count int, stationID int) error {
+	msg := SessionsRequest{Count: count, PostID: stationID}
+
+	return a.servicesPublisherFunc(msg, vo.WashBonusService, vo.BonusSvc, int(vo.BonusSessionRequest))
 }
 
 func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) error {
@@ -903,10 +958,12 @@ func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) erro
 	defer a.stationsMutex.Unlock()
 
 	val, ok := a.stationsSessionsPool[stationID]
-	if ok {
-		for _, session := range sessionsIDs {
-			val <- session
-		}
+	if !ok {
+		return errors.New("no sessions available")
+	}
+
+	for _, session := range sessionsIDs {
+		val <- session
 	}
 
 	return nil

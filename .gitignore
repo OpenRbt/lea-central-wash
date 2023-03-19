@@ -5,7 +5,8 @@
 *.dll
 *.so
 *.dylib
-cmd/storage/storage
+main
+storage
 
 # Test binary, build with `go test -c`
 *.test

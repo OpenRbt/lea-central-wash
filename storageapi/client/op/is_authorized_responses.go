@@ -91,6 +91,11 @@ func (o *IsAuthorizedOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the is authorized o k response
+func (o *IsAuthorizedOK) Code() int {
+	return 200
+}
+
 func (o *IsAuthorizedOK) Error() string {
 	return fmt.Sprintf("[POST /is-authorized][%d] isAuthorizedOK  %+v", 200, o.Payload)
 }
@@ -153,6 +158,11 @@ func (o *IsAuthorizedNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the is authorized not found response
+func (o *IsAuthorizedNotFound) Code() int {
+	return 404
+}
+
 func (o *IsAuthorizedNotFound) Error() string {
 	return fmt.Sprintf("[POST /is-authorized][%d] isAuthorizedNotFound ", 404)
 }
@@ -202,6 +212,11 @@ func (o *IsAuthorizedInternalServerError) IsServerError() bool {
 // IsCode returns true when this is authorized internal server error response a status code equal to that given
 func (o *IsAuthorizedInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the is authorized internal server error response
+func (o *IsAuthorizedInternalServerError) Code() int {
+	return 500
 }
 
 func (o *IsAuthorizedInternalServerError) Error() string {

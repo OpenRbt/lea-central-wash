@@ -85,6 +85,11 @@ func (o *AddServiceAmountNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the add service amount no content response
+func (o *AddServiceAmountNoContent) Code() int {
+	return 204
+}
+
 func (o *AddServiceAmountNoContent) Error() string {
 	return fmt.Sprintf("[POST /add-service-amount][%d] addServiceAmountNoContent ", 204)
 }
@@ -136,6 +141,11 @@ func (o *AddServiceAmountNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the add service amount not found response
+func (o *AddServiceAmountNotFound) Code() int {
+	return 404
+}
+
 func (o *AddServiceAmountNotFound) Error() string {
 	return fmt.Sprintf("[POST /add-service-amount][%d] addServiceAmountNotFound ", 404)
 }
@@ -185,6 +195,11 @@ func (o *AddServiceAmountInternalServerError) IsServerError() bool {
 // IsCode returns true when this add service amount internal server error response a status code equal to that given
 func (o *AddServiceAmountInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the add service amount internal server error response
+func (o *AddServiceAmountInternalServerError) Code() int {
+	return 500
 }
 
 func (o *AddServiceAmountInternalServerError) Error() string {

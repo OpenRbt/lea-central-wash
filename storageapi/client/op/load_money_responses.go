@@ -91,6 +91,11 @@ func (o *LoadMoneyOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the load money o k response
+func (o *LoadMoneyOK) Code() int {
+	return 200
+}
+
 func (o *LoadMoneyOK) Error() string {
 	return fmt.Sprintf("[POST /load-money][%d] loadMoneyOK  %+v", 200, o.Payload)
 }
@@ -153,6 +158,11 @@ func (o *LoadMoneyNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the load money not found response
+func (o *LoadMoneyNotFound) Code() int {
+	return 404
+}
+
 func (o *LoadMoneyNotFound) Error() string {
 	return fmt.Sprintf("[POST /load-money][%d] loadMoneyNotFound ", 404)
 }
@@ -202,6 +212,11 @@ func (o *LoadMoneyInternalServerError) IsServerError() bool {
 // IsCode returns true when this load money internal server error response a status code equal to that given
 func (o *LoadMoneyInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the load money internal server error response
+func (o *LoadMoneyInternalServerError) Code() int {
+	return 500
 }
 
 func (o *LoadMoneyInternalServerError) Error() string {

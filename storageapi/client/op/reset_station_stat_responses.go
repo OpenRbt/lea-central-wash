@@ -93,6 +93,11 @@ func (o *ResetStationStatNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the reset station stat no content response
+func (o *ResetStationStatNoContent) Code() int {
+	return 204
+}
+
 func (o *ResetStationStatNoContent) Error() string {
 	return fmt.Sprintf("[POST /reset-station-stat][%d] resetStationStatNoContent ", 204)
 }
@@ -142,6 +147,11 @@ func (o *ResetStationStatUnauthorized) IsServerError() bool {
 // IsCode returns true when this reset station stat unauthorized response a status code equal to that given
 func (o *ResetStationStatUnauthorized) IsCode(code int) bool {
 	return code == 401
+}
+
+// Code gets the status code for the reset station stat unauthorized response
+func (o *ResetStationStatUnauthorized) Code() int {
+	return 401
 }
 
 func (o *ResetStationStatUnauthorized) Error() string {
@@ -195,6 +205,11 @@ func (o *ResetStationStatForbidden) IsCode(code int) bool {
 	return code == 403
 }
 
+// Code gets the status code for the reset station stat forbidden response
+func (o *ResetStationStatForbidden) Code() int {
+	return 403
+}
+
 func (o *ResetStationStatForbidden) Error() string {
 	return fmt.Sprintf("[POST /reset-station-stat][%d] resetStationStatForbidden ", 403)
 }
@@ -244,6 +259,11 @@ func (o *ResetStationStatInternalServerError) IsServerError() bool {
 // IsCode returns true when this reset station stat internal server error response a status code equal to that given
 func (o *ResetStationStatInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the reset station stat internal server error response
+func (o *ResetStationStatInternalServerError) Code() int {
+	return 500
 }
 
 func (o *ResetStationStatInternalServerError) Error() string {
