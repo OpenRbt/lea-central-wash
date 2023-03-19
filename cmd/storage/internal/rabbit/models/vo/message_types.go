@@ -18,6 +18,8 @@ func (m MessageType) String() string {
 		return "bonus_svc/session_bonus_confirm"
 	case BonusSessionBonusDiscard:
 		return "bonus_svc/session_bonus_discard"
+	case BonusSessionStateChange:
+		return "bonus_svc/session_state_change"
 	case BonusSessionUserAssign:
 		return "bonus_svc/user_assign"
 	case BonusSessionEventLog:
@@ -43,6 +45,8 @@ func MessageTypeFromString(contentType string) MessageType {
 		return BonusSessionBonusConfirm
 	case "bonus_svc/session_bonus_discard":
 		return BonusSessionBonusDiscard
+	case "bonus_svc/session_state_change":
+		return BonusSessionStateChange
 	case "bonus_svc/session_start":
 		return BonusSessionStart
 	case "bonus_svc/session_finish":

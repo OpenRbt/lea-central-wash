@@ -91,6 +91,11 @@ func (o *LoadRelayOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the load relay o k response
+func (o *LoadRelayOK) Code() int {
+	return 200
+}
+
 func (o *LoadRelayOK) Error() string {
 	return fmt.Sprintf("[POST /load-relay][%d] loadRelayOK  %+v", 200, o.Payload)
 }
@@ -153,6 +158,11 @@ func (o *LoadRelayNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the load relay not found response
+func (o *LoadRelayNotFound) Code() int {
+	return 404
+}
+
 func (o *LoadRelayNotFound) Error() string {
 	return fmt.Sprintf("[POST /load-relay][%d] loadRelayNotFound ", 404)
 }
@@ -202,6 +212,11 @@ func (o *LoadRelayInternalServerError) IsServerError() bool {
 // IsCode returns true when this load relay internal server error response a status code equal to that given
 func (o *LoadRelayInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the load relay internal server error response
+func (o *LoadRelayInternalServerError) Code() int {
+	return 500
 }
 
 func (o *LoadRelayInternalServerError) Error() string {

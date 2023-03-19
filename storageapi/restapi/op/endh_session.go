@@ -70,6 +70,10 @@ type EndhSessionBody struct {
 	// hash
 	// Required: true
 	Hash *string `json:"hash"`
+
+	// session ID
+	// Required: true
+	SessionID *string `json:"sessionID"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
@@ -79,6 +83,10 @@ func (o *EndhSessionBody) UnmarshalJSON(data []byte) error {
 		// hash
 		// Required: true
 		Hash *string `json:"hash"`
+
+		// session ID
+		// Required: true
+		SessionID *string `json:"sessionID"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -88,6 +96,7 @@ func (o *EndhSessionBody) UnmarshalJSON(data []byte) error {
 	}
 
 	o.Hash = props.Hash
+	o.SessionID = props.SessionID
 	return nil
 }
 
@@ -96,6 +105,10 @@ func (o *EndhSessionBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateHash(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateSessionID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -108,6 +121,15 @@ func (o *EndhSessionBody) Validate(formats strfmt.Registry) error {
 func (o *EndhSessionBody) validateHash(formats strfmt.Registry) error {
 
 	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *EndhSessionBody) validateSessionID(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"sessionID", "body", o.SessionID); err != nil {
 		return err
 	}
 

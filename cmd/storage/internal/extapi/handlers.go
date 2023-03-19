@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/def"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
 	"github.com/pkg/errors"
@@ -1071,7 +1072,7 @@ func (svc *service) createSession(params op.CreateSessionParams) op.CreateSessio
 		return op.NewCreateSessionNotFound()
 	}
 
-	sessionId, QR, err := svc.app.CreateSession(stationID)
+	sessionId, QR, err := svc.app.CreateSession(def.OpenwashingURL, stationID)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewCreateSessionOK().WithPayload(apiCreateSession(sessionId, QR))
@@ -1101,7 +1102,7 @@ func (svc *service) endSession(params op.EndhSessionParams) op.EndhSessionRespon
 		return op.NewEndhSessionNotFound()
 	}
 
-	err = svc.app.EndSession(stationID)
+	err = svc.app.EndSession(stationID, app.BonusSessionID(*params.Args.SessionID))
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewEndhSessionNoContent()

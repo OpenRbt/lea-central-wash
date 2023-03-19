@@ -93,6 +93,11 @@ func (o *SaveCollectionNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the save collection no content response
+func (o *SaveCollectionNoContent) Code() int {
+	return 204
+}
+
 func (o *SaveCollectionNoContent) Error() string {
 	return fmt.Sprintf("[POST /save-collection][%d] saveCollectionNoContent ", 204)
 }
@@ -142,6 +147,11 @@ func (o *SaveCollectionUnauthorized) IsServerError() bool {
 // IsCode returns true when this save collection unauthorized response a status code equal to that given
 func (o *SaveCollectionUnauthorized) IsCode(code int) bool {
 	return code == 401
+}
+
+// Code gets the status code for the save collection unauthorized response
+func (o *SaveCollectionUnauthorized) Code() int {
+	return 401
 }
 
 func (o *SaveCollectionUnauthorized) Error() string {
@@ -195,6 +205,11 @@ func (o *SaveCollectionNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the save collection not found response
+func (o *SaveCollectionNotFound) Code() int {
+	return 404
+}
+
 func (o *SaveCollectionNotFound) Error() string {
 	return fmt.Sprintf("[POST /save-collection][%d] saveCollectionNotFound ", 404)
 }
@@ -244,6 +259,11 @@ func (o *SaveCollectionInternalServerError) IsServerError() bool {
 // IsCode returns true when this save collection internal server error response a status code equal to that given
 func (o *SaveCollectionInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the save collection internal server error response
+func (o *SaveCollectionInternalServerError) Code() int {
+	return 500
 }
 
 func (o *SaveCollectionInternalServerError) Error() string {

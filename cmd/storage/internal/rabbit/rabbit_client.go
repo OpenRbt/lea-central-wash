@@ -5,6 +5,7 @@ import (
 	"crypto/x509"
 	_ "embed"
 	"fmt"
+
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/models/vo"
 	"github.com/wagslane/go-rabbitmq"
@@ -45,9 +46,10 @@ func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 	}
 
 	tlsConf := &tls.Config{
-		RootCAs:      rootCAs,
-		Certificates: []tls.Certificate{cert},
-		ServerName:   "localhost", // Optional
+		RootCAs:            rootCAs,
+		Certificates:       []tls.Certificate{cert},
+		ServerName:         "localhost", // Optional
+		InsecureSkipVerify: true,
 	}
 
 	//TODO: add rabbit variables extraction from repo
@@ -55,7 +57,7 @@ func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 	connString := fmt.Sprintf("amqps://%s:%s@%s:%s/", cfg.ServerID, cfg.ServerKey, cfg.Url, cfg.Port)
 	rabbitConf := rabbitmq.Config{
 		SASL:            nil,
-		Vhost:           "",
+		Vhost:           "/",
 		ChannelMax:      0,
 		FrameSize:       0,
 		Heartbeat:       0,
@@ -92,6 +94,7 @@ func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 		cfg.ServerID,
 		rabbitmq.WithConsumerOptionsExchangeName(vo.WashBonusService),
 		rabbitmq.WithConsumerOptionsConsumerExclusive,
+		rabbitmq.WithConsumerOptionsRoutingKey(cfg.ServerID),
 	)
 
 	return

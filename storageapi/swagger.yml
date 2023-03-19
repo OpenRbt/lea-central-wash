@@ -2170,8 +2170,11 @@ paths:
             type: object
             required:
               - hash
+              - sessionID
             properties:
               hash:
+                type: string
+              sessionID:
                 type: string
       responses:
         204:

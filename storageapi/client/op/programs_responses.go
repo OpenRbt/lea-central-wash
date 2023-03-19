@@ -85,6 +85,11 @@ func (o *ProgramsOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the programs o k response
+func (o *ProgramsOK) Code() int {
+	return 200
+}
+
 func (o *ProgramsOK) Error() string {
 	return fmt.Sprintf("[POST /programs][%d] programsOK  %+v", 200, o.Payload)
 }
@@ -143,6 +148,11 @@ func (o *ProgramsInternalServerError) IsServerError() bool {
 // IsCode returns true when this programs internal server error response a status code equal to that given
 func (o *ProgramsInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the programs internal server error response
+func (o *ProgramsInternalServerError) Code() int {
+	return 500
 }
 
 func (o *ProgramsInternalServerError) Error() string {

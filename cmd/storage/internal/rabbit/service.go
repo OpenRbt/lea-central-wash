@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/models"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/models/vo"
 	"github.com/wagslane/go-rabbitmq"
@@ -15,6 +16,11 @@ func (s *Service) ProcessBonusMessage(d rabbitmq.Delivery) (action rabbitmq.Acti
 	case vo.BonusSessionCreated:
 		var msg models.SessionCreation
 		err := json.Unmarshal(d.Body, &msg)
+		if err != nil {
+			action = rabbitmq.NackDiscard
+			return
+		}
+		err = s.app.AddSessionsToPool(app.StationID(msg.PostID), msg.NewSessions...)
 		if err != nil {
 			action = rabbitmq.NackDiscard
 			return
@@ -46,12 +52,18 @@ func (s *Service) SendMessage(msg interface{}, service string, target string, me
 		return
 	}
 
+	serverID, err := s.app.GetConfigString(nil, "server_id")
+	if err != nil {
+		return err
+	}
+
 	switch service {
 	case vo.WashBonusService:
 		return s.bonusSvcPub.Publish(
 			jsonMsg,
 			[]string{target},
 			rabbitmq.WithPublishOptionsType(vo.MessageType(messageType).String()),
+			rabbitmq.WithPublishOptionsUserID(serverID.Value),
 		)
 	default:
 		return errors.New("unknown service")

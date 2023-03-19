@@ -440,10 +440,14 @@ func init() {
               "type": "object",
               "title": "ArgEndSession",
               "required": [
-                "hash"
+                "hash",
+                "sessionID"
               ],
               "properties": {
                 "hash": {
+                  "type": "string"
+                },
+                "sessionID": {
                   "type": "string"
                 }
               }
@@ -3792,10 +3796,14 @@ func init() {
               "type": "object",
               "title": "ArgEndSession",
               "required": [
-                "hash"
+                "hash",
+                "sessionID"
               ],
               "properties": {
                 "hash": {
+                  "type": "string"
+                },
+                "sessionID": {
                   "type": "string"
                 }
               }
