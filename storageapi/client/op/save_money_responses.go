@@ -81,6 +81,11 @@ func (o *SaveMoneyNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the save money no content response
+func (o *SaveMoneyNoContent) Code() int {
+	return 204
+}
+
 func (o *SaveMoneyNoContent) Error() string {
 	return fmt.Sprintf("[POST /save-money][%d] saveMoneyNoContent ", 204)
 }
@@ -132,6 +137,11 @@ func (o *SaveMoneyNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the save money not found response
+func (o *SaveMoneyNotFound) Code() int {
+	return 404
+}
+
 func (o *SaveMoneyNotFound) Error() string {
 	return fmt.Sprintf("[POST /save-money][%d] saveMoneyNotFound ", 404)
 }
@@ -181,6 +191,11 @@ func (o *SaveMoneyInternalServerError) IsServerError() bool {
 // IsCode returns true when this save money internal server error response a status code equal to that given
 func (o *SaveMoneyInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the save money internal server error response
+func (o *SaveMoneyInternalServerError) Code() int {
+	return 500
 }
 
 func (o *SaveMoneyInternalServerError) Error() string {

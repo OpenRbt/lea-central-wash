@@ -89,6 +89,11 @@ func (o *SetStationButtonNoContent) IsCode(code int) bool {
 	return code == 204
 }
 
+// Code gets the status code for the set station button no content response
+func (o *SetStationButtonNoContent) Code() int {
+	return 204
+}
+
 func (o *SetStationButtonNoContent) Error() string {
 	return fmt.Sprintf("[POST /set-station-button][%d] setStationButtonNoContent ", 204)
 }
@@ -139,6 +144,11 @@ func (o *SetStationButtonUnprocessableEntity) IsServerError() bool {
 // IsCode returns true when this set station button unprocessable entity response a status code equal to that given
 func (o *SetStationButtonUnprocessableEntity) IsCode(code int) bool {
 	return code == 422
+}
+
+// Code gets the status code for the set station button unprocessable entity response
+func (o *SetStationButtonUnprocessableEntity) Code() int {
+	return 422
 }
 
 func (o *SetStationButtonUnprocessableEntity) Error() string {
@@ -199,6 +209,11 @@ func (o *SetStationButtonInternalServerError) IsServerError() bool {
 // IsCode returns true when this set station button internal server error response a status code equal to that given
 func (o *SetStationButtonInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the set station button internal server error response
+func (o *SetStationButtonInternalServerError) Code() int {
+	return 500
 }
 
 func (o *SetStationButtonInternalServerError) Error() string {

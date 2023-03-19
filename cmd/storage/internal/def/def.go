@@ -55,6 +55,7 @@ var (
 	ReadTimeout        = intGetenv("STORAGE_API_READ_TIMEOUT", 2)
 	WriteTimeout       = intGetenv("STORAGE_API_WRITE_TIMEOUT", 2)
 	StartDelaySec      = intGetenv("STORAGE_START_DELAY", 30)
+	OpenwashingURL     = strGetenv("OPENWASHING_URL", "http://app.openwashing.com")
 
 	RabbitHost     = strGetenv("RABBIT_HOST", "localhost")
 	RabbitPort     = strGetenv("RABBIT_PORT", "5671")

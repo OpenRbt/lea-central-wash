@@ -136,9 +136,9 @@ type (
 		SetStationConfigBool(auth *Auth, config StationConfigBool) error
 		SetStationConfigString(auth *Auth, config StationConfigString) error
 		
-		CreateSession(stationID StationID) (string, string, error)
+		CreateSession(url string, stationID StationID) (string, string, error)
 		RefreshSession(stationID StationID) (string, int64, error)
-		EndSession(stationID StationID) error
+		EndSession(stationID StationID, sessionID BonusSessionID) error
 		IsAuthorized(stationID StationID) error
 		SetBonuses(stationID StationID, bonuses int) error
 
@@ -146,7 +146,7 @@ type (
 		SetExternalServicesActive(active bool)
 		AssignRabbitPub(func(msg interface{}, service string, target string, messageType int) error)
 		SetNextSession(stationID StationID) error
-		RequestSessionsFromService(count int) error
+		RequestSessionsFromService(count int, postID int) error
 		AddSessionsToPool(stationID StationID, sessionsIDs ...string) error
 		AssignSessionUser(sessionID string, userID string) error
 		AssignSessionBonuses(sessionID string, amount int) error
@@ -433,5 +433,6 @@ type StationConfig struct {
 }
 
 type SessionsRequest struct {
-	Count int `json:"new_sessions_amount"`
+	Count  int `json:"new_sessions_amount"`
+	PostID int `json:"post_id"`
 }

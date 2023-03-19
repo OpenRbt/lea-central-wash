@@ -91,6 +91,11 @@ func (o *RefreshSessionOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the refresh session o k response
+func (o *RefreshSessionOK) Code() int {
+	return 200
+}
+
 func (o *RefreshSessionOK) Error() string {
 	return fmt.Sprintf("[POST /refresh-session][%d] refreshSessionOK  %+v", 200, o.Payload)
 }
@@ -153,6 +158,11 @@ func (o *RefreshSessionNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
+// Code gets the status code for the refresh session not found response
+func (o *RefreshSessionNotFound) Code() int {
+	return 404
+}
+
 func (o *RefreshSessionNotFound) Error() string {
 	return fmt.Sprintf("[POST /refresh-session][%d] refreshSessionNotFound ", 404)
 }
@@ -202,6 +212,11 @@ func (o *RefreshSessionInternalServerError) IsServerError() bool {
 // IsCode returns true when this refresh session internal server error response a status code equal to that given
 func (o *RefreshSessionInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the refresh session internal server error response
+func (o *RefreshSessionInternalServerError) Code() int {
+	return 500
 }
 
 func (o *RefreshSessionInternalServerError) Error() string {
