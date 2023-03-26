@@ -24,3 +24,6 @@ quazarGUI/lib/
 # lazarusGUI
 lazarusGUI/backup/
 lazarusGUI/lib/
+
+# vscode
+.vscode
