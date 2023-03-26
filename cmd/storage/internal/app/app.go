@@ -52,6 +52,7 @@ type (
 		SaveIfNotExists(stationID StationID, key string, value string) error
 		Load(stationID StationID, key string) (string, error)
 		StationsVariables() ([]StationsVariables, error)
+		FetchSessions() error
 
 		// DBMS info method
 		Info() string
@@ -245,7 +246,6 @@ type app struct {
 	repo                  Repo
 	stations              map[StationID]StationData
 	stationsSessionsPool  map[StationID]chan string
-	stationsSessions      map[BonusSessionID]StationID
 	stationsMutex         sync.Mutex
 	programs              map[int64]Program
 	programsMutex         sync.Mutex

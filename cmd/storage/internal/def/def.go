@@ -40,7 +40,7 @@ var (
 	DBPass             = strGetenv("STORAGE_DB_PASS", "")
 	DBName             = strGetenv("STORAGE_DB_NAME", "")
 	DBSchema           = strGetenv("STORAGE_DB_SCHEMA", "public")
-	GooseDir           = "cmd/storage/internal/migration"
+	GooseDir           = strGetenv("GOOSE_DIR", "cmd/storage/internal/migration")
 	ExtAPIHost         = strGetenv("STORAGE_EXT_HOST", oapiHost)
 	ExtAPIPort         = intGetenv("STORAGE_EXT_PORT", 8020)
 	ExtAPIBasePath     = strGetenv("STORAGE_EXT_BASEPATH", oapiBasePath)

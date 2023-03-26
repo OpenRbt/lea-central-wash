@@ -260,6 +260,7 @@ func run(db *sqlx.DB, errc chan<- error) {
 			return
 		}
 		appl.AssignRabbitPub(rabbitWorker.SendMessage)
+		appl.FetchSessions()
 	}
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))

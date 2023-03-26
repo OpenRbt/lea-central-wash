@@ -96,6 +96,17 @@ func (a *app) loadStations() error {
 	return nil
 }
 
+func (a *app) FetchSessions() (err error) {
+	for i := range a.stations {
+		err = a.RequestSessionsFromService(5, int(a.stations[i].ID))
+		if err != nil {
+			return
+		}
+	}
+
+	return
+}
+
 // Set accepts existing hash and writes specified StationData
 func (a *app) Set(station StationData) error {
 	a.stationsMutex.Lock()
@@ -821,10 +832,10 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 	station := a.stations[stationID]
 	sessionID := station.SessionID
 
-	QrUrl := "%s/#/?stationID=%d&sessionID=%s"
+	QrUrl := "%s/#/?sessionID=%s"
 
 	if len(sessionID) != 0 {
-		return sessionID, fmt.Sprintf(QrUrl, url, stationID, sessionID), nil
+		return sessionID, fmt.Sprintf(QrUrl, url, sessionID), nil
 	}
 
 	err := a.SetNextSession(stationID)
@@ -845,7 +856,7 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 		return "", "", err
 	}
 
-	return sessionID, fmt.Sprintf(QrUrl, url, stationID, sessionID), nil
+	return sessionID, fmt.Sprintf(QrUrl, url, sessionID), nil
 }
 
 func (a *app) RefreshSession(stationID StationID) (string, int64, error) {
@@ -856,7 +867,8 @@ func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 	station := a.stations[stationID]
 
 	if station.SessionID != string(sessionID) {
-		return errors.New("wrong session")
+		fmt.Println(sessionID)
+		return errors.New("session not found")
 	}
 
 	station.SessionID = ""
@@ -918,9 +930,8 @@ func (a *app) SetNextSession(stationID StationID) (err error) { // Создае�
 	defer a.stationsMutex.Unlock()
 	if station, ok := a.stations[stationID]; ok {
 		sessionsPool := a.stationsSessionsPool[stationID]
-
-		fmt.Println("Len ssPool: ", len(sessionsPool))
 		sessionsCount := len(sessionsPool)
+
 		switch {
 		case sessionsCount > 0:
 			station.SessionID = <-sessionsPool
