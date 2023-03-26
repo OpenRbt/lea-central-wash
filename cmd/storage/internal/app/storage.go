@@ -527,6 +527,7 @@ func (a *app) SetStation(station SetStation) error {
 		return err
 	}
 	a.loadStations()
+	a.RequestSessionsFromService(5, int(station.ID))
 	err = a.updateConfig("SetStation")
 	return err
 }
