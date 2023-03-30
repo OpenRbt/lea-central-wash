@@ -62,6 +62,7 @@ func (s *Service) SendMessage(msg interface{}, service string, target string, me
 		return s.bonusSvcPub.Publish(
 			jsonMsg,
 			[]string{target},
+			rabbitmq.WithPublishOptionsExchange(vo.WashBonusService),
 			rabbitmq.WithPublishOptionsType(vo.MessageType(messageType).String()),
 			rabbitmq.WithPublishOptionsUserID(serverID.Value),
 		)
