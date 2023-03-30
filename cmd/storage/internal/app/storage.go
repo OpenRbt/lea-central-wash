@@ -830,9 +830,10 @@ func isValidDayOfWeek(dayOfWeek int, weekDay []string) bool {
 }
 
 func (a *app) CreateSession(url string, stationID StationID) (string, string, error) {
+	a.stationsMutex.Lock()
 	station := a.stations[stationID]
 	sessionID := station.SessionID
-
+	a.stationsMutex.Unlock()
 	QrUrl := "%s/#/?sessionID=%s"
 
 	if len(sessionID) != 0 {
@@ -844,8 +845,10 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 		return "", "", err
 	}
 
+	a.stationsMutex.Lock()
 	station = a.stations[stationID]
 	sessionID = station.SessionID
+	a.stationsMutex.Unlock()
 
 	msg := models.SessionStateChange{
 		SessionID: sessionID,
@@ -966,9 +969,6 @@ func (a *app) RequestSessionsFromService(count int, stationID int) error {
 }
 
 func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) error {
-	a.stationsMutex.Lock()
-	defer a.stationsMutex.Unlock()
-
 	val, ok := a.stationsSessionsPool[stationID]
 	if !ok {
 		return errors.New("no sessions available")
