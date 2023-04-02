@@ -3,15 +3,14 @@ package app
 import (
 	"errors"
 	"fmt"
+	"github.com/OpenRbt/share_business/wash_rabbit/entity/session"
+	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 	"reflect"
 	"strconv"
 	"time"
 
 	"github.com/powerman/structlog"
 	"golang.org/x/crypto/bcrypt"
-
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/models"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/models/vo"
 )
 
 var log = structlog.New() //nolint:gochecknoglobals
@@ -850,12 +849,12 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 	sessionID = station.SessionID
 	a.stationsMutex.Unlock()
 
-	msg := models.SessionStateChange{
+	msg := session.StateChange{
 		SessionID: sessionID,
-		State:     models.SessionStateStart,
+		State:     rabbit_vo.SessionStateStart,
 	}
 
-	err = a.servicesPublisherFunc(msg, vo.WashBonusService, vo.BonusSvc, int(vo.BonusSessionStateChange))
+	err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionStateMessageType)
 	if err != nil {
 		return "", "", err
 	}
@@ -877,12 +876,12 @@ func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 
 	station.SessionID = ""
 	a.stations[stationID] = station
-	msg := models.SessionStateChange{
+	msg := session.StateChange{
 		SessionID: string(sessionID),
-		State:     models.SessionStateFinish,
+		State:     rabbit_vo.SessionStateFinish,
 	}
 
-	return a.servicesPublisherFunc(msg, vo.WashBonusService, vo.BonusSvc, int(vo.BonusSessionStateChange))
+	return a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionStateMessageType)
 }
 
 func (a *app) SetBonuses(stationID StationID, bonuses int) error {
@@ -899,7 +898,7 @@ func (a *app) IsAuthorized(stationID StationID) error {
 	return nil
 }
 
-func (a *app) AssignRabbitPub(publishFunc func(msg interface{}, service string, target string, messageType int) error) {
+func (a *app) AssignRabbitPub(publishFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error) {
 	a.servicesPublisherFunc = publishFunc
 }
 func (a *app) SetExternalServicesActive(active bool) {
@@ -963,9 +962,9 @@ func (a *app) SetNextSession(stationID StationID) (err error) { // Создае�
 }
 
 func (a *app) RequestSessionsFromService(count int, stationID int) error {
-	msg := SessionsRequest{Count: count, PostID: stationID}
+	msg := session.RequestSessions{NewSessionsAmount: int64(count), PostID: int64(stationID)}
 
-	return a.servicesPublisherFunc(msg, vo.WashBonusService, vo.BonusSvc, int(vo.BonusSessionRequest))
+	return a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionRequestMessageType)
 }
 
 func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) error {
@@ -1000,13 +999,23 @@ func (a *app) AssignSessionBonuses(sessionID string, amount int) error {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
-	//TODO: add a better way for station search?
 	for _, v := range a.stations {
 		if v.SessionID == sessionID {
 			v.BonusMoney += amount
-			break
+
+			err := a.servicesPublisherFunc(session.BonusChargeConfirm{SessionID: sessionID, Amount: int64(amount)}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusConfirmMessageType)
+			if err != nil {
+				return err
+			}
+
+			return nil
 		}
 	}
-	//TODO: add bonus return
+
+	err := a.servicesPublisherFunc(session.BonusChargeDiscard{SessionID: sessionID, Amount: int64(amount)}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusDiscardMessageType)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
