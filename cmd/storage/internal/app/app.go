@@ -2,6 +2,7 @@ package app
 
 import (
 	"errors"
+	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 	"sync"
 	"time"
 
@@ -145,7 +146,7 @@ type (
 
 		GetRabbitConfig() (RabbitConfig, error)
 		SetExternalServicesActive(active bool)
-		AssignRabbitPub(func(msg interface{}, service string, target string, messageType int) error)
+		AssignRabbitPub(func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error)
 		SetNextSession(stationID StationID) error
 		RequestSessionsFromService(count int, postID int) error
 		AddSessionsToPool(stationID StationID, sessionsIDs ...string) error
@@ -284,7 +285,7 @@ type app struct {
 	volumeCorrection      int
 
 	extServicesActive     bool
-	servicesPublisherFunc func(msg interface{}, service string, target string, messageType int) error
+	servicesPublisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error
 }
 
 // New creates and returns new App.

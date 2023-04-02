@@ -5,9 +5,8 @@ import (
 	"crypto/x509"
 	_ "embed"
 	"fmt"
-
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/models/vo"
+	"github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 	"github.com/wagslane/go-rabbitmq"
 )
 
@@ -83,7 +82,7 @@ func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 
 	svc.bonusSvcPub, err = rabbitmq.NewPublisher(conn,
 		rabbitmq.WithPublisherOptionsLogging,
-		rabbitmq.WithPublisherOptionsExchangeName(vo.WashBonusService),
+		rabbitmq.WithPublisherOptionsExchangeName(string(vo.WashBonusService)),
 	)
 	if err != nil {
 		return
@@ -92,7 +91,7 @@ func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 	svc.bonusSvcSub, err = rabbitmq.NewConsumer(conn,
 		svc.ProcessBonusMessage,
 		cfg.ServerID,
-		rabbitmq.WithConsumerOptionsExchangeName(vo.WashBonusService),
+		rabbitmq.WithConsumerOptionsExchangeName(string(vo.WashBonusService)),
 		rabbitmq.WithConsumerOptionsConsumerExclusive,
 		rabbitmq.WithConsumerOptionsRoutingKey(cfg.ServerID),
 	)
