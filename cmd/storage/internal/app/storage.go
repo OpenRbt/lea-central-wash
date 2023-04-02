@@ -3,11 +3,12 @@ package app
 import (
 	"errors"
 	"fmt"
-	"github.com/OpenRbt/share_business/wash_rabbit/entity/session"
-	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 	"reflect"
 	"strconv"
 	"time"
+
+	"github.com/OpenRbt/share_business/wash_rabbit/entity/session"
+	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 
 	"github.com/powerman/structlog"
 	"golang.org/x/crypto/bcrypt"
@@ -870,7 +871,6 @@ func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 	station := a.stations[stationID]
 
 	if station.SessionID != string(sessionID) {
-		fmt.Println(sessionID)
 		return errors.New("session not found")
 	}
 
@@ -985,11 +985,10 @@ func (a *app) AssignSessionUser(sessionID string, userID string) error {
 	defer a.stationsMutex.Unlock()
 
 	//TODO: add a better way for station search?
-	for k, v := range a.stations {
-		if v.SessionID == sessionID {
-			oldStation := v
-			oldStation.UserID = userID
-			a.stations[k] = oldStation
+	for id, data := range a.stations {
+		if data.SessionID == sessionID {
+			data.UserID = userID
+			a.stations[id] = data
 
 			break
 		}

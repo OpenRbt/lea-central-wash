@@ -3,6 +3,7 @@ package rabbit
 import (
 	"encoding/json"
 	"errors"
+
 	"github.com/OpenRbt/share_business/wash_rabbit/entity/session"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
