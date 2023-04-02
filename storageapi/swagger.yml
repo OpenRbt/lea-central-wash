@@ -1608,6 +1608,8 @@ paths:
                 type: integer
               ButtonID:
                 type: integer
+              isAuthorized:
+                type: boolean
 
     get:
       operationId: "getPing"
