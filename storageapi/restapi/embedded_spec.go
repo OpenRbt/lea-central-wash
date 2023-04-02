@@ -1001,6 +1001,9 @@ func init() {
                 "bonusSystemActive": {
                   "type": "boolean"
                 },
+                "isAuthorized": {
+                  "type": "boolean"
+                },
                 "lastDiscountUpdate": {
                   "type": "integer"
                 },
@@ -4355,6 +4358,9 @@ func init() {
                   "type": "integer"
                 },
                 "bonusSystemActive": {
+                  "type": "boolean"
+                },
+                "isAuthorized": {
                   "type": "boolean"
                 },
                 "lastDiscountUpdate": {
