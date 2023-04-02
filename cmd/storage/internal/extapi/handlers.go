@@ -250,6 +250,11 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 
 	station, bonusActive := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP)
 
+	isAuth := false
+	if station.UserID != "" {
+		isAuth = true
+	}
+
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
 		ServiceAmount:      newInt64(int64(station.ServiceMoney)),
 		BonusAmount:        int64(station.BonusMoney),
@@ -259,6 +264,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		LastDiscountUpdate: int64(station.LastDiscountUpdate),
 		SessionID:          station.SessionID,
 		BonusSystemActive:  bonusActive,
+		IsAuthorized:       isAuth,
 	})
 }
 
