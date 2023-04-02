@@ -33,6 +33,7 @@ require (
 )
 
 require (
+	github.com/OpenRbt/share_business/wash_rabbit v0.0.0-20230331123331-dd816969c391 // indirect
 	github.com/go-openapi/analysis v0.21.4 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.2 // indirect
 	github.com/rogpeppe/go-internal v1.8.1 // indirect

@@ -255,6 +255,7 @@ func run(db *sqlx.DB, errc chan<- error) {
 		cfg.rabbit.ServerID = rabbitCfg.ServerID
 		cfg.rabbit.ServerKey = rabbitCfg.ServerKey
 		rabbitWorker, err := rabbit.NewClient(cfg.rabbit, appl)
+		log.Info("Serve rabbit client")
 		if err != nil {
 			errc <- err
 			return
