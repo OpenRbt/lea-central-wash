@@ -985,9 +985,12 @@ func (a *app) AssignSessionUser(sessionID string, userID string) error {
 	defer a.stationsMutex.Unlock()
 
 	//TODO: add a better way for station search?
-	for _, v := range a.stations {
+	for k, v := range a.stations {
 		if v.SessionID == sessionID {
-			v.UserID = userID
+			oldStation := v
+			oldStation.UserID = userID
+			a.stations[k] = oldStation
+
 			break
 		}
 	}
@@ -999,9 +1002,11 @@ func (a *app) AssignSessionBonuses(sessionID string, amount int) error {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
-	for _, v := range a.stations {
+	for k, v := range a.stations {
 		if v.SessionID == sessionID {
-			v.BonusMoney += amount
+			oldStation := v
+			oldStation.BonusMoney += amount
+			a.stations[k] = oldStation
 
 			err := a.servicesPublisherFunc(session.BonusChargeConfirm{SessionID: sessionID, Amount: int64(amount)}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusConfirmMessageType)
 			if err != nil {
