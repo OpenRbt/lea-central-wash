@@ -256,12 +256,12 @@ func run(db *sqlx.DB, errc chan<- error) {
 		cfg.rabbit.ServerKey = rabbitCfg.ServerKey
 		rabbitWorker, err := rabbit.NewClient(cfg.rabbit, appl)
 		log.Info("Serve rabbit client")
-		if err != nil {
-			errc <- err
-			return
+		if nil != err {
+			log.Err("failed to init rabbit client", "error", err)
+		} else {
+			appl.AssignRabbitPub(rabbitWorker.SendMessage)
+			appl.FetchSessions()
 		}
-		appl.AssignRabbitPub(rabbitWorker.SendMessage)
-		appl.FetchSessions()
 	}
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
