@@ -868,6 +868,9 @@ func (a *app) RefreshSession(stationID StationID) (string, int64, error) {
 }
 
 func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+
 	station := a.stations[stationID]
 
 	if station.SessionID != string(sessionID) {
@@ -885,10 +888,16 @@ func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 }
 
 func (a *app) SetBonuses(stationID StationID, bonuses int) error {
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
 
-	// ...
+	station := a.stations[stationID]
+	msg := session.BonusReward{
+		SessionID: station.SessionID,
+		Amount:    bonuses,
+	}
 
-	return nil
+	return a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusRewardMessageType)
 }
 
 func (a *app) IsAuthorized(stationID StationID) error {
