@@ -1612,6 +1612,7 @@ paths:
                 type: integer
               isAuthorized:
                 type: boolean
+                x-nullable: true
 
     get:
       operationId: "getPing"
