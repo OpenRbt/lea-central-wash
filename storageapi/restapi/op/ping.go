@@ -208,7 +208,7 @@ type PingOKBody struct {
 	BonusSystemActive bool `json:"bonusSystemActive,omitempty"`
 
 	// is authorized
-	IsAuthorized bool `json:"isAuthorized,omitempty"`
+	IsAuthorized *bool `json:"isAuthorized,omitempty"`
 
 	// last discount update
 	LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
@@ -242,7 +242,7 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 		BonusSystemActive bool `json:"bonusSystemActive,omitempty"`
 
 		// is authorized
-		IsAuthorized bool `json:"isAuthorized,omitempty"`
+		IsAuthorized *bool `json:"isAuthorized,omitempty"`
 
 		// last discount update
 		LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`

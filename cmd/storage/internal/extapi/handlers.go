@@ -265,7 +265,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		LastDiscountUpdate: int64(station.LastDiscountUpdate),
 		SessionID:          station.SessionID,
 		BonusSystemActive:  bonusActive,
-		IsAuthorized:       isAuth,
+		IsAuthorized:       &isAuth,
 	})
 }
 
