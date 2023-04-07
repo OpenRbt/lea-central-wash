@@ -251,12 +251,14 @@ func run(db *sqlx.DB, errc chan<- error) {
 	appl := app.New(repo, kasse, weather, client)
 
 	rabbitCfg, err := appl.GetRabbitConfig()
-	if err == nil {
+	if err != nil {
+		log.Warn("no wash_bonus config found! skipping wash_bonus service initialization")
+	} else {
 		cfg.rabbit.ServerID = rabbitCfg.ServerID
 		cfg.rabbit.ServerKey = rabbitCfg.ServerKey
 		rabbitWorker, err := rabbit.NewClient(cfg.rabbit, appl)
 		log.Info("Serve rabbit client")
-		if nil != err {
+		if err != nil {
 			log.Err("failed to init rabbit client", "error", err)
 		} else {
 			appl.AssignRabbitPub(rabbitWorker.SendMessage)
