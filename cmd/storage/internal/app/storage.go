@@ -150,7 +150,7 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) (Statio
 	a.stations[id] = station
 	oldStation.LastUpdate = a.lastUpdate
 	oldStation.LastDiscountUpdate = a.lastDiscountUpdate
-	return oldStation, false
+	return oldStation, a.servicesPublisherFunc != nil
 }
 
 func (a *app) checkStationOnline() {
@@ -839,7 +839,7 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 	if len(sessionID) != 0 {
 		return sessionID, fmt.Sprintf(QrUrl, url, sessionID), nil
 	}
-
+	//TODO: create static link if sessions not available
 	err := a.SetNextSession(stationID)
 	if err != nil {
 		return "", "", err
@@ -855,9 +855,13 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 		State:     rabbit_vo.SessionStateStart,
 	}
 
-	err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionStateMessageType)
-	if err != nil {
-		return "", "", err
+	if a.servicesPublisherFunc != nil {
+		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionStateMessageType)
+		if err != nil {
+			return "", "", err
+		}
+	} else {
+		log.Err("failed to call wash_bonus service for session creation")
 	}
 
 	return sessionID, fmt.Sprintf(QrUrl, url, sessionID), nil
@@ -884,7 +888,15 @@ func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 		State:     rabbit_vo.SessionStateFinish,
 	}
 
-	return a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionStateMessageType)
+	var err error
+
+	if a.servicesPublisherFunc != nil {
+		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionStateMessageType)
+	} else {
+		log.Err("failed to call wash_bonus service for finish session")
+	}
+
+	return err
 }
 
 func (a *app) SetBonuses(stationID StationID, bonuses int) error {
@@ -897,7 +909,14 @@ func (a *app) SetBonuses(stationID StationID, bonuses int) error {
 		Amount:    bonuses,
 	}
 
-	return a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusRewardMessageType)
+	var err error
+	if a.servicesPublisherFunc != nil {
+		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusRewardMessageType)
+	} else {
+		log.Err("failed to call wash_bonus service for reward with bonuses")
+	}
+
+	return err
 }
 
 func (a *app) IsAuthorized(stationID StationID) error {
@@ -940,6 +959,12 @@ func (a *app) GetRabbitConfig() (cfg RabbitConfig, err error) {
 func (a *app) SetNextSession(stationID StationID) (err error) { // Создаем новую сессию для указанной станции? Устанавливает сессию из очереди, если нет сессии, то ошибка
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
+
+	if a.servicesPublisherFunc == nil {
+		log.Err("can`t assign next session, wash_bonus service not initialized")
+		return nil
+	}
+
 	if station, ok := a.stations[stationID]; ok {
 		sessionsPool := a.stationsSessionsPool[stationID]
 		sessionsCount := len(sessionsPool)
@@ -973,7 +998,14 @@ func (a *app) SetNextSession(stationID StationID) (err error) { // Создае�
 func (a *app) RequestSessionsFromService(count int, stationID int) error {
 	msg := session.RequestSessions{NewSessionsAmount: int64(count), PostID: int64(stationID)}
 
-	return a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionRequestMessageType)
+	var err error
+	if a.servicesPublisherFunc != nil {
+		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionRequestMessageType)
+	} else {
+		log.Err("failed to call wash_bonus service for request session")
+	}
+
+	return err
 }
 
 func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) error {
@@ -1016,18 +1048,26 @@ func (a *app) AssignSessionBonuses(sessionID string, amount int) error {
 			oldStation.BonusMoney += amount
 			a.stations[k] = oldStation
 
-			err := a.servicesPublisherFunc(session.BonusChargeConfirm{SessionID: sessionID, Amount: int64(amount)}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusConfirmMessageType)
-			if err != nil {
-				return err
+			if a.servicesPublisherFunc != nil {
+				err := a.servicesPublisherFunc(session.BonusChargeConfirm{SessionID: sessionID, Amount: int64(amount)}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusConfirmMessageType)
+				if err != nil {
+					return err
+				}
+			} else {
+				log.Err("failed to call wash_bonus service for bonus assign")
 			}
 
 			return nil
 		}
 	}
 
-	err := a.servicesPublisherFunc(session.BonusChargeDiscard{SessionID: sessionID, Amount: int64(amount)}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusDiscardMessageType)
-	if err != nil {
-		return err
+	if a.servicesPublisherFunc != nil {
+		err := a.servicesPublisherFunc(session.BonusChargeDiscard{SessionID: sessionID, Amount: int64(amount)}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusDiscardMessageType)
+		if err != nil {
+			return err
+		}
+	} else {
+		log.Err("failed to call wash_bonus service for bonus discard")
 	}
 
 	return nil
