@@ -1,0 +1,10 @@
+add driver for frequency generator
+add sequence requester
+------>
+add preliminary tests and check how its working
+sequence requester add working goroutine
+unit tests for the sequence requester
+add wrapper for the current motor driver
+add to hal
+add to openwashing
+test

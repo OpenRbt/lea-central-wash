@@ -208,6 +208,111 @@ func (mr *MockAppMockRecorder) Get(stationID interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockApp)(nil).Get), stationID)
 }
 
+// GetConfigBool mocks base method.
+func (m *MockApp) GetConfigBool(auth *Auth, name string) (*ConfigBool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetConfigBool", auth, name)
+	ret0, _ := ret[0].(*ConfigBool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetConfigBool indicates an expected call of GetConfigBool.
+func (mr *MockAppMockRecorder) GetConfigBool(auth, name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetConfigBool", reflect.TypeOf((*MockApp)(nil).GetConfigBool), auth, name)
+}
+
+// GetConfigInt mocks base method.
+func (m *MockApp) GetConfigInt(auth *Auth, name string) (*ConfigInt, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetConfigInt", auth, name)
+	ret0, _ := ret[0].(*ConfigInt)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetConfigInt indicates an expected call of GetConfigInt.
+func (mr *MockAppMockRecorder) GetConfigInt(auth, name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetConfigInt", reflect.TypeOf((*MockApp)(nil).GetConfigInt), auth, name)
+}
+
+// GetConfigString mocks base method.
+func (m *MockApp) GetConfigString(auth *Auth, name string) (*ConfigString, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetConfigString", auth, name)
+	ret0, _ := ret[0].(*ConfigString)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetConfigString indicates an expected call of GetConfigString.
+func (mr *MockAppMockRecorder) GetConfigString(auth, name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetConfigString", reflect.TypeOf((*MockApp)(nil).GetConfigString), auth, name)
+}
+
+// GetLevel mocks base method.
+func (m *MockApp) GetLevel() (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetLevel")
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetLevel indicates an expected call of GetLevel.
+func (mr *MockAppMockRecorder) GetLevel() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLevel", reflect.TypeOf((*MockApp)(nil).GetLevel))
+}
+
+// GetStationConfigBool mocks base method.
+func (m *MockApp) GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetStationConfigBool", name, stationID)
+	ret0, _ := ret[0].(*StationConfigBool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetStationConfigBool indicates an expected call of GetStationConfigBool.
+func (mr *MockAppMockRecorder) GetStationConfigBool(name, stationID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStationConfigBool", reflect.TypeOf((*MockApp)(nil).GetStationConfigBool), name, stationID)
+}
+
+// GetStationConfigInt mocks base method.
+func (m *MockApp) GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetStationConfigInt", name, stationID)
+	ret0, _ := ret[0].(*StationConfigInt)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetStationConfigInt indicates an expected call of GetStationConfigInt.
+func (mr *MockAppMockRecorder) GetStationConfigInt(name, stationID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStationConfigInt", reflect.TypeOf((*MockApp)(nil).GetStationConfigInt), name, stationID)
+}
+
+// GetStationConfigString mocks base method.
+func (m *MockApp) GetStationConfigString(name string, stationID StationID) (*StationConfigString, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetStationConfigString", name, stationID)
+	ret0, _ := ret[0].(*StationConfigString)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetStationConfigString indicates an expected call of GetStationConfigString.
+func (mr *MockAppMockRecorder) GetStationConfigString(name, stationID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStationConfigString", reflect.TypeOf((*MockApp)(nil).GetStationConfigString), name, stationID)
+}
+
 // GetStationDiscount mocks base method.
 func (m *MockApp) GetStationDiscount(id StationID) (*StationDiscount, error) {
 	m.ctrl.T.Helper()
@@ -221,6 +326,22 @@ func (m *MockApp) GetStationDiscount(id StationID) (*StationDiscount, error) {
 func (mr *MockAppMockRecorder) GetStationDiscount(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStationDiscount", reflect.TypeOf((*MockApp)(nil).GetStationDiscount), id)
+}
+
+// GetVolumeDispenser mocks base method.
+func (m *MockApp) GetVolumeDispenser() (int64, string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetVolumeDispenser")
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(string)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetVolumeDispenser indicates an expected call of GetVolumeDispenser.
+func (mr *MockAppMockRecorder) GetVolumeDispenser() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVolumeDispenser", reflect.TypeOf((*MockApp)(nil).GetVolumeDispenser))
 }
 
 // Info mocks base method.
@@ -294,6 +415,20 @@ func (m *MockApp) LoadMoneyReport(arg0 StationID) (*MoneyReport, error) {
 func (mr *MockAppMockRecorder) LoadMoneyReport(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadMoneyReport", reflect.TypeOf((*MockApp)(nil).LoadMoneyReport), arg0)
+}
+
+// MeasureVolumeMilliliters mocks base method.
+func (m *MockApp) MeasureVolumeMilliliters(volume int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MeasureVolumeMilliliters", volume)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// MeasureVolumeMilliliters indicates an expected call of MeasureVolumeMilliliters.
+func (mr *MockAppMockRecorder) MeasureVolumeMilliliters(volume interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MeasureVolumeMilliliters", reflect.TypeOf((*MockApp)(nil).MeasureVolumeMilliliters), volume)
 }
 
 // OpenStation mocks base method.
@@ -395,6 +530,20 @@ func (m *MockApp) ResetStationStat(auth *Auth, stationID StationID) error {
 func (mr *MockAppMockRecorder) ResetStationStat(auth, stationID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResetStationStat", reflect.TypeOf((*MockApp)(nil).ResetStationStat), auth, stationID)
+}
+
+// Run2Program mocks base method.
+func (m *MockApp) Run2Program(id StationID, programID, programID2 int64, preflight bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Run2Program", id, programID, programID2, preflight)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Run2Program indicates an expected call of Run2Program.
+func (mr *MockAppMockRecorder) Run2Program(id, programID, programID2, preflight interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Run2Program", reflect.TypeOf((*MockApp)(nil).Run2Program), id, programID, programID2, preflight)
 }
 
 // RunProgram mocks base method.
@@ -509,6 +658,48 @@ func (mr *MockAppMockRecorder) SetCardReaderConfig(arg0 interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetCardReaderConfig", reflect.TypeOf((*MockApp)(nil).SetCardReaderConfig), arg0)
 }
 
+// SetConfigBool mocks base method.
+func (m *MockApp) SetConfigBool(auth *Auth, config ConfigBool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetConfigBool", auth, config)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetConfigBool indicates an expected call of SetConfigBool.
+func (mr *MockAppMockRecorder) SetConfigBool(auth, config interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetConfigBool", reflect.TypeOf((*MockApp)(nil).SetConfigBool), auth, config)
+}
+
+// SetConfigInt mocks base method.
+func (m *MockApp) SetConfigInt(auth *Auth, config ConfigInt) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetConfigInt", auth, config)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetConfigInt indicates an expected call of SetConfigInt.
+func (mr *MockAppMockRecorder) SetConfigInt(auth, config interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetConfigInt", reflect.TypeOf((*MockApp)(nil).SetConfigInt), auth, config)
+}
+
+// SetConfigString mocks base method.
+func (m *MockApp) SetConfigString(auth *Auth, config ConfigString) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetConfigString", auth, config)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetConfigString indicates an expected call of SetConfigString.
+func (mr *MockAppMockRecorder) SetConfigString(auth, config interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetConfigString", reflect.TypeOf((*MockApp)(nil).SetConfigString), auth, config)
+}
+
 // SetKasse mocks base method.
 func (m *MockApp) SetKasse(kasse Kasse) error {
 	m.ctrl.T.Helper()
@@ -549,6 +740,48 @@ func (m *MockApp) SetStation(station SetStation) error {
 func (mr *MockAppMockRecorder) SetStation(station interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStation", reflect.TypeOf((*MockApp)(nil).SetStation), station)
+}
+
+// SetStationConfigBool mocks base method.
+func (m *MockApp) SetStationConfigBool(auth *Auth, config StationConfigBool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetStationConfigBool", auth, config)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetStationConfigBool indicates an expected call of SetStationConfigBool.
+func (mr *MockAppMockRecorder) SetStationConfigBool(auth, config interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStationConfigBool", reflect.TypeOf((*MockApp)(nil).SetStationConfigBool), auth, config)
+}
+
+// SetStationConfigInt mocks base method.
+func (m *MockApp) SetStationConfigInt(auth *Auth, config StationConfigInt) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetStationConfigInt", auth, config)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetStationConfigInt indicates an expected call of SetStationConfigInt.
+func (mr *MockAppMockRecorder) SetStationConfigInt(auth, config interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStationConfigInt", reflect.TypeOf((*MockApp)(nil).SetStationConfigInt), auth, config)
+}
+
+// SetStationConfigString mocks base method.
+func (m *MockApp) SetStationConfigString(auth *Auth, config StationConfigString) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetStationConfigString", auth, config)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetStationConfigString indicates an expected call of SetStationConfigString.
+func (mr *MockAppMockRecorder) SetStationConfigString(auth, config interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStationConfigString", reflect.TypeOf((*MockApp)(nil).SetStationConfigString), auth, config)
 }
 
 // SetStationProgram mocks base method.
@@ -1046,6 +1279,51 @@ func (mr *MockRepoMockRecorder) GetCurrentAdvertisingCampaigns(arg0 interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCurrentAdvertisingCampaigns", reflect.TypeOf((*MockRepo)(nil).GetCurrentAdvertisingCampaigns), arg0)
 }
 
+// GetStationConfigBool mocks base method.
+func (m *MockRepo) GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetStationConfigBool", name, stationID)
+	ret0, _ := ret[0].(*StationConfigBool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetStationConfigBool indicates an expected call of GetStationConfigBool.
+func (mr *MockRepoMockRecorder) GetStationConfigBool(name, stationID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStationConfigBool", reflect.TypeOf((*MockRepo)(nil).GetStationConfigBool), name, stationID)
+}
+
+// GetStationConfigInt mocks base method.
+func (m *MockRepo) GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetStationConfigInt", name, stationID)
+	ret0, _ := ret[0].(*StationConfigInt)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetStationConfigInt indicates an expected call of GetStationConfigInt.
+func (mr *MockRepoMockRecorder) GetStationConfigInt(name, stationID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStationConfigInt", reflect.TypeOf((*MockRepo)(nil).GetStationConfigInt), name, stationID)
+}
+
+// GetStationConfigString mocks base method.
+func (m *MockRepo) GetStationConfigString(name string, stationID StationID) (*StationConfigString, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetStationConfigString", name, stationID)
+	ret0, _ := ret[0].(*StationConfigString)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetStationConfigString indicates an expected call of GetStationConfigString.
+func (mr *MockRepoMockRecorder) GetStationConfigString(name, stationID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStationConfigString", reflect.TypeOf((*MockRepo)(nil).GetStationConfigString), name, stationID)
+}
+
 // Info mocks base method.
 func (m *MockRepo) Info() string {
 	m.ctrl.T.Helper()
@@ -1436,6 +1714,48 @@ func (mr *MockRepoMockRecorder) SetStation(station interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStation", reflect.TypeOf((*MockRepo)(nil).SetStation), station)
 }
 
+// SetStationConfigBool mocks base method.
+func (m *MockRepo) SetStationConfigBool(config StationConfigBool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetStationConfigBool", config)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetStationConfigBool indicates an expected call of SetStationConfigBool.
+func (mr *MockRepoMockRecorder) SetStationConfigBool(config interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStationConfigBool", reflect.TypeOf((*MockRepo)(nil).SetStationConfigBool), config)
+}
+
+// SetStationConfigInt mocks base method.
+func (m *MockRepo) SetStationConfigInt(config StationConfigInt) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetStationConfigInt", config)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetStationConfigInt indicates an expected call of SetStationConfigInt.
+func (mr *MockRepoMockRecorder) SetStationConfigInt(config interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStationConfigInt", reflect.TypeOf((*MockRepo)(nil).SetStationConfigInt), config)
+}
+
+// SetStationConfigString mocks base method.
+func (m *MockRepo) SetStationConfigString(config StationConfigString) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetStationConfigString", config)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetStationConfigString indicates an expected call of SetStationConfigString.
+func (mr *MockRepoMockRecorder) SetStationConfigString(config interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStationConfigString", reflect.TypeOf((*MockRepo)(nil).SetStationConfigString), config)
+}
+
 // SetStationProgram mocks base method.
 func (m *MockRepo) SetStationProgram(arg0 StationID, arg1 []StationProgram) error {
 	m.ctrl.T.Helper()
@@ -1684,45 +2004,63 @@ func (m *MockHardwareAccessLayer) EXPECT() *MockHardwareAccessLayerMockRecorder 
 	return m.recorder
 }
 
-// ControlBoard mocks base method.
-func (m *MockHardwareAccessLayer) ControlBoard(key int) (ControlBoard, error) {
+// GetLevel mocks base method.
+func (m *MockHardwareAccessLayer) GetLevel() (int64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ControlBoard", key)
-	ret0, _ := ret[0].(ControlBoard)
+	ret := m.ctrl.Call(m, "GetLevel")
+	ret0, _ := ret[0].(int64)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// ControlBoard indicates an expected call of ControlBoard.
-func (mr *MockHardwareAccessLayerMockRecorder) ControlBoard(key interface{}) *gomock.Call {
+// GetLevel indicates an expected call of GetLevel.
+func (mr *MockHardwareAccessLayerMockRecorder) GetLevel() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ControlBoard", reflect.TypeOf((*MockHardwareAccessLayer)(nil).ControlBoard), key)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLevel", reflect.TypeOf((*MockHardwareAccessLayer)(nil).GetLevel))
+}
+
+// MeasureVolumeMilliliters mocks base method.
+func (m *MockHardwareAccessLayer) MeasureVolumeMilliliters(volume int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MeasureVolumeMilliliters", volume)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// MeasureVolumeMilliliters indicates an expected call of MeasureVolumeMilliliters.
+func (mr *MockHardwareAccessLayerMockRecorder) MeasureVolumeMilliliters(volume interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MeasureVolumeMilliliters", reflect.TypeOf((*MockHardwareAccessLayer)(nil).MeasureVolumeMilliliters), volume)
 }
 
 // RunProgram mocks base method.
-func (m *MockHardwareAccessLayer) RunProgram(id int, config RelayConfig) error {
+func (m *MockHardwareAccessLayer) RunProgram(id int32, cfg RelayConfig) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RunProgram", id, config)
+	ret := m.ctrl.Call(m, "RunProgram", id, cfg)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // RunProgram indicates an expected call of RunProgram.
-func (mr *MockHardwareAccessLayerMockRecorder) RunProgram(id, config interface{}) *gomock.Call {
+func (mr *MockHardwareAccessLayerMockRecorder) RunProgram(id, cfg interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RunProgram", reflect.TypeOf((*MockHardwareAccessLayer)(nil).RunProgram), id, config)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RunProgram", reflect.TypeOf((*MockHardwareAccessLayer)(nil).RunProgram), id, cfg)
 }
 
-// Start mocks base method.
-func (m *MockHardwareAccessLayer) Start() {
+// Volume mocks base method.
+func (m *MockHardwareAccessLayer) Volume() (int64, string, error) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Start")
+	ret := m.ctrl.Call(m, "Volume")
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(string)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
-// Start indicates an expected call of Start.
-func (mr *MockHardwareAccessLayerMockRecorder) Start() *gomock.Call {
+// Volume indicates an expected call of Volume.
+func (mr *MockHardwareAccessLayerMockRecorder) Volume() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Start", reflect.TypeOf((*MockHardwareAccessLayer)(nil).Start))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Volume", reflect.TypeOf((*MockHardwareAccessLayer)(nil).Volume))
 }
 
 // MockControlBoard is a mock of ControlBoard interface.

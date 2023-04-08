@@ -2,11 +2,12 @@ package main
 
 import (
 	"flag"
-	"hal/internal/api/xgrpc"
-	"hal/internal/app"
-	"hal/service"
 	"log"
 	"net"
+
+	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/api/xgrpc"
+	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/app"
+	"github.com/DiaElectronics/lea-central-wash/cmd/hal/service"
 
 	"google.golang.org/grpc"
 )
