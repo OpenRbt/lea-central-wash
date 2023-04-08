@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"fmt"
-	"hal/internal/app"
 	"io"
 	"io/ioutil"
 	"log"
@@ -12,6 +11,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/app"
 
 	"github.com/tarm/serial"
 )
@@ -108,6 +109,7 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 		if strings.HasPrefix(f.Name(), "ttyUSB") {
 			_, portExists := h.portByKey(f.Name())
 			if !portExists {
+
 				// port is not found in our dictionary
 				err := h.checkAndAddPort(f.Name())
 				if err == nil {
