@@ -6,9 +6,7 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -76,30 +74,6 @@ type MeasureVolumeMillilitersBody struct {
 	// volume
 	// Required: true
 	Volume *int64 `json:"volume"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *MeasureVolumeMillilitersBody) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// hash
-		// Required: true
-		Hash *model.Hash `json:"hash"`
-
-		// volume
-		// Required: true
-		Volume *int64 `json:"volume"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	o.Hash = props.Hash
-	o.Volume = props.Volume
-	return nil
 }
 
 // Validate validates this measure volume milliliters body

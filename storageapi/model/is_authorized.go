@@ -6,9 +6,7 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -21,24 +19,6 @@ type IsAuthorized struct {
 
 	// authorized
 	Authorized bool `json:"authorized,omitempty"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (m *IsAuthorized) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// authorized
-		Authorized bool `json:"authorized,omitempty"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	m.Authorized = props.Authorized
-	return nil
 }
 
 // Validate validates this is authorized

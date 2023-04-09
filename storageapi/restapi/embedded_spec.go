@@ -2988,6 +2988,9 @@ func init() {
         },
         "service": {
           "type": "integer"
+        },
+        "sessionId": {
+          "type": "string"
         }
       }
     },
@@ -6344,6 +6347,9 @@ func init() {
         },
         "service": {
           "type": "integer"
+        },
+        "sessionId": {
+          "type": "string"
         }
       }
     },

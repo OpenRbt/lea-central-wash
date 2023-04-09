@@ -6,9 +6,7 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -78,33 +76,6 @@ type PingBody struct {
 	// hash
 	// Required: true
 	Hash *model.Hash `json:"hash"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *PingBody) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// current balance
-		CurrentBalance int64 `json:"currentBalance,omitempty"`
-
-		// current program
-		CurrentProgram int64 `json:"currentProgram,omitempty"`
-
-		// hash
-		// Required: true
-		Hash *model.Hash `json:"hash"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	o.CurrentBalance = props.CurrentBalance
-	o.CurrentProgram = props.CurrentProgram
-	o.Hash = props.Hash
-	return nil
 }
 
 // Validate validates this ping body
@@ -226,58 +197,6 @@ type PingOKBody struct {
 
 	// session ID
 	SessionID string `json:"sessionID,omitempty"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *PingOKBody) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// button ID
-		ButtonID int64 `json:"ButtonID,omitempty"`
-
-		// bonus amount
-		BonusAmount int64 `json:"bonusAmount,omitempty"`
-
-		// bonus system active
-		BonusSystemActive bool `json:"bonusSystemActive,omitempty"`
-
-		// is authorized
-		IsAuthorized bool `json:"isAuthorized,omitempty"`
-
-		// last discount update
-		LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
-
-		// last update
-		LastUpdate int64 `json:"lastUpdate,omitempty"`
-
-		// open station
-		// Required: true
-		OpenStation *bool `json:"openStation"`
-
-		// service amount
-		// Required: true
-		ServiceAmount *int64 `json:"serviceAmount"`
-
-		// session ID
-		SessionID string `json:"sessionID,omitempty"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	o.ButtonID = props.ButtonID
-	o.BonusAmount = props.BonusAmount
-	o.BonusSystemActive = props.BonusSystemActive
-	o.IsAuthorized = props.IsAuthorized
-	o.LastDiscountUpdate = props.LastDiscountUpdate
-	o.LastUpdate = props.LastUpdate
-	o.OpenStation = props.OpenStation
-	o.ServiceAmount = props.ServiceAmount
-	o.SessionID = props.SessionID
-	return nil
 }
 
 // Validate validates this ping o k body

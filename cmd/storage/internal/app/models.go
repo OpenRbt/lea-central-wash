@@ -61,6 +61,7 @@ type MoneyReport struct {
 	Electronical int
 	Service      int
 	Bonuses      int
+	SessionID    string
 }
 
 // CollectionReport is how much was collected from a station + when
