@@ -164,8 +164,8 @@ SET deleted = true, hash = null
 WHERE id = :id
 	`
 	sqlAddMoneyReport = `
-INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, bonuses, ctime)  
-VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :bonuses, :ctime)
+INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, bonuses, ctime, session_id)  
+VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :bonuses, :ctime, :session_id)
 	`
 	sqlAddCollectionReport = `
 	INSERT INTO money_collection (station_id, user_id, banknotes, cars_total, coins, electronical, service, last_money_report_id, ctime) 
@@ -189,7 +189,7 @@ VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, 
 	)	
 	`
 	sqlLastMoneyReport = `
-SELECT station_id, banknotes, cars_total, coins, electronical, service, bonuses FROM money_report WHERE station_id = :station_id
+SELECT station_id, banknotes, cars_total, coins, electronical, service, bonuses, session_id FROM money_report WHERE station_id = :station_id
 ORDER BY id DESC
 LIMIT 1
 	`
@@ -936,6 +936,7 @@ type (
 		Service      int
 		Bonuses      int
 		Ctime        time.Time
+		SessionID    string
 	}
 	argAdvertisingCampaign struct {
 		DefaultDiscount  int64
