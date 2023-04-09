@@ -236,6 +236,8 @@ definitions:
         type: integer
       hash:
         $ref: '#/definitions/Hash'
+      sessionId:
+        type: string
 
   RelayReport:
     type: object

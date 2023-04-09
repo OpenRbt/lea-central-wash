@@ -298,7 +298,31 @@ func (a *app) OpenStation(id StationID) error {
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
 func (a *app) SaveMoneyReport(report MoneyReport) error {
-	return a.repo.SaveMoneyReport(report)
+	err := a.repo.SaveMoneyReport(report)
+	if err != nil {
+		log.Err("failed to save moneyReport", "err", err)
+		return err
+	}
+
+	if a.servicesPublisherFunc != nil {
+		msg := session.MoneyReport{
+			StationID:    int(report.StationID),
+			Banknotes:    report.Banknotes,
+			CarsTotal:    report.CarsTotal,
+			Coins:        report.Coins,
+			Electronical: report.Electronical,
+			Service:      report.Service,
+			Bonuses:      report.Bonuses,
+			SessionID:    report.SessionID,
+		}
+		eventErr := a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionMoneyReportMessageType)
+		if eventErr != nil {
+			log.Err("failed to send moneyReport to wash_bonus service", "error", eventErr)
+		}
+	} else {
+		log.Warn("unable to send moneyReport to wash_bonus service")
+	}
+	return nil
 }
 
 // SaveCollectionReport gets app.CollectionReport struct
@@ -858,10 +882,11 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 	if a.servicesPublisherFunc != nil {
 		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionStateMessageType)
 		if err != nil {
+			log.Err("failed to call wash_bonus service for session creation", "error", err)
 			return "", "", err
 		}
 	} else {
-		log.Err("failed to call wash_bonus service for session creation")
+		log.Warn("unable to call wash_bonus service for session creation")
 	}
 
 	return sessionID, fmt.Sprintf(QrUrl, url, sessionID), nil
@@ -892,8 +917,11 @@ func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 
 	if a.servicesPublisherFunc != nil {
 		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionStateMessageType)
+		if err != nil {
+			log.Err("failed to call wash_bonus service for finish session", "error", err)
+		}
 	} else {
-		log.Err("failed to call wash_bonus service for finish session")
+		log.Warn("unable to call wash_bonus service for finish session")
 	}
 
 	return err
@@ -912,8 +940,11 @@ func (a *app) SetBonuses(stationID StationID, bonuses int) error {
 	var err error
 	if a.servicesPublisherFunc != nil {
 		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusRewardMessageType)
+		if err != nil {
+			log.Err("failed to call wash_bonus service for reward with bonuses", "error", err)
+		}
 	} else {
-		log.Err("failed to call wash_bonus service for reward with bonuses")
+		log.Warn("unable to call wash_bonus service for reward with bonuses")
 	}
 
 	return err
@@ -1001,8 +1032,11 @@ func (a *app) RequestSessionsFromService(count int, stationID int) error {
 	var err error
 	if a.servicesPublisherFunc != nil {
 		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionRequestMessageType)
+		if err != nil {
+			log.Err("failed to call wash_bonus service for request session", "error", err)
+		}
 	} else {
-		log.Err("failed to call wash_bonus service for request session")
+		log.Warn("unable to call wash_bonus service for request session")
 	}
 
 	return err
@@ -1051,10 +1085,11 @@ func (a *app) AssignSessionBonuses(sessionID string, amount int) error {
 			if a.servicesPublisherFunc != nil {
 				err := a.servicesPublisherFunc(session.BonusChargeConfirm{SessionID: sessionID, Amount: int64(amount)}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusConfirmMessageType)
 				if err != nil {
+					log.Err("failed to call wash_bonus service for bonus assign", "error", err)
 					return err
 				}
 			} else {
-				log.Err("failed to call wash_bonus service for bonus assign")
+				log.Warn("unable to call wash_bonus service for bonus assign")
 			}
 
 			return nil
@@ -1064,10 +1099,11 @@ func (a *app) AssignSessionBonuses(sessionID string, amount int) error {
 	if a.servicesPublisherFunc != nil {
 		err := a.servicesPublisherFunc(session.BonusChargeDiscard{SessionID: sessionID, Amount: int64(amount)}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusDiscardMessageType)
 		if err != nil {
+			log.Err("failed to call wash_bonus service for bonus discard", "error", err)
 			return err
 		}
 	} else {
-		log.Err("failed to call wash_bonus service for bonus discard")
+		log.Warn("unable to call wash_bonus service for bonus discard")
 	}
 
 	return nil
