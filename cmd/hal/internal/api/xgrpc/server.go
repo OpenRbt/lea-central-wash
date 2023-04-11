@@ -3,7 +3,8 @@ package xgrpc
 import (
 	"context"
 	"fmt"
-	"hal/internal/app"
+
+	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/app"
 
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )

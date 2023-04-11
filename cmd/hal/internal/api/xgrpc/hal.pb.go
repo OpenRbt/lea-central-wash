@@ -635,7 +635,7 @@ var file_hal_proto_goTypes = []interface{}{
 	(*AnswerProgram)(nil),        // 5: xgrpc.AnswerProgram
 	(*AnswerLevel)(nil),          // 6: xgrpc.AnswerLevel
 	(*RequestStopDispenser)(nil), // 7: xgrpc.RequestStopDispenser
-	(*emptypb.Empty)(nil),        // 8: google.protobuf.Empty
+	(*emptypb.Empty)(nil),      // 8: google.protobuf.Empty
 }
 var file_hal_proto_depIdxs = []int32{
 	1, // 0: xgrpc.Options.relays:type_name -> xgrpc.Relay

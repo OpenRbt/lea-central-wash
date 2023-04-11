@@ -14,6 +14,17 @@ var (
 	ErrDispenserNotRespond = errors.New("dispenser is not responding")
 )
 
+type MotorDriver interface {
+	StopMotor(device uint8) error
+	StartMotor(device uint8) error
+	SetSpeedPercent(device uint8, percent int16) error
+	GetSpeedPercent(device uint8) (int16, error)
+	MaxSpeed(device uint8) (uint16, error)
+	Temperature(device uint8) (float32, error)
+	Destroy() error
+	Port() string
+}
+
 // HardwareAccessLayer describes an interface to access hardware control modules
 type HardwareAccessLayer interface {
 	Start()
