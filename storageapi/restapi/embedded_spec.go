@@ -1523,6 +1523,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "401": {
+            "description": "user not authorized"
+          },
           "404": {
             "description": "hash not found"
           },
@@ -4884,6 +4887,9 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "401": {
+            "description": "user not authorized"
           },
           "404": {
             "description": "hash not found"

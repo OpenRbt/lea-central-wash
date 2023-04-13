@@ -2208,6 +2208,8 @@ paths:
       responses:
         204:
           description: OK
+        401:
+          description: user not authorized
         404:
           description: hash not found
         500:

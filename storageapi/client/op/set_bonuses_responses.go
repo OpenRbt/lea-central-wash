@@ -32,6 +32,12 @@ func (o *SetBonusesReader) ReadResponse(response runtime.ClientResponse, consume
 			return nil, err
 		}
 		return result, nil
+	case 401:
+		result := NewSetBonusesUnauthorized()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 404:
 		result := NewSetBonusesNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -101,6 +107,62 @@ func (o *SetBonusesNoContent) String() string {
 }
 
 func (o *SetBonusesNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewSetBonusesUnauthorized creates a SetBonusesUnauthorized with default headers values
+func NewSetBonusesUnauthorized() *SetBonusesUnauthorized {
+	return &SetBonusesUnauthorized{}
+}
+
+/*
+SetBonusesUnauthorized describes a response with status code 401, with default header values.
+
+user not authorized
+*/
+type SetBonusesUnauthorized struct {
+}
+
+// IsSuccess returns true when this set bonuses unauthorized response has a 2xx status code
+func (o *SetBonusesUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this set bonuses unauthorized response has a 3xx status code
+func (o *SetBonusesUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this set bonuses unauthorized response has a 4xx status code
+func (o *SetBonusesUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this set bonuses unauthorized response has a 5xx status code
+func (o *SetBonusesUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this set bonuses unauthorized response a status code equal to that given
+func (o *SetBonusesUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the set bonuses unauthorized response
+func (o *SetBonusesUnauthorized) Code() int {
+	return 401
+}
+
+func (o *SetBonusesUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /set-bonuses][%d] setBonusesUnauthorized ", 401)
+}
+
+func (o *SetBonusesUnauthorized) String() string {
+	return fmt.Sprintf("[POST /set-bonuses][%d] setBonusesUnauthorized ", 401)
+}
+
+func (o *SetBonusesUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

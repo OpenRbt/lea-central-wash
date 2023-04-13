@@ -6,7 +6,9 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -22,6 +24,28 @@ type ButtonDiscount struct {
 
 	// discount
 	Discount int64 `json:"discount,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *ButtonDiscount) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// button ID
+		ButtonID int64 `json:"buttonID,omitempty"`
+
+		// discount
+		Discount int64 `json:"discount,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.ButtonID = props.ButtonID
+	m.Discount = props.Discount
+	return nil
 }
 
 // Validate validates this button discount
