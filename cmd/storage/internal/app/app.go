@@ -2,9 +2,10 @@ package app
 
 import (
 	"errors"
-	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 	"sync"
 	"time"
+
+	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
@@ -43,6 +44,7 @@ var (
 	ErrUnknownProgram           = errors.New("unknown program")
 	ErrUnknownStation           = errors.New("unknown station")
 	ErrStationProgramMustUnique = errors.New("programID and buttonID must be unique")
+	ErrUserIsNotAuthorized      = errors.New("user is not authorized")
 
 	ErrServiceNotConfigured = errors.New("service not configured")
 )
