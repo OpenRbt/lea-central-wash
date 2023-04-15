@@ -360,7 +360,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 		for {
 			select {
 			case <-tick:
-				if startFluid > 9 {
+				if startFluid > 5 {
 					relay := r.GetCommandStartRev2Board()
 					board.RunConfig(relay)
 					startFluid = 0

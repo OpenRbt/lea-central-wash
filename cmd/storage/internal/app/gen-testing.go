@@ -179,6 +179,20 @@ func (mr *MockAppMockRecorder) DeleteUser(login, auth interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockApp)(nil).DeleteUser), login, auth)
 }
 
+// DispenserStop mocks base method.
+func (m *MockApp) DispenserStop(stationID StationID, stopProgramID int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DispenserStop", stationID, stopProgramID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DispenserStop indicates an expected call of DispenserStop.
+func (mr *MockAppMockRecorder) DispenserStop(stationID, stopProgramID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DispenserStop", reflect.TypeOf((*MockApp)(nil).DispenserStop), stationID, stopProgramID)
+}
+
 // EditAdvertisingCampaign mocks base method.
 func (m *MockApp) EditAdvertisingCampaign(auth *Auth, a AdvertisingCampaign) error {
 	m.ctrl.T.Helper()
@@ -418,17 +432,17 @@ func (mr *MockAppMockRecorder) LoadMoneyReport(arg0 interface{}) *gomock.Call {
 }
 
 // MeasureVolumeMilliliters mocks base method.
-func (m *MockApp) MeasureVolumeMilliliters(volume int64) error {
+func (m *MockApp) MeasureVolumeMilliliters(volume int64, stationID StationID, startProgramID, stopProgramID int64) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "MeasureVolumeMilliliters", volume)
+	ret := m.ctrl.Call(m, "MeasureVolumeMilliliters", volume, stationID, startProgramID, stopProgramID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // MeasureVolumeMilliliters indicates an expected call of MeasureVolumeMilliliters.
-func (mr *MockAppMockRecorder) MeasureVolumeMilliliters(volume interface{}) *gomock.Call {
+func (mr *MockAppMockRecorder) MeasureVolumeMilliliters(volume, stationID, startProgramID, stopProgramID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MeasureVolumeMilliliters", reflect.TypeOf((*MockApp)(nil).MeasureVolumeMilliliters), volume)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MeasureVolumeMilliliters", reflect.TypeOf((*MockApp)(nil).MeasureVolumeMilliliters), volume, stationID, startProgramID, stopProgramID)
 }
 
 // OpenStation mocks base method.
@@ -2004,6 +2018,20 @@ func (m *MockHardwareAccessLayer) EXPECT() *MockHardwareAccessLayerMockRecorder 
 	return m.recorder
 }
 
+// DispenserStop mocks base method.
+func (m *MockHardwareAccessLayer) DispenserStop(stationID StationID, cfg RelayConfig) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DispenserStop", stationID, cfg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DispenserStop indicates an expected call of DispenserStop.
+func (mr *MockHardwareAccessLayerMockRecorder) DispenserStop(stationID, cfg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DispenserStop", reflect.TypeOf((*MockHardwareAccessLayer)(nil).DispenserStop), stationID, cfg)
+}
+
 // GetLevel mocks base method.
 func (m *MockHardwareAccessLayer) GetLevel() (int64, error) {
 	m.ctrl.T.Helper()
@@ -2020,17 +2048,17 @@ func (mr *MockHardwareAccessLayerMockRecorder) GetLevel() *gomock.Call {
 }
 
 // MeasureVolumeMilliliters mocks base method.
-func (m *MockHardwareAccessLayer) MeasureVolumeMilliliters(volume int64) error {
+func (m *MockHardwareAccessLayer) MeasureVolumeMilliliters(volume int64, stationID StationID, startCfg, stopCfg RelayConfig) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "MeasureVolumeMilliliters", volume)
+	ret := m.ctrl.Call(m, "MeasureVolumeMilliliters", volume, stationID, startCfg, stopCfg)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // MeasureVolumeMilliliters indicates an expected call of MeasureVolumeMilliliters.
-func (mr *MockHardwareAccessLayerMockRecorder) MeasureVolumeMilliliters(volume interface{}) *gomock.Call {
+func (mr *MockHardwareAccessLayerMockRecorder) MeasureVolumeMilliliters(volume, stationID, startCfg, stopCfg interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MeasureVolumeMilliliters", reflect.TypeOf((*MockHardwareAccessLayer)(nil).MeasureVolumeMilliliters), volume)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MeasureVolumeMilliliters", reflect.TypeOf((*MockHardwareAccessLayer)(nil).MeasureVolumeMilliliters), volume, stationID, startCfg, stopCfg)
 }
 
 // RunProgram mocks base method.
