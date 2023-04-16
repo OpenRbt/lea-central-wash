@@ -6,7 +6,9 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -27,6 +29,31 @@ type KeyPair struct {
 	// value
 	// Required: true
 	Value *string `json:"value"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *KeyPair) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// key
+		// Required: true
+		// Min Length: 1
+		Key *string `json:"key"`
+
+		// value
+		// Required: true
+		Value *string `json:"value"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.Key = props.Key
+	m.Value = props.Value
+	return nil
 }
 
 // Validate validates this key pair

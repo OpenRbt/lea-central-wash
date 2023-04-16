@@ -907,6 +907,7 @@ func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 	}
 
 	station.SessionID = ""
+	station.UserID = ""
 	a.stations[stationID] = station
 	msg := session.StateChange{
 		SessionID: string(sessionID),
@@ -932,6 +933,11 @@ func (a *app) SetBonuses(stationID StationID, bonuses int) error {
 	defer a.stationsMutex.Unlock()
 
 	station := a.stations[stationID]
+
+	if station.UserID == "" {
+		return ErrUserIsNotAuthorized
+	}
+
 	msg := session.BonusReward{
 		SessionID: station.SessionID,
 		Amount:    bonuses,

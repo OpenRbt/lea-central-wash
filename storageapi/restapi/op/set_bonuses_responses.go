@@ -39,6 +39,33 @@ func (o *SetBonusesNoContent) WriteResponse(rw http.ResponseWriter, producer run
 
 func (o *SetBonusesNoContent) SetBonusesResponder() {}
 
+// SetBonusesUnauthorizedCode is the HTTP code returned for type SetBonusesUnauthorized
+const SetBonusesUnauthorizedCode int = 401
+
+/*
+SetBonusesUnauthorized user not authorized
+
+swagger:response setBonusesUnauthorized
+*/
+type SetBonusesUnauthorized struct {
+}
+
+// NewSetBonusesUnauthorized creates SetBonusesUnauthorized with default headers values
+func NewSetBonusesUnauthorized() *SetBonusesUnauthorized {
+
+	return &SetBonusesUnauthorized{}
+}
+
+// WriteResponse to the client
+func (o *SetBonusesUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(401)
+}
+
+func (o *SetBonusesUnauthorized) SetBonusesResponder() {}
+
 // SetBonusesNotFoundCode is the HTTP code returned for type SetBonusesNotFound
 const SetBonusesNotFoundCode int = 404
 

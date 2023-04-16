@@ -1129,6 +1129,8 @@ func (svc *service) setBonuses(params op.SetBonusesParams) op.SetBonusesResponde
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewSetBonusesNoContent()
+	case app.ErrUserIsNotAuthorized:
+		return op.NewSetBonusesUnauthorized()
 	default:
 		return op.NewSetBonusesInternalServerError()
 	}

@@ -6,7 +6,9 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -36,6 +38,44 @@ type StationPrograms struct {
 
 	// station ID
 	StationID int64 `json:"stationID,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *StationPrograms) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// last update
+		LastUpdate int64 `json:"lastUpdate,omitempty"`
+
+		// name
+		Name string `json:"name,omitempty"`
+
+		// preflight sec
+		PreflightSec int64 `json:"preflightSec,omitempty"`
+
+		// programs
+		Programs []*StationProgramsProgramsItems0 `json:"programs"`
+
+		// relay board
+		RelayBoard RelayBoard `json:"relayBoard,omitempty"`
+
+		// station ID
+		StationID int64 `json:"stationID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.LastUpdate = props.LastUpdate
+	m.Name = props.Name
+	m.PreflightSec = props.PreflightSec
+	m.Programs = props.Programs
+	m.RelayBoard = props.RelayBoard
+	m.StationID = props.StationID
+	return nil
 }
 
 // Validate validates this station programs
@@ -179,6 +219,28 @@ type StationProgramsProgramsItems0 struct {
 
 	// program
 	Program *Program `json:"program,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *StationProgramsProgramsItems0) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// button ID
+		ButtonID int64 `json:"buttonID,omitempty"`
+
+		// program
+		Program *Program `json:"program,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.ButtonID = props.ButtonID
+	m.Program = props.Program
+	return nil
 }
 
 // Validate validates this station programs programs items0
