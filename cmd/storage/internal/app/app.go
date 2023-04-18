@@ -275,12 +275,13 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 		hardware:         hardware,
 		volumeCorrection: 1000,
 	}
-	stationConfig, err := appl.repo.GetStationConfigInt(ParameterNameVolumeCoef, 1)
+	stationConfig, err := appl.repo.GetStationConfigInt(ParameterNameVolumeCoef, StationID(1))
 	if err != nil {
 		log.PrintErr(err)
 	}
 	appl.stationsMutex.Lock()
 	appl.volumeCorrection = int(stationConfig.Value)
+	log.Info("New App", "VOLUME_COEF", appl.volumeCorrection)
 	appl.stationsMutex.Unlock()
 	err = appl.setDefaultConfig()
 	if err != nil {

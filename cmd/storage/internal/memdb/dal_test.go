@@ -27,7 +27,7 @@ func TestSmoke(tt *testing.T) {
 	t.Nil(err)
 	v, err = db.Load(1, "key1")
 	t.Nil(err)
-	t.DeepEqual(v, []byte("value5"))
+	t.DeepEqual(v, "value5")
 
 	_, err = db.Load(1, "key3")
 	t.Err(err, app.ErrNotFound)
