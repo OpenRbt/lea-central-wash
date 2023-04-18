@@ -1349,11 +1349,19 @@ func init() {
               "title": "ArgMeasureVolumeMilliliters",
               "required": [
                 "hash",
-                "volume"
+                "volume",
+                "startProgramID",
+                "stopProgramID"
               ],
               "properties": {
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "startProgramID": {
+                  "type": "integer"
+                },
+                "stopProgramID": {
+                  "type": "integer"
                 },
                 "volume": {
                   "type": "integer"
@@ -2406,6 +2414,48 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/stop-dispenser": {
+      "post": {
+        "operationId": "dispenserStop",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgDispenserStop",
+              "required": [
+                "hash",
+                "stopProgramID"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "stopProgramID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"
@@ -4907,11 +4957,19 @@ func init() {
               "title": "ArgMeasureVolumeMilliliters",
               "required": [
                 "hash",
-                "volume"
+                "volume",
+                "startProgramID",
+                "stopProgramID"
               ],
               "properties": {
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "startProgramID": {
+                  "type": "integer"
+                },
+                "stopProgramID": {
+                  "type": "integer"
                 },
                 "volume": {
                   "type": "integer"
@@ -5948,6 +6006,48 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/stop-dispenser": {
+      "post": {
+        "operationId": "dispenserStop",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgDispenserStop",
+              "required": [
+                "hash",
+                "stopProgramID"
+              ],
+              "properties": {
+                "hash": {
+                  "$ref": "#/definitions/Hash"
+                },
+                "stopProgramID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "not found",
+            "schema": {
+              "type": "string"
+            }
           },
           "500": {
             "description": "internal error"

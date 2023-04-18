@@ -59,11 +59,12 @@ func testNew(t *check.C) (*app, func(), *mocks) {
 		mockWeather: NewMockWeatherSvc(ctrl),
 		mockHal:     NewMockHardwareAccessLayer(ctrl),
 	}
-	// fix me
+
 	m.mockRepo.EXPECT().Stations().Return(nil, nil).AnyTimes()
 	m.mockRepo.EXPECT().LastUpdateConfig().Return(2, nil).AnyTimes()
 	m.mockRepo.EXPECT().Programs(gomock.Any()).Return(nil, nil).AnyTimes()
 	m.mockRepo.EXPECT().AddStation(gomock.Any()).Return(nil).AnyTimes()
+	m.mockRepo.EXPECT().GetStationConfigInt(ParameterNameVolumeCoef, StationID(1)).Return(&StationConfigInt{Value: 1000}, nil).AnyTimes()
 	m.mockRepo.EXPECT().GetConfigInt(parameterNameTimeZone).Return(&ConfigInt{
 		Value: 420,
 	}, nil)

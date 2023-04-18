@@ -5,7 +5,13 @@ import (
 )
 
 var (
-	ErrNotFound = errors.New("not found")
+	ErrNotFound            = errors.New("not found")
+	ErrNotFoundDispenser   = errors.New("not found Dispenser")
+	ErrNotFoundBoard       = errors.New("not found Board")
+	ErrNonFreezing         = errors.New("the non-freezing is over")
+	ErrInCommandFok        = errors.New("error in command FOK")
+	ErrReadAnswerDispenser = errors.New("error in read answer from Dispenser")
+	ErrDispenserNotRespond = errors.New("dispenser is not responding")
 )
 
 type MotorDriver interface {
@@ -24,9 +30,10 @@ type HardwareAccessLayer interface {
 	Start()
 	ControlBoard(key int32) (ControlBoard, error)
 	RunProgram(id int32, cfg RelayConfig) (err error)
-	MeasureVolumeMilliliters(cmd int) error
+	MeasureVolumeMilliliters(measureVolume int, stationID int32, startCfg RelayConfig, stopCfg RelayConfig) error
 	Volume() DispenserStatus
 	GetLevel() int
+	DispenserStop(cfg RelayConfig) error
 }
 
 // ControlBoard represents one board (even virtual) to control relays

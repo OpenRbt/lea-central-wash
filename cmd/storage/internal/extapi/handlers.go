@@ -656,9 +656,35 @@ func (svc *service) run2Program(params op.Run2ProgramParams) op.Run2ProgramRespo
 	}
 }
 
-func (svc *service) measureVolumeMilliliters(params op.MeasureVolumeMillilitersParams) op.MeasureVolumeMillilitersResponder {
+func (svc *service) dispenserStop(params op.DispenserStopParams) op.DispenserStopResponder {
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		log.Info("DispenserPause: StationID not found ", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	}
 
-	err := svc.app.MeasureVolumeMilliliters(*params.Args.Volume)
+	err = svc.app.DispenserStop(stationID, *params.Args.StopProgramID)
+
+	log.Info("Program Pause ", "ip", params.HTTPRequest.RemoteAddr)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewDispenserStopNoContent()
+	case app.ErrNotFound:
+		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewDispenserStopNotFound().WithPayload("Arduino not found")
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewDispenserStopInternalServerError()
+	}
+}
+
+func (svc *service) measureVolumeMilliliters(params op.MeasureVolumeMillilitersParams) op.MeasureVolumeMillilitersResponder {
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		log.Info("measureVolumeMilliliters: StationID not found ", "hash", *params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
+	}
+
+	err = svc.app.MeasureVolumeMilliliters(*params.Args.Volume, stationID, *params.Args.StartProgramID, *params.Args.StopProgramID)
 
 	log.Info("Run Command Dispenser ", "Volume", *params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
 	fmt.Println("ERROR: ", err)
@@ -669,6 +695,12 @@ func (svc *service) measureVolumeMilliliters(params op.MeasureVolumeMillilitersP
 	case app.ErrNotFound:
 		log.PrintErr(err, "hash", params.Args.Hash, "Volume", params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewMeasureVolumeMillilitersNotFound().WithPayload("Arduino not found")
+	case app.ErrNotFoundDispenser:
+		log.PrintErr(err, "hash", params.Args.Hash, "Volume", params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewMeasureVolumeMillilitersNotFound().WithPayload("Arduino not found")
+	case app.ErrNotFoundBoard:
+		log.PrintErr(err, "hash", params.Args.Hash, "Volume", params.Args.Volume, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewMeasureVolumeMillilitersNotFound().WithPayload("Board not found")
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewMeasureVolumeMillilitersInternalServerError()
@@ -677,7 +709,7 @@ func (svc *service) measureVolumeMilliliters(params op.MeasureVolumeMillilitersP
 
 func (svc *service) VolumeDispenser(params op.VolumeDispenserParams) op.VolumeDispenserResponder {
 
-	znach, status, err := svc.app.GetVolumeDispenser()
+	volume, status, err := svc.app.GetVolumeDispenser()
 
 	log.Info("Get Volume", "ip", params.HTTPRequest.RemoteAddr)
 
@@ -687,7 +719,7 @@ func (svc *service) VolumeDispenser(params op.VolumeDispenserParams) op.VolumeDi
 
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewVolumeDispenserOK().WithPayload(&op.VolumeDispenserOKBody{Status: &status, Volume: &znach})
+		return op.NewVolumeDispenserOK().WithPayload(&op.VolumeDispenserOKBody{Status: &status, Volume: &volume})
 	case app.ErrNotFound:
 		log.PrintErr(err, "hash", params.Args.Hash, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewVolumeDispenserNotFound().WithPayload("Volume from Arduino not found")

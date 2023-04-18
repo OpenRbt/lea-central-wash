@@ -19,6 +19,8 @@ const (
 // Auth describes user profile.
 type Auth = storageapi.Profile
 
+const ParameterNameVolumeCoef = "VOLUME_COEF"
+
 // Key aliases
 const (
 	TemperatureCurrent    = "curr_temp"
@@ -32,6 +34,8 @@ const (
 // Errors.
 var (
 	ErrNotFound                 = errors.New("not found")
+	ErrNotFoundDispenser        = errors.New("not found Dispenser")
+	ErrNotFoundBoard            = errors.New("not found Board")
 	ErrAccessDenied             = errors.New("access denied")
 	ErrLoginNotUnique           = errors.New("login is already in use")
 	ErrMoneyCollectionFkey      = errors.New("violates foreign key constraint on table money_collection")
@@ -97,8 +101,9 @@ type (
 
 		RunProgram(id StationID, programID int64, preflight bool) (err error)
 		Run2Program(id StationID, programID int64, programID2 int64, preflight bool) (err error)
-		MeasureVolumeMilliliters(volume int64) (err error)
+		MeasureVolumeMilliliters(volume int64, stationID StationID, startProgramID int64, stopProgramID int64) (err error)
 		GetVolumeDispenser() (volume int64, status string, err error)
+		DispenserStop(stationID StationID, stopProgramID int64) (err error)
 		GetLevel() (level int64, err error)
 		PressButton(id StationID, buttonID int64) (err error)
 
@@ -218,7 +223,8 @@ type (
 	// HardwareAccessLayer describes an interface to access hardware control modules
 	HardwareAccessLayer interface {
 		RunProgram(id int32, cfg RelayConfig) (err error)
-		MeasureVolumeMilliliters(volume int64) (err error)
+		MeasureVolumeMilliliters(volume int64, stationID StationID, startCfg RelayConfig, stopCfg RelayConfig) (err error)
+		DispenserStop(stationID StationID, cfg RelayConfig) (err error)
 		Volume() (volume int64, status string, err error)
 		GetLevel() (level int64, err error)
 	}
@@ -256,18 +262,28 @@ type app struct {
 	lastDiscountUpdate    int64
 	cfg                   AppConfig
 	cfgMutex              sync.Mutex
+	volumeCorrection      int
 }
 
 // New creates and returns new App.
 func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareAccessLayer) App {
 	appl := &app{
-		repo:       repo,
-		stations:   make(map[StationID]StationData),
-		kasseSvc:   kasseSvc,
-		weatherSvc: weatherSvc,
-		hardware:   hardware,
+		repo:             repo,
+		stations:         make(map[StationID]StationData),
+		kasseSvc:         kasseSvc,
+		weatherSvc:       weatherSvc,
+		hardware:         hardware,
+		volumeCorrection: 1000,
 	}
-	err := appl.setDefaultConfig()
+	stationConfig, err := appl.repo.GetStationConfigInt(ParameterNameVolumeCoef, StationID(1))
+	if err != nil {
+		log.PrintErr(err)
+	}
+	appl.stationsMutex.Lock()
+	appl.volumeCorrection = int(stationConfig.Value)
+	log.Info("New App", "VOLUME_COEF", appl.volumeCorrection)
+	appl.stationsMutex.Unlock()
+	err = appl.setDefaultConfig()
 	if err != nil {
 		log.PrintErr(err)
 	}

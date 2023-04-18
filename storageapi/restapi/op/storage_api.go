@@ -80,6 +80,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		DeleteUserHandler: DeleteUserHandlerFunc(func(params DeleteUserParams, principal *storageapi.Profile) DeleteUserResponder {
 			return DeleteUserNotImplemented()
 		}),
+		DispenserStopHandler: DispenserStopHandlerFunc(func(params DispenserStopParams) DispenserStopResponder {
+			return DispenserStopNotImplemented()
+		}),
 		EditAdvertisingCampaignHandler: EditAdvertisingCampaignHandlerFunc(func(params EditAdvertisingCampaignParams, principal *storageapi.Profile) EditAdvertisingCampaignResponder {
 			return EditAdvertisingCampaignNotImplemented()
 		}),
@@ -328,6 +331,8 @@ type StorageAPI struct {
 	DelStationHandler DelStationHandler
 	// DeleteUserHandler sets the operation handler for the delete user operation
 	DeleteUserHandler DeleteUserHandler
+	// DispenserStopHandler sets the operation handler for the dispenser stop operation
+	DispenserStopHandler DispenserStopHandler
 	// EditAdvertisingCampaignHandler sets the operation handler for the edit advertising campaign operation
 	EditAdvertisingCampaignHandler EditAdvertisingCampaignHandler
 	// GetConfigVarBoolHandler sets the operation handler for the get config var bool operation
@@ -560,6 +565,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.DeleteUserHandler == nil {
 		unregistered = append(unregistered, "DeleteUserHandler")
+	}
+	if o.DispenserStopHandler == nil {
+		unregistered = append(unregistered, "DispenserStopHandler")
 	}
 	if o.EditAdvertisingCampaignHandler == nil {
 		unregistered = append(unregistered, "EditAdvertisingCampaignHandler")
@@ -882,6 +890,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/user"] = NewDeleteUser(o.context, o.DeleteUserHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/stop-dispenser"] = NewDispenserStop(o.context, o.DispenserStopHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

@@ -73,6 +73,14 @@ type MeasureVolumeMillilitersBody struct {
 	// Required: true
 	Hash *model.Hash `json:"hash"`
 
+	// start program ID
+	// Required: true
+	StartProgramID *int64 `json:"startProgramID"`
+
+	// stop program ID
+	// Required: true
+	StopProgramID *int64 `json:"stopProgramID"`
+
 	// volume
 	// Required: true
 	Volume *int64 `json:"volume"`
@@ -86,6 +94,14 @@ func (o *MeasureVolumeMillilitersBody) UnmarshalJSON(data []byte) error {
 		// Required: true
 		Hash *model.Hash `json:"hash"`
 
+		// start program ID
+		// Required: true
+		StartProgramID *int64 `json:"startProgramID"`
+
+		// stop program ID
+		// Required: true
+		StopProgramID *int64 `json:"stopProgramID"`
+
 		// volume
 		// Required: true
 		Volume *int64 `json:"volume"`
@@ -98,6 +114,8 @@ func (o *MeasureVolumeMillilitersBody) UnmarshalJSON(data []byte) error {
 	}
 
 	o.Hash = props.Hash
+	o.StartProgramID = props.StartProgramID
+	o.StopProgramID = props.StopProgramID
 	o.Volume = props.Volume
 	return nil
 }
@@ -107,6 +125,14 @@ func (o *MeasureVolumeMillilitersBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateHash(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateStartProgramID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateStopProgramID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -139,6 +165,24 @@ func (o *MeasureVolumeMillilitersBody) validateHash(formats strfmt.Registry) err
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (o *MeasureVolumeMillilitersBody) validateStartProgramID(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"startProgramID", "body", o.StartProgramID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *MeasureVolumeMillilitersBody) validateStopProgramID(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"stopProgramID", "body", o.StopProgramID); err != nil {
+		return err
 	}
 
 	return nil

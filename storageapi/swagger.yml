@@ -2199,10 +2199,44 @@ paths:
             required:
               - hash
               - volume
+              - startProgramID
+              - stopProgramID
             properties:
               hash:
                 $ref: '#/definitions/Hash'
               volume:
+                type: integer
+              startProgramID:
+                type: integer
+              stopProgramID:
+                type: integer
+      responses:
+        204:
+          description: OK
+        404:
+          description: not found
+          schema:
+            type: string
+        500:
+          description: internal error
+
+  /stop-dispenser:
+    post:
+      operationId: "dispenserStop"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "ArgDispenserStop"
+            type: object
+            required:
+              - hash
+              - stopProgramID
+            properties:
+              hash:
+                $ref: '#/definitions/Hash'
+              stopProgramID:
                 type: integer
       responses:
         204:

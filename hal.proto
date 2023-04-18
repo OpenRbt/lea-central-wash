@@ -7,6 +7,7 @@ import "google/protobuf/empty.proto";
 service HardwareAccessLayer{
     rpc RunProgram(Options) returns(AnswerProgram);
     rpc MeasureVolumeMilliliters(OptionsCommand) returns(AnswerCommand);
+    rpc Stop(RequestStopDispenser) returns(AnswerCommand);
     rpc Volume(google.protobuf.Empty) returns(Answer);
     rpc GetLevel(google.protobuf.Empty) returns(AnswerLevel);
 }
@@ -25,7 +26,14 @@ message Relay{
 }
 
 message OptionsCommand{
-    int32 command = 1;
+    int32 volume = 1;
+    int32 station_id = 2;
+    int32 StartTimeoutSec = 3;
+    int32 StartMotorSpeedPercent = 4;
+    repeated Relay StartRelays = 5;
+    int32 StopTimeoutSec = 6;
+    int32 StopMotorSpeedPercent = 7;
+    repeated Relay StopRelays = 8;
 }
 
 message Answer{
@@ -44,3 +52,11 @@ message AnswerProgram{
 message AnswerLevel{
     int64 answer = 1;
 }
+
+message RequestStopDispenser{
+    int32 station_id = 1;
+    int32 timeoutSec = 2;
+    int32 motorSpeedPercent = 3;
+    repeated Relay relays = 4;
+}
+
