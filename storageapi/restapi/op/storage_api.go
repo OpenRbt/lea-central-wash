@@ -68,6 +68,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		CardReaderConfigByHashHandler: CardReaderConfigByHashHandlerFunc(func(params CardReaderConfigByHashParams) CardReaderConfigByHashResponder {
 			return CardReaderConfigByHashNotImplemented()
 		}),
+		CreateSessionHandler: CreateSessionHandlerFunc(func(params CreateSessionParams) CreateSessionResponder {
+			return CreateSessionNotImplemented()
+		}),
 		CreateUserHandler: CreateUserHandlerFunc(func(params CreateUserParams, principal *storageapi.Profile) CreateUserResponder {
 			return CreateUserNotImplemented()
 		}),
@@ -85,6 +88,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		EditAdvertisingCampaignHandler: EditAdvertisingCampaignHandlerFunc(func(params EditAdvertisingCampaignParams, principal *storageapi.Profile) EditAdvertisingCampaignResponder {
 			return EditAdvertisingCampaignNotImplemented()
+		}),
+		EndhSessionHandler: EndhSessionHandlerFunc(func(params EndhSessionParams) EndhSessionResponder {
+			return EndhSessionNotImplemented()
 		}),
 		GetConfigVarBoolHandler: GetConfigVarBoolHandlerFunc(func(params GetConfigVarBoolParams, principal *storageapi.Profile) GetConfigVarBoolResponder {
 			return GetConfigVarBoolNotImplemented()
@@ -128,6 +134,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		InfoHandler: InfoHandlerFunc(func(params InfoParams) InfoResponder {
 			return InfoNotImplemented()
 		}),
+		IsAuthorizedHandler: IsAuthorizedHandlerFunc(func(params IsAuthorizedParams) IsAuthorizedResponder {
+			return IsAuthorizedNotImplemented()
+		}),
 		KasseHandler: KasseHandlerFunc(func(params KasseParams) KasseResponder {
 			return KasseNotImplemented()
 		}),
@@ -158,6 +167,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		ProgramsHandler: ProgramsHandlerFunc(func(params ProgramsParams) ProgramsResponder {
 			return ProgramsNotImplemented()
 		}),
+		RefreshSessionHandler: RefreshSessionHandlerFunc(func(params RefreshSessionParams) RefreshSessionResponder {
+			return RefreshSessionNotImplemented()
+		}),
 		ResetStationStatHandler: ResetStationStatHandlerFunc(func(params ResetStationStatParams, principal *storageapi.Profile) ResetStationStatResponder {
 			return ResetStationStatNotImplemented()
 		}),
@@ -181,6 +193,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		SaveRelayHandler: SaveRelayHandlerFunc(func(params SaveRelayParams) SaveRelayResponder {
 			return SaveRelayNotImplemented()
+		}),
+		SetBonusesHandler: SetBonusesHandlerFunc(func(params SetBonusesParams) SetBonusesResponder {
+			return SetBonusesNotImplemented()
 		}),
 		SetCardReaderConfigHandler: SetCardReaderConfigHandlerFunc(func(params SetCardReaderConfigParams) SetCardReaderConfigResponder {
 			return SetCardReaderConfigNotImplemented()
@@ -323,6 +338,8 @@ type StorageAPI struct {
 	CardReaderConfigHandler CardReaderConfigHandler
 	// CardReaderConfigByHashHandler sets the operation handler for the card reader config by hash operation
 	CardReaderConfigByHashHandler CardReaderConfigByHashHandler
+	// CreateSessionHandler sets the operation handler for the create session operation
+	CreateSessionHandler CreateSessionHandler
 	// CreateUserHandler sets the operation handler for the create user operation
 	CreateUserHandler CreateUserHandler
 	// DelAdvertisingCampaignHandler sets the operation handler for the del advertising campaign operation
@@ -335,6 +352,8 @@ type StorageAPI struct {
 	DispenserStopHandler DispenserStopHandler
 	// EditAdvertisingCampaignHandler sets the operation handler for the edit advertising campaign operation
 	EditAdvertisingCampaignHandler EditAdvertisingCampaignHandler
+	// EndhSessionHandler sets the operation handler for the endh session operation
+	EndhSessionHandler EndhSessionHandler
 	// GetConfigVarBoolHandler sets the operation handler for the get config var bool operation
 	GetConfigVarBoolHandler GetConfigVarBoolHandler
 	// GetConfigVarIntHandler sets the operation handler for the get config var int operation
@@ -363,6 +382,8 @@ type StorageAPI struct {
 	GetUsersHandler GetUsersHandler
 	// InfoHandler sets the operation handler for the info operation
 	InfoHandler InfoHandler
+	// IsAuthorizedHandler sets the operation handler for the is authorized operation
+	IsAuthorizedHandler IsAuthorizedHandler
 	// KasseHandler sets the operation handler for the kasse operation
 	KasseHandler KasseHandler
 	// LoadHandler sets the operation handler for the load operation
@@ -383,6 +404,8 @@ type StorageAPI struct {
 	PressButtonHandler PressButtonHandler
 	// ProgramsHandler sets the operation handler for the programs operation
 	ProgramsHandler ProgramsHandler
+	// RefreshSessionHandler sets the operation handler for the refresh session operation
+	RefreshSessionHandler RefreshSessionHandler
 	// ResetStationStatHandler sets the operation handler for the reset station stat operation
 	ResetStationStatHandler ResetStationStatHandler
 	// Run2ProgramHandler sets the operation handler for the run2 program operation
@@ -399,6 +422,8 @@ type StorageAPI struct {
 	SaveMoneyHandler SaveMoneyHandler
 	// SaveRelayHandler sets the operation handler for the save relay operation
 	SaveRelayHandler SaveRelayHandler
+	// SetBonusesHandler sets the operation handler for the set bonuses operation
+	SetBonusesHandler SetBonusesHandler
 	// SetCardReaderConfigHandler sets the operation handler for the set card reader config operation
 	SetCardReaderConfigHandler SetCardReaderConfigHandler
 	// SetConfigVarBoolHandler sets the operation handler for the set config var bool operation
@@ -554,6 +579,9 @@ func (o *StorageAPI) Validate() error {
 	if o.CardReaderConfigByHashHandler == nil {
 		unregistered = append(unregistered, "CardReaderConfigByHashHandler")
 	}
+	if o.CreateSessionHandler == nil {
+		unregistered = append(unregistered, "CreateSessionHandler")
+	}
 	if o.CreateUserHandler == nil {
 		unregistered = append(unregistered, "CreateUserHandler")
 	}
@@ -571,6 +599,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.EditAdvertisingCampaignHandler == nil {
 		unregistered = append(unregistered, "EditAdvertisingCampaignHandler")
+	}
+	if o.EndhSessionHandler == nil {
+		unregistered = append(unregistered, "EndhSessionHandler")
 	}
 	if o.GetConfigVarBoolHandler == nil {
 		unregistered = append(unregistered, "GetConfigVarBoolHandler")
@@ -614,6 +645,9 @@ func (o *StorageAPI) Validate() error {
 	if o.InfoHandler == nil {
 		unregistered = append(unregistered, "InfoHandler")
 	}
+	if o.IsAuthorizedHandler == nil {
+		unregistered = append(unregistered, "IsAuthorizedHandler")
+	}
 	if o.KasseHandler == nil {
 		unregistered = append(unregistered, "KasseHandler")
 	}
@@ -644,6 +678,9 @@ func (o *StorageAPI) Validate() error {
 	if o.ProgramsHandler == nil {
 		unregistered = append(unregistered, "ProgramsHandler")
 	}
+	if o.RefreshSessionHandler == nil {
+		unregistered = append(unregistered, "RefreshSessionHandler")
+	}
 	if o.ResetStationStatHandler == nil {
 		unregistered = append(unregistered, "ResetStationStatHandler")
 	}
@@ -667,6 +704,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.SaveRelayHandler == nil {
 		unregistered = append(unregistered, "SaveRelayHandler")
+	}
+	if o.SetBonusesHandler == nil {
+		unregistered = append(unregistered, "SetBonusesHandler")
 	}
 	if o.SetCardReaderConfigHandler == nil {
 		unregistered = append(unregistered, "SetCardReaderConfigHandler")
@@ -877,6 +917,10 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/create-session"] = NewCreateSession(o.context, o.CreateSessionHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/user"] = NewCreateUser(o.context, o.CreateUserHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -898,6 +942,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/edit-advertising-campaign"] = NewEditAdvertisingCampaign(o.context, o.EditAdvertisingCampaignHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/end-session"] = NewEndhSession(o.context, o.EndhSessionHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
@@ -957,6 +1005,10 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/is-authorized"] = NewIsAuthorized(o.context, o.IsAuthorizedHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/kasse"] = NewKasse(o.context, o.KasseHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -997,6 +1049,10 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/refresh-session"] = NewRefreshSession(o.context, o.RefreshSessionHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/reset-station-stat"] = NewResetStationStat(o.context, o.ResetStationStatHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -1026,6 +1082,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/save-relay"] = NewSaveRelay(o.context, o.SaveRelayHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/set-bonuses"] = NewSetBonuses(o.context, o.SetBonusesHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
