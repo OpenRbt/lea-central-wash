@@ -278,6 +278,44 @@ func init() {
         }
       }
     },
+    "/create-session": {
+      "post": {
+        "operationId": "createSession",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "CreateSession",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/del-advertising-campaign": {
       "post": {
         "security": [
@@ -386,6 +424,45 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/end-session": {
+      "post": {
+        "operationId": "endhSession",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgEndSession",
+              "required": [
+                "hash",
+                "sessionID"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "sessionID": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -878,6 +955,44 @@ func init() {
         }
       }
     },
+    "/is-authorized": {
+      "post": {
+        "operationId": "isAuthorized",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgIsAuthorized",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/IsAuthorized"
+            }
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/kasse": {
       "post": {
         "operationId": "kasse",
@@ -1147,6 +1262,16 @@ func init() {
                 "ButtonID": {
                   "type": "integer"
                 },
+                "bonusAmount": {
+                  "type": "integer"
+                },
+                "bonusSystemActive": {
+                  "type": "boolean"
+                },
+                "isAuthorized": {
+                  "type": "boolean",
+                  "x-nullable": true
+                },
                 "lastDiscountUpdate": {
                   "type": "integer"
                 },
@@ -1158,6 +1283,9 @@ func init() {
                 },
                 "serviceAmount": {
                   "type": "integer"
+                },
+                "sessionID": {
+                  "type": "string"
                 }
               }
             }
@@ -1240,6 +1368,44 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/refresh-session": {
+      "post": {
+        "operationId": "refreshSession",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "RefreshSession",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/SessionRefresh"
+            }
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -1600,6 +1766,47 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-bonuses": {
+      "post": {
+        "operationId": "setBonuses",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgSetBonuses",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "bonuses": {
+                  "type": "integer"
+                },
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "user not authorized"
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -3095,6 +3302,14 @@ func init() {
       "type": "boolean",
       "x-nullable": true
     },
+    "IsAuthorized": {
+      "type": "object",
+      "properties": {
+        "authorized": {
+          "type": "boolean"
+        }
+      }
+    },
     "IsEngineer": {
       "type": "boolean",
       "x-nullable": true
@@ -3170,6 +3385,9 @@ func init() {
         "banknotes": {
           "type": "integer"
         },
+        "bonuses": {
+          "type": "integer"
+        },
         "carsTotal": {
           "type": "integer"
         },
@@ -3184,6 +3402,9 @@ func init() {
         },
         "service": {
           "type": "integer"
+        },
+        "sessionId": {
+          "type": "string"
         }
       }
     },
@@ -3301,6 +3522,28 @@ func init() {
         },
         "totalTimeOn": {
           "type": "integer"
+        }
+      }
+    },
+    "Session": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "string"
+        },
+        "QR": {
+          "type": "string"
+        }
+      }
+    },
+    "SessionRefresh": {
+      "type": "object",
+      "properties": {
+        "receiveAmount": {
+          "type": "integer"
+        },
+        "userID": {
+          "type": "string"
         }
       }
     },
@@ -3886,6 +4129,44 @@ func init() {
         }
       }
     },
+    "/create-session": {
+      "post": {
+        "operationId": "createSession",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "CreateSession",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/del-advertising-campaign": {
       "post": {
         "security": [
@@ -3994,6 +4275,45 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/end-session": {
+      "post": {
+        "operationId": "endhSession",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgEndSession",
+              "required": [
+                "hash",
+                "sessionID"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                },
+                "sessionID": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -4486,6 +4806,44 @@ func init() {
         }
       }
     },
+    "/is-authorized": {
+      "post": {
+        "operationId": "isAuthorized",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgIsAuthorized",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/IsAuthorized"
+            }
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/kasse": {
       "post": {
         "operationId": "kasse",
@@ -4755,6 +5113,16 @@ func init() {
                 "ButtonID": {
                   "type": "integer"
                 },
+                "bonusAmount": {
+                  "type": "integer"
+                },
+                "bonusSystemActive": {
+                  "type": "boolean"
+                },
+                "isAuthorized": {
+                  "type": "boolean",
+                  "x-nullable": true
+                },
                 "lastDiscountUpdate": {
                   "type": "integer"
                 },
@@ -4766,6 +5134,9 @@ func init() {
                 },
                 "serviceAmount": {
                   "type": "integer"
+                },
+                "sessionID": {
+                  "type": "string"
                 }
               }
             }
@@ -4848,6 +5219,44 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/refresh-session": {
+      "post": {
+        "operationId": "refreshSession",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "RefreshSession",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/SessionRefresh"
+            }
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -5208,6 +5617,47 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/set-bonuses": {
+      "post": {
+        "operationId": "setBonuses",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "ArgSetBonuses",
+              "required": [
+                "hash"
+              ],
+              "properties": {
+                "bonuses": {
+                  "type": "integer"
+                },
+                "hash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "user not authorized"
+          },
+          "404": {
+            "description": "hash not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -6700,6 +7150,14 @@ func init() {
       "type": "boolean",
       "x-nullable": true
     },
+    "IsAuthorized": {
+      "type": "object",
+      "properties": {
+        "authorized": {
+          "type": "boolean"
+        }
+      }
+    },
     "IsEngineer": {
       "type": "boolean",
       "x-nullable": true
@@ -6775,6 +7233,9 @@ func init() {
         "banknotes": {
           "type": "integer"
         },
+        "bonuses": {
+          "type": "integer"
+        },
         "carsTotal": {
           "type": "integer"
         },
@@ -6789,6 +7250,9 @@ func init() {
         },
         "service": {
           "type": "integer"
+        },
+        "sessionId": {
+          "type": "string"
         }
       }
     },
@@ -6908,6 +7372,28 @@ func init() {
         },
         "totalTimeOn": {
           "type": "integer"
+        }
+      }
+    },
+    "Session": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "string"
+        },
+        "QR": {
+          "type": "string"
+        }
+      }
+    },
+    "SessionRefresh": {
+      "type": "object",
+      "properties": {
+        "receiveAmount": {
+          "type": "integer"
+        },
+        "userID": {
+          "type": "string"
         }
       }
     },

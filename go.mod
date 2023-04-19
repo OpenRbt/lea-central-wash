@@ -28,6 +28,8 @@ require (
 )
 
 require (
+	github.com/OpenRbt/share_business/wash_rabbit v0.0.0-20230419060511-f3ccc48dd66e
+	github.com/wagslane/go-rabbitmq v0.12.3
 	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.28.1
 )
@@ -127,6 +129,7 @@ require (
 	github.com/powerman/tail v0.1.0 // indirect
 	github.com/quasilyte/go-ruleguard v0.2.0 // indirect
 	github.com/quasilyte/regex/syntax v0.0.0-20200407221936-30656e2c4a95 // indirect
+	github.com/rabbitmq/amqp091-go v1.7.0 // indirect
 	github.com/ryancurrah/gomodguard v1.1.0 // indirect
 	github.com/ryanrolds/sqlclosecheck v0.3.0 // indirect
 	github.com/securego/gosec/v2 v2.5.0 // indirect
