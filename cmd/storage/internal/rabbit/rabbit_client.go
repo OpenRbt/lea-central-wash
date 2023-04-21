@@ -5,6 +5,8 @@ import (
 	"crypto/x509"
 	_ "embed"
 	"fmt"
+	"io/ioutil"
+
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 	"github.com/wagslane/go-rabbitmq"
@@ -17,15 +19,6 @@ type Config struct {
 	ServerKey string
 }
 
-var (
-	//go:embed client.pem
-	clientCertRaw []byte
-	//go:embed client_key.pem
-	clientCertKeyRaw []byte
-	//go:embed root_ca.pem
-	caCertRaw []byte
-)
-
 type Service struct {
 	app app.App
 
@@ -35,7 +28,23 @@ type Service struct {
 	bonusSvcSub *rabbitmq.Consumer
 }
 
-func NewClient(cfg Config, app app.App) (svc *Service, err error) {
+func NewClient(cfg Config, app app.App, rabbitCertPath string) (svc *Service, err error) {
+
+	clientCertRaw, err := ioutil.ReadFile(rabbitCertPath + "client.pem")
+	if err != nil {
+		return nil, err
+	}
+
+	clientCertKeyRaw, err := ioutil.ReadFile(rabbitCertPath + "client_key.pem")
+	if err != nil {
+		return nil, err
+	}
+
+	caCertRaw, err := ioutil.ReadFile(rabbitCertPath + "root_ca.pem")
+	if err != nil {
+		return nil, err
+	}
+
 	rootCAs := x509.NewCertPool()
 	rootCAs.AppendCertsFromPEM(caCertRaw)
 
@@ -54,6 +63,7 @@ func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 	//TODO: add rabbit variables extraction from repo
 
 	connString := fmt.Sprintf("amqps://%s:%s@%s:%s/", cfg.ServerID, cfg.ServerKey, cfg.Url, cfg.Port)
+	fmt.Println("Config string ", connString)
 	rabbitConf := rabbitmq.Config{
 		SASL:            nil,
 		Vhost:           "/",
