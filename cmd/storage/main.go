@@ -55,6 +55,8 @@ var (
 	checkSysTime  bool
 	startDelaySec int
 
+	RabbitCertPath string
+
 	cmd = strings.TrimSuffix(path.Base(os.Args[0]), ".test")
 	ver = strings.Join(strings.Fields(strings.Join([]string{gitVersion, gitBranch, gitRevision, buildDate}, " ")), " ")
 	log = structlog.New()
@@ -105,6 +107,8 @@ func init() { //nolint:gochecknoinits
 	flag.StringVar(&cfg.rabbit.Port, "rabbit.port", def.RabbitPort, "port for service connections")
 	flag.StringVar(&cfg.rabbit.ServerID, "rabbit.user", def.RabbitUser, "user for service connections")
 	flag.StringVar(&cfg.rabbit.ServerKey, "rabbit.pass", def.RabbitPassword, "password for service connections")
+
+	flag.StringVar(&RabbitCertPath, "pathCert", def.RabbitCertPath, "path to cert Rabbit")
 
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",
@@ -256,11 +260,11 @@ func run(db *sqlx.DB, errc chan<- error) {
 	} else {
 		cfg.rabbit.ServerID = rabbitCfg.ServerID
 		cfg.rabbit.ServerKey = rabbitCfg.ServerKey
-		rabbitWorker, err := rabbit.NewClient(cfg.rabbit, appl)
-		log.Info("Serve rabbit client")
+		rabbitWorker, err := rabbit.NewClient(cfg.rabbit, appl, RabbitCertPath)
 		if err != nil {
 			log.Err("failed to init rabbit client", "error", err)
 		} else {
+			log.Info("Serve rabbit client")
 			appl.AssignRabbitPub(rabbitWorker.SendMessage)
 			appl.FetchSessions()
 		}

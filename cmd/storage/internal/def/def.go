@@ -61,6 +61,8 @@ var (
 	RabbitPort     = strGetenv("RABBIT_PORT", "5671")
 	RabbitUser     = strGetenv("RABBIT_USER", "")
 	RabbitPassword = strGetenv("RABBIT_PASSWORD", "")
+
+	RabbitCertPath = strGetenv("RABBIT_CERT_PATH", "")
 )
 
 var initErr error
