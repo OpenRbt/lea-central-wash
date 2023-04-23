@@ -63,7 +63,6 @@ func NewClient(cfg Config, app app.App, rabbitCertPath string) (svc *Service, er
 	//TODO: add rabbit variables extraction from repo
 
 	connString := fmt.Sprintf("amqps://%s:%s@%s:%s/", cfg.ServerID, cfg.ServerKey, cfg.Url, cfg.Port)
-	fmt.Println("Config string ", connString)
 	rabbitConf := rabbitmq.Config{
 		SASL:            nil,
 		Vhost:           "/",
