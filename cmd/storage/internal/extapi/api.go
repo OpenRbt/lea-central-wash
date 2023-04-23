@@ -160,6 +160,11 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.GetStationWashConfigVarBoolHandler = op.GetStationWashConfigVarBoolHandlerFunc(svc.getStationWashConfigVarBool)
 	api.GetStationWashConfigVarStringHandler = op.GetStationWashConfigVarStringHandlerFunc(svc.getStationWashConfigVarString)
 
+	api.CreateSessionHandler = op.CreateSessionHandlerFunc(svc.createSession)
+	api.RefreshSessionHandler = op.RefreshSessionHandlerFunc(svc.refreshSession)
+	api.EndhSessionHandler = op.EndhSessionHandlerFunc(svc.endSession)
+	api.SetBonusesHandler = op.SetBonusesHandlerFunc(svc.setBonuses)
+
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port

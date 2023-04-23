@@ -327,7 +327,9 @@ func (r *repo) SaveMoneyReport(report app.MoneyReport) (err error) {
 			Coins:        report.Coins,
 			Electronical: report.Electronical,
 			Service:      report.Service,
+			Bonuses:      report.Bonuses,
 			Ctime:        time.Now().UTC(),
+			SessionID:    report.SessionID,
 		})
 		return err
 	})
@@ -960,7 +962,7 @@ func (r *repo) SetConfigBool(config app.ConfigBool) (err error) {
 }
 func (r *repo) SetConfigString(config app.ConfigString) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlSetConfigInt, argSetConfigString{
+		_, err := tx.NamedExec(sqlSetConfigString, argSetConfigString{
 			Name:        config.Name,
 			Value:       config.Value,
 			Description: config.Description,

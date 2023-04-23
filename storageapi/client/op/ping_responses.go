@@ -247,6 +247,15 @@ type PingOKBody struct {
 	// button ID
 	ButtonID int64 `json:"ButtonID,omitempty"`
 
+	// bonus amount
+	BonusAmount int64 `json:"bonusAmount,omitempty"`
+
+	// bonus system active
+	BonusSystemActive bool `json:"bonusSystemActive,omitempty"`
+
+	// is authorized
+	IsAuthorized *bool `json:"isAuthorized,omitempty"`
+
 	// last discount update
 	LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
 
@@ -260,6 +269,9 @@ type PingOKBody struct {
 	// service amount
 	// Required: true
 	ServiceAmount *int64 `json:"serviceAmount"`
+
+	// session ID
+	SessionID string `json:"sessionID,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
@@ -268,6 +280,15 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 
 		// button ID
 		ButtonID int64 `json:"ButtonID,omitempty"`
+
+		// bonus amount
+		BonusAmount int64 `json:"bonusAmount,omitempty"`
+
+		// bonus system active
+		BonusSystemActive bool `json:"bonusSystemActive,omitempty"`
+
+		// is authorized
+		IsAuthorized *bool `json:"isAuthorized,omitempty"`
 
 		// last discount update
 		LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
@@ -282,6 +303,9 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 		// service amount
 		// Required: true
 		ServiceAmount *int64 `json:"serviceAmount"`
+
+		// session ID
+		SessionID string `json:"sessionID,omitempty"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -291,10 +315,14 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 	}
 
 	o.ButtonID = props.ButtonID
+	o.BonusAmount = props.BonusAmount
+	o.BonusSystemActive = props.BonusSystemActive
+	o.IsAuthorized = props.IsAuthorized
 	o.LastDiscountUpdate = props.LastDiscountUpdate
 	o.LastUpdate = props.LastUpdate
 	o.OpenStation = props.OpenStation
 	o.ServiceAmount = props.ServiceAmount
+	o.SessionID = props.SessionID
 	return nil
 }
 

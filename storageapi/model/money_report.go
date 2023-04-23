@@ -24,6 +24,9 @@ type MoneyReport struct {
 	// banknotes
 	Banknotes int64 `json:"banknotes,omitempty"`
 
+	// bonuses
+	Bonuses int64 `json:"bonuses,omitempty"`
+
 	// cars total
 	CarsTotal int64 `json:"carsTotal,omitempty"`
 
@@ -39,6 +42,9 @@ type MoneyReport struct {
 
 	// service
 	Service int64 `json:"service,omitempty"`
+
+	// session Id
+	SessionID string `json:"sessionId,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
@@ -47,6 +53,9 @@ func (m *MoneyReport) UnmarshalJSON(data []byte) error {
 
 		// banknotes
 		Banknotes int64 `json:"banknotes,omitempty"`
+
+		// bonuses
+		Bonuses int64 `json:"bonuses,omitempty"`
 
 		// cars total
 		CarsTotal int64 `json:"carsTotal,omitempty"`
@@ -63,6 +72,9 @@ func (m *MoneyReport) UnmarshalJSON(data []byte) error {
 
 		// service
 		Service int64 `json:"service,omitempty"`
+
+		// session Id
+		SessionID string `json:"sessionId,omitempty"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -72,11 +84,13 @@ func (m *MoneyReport) UnmarshalJSON(data []byte) error {
 	}
 
 	m.Banknotes = props.Banknotes
+	m.Bonuses = props.Bonuses
 	m.CarsTotal = props.CarsTotal
 	m.Coins = props.Coins
 	m.Electronical = props.Electronical
 	m.Hash = props.Hash
 	m.Service = props.Service
+	m.SessionID = props.SessionID
 	return nil
 }
 

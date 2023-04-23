@@ -128,6 +128,7 @@ func apiMoneyReport(data *app.MoneyReport) *model.MoneyReport {
 		Coins:        int64(data.Coins),
 		Electronical: int64(data.Electronical),
 		Service:      int64(data.Service),
+		Bonuses:      int64(data.Bonuses),
 	}
 }
 
@@ -524,5 +525,19 @@ func apiStationConfigString(a *app.StationConfigString) *model.StationConfigVarS
 		Description: a.Description,
 		Note:        a.Note,
 		StationID:   &stID,
+	}
+}
+
+func apiCreateSession(sessionID string, QR string) *model.Session {
+	return &model.Session{
+		ID: sessionID,
+		QR: QR,
+	}
+}
+
+func apiRefreshSession(UserID string, receiveAmount int) *model.SessionRefresh {
+	return &model.SessionRefresh{
+		UserID:        UserID,
+		ReceiveAmount: int64(receiveAmount),
 	}
 }

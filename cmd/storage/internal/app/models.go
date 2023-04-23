@@ -36,8 +36,11 @@ type UpdatePasswordData struct {
 // StationData represents current status of a station
 type StationData struct {
 	ID                 StationID
+	SessionID          string
+	UserID             string
 	Name               string
 	ServiceMoney       int
+	BonusMoney         int
 	LastPing           time.Time
 	RunProgram         time.Time
 	OpenStation        bool
@@ -57,6 +60,8 @@ type MoneyReport struct {
 	Coins        int
 	Electronical int
 	Service      int
+	Bonuses      int
+	SessionID    string
 }
 
 // CollectionReport is how much was collected from a station + when
@@ -192,4 +197,9 @@ type StationConfigString struct {
 	Description string
 	Note        string
 	StationID   StationID
+}
+
+type RabbitConfig struct {
+	ServerID  string
+	ServerKey string
 }

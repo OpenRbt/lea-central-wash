@@ -40,7 +40,7 @@ var (
 	DBPass             = strGetenv("STORAGE_DB_PASS", "")
 	DBName             = strGetenv("STORAGE_DB_NAME", "")
 	DBSchema           = strGetenv("STORAGE_DB_SCHEMA", "public")
-	GooseDir           = "cmd/storage/internal/migration"
+	GooseDir           = strGetenv("GOOSE_DIR", "cmd/storage/internal/migration")
 	ExtAPIHost         = strGetenv("STORAGE_EXT_HOST", oapiHost)
 	ExtAPIPort         = intGetenv("STORAGE_EXT_PORT", 8020)
 	ExtAPIBasePath     = strGetenv("STORAGE_EXT_BASEPATH", oapiBasePath)
@@ -55,6 +55,14 @@ var (
 	ReadTimeout        = intGetenv("STORAGE_API_READ_TIMEOUT", 2)
 	WriteTimeout       = intGetenv("STORAGE_API_WRITE_TIMEOUT", 2)
 	StartDelaySec      = intGetenv("STORAGE_START_DELAY", 30)
+	OpenwashingURL     = strGetenv("OPENWASHING_URL", "http://app.openwashing.com")
+
+	RabbitHost     = strGetenv("RABBIT_HOST", "localhost")
+	RabbitPort     = strGetenv("RABBIT_PORT", "5671")
+	RabbitUser     = strGetenv("RABBIT_USER", "")
+	RabbitPassword = strGetenv("RABBIT_PASSWORD", "")
+
+	RabbitCertPath = strGetenv("RABBIT_CERT_PATH", "certificates/")
 )
 
 var initErr error

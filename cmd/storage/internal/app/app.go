@@ -5,6 +5,8 @@ import (
 	"sync"
 	"time"
 
+	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
+
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
 
@@ -42,6 +44,9 @@ var (
 	ErrUnknownProgram           = errors.New("unknown program")
 	ErrUnknownStation           = errors.New("unknown station")
 	ErrStationProgramMustUnique = errors.New("programID and buttonID must be unique")
+	ErrUserIsNotAuthorized      = errors.New("user is not authorized")
+
+	ErrServiceNotConfigured = errors.New("service not configured")
 )
 
 var testApp = false
@@ -54,6 +59,7 @@ type (
 		SaveIfNotExists(stationID StationID, key string, value string) error
 		Load(stationID StationID, key string) (string, error)
 		StationsVariables() ([]StationsVariables, error)
+		FetchSessions() error
 
 		// DBMS info method
 		Info() string
@@ -63,7 +69,7 @@ type (
 
 		Set(station StationData) error
 		Get(stationID StationID) (StationData, error)
-		Ping(id StationID, balance, program int, stationIP string) StationData
+		Ping(id StationID, balance, program int, stationIP string) (StationData, bool)
 
 		SaveMoneyReport(report MoneyReport) error
 		SaveRelayReport(report RelayReport) error
@@ -133,6 +139,21 @@ type (
 		SetStationConfigInt(auth *Auth, config StationConfigInt) error
 		SetStationConfigBool(auth *Auth, config StationConfigBool) error
 		SetStationConfigString(auth *Auth, config StationConfigString) error
+		
+		CreateSession(url string, stationID StationID) (string, string, error)
+		RefreshSession(stationID StationID) (string, int64, error)
+		EndSession(stationID StationID, sessionID BonusSessionID) error
+		IsAuthorized(stationID StationID) error
+		SetBonuses(stationID StationID, bonuses int) error
+
+		GetRabbitConfig() (RabbitConfig, error)
+		SetExternalServicesActive(active bool)
+		AssignRabbitPub(func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error)
+		SetNextSession(stationID StationID) error
+		RequestSessionsFromService(count int, postID int) error
+		AddSessionsToPool(stationID StationID, sessionsIDs ...string) error
+		AssignSessionUser(sessionID string, userID string) error
+		AssignSessionBonuses(sessionID string, amount int) error
 	}
 
 	// Repo is a DAL interface.
@@ -250,6 +271,7 @@ type (
 type app struct {
 	repo                  Repo
 	stations              map[StationID]StationData
+	stationsSessionsPool  map[StationID]chan string
 	stationsMutex         sync.Mutex
 	programs              map[int64]Program
 	programsMutex         sync.Mutex
@@ -263,6 +285,9 @@ type app struct {
 	cfg                   AppConfig
 	cfgMutex              sync.Mutex
 	volumeCorrection      int
+
+	extServicesActive     bool
+	servicesPublisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error
 }
 
 // New creates and returns new App.
@@ -311,6 +336,9 @@ type Status int
 
 // StationID car wash station number
 type StationID int
+
+// BonusSessionID external bonus session uuid
+type BonusSessionID string
 
 // Status.
 const (
@@ -405,4 +433,9 @@ type StationConfig struct {
 	RelayBoard   string
 	LastUpdate   int
 	Programs     []Program
+}
+
+type SessionsRequest struct {
+	Count  int `json:"new_sessions_amount"`
+	PostID int `json:"post_id"`
 }

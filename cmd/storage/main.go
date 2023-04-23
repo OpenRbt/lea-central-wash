@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit"
+
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/hal"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
@@ -53,6 +55,8 @@ var (
 	checkSysTime  bool
 	startDelaySec int
 
+	RabbitCertPath string
+
 	cmd = strings.TrimSuffix(path.Base(os.Args[0]), ".test")
 	ver = strings.Join(strings.Fields(strings.Join([]string{gitVersion, gitBranch, gitRevision, buildDate}, " ")), " ")
 	log = structlog.New()
@@ -64,6 +68,7 @@ var (
 		gooseDir   string
 		extapi     extapi.Config
 		kasse      svckasse.Config
+		rabbit     rabbit.Config
 		hal        hal.Config
 		testBoards bool
 	}
@@ -97,6 +102,13 @@ func init() { //nolint:gochecknoinits
 	flag.IntVar(&cfg.extapi.ReadTimeout, "extapi.read-timeout", def.ReadTimeout, "server timeout for reading in seconds")
 	flag.IntVar(&cfg.extapi.WriteTimeout, "extapi.write-timeout", def.WriteTimeout, "server timeout for writing in seconds")
 	flag.IntVar(&startDelaySec, "delay", def.StartDelaySec, "startup delay in seconds")
+
+	flag.StringVar(&cfg.rabbit.Url, "rabbit.host", def.RabbitHost, "host for service connections")
+	flag.StringVar(&cfg.rabbit.Port, "rabbit.port", def.RabbitPort, "port for service connections")
+	flag.StringVar(&cfg.rabbit.ServerID, "rabbit.user", def.RabbitUser, "user for service connections")
+	flag.StringVar(&cfg.rabbit.ServerKey, "rabbit.pass", def.RabbitPassword, "password for service connections")
+
+	flag.StringVar(&RabbitCertPath, "pathCert", def.RabbitCertPath, "path to cert Rabbit")
 
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",
@@ -241,6 +253,22 @@ func run(db *sqlx.DB, errc chan<- error) {
 	}
 
 	appl := app.New(repo, kasse, weather, client)
+
+	rabbitCfg, err := appl.GetRabbitConfig()
+	if err != nil {
+		log.Warn("no wash_bonus config found! skipping wash_bonus service initialization")
+	} else {
+		cfg.rabbit.ServerID = rabbitCfg.ServerID
+		cfg.rabbit.ServerKey = rabbitCfg.ServerKey
+		rabbitWorker, err := rabbit.NewClient(cfg.rabbit, appl, RabbitCertPath)
+		if err != nil {
+			log.Err("failed to init rabbit client", "error", err)
+		} else {
+			log.Info("Serve rabbit client")
+			appl.AssignRabbitPub(rabbitWorker.SendMessage)
+			appl.FetchSessions()
+		}
+	}
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
 	if err != nil {

@@ -90,6 +90,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.CardReaderConfigByHashNotImplemented()
 		})
 	}
+	if api.CreateSessionHandler == nil {
+		api.CreateSessionHandler = op.CreateSessionHandlerFunc(func(params op.CreateSessionParams) op.CreateSessionResponder {
+			return op.CreateSessionNotImplemented()
+		})
+	}
 	if api.CreateUserHandler == nil {
 		api.CreateUserHandler = op.CreateUserHandlerFunc(func(params op.CreateUserParams, principal *storageapi.Profile) op.CreateUserResponder {
 			return op.CreateUserNotImplemented()
@@ -118,6 +123,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.EditAdvertisingCampaignHandler == nil {
 		api.EditAdvertisingCampaignHandler = op.EditAdvertisingCampaignHandlerFunc(func(params op.EditAdvertisingCampaignParams, principal *storageapi.Profile) op.EditAdvertisingCampaignResponder {
 			return op.EditAdvertisingCampaignNotImplemented()
+		})
+	}
+	if api.EndhSessionHandler == nil {
+		api.EndhSessionHandler = op.EndhSessionHandlerFunc(func(params op.EndhSessionParams) op.EndhSessionResponder {
+			return op.EndhSessionNotImplemented()
 		})
 	}
 	if api.GetConfigVarBoolHandler == nil {
@@ -190,6 +200,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.InfoNotImplemented()
 		})
 	}
+	if api.IsAuthorizedHandler == nil {
+		api.IsAuthorizedHandler = op.IsAuthorizedHandlerFunc(func(params op.IsAuthorizedParams) op.IsAuthorizedResponder {
+			return op.IsAuthorizedNotImplemented()
+		})
+	}
 	if api.KasseHandler == nil {
 		api.KasseHandler = op.KasseHandlerFunc(func(params op.KasseParams) op.KasseResponder {
 			return op.KasseNotImplemented()
@@ -240,6 +255,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.ProgramsNotImplemented()
 		})
 	}
+	if api.RefreshSessionHandler == nil {
+		api.RefreshSessionHandler = op.RefreshSessionHandlerFunc(func(params op.RefreshSessionParams) op.RefreshSessionResponder {
+			return op.RefreshSessionNotImplemented()
+		})
+	}
 	if api.ResetStationStatHandler == nil {
 		api.ResetStationStatHandler = op.ResetStationStatHandlerFunc(func(params op.ResetStationStatParams, principal *storageapi.Profile) op.ResetStationStatResponder {
 			return op.ResetStationStatNotImplemented()
@@ -278,6 +298,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.SaveRelayHandler == nil {
 		api.SaveRelayHandler = op.SaveRelayHandlerFunc(func(params op.SaveRelayParams) op.SaveRelayResponder {
 			return op.SaveRelayNotImplemented()
+		})
+	}
+	if api.SetBonusesHandler == nil {
+		api.SetBonusesHandler = op.SetBonusesHandlerFunc(func(params op.SetBonusesParams) op.SetBonusesResponder {
+			return op.SetBonusesNotImplemented()
 		})
 	}
 	if api.SetCardReaderConfigHandler == nil {

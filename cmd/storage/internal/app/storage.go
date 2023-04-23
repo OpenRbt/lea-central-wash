@@ -1,10 +1,14 @@
 package app
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strconv"
 	"time"
+
+	"github.com/OpenRbt/share_business/wash_rabbit/entity/session"
+	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 
 	"github.com/powerman/structlog"
 	"golang.org/x/crypto/bcrypt"
@@ -51,6 +55,7 @@ func (a *app) loadStations() error {
 		return err
 	}
 	stations := map[StationID]StationData{}
+	sessionsPool := make(map[StationID]chan string)
 
 	// Calculate how many stations
 	createCount := 12 - len(res)
@@ -80,13 +85,26 @@ func (a *app) loadStations() error {
 			ID:   res[i].ID,
 			Name: res[i].Name,
 		}
+		sessionsPool[res[i].ID] = make(chan string, 10)
 	}
 
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 	a.stations = stations
+	a.stationsSessionsPool = sessionsPool
 
 	return nil
+}
+
+func (a *app) FetchSessions() (err error) {
+	for i := range a.stations {
+		err = a.RequestSessionsFromService(5, int(a.stations[i].ID))
+		if err != nil {
+			return
+		}
+	}
+
+	return
 }
 
 // Set accepts existing hash and writes specified StationData
@@ -104,7 +122,7 @@ func (a *app) Set(station StationData) error {
 }
 
 // Ping sets the time of the last ping and returns service money.
-func (a *app) Ping(id StationID, balance, program int, stationIP string) StationData {
+func (a *app) Ping(id StationID, balance, program int, stationIP string) (StationData, bool) {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 	var station StationData
@@ -116,6 +134,7 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) Station
 	oldStation := station
 	station.LastPing = time.Now()
 	station.ServiceMoney = 0
+	station.BonusMoney = 0
 	station.OpenStation = false
 	station.CurrentBalance = balance
 	station.CurrentProgram = program
@@ -131,7 +150,7 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) Station
 	a.stations[id] = station
 	oldStation.LastUpdate = a.lastUpdate
 	oldStation.LastDiscountUpdate = a.lastDiscountUpdate
-	return oldStation
+	return oldStation, a.servicesPublisherFunc != nil
 }
 
 func (a *app) checkStationOnline() {
@@ -279,7 +298,31 @@ func (a *app) OpenStation(id StationID) error {
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
 func (a *app) SaveMoneyReport(report MoneyReport) error {
-	return a.repo.SaveMoneyReport(report)
+	err := a.repo.SaveMoneyReport(report)
+	if err != nil {
+		log.Err("failed to save moneyReport", "err", err)
+		return err
+	}
+
+	if a.servicesPublisherFunc != nil {
+		msg := session.MoneyReport{
+			StationID:    int(report.StationID),
+			Banknotes:    report.Banknotes,
+			CarsTotal:    report.CarsTotal,
+			Coins:        report.Coins,
+			Electronical: report.Electronical,
+			Service:      report.Service,
+			Bonuses:      report.Bonuses,
+			SessionID:    report.SessionID,
+		}
+		eventErr := a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionMoneyReportMessageType)
+		if eventErr != nil {
+			log.Err("failed to send moneyReport to wash_bonus service", "error", eventErr)
+		}
+	} else {
+		log.Warn("unable to send moneyReport to wash_bonus service")
+	}
+	return nil
 }
 
 // SaveCollectionReport gets app.CollectionReport struct
@@ -508,6 +551,7 @@ func (a *app) SetStation(station SetStation) error {
 		return err
 	}
 	a.loadStations()
+	a.RequestSessionsFromService(5, int(station.ID))
 	err = a.updateConfig("SetStation")
 	return err
 }
@@ -807,4 +851,266 @@ func isValidDayOfWeek(dayOfWeek int, weekDay []string) bool {
 		}
 	}
 	return false
+}
+
+func (a *app) CreateSession(url string, stationID StationID) (string, string, error) {
+	a.stationsMutex.Lock()
+	station := a.stations[stationID]
+	sessionID := station.SessionID
+	a.stationsMutex.Unlock()
+	QrUrl := "%s/#/?sessionID=%s"
+
+	if len(sessionID) != 0 {
+		return sessionID, fmt.Sprintf(QrUrl, url, sessionID), nil
+	}
+	//TODO: create static link if sessions not available
+	err := a.SetNextSession(stationID)
+	if err != nil {
+		return "", "", err
+	}
+
+	a.stationsMutex.Lock()
+	station = a.stations[stationID]
+	sessionID = station.SessionID
+	a.stationsMutex.Unlock()
+
+	msg := session.StateChange{
+		SessionID: sessionID,
+		State:     rabbit_vo.SessionStateStart,
+	}
+
+	if a.servicesPublisherFunc != nil {
+		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionStateMessageType)
+		if err != nil {
+			log.Err("failed to call wash_bonus service for session creation", "error", err)
+			return "", "", err
+		}
+	} else {
+		log.Warn("unable to call wash_bonus service for session creation")
+	}
+
+	return sessionID, fmt.Sprintf(QrUrl, url, sessionID), nil
+}
+
+func (a *app) RefreshSession(stationID StationID) (string, int64, error) {
+	panic("Not implemented")
+}
+
+func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+
+	station := a.stations[stationID]
+
+	if station.SessionID != string(sessionID) {
+		return errors.New("session not found")
+	}
+
+	station.SessionID = ""
+	station.UserID = ""
+	a.stations[stationID] = station
+	msg := session.StateChange{
+		SessionID: string(sessionID),
+		State:     rabbit_vo.SessionStateFinish,
+	}
+
+	var err error
+
+	if a.servicesPublisherFunc != nil {
+		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionStateMessageType)
+		if err != nil {
+			log.Err("failed to call wash_bonus service for finish session", "error", err)
+		}
+	} else {
+		log.Warn("unable to call wash_bonus service for finish session")
+	}
+
+	return err
+}
+
+func (a *app) SetBonuses(stationID StationID, bonuses int) error {
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+
+	station := a.stations[stationID]
+
+	if station.UserID == "" {
+		return ErrUserIsNotAuthorized
+	}
+
+	msg := session.BonusReward{
+		SessionID: station.SessionID,
+		Amount:    bonuses,
+	}
+
+	var err error
+	if a.servicesPublisherFunc != nil {
+		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusRewardMessageType)
+		if err != nil {
+			log.Err("failed to call wash_bonus service for reward with bonuses", "error", err)
+		}
+	} else {
+		log.Warn("unable to call wash_bonus service for reward with bonuses")
+	}
+
+	return err
+}
+
+func (a *app) IsAuthorized(stationID StationID) error {
+
+	// ...
+
+	return nil
+}
+
+func (a *app) AssignRabbitPub(publishFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error) {
+	a.servicesPublisherFunc = publishFunc
+}
+func (a *app) SetExternalServicesActive(active bool) {
+	a.extServicesActive = active
+}
+
+func (a *app) GetRabbitConfig() (cfg RabbitConfig, err error) {
+	serverID, err := a.repo.GetConfigString("server_id")
+	if err != nil {
+		err = ErrServiceNotConfigured
+		return
+	}
+
+	serverKey, err := a.repo.GetConfigString("server_key")
+	if err != nil {
+		err = ErrServiceNotConfigured
+		return
+	}
+
+	cfg.ServerID = serverID.Value
+	cfg.ServerKey = serverKey.Value
+
+	if err != nil {
+		err = ErrServiceNotConfigured
+		return
+	}
+	return
+}
+
+func (a *app) SetNextSession(stationID StationID) (err error) { // Создаем новую сессию для указанной станции? Устанавливает сессию из очереди, если нет сессии, то ошибка
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+
+	if a.servicesPublisherFunc == nil {
+		log.Err("can`t assign next session, wash_bonus service not initialized")
+		return nil
+	}
+
+	if station, ok := a.stations[stationID]; ok {
+		sessionsPool := a.stationsSessionsPool[stationID]
+		sessionsCount := len(sessionsPool)
+
+		switch {
+		case sessionsCount > 0:
+			station.SessionID = <-sessionsPool
+
+			if sessionsCount >= 5 {
+				a.stations[stationID] = station
+				return nil
+			}
+			fallthrough
+		case sessionsCount < 5:
+			err = a.RequestSessionsFromService(5, int(stationID))
+			if err != nil {
+				return err
+			}
+
+			sessionsPool = a.stationsSessionsPool[stationID]
+			station.SessionID = <-sessionsPool
+
+			a.stations[stationID] = station
+			return nil
+		}
+	}
+
+	return errors.New("not found station with StationID")
+}
+
+func (a *app) RequestSessionsFromService(count int, stationID int) error {
+	msg := session.RequestSessions{NewSessionsAmount: int64(count), PostID: int64(stationID)}
+
+	var err error
+	if a.servicesPublisherFunc != nil {
+		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionRequestMessageType)
+		if err != nil {
+			log.Err("failed to call wash_bonus service for request session", "error", err)
+		}
+	} else {
+		log.Warn("unable to call wash_bonus service for request session")
+	}
+
+	return err
+}
+
+func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) error {
+	val, ok := a.stationsSessionsPool[stationID]
+	if !ok {
+		return errors.New("no sessions available")
+	}
+
+	for _, session := range sessionsIDs {
+		val <- session
+	}
+
+	return nil
+}
+
+func (a *app) AssignSessionUser(sessionID string, userID string) error {
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+
+	//TODO: add a better way for station search?
+	for id, data := range a.stations {
+		if data.SessionID == sessionID {
+			data.UserID = userID
+			a.stations[id] = data
+
+			break
+		}
+	}
+
+	return nil
+}
+
+func (a *app) AssignSessionBonuses(sessionID string, amount int) error {
+	a.stationsMutex.Lock()
+	defer a.stationsMutex.Unlock()
+
+	for k, v := range a.stations {
+		if v.SessionID == sessionID {
+			oldStation := v
+			oldStation.BonusMoney += amount
+			a.stations[k] = oldStation
+
+			if a.servicesPublisherFunc != nil {
+				err := a.servicesPublisherFunc(session.BonusChargeConfirm{SessionID: sessionID, Amount: int64(amount)}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusConfirmMessageType)
+				if err != nil {
+					log.Err("failed to call wash_bonus service for bonus assign", "error", err)
+					return err
+				}
+			} else {
+				log.Warn("unable to call wash_bonus service for bonus assign")
+			}
+
+			return nil
+		}
+	}
+
+	if a.servicesPublisherFunc != nil {
+		err := a.servicesPublisherFunc(session.BonusChargeDiscard{SessionID: sessionID, Amount: int64(amount)}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusDiscardMessageType)
+		if err != nil {
+			log.Err("failed to call wash_bonus service for bonus discard", "error", err)
+			return err
+		}
+	} else {
+		log.Warn("unable to call wash_bonus service for bonus discard")
+	}
+
+	return nil
 }

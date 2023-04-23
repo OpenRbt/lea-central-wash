@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/def"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
 	"github.com/pkg/errors"
@@ -205,6 +206,8 @@ func (svc *service) saveMoney(params op.SaveMoneyParams) op.SaveMoneyResponder {
 		Coins:        int(params.Args.Coins),
 		Electronical: int(params.Args.Electronical),
 		Service:      int(params.Args.Service),
+		Bonuses:      int(params.Args.Bonuses),
+		SessionID:    params.Args.SessionID,
 	}
 
 	err = svc.app.SaveMoneyReport(toSave)
@@ -246,14 +249,23 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		})
 	}
 
-	station := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP)
+	station, bonusActive := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP)
+
+	isAuth := false
+	if station.UserID != "" {
+		isAuth = true
+	}
 
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
 		ServiceAmount:      newInt64(int64(station.ServiceMoney)),
+		BonusAmount:        int64(station.BonusMoney),
 		OpenStation:        &station.OpenStation,
 		ButtonID:           int64(station.ButtonID),
 		LastUpdate:         int64(station.LastUpdate),
 		LastDiscountUpdate: int64(station.LastDiscountUpdate),
+		SessionID:          station.SessionID,
+		BonusSystemActive:  bonusActive,
+		IsAuthorized:       &isAuth,
 	})
 }
 
@@ -1090,5 +1102,86 @@ func (svc *service) getStationDiscount(params op.GetStationDiscountsParams) op.G
 		return op.NewGetStationDiscountsOK().WithPayload(apiStationDiscount(*res))
 	default:
 		return op.NewGetStationDiscountsInternalServerError()
+	}
+}
+
+func (svc *service) createSession(params op.CreateSessionParams) op.CreateSessionResponder {
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		return op.NewCreateSessionNotFound()
+	}
+
+	sessionId, QR, err := svc.app.CreateSession(def.OpenwashingURL, stationID)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewCreateSessionOK().WithPayload(apiCreateSession(sessionId, QR))
+	default:
+		return op.NewCreateSessionInternalServerError()
+	}
+}
+
+func (svc *service) refreshSession(params op.RefreshSessionParams) op.RefreshSessionResponder {
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		return op.NewRefreshSessionNotFound()
+	}
+
+	sessionId, receiveAmount, err := svc.app.RefreshSession(stationID)
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewRefreshSessionOK().WithPayload(apiRefreshSession(sessionId, int(receiveAmount)))
+	default:
+		return op.NewRefreshSessionInternalServerError()
+	}
+}
+
+func (svc *service) endSession(params op.EndhSessionParams) op.EndhSessionResponder {
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		return op.NewEndhSessionNotFound()
+	}
+
+	err = svc.app.EndSession(stationID, app.BonusSessionID(*params.Args.SessionID))
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewEndhSessionNoContent()
+	default:
+		return op.NewEndhSessionInternalServerError()
+	}
+}
+
+func (svc *service) setBonuses(params op.SetBonusesParams) op.SetBonusesResponder {
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		return op.NewSetBonusesNotFound()
+	}
+
+	err = svc.app.SetBonuses(stationID, int(params.Args.Bonuses))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSetBonusesNoContent()
+	case app.ErrUserIsNotAuthorized:
+		return op.NewSetBonusesUnauthorized()
+	default:
+		return op.NewSetBonusesInternalServerError()
+	}
+}
+
+func (svc *service) isAuthorized(params op.IsAuthorizedParams) op.IsAuthorizedResponder {
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		return op.NewIsAuthorizedNotFound()
+	}
+
+	err = svc.app.IsAuthorized(stationID)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewIsAuthorizedOK().WithPayload(&model.IsAuthorized{
+			Authorized: true,
+		})
+	default:
+		return op.NewIsAuthorizedInternalServerError()
 	}
 }
