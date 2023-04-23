@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -13,6 +14,7 @@ import (
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/app"
+	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485"
 
 	"github.com/tarm/serial"
 )
@@ -39,6 +41,7 @@ type HardwareAccessLayer struct {
 	ports         map[string]*ports
 	portRev2Board map[string]*Rev2Board
 	dispencer     *Rev1DispencerBoard
+	motorManager  rs485.MotorManager
 	Errors        chan PostError
 }
 
@@ -183,9 +186,14 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 		if strings.HasPrefix(f.Name(), "ttyUSB") {
 			_, portExists := h.portByKey(f.Name())
 			if !portExists {
-
+				err = h.motorManager.TryAddDevice(f.Name())
+				if err == nil {
+					h.addPort(f.Name(), &ports{osPath: f.Name()})
+					fmt.Printf("added as rs485 controller [%s]\n", f.Name())
+					continue
+				}
 				// port is not found in our dictionary
-				err := h.checkAndAddPort(f.Name())
+				err = h.checkAndAddPort(f.Name())
 				if err == nil {
 					fmt.Printf("New device is added [%s]\n", f.Name())
 				} else {
@@ -613,7 +621,7 @@ func (h *HardwareAccessLayer) portByKey(key string) (*ports, bool) {
 func (h *HardwareAccessLayer) deletePort(key string) {
 	h.portsMu.Lock()
 	delete(h.ports, key)
-	if h.dispencer.osPath == key {
+	if h.dispencer != nil && h.dispencer.osPath == key {
 		h.dispencer = nil
 	} else {
 		delete(h.portRev2Board, key)
@@ -705,6 +713,7 @@ func (h *HardwareAccessLayer) ControlBoard(wantedPosition int32) (app.ControlBoa
 // Start just starts everything
 func (h *HardwareAccessLayer) Start() {
 	go h.workingLoop()
+	h.motorManager.Run()
 }
 
 func (h *HardwareAccessLayer) workingLoop() ([]app.ControlBoard, error) {
@@ -733,12 +742,40 @@ func NewHardwareAccessLayer() (app.HardwareAccessLayer, error) {
 		ports:         make(map[string]*ports),
 		portRev2Board: make(map[string]*Rev2Board),
 	}
+	res.motorManager = *rs485.NewMotorManager(context.Background(), res, time.Second*10)
 	return res, nil
+}
+
+func (h *HardwareAccessLayer) FreePort(portName string) {
+	h.deletePort(portName)
 }
 
 // RunProgram
 func (h *HardwareAccessLayer) RunProgram(id int32, cfg app.RelayConfig) (err error) {
 	log.Printf("Program config: stationID=%d, motor speed=%d", id, cfg.MotorSpeedPercent)
+
+	errBoard := h.runOnRev2Board(id, cfg)
+	errRS := h.runOnRS(id, cfg)
+	if errBoard == nil || errRS == nil {
+		return nil
+	}
+	errAll := fmt.Errorf("can't run program, %+w %+w", errBoard, errRS)
+	return errAll
+}
+
+func (h *HardwareAccessLayer) runOnRS(id int32, cfg app.RelayConfig) error {
+	err := h.motorManager.StartMotor(uint8(id))
+	if err != nil {
+		return nil
+	}
+	err = h.motorManager.SetSpeedPercent(uint8(id), int16(cfg.MotorSpeedPercent))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (h *HardwareAccessLayer) runOnRev2Board(id int32, cfg app.RelayConfig) error {
 	board, err := h.ControlBoard(id)
 	if err != nil {
 		return err

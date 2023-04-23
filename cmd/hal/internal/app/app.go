@@ -34,6 +34,7 @@ type HardwareAccessLayer interface {
 	Volume() DispenserStatus
 	GetLevel() int
 	DispenserStop(cfg RelayConfig) error
+	FreePort(portName string)
 }
 
 // ControlBoard represents one board (even virtual) to control relays
