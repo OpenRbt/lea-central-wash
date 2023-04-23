@@ -62,7 +62,7 @@ var (
 	RabbitUser     = strGetenv("RABBIT_USER", "")
 	RabbitPassword = strGetenv("RABBIT_PASSWORD", "")
 
-	RabbitCertPath = strGetenv("RABBIT_CERT_PATH", "")
+	RabbitCertPath = strGetenv("RABBIT_CERT_PATH", "certificates/")
 )
 
 var initErr error
