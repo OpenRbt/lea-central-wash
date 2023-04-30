@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	attemptsToPingDevice     = 3
+	attemptsToPingDevice     = 10
 	requestersToDeleteMaxCnt = 100
 )
 
@@ -80,6 +80,7 @@ func (m *MotorManager) StopMotorAttempts(requester *requester.SequenceRequester,
 		if a.Err == nil {
 			return nil
 		} else {
+			time.Sleep(time.Millisecond * 100)
 			lastError = a.Err
 		}
 	}
@@ -268,7 +269,7 @@ func (m *MotorManager) Destroy() {
 
 func (m *MotorManager) CheckAndGetSequenceRequencerPort(port string) (*requester.SequenceRequester, error) {
 	// Let's create a device
-	mDriver, err := modbusae200h.NewFrequencyGenerator(port, 19200, 5000)
+	mDriver, err := modbusae200h.NewFrequencyGenerator(port, 19200, 10000)
 	if err != nil {
 		return nil, fmt.Errorf("can't initialize newfrequencygenerator %+w", err)
 	}
