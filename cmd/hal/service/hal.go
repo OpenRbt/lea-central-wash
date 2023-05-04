@@ -759,7 +759,7 @@ func (h *HardwareAccessLayer) RunProgram(id int32, cfg app.RelayConfig) (err err
 	if errBoard == nil || errRS == nil {
 		return nil
 	}
-	errAll := fmt.Errorf("can't run program, %+w %+w", errBoard, errRS)
+	errAll := fmt.Errorf("can't run program, %w %w", errBoard, errRS)
 	return errAll
 }
 
