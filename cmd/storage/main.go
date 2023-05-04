@@ -38,8 +38,8 @@ import (
 
 const (
 	connectTimeout  = 3 * time.Second // must be less than swarm's deploy.update_config.monitor
-	dbTimeout       = 3 * time.Second
-	dbIdleTimeout   = 10 * time.Second
+	dbTimeout       = 3 * time.Minute
+	dbIdleTimeout   = 10 * time.Minute
 	dbMaxOpenConns  = 30 // about ⅓ of server's max_connections
 	dbParallelConns = 5  // a bit more than average
 )
