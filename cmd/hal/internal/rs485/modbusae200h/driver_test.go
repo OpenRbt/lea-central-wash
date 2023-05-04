@@ -1,3 +1,5 @@
+//go:build integration
+
 package modbusae200h
 
 import "testing"
