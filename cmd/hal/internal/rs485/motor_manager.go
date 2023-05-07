@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	attemptsToPingDevice     = 3
+	attemptsToPingDevice     = 20
 	requestersToDeleteMaxCnt = 100
 )
 
