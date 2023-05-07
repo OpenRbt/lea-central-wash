@@ -177,6 +177,7 @@ VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, 
 			   sum(coins) as coins, 
 			   sum(electronical) as electronical, 
 			   sum(service) as service,
+			   sum(bonuses) as bonuses,
 			   max(id) as max_id,
 			   :ctime
 		FROM money_report
@@ -194,7 +195,7 @@ ORDER BY id DESC
 LIMIT 1
 	`
 	sqlLastCollectionReport = `
-SELECT station_id, banknotes, cars_total, coins, electronical, service, ctime FROM money_collection WHERE station_id = :station_id
+SELECT station_id, banknotes, cars_total, coins, electronical, service, ctime, bonuses FROM money_collection WHERE station_id = :station_id
 ORDER BY id DESC
 LIMIT 1
 	`
@@ -206,6 +207,7 @@ LIMIT 1
 		mc.coins, 
 		mc.electronical, 
 		mc.service,
+		mc.bonuses,
 		mc.ctime,
 		COALESCE(u.login, '')  "user"
 	FROM money_collection mc
@@ -896,6 +898,7 @@ type (
 		Coins        int
 		Electronical int
 		Service      int
+		Bonuses      int
 		Ctime        time.Time
 		User         string
 	}

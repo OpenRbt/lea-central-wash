@@ -6,9 +6,7 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -21,6 +19,9 @@ type CollectionReportWithUser struct {
 
 	// banknotes
 	Banknotes int64 `json:"banknotes,omitempty"`
+
+	// bonuses
+	Bonuses int64 `json:"bonuses,omitempty"`
 
 	// cars total
 	CarsTotal int64 `json:"carsTotal,omitempty"`
@@ -42,52 +43,6 @@ type CollectionReportWithUser struct {
 
 	// user
 	User string `json:"user,omitempty"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (m *CollectionReportWithUser) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// banknotes
-		Banknotes int64 `json:"banknotes,omitempty"`
-
-		// cars total
-		CarsTotal int64 `json:"carsTotal,omitempty"`
-
-		// coins
-		Coins int64 `json:"coins,omitempty"`
-
-		// ctime
-		Ctime int64 `json:"ctime,omitempty"`
-
-		// electronical
-		Electronical int64 `json:"electronical,omitempty"`
-
-		// id
-		ID int64 `json:"id,omitempty"`
-
-		// service
-		Service int64 `json:"service,omitempty"`
-
-		// user
-		User string `json:"user,omitempty"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	m.Banknotes = props.Banknotes
-	m.CarsTotal = props.CarsTotal
-	m.Coins = props.Coins
-	m.Ctime = props.Ctime
-	m.Electronical = props.Electronical
-	m.ID = props.ID
-	m.Service = props.Service
-	m.User = props.User
-	return nil
 }
 
 // Validate validates this collection report with user

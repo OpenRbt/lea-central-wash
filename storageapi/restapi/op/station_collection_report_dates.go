@@ -6,9 +6,7 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -94,32 +92,6 @@ type StationCollectionReportDatesBody struct {
 	StationID int64 `json:"stationID,omitempty"`
 }
 
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *StationCollectionReportDatesBody) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// Unix time
-		EndDate *int64 `json:"endDate,omitempty"`
-
-		// Unix time
-		StartDate *int64 `json:"startDate,omitempty"`
-
-		// station ID
-		StationID int64 `json:"stationID,omitempty"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	o.EndDate = props.EndDate
-	o.StartDate = props.StartDate
-	o.StationID = props.StationID
-	return nil
-}
-
 // Validate validates this station collection report dates body
 func (o *StationCollectionReportDatesBody) Validate(formats strfmt.Registry) error {
 	return nil
@@ -156,25 +128,6 @@ type StationCollectionReportDatesOKBody struct {
 	// collection reports
 	// Required: true
 	CollectionReports []*model.CollectionReportWithUser `json:"collectionReports"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *StationCollectionReportDatesOKBody) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// collection reports
-		// Required: true
-		CollectionReports []*model.CollectionReportWithUser `json:"collectionReports"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	o.CollectionReports = props.CollectionReports
-	return nil
 }
 
 // Validate validates this station collection report dates o k body

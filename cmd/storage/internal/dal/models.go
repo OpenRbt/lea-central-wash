@@ -160,6 +160,7 @@ func appCollectionReportsByDate(r []resCollectionReportByDate) (res []app.Collec
 			Coins:        r[i].Coins,
 			Electronical: r[i].Electronical,
 			Service:      r[i].Service,
+			Bonuses:      r[i].Bonuses,
 			Ctime:        r[i].Ctime,
 			User:         r[i].User,
 		})
