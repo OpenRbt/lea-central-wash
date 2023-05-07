@@ -268,7 +268,7 @@ func (m *MotorManager) Destroy() {
 
 func (m *MotorManager) CheckAndGetSequenceRequencerPort(port string) (*requester.SequenceRequester, error) {
 	// Let's create a device
-	mDriver, err := modbusae200h.NewFrequencyGenerator(port, 19200, 5000)
+	mDriver, err := modbusae200h.NewFrequencyGenerator(port, 19200, 10000) // 10000 means 100.00 % for our driver
 	if err != nil {
 		return nil, fmt.Errorf("can't initialize newfrequencygenerator %+w", err)
 	}
