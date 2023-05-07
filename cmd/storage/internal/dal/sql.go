@@ -627,6 +627,18 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 			description = :description,
 			note = :note
 	`
+
+	sqlGetUnsendedRabbitMessages = `
+	select id, routing_key, target, message_type, payload, created_at, sent, sent_at from rabbit_send_log where sent = false and routing_key = :routing_key
+	`
+
+	sqlMarkRabbitMessageAsSent = `
+	UPDATE rabbit_send_log SET sent = TRUE, sent_at = :ctime WHERE id = :id
+	`
+
+	sqlAddRabbitMessage = `
+	INSERT INTO rabbit_send_log (routing_key,target,message_type,payload,created_at) VALUES (:routing_key,:target,:message_type,:payload,:created_at)
+	`
 )
 
 type (
@@ -1005,6 +1017,24 @@ type (
 		Description string
 		Note        string
 	}
+
+	argGetUnsendedRabbitMessages struct {
+		RoutingKey string
+	}
+
+	argAddRabbitMessage struct {
+		RoutingKey  string
+		Target      string
+		MessageType string
+		Payload     []byte
+		CreatedAt   time.Time
+	}
+
+	argMarkRabbitMessageAsSent struct {
+		ID    int64
+		Ctime time.Time
+	}
+
 	resGetConfigInt struct {
 		Name        string
 		Value       int64
@@ -1065,5 +1095,16 @@ type (
 		Description string
 		Note        string
 		StationID   app.StationID
+	}
+
+	resRabbitMessage struct {
+		ID          int64
+		RoutingKey  string
+		Target      string
+		MessageType string
+		Payload     []byte
+		CreatedAt   time.Time
+		Sent        bool
+		SentAt      *time.Time
 	}
 )

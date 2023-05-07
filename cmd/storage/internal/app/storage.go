@@ -150,7 +150,10 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) (Statio
 	a.stations[id] = station
 	oldStation.LastUpdate = a.lastUpdate
 	oldStation.LastDiscountUpdate = a.lastDiscountUpdate
-	return oldStation, a.servicesPublisherFunc != nil
+
+	_, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusRoutingKey)]
+
+	return oldStation, ok
 }
 
 func (a *app) checkStationOnline() {
@@ -304,23 +307,26 @@ func (a *app) SaveMoneyReport(report MoneyReport) error {
 		return err
 	}
 
-	if a.servicesPublisherFunc != nil {
-		msg := session.MoneyReport{
-			StationID:    int(report.StationID),
-			Banknotes:    report.Banknotes,
-			CarsTotal:    report.CarsTotal,
-			Coins:        report.Coins,
-			Electronical: report.Electronical,
-			Service:      report.Service,
-			Bonuses:      report.Bonuses,
-			SessionID:    report.SessionID,
+	if report.SessionID != "" || report.Bonuses != 0 {
+		if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; ok {
+			msg := session.MoneyReport{
+				StationID:    int(report.StationID),
+				Banknotes:    report.Banknotes,
+				CarsTotal:    report.CarsTotal,
+				Coins:        report.Coins,
+				Electronical: report.Electronical,
+				Service:      report.Service,
+				Bonuses:      report.Bonuses,
+				SessionID:    report.SessionID,
+			}
+
+			eventErr := a.PrepareRabbitMessage(string(rabbit_vo.WashBonusRoutingKey), string(rabbit_vo.WashBonusService), string(rabbit_vo.SessionMoneyReportMessageType), msg, true)
+			if eventErr != nil {
+				log.Err("failed preparing RabbitMessage for send moneyReport to bonus service", "error", eventErr)
+			}
+		} else {
+			log.Warn("not found rabbit worker for bonus service")
 		}
-		eventErr := a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionMoneyReportMessageType)
-		if eventErr != nil {
-			log.Err("failed to send moneyReport to wash_bonus service", "error", eventErr)
-		}
-	} else {
-		log.Warn("unable to send moneyReport to wash_bonus service")
 	}
 	return nil
 }
@@ -874,19 +880,19 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 	sessionID = station.SessionID
 	a.stationsMutex.Unlock()
 
-	msg := session.StateChange{
-		SessionID: sessionID,
-		State:     rabbit_vo.SessionStateStart,
-	}
+	if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; ok {
+		msg := session.StateChange{
+			SessionID: sessionID,
+			State:     rabbit_vo.SessionStateStart,
+		}
 
-	if a.servicesPublisherFunc != nil {
-		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionStateMessageType)
-		if err != nil {
-			log.Err("failed to call wash_bonus service for session creation", "error", err)
+		eventErr := a.PrepareRabbitMessage(string(rabbit_vo.WashBonusRoutingKey), string(rabbit_vo.WashBonusService), string(rabbit_vo.SessionStateMessageType), msg, true)
+		if eventErr != nil {
+			log.Err("failed preparing RabbitMessage for send session creation to bonus service", "error", eventErr)
 			return "", "", err
 		}
 	} else {
-		log.Warn("unable to call wash_bonus service for session creation")
+		log.Warn("not found rabbit worker for bonus service")
 	}
 
 	return sessionID, fmt.Sprintf(QrUrl, url, sessionID), nil
@@ -909,20 +915,19 @@ func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 	station.SessionID = ""
 	station.UserID = ""
 	a.stations[stationID] = station
-	msg := session.StateChange{
-		SessionID: string(sessionID),
-		State:     rabbit_vo.SessionStateFinish,
-	}
-
 	var err error
 
-	if a.servicesPublisherFunc != nil {
-		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionStateMessageType)
-		if err != nil {
-			log.Err("failed to call wash_bonus service for finish session", "error", err)
+	if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; ok {
+		msg := session.StateChange{
+			SessionID: string(sessionID),
+			State:     rabbit_vo.SessionStateFinish,
+		}
+		eventErr := a.PrepareRabbitMessage(string(rabbit_vo.WashBonusRoutingKey), string(rabbit_vo.WashBonusService), string(rabbit_vo.SessionStateMessageType), msg, true)
+		if eventErr != nil {
+			log.Err("failed preparing RabbitMessage for send finish session to bonus service", "error", err)
 		}
 	} else {
-		log.Warn("unable to call wash_bonus service for finish session")
+		log.Warn("not found rabbit worker for bonus service")
 	}
 
 	return err
@@ -938,19 +943,19 @@ func (a *app) SetBonuses(stationID StationID, bonuses int) error {
 		return ErrUserIsNotAuthorized
 	}
 
-	msg := session.BonusReward{
-		SessionID: station.SessionID,
-		Amount:    bonuses,
-	}
-
 	var err error
-	if a.servicesPublisherFunc != nil {
-		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusRewardMessageType)
+	if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; ok {
+		msg := session.BonusReward{
+			SessionID: station.SessionID,
+			Amount:    bonuses,
+		}
+
+		err = a.PrepareRabbitMessage(string(rabbit_vo.WashBonusRoutingKey), string(rabbit_vo.WashBonusService), string(rabbit_vo.SessionBonusRewardMessageType), msg, true)
 		if err != nil {
-			log.Err("failed to call wash_bonus service for reward with bonuses", "error", err)
+			log.Err("failed preparing RabbitMessage for reward with bonuses to bonus service", "error", err)
 		}
 	} else {
-		log.Warn("unable to call wash_bonus service for reward with bonuses")
+		log.Warn("not found rabbit worker for bonus service")
 	}
 
 	return err
@@ -963,9 +968,6 @@ func (a *app) IsAuthorized(stationID StationID) error {
 	return nil
 }
 
-func (a *app) AssignRabbitPub(publishFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error) {
-	a.servicesPublisherFunc = publishFunc
-}
 func (a *app) SetExternalServicesActive(active bool) {
 	a.extServicesActive = active
 }
@@ -997,8 +999,8 @@ func (a *app) SetNextSession(stationID StationID) (err error) { // Создае�
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
-	if a.servicesPublisherFunc == nil {
-		log.Err("can`t assign next session, wash_bonus service not initialized")
+	if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; !ok {
+		log.Err("can`t assign next session, not found rabbit worker for bonus service")
 		return nil
 	}
 
@@ -1033,16 +1035,16 @@ func (a *app) SetNextSession(stationID StationID) (err error) { // Создае�
 }
 
 func (a *app) RequestSessionsFromService(count int, stationID int) error {
-	msg := session.RequestSessions{NewSessionsAmount: int64(count), PostID: int64(stationID)}
 
 	var err error
-	if a.servicesPublisherFunc != nil {
-		err = a.servicesPublisherFunc(msg, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionRequestMessageType)
+	if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; ok {
+		msg := session.RequestSessions{NewSessionsAmount: int64(count), PostID: int64(stationID)}
+		err = a.PrepareRabbitMessage(string(rabbit_vo.WashBonusRoutingKey), string(rabbit_vo.WashBonusService), string(rabbit_vo.SessionRequestMessageType), msg, true)
 		if err != nil {
-			log.Err("failed to call wash_bonus service for request session", "error", err)
+			log.Err("failed preparing RabbitMessage for request session to bonus service", "error", err)
 		}
 	} else {
-		log.Warn("unable to call wash_bonus service for request session")
+		log.Warn("not found rabbit worker for bonus service")
 	}
 
 	return err
@@ -1088,29 +1090,49 @@ func (a *app) AssignSessionBonuses(sessionID string, amount int) error {
 			oldStation.BonusMoney += amount
 			a.stations[k] = oldStation
 
-			if a.servicesPublisherFunc != nil {
-				err := a.servicesPublisherFunc(session.BonusChargeConfirm{SessionID: sessionID, Amount: int64(amount)}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusConfirmMessageType)
+			if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; ok {
+				msg := session.BonusChargeConfirm{
+					SessionID: sessionID,
+					Amount:    int64(amount),
+				}
+
+				err := a.PrepareRabbitMessage(string(rabbit_vo.WashBonusRoutingKey), string(rabbit_vo.WashBonusService), string(rabbit_vo.SessionBonusConfirmMessageType), msg, true)
 				if err != nil {
-					log.Err("failed to call wash_bonus service for bonus assign", "error", err)
+					log.Err("failed preparing RabbitMessage for bonuses assign to bonus service", "error", err)
 					return err
 				}
 			} else {
-				log.Warn("unable to call wash_bonus service for bonus assign")
+				log.Warn("not found rabbit worker for bonus service")
 			}
 
 			return nil
 		}
 	}
 
-	if a.servicesPublisherFunc != nil {
-		err := a.servicesPublisherFunc(session.BonusChargeDiscard{SessionID: sessionID, Amount: int64(amount)}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.SessionBonusDiscardMessageType)
+	if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; ok {
+		msg := session.BonusChargeDiscard{SessionID: sessionID, Amount: int64(amount)}
+		err := a.PrepareRabbitMessage(string(rabbit_vo.WashBonusRoutingKey), string(rabbit_vo.WashBonusService), string(rabbit_vo.SessionBonusDiscardMessageType), msg, true)
 		if err != nil {
-			log.Err("failed to call wash_bonus service for bonus discard", "error", err)
+			log.Err("failed preparing RabbitMessage for bonuses discard to bonus service", "error", err)
 			return err
 		}
 	} else {
-		log.Warn("unable to call wash_bonus service for bonus discard")
+		log.Warn("not found rabbit worker for bonus service")
 	}
 
 	return nil
+}
+
+func (a *app) CreateRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error) {
+	worker := RabbitWorker{
+		repo:                  a.repo,
+		routingKey:            routingKey,
+		nonPersistentMessages: make(chan RabbitMessage),
+		publisherFunc:         publisherFunc,
+	}
+
+	a.rabbitWorkers[routingKey] = worker
+
+	go worker.ProcessPersistentMessages()
+	go worker.ProcessNonPersistentMessages()
 }

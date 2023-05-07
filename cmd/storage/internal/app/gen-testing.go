@@ -8,6 +8,7 @@ import (
 	reflect "reflect"
 	time "time"
 
+	vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -62,6 +63,25 @@ func (mr *MockAppMockRecorder) AddServiceAmount(stationID, money interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddServiceAmount", reflect.TypeOf((*MockApp)(nil).AddServiceAmount), stationID, money)
 }
 
+// AddSessionsToPool mocks base method.
+func (m *MockApp) AddSessionsToPool(stationID StationID, sessionsIDs ...string) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{stationID}
+	for _, a := range sessionsIDs {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "AddSessionsToPool", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddSessionsToPool indicates an expected call of AddSessionsToPool.
+func (mr *MockAppMockRecorder) AddSessionsToPool(stationID interface{}, sessionsIDs ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{stationID}, sessionsIDs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddSessionsToPool", reflect.TypeOf((*MockApp)(nil).AddSessionsToPool), varargs...)
+}
+
 // AdvertisingCampaign mocks base method.
 func (m *MockApp) AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error) {
 	m.ctrl.T.Helper()
@@ -92,6 +112,34 @@ func (mr *MockAppMockRecorder) AdvertisingCampaignByID(auth, id interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AdvertisingCampaignByID", reflect.TypeOf((*MockApp)(nil).AdvertisingCampaignByID), auth, id)
 }
 
+// AssignSessionBonuses mocks base method.
+func (m *MockApp) AssignSessionBonuses(sessionID string, amount int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AssignSessionBonuses", sessionID, amount)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AssignSessionBonuses indicates an expected call of AssignSessionBonuses.
+func (mr *MockAppMockRecorder) AssignSessionBonuses(sessionID, amount interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssignSessionBonuses", reflect.TypeOf((*MockApp)(nil).AssignSessionBonuses), sessionID, amount)
+}
+
+// AssignSessionUser mocks base method.
+func (m *MockApp) AssignSessionUser(sessionID, userID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AssignSessionUser", sessionID, userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AssignSessionUser indicates an expected call of AssignSessionUser.
+func (mr *MockAppMockRecorder) AssignSessionUser(sessionID, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssignSessionUser", reflect.TypeOf((*MockApp)(nil).AssignSessionUser), sessionID, userID)
+}
+
 // CardReaderConfig mocks base method.
 func (m *MockApp) CardReaderConfig(arg0 StationID) (*CardReaderConfig, error) {
 	m.ctrl.T.Helper()
@@ -120,6 +168,34 @@ func (m *MockApp) CollectionReports(id StationID, startDate, endDate *time.Time)
 func (mr *MockAppMockRecorder) CollectionReports(id, startDate, endDate interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CollectionReports", reflect.TypeOf((*MockApp)(nil).CollectionReports), id, startDate, endDate)
+}
+
+// CreateRabbitWorker mocks base method.
+func (m *MockApp) CreateRabbitWorker(routingKey string, publisherFunc func(interface{}, vo.Service, vo.RoutingKey, vo.MessageType) error) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "CreateRabbitWorker", routingKey, publisherFunc)
+}
+
+// CreateRabbitWorker indicates an expected call of CreateRabbitWorker.
+func (mr *MockAppMockRecorder) CreateRabbitWorker(routingKey, publisherFunc interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRabbitWorker", reflect.TypeOf((*MockApp)(nil).CreateRabbitWorker), routingKey, publisherFunc)
+}
+
+// CreateSession mocks base method.
+func (m *MockApp) CreateSession(url string, stationID StationID) (string, string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateSession", url, stationID)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(string)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// CreateSession indicates an expected call of CreateSession.
+func (mr *MockAppMockRecorder) CreateSession(url, stationID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSession", reflect.TypeOf((*MockApp)(nil).CreateSession), url, stationID)
 }
 
 // CreateUser mocks base method.
@@ -207,6 +283,34 @@ func (mr *MockAppMockRecorder) EditAdvertisingCampaign(auth, a interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditAdvertisingCampaign", reflect.TypeOf((*MockApp)(nil).EditAdvertisingCampaign), auth, a)
 }
 
+// EndSession mocks base method.
+func (m *MockApp) EndSession(stationID StationID, sessionID BonusSessionID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EndSession", stationID, sessionID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// EndSession indicates an expected call of EndSession.
+func (mr *MockAppMockRecorder) EndSession(stationID, sessionID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EndSession", reflect.TypeOf((*MockApp)(nil).EndSession), stationID, sessionID)
+}
+
+// FetchSessions mocks base method.
+func (m *MockApp) FetchSessions() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FetchSessions")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// FetchSessions indicates an expected call of FetchSessions.
+func (mr *MockAppMockRecorder) FetchSessions() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchSessions", reflect.TypeOf((*MockApp)(nil).FetchSessions))
+}
+
 // Get mocks base method.
 func (m *MockApp) Get(stationID StationID) (StationData, error) {
 	m.ctrl.T.Helper()
@@ -280,6 +384,21 @@ func (m *MockApp) GetLevel() (int64, error) {
 func (mr *MockAppMockRecorder) GetLevel() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLevel", reflect.TypeOf((*MockApp)(nil).GetLevel))
+}
+
+// GetRabbitConfig mocks base method.
+func (m *MockApp) GetRabbitConfig() (RabbitConfig, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRabbitConfig")
+	ret0, _ := ret[0].(RabbitConfig)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRabbitConfig indicates an expected call of GetRabbitConfig.
+func (mr *MockAppMockRecorder) GetRabbitConfig() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRabbitConfig", reflect.TypeOf((*MockApp)(nil).GetRabbitConfig))
 }
 
 // GetStationConfigBool mocks base method.
@@ -372,6 +491,20 @@ func (mr *MockAppMockRecorder) Info() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Info", reflect.TypeOf((*MockApp)(nil).Info))
 }
 
+// IsAuthorized mocks base method.
+func (m *MockApp) IsAuthorized(stationID StationID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsAuthorized", stationID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// IsAuthorized indicates an expected call of IsAuthorized.
+func (mr *MockAppMockRecorder) IsAuthorized(stationID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsAuthorized", reflect.TypeOf((*MockApp)(nil).IsAuthorized), stationID)
+}
+
 // IsEnabled mocks base method.
 func (m *MockApp) IsEnabled(user *UserData) bool {
 	m.ctrl.T.Helper()
@@ -460,17 +593,32 @@ func (mr *MockAppMockRecorder) OpenStation(arg0 interface{}) *gomock.Call {
 }
 
 // Ping mocks base method.
-func (m *MockApp) Ping(id StationID, balance, program int, stationIP string) StationData {
+func (m *MockApp) Ping(id StationID, balance, program int, stationIP string) (StationData, bool) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Ping", id, balance, program, stationIP)
 	ret0, _ := ret[0].(StationData)
-	return ret0
+	ret1, _ := ret[1].(bool)
+	return ret0, ret1
 }
 
 // Ping indicates an expected call of Ping.
 func (mr *MockAppMockRecorder) Ping(id, balance, program, stationIP interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Ping", reflect.TypeOf((*MockApp)(nil).Ping), id, balance, program, stationIP)
+}
+
+// PrepareRabbitMessage mocks base method.
+func (m *MockApp) PrepareRabbitMessage(routingKey, target, messageType string, payload interface{}, persistent bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PrepareRabbitMessage", routingKey, target, messageType, payload, persistent)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// PrepareRabbitMessage indicates an expected call of PrepareRabbitMessage.
+func (mr *MockAppMockRecorder) PrepareRabbitMessage(routingKey, target, messageType, payload, persistent interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PrepareRabbitMessage", reflect.TypeOf((*MockApp)(nil).PrepareRabbitMessage), routingKey, target, messageType, payload, persistent)
 }
 
 // PressButton mocks base method.
@@ -502,6 +650,22 @@ func (mr *MockAppMockRecorder) Programs(id interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Programs", reflect.TypeOf((*MockApp)(nil).Programs), id)
 }
 
+// RefreshSession mocks base method.
+func (m *MockApp) RefreshSession(stationID StationID) (string, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RefreshSession", stationID)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// RefreshSession indicates an expected call of RefreshSession.
+func (mr *MockAppMockRecorder) RefreshSession(stationID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshSession", reflect.TypeOf((*MockApp)(nil).RefreshSession), stationID)
+}
+
 // RelayReportCurrent mocks base method.
 func (m *MockApp) RelayReportCurrent(auth *Auth, id *StationID) (StationsStat, error) {
 	m.ctrl.T.Helper()
@@ -530,6 +694,20 @@ func (m *MockApp) RelayReportDates(auth *Auth, stationID *StationID, startDate, 
 func (mr *MockAppMockRecorder) RelayReportDates(auth, stationID, startDate, endDate interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RelayReportDates", reflect.TypeOf((*MockApp)(nil).RelayReportDates), auth, stationID, startDate, endDate)
+}
+
+// RequestSessionsFromService mocks base method.
+func (m *MockApp) RequestSessionsFromService(count, postID int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RequestSessionsFromService", count, postID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RequestSessionsFromService indicates an expected call of RequestSessionsFromService.
+func (mr *MockAppMockRecorder) RequestSessionsFromService(count, postID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RequestSessionsFromService", reflect.TypeOf((*MockApp)(nil).RequestSessionsFromService), count, postID)
 }
 
 // ResetStationStat mocks base method.
@@ -658,6 +836,20 @@ func (mr *MockAppMockRecorder) Set(station interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockApp)(nil).Set), station)
 }
 
+// SetBonuses mocks base method.
+func (m *MockApp) SetBonuses(stationID StationID, bonuses int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetBonuses", stationID, bonuses)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetBonuses indicates an expected call of SetBonuses.
+func (mr *MockAppMockRecorder) SetBonuses(stationID, bonuses interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetBonuses", reflect.TypeOf((*MockApp)(nil).SetBonuses), stationID, bonuses)
+}
+
 // SetCardReaderConfig mocks base method.
 func (m *MockApp) SetCardReaderConfig(arg0 CardReaderConfig) error {
 	m.ctrl.T.Helper()
@@ -714,6 +906,18 @@ func (mr *MockAppMockRecorder) SetConfigString(auth, config interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetConfigString", reflect.TypeOf((*MockApp)(nil).SetConfigString), auth, config)
 }
 
+// SetExternalServicesActive mocks base method.
+func (m *MockApp) SetExternalServicesActive(active bool) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetExternalServicesActive", active)
+}
+
+// SetExternalServicesActive indicates an expected call of SetExternalServicesActive.
+func (mr *MockAppMockRecorder) SetExternalServicesActive(active interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetExternalServicesActive", reflect.TypeOf((*MockApp)(nil).SetExternalServicesActive), active)
+}
+
 // SetKasse mocks base method.
 func (m *MockApp) SetKasse(kasse Kasse) error {
 	m.ctrl.T.Helper()
@@ -726,6 +930,20 @@ func (m *MockApp) SetKasse(kasse Kasse) error {
 func (mr *MockAppMockRecorder) SetKasse(kasse interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetKasse", reflect.TypeOf((*MockApp)(nil).SetKasse), kasse)
+}
+
+// SetNextSession mocks base method.
+func (m *MockApp) SetNextSession(stationID StationID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetNextSession", stationID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetNextSession indicates an expected call of SetNextSession.
+func (mr *MockAppMockRecorder) SetNextSession(stationID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetNextSession", reflect.TypeOf((*MockApp)(nil).SetNextSession), stationID)
 }
 
 // SetProgram mocks base method.
@@ -1043,6 +1261,20 @@ func (mr *MockRepoMockRecorder) AddOpenStationLog(arg0 interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddOpenStationLog", reflect.TypeOf((*MockRepo)(nil).AddOpenStationLog), arg0)
 }
 
+// AddRabbitMessage mocks base method.
+func (m *MockRepo) AddRabbitMessage(message RabbitMessage) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddRabbitMessage", message)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddRabbitMessage indicates an expected call of AddRabbitMessage.
+func (mr *MockRepoMockRecorder) AddRabbitMessage(message interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddRabbitMessage", reflect.TypeOf((*MockRepo)(nil).AddRabbitMessage), message)
+}
+
 // AddStation mocks base method.
 func (m *MockRepo) AddStation(name string) error {
 	m.ctrl.T.Helper()
@@ -1338,6 +1570,21 @@ func (mr *MockRepoMockRecorder) GetStationConfigString(name, stationID interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStationConfigString", reflect.TypeOf((*MockRepo)(nil).GetStationConfigString), name, stationID)
 }
 
+// GetUnsendedRabbitMessages mocks base method.
+func (m *MockRepo) GetUnsendedRabbitMessages(routingKey string) ([]RabbitMessage, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUnsendedRabbitMessages", routingKey)
+	ret0, _ := ret[0].([]RabbitMessage)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUnsendedRabbitMessages indicates an expected call of GetUnsendedRabbitMessages.
+func (mr *MockRepoMockRecorder) GetUnsendedRabbitMessages(routingKey interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnsendedRabbitMessages", reflect.TypeOf((*MockRepo)(nil).GetUnsendedRabbitMessages), routingKey)
+}
+
 // Info mocks base method.
 func (m *MockRepo) Info() string {
 	m.ctrl.T.Helper()
@@ -1441,6 +1688,20 @@ func (m *MockRepo) LoadHash() ([]StationID, []string, error) {
 func (mr *MockRepoMockRecorder) LoadHash() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadHash", reflect.TypeOf((*MockRepo)(nil).LoadHash))
+}
+
+// MarkRabbitMessageAsSent mocks base method.
+func (m *MockRepo) MarkRabbitMessageAsSent(id int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MarkRabbitMessageAsSent", id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// MarkRabbitMessageAsSent indicates an expected call of MarkRabbitMessageAsSent.
+func (mr *MockRepoMockRecorder) MarkRabbitMessageAsSent(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkRabbitMessageAsSent", reflect.TypeOf((*MockRepo)(nil).MarkRabbitMessageAsSent), id)
 }
 
 // MoneyReport mocks base method.

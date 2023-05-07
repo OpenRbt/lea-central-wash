@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
+	"github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 	"os"
 	"os/user"
 	"path"
@@ -108,8 +109,6 @@ func init() { //nolint:gochecknoinits
 
 	flag.StringVar(&cfg.rabbit.Url, "rabbit.host", def.RabbitHost, "host for service connections")
 	flag.StringVar(&cfg.rabbit.Port, "rabbit.port", def.RabbitPort, "port for service connections")
-	flag.StringVar(&cfg.rabbit.ServerID, "rabbit.user", def.RabbitUser, "user for service connections")
-	flag.StringVar(&cfg.rabbit.ServerKey, "rabbit.pass", def.RabbitPassword, "password for service connections")
 
 	flag.StringVar(&RabbitCertPath, "pathCert", def.RabbitCertPath, "path to cert Rabbit")
 
@@ -318,12 +317,13 @@ func run(db *sqlx.DB, errc chan<- error) {
 	} else {
 		cfg.rabbit.ServerID = rabbitCfg.ServerID
 		cfg.rabbit.ServerKey = rabbitCfg.ServerKey
-		rabbitWorker, err := rabbit.NewClient(cfg.rabbit, appl, RabbitCertPath)
+		rabbitClient, err := rabbit.NewClient(cfg.rabbit, appl, RabbitCertPath)
 		if err != nil {
 			log.Err("failed to init rabbit client", "error", err)
 		} else {
 			log.Info("Serve rabbit client")
-			appl.AssignRabbitPub(rabbitWorker.SendMessage)
+
+			appl.CreateRabbitWorker(string(vo.WashBonusService), rabbitClient.SendMessage)
 			appl.FetchSessions()
 		}
 	}

@@ -1077,3 +1077,50 @@ func (r *repo) SetStationConfigString(config app.StationConfigString) (err error
 	})
 	return
 }
+
+func (r *repo) AddRabbitMessage(message app.RabbitMessage) (err error) {
+	bytes, ok := message.Payload.([]byte)
+	if !ok {
+		return app.ErrRabbitMessageBadPayload
+	}
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlAddRabbitMessage, argAddRabbitMessage{
+			RoutingKey:  message.RoutingKey,
+			Target:      message.Target,
+			MessageType: message.MessageType,
+			Payload:     bytes,
+			CreatedAt:   time.Now().UTC(),
+		})
+		return err
+	})
+	return
+}
+
+func (r *repo) GetUnsendedRabbitMessages(routingKey string) (messages []app.RabbitMessage, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res []resRabbitMessage
+		err := tx.NamedSelectContext(ctx, &res, sqlGetUnsendedRabbitMessages, argGetUnsendedRabbitMessages{
+			RoutingKey: routingKey,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		messages = appRabbitMessages(res)
+		return nil
+	})
+	return
+}
+
+func (r *repo) MarkRabbitMessageAsSent(id int64) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlMarkRabbitMessageAsSent, argMarkRabbitMessageAsSent{
+			ID:    id,
+			Ctime: time.Now().UTC(),
+		})
+		return err
+	})
+
+	return
+}

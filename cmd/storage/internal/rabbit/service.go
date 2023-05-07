@@ -61,9 +61,12 @@ func (s *Service) ProcessBonusMessage(d rabbitmq.Delivery) (action rabbitmq.Acti
 }
 
 func (s *Service) SendMessage(msg interface{}, service rabbit_vo.Service, routingKey rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) (err error) {
-	jsonMsg, err := json.Marshal(msg)
-	if err != nil {
-		return
+	jsonMsg, ok := msg.([]byte)
+	if !ok {
+		jsonMsg, err = json.Marshal(msg)
+		if err != nil {
+			return
+		}
 	}
 
 	serverID, err := s.app.GetConfigString(nil, "server_id")

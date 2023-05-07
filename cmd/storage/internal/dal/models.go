@@ -2,9 +2,8 @@ package dal
 
 import (
 	"encoding/json"
-	"strings"
-
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"strings"
 )
 
 func appSetUsers(v []resUser) []app.UserData {
@@ -309,5 +308,26 @@ func appStationConfigString(a resGetStationConfigString) *app.StationConfigStrin
 		Description: a.Description,
 		Note:        a.Note,
 		StationID:   a.StationID,
+	}
+}
+
+func appRabbitMessages(a []resRabbitMessage) []app.RabbitMessage {
+	res := []app.RabbitMessage{}
+	for _, msg := range a {
+		res = append(res, appRabbitMessage(msg))
+	}
+	return res
+}
+
+func appRabbitMessage(a resRabbitMessage) app.RabbitMessage {
+	return app.RabbitMessage{
+		ID:          app.RabbitMessageID(a.ID),
+		RoutingKey:  a.RoutingKey,
+		Target:      a.Target,
+		MessageType: a.MessageType,
+		Payload:     a.Payload,
+		CreatedAt:   a.CreatedAt,
+		IsSent:      a.Sent,
+		SentAt:      a.SentAt,
 	}
 }

@@ -299,3 +299,15 @@ func (t *DB) SetStationConfigBool(config app.StationConfigBool) error {
 func (t *DB) SetStationConfigString(config app.StationConfigString) error {
 	return nil
 }
+
+func (t *DB) AddRabbitMessage(message app.RabbitMessage) error {
+	return nil
+}
+
+func (t *DB) GetUnsendedRabbitMessages(routingKey string) ([]app.RabbitMessage, error) {
+	return nil, nil
+}
+
+func (t *DB) MarkRabbitMessageAsSent(id int64) (err error) {
+	return nil
+}
