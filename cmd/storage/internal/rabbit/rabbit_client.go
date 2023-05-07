@@ -1,14 +1,12 @@
 package rabbit
 
 import (
-	"crypto/tls"
-	"crypto/x509"
 	_ "embed"
 	"fmt"
-	"io/ioutil"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
+	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/wagslane/go-rabbitmq"
 )
 
@@ -29,50 +27,23 @@ type Service struct {
 }
 
 func NewClient(cfg Config, app app.App, rabbitCertPath string) (svc *Service, err error) {
-
-	clientCertRaw, err := ioutil.ReadFile(rabbitCertPath + "client.pem")
-	if err != nil {
-		return nil, err
-	}
-
-	clientCertKeyRaw, err := ioutil.ReadFile(rabbitCertPath + "client_key.pem")
-	if err != nil {
-		return nil, err
-	}
-
-	caCertRaw, err := ioutil.ReadFile(rabbitCertPath + "root_ca.pem")
-	if err != nil {
-		return nil, err
-	}
-
-	rootCAs := x509.NewCertPool()
-	rootCAs.AppendCertsFromPEM(caCertRaw)
-
-	cert, err := tls.X509KeyPair(clientCertRaw, clientCertKeyRaw)
-	if err != nil {
-		return nil, err
-	}
-
-	tlsConf := &tls.Config{
-		RootCAs:            rootCAs,
-		Certificates:       []tls.Certificate{cert},
-		ServerName:         "localhost", // Optional
-		InsecureSkipVerify: true,
-	}
-
 	//TODO: add rabbit variables extraction from repo
 
 	connString := fmt.Sprintf("amqps://%s:%s@%s:%s/", cfg.ServerID, cfg.ServerKey, cfg.Url, cfg.Port)
 	rabbitConf := rabbitmq.Config{
-		SASL:            nil,
-		Vhost:           "/",
-		ChannelMax:      0,
-		FrameSize:       0,
-		Heartbeat:       0,
-		TLSClientConfig: tlsConf,
-		Properties:      nil,
-		Locale:          "",
-		Dial:            nil,
+		SASL: []amqp.Authentication{
+			&amqp.PlainAuth{
+				Username: cfg.ServerID,
+				Password: cfg.ServerKey,
+			},
+		},
+		Vhost:      "/",
+		ChannelMax: 0,
+		FrameSize:  0,
+		Heartbeat:  0,
+		Properties: nil,
+		Locale:     "",
+		Dial:       nil,
 	}
 
 	conn, err := rabbitmq.NewConn(
