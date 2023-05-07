@@ -265,7 +265,6 @@ func run(db *sqlx.DB, errc chan<- error) {
 	if db != nil {
 		var err error
 		var dbMigrations *sqlx.DB
-		defer dbMigrations.Close()
 
 		count := 0
 
@@ -278,6 +277,7 @@ func run(db *sqlx.DB, errc chan<- error) {
 			count++
 			cancel()
 		}
+		defer dbMigrations.Close()
 
 		err = applyMigrations(dbMigrations)
 		if err != nil {
