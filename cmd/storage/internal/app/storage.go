@@ -307,7 +307,7 @@ func (a *app) SaveMoneyReport(report MoneyReport) error {
 		return err
 	}
 
-	if report.SessionID != "" || report.Bonuses != 0 {
+	if report.SessionID != "" {
 		if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; ok {
 			msg := session.MoneyReport{
 				StationID:    int(report.StationID),
