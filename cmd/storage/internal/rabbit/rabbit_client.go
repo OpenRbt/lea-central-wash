@@ -3,8 +3,10 @@ package rabbit
 import (
 	_ "embed"
 	"fmt"
+
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
+	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/wagslane/go-rabbitmq"
 )
 
@@ -25,9 +27,16 @@ type Service struct {
 }
 
 func NewClient(cfg Config, app app.App, rabbitCertPath string) (svc *Service, err error) {
+	//TODO: add rabbit variables extraction from repo
+
 	connString := fmt.Sprintf("amqps://%s:%s@%s:%s/", cfg.ServerID, cfg.ServerKey, cfg.Url, cfg.Port)
 	rabbitConf := rabbitmq.Config{
-		SASL:       nil,
+		SASL: []amqp.Authentication{
+			&amqp.PlainAuth{
+				Username: cfg.ServerID,
+				Password: cfg.ServerKey,
+			},
+		},
 		Vhost:      "/",
 		ChannelMax: 0,
 		FrameSize:  0,

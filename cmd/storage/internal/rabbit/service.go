@@ -12,7 +12,6 @@ import (
 )
 
 func (s *Service) ProcessBonusMessage(d rabbitmq.Delivery) (action rabbitmq.Action) { // Обработка сообщения на основе типа. В зависимости от типа происходят нужные действия
-
 	switch rabbit_vo.MessageType(d.Type) {
 	case rabbit_vo.SessionCreatedMessageType:
 		var msg session.PostSessions

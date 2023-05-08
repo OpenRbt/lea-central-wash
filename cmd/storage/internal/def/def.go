@@ -57,8 +57,8 @@ var (
 	StartDelaySec      = intGetenv("STORAGE_START_DELAY", 30)
 	OpenwashingURL     = strGetenv("OPENWASHING_URL", "https://app.openwashing.com")
 
-	RabbitHost = strGetenv("RABBIT_HOST", "localhost")
-	RabbitPort = strGetenv("RABBIT_PORT", "5671")
+	RabbitHost     = strGetenv("RABBIT_HOST", "app.openwashing.com")
+	RabbitPort     = strGetenv("RABBIT_PORT", "4043")
 
 	RabbitCertPath = strGetenv("RABBIT_CERT_PATH", "certificates/")
 )
