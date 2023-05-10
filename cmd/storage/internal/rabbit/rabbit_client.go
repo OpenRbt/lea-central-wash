@@ -26,7 +26,7 @@ type Service struct {
 	bonusSvcSub *rabbitmq.Consumer
 }
 
-func NewClient(cfg Config, app app.App, rabbitCertPath string) (svc *Service, err error) {
+func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 	//TODO: add rabbit variables extraction from repo
 
 	connString := fmt.Sprintf("amqps://%s:%s@%s:%s/", cfg.ServerID, cfg.ServerKey, cfg.Url, cfg.Port)
