@@ -322,12 +322,37 @@ func appRabbitMessages(a []resRabbitMessage) []app.RabbitMessage {
 func appRabbitMessage(a resRabbitMessage) app.RabbitMessage {
 	return app.RabbitMessage{
 		ID:          app.RabbitMessageID(a.ID),
-		RoutingKey:  a.RoutingKey,
-		Target:      a.Target,
 		MessageType: a.MessageType,
 		Payload:     a.Payload,
 		CreatedAt:   a.CreatedAt,
 		IsSent:      a.Sent,
 		SentAt:      a.SentAt,
+	}
+}
+func appRabbitMoneyReports(r []resRabbitMoneyReport) []app.RabbitMoneyReport {
+	res := []app.RabbitMoneyReport{}
+	for _, rabbitReport := range r {
+		res = append(res, appRabbitMoneyReport(rabbitReport))
+	}
+	return res
+}
+
+func appRabbitMoneyReport(r resRabbitMoneyReport) app.RabbitMoneyReport {
+	return app.RabbitMoneyReport{
+		ID:          app.RabbitMessageID(r.ID),
+		MessageType: r.MessageType,
+		MoneyReport: app.MoneyReport{
+			StationID:    app.StationID(r.StationID),
+			Banknotes:    r.Banknotes,
+			CarsTotal:    r.CarsTotal,
+			Coins:        r.Coins,
+			Electronical: r.Electronical,
+			Service:      r.Service,
+			Bonuses:      r.Bonuses,
+			SessionID:    r.SessionID,
+		},
+		CreatedAt: r.CreatedAt,
+		IsSent:    r.Sent,
+		SentAt:    r.SentAt,
 	}
 }

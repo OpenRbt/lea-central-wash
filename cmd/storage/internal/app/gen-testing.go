@@ -170,18 +170,6 @@ func (mr *MockAppMockRecorder) CollectionReports(id, startDate, endDate interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CollectionReports", reflect.TypeOf((*MockApp)(nil).CollectionReports), id, startDate, endDate)
 }
 
-// CreateRabbitWorker mocks base method.
-func (m *MockApp) CreateRabbitWorker(routingKey string, publisherFunc func(interface{}, vo.Service, vo.RoutingKey, vo.MessageType) error) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "CreateRabbitWorker", routingKey, publisherFunc)
-}
-
-// CreateRabbitWorker indicates an expected call of CreateRabbitWorker.
-func (mr *MockAppMockRecorder) CreateRabbitWorker(routingKey, publisherFunc interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRabbitWorker", reflect.TypeOf((*MockApp)(nil).CreateRabbitWorker), routingKey, publisherFunc)
-}
-
 // CreateSession mocks base method.
 func (m *MockApp) CreateSession(url string, stationID StationID) (string, string, error) {
 	m.ctrl.T.Helper()
@@ -491,6 +479,18 @@ func (mr *MockAppMockRecorder) Info() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Info", reflect.TypeOf((*MockApp)(nil).Info))
 }
 
+// InitBonusRabbitWorker mocks base method.
+func (m *MockApp) InitBonusRabbitWorker(routingKey string, publisherFunc func(interface{}, vo.Service, vo.RoutingKey, vo.MessageType) error) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "InitBonusRabbitWorker", routingKey, publisherFunc)
+}
+
+// InitBonusRabbitWorker indicates an expected call of InitBonusRabbitWorker.
+func (mr *MockAppMockRecorder) InitBonusRabbitWorker(routingKey, publisherFunc interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitBonusRabbitWorker", reflect.TypeOf((*MockApp)(nil).InitBonusRabbitWorker), routingKey, publisherFunc)
+}
+
 // IsAuthorized mocks base method.
 func (m *MockApp) IsAuthorized(stationID StationID) error {
 	m.ctrl.T.Helper()
@@ -608,17 +608,17 @@ func (mr *MockAppMockRecorder) Ping(id, balance, program, stationIP interface{})
 }
 
 // PrepareRabbitMessage mocks base method.
-func (m *MockApp) PrepareRabbitMessage(routingKey, target, messageType string, payload interface{}, persistent bool) error {
+func (m *MockApp) PrepareRabbitMessage(messageType string, payload interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PrepareRabbitMessage", routingKey, target, messageType, payload, persistent)
+	ret := m.ctrl.Call(m, "PrepareRabbitMessage", messageType, payload)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // PrepareRabbitMessage indicates an expected call of PrepareRabbitMessage.
-func (mr *MockAppMockRecorder) PrepareRabbitMessage(routingKey, target, messageType, payload, persistent interface{}) *gomock.Call {
+func (mr *MockAppMockRecorder) PrepareRabbitMessage(messageType, payload interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PrepareRabbitMessage", reflect.TypeOf((*MockApp)(nil).PrepareRabbitMessage), routingKey, target, messageType, payload, persistent)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PrepareRabbitMessage", reflect.TypeOf((*MockApp)(nil).PrepareRabbitMessage), messageType, payload)
 }
 
 // PressButton mocks base method.
@@ -806,6 +806,20 @@ func (m *MockApp) SaveMoneyReport(report MoneyReport) error {
 func (mr *MockAppMockRecorder) SaveMoneyReport(report interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveMoneyReport", reflect.TypeOf((*MockApp)(nil).SaveMoneyReport), report)
+}
+
+// SaveMoneyReportAndMessage mocks base method.
+func (m *MockApp) SaveMoneyReportAndMessage(report RabbitMoneyReport) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveMoneyReportAndMessage", report)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SaveMoneyReportAndMessage indicates an expected call of SaveMoneyReportAndMessage.
+func (mr *MockAppMockRecorder) SaveMoneyReportAndMessage(report interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveMoneyReportAndMessage", reflect.TypeOf((*MockApp)(nil).SaveMoneyReportAndMessage), report)
 }
 
 // SaveRelayReport mocks base method.
@@ -1570,19 +1584,34 @@ func (mr *MockRepoMockRecorder) GetStationConfigString(name, stationID interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStationConfigString", reflect.TypeOf((*MockRepo)(nil).GetStationConfigString), name, stationID)
 }
 
-// GetUnsendedRabbitMessages mocks base method.
-func (m *MockRepo) GetUnsendedRabbitMessages(routingKey string) ([]RabbitMessage, error) {
+// GetUnsendedMoneyReports mocks base method.
+func (m *MockRepo) GetUnsendedMoneyReports() ([]RabbitMoneyReport, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUnsendedRabbitMessages", routingKey)
+	ret := m.ctrl.Call(m, "GetUnsendedMoneyReports")
+	ret0, _ := ret[0].([]RabbitMoneyReport)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUnsendedMoneyReports indicates an expected call of GetUnsendedMoneyReports.
+func (mr *MockRepoMockRecorder) GetUnsendedMoneyReports() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnsendedMoneyReports", reflect.TypeOf((*MockRepo)(nil).GetUnsendedMoneyReports))
+}
+
+// GetUnsendedRabbitMessages mocks base method.
+func (m *MockRepo) GetUnsendedRabbitMessages() ([]RabbitMessage, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUnsendedRabbitMessages")
 	ret0, _ := ret[0].([]RabbitMessage)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetUnsendedRabbitMessages indicates an expected call of GetUnsendedRabbitMessages.
-func (mr *MockRepoMockRecorder) GetUnsendedRabbitMessages(routingKey interface{}) *gomock.Call {
+func (mr *MockRepoMockRecorder) GetUnsendedRabbitMessages() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnsendedRabbitMessages", reflect.TypeOf((*MockRepo)(nil).GetUnsendedRabbitMessages), routingKey)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnsendedRabbitMessages", reflect.TypeOf((*MockRepo)(nil).GetUnsendedRabbitMessages))
 }
 
 // Info mocks base method.
@@ -1702,6 +1731,20 @@ func (m *MockRepo) MarkRabbitMessageAsSent(id int64) error {
 func (mr *MockRepoMockRecorder) MarkRabbitMessageAsSent(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkRabbitMessageAsSent", reflect.TypeOf((*MockRepo)(nil).MarkRabbitMessageAsSent), id)
+}
+
+// MarkRabbitMoneyReportAsSent mocks base method.
+func (m *MockRepo) MarkRabbitMoneyReportAsSent(id int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MarkRabbitMoneyReportAsSent", id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// MarkRabbitMoneyReportAsSent indicates an expected call of MarkRabbitMoneyReportAsSent.
+func (mr *MockRepoMockRecorder) MarkRabbitMoneyReportAsSent(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkRabbitMoneyReportAsSent", reflect.TypeOf((*MockRepo)(nil).MarkRabbitMoneyReportAsSent), id)
 }
 
 // MoneyReport mocks base method.
@@ -1847,6 +1890,20 @@ func (m *MockRepo) SaveMoneyReport(arg0 MoneyReport) error {
 func (mr *MockRepoMockRecorder) SaveMoneyReport(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveMoneyReport", reflect.TypeOf((*MockRepo)(nil).SaveMoneyReport), arg0)
+}
+
+// SaveMoneyReportAndMessage mocks base method.
+func (m *MockRepo) SaveMoneyReportAndMessage(report RabbitMoneyReport) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveMoneyReportAndMessage", report)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SaveMoneyReportAndMessage indicates an expected call of SaveMoneyReportAndMessage.
+func (mr *MockRepoMockRecorder) SaveMoneyReportAndMessage(report interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveMoneyReportAndMessage", reflect.TypeOf((*MockRepo)(nil).SaveMoneyReportAndMessage), report)
 }
 
 // SaveRelayReport mocks base method.

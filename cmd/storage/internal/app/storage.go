@@ -151,9 +151,7 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) (Statio
 	oldStation.LastUpdate = a.lastUpdate
 	oldStation.LastDiscountUpdate = a.lastDiscountUpdate
 
-	_, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusRoutingKey)]
-
-	return oldStation, ok
+	return oldStation, a.bonusSystemRabbitWorker != nil
 }
 
 func (a *app) checkStationOnline() {
@@ -308,25 +306,10 @@ func (a *app) SaveMoneyReport(report MoneyReport) error {
 	}
 
 	if report.SessionID != "" {
-		if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; ok {
-			msg := session.MoneyReport{
-				StationID:    int(report.StationID),
-				Banknotes:    report.Banknotes,
-				CarsTotal:    report.CarsTotal,
-				Coins:        report.Coins,
-				Electronical: report.Electronical,
-				Service:      report.Service,
-				Bonuses:      report.Bonuses,
-				SessionID:    report.SessionID,
-			}
-
-			eventErr := a.PrepareRabbitMessage(string(rabbit_vo.WashBonusRoutingKey), string(rabbit_vo.WashBonusService), string(rabbit_vo.SessionMoneyReportMessageType), msg, true)
-			if eventErr != nil {
-				log.Err("failed preparing RabbitMessage for send moneyReport to bonus service", "error", eventErr)
-			}
-		} else {
-			log.Warn("not found rabbit worker for bonus service")
-		}
+		a.repo.SaveMoneyReportAndMessage(RabbitMoneyReport{
+			MessageType: string(rabbit_vo.SessionMoneyReportMessageType),
+			MoneyReport: report,
+		})
 	}
 	return nil
 }
@@ -880,13 +863,13 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 	sessionID = station.SessionID
 	a.stationsMutex.Unlock()
 
-	if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; ok {
+	if a.bonusSystemRabbitWorker != nil {
 		msg := session.StateChange{
 			SessionID: sessionID,
 			State:     rabbit_vo.SessionStateStart,
 		}
 
-		eventErr := a.PrepareRabbitMessage(string(rabbit_vo.WashBonusRoutingKey), string(rabbit_vo.WashBonusService), string(rabbit_vo.SessionStateMessageType), msg, true)
+		eventErr := a.PrepareRabbitMessage(string(rabbit_vo.SessionStateMessageType), msg)
 		if eventErr != nil {
 			log.Err("failed preparing RabbitMessage for send session creation to bonus service", "error", eventErr)
 			return "", "", err
@@ -917,12 +900,12 @@ func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 	a.stations[stationID] = station
 	var err error
 
-	if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; ok {
+	if a.bonusSystemRabbitWorker != nil {
 		msg := session.StateChange{
 			SessionID: string(sessionID),
 			State:     rabbit_vo.SessionStateFinish,
 		}
-		eventErr := a.PrepareRabbitMessage(string(rabbit_vo.WashBonusRoutingKey), string(rabbit_vo.WashBonusService), string(rabbit_vo.SessionStateMessageType), msg, true)
+		eventErr := a.PrepareRabbitMessage(string(rabbit_vo.SessionStateMessageType), msg)
 		if eventErr != nil {
 			log.Err("failed preparing RabbitMessage for send finish session to bonus service", "error", err)
 		}
@@ -944,13 +927,13 @@ func (a *app) SetBonuses(stationID StationID, bonuses int) error {
 	}
 
 	var err error
-	if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; ok {
+	if a.bonusSystemRabbitWorker != nil {
 		msg := session.BonusReward{
 			SessionID: station.SessionID,
 			Amount:    bonuses,
 		}
 
-		err = a.PrepareRabbitMessage(string(rabbit_vo.WashBonusRoutingKey), string(rabbit_vo.WashBonusService), string(rabbit_vo.SessionBonusRewardMessageType), msg, true)
+		err = a.PrepareRabbitMessage(string(rabbit_vo.SessionBonusRewardMessageType), msg)
 		if err != nil {
 			log.Err("failed preparing RabbitMessage for reward with bonuses to bonus service", "error", err)
 		}
@@ -999,7 +982,7 @@ func (a *app) SetNextSession(stationID StationID) (err error) { // Создае�
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
-	if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; !ok {
+	if a.bonusSystemRabbitWorker == nil {
 		log.Err("can`t assign next session, not found rabbit worker for bonus service")
 		return nil
 	}
@@ -1035,16 +1018,13 @@ func (a *app) SetNextSession(stationID StationID) (err error) { // Создае�
 }
 
 func (a *app) RequestSessionsFromService(count int, stationID int) error {
-
 	var err error
-	if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; ok {
-		msg := session.RequestSessions{NewSessionsAmount: int64(count), PostID: int64(stationID)}
-		err = a.PrepareRabbitMessage(string(rabbit_vo.WashBonusRoutingKey), string(rabbit_vo.WashBonusService), string(rabbit_vo.SessionRequestMessageType), msg, true)
-		if err != nil {
-			log.Err("failed preparing RabbitMessage for request session to bonus service", "error", err)
-		}
-	} else {
-		log.Warn("not found rabbit worker for bonus service")
+
+	msg := session.RequestSessions{NewSessionsAmount: int64(count), PostID: int64(stationID)}
+	err = a.SendMessage(string(rabbit_vo.SessionRequestMessageType), msg)
+	if errors.Is(err, ErrNoRabbitWorker) {
+		log.Err("not found rabbit worker for bonus service, no sessions will retrieved", "error", err)
+		err = nil
 	}
 
 	return err
@@ -1090,13 +1070,13 @@ func (a *app) AssignSessionBonuses(sessionID string, amount int) error {
 			oldStation.BonusMoney += amount
 			a.stations[k] = oldStation
 
-			if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; ok {
+			if a.bonusSystemRabbitWorker != nil {
 				msg := session.BonusChargeConfirm{
 					SessionID: sessionID,
 					Amount:    int64(amount),
 				}
 
-				err := a.PrepareRabbitMessage(string(rabbit_vo.WashBonusRoutingKey), string(rabbit_vo.WashBonusService), string(rabbit_vo.SessionBonusConfirmMessageType), msg, true)
+				err := a.PrepareRabbitMessage(string(rabbit_vo.SessionBonusConfirmMessageType), msg)
 				if err != nil {
 					log.Err("failed preparing RabbitMessage for bonuses assign to bonus service", "error", err)
 					return err
@@ -1109,9 +1089,9 @@ func (a *app) AssignSessionBonuses(sessionID string, amount int) error {
 		}
 	}
 
-	if _, ok := a.rabbitWorkers[string(rabbit_vo.WashBonusService)]; ok {
+	if a.bonusSystemRabbitWorker != nil {
 		msg := session.BonusChargeDiscard{SessionID: sessionID, Amount: int64(amount)}
-		err := a.PrepareRabbitMessage(string(rabbit_vo.WashBonusRoutingKey), string(rabbit_vo.WashBonusService), string(rabbit_vo.SessionBonusDiscardMessageType), msg, true)
+		err := a.PrepareRabbitMessage(string(rabbit_vo.SessionBonusDiscardMessageType), msg)
 		if err != nil {
 			log.Err("failed preparing RabbitMessage for bonuses discard to bonus service", "error", err)
 			return err
@@ -1123,16 +1103,19 @@ func (a *app) AssignSessionBonuses(sessionID string, amount int) error {
 	return nil
 }
 
-func (a *app) CreateRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error) {
-	worker := RabbitWorker{
-		repo:                  a.repo,
-		routingKey:            routingKey,
-		nonPersistentMessages: make(chan RabbitMessage),
-		publisherFunc:         publisherFunc,
+func (a *app) InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error) {
+	worker := BonusRabbitWorker{
+		repo:          a.repo,
+		routingKey:    routingKey,
+		publisherFunc: publisherFunc,
 	}
 
-	a.rabbitWorkers[routingKey] = worker
+	a.bonusSystemRabbitWorker = &worker
 
-	go worker.ProcessPersistentMessages()
-	go worker.ProcessNonPersistentMessages()
+	go worker.ProcessMessages()
+	go worker.ProcessMoneyReports()
+}
+
+func (a *app) SaveMoneyReportAndMessage(report RabbitMoneyReport) (err error) {
+	return a.repo.SaveMoneyReportAndMessage(report)
 }

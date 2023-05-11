@@ -3,42 +3,67 @@ package app
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/OpenRbt/share_business/wash_rabbit/entity/session"
 	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 	"time"
 )
 
-type RabbitWorker struct {
+type BonusRabbitWorker struct {
 	repo       Repo
 	routingKey string
-
-	nonPersistentMessages chan RabbitMessage
 
 	publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error
 }
 
-func (r *RabbitWorker) ProcessNonPersistentMessages() {
+func (r *BonusRabbitWorker) ProcessMoneyReports() {
 	for {
-		msg := <-r.nonPersistentMessages
-		err := r.publisherFunc(msg.Payload, rabbit_vo.Service(msg.RoutingKey), rabbit_vo.RoutingKey(msg.Target), rabbit_vo.MessageType(msg.MessageType))
+		rabbitMoneyReports, err := r.repo.GetUnsendedMoneyReports()
 		if err != nil {
-			log.Warn("failed to send non-persistent RabbitMessage", "error", err)
+			log.Err("failed to retrieve queued RabbitMoneyReports", "error", err)
 		}
+
+		for _, report := range rabbitMoneyReports {
+			err := r.publisherFunc(session.MoneyReport{
+				StationID:    int(report.MoneyReport.StationID),
+				Banknotes:    report.MoneyReport.Banknotes,
+				CarsTotal:    report.MoneyReport.CarsTotal,
+				Coins:        report.MoneyReport.Coins,
+				Electronical: report.MoneyReport.Electronical,
+				Service:      report.MoneyReport.Service,
+				Bonuses:      report.MoneyReport.Bonuses,
+				SessionID:    report.MoneyReport.SessionID,
+			}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.MessageType(report.MessageType))
+			if err != nil {
+				log.Warn("failed to send RabbitMoneyReports", "error", err)
+			} else {
+				err = r.repo.MarkRabbitMoneyReportAsSent(int64(report.ID))
+				if err != nil {
+					log.Err("failed to mark RabbitMoneyReports as sent", "error", err)
+				}
+			}
+		}
+
+		time.Sleep(10 * time.Second)
 	}
 }
 
-func (r *RabbitWorker) ProcessPersistentMessages() {
-	ticker := time.NewTicker(RabbitWorkerScheduleInterval)
-	defer ticker.Stop()
-	for {
-		<-ticker.C
+func (r *app) SendMessage(messageType string, payload interface{}) error {
+	if r.bonusSystemRabbitWorker == nil {
+		return ErrNoRabbitWorker
+	}
 
-		messages, err := r.repo.GetUnsendedRabbitMessages(r.routingKey)
+	return r.bonusSystemRabbitWorker.publisherFunc(payload, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.MessageType(messageType))
+}
+
+func (r *BonusRabbitWorker) ProcessMessages() {
+	for {
+		messages, err := r.repo.GetUnsendedRabbitMessages()
 		if err != nil {
 			log.Err("failed to retrieve queued RabbitMessages", "error", err)
 		}
 
 		for _, message := range messages {
-			err := r.publisherFunc(message.Payload, rabbit_vo.Service(message.RoutingKey), rabbit_vo.RoutingKey(message.Target), rabbit_vo.MessageType(message.MessageType))
+			err := r.publisherFunc(message.Payload, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.MessageType(message.MessageType))
 			if err != nil {
 				log.Warn("failed to send persistent RabbitMessage", "error", err)
 			} else {
@@ -48,37 +73,24 @@ func (r *RabbitWorker) ProcessPersistentMessages() {
 				}
 			}
 		}
+
+		time.Sleep(10 * time.Second)
 	}
 }
 
-func (a *app) PrepareRabbitMessage(target string, routingKey string, messageType string, payload interface{}, persistent bool) error {
-	if persistent {
-		if payload != nil {
-			bytes, err := json.Marshal(payload)
-			if err != nil {
-				return err
-			}
-
-			err = a.repo.AddRabbitMessage(RabbitMessage{
-				RoutingKey:  routingKey,
-				Target:      target,
-				MessageType: messageType,
-				Payload:     bytes,
-			})
-
+func (a *app) PrepareRabbitMessage(messageType string, payload interface{}) error {
+	if payload != nil {
+		bytes, err := json.Marshal(payload)
+		if err != nil {
 			return err
 		}
-	} else {
-		worker, ok := a.rabbitWorkers[routingKey]
-		if !ok {
-			return fmt.Errorf("rabbit worker not found")
-		}
-		worker.nonPersistentMessages <- RabbitMessage{
-			RoutingKey:  routingKey,
-			Target:      target,
+
+		err = a.repo.AddRabbitMessage(RabbitMessage{
 			MessageType: messageType,
-			Payload:     payload}
-		return nil
+			Payload:     bytes,
+		})
+
+		return err
 	}
 
 	return fmt.Errorf("failed to prepare RabbitMessage to send")

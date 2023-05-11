@@ -323,7 +323,7 @@ func run(db *sqlx.DB, errc chan<- error) {
 		} else {
 			log.Info("Serve rabbit client")
 
-			appl.CreateRabbitWorker(string(vo.WashBonusService), rabbitClient.SendMessage)
+			appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitClient.SendMessage)
 			appl.FetchSessions()
 		}
 	}

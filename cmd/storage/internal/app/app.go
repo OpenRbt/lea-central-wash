@@ -50,6 +50,7 @@ var (
 
 	ErrServiceNotConfigured    = errors.New("service not configured")
 	ErrRabbitMessageBadPayload = errors.New("bad RabbitMessagePayloadData")
+	ErrNoRabbitWorker          = errors.New("rabbit worker not initialized")
 )
 
 var testApp = false
@@ -157,8 +158,9 @@ type (
 		AssignSessionUser(sessionID string, userID string) error
 		AssignSessionBonuses(sessionID string, amount int) error
 
-		CreateRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error)
-		PrepareRabbitMessage(routingKey string, target string, messageType string, payload interface{}, persistent bool) error
+		InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error)
+		PrepareRabbitMessage(messageType string, payload interface{}) error
+		SaveMoneyReportAndMessage(report RabbitMoneyReport) (err error)
 	}
 
 	// Repo is a DAL interface.
@@ -238,8 +240,11 @@ type (
 
 		SetConfigIntIfNotExists(ConfigInt) error
 
+		SaveMoneyReportAndMessage(report RabbitMoneyReport) (err error)
 		AddRabbitMessage(message RabbitMessage) error
-		GetUnsendedRabbitMessages(routingKey string) ([]RabbitMessage, error)
+		GetUnsendedRabbitMessages() ([]RabbitMessage, error)
+		GetUnsendedMoneyReports() (rabbitMoneyReports []RabbitMoneyReport, err error)
+		MarkRabbitMoneyReportAsSent(id int64) (err error)
 		MarkRabbitMessageAsSent(id int64) (err error)
 	}
 	// KasseSvc is an interface for kasse service.
@@ -298,7 +303,7 @@ type app struct {
 	extServicesActive     bool
 	servicesPublisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error
 
-	rabbitWorkers map[string]RabbitWorker
+	bonusSystemRabbitWorker *BonusRabbitWorker
 }
 
 // New creates and returns new App.
@@ -310,7 +315,6 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 		weatherSvc:       weatherSvc,
 		hardware:         hardware,
 		volumeCorrection: 1000,
-		rabbitWorkers:    map[string]RabbitWorker{},
 	}
 
 	stationConfig, err := appl.repo.GetStationConfigInt(ParameterNameVolumeCoef, StationID(1))
@@ -457,10 +461,17 @@ type RabbitMessageID int64
 
 type RabbitMessage struct {
 	ID          RabbitMessageID
-	RoutingKey  string
-	Target      string
 	MessageType string
 	Payload     interface{}
+	CreatedAt   time.Time
+	IsSent      bool
+	SentAt      *time.Time
+}
+
+type RabbitMoneyReport struct {
+	ID          RabbitMessageID
+	MessageType string
+	MoneyReport MoneyReport
 	CreatedAt   time.Time
 	IsSent      bool
 	SentAt      *time.Time

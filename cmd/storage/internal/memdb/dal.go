@@ -304,10 +304,21 @@ func (t *DB) AddRabbitMessage(message app.RabbitMessage) error {
 	return nil
 }
 
-func (t *DB) GetUnsendedRabbitMessages(routingKey string) ([]app.RabbitMessage, error) {
+func (t *DB) GetUnsendedRabbitMessages() ([]app.RabbitMessage, error) {
 	return nil, nil
 }
 
 func (t *DB) MarkRabbitMessageAsSent(id int64) (err error) {
+	return nil
+}
+
+func (t *DB) GetUnsendedMoneyReports() (rabbitMoneyReports []app.RabbitMoneyReport, err error) {
+	return nil, nil
+}
+
+func (t *DB) SaveMoneyReportAndMessage(report app.RabbitMoneyReport) (err error) {
+	return nil
+}
+func (t *DB) MarkRabbitMoneyReportAsSent(id int64) (err error) {
 	return nil
 }
