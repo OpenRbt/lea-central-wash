@@ -36,7 +36,8 @@ type UpdatePasswordData struct {
 // StationData represents current status of a station
 type StationData struct {
 	ID                 StationID
-	SessionID          string
+	NextSessionID      string
+	CurrentSessionID   string
 	UserID             string
 	Name               string
 	ServiceMoney       int

@@ -847,7 +847,7 @@ func isValidDayOfWeek(dayOfWeek int, weekDay []string) bool {
 func (a *app) CreateSession(url string, stationID StationID) (string, string, error) {
 	a.stationsMutex.Lock()
 	station := a.stations[stationID]
-	sessionID := station.SessionID
+	sessionID := station.NextSessionID
 	a.stationsMutex.Unlock()
 	QrUrl := "%s/#/?sessionID=%s"
 
@@ -862,7 +862,7 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 
 	a.stationsMutex.Lock()
 	station = a.stations[stationID]
-	sessionID = station.SessionID
+	sessionID = station.NextSessionID
 	a.stationsMutex.Unlock()
 
 	if a.bonusSystemRabbitWorker != nil {
@@ -893,11 +893,11 @@ func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 
 	station := a.stations[stationID]
 
-	if station.SessionID != string(sessionID) {
+	if station.CurrentSessionID != string(sessionID) {
 		return errors.New("session not found")
 	}
 
-	station.SessionID = ""
+	station.CurrentSessionID = ""
 	station.UserID = ""
 	a.stations[stationID] = station
 	var err error
@@ -931,7 +931,7 @@ func (a *app) SetBonuses(stationID StationID, bonuses int) error {
 	var err error
 	if a.bonusSystemRabbitWorker != nil {
 		msg := session.BonusReward{
-			SessionID: station.SessionID,
+			SessionID: station.CurrentSessionID,
 			Amount:    bonuses,
 			UUID:      uuid.NewV4().String(),
 		}
@@ -996,7 +996,7 @@ func (a *app) SetNextSession(stationID StationID) (err error) { // Создае�
 
 		switch {
 		case sessionsCount > 0:
-			station.SessionID = <-sessionsPool
+			station.NextSessionID = <-sessionsPool
 
 			if sessionsCount >= 5 {
 				a.stations[stationID] = station
@@ -1010,7 +1010,7 @@ func (a *app) SetNextSession(stationID StationID) (err error) { // Создае�
 			}
 
 			sessionsPool = a.stationsSessionsPool[stationID]
-			station.SessionID = <-sessionsPool
+			station.NextSessionID = <-sessionsPool
 
 			a.stations[stationID] = station
 			return nil
@@ -1052,7 +1052,9 @@ func (a *app) AssignSessionUser(sessionID string, userID string) error {
 
 	//TODO: add a better way for station search?
 	for id, data := range a.stations {
-		if data.SessionID == sessionID {
+		if data.NextSessionID == sessionID {
+			data.NextSessionID = ""
+			data.CurrentSessionID = data.NextSessionID
 			data.UserID = userID
 			a.stations[id] = data
 
@@ -1068,7 +1070,7 @@ func (a *app) AssignSessionBonuses(sessionID string, amount int) error {
 	defer a.stationsMutex.Unlock()
 
 	for k, v := range a.stations {
-		if v.SessionID == sessionID {
+		if v.CurrentSessionID == sessionID {
 			oldStation := v
 			oldStation.BonusMoney += amount
 			a.stations[k] = oldStation

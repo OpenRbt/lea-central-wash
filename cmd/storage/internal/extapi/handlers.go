@@ -263,7 +263,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		ButtonID:           int64(station.ButtonID),
 		LastUpdate:         int64(station.LastUpdate),
 		LastDiscountUpdate: int64(station.LastDiscountUpdate),
-		SessionID:          station.SessionID,
+		SessionID:          station.CurrentSessionID,
 		BonusSystemActive:  bonusActive,
 		IsAuthorized:       &isAuth,
 	})
