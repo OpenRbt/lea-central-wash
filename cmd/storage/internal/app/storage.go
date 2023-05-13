@@ -1053,8 +1053,8 @@ func (a *app) AssignSessionUser(sessionID string, userID string) error {
 	//TODO: add a better way for station search?
 	for id, data := range a.stations {
 		if data.NextSessionID == sessionID {
-			data.NextSessionID = ""
 			data.CurrentSessionID = data.NextSessionID
+			data.NextSessionID = ""
 			data.UserID = userID
 			a.stations[id] = data
 
