@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-const MAX_ALLOWED_DEVICES = 5
+const MAX_ALLOWED_DEVICES = 6
 
 type MotorDriver interface {
 	StopMotor(device uint8) error
