@@ -187,7 +187,7 @@ func TestAddAdvertisingCampaign(tt *testing.T) {
 
 	mocks.mockRepo.EXPECT().AddAdvertisingCampaign(gomock.Any()).Return(nil)
 
-	err := a.AddAdvertisingCampaign(nil, AdvertisingCampaign{})
+	err := a.AddAdvertisingCampaign(&Auth{IsAdmin: true}, AdvertisingCampaign{})
 
 	t.Nil(err)
 }

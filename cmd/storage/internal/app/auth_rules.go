@@ -52,8 +52,8 @@ func roleAdmin(auth *Auth) (ok bool) {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Unexpected nil auth in checking roleAdmin, ", r)
+			ok = false
 		}
-		ok = false
 	}()
 
 	ok = auth.IsAdmin
@@ -65,8 +65,8 @@ func roleOperator(auth *Auth) (ok bool) {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Unexpected nil auth in checking roleOperator, ", r)
+			ok = false
 		}
-		ok = false
 	}()
 
 	ok = auth.IsOperator
@@ -78,8 +78,8 @@ func roleEngineer(auth *Auth) (ok bool) {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Unexpected nil auth in checking roleEngineer, ", r)
+			ok = false
 		}
-		ok = false
 	}()
 
 	ok = auth.IsEngineer
