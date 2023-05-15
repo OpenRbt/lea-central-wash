@@ -43,26 +43,50 @@ func (a *app) setDefaultConfig() error {
 }
 
 func (a *app) GetConfigInt(auth *Auth, name string) (*ConfigInt, error) {
+	if ok := CheckAccess(auth, anyRule(roleAdmin, roleOperator)); !ok {
+		return nil, ErrAccessDenied
+	}
+
 	return a.repo.GetConfigInt(name)
 }
 
 func (a *app) GetConfigBool(auth *Auth, name string) (*ConfigBool, error) {
+	if ok := CheckAccess(auth, anyRule(roleAdmin, roleOperator)); !ok {
+		return nil, ErrAccessDenied
+	}
+
 	return a.repo.GetConfigBool(name)
 }
 
 func (a *app) GetConfigString(auth *Auth, name string) (*ConfigString, error) {
+	if ok := CheckAccess(auth, anyRule(roleAdmin, roleOperator)); !ok {
+		return nil, ErrAccessDenied
+	}
+
 	return a.repo.GetConfigString(name)
 }
 
 func (a *app) SetConfigInt(auth *Auth, config ConfigInt) error {
+	if ok := CheckAccess(auth, roleAdmin); !ok {
+		return ErrAccessDenied
+	}
+
 	return a.repo.SetConfigInt(config)
 }
 
 func (a *app) SetConfigBool(auth *Auth, config ConfigBool) error {
+	if ok := CheckAccess(auth, roleAdmin); !ok {
+		return ErrAccessDenied
+	}
+
 	return a.repo.SetConfigBool(config)
 }
 
 func (a *app) SetConfigString(auth *Auth, config ConfigString) error {
+	if ok := CheckAccess(auth, roleAdmin); !ok {
+		return ErrAccessDenied
+	}
+
 	return a.repo.SetConfigString(config)
 }
 
@@ -79,6 +103,10 @@ func (a *app) GetStationConfigString(name string, stationID StationID) (*Station
 }
 
 func (a *app) SetStationConfigInt(auth *Auth, config StationConfigInt) error {
+	if ok := CheckAccess(auth, roleAdmin); !ok {
+		return ErrAccessDenied
+	}
+
 	if config.Name == ParameterNameVolumeCoef {
 		a.stationsMutex.Lock()
 		a.volumeCorrection = int(config.Value)
@@ -88,9 +116,17 @@ func (a *app) SetStationConfigInt(auth *Auth, config StationConfigInt) error {
 }
 
 func (a *app) SetStationConfigBool(auth *Auth, config StationConfigBool) error {
+	if ok := CheckAccess(auth, roleAdmin); !ok {
+		return ErrAccessDenied
+	}
+
 	return a.repo.SetStationConfigBool(config)
 }
 
 func (a *app) SetStationConfigString(auth *Auth, config StationConfigString) error {
+	if ok := CheckAccess(auth, roleAdmin); !ok {
+		return ErrAccessDenied
+	}
+
 	return a.repo.SetStationConfigString(config)
 }

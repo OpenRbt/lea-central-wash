@@ -26,6 +26,12 @@ func (o *SetConfigVarBoolReader) ReadResponse(response runtime.ClientResponse, c
 			return nil, err
 		}
 		return result, nil
+	case 403:
+		result := NewSetConfigVarBoolForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewSetConfigVarBoolInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -89,6 +95,62 @@ func (o *SetConfigVarBoolNoContent) String() string {
 }
 
 func (o *SetConfigVarBoolNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewSetConfigVarBoolForbidden creates a SetConfigVarBoolForbidden with default headers values
+func NewSetConfigVarBoolForbidden() *SetConfigVarBoolForbidden {
+	return &SetConfigVarBoolForbidden{}
+}
+
+/*
+SetConfigVarBoolForbidden describes a response with status code 403, with default header values.
+
+Access forbidden
+*/
+type SetConfigVarBoolForbidden struct {
+}
+
+// IsSuccess returns true when this set config var bool forbidden response has a 2xx status code
+func (o *SetConfigVarBoolForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this set config var bool forbidden response has a 3xx status code
+func (o *SetConfigVarBoolForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this set config var bool forbidden response has a 4xx status code
+func (o *SetConfigVarBoolForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this set config var bool forbidden response has a 5xx status code
+func (o *SetConfigVarBoolForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this set config var bool forbidden response a status code equal to that given
+func (o *SetConfigVarBoolForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the set config var bool forbidden response
+func (o *SetConfigVarBoolForbidden) Code() int {
+	return 403
+}
+
+func (o *SetConfigVarBoolForbidden) Error() string {
+	return fmt.Sprintf("[POST /set-config-var-bool][%d] setConfigVarBoolForbidden ", 403)
+}
+
+func (o *SetConfigVarBoolForbidden) String() string {
+	return fmt.Sprintf("[POST /set-config-var-bool][%d] setConfigVarBoolForbidden ", 403)
+}
+
+func (o *SetConfigVarBoolForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

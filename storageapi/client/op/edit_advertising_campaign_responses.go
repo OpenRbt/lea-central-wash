@@ -169,7 +169,7 @@ func NewEditAdvertisingCampaignForbidden() *EditAdvertisingCampaignForbidden {
 /*
 EditAdvertisingCampaignForbidden describes a response with status code 403, with default header values.
 
-Access forbiddenn
+Access forbidden
 */
 type EditAdvertisingCampaignForbidden struct {
 }

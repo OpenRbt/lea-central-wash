@@ -26,6 +26,12 @@ func (o *SetConfigVarStringReader) ReadResponse(response runtime.ClientResponse,
 			return nil, err
 		}
 		return result, nil
+	case 403:
+		result := NewSetConfigVarStringForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewSetConfigVarStringInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -89,6 +95,62 @@ func (o *SetConfigVarStringNoContent) String() string {
 }
 
 func (o *SetConfigVarStringNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewSetConfigVarStringForbidden creates a SetConfigVarStringForbidden with default headers values
+func NewSetConfigVarStringForbidden() *SetConfigVarStringForbidden {
+	return &SetConfigVarStringForbidden{}
+}
+
+/*
+SetConfigVarStringForbidden describes a response with status code 403, with default header values.
+
+Access forbidden
+*/
+type SetConfigVarStringForbidden struct {
+}
+
+// IsSuccess returns true when this set config var string forbidden response has a 2xx status code
+func (o *SetConfigVarStringForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this set config var string forbidden response has a 3xx status code
+func (o *SetConfigVarStringForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this set config var string forbidden response has a 4xx status code
+func (o *SetConfigVarStringForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this set config var string forbidden response has a 5xx status code
+func (o *SetConfigVarStringForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this set config var string forbidden response a status code equal to that given
+func (o *SetConfigVarStringForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the set config var string forbidden response
+func (o *SetConfigVarStringForbidden) Code() int {
+	return 403
+}
+
+func (o *SetConfigVarStringForbidden) Error() string {
+	return fmt.Sprintf("[POST /set-config-var-string][%d] setConfigVarStringForbidden ", 403)
+}
+
+func (o *SetConfigVarStringForbidden) String() string {
+	return fmt.Sprintf("[POST /set-config-var-string][%d] setConfigVarStringForbidden ", 403)
+}
+
+func (o *SetConfigVarStringForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

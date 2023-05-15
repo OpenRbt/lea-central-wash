@@ -95,7 +95,7 @@ func (o *AdvertisingCampaignUnauthorized) AdvertisingCampaignResponder() {}
 const AdvertisingCampaignForbiddenCode int = 403
 
 /*
-AdvertisingCampaignForbidden Access forbiddenn
+AdvertisingCampaignForbidden Access forbidden
 
 swagger:response advertisingCampaignForbidden
 */

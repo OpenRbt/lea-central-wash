@@ -65,7 +65,7 @@ func (s *Service) SendMessage(msg interface{}, service rabbit_vo.Service, routin
 		return
 	}
 
-	serverID, err := s.app.GetConfigString(nil, "server_id")
+	serverID, err := s.app.GetConfigString(&app.Auth{IsAdmin: true}, "server_id")
 	if err != nil {
 		return err
 	}

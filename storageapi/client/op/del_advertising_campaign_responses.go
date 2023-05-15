@@ -175,7 +175,7 @@ func NewDelAdvertisingCampaignForbidden() *DelAdvertisingCampaignForbidden {
 /*
 DelAdvertisingCampaignForbidden describes a response with status code 403, with default header values.
 
-Access forbiddenn
+Access forbidden
 */
 type DelAdvertisingCampaignForbidden struct {
 }

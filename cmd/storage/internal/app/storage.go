@@ -327,6 +327,10 @@ func (a *app) SaveMoneyReport(report MoneyReport) error {
 
 // SaveCollectionReport gets app.CollectionReport struct
 func (a *app) SaveCollectionReport(auth *Auth, id StationID) error {
+	if ok := CheckAccess(auth, roleAdmin); !ok {
+		return ErrAccessDenied
+	}
+
 	fmt.Println("APP: SaveCollectionReport")
 	return a.repo.SaveCollectionReport(auth.ID, id)
 }
@@ -486,6 +490,10 @@ func (a *app) DeleteUser(login string, auth *Auth) error {
 }
 
 func (a *app) RelayReportCurrent(auth *Auth, id *StationID) (StationsStat, error) {
+	if ok := CheckAccess(auth, roleAdmin); !ok {
+		return nil, ErrAccessDenied
+	}
+
 	return a.repo.RelayReportCurrent(id)
 }
 
@@ -678,26 +686,54 @@ func (a *app) loadPrograms() error {
 }
 
 func (a *app) RelayReportDates(auth *Auth, stationID *StationID, startDate, endDate time.Time) (StationsStat, error) {
+	if ok := CheckAccess(auth, roleAdmin); !ok {
+		return nil, ErrAccessDenied
+	}
+
 	return a.repo.RelayReportDates(stationID, startDate, endDate)
 }
 
 func (a *app) ResetStationStat(auth *Auth, stationID StationID) error {
+	if ok := CheckAccess(auth, roleAdmin); !ok {
+		return ErrAccessDenied
+	}
+
 	return a.repo.ResetStationStat(stationID)
 }
 
 func (a *app) AddAdvertisingCampaign(auth *Auth, res AdvertisingCampaign) error {
+	if ok := CheckAccess(auth, roleAdmin); !ok {
+		return ErrAccessDenied
+	}
+
 	return a.repo.AddAdvertisingCampaign(res)
 }
 func (a *app) EditAdvertisingCampaign(auth *Auth, res AdvertisingCampaign) error {
+	if ok := CheckAccess(auth, roleAdmin); !ok {
+		return ErrAccessDenied
+	}
+
 	return a.repo.EditAdvertisingCampaign(res)
 }
 func (a *app) DelAdvertisingCampaign(auth *Auth, id int64) error {
+	if ok := CheckAccess(auth, roleAdmin); !ok {
+		return ErrAccessDenied
+	}
+
 	return a.repo.DelAdvertisingCampaign(id)
 }
 func (a *app) AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaign, error) {
+	if ok := CheckAccess(auth, roleAdmin); !ok {
+		return nil, ErrAccessDenied
+	}
+
 	return a.repo.AdvertisingCampaignByID(id)
 }
 func (a *app) AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error) {
+	if ok := CheckAccess(auth, roleAdmin); !ok {
+		return nil, ErrAccessDenied
+	}
+
 	return a.repo.AdvertisingCampaign(startDate, endDate)
 }
 

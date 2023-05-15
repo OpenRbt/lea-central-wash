@@ -88,6 +88,33 @@ func (o *StatusCollectionUnauthorized) WriteResponse(rw http.ResponseWriter, pro
 
 func (o *StatusCollectionUnauthorized) StatusCollectionResponder() {}
 
+// StatusCollectionForbiddenCode is the HTTP code returned for type StatusCollectionForbidden
+const StatusCollectionForbiddenCode int = 403
+
+/*
+StatusCollectionForbidden Access forbidden
+
+swagger:response statusCollectionForbidden
+*/
+type StatusCollectionForbidden struct {
+}
+
+// NewStatusCollectionForbidden creates StatusCollectionForbidden with default headers values
+func NewStatusCollectionForbidden() *StatusCollectionForbidden {
+
+	return &StatusCollectionForbidden{}
+}
+
+// WriteResponse to the client
+func (o *StatusCollectionForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
+}
+
+func (o *StatusCollectionForbidden) StatusCollectionResponder() {}
+
 // StatusCollectionInternalServerErrorCode is the HTTP code returned for type StatusCollectionInternalServerError
 const StatusCollectionInternalServerErrorCode int = 500
 

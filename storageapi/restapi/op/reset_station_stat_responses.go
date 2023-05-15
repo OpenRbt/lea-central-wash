@@ -70,7 +70,7 @@ func (o *ResetStationStatUnauthorized) ResetStationStatResponder() {}
 const ResetStationStatForbiddenCode int = 403
 
 /*
-ResetStationStatForbidden Access forbiddenn
+ResetStationStatForbidden Access forbidden
 
 swagger:response resetStationStatForbidden
 */

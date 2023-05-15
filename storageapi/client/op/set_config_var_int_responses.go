@@ -26,6 +26,12 @@ func (o *SetConfigVarIntReader) ReadResponse(response runtime.ClientResponse, co
 			return nil, err
 		}
 		return result, nil
+	case 403:
+		result := NewSetConfigVarIntForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewSetConfigVarIntInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -89,6 +95,62 @@ func (o *SetConfigVarIntNoContent) String() string {
 }
 
 func (o *SetConfigVarIntNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewSetConfigVarIntForbidden creates a SetConfigVarIntForbidden with default headers values
+func NewSetConfigVarIntForbidden() *SetConfigVarIntForbidden {
+	return &SetConfigVarIntForbidden{}
+}
+
+/*
+SetConfigVarIntForbidden describes a response with status code 403, with default header values.
+
+Access forbidden
+*/
+type SetConfigVarIntForbidden struct {
+}
+
+// IsSuccess returns true when this set config var int forbidden response has a 2xx status code
+func (o *SetConfigVarIntForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this set config var int forbidden response has a 3xx status code
+func (o *SetConfigVarIntForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this set config var int forbidden response has a 4xx status code
+func (o *SetConfigVarIntForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this set config var int forbidden response has a 5xx status code
+func (o *SetConfigVarIntForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this set config var int forbidden response a status code equal to that given
+func (o *SetConfigVarIntForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the set config var int forbidden response
+func (o *SetConfigVarIntForbidden) Code() int {
+	return 403
+}
+
+func (o *SetConfigVarIntForbidden) Error() string {
+	return fmt.Sprintf("[POST /set-config-var-int][%d] setConfigVarIntForbidden ", 403)
+}
+
+func (o *SetConfigVarIntForbidden) String() string {
+	return fmt.Sprintf("[POST /set-config-var-int][%d] setConfigVarIntForbidden ", 403)
+}
+
+func (o *SetConfigVarIntForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

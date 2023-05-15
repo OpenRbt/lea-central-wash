@@ -95,7 +95,7 @@ func (o *StationStatCurrentUnauthorized) StationStatCurrentResponder() {}
 const StationStatCurrentForbiddenCode int = 403
 
 /*
-StationStatCurrentForbidden Access forbiddenn
+StationStatCurrentForbidden Access forbidden
 
 swagger:response stationStatCurrentForbidden
 */

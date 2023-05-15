@@ -38,6 +38,12 @@ func (o *SaveCollectionReader) ReadResponse(response runtime.ClientResponse, con
 			return nil, err
 		}
 		return nil, result
+	case 403:
+		result := NewSaveCollectionForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 404:
 		result := NewSaveCollectionNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -163,6 +169,62 @@ func (o *SaveCollectionUnauthorized) String() string {
 }
 
 func (o *SaveCollectionUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewSaveCollectionForbidden creates a SaveCollectionForbidden with default headers values
+func NewSaveCollectionForbidden() *SaveCollectionForbidden {
+	return &SaveCollectionForbidden{}
+}
+
+/*
+SaveCollectionForbidden describes a response with status code 403, with default header values.
+
+Access forbidden
+*/
+type SaveCollectionForbidden struct {
+}
+
+// IsSuccess returns true when this save collection forbidden response has a 2xx status code
+func (o *SaveCollectionForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this save collection forbidden response has a 3xx status code
+func (o *SaveCollectionForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this save collection forbidden response has a 4xx status code
+func (o *SaveCollectionForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this save collection forbidden response has a 5xx status code
+func (o *SaveCollectionForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this save collection forbidden response a status code equal to that given
+func (o *SaveCollectionForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the save collection forbidden response
+func (o *SaveCollectionForbidden) Code() int {
+	return 403
+}
+
+func (o *SaveCollectionForbidden) Error() string {
+	return fmt.Sprintf("[POST /save-collection][%d] saveCollectionForbidden ", 403)
+}
+
+func (o *SaveCollectionForbidden) String() string {
+	return fmt.Sprintf("[POST /save-collection][%d] saveCollectionForbidden ", 403)
+}
+
+func (o *SaveCollectionForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

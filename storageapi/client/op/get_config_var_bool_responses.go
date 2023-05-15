@@ -33,6 +33,12 @@ func (o *GetConfigVarBoolReader) ReadResponse(response runtime.ClientResponse, c
 			return nil, err
 		}
 		return result, nil
+	case 403:
+		result := NewGetConfigVarBoolForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 404:
 		result := NewGetConfigVarBoolNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -114,6 +120,62 @@ func (o *GetConfigVarBoolOK) readResponse(response runtime.ClientResponse, consu
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
+
+	return nil
+}
+
+// NewGetConfigVarBoolForbidden creates a GetConfigVarBoolForbidden with default headers values
+func NewGetConfigVarBoolForbidden() *GetConfigVarBoolForbidden {
+	return &GetConfigVarBoolForbidden{}
+}
+
+/*
+GetConfigVarBoolForbidden describes a response with status code 403, with default header values.
+
+Access forbidden
+*/
+type GetConfigVarBoolForbidden struct {
+}
+
+// IsSuccess returns true when this get config var bool forbidden response has a 2xx status code
+func (o *GetConfigVarBoolForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get config var bool forbidden response has a 3xx status code
+func (o *GetConfigVarBoolForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get config var bool forbidden response has a 4xx status code
+func (o *GetConfigVarBoolForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get config var bool forbidden response has a 5xx status code
+func (o *GetConfigVarBoolForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get config var bool forbidden response a status code equal to that given
+func (o *GetConfigVarBoolForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the get config var bool forbidden response
+func (o *GetConfigVarBoolForbidden) Code() int {
+	return 403
+}
+
+func (o *GetConfigVarBoolForbidden) Error() string {
+	return fmt.Sprintf("[POST /get-config-var-bool][%d] getConfigVarBoolForbidden ", 403)
+}
+
+func (o *GetConfigVarBoolForbidden) String() string {
+	return fmt.Sprintf("[POST /get-config-var-bool][%d] getConfigVarBoolForbidden ", 403)
+}
+
+func (o *GetConfigVarBoolForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

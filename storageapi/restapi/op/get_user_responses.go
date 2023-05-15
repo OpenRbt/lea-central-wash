@@ -88,6 +88,33 @@ func (o *GetUserUnauthorized) WriteResponse(rw http.ResponseWriter, producer run
 
 func (o *GetUserUnauthorized) GetUserResponder() {}
 
+// GetUserForbiddenCode is the HTTP code returned for type GetUserForbidden
+const GetUserForbiddenCode int = 403
+
+/*
+GetUserForbidden Access forbidden
+
+swagger:response getUserForbidden
+*/
+type GetUserForbidden struct {
+}
+
+// NewGetUserForbidden creates GetUserForbidden with default headers values
+func NewGetUserForbidden() *GetUserForbidden {
+
+	return &GetUserForbidden{}
+}
+
+// WriteResponse to the client
+func (o *GetUserForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
+}
+
+func (o *GetUserForbidden) GetUserResponder() {}
+
 type GetUserNotImplementedResponder struct {
 	middleware.Responder
 }

@@ -66,6 +66,33 @@ func (o *SaveCollectionUnauthorized) WriteResponse(rw http.ResponseWriter, produ
 
 func (o *SaveCollectionUnauthorized) SaveCollectionResponder() {}
 
+// SaveCollectionForbiddenCode is the HTTP code returned for type SaveCollectionForbidden
+const SaveCollectionForbiddenCode int = 403
+
+/*
+SaveCollectionForbidden Access forbidden
+
+swagger:response saveCollectionForbidden
+*/
+type SaveCollectionForbidden struct {
+}
+
+// NewSaveCollectionForbidden creates SaveCollectionForbidden with default headers values
+func NewSaveCollectionForbidden() *SaveCollectionForbidden {
+
+	return &SaveCollectionForbidden{}
+}
+
+// WriteResponse to the client
+func (o *SaveCollectionForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
+}
+
+func (o *SaveCollectionForbidden) SaveCollectionResponder() {}
+
 // SaveCollectionNotFoundCode is the HTTP code returned for type SaveCollectionNotFound
 const SaveCollectionNotFoundCode int = 404
 
