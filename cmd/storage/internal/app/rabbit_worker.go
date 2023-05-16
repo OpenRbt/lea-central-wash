@@ -16,29 +16,41 @@ type BonusRabbitWorker struct {
 }
 
 func (r *BonusRabbitWorker) ProcessMoneyReports() {
-	for {
-		rabbitMoneyReports, err := r.repo.GetUnsendedMoneyReports()
-		if err != nil {
-			log.Err("failed to retrieve queued RabbitMoneyReports", "error", err)
-		}
+	var lastReportID int64
 
-		for _, report := range rabbitMoneyReports {
-			err := r.publisherFunc(session.MoneyReport{
-				StationID:    int(report.MoneyReport.StationID),
-				Banknotes:    report.MoneyReport.Banknotes,
-				CarsTotal:    report.MoneyReport.CarsTotal,
-				Coins:        report.MoneyReport.Coins,
-				Electronical: report.MoneyReport.Electronical,
-				Service:      report.MoneyReport.Service,
-				Bonuses:      report.MoneyReport.Bonuses,
-				SessionID:    report.MoneyReport.SessionID,
-			}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.MessageType(report.MessageType))
+	for {
+		lastReportID = 0
+
+		for {
+			rabbitMoneyReports, err := r.repo.GetUnsendedMoneyReports(lastReportID)
 			if err != nil {
-				log.Warn("failed to send RabbitMoneyReports", "error", err)
-			} else {
-				err = r.repo.MarkRabbitMoneyReportAsSent(int64(report.ID))
+				log.Err("failed to retrieve queued RabbitMoneyReports", "error", err)
+			}
+
+			if len(rabbitMoneyReports) == 0 {
+				break
+			}
+
+			lastReportID = int64(len(rabbitMoneyReports) - 1)
+
+			for _, report := range rabbitMoneyReports {
+				err := r.publisherFunc(session.MoneyReport{
+					StationID:    int(report.MoneyReport.StationID),
+					Banknotes:    report.MoneyReport.Banknotes,
+					CarsTotal:    report.MoneyReport.CarsTotal,
+					Coins:        report.MoneyReport.Coins,
+					Electronical: report.MoneyReport.Electronical,
+					Service:      report.MoneyReport.Service,
+					Bonuses:      report.MoneyReport.Bonuses,
+					SessionID:    report.MoneyReport.SessionID,
+				}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.MessageType(report.MessageType))
 				if err != nil {
-					log.Err("failed to mark RabbitMoneyReports as sent", "error", err)
+					log.Warn("failed to send RabbitMoneyReports", "error", err)
+				} else {
+					err = r.repo.MarkRabbitMoneyReportAsSent(int64(report.ID))
+					if err != nil {
+						log.Err("failed to mark RabbitMoneyReports as sent", "error", err)
+					}
 				}
 			}
 		}
@@ -56,24 +68,36 @@ func (r *app) SendMessage(messageType string, payload interface{}) error {
 }
 
 func (r *BonusRabbitWorker) ProcessMessages() {
-	for {
-		messages, err := r.repo.GetUnsendedRabbitMessages()
-		if err != nil {
-			log.Err("failed to retrieve queued RabbitMessages", "error", err)
-		}
+	var lastMessageID int64
 
-		for _, message := range messages {
-			err := r.publisherFunc(message.Payload, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.MessageType(message.MessageType))
+	for {
+		lastMessageID = 0
+
+		for {
+			messages, err := r.repo.GetUnsendedRabbitMessages(lastMessageID)
+
 			if err != nil {
-				log.Warn("failed to send persistent RabbitMessage", "error", err)
-			} else {
-				err = r.repo.MarkRabbitMessageAsSent(int64(message.ID))
+				log.Err("failed to retrieve queued RabbitMessages", "error", err)
+			}
+
+			if len(messages) == 0 {
+				break
+			}
+
+			lastMessageID = int64(messages[len(messages)-1].ID)
+
+			for _, message := range messages {
+				err := r.publisherFunc(message.Payload, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.MessageType(message.MessageType))
 				if err != nil {
-					log.Err("failed to mark RabbitMessage as sent", "error", err)
+					log.Warn("failed to send persistent RabbitMessage", "error", err)
+				} else {
+					err = r.repo.MarkRabbitMessageAsSent(int64(message.ID))
+					if err != nil {
+						log.Err("failed to mark RabbitMessage as sent", "error", err)
+					}
 				}
 			}
 		}
-
 		time.Sleep(10 * time.Second)
 	}
 }

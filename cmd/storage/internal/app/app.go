@@ -242,8 +242,8 @@ type (
 
 		SaveMoneyReportAndMessage(report RabbitMoneyReport) (err error)
 		AddRabbitMessage(message RabbitMessage) error
-		GetUnsendedRabbitMessages() ([]RabbitMessage, error)
-		GetUnsendedMoneyReports() (rabbitMoneyReports []RabbitMoneyReport, err error)
+		GetUnsendedRabbitMessages(lastMessageID int64) ([]RabbitMessage, error)
+		GetUnsendedMoneyReports(lastMessageID int64) (rabbitMoneyReports []RabbitMoneyReport, err error)
 		MarkRabbitMoneyReportAsSent(id int64) (err error)
 		MarkRabbitMessageAsSent(id int64) (err error)
 	}

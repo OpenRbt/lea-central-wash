@@ -1095,10 +1095,12 @@ func (r *repo) AddRabbitMessage(message app.RabbitMessage) (err error) {
 	return
 }
 
-func (r *repo) GetUnsendedRabbitMessages() (messages []app.RabbitMessage, err error) {
+func (r *repo) GetUnsendedRabbitMessages(lastMessageID int64) (messages []app.RabbitMessage, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res []resRabbitMessage
-		err := tx.NamedSelectContext(ctx, &res, sqlGetUnsendedRabbitMessages, argGetUnsendedRabbitMessages{})
+		err := tx.NamedSelectContext(ctx, &res, sqlGetUnsendedRabbitMessages, argGetUnsendedRabbitMessages{
+			LastID: lastMessageID,
+		})
 
 		if err != nil {
 			return err
@@ -1124,10 +1126,12 @@ func (r *repo) MarkRabbitMessageAsSent(id int64) (err error) {
 	return
 }
 
-func (r *repo) GetUnsendedMoneyReports() (rabbitMoneyReports []app.RabbitMoneyReport, err error) {
+func (r *repo) GetUnsendedMoneyReports(lastMessageID int64) (rabbitMoneyReports []app.RabbitMoneyReport, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		res := []resRabbitMoneyReport{}
-		err := tx.NamedSelectContext(ctx, &res, sqlGetUnsendedRabbitMoneyReports, argGetUnsendedRabbitMessages{})
+		err := tx.NamedSelectContext(ctx, &res, sqlGetUnsendedRabbitMoneyReports, argGetUnsendedRabbitMessages{
+			LastID: lastMessageID,
+		})
 
 		if err != nil {
 			return err

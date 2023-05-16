@@ -304,7 +304,7 @@ func (t *DB) AddRabbitMessage(message app.RabbitMessage) error {
 	return nil
 }
 
-func (t *DB) GetUnsendedRabbitMessages() ([]app.RabbitMessage, error) {
+func (t *DB) GetUnsendedRabbitMessages(lastMessageID int64) ([]app.RabbitMessage, error) {
 	return nil, nil
 }
 
@@ -312,7 +312,7 @@ func (t *DB) MarkRabbitMessageAsSent(id int64) (err error) {
 	return nil
 }
 
-func (t *DB) GetUnsendedMoneyReports() (rabbitMoneyReports []app.RabbitMoneyReport, err error) {
+func (t *DB) GetUnsendedMoneyReports(lastMessageID int64) (rabbitMoneyReports []app.RabbitMoneyReport, err error) {
 	return nil, nil
 }
 

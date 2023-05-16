@@ -1585,33 +1585,33 @@ func (mr *MockRepoMockRecorder) GetStationConfigString(name, stationID interface
 }
 
 // GetUnsendedMoneyReports mocks base method.
-func (m *MockRepo) GetUnsendedMoneyReports() ([]RabbitMoneyReport, error) {
+func (m *MockRepo) GetUnsendedMoneyReports(lastMessageID int64) ([]RabbitMoneyReport, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUnsendedMoneyReports")
+	ret := m.ctrl.Call(m, "GetUnsendedMoneyReports", lastMessageID)
 	ret0, _ := ret[0].([]RabbitMoneyReport)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetUnsendedMoneyReports indicates an expected call of GetUnsendedMoneyReports.
-func (mr *MockRepoMockRecorder) GetUnsendedMoneyReports() *gomock.Call {
+func (mr *MockRepoMockRecorder) GetUnsendedMoneyReports(lastMessageID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnsendedMoneyReports", reflect.TypeOf((*MockRepo)(nil).GetUnsendedMoneyReports))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnsendedMoneyReports", reflect.TypeOf((*MockRepo)(nil).GetUnsendedMoneyReports), lastMessageID)
 }
 
 // GetUnsendedRabbitMessages mocks base method.
-func (m *MockRepo) GetUnsendedRabbitMessages() ([]RabbitMessage, error) {
+func (m *MockRepo) GetUnsendedRabbitMessages(lastMessageID int64) ([]RabbitMessage, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUnsendedRabbitMessages")
+	ret := m.ctrl.Call(m, "GetUnsendedRabbitMessages", lastMessageID)
 	ret0, _ := ret[0].([]RabbitMessage)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetUnsendedRabbitMessages indicates an expected call of GetUnsendedRabbitMessages.
-func (mr *MockRepoMockRecorder) GetUnsendedRabbitMessages() *gomock.Call {
+func (mr *MockRepoMockRecorder) GetUnsendedRabbitMessages(lastMessageID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnsendedRabbitMessages", reflect.TypeOf((*MockRepo)(nil).GetUnsendedRabbitMessages))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnsendedRabbitMessages", reflect.TypeOf((*MockRepo)(nil).GetUnsendedRabbitMessages), lastMessageID)
 }
 
 // Info mocks base method.

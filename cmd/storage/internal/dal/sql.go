@@ -1,7 +1,6 @@
 package dal
 
 import (
-	"github.com/lib/pq"
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
@@ -630,7 +629,11 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 	`
 
 	sqlGetUnsendedRabbitMessages = `
-	select id, message_type, payload, created_at, sent, sent_at from bonus_rabbit_send_log where sent = false
+	select id, message_type, payload, created_at, sent, sent_at 
+	from bonus_rabbit_send_log 
+	where sent = false AND id > :last_id
+	order by id
+	limit 100
 	`
 
 	sqlMarkRabbitMessageAsSent = `
@@ -661,8 +664,11 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 		   report.session_id
 		from bonus_rabbit_money_report_send_log rabbit
 			LEFT JOIN money_report report on rabbit.money_report_id = report.id
-		where rabbit.sent = false
+		where rabbit.sent = false AND rabbit.id > :last_id
+		order by rabbit.id
+		limit 100
 	`
+
 	sqlGetMoneyReportsByID = `
 	select station_id, banknotes, cars_total, coins, electronical, service, bonuses,  session_id from money_report where id = any (:list_id)
 `
@@ -1056,16 +1062,13 @@ type (
 	}
 
 	argGetUnsendedRabbitMessages struct {
+		LastID int64
 	}
 
 	argAddRabbitMoneyReport struct {
 		MessageType   string
 		MoneyReportID int
 		CreatedAt     time.Time
-	}
-
-	artMoneyReportsByID struct {
-		ListID *pq.Int64Array
 	}
 
 	argAddRabbitMessage struct {
