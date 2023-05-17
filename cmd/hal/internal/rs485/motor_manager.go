@@ -299,7 +299,7 @@ func (m *MotorManager) Destroy() {
 func (m *MotorManager) CheckAndGetSequenceRequencerPort(port string) (*requester.SequenceRequester, error) {
 	// Let's create a device
 
-	cfg := rsutil.NewRS485Config(port, 19200, 10000)
+	cfg := rsutil.NewRS485Config(port, 9600, 10000)
 	mDriver, err := CreateFrequencyGenerator(m.devicesModel, cfg) // 10000 means 100.00 % for our driver
 	if err != nil {
 		return nil, fmt.Errorf("can't initialize newfrequencygenerator %+w", err)

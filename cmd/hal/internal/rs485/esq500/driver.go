@@ -108,7 +108,7 @@ func (f *FrequencyGenerator) SetSpeedPercent(deviceID uint8, percent int16) erro
 
 	fmt.Printf("final value %d percent, low %d, high %d\n", percent, LowVal, HighVal)
 	err := f.client.WriteRegister(0x1e01, realValue)
-	if err != nil {
+	if err == modbus.ErrRequestTimedOut {
 		return err
 	}
 	return nil
@@ -139,7 +139,8 @@ func (f *FrequencyGenerator) StartMotor(deviceID uint8) error {
 	addr := uint16(0x1e00)
 	f.client.SetUnitId(deviceID)
 	err := f.client.WriteRegister(addr, 0x5)
-	if err != nil {
+
+	if err == modbus.ErrRequestTimedOut {
 		fmt.Printf("driver: cant start %+v\n", err)
 		return err
 	}
@@ -153,7 +154,7 @@ func (f *FrequencyGenerator) StopMotor(deviceID uint8) error {
 	f.client.SetUnitId(deviceID)
 	addr := uint16(0x1e00)
 	err := f.client.WriteRegister(addr, 0x6)
-	if err != nil {
+	if err == modbus.ErrRequestTimedOut {
 		return err
 	}
 	return nil
