@@ -12,6 +12,7 @@ var (
 	ErrInCommandFok        = errors.New("error in command FOK")
 	ErrReadAnswerDispenser = errors.New("error in read answer from Dispenser")
 	ErrDispenserNotRespond = errors.New("dispenser is not responding")
+	ErrModelDoesNotExist   = errors.New("model does not exist")
 )
 
 type MotorDriver interface {

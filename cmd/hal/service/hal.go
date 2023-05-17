@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -748,7 +749,11 @@ func NewHardwareAccessLayer(newMetrics app.HardwareMetrics) (app.HardwareAccessL
 		portRev2Board: make(map[string]*Rev2Board),
 		hwMetrics:     newMetrics,
 	}
-	res.motorManager = *rs485.NewMotorManager(context.Background(), newMetrics, res, time.Second*10)
+	model := rs485.FreqGenModelESQ500
+	if strings.ToLower(os.Getenv("ESQ_MODEL")) == "ae200h" {
+		model = rs485.FreqGenModelAE200H
+	}
+	res.motorManager = *rs485.NewMotorManager(context.Background(), newMetrics, res, time.Second*10, model)
 	return res, nil
 }
 

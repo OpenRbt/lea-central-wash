@@ -59,19 +59,8 @@ type Ans struct {
 }
 
 func (f *FrequencyGenerator) MaxSpeed(deviceID uint8) (uint16, error) {
-	f.modbusMutex.Lock()
-	defer f.modbusMutex.Unlock()
-	f.client.SetUnitId(deviceID)
-	val, err := f.client.ReadBytes(0x1e02, 2, modbus.HOLDING_REGISTER)
-
-	if err != nil {
-		return 0, err
-	}
-
-	res1 := uint16(val[0]) * 256
-	res2 := uint16(val[1])
-
-	return res1 + res2, nil
+	addr := uint16(0x1e02)
+	return f.Read16bit(deviceID, addr)
 }
 
 func (f *FrequencyGenerator) Read16bit(deviceID uint8, addr uint16) (uint16, error) {
@@ -118,7 +107,7 @@ func (f *FrequencyGenerator) SetSpeedPercent(deviceID uint8, percent int16) erro
 	HighVal := realValue / 256
 
 	fmt.Printf("final value %d percent, low %d, high %d\n", percent, LowVal, HighVal)
-	err := f.client.WriteBytes(0x2000, []byte{byte(HighVal), byte(LowVal)})
+	err := f.client.WriteRegister(0x1e01, realValue)
 	if err != nil {
 		return err
 	}
@@ -129,7 +118,7 @@ func (f *FrequencyGenerator) GetSpeedPercent(deviceID uint8) (int16, error) {
 	if f.nominalSpeed == 0 {
 		return 0, fmt.Errorf("can't divide to zero nominal speed %+w", ErrNominalSpeed)
 	}
-	res, err := f.Read16bit(deviceID, 0x2000)
+	res, err := f.Read16bit(deviceID, 0x1e01)
 
 	if err != nil {
 		return 0, err
@@ -147,10 +136,9 @@ func (f *FrequencyGenerator) Temperature(device uint8) (float32, error) {
 func (f *FrequencyGenerator) StartMotor(deviceID uint8) error {
 	f.modbusMutex.Lock()
 	defer f.modbusMutex.Unlock()
+	addr := uint16(0x1e00)
 	f.client.SetUnitId(deviceID)
-	cmd := []byte{0x0, 0x1}
-	//cmd := []byte{0x0, 0x01}
-	err := f.client.WriteBytes(0x1000, cmd)
+	err := f.client.WriteRegister(addr, 0x5)
 	if err != nil {
 		fmt.Printf("driver: cant start %+v\n", err)
 		return err
@@ -163,29 +151,10 @@ func (f *FrequencyGenerator) StopMotor(deviceID uint8) error {
 	f.modbusMutex.Lock()
 	defer f.modbusMutex.Unlock()
 	f.client.SetUnitId(deviceID)
-	err := f.client.WriteBytes(0x1000, []byte{0x5})
+	addr := uint16(0x1e00)
+	err := f.client.WriteRegister(addr, 0x6)
 	if err != nil {
 		return err
-	}
-	return nil
-}
-
-func (f *FrequencyGenerator) ReadData() error {
-	var addr uint16 = 0x3001
-	res := make([]Ans, 0, 10000)
-
-	for i := 0; i < 65535; i++ {
-		addr = uint16(i)
-		fmt.Printf("%X\n", addr)
-		values, err := f.client.ReadBytes(addr, 2, modbus.HOLDING_REGISTER)
-		if err != nil {
-			continue
-		}
-		res = append(res, Ans{Addr: addr, Val: values})
-	}
-
-	for i := range res {
-		fmt.Printf("addr: %X, val: %+v", res[i].Addr, res[i].Val)
 	}
 	return nil
 }

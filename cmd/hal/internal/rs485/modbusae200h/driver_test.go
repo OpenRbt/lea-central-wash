@@ -1,8 +1,10 @@
-//go:build integration
-
 package modbusae200h
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/rsutil"
+)
 
 func TestClient(t *testing.T) {
 	name := "tty.usbserial-10"

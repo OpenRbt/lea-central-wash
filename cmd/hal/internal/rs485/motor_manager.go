@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/modbusae200h"
 	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/requester"
+	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/rsutil"
 )
 
 const (
@@ -31,14 +31,17 @@ type MotorManager struct {
 
 	requesterToDelete chan *requester.SequenceRequester
 	hwMetrics         app.HardwareMetrics
+	devicesModel      FreqGenModel
 }
 
-func NewMotorManager(ctx context.Context, hwMetrics app.HardwareMetrics, portReporter requester.PortReporter, refreshDelay time.Duration) *MotorManager {
+func NewMotorManager(ctx context.Context, hwMetrics app.HardwareMetrics,
+	portReporter requester.PortReporter, refreshDelay time.Duration, newModel FreqGenModel) *MotorManager {
 	return &MotorManager{
 		ctx:               ctx,
 		refreshDelay:      refreshDelay,
 		portReporter:      portReporter,
 		hwMetrics:         hwMetrics,
+		devicesModel:      newModel,
 		requesterToDelete: make(chan *requester.SequenceRequester, requestersToDeleteMaxCnt),
 	}
 }
@@ -292,7 +295,9 @@ func (m *MotorManager) Destroy() {
 
 func (m *MotorManager) CheckAndGetSequenceRequencerPort(port string) (*requester.SequenceRequester, error) {
 	// Let's create a device
-	mDriver, err := modbusae200h.NewFrequencyGenerator(port, 19200, 10000) // 10000 means 100.00 % for our driver
+
+	cfg := rsutil.NewRS485Config(port, 19200, 10000)
+	mDriver, err := CreateFrequencyGenerator(m.devicesModel, cfg) // 10000 means 100.00 % for our driver
 	if err != nil {
 		return nil, fmt.Errorf("can't initialize newfrequencygenerator %+w", err)
 	}
