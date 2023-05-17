@@ -188,6 +188,7 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 		if strings.HasPrefix(f.Name(), "ttyUSB") {
 			_, portExists := h.portByKey(f.Name())
 			if !portExists {
+				fmt.Printf("trying to add %s \n", f.Name())
 				err = h.motorManager.TryAddDevice(f.Name())
 				if err == nil {
 					h.addPort(f.Name(), &ports{osPath: f.Name()})
