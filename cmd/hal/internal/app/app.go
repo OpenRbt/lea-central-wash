@@ -82,7 +82,7 @@ type HardwareMetrics struct {
 	// MotorRunning indicates 1 for running motor and zero for stopped. By id.
 	MotorRunning GaugeMetric
 
-	//RS485MotorRequestCounter, Total number of requests to a motor by id
+	// RS485MotorRequestCounter, Total number of requests to a motor by id
 	RS485MotorRequestCounter     CounterMetric
 	RS485MotorRequestFailCounter CounterMetric
 }

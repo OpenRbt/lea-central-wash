@@ -255,7 +255,7 @@ func (m *MotorManager) collectInfoIteration() int {
 			break // means we reached end of the cycle
 		}
 		fmt.Printf("scan devices engaged\n")
-		devicesFound := curRequester.ScanDevices(attemptsToPingDevice)
+		devicesFound := curRequester.ScanDevices(3)
 		if devicesFound == 0 {
 			fmt.Printf("no devices found")
 			m.MarkSequenceRequesterToDelete(curRequester)
