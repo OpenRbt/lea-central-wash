@@ -1,4 +1,4 @@
-package modbusae200h
+package esq500
 
 import (
 	"errors"
@@ -62,7 +62,7 @@ func (f *FrequencyGenerator) MaxSpeed(deviceID uint8) (uint16, error) {
 	f.modbusMutex.Lock()
 	defer f.modbusMutex.Unlock()
 	f.client.SetUnitId(deviceID)
-	val, err := f.client.ReadBytes(0x4, 2, modbus.HOLDING_REGISTER)
+	val, err := f.client.ReadBytes(0x1e02, 2, modbus.HOLDING_REGISTER)
 
 	if err != nil {
 		return 0, err

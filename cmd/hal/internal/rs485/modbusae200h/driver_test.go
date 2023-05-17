@@ -6,7 +6,7 @@ import "testing"
 
 func TestClient(t *testing.T) {
 	name := "tty.usbserial-10"
-	cl, err := NewFrequencyGenerator(name, 9600, 5000)
+	cl, err := NewFrequencyGenerator(rsutil.NewRS485Config(name, 19200, 10000))
 	if err != nil {
 		t.Error(err)
 		return
