@@ -110,7 +110,10 @@ func (m *MotorManager) StartMotor(deviceID uint8) error {
 		}
 	}
 	if !deviceFound {
+		fmt.Printf("RS dev NOT found #%d\n", deviceID)
 		return ErrDeviceNotFound
+	} else {
+		fmt.Printf("RS dev found #%d\n", deviceID)
 	}
 	return nil
 }

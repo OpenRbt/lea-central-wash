@@ -779,13 +779,13 @@ func (h *HardwareAccessLayer) RunProgram(id int32, cfg app.RelayConfig) (err err
 }
 
 func (h *HardwareAccessLayer) runOnRS(id int32, cfg app.RelayConfig) error {
-	err := h.motorManager.StartMotor(uint8(id))
-	if err != nil {
-		return nil
+	err1 := h.motorManager.StartMotor(uint8(id))
+	err2 := h.motorManager.SetSpeedPercent(uint8(id), int16(cfg.MotorSpeedPercent))
+	if err1 != nil {
+		return err1
 	}
-	err = h.motorManager.SetSpeedPercent(uint8(id), int16(cfg.MotorSpeedPercent))
-	if err != nil {
-		return err
+	if err2 != nil {
+		return err2
 	}
 	return nil
 }
