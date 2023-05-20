@@ -98,7 +98,7 @@ func (a *app) loadStations() error {
 
 func (a *app) FetchSessions() (err error) {
 	for i := range a.stations {
-		err = a.RequestSessionsFromService(5, int(a.stations[i].ID))
+		err = a.RequestSessionsFromService(5, a.stations[i].ID)
 		if err != nil {
 			return
 		}
@@ -540,7 +540,7 @@ func (a *app) SetStation(station SetStation) error {
 		return err
 	}
 	a.loadStations()
-	a.RequestSessionsFromService(5, int(station.ID))
+	a.RequestSessionsFromService(5, station.ID)
 	err = a.updateConfig("SetStation")
 	return err
 }
@@ -1001,7 +1001,7 @@ func (a *app) SetNextSession(stationID StationID) (err error) { // Создае�
 			}
 			fallthrough
 		case sessionsCount < 5:
-			err = a.RequestSessionsFromService(5, int(stationID))
+			err = a.RequestSessionsFromService(5, stationID)
 			if err != nil {
 				return err
 			}
@@ -1017,7 +1017,7 @@ func (a *app) SetNextSession(stationID StationID) (err error) { // Создае�
 	return errors.New("not found station with StationID")
 }
 
-func (a *app) RequestSessionsFromService(count int, stationID int) error {
+func (a *app) RequestSessionsFromService(count int, stationID StationID) error {
 	var err error
 
 	msg := session.RequestSessions{NewSessionsAmount: int64(count), PostID: int64(stationID)}

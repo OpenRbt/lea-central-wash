@@ -168,7 +168,7 @@ INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical
 VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :bonuses, :ctime, :session_id)
 	`
 	sqlAddCollectionReport = `
-	INSERT INTO money_collection (station_id, user_id, banknotes, cars_total, coins, electronical, service, last_money_report_id, ctime) 
+	INSERT INTO money_collection (station_id, user_id, banknotes, cars_total, coins, electronical, service, bonuses, last_money_report_id, ctime) 
 	(
 	SELECT station_id, 
 			   :user_id,

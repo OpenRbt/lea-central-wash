@@ -153,7 +153,7 @@ type (
 		GetRabbitConfig() (RabbitConfig, error)
 		SetExternalServicesActive(active bool)
 		SetNextSession(stationID StationID) error
-		RequestSessionsFromService(count int, postID int) error
+		RequestSessionsFromService(count int, stationID StationID) error
 		AddSessionsToPool(stationID StationID, sessionsIDs ...string) error
 		AssignSessionUser(sessionID string, userID string) error
 		AssignSessionBonuses(sessionID string, amount int) error

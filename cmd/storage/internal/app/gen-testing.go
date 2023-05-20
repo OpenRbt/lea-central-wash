@@ -697,17 +697,17 @@ func (mr *MockAppMockRecorder) RelayReportDates(auth, stationID, startDate, endD
 }
 
 // RequestSessionsFromService mocks base method.
-func (m *MockApp) RequestSessionsFromService(count, postID int) error {
+func (m *MockApp) RequestSessionsFromService(count int, stationID StationID) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RequestSessionsFromService", count, postID)
+	ret := m.ctrl.Call(m, "RequestSessionsFromService", count, stationID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // RequestSessionsFromService indicates an expected call of RequestSessionsFromService.
-func (mr *MockAppMockRecorder) RequestSessionsFromService(count, postID interface{}) *gomock.Call {
+func (mr *MockAppMockRecorder) RequestSessionsFromService(count, stationID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RequestSessionsFromService", reflect.TypeOf((*MockApp)(nil).RequestSessionsFromService), count, postID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RequestSessionsFromService", reflect.TypeOf((*MockApp)(nil).RequestSessionsFromService), count, stationID)
 }
 
 // ResetStationStat mocks base method.

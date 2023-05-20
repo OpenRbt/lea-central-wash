@@ -31,7 +31,7 @@ func (r *BonusRabbitWorker) ProcessMoneyReports() {
 				break
 			}
 
-			lastReportID = int64(len(rabbitMoneyReports) - 1)
+			lastReportID = int64(rabbitMoneyReports[int64(len(rabbitMoneyReports)-1)].ID)
 
 			for _, report := range rabbitMoneyReports {
 				err := r.publisherFunc(session.MoneyReport{
