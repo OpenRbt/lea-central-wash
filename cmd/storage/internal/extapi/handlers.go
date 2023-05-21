@@ -228,6 +228,8 @@ func (svc *service) saveCollection(params op.SaveCollectionParams, auth *app.Aut
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewSaveCollectionNoContent()
+	case app.ErrAccessDenied:
+		return op.NewSaveCollectionForbidden()
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewSaveCollectionInternalServerError()
@@ -978,6 +980,8 @@ func (svc *service) stationStatCurrent(params op.StationStatCurrentParams, auth 
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewStationStatCurrentOK().WithPayload(apiStationsStat(report))
+	case app.ErrAccessDenied:
+		return op.NewStationStatCurrentForbidden()
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewStationStatCurrentInternalServerError()
@@ -996,6 +1000,8 @@ func (svc *service) stationStatDates(params op.StationStatDatesParams, auth *app
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewStationStatDatesOK().WithPayload(apiStationsStat(report))
+	case app.ErrAccessDenied:
+		return op.NewStationStatDatesForbidden()
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewStationStatDatesInternalServerError()
@@ -1008,6 +1014,8 @@ func (svc *service) resetStationStat(params op.ResetStationStatParams, auth *app
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewResetStationStatNoContent()
+	case app.ErrAccessDenied:
+		return op.NewResetStationStatForbidden()
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewResetStationStatInternalServerError()
@@ -1020,6 +1028,8 @@ func (svc *service) addAdvertisingCampaign(params op.AddAdvertisingCampaignParam
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewAddAdvertisingCampaignNoContent()
+	case app.ErrAccessDenied:
+		return op.NewAddAdvertisingCampaignForbidden()
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewAddAdvertisingCampaignInternalServerError()
@@ -1032,6 +1042,8 @@ func (svc *service) editAdvertisingCampaign(params op.EditAdvertisingCampaignPar
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewEditAdvertisingCampaignNoContent()
+	case app.ErrAccessDenied:
+		return op.NewEditAdvertisingCampaignForbidden()
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewEditAdvertisingCampaignInternalServerError()
@@ -1055,6 +1067,8 @@ func (svc *service) advertisingCampaign(params op.AdvertisingCampaignParams, aut
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewAdvertisingCampaignOK().WithPayload(apiAdvertisingCampaigns(res))
+	case app.ErrAccessDenied:
+		return op.NewAdvertisingCampaignForbidden()
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewAdvertisingCampaignInternalServerError()
@@ -1069,13 +1083,15 @@ func (svc *service) advertisingCampaignByID(params op.AdvertisingCampaignByIDPar
 		return op.NewAdvertisingCampaignByIDOK().WithPayload(apiAdvertisingCampaign(*res))
 	case app.ErrNotFound:
 		return op.NewAdvertisingCampaignByIDNotFound()
+	case app.ErrAccessDenied:
+		return op.NewAdvertisingCampaignByIDForbidden()
 	default:
 		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewAdvertisingCampaignByIDInternalServerError()
 	}
 }
 
-func (svc *service) delAdvertistingCampagin(params op.DelAdvertisingCampaignParams, auth *app.Auth) op.DelAdvertisingCampaignResponder {
+func (svc *service) delAdvertisingCampaign(params op.DelAdvertisingCampaignParams, auth *app.Auth) op.DelAdvertisingCampaignResponder {
 	err := svc.app.DelAdvertisingCampaign(auth, *params.Args.ID)
 
 	switch errors.Cause(err) {

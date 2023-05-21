@@ -35,6 +35,12 @@ func (o *GetUserReader) ReadResponse(response runtime.ClientResponse, consumer r
 			return nil, err
 		}
 		return nil, result
+	case 403:
+		result := NewGetUserForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -160,6 +166,62 @@ func (o *GetUserUnauthorized) String() string {
 }
 
 func (o *GetUserUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewGetUserForbidden creates a GetUserForbidden with default headers values
+func NewGetUserForbidden() *GetUserForbidden {
+	return &GetUserForbidden{}
+}
+
+/*
+GetUserForbidden describes a response with status code 403, with default header values.
+
+Access forbidden
+*/
+type GetUserForbidden struct {
+}
+
+// IsSuccess returns true when this get user forbidden response has a 2xx status code
+func (o *GetUserForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get user forbidden response has a 3xx status code
+func (o *GetUserForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get user forbidden response has a 4xx status code
+func (o *GetUserForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get user forbidden response has a 5xx status code
+func (o *GetUserForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get user forbidden response a status code equal to that given
+func (o *GetUserForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the get user forbidden response
+func (o *GetUserForbidden) Code() int {
+	return 403
+}
+
+func (o *GetUserForbidden) Error() string {
+	return fmt.Sprintf("[GET /user][%d] getUserForbidden ", 403)
+}
+
+func (o *GetUserForbidden) String() string {
+	return fmt.Sprintf("[GET /user][%d] getUserForbidden ", 403)
+}
+
+func (o *GetUserForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

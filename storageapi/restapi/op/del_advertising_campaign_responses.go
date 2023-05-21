@@ -70,7 +70,7 @@ func (o *DelAdvertisingCampaignUnauthorized) DelAdvertisingCampaignResponder() {
 const DelAdvertisingCampaignForbiddenCode int = 403
 
 /*
-DelAdvertisingCampaignForbidden Access forbiddenn
+DelAdvertisingCampaignForbidden Access forbidden
 
 swagger:response delAdvertisingCampaignForbidden
 */

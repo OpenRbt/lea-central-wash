@@ -196,7 +196,7 @@ func NewAdvertisingCampaignByIDForbidden() *AdvertisingCampaignByIDForbidden {
 /*
 AdvertisingCampaignByIDForbidden describes a response with status code 403, with default header values.
 
-Access forbiddenn
+Access forbidden
 */
 type AdvertisingCampaignByIDForbidden struct {
 }

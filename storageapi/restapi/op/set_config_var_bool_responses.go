@@ -39,6 +39,33 @@ func (o *SetConfigVarBoolNoContent) WriteResponse(rw http.ResponseWriter, produc
 
 func (o *SetConfigVarBoolNoContent) SetConfigVarBoolResponder() {}
 
+// SetConfigVarBoolForbiddenCode is the HTTP code returned for type SetConfigVarBoolForbidden
+const SetConfigVarBoolForbiddenCode int = 403
+
+/*
+SetConfigVarBoolForbidden Access forbidden
+
+swagger:response setConfigVarBoolForbidden
+*/
+type SetConfigVarBoolForbidden struct {
+}
+
+// NewSetConfigVarBoolForbidden creates SetConfigVarBoolForbidden with default headers values
+func NewSetConfigVarBoolForbidden() *SetConfigVarBoolForbidden {
+
+	return &SetConfigVarBoolForbidden{}
+}
+
+// WriteResponse to the client
+func (o *SetConfigVarBoolForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
+}
+
+func (o *SetConfigVarBoolForbidden) SetConfigVarBoolResponder() {}
+
 // SetConfigVarBoolInternalServerErrorCode is the HTTP code returned for type SetConfigVarBoolInternalServerError
 const SetConfigVarBoolInternalServerErrorCode int = 500
 

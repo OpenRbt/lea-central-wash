@@ -95,7 +95,7 @@ func (o *StationStatDatesUnauthorized) StationStatDatesResponder() {}
 const StationStatDatesForbiddenCode int = 403
 
 /*
-StationStatDatesForbidden Access forbiddenn
+StationStatDatesForbidden Access forbidden
 
 swagger:response stationStatDatesForbidden
 */

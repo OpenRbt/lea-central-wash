@@ -90,7 +90,7 @@ func (o *StationCollectionReportDatesUnauthorized) StationCollectionReportDatesR
 const StationCollectionReportDatesForbiddenCode int = 403
 
 /*
-StationCollectionReportDatesForbidden Access forbiddenn
+StationCollectionReportDatesForbidden Access forbidden
 
 swagger:response stationCollectionReportDatesForbidden
 */

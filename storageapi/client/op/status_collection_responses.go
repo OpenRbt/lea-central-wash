@@ -35,6 +35,12 @@ func (o *StatusCollectionReader) ReadResponse(response runtime.ClientResponse, c
 			return nil, err
 		}
 		return nil, result
+	case 403:
+		result := NewStatusCollectionForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewStatusCollectionInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -166,6 +172,62 @@ func (o *StatusCollectionUnauthorized) String() string {
 }
 
 func (o *StatusCollectionUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewStatusCollectionForbidden creates a StatusCollectionForbidden with default headers values
+func NewStatusCollectionForbidden() *StatusCollectionForbidden {
+	return &StatusCollectionForbidden{}
+}
+
+/*
+StatusCollectionForbidden describes a response with status code 403, with default header values.
+
+Access forbidden
+*/
+type StatusCollectionForbidden struct {
+}
+
+// IsSuccess returns true when this status collection forbidden response has a 2xx status code
+func (o *StatusCollectionForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this status collection forbidden response has a 3xx status code
+func (o *StatusCollectionForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this status collection forbidden response has a 4xx status code
+func (o *StatusCollectionForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this status collection forbidden response has a 5xx status code
+func (o *StatusCollectionForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this status collection forbidden response a status code equal to that given
+func (o *StatusCollectionForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the status collection forbidden response
+func (o *StatusCollectionForbidden) Code() int {
+	return 403
+}
+
+func (o *StatusCollectionForbidden) Error() string {
+	return fmt.Sprintf("[GET /status-collection][%d] statusCollectionForbidden ", 403)
+}
+
+func (o *StatusCollectionForbidden) String() string {
+	return fmt.Sprintf("[GET /status-collection][%d] statusCollectionForbidden ", 403)
+}
+
+func (o *StatusCollectionForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

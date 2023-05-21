@@ -847,6 +847,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/ConfigVarInt'
+        403:
+          description: Access forbidden
         404:
           description: Not found
         500:
@@ -872,6 +874,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/ConfigVarBool'
+        403:
+          description: Access forbidden
         404:
           description: Not found
         500:
@@ -897,6 +901,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/ConfigVarString'
+        403:
+          description: Access forbidden
         404:
           description: Not found
         500:
@@ -916,6 +922,8 @@ paths:
       responses:
         204:
           description: OK
+        403:
+          description: Access forbidden
         500:
           description: Internal error
 
@@ -933,6 +941,8 @@ paths:
       responses:
         204:
           description: OK
+        403:
+          description: Access forbidden
         500:
           description: Internal error
 
@@ -950,6 +960,8 @@ paths:
       responses:
         204:
           description: OK
+        403:
+          description: Access forbidden
         500:
           description: Internal error
 
@@ -993,7 +1005,7 @@ paths:
         401:
           description: PIN is missing or invalid
         403:
-          description: Access forbiddenn
+          description: Access forbidden
         500:
           description: internal error
   /edit-advertising-campaign:
@@ -1013,7 +1025,7 @@ paths:
         401:
           description: PIN is missing or invalid
         403:
-          description: Access forbiddenn
+          description: Access forbidden
         500:
           description: internal error
 
@@ -1045,7 +1057,7 @@ paths:
         401:
           description: PIN is missing or invalid
         403:
-          description: Access forbiddenn
+          description: Access forbidden
         500:
           description: internal error
 
@@ -1074,7 +1086,7 @@ paths:
         401:
           description: PIN is missing or invalid
         403:
-          description: Access forbiddenn
+          description: Access forbidden
         404:
           description: not found
         500:
@@ -1103,7 +1115,7 @@ paths:
         401:
           description: PIN is missing or invalid
         403:
-          description: Access forbiddenn
+          description: Access forbidden
         500:
           description: internal error
 
@@ -1130,7 +1142,7 @@ paths:
         401:
           description: PIN is missing or invalid
         403:
-          description: Access forbiddenn
+          description: Access forbidden
         500:
           description: internal error
 
@@ -1166,7 +1178,7 @@ paths:
         401:
           description: PIN is missing or invalid
         403:
-          description: Access forbiddenn
+          description: Access forbidden
         500:
           description: internal error
 
@@ -1192,7 +1204,7 @@ paths:
         401:
           description: PIN is missing or invalid
         403:
-          description: Access forbiddenn
+          description: Access forbidden
         500:
           description: internal error
 
@@ -1276,6 +1288,8 @@ paths:
             $ref: '#/definitions/StatusCollectionReport'
         500:
           description: internal error
+        403:
+          description: Access forbidden
         401:
           description: PIN is missing or invalid
 
@@ -1449,6 +1463,8 @@ paths:
       responses:
         204:
           description: OK
+        403:
+          description: Access forbidden
         404:
           description: not found
         500:
@@ -2009,6 +2025,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/UserConfig'
+        403:
+          description: Access forbidden
         401:
           description: PIN is missing or invalid
     post:
@@ -2426,7 +2444,7 @@ paths:
         401:
           description: PIN is missing or invalid
         403:
-          description: Access forbiddenn
+          description: Access forbidden
         404:
           description: not found
         500:

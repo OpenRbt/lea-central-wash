@@ -61,6 +61,33 @@ func (o *GetConfigVarIntOK) WriteResponse(rw http.ResponseWriter, producer runti
 
 func (o *GetConfigVarIntOK) GetConfigVarIntResponder() {}
 
+// GetConfigVarIntForbiddenCode is the HTTP code returned for type GetConfigVarIntForbidden
+const GetConfigVarIntForbiddenCode int = 403
+
+/*
+GetConfigVarIntForbidden Access forbidden
+
+swagger:response getConfigVarIntForbidden
+*/
+type GetConfigVarIntForbidden struct {
+}
+
+// NewGetConfigVarIntForbidden creates GetConfigVarIntForbidden with default headers values
+func NewGetConfigVarIntForbidden() *GetConfigVarIntForbidden {
+
+	return &GetConfigVarIntForbidden{}
+}
+
+// WriteResponse to the client
+func (o *GetConfigVarIntForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
+}
+
+func (o *GetConfigVarIntForbidden) GetConfigVarIntResponder() {}
+
 // GetConfigVarIntNotFoundCode is the HTTP code returned for type GetConfigVarIntNotFound
 const GetConfigVarIntNotFoundCode int = 404
 

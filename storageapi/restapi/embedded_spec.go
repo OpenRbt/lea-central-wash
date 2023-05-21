@@ -60,7 +60,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -144,7 +144,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -190,7 +190,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "404": {
             "description": "not found"
@@ -351,7 +351,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -420,7 +420,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -498,6 +498,9 @@ func init() {
               "$ref": "#/definitions/ConfigVarBool"
             }
           },
+          "403": {
+            "description": "Access forbidden"
+          },
           "404": {
             "description": "Not found"
           },
@@ -538,6 +541,9 @@ func init() {
               "$ref": "#/definitions/ConfigVarInt"
             }
           },
+          "403": {
+            "description": "Access forbidden"
+          },
           "404": {
             "description": "Not found"
           },
@@ -577,6 +583,9 @@ func init() {
             "schema": {
               "$ref": "#/definitions/ConfigVarString"
             }
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "404": {
             "description": "Not found"
@@ -1444,7 +1453,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -1670,6 +1679,9 @@ func init() {
           "401": {
             "description": "PIN is missing or invalid"
           },
+          "403": {
+            "description": "Access forbidden"
+          },
           "404": {
             "description": "not found"
           },
@@ -1865,6 +1877,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "403": {
+            "description": "Access forbidden"
+          },
           "500": {
             "description": "Internal error"
           }
@@ -1893,6 +1908,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "403": {
+            "description": "Access forbidden"
+          },
           "500": {
             "description": "Internal error"
           }
@@ -1920,6 +1938,9 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "500": {
             "description": "Internal error"
@@ -2339,7 +2360,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "404": {
             "description": "not found"
@@ -2506,7 +2527,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -2561,7 +2582,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -2621,6 +2642,9 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -2687,6 +2711,9 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
           }
         }
       },
@@ -3911,7 +3938,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -3995,7 +4022,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -4041,7 +4068,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "404": {
             "description": "not found"
@@ -4202,7 +4229,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -4271,7 +4298,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -4349,6 +4376,9 @@ func init() {
               "$ref": "#/definitions/ConfigVarBool"
             }
           },
+          "403": {
+            "description": "Access forbidden"
+          },
           "404": {
             "description": "Not found"
           },
@@ -4389,6 +4419,9 @@ func init() {
               "$ref": "#/definitions/ConfigVarInt"
             }
           },
+          "403": {
+            "description": "Access forbidden"
+          },
           "404": {
             "description": "Not found"
           },
@@ -4428,6 +4461,9 @@ func init() {
             "schema": {
               "$ref": "#/definitions/ConfigVarString"
             }
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "404": {
             "description": "Not found"
@@ -5295,7 +5331,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -5521,6 +5557,9 @@ func init() {
           "401": {
             "description": "PIN is missing or invalid"
           },
+          "403": {
+            "description": "Access forbidden"
+          },
           "404": {
             "description": "not found"
           },
@@ -5716,6 +5755,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "403": {
+            "description": "Access forbidden"
+          },
           "500": {
             "description": "Internal error"
           }
@@ -5744,6 +5786,9 @@ func init() {
           "204": {
             "description": "OK"
           },
+          "403": {
+            "description": "Access forbidden"
+          },
           "500": {
             "description": "Internal error"
           }
@@ -5771,6 +5816,9 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "500": {
             "description": "Internal error"
@@ -6174,7 +6222,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "404": {
             "description": "not found"
@@ -6341,7 +6389,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -6396,7 +6444,7 @@ func init() {
             "description": "PIN is missing or invalid"
           },
           "403": {
-            "description": "Access forbiddenn"
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -6456,6 +6504,9 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
           },
           "500": {
             "description": "internal error"
@@ -6522,6 +6573,9 @@ func init() {
           },
           "401": {
             "description": "PIN is missing or invalid"
+          },
+          "403": {
+            "description": "Access forbidden"
           }
         }
       },
