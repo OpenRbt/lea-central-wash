@@ -10,7 +10,7 @@ func CheckAccess(auth *Auth, rule AccessRule) bool {
 	return rule(auth)
 }
 
-func allRules(accessRules ...func(*Auth) bool) AccessRule {
+func allRules(accessRules ...AccessRule) AccessRule {
 	return func(auth *Auth) bool {
 		var ok bool
 
@@ -25,7 +25,7 @@ func allRules(accessRules ...func(*Auth) bool) AccessRule {
 	}
 }
 
-func anyRule(accessRule ...func(*Auth) bool) AccessRule {
+func anyRule(accessRule ...AccessRule) AccessRule {
 	return func(auth *Auth) bool {
 		var ok bool
 
