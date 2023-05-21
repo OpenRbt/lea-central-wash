@@ -1,20 +1,16 @@
 package app
 
-import "fmt"
+type AccessRule func(*Auth) bool
 
-func CheckAccess(auth *Auth, accessRules ...func(*Auth) bool) bool {
-	var ok bool
-	for _, rule := range accessRules {
-		ok = rule(auth)
-		if !ok {
-			return false
-		}
+func CheckAccess(auth *Auth, rule AccessRule) bool {
+	if rule == nil {
+		return auth != nil
 	}
 
-	return true
+	return rule(auth)
 }
 
-func allRules(accessRules ...func(*Auth) bool) func(auth *Auth) bool {
+func allRules(accessRules ...func(*Auth) bool) AccessRule {
 	return func(auth *Auth) bool {
 		var ok bool
 
@@ -29,7 +25,7 @@ func allRules(accessRules ...func(*Auth) bool) func(auth *Auth) bool {
 	}
 }
 
-func anyRule(accessRule ...func(*Auth) bool) func(auth *Auth) bool {
+func anyRule(accessRule ...func(*Auth) bool) AccessRule {
 	return func(auth *Auth) bool {
 		var ok bool
 
@@ -49,12 +45,9 @@ func allowUnauthorized(auth *Auth) bool {
 }
 
 func roleAdmin(auth *Auth) (ok bool) {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println("Unexpected nil auth in checking roleAdmin, ", r)
-			ok = false
-		}
-	}()
+	if auth == nil {
+		return false
+	}
 
 	ok = auth.IsAdmin
 
@@ -62,12 +55,9 @@ func roleAdmin(auth *Auth) (ok bool) {
 }
 
 func roleOperator(auth *Auth) (ok bool) {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println("Unexpected nil auth in checking roleOperator, ", r)
-			ok = false
-		}
-	}()
+	if auth == nil {
+		return false
+	}
 
 	ok = auth.IsOperator
 
@@ -75,12 +65,9 @@ func roleOperator(auth *Auth) (ok bool) {
 }
 
 func roleEngineer(auth *Auth) (ok bool) {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println("Unexpected nil auth in checking roleEngineer, ", r)
-			ok = false
-		}
-	}()
+	if auth == nil {
+		return false
+	}
 
 	ok = auth.IsEngineer
 
