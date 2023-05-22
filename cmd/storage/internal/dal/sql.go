@@ -1,6 +1,7 @@
 package dal
 
 import (
+	uuid "github.com/satori/go.uuid"
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
@@ -645,7 +646,7 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 	`
 
 	sqlAddRabbitMoneyReport = `
-	INSERT INTO bonus_rabbit_money_report_send_log (message_type,money_report_id,created_at) VALUES (:message_type,:money_report_id,:created_at)
+	INSERT INTO bonus_rabbit_money_report_send_log (message_type,money_report_id,created_at, message_uuid) VALUES (:message_type,:money_report_id,:created_at,:message_uuid)
 	`
 
 	sqlGetUnsendedRabbitMoneyReports = `
@@ -661,17 +662,14 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 		   report.electronical,
 		   report.service,
 		   report.bonuses,
-		   report.session_id
+		   report.session_id,
+		   rabbit.message_uuid
 		from bonus_rabbit_money_report_send_log rabbit
 			LEFT JOIN money_report report on rabbit.money_report_id = report.id
 		where rabbit.sent = false AND rabbit.id > :last_id
 		order by rabbit.id
 		limit 100
 	`
-
-	sqlGetMoneyReportsByID = `
-	select station_id, banknotes, cars_total, coins, electronical, service, bonuses,  session_id from money_report where id = any (:list_id)
-`
 
 	sqlAddMoneyReportForRabbitMessage = `
 INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, bonuses, ctime, session_id)  
@@ -1069,6 +1067,7 @@ type (
 		MessageType   string
 		MoneyReportID int
 		CreatedAt     time.Time
+		MessageUUID   uuid.NullUUID
 	}
 
 	argAddRabbitMessage struct {
@@ -1167,5 +1166,6 @@ type (
 		CreatedAt     time.Time
 		Sent          bool
 		SentAt        *time.Time
+		MessageUUID   uuid.NullUUID
 	}
 )

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	uuid "github.com/satori/go.uuid"
 	"runtime"
 	"strconv"
 	"strings"
@@ -1173,6 +1174,7 @@ func (r *repo) SaveMoneyReportAndMessage(report app.RabbitMoneyReport) (err erro
 			MessageType:   report.MessageType,
 			MoneyReportID: id,
 			CreatedAt:     now,
+			MessageUUID:   uuid.NullUUID{UUID: uuid.NewV4(), Valid: true},
 		})
 
 		return err

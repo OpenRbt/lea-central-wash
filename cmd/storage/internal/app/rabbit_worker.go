@@ -43,6 +43,7 @@ func (r *BonusRabbitWorker) ProcessMoneyReports() {
 					Service:      report.MoneyReport.Service,
 					Bonuses:      report.MoneyReport.Bonuses,
 					SessionID:    report.MoneyReport.SessionID,
+					UUID:         report.MessageUUID.String(),
 				}, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.MessageType(report.MessageType))
 				if err != nil {
 					log.Warn("failed to send RabbitMoneyReports", "error", err)

@@ -2,6 +2,7 @@ package app
 
 import (
 	"errors"
+	uuid "github.com/satori/go.uuid"
 	"sync"
 	"time"
 
@@ -472,6 +473,7 @@ type RabbitMoneyReport struct {
 	ID          RabbitMessageID
 	MessageType string
 	MoneyReport MoneyReport
+	MessageUUID uuid.UUID
 	CreatedAt   time.Time
 	IsSent      bool
 	SentAt      *time.Time

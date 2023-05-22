@@ -351,8 +351,9 @@ func appRabbitMoneyReport(r resRabbitMoneyReport) app.RabbitMoneyReport {
 			Bonuses:      r.Bonuses,
 			SessionID:    r.SessionID,
 		},
-		CreatedAt: r.CreatedAt,
-		IsSent:    r.Sent,
-		SentAt:    r.SentAt,
+		CreatedAt:   r.CreatedAt,
+		IsSent:      r.Sent,
+		SentAt:      r.SentAt,
+		MessageUUID: r.MessageUUID.UUID,
 	}
 }
