@@ -38,9 +38,9 @@ type PostError struct {
 // HardwareAccessLayer is the whole layer to communicate with boards
 type HardwareAccessLayer struct {
 	uidAnswer     *regexp.Regexp
-	portsMu       sync.Mutex
 	ports         map[string]*ports
 	portRev2Board map[string]*Rev2Board
+	portsMu       sync.RWMutex // used for both ports and portRev2Board
 	dispencer     *Rev1DispencerBoard
 	motorManager  rs485.MotorManager
 	hwMetrics     app.HardwareMetrics
@@ -78,7 +78,7 @@ type Rev1DispencerBoard struct {
 	timeoutSec            int
 }
 
-// NewRev2Board is a constructor
+// NewRev2Board is a constructor, using USB to communicate
 func NewRev2Board(osPath string, openPort *serial.Port) *Rev2Board {
 	return &Rev2Board{
 		osPath:        osPath,
@@ -89,7 +89,7 @@ func NewRev2Board(osPath string, openPort *serial.Port) *Rev2Board {
 	}
 }
 
-// NewRevSensor is a constructor
+// NewDispencerBoard is a constructor
 func NewDispencerBoard(osPath string, openPort *serial.Port) *Rev1DispencerBoard {
 	return &Rev1DispencerBoard{
 		osPath:                osPath,
@@ -713,7 +713,7 @@ func (h *HardwareAccessLayer) ControlBoard(wantedPosition int32) (app.ControlBoa
 			return h.portRev2Board[key], nil
 		}
 	}
-	fmt.Printf("board #%d is not found on dictionary\n", wantedPosition)
+	// fmt.Printf("board #%d is not found on dictionary\n", wantedPosition)
 	return nil, app.ErrNotFound
 }
 
@@ -764,7 +764,7 @@ func (h *HardwareAccessLayer) FreePort(portName string) {
 
 // RunProgram
 func (h *HardwareAccessLayer) RunProgram(id int32, cfg app.RelayConfig) (err error) {
-	log.Printf("Program config: stationID=%d, motor speed=%d", id, cfg.MotorSpeedPercent)
+	// log.Printf("Program config: stationID=%d, motor speed=%d", id, cfg.MotorSpeedPercent)
 
 	errBoard := h.runOnRev2Board(id, cfg)
 	errRS := h.runOnRS(id, cfg)
@@ -801,7 +801,7 @@ func (h *HardwareAccessLayer) runOnRev2Board(id int32, cfg app.RelayConfig) erro
 
 // HardwareDebugAccessLayer is the whole layer to communicate with boards
 type HardwareDebugAccessLayer struct {
-	portsMu sync.Mutex
+	portsMu sync.RWMutex
 	// ports   map[string]*ports
 	portsRev2Board map[string]*Rev2DebugBoard
 }
@@ -872,12 +872,13 @@ func (h *HardwareDebugAccessLayer) Run2Programs(id int32, secondID int32, cfg ap
 // ControlBoard returns required control board by its key
 func (h *HardwareDebugAccessLayer) ControlBoard(wantedPosition int32) (app.ControlBoard, error) {
 	// h.portsMu.Lock()
+	h.portsMu.RLock()
+	defer h.portsMu.RUnlock()
 	for key := range h.portsRev2Board {
 		if h.portsRev2Board[key].stationNumber == int(wantedPosition) {
 			return h.portsRev2Board[key], nil
 		}
 	}
-	// defer h.portsMu.Unlock()
 	return nil, app.ErrNotFound
 }
 

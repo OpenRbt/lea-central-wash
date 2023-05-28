@@ -139,7 +139,7 @@ type (
 		SetStationConfigInt(auth *Auth, config StationConfigInt) error
 		SetStationConfigBool(auth *Auth, config StationConfigBool) error
 		SetStationConfigString(auth *Auth, config StationConfigString) error
-		
+
 		CreateSession(url string, stationID StationID) (string, string, error)
 		RefreshSession(stationID StationID) (string, int64, error)
 		EndSession(stationID StationID, sessionID BonusSessionID) error
@@ -269,12 +269,16 @@ type (
 )
 
 type app struct {
-	repo                  Repo
-	stations              map[StationID]StationData
-	stationsSessionsPool  map[StationID]chan string
-	stationsMutex         sync.Mutex
-	programs              map[int64]Program
-	programsMutex         sync.Mutex
+	repo          Repo
+	stations      map[StationID]StationData
+	stationsMutex sync.RWMutex
+
+	stationsSessionsPool    map[StationID]chan string
+	stationSessionPoolMutex sync.RWMutex
+
+	programs      map[int64]Program
+	programsMutex sync.RWMutex
+
 	programsDiscounts     ProgramsDiscount
 	programsDiscountMutex sync.Mutex
 	kasseSvc              KasseSvc

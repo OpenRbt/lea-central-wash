@@ -16,6 +16,7 @@ type FrequencyGenerator struct {
 	client       *modbus.ModbusClient
 	modbusMutex  sync.Mutex
 	nominalSpeed int
+	coolTime     time.Duration
 }
 
 func (f *FrequencyGenerator) Port() string {
@@ -44,6 +45,7 @@ func NewFrequencyGenerator(cfg rsutil.RS485Config) (*FrequencyGenerator, error) 
 		portName:     cfg.PortName,
 		client:       client,
 		nominalSpeed: cfg.DefaultMotorSpeed,
+		coolTime:     10 * time.Millisecond,
 	}
 
 	err = client.Open()
@@ -67,6 +69,7 @@ func (f *FrequencyGenerator) Read16bit(deviceID uint8, addr uint16) (uint16, err
 	f.modbusMutex.Lock()
 	defer f.modbusMutex.Unlock()
 	f.client.SetUnitId(deviceID)
+	time.Sleep(f.coolTime)
 	val, err := f.client.ReadBytes(addr, 2, modbus.HOLDING_REGISTER)
 
 	if err != nil {
@@ -107,6 +110,7 @@ func (f *FrequencyGenerator) SetSpeedPercent(deviceID uint8, percent int16) erro
 	HighVal := realValue / 256
 
 	fmt.Printf("final value %d percent, low %d, high %d\n", percent, LowVal, HighVal)
+	time.Sleep(f.coolTime)
 	err := f.client.WriteRegister(0x1e01, realValue)
 	if err == modbus.ErrRequestTimedOut {
 		return err
@@ -114,10 +118,13 @@ func (f *FrequencyGenerator) SetSpeedPercent(deviceID uint8, percent int16) erro
 	return nil
 }
 func (f *FrequencyGenerator) GetSpeedPercent(deviceID uint8) (int16, error) {
+	f.modbusMutex.Lock()
+	defer f.modbusMutex.Unlock()
 	ErrNominalSpeed := errors.New("zero nominal speed")
 	if f.nominalSpeed == 0 {
 		return 0, fmt.Errorf("can't divide to zero nominal speed %+w", ErrNominalSpeed)
 	}
+	time.Sleep(f.coolTime)
 	res, err := f.Read16bit(deviceID, 0x1e01)
 
 	if err != nil {
@@ -138,6 +145,7 @@ func (f *FrequencyGenerator) StartMotor(deviceID uint8) error {
 	defer f.modbusMutex.Unlock()
 	addr := uint16(0x1e00)
 	f.client.SetUnitId(deviceID)
+	time.Sleep(f.coolTime)
 	err := f.client.WriteRegister(addr, 0x5)
 
 	if err == modbus.ErrRequestTimedOut {
@@ -153,6 +161,7 @@ func (f *FrequencyGenerator) StopMotor(deviceID uint8) error {
 	defer f.modbusMutex.Unlock()
 	f.client.SetUnitId(deviceID)
 	addr := uint16(0x1e00)
+	time.Sleep(f.coolTime)
 	err := f.client.WriteRegister(addr, 0x6)
 	if err == modbus.ErrRequestTimedOut {
 		return err

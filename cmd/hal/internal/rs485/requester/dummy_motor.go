@@ -22,6 +22,7 @@ type DummyMotor struct {
 	errorCycle   int
 	stopped      bool
 	errors       map[uint8][]MotorError
+	errorsMutex  sync.Mutex
 
 	killed      bool
 	killedMutex sync.RWMutex
@@ -53,6 +54,8 @@ func (m *DummyMotor) NominalSpeed() uint16 {
 	return uint16(m.nominalSpeed)
 }
 func (m *DummyMotor) PushError(deviceID uint8, err error) {
+	m.errorsMutex.Lock()
+	defer m.errorsMutex.Unlock()
 	m.errors[deviceID] = append(m.errors[deviceID], MotorError{
 		Comment: err.Error(),
 		Code:    0x01,

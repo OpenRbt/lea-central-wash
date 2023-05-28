@@ -134,9 +134,13 @@ func (a *app) GetVolumeDispenser() (volume int64, status string, err error) {
 	return volume, status, err
 }
 
+// GetLevel returnы liquid level
 func (a *app) GetLevel() (level int64, err error) {
 	level, err = a.hardware.GetLevel()
-	return level, nil
+	if err != nil {
+		return level, nil
+	}
+	return level, err
 }
 
 func (a *app) DispenserStop(stationID StationID, stopProgramID int64) (err error) {

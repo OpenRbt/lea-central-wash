@@ -262,7 +262,12 @@ func (s *SequenceRequester) ScanDevices(attempts int) int {
 	res := 0
 	for i := uint8(1); i <= MAX_ALLOWED_DEVICES; i++ {
 		fmt.Printf("trying device #%d\n", i)
-		deviceAnswered := s.SpecificDeviceReplies(i, attempts)
+		maxAttempts := 1
+		if s.HasDevice(i) {
+			// we need to ping existing device more than others
+			maxAttempts = attempts
+		}
+		deviceAnswered := s.SpecificDeviceReplies(i, maxAttempts)
 		fmt.Printf("trying device #%d, answered=%+v\n", i, deviceAnswered)
 		if deviceAnswered {
 			res++
@@ -331,6 +336,7 @@ func (s *SequenceRequester) HighPriorityStopMotor(deviceID uint8) Answer {
 func (s *SequenceRequester) runRequest(currentQueue chan *RequestWrapper, request Request) Answer {
 	curChan, err := s.PullAnswerChannel()
 	if err != nil {
+		fmt.Println("ERROR! NO ANSWER CHANNELS AVAILABLE")
 		return Answer{
 			R:   request,
 			Err: err,

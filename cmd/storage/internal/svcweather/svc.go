@@ -23,11 +23,11 @@ const MeasurementInterval = 300
 
 // Errors
 var (
-	ErrBadConfig        = errors.New("Bad or missing configuration parameter")
-	ErrPropertyNotFound = errors.New("JSON property not found")
-	ErrHTTPRequest      = errors.New("Failed HTTP request")
-	ErrBadStatusCode    = errors.New("Bad HTTP response code")
-	ErrNoPayload        = errors.New("No payload")
+	ErrBadConfig        = errors.New("bad or missing configuration parameter")
+	ErrPropertyNotFound = errors.New("json property not found")
+	ErrHTTPRequest      = errors.New("failed HTTP request")
+	ErrBadStatusCode    = errors.New("bad HTTP response code")
+	ErrNoPayload        = errors.New("no payload")
 )
 
 type ipV4addr string
