@@ -37,6 +37,9 @@ import (
 )
 
 const (
+	dbTimeoutMigrations     = 5 * time.Minute
+	dbIdleTimeoutMigrations = 10 * time.Minute
+
 	connectTimeout  = 3 * time.Second // must be less than swarm's deploy.update_config.monitor
 	dbTimeout       = 3 * time.Second
 	dbIdleTimeout   = 10 * time.Second
@@ -211,15 +214,67 @@ func connectDB(ctx context.Context) (*sqlx.DB, error) {
 	return sqlx.NewDb(db, "postgres"), nil
 }
 
+func connectDBMigrations(ctx context.Context) (*sqlx.DB, error) {
+	cfg.db.ConnectTimeout = connectTimeout
+	cfg.db.SSLMode = pqx.SSLDisable
+	cfg.db.DefaultTransactionIsolation = sql.LevelSerializable
+	cfg.db.StatementTimeout = dbTimeoutMigrations
+	cfg.db.LockTimeout = dbTimeoutMigrations
+	cfg.db.IdleInTransactionSessionTimeout = dbIdleTimeoutMigrations
+
+	db, err := sql.Open("pqx", cfg.db.FormatDSN())
+	if err != nil {
+		return nil, err
+	}
+
+	db.SetMaxOpenConns(dbMaxOpenConns)
+	db.SetMaxIdleConns(dbParallelConns)
+
+	err = db.PingContext(ctx)
+	for err != nil {
+		nextErr := db.PingContext(ctx)
+		if nextErr == context.DeadlineExceeded {
+			return nil, errors.Wrap(err, "connect to postgres")
+		}
+		err = nextErr
+	}
+
+	return sqlx.NewDb(db, "postgres"), nil
+}
+func applyMigrations(db *sqlx.DB) error {
+	goose.Init("postgres")
+	if db == nil {
+		return errors.New("db not connected")
+	}
+
+	if cfg.goose != "" {
+		return goose.Run(db.DB, cfg.gooseDir, cfg.goose)
+	}
+
+	return goose.UpTo(db.DB, cfg.gooseDir, migration.CurrentVersion)
+}
+
 func run(db *sqlx.DB, errc chan<- error) {
 	goose.Init("postgres")
 	var repo app.Repo
 	if db != nil {
-		if cfg.goose != "" {
-			errc <- goose.Run(db.DB, cfg.gooseDir, cfg.goose)
-			return
+		var err error
+		var dbMigrations *sqlx.DB
+
+		count := 0
+
+		for dbMigrations == nil {
+			ctx, cancel := context.WithTimeout(context.Background(), connectTimeout)
+			dbMigrations, err = connectDBMigrations(ctx)
+			if err != nil {
+				log.Warn("Warning: DB is not connected", "count", count, "err", err)
+			}
+			count++
+			cancel()
 		}
-		err := goose.UpTo(db.DB, cfg.gooseDir, migration.CurrentVersion)
+		defer dbMigrations.Close()
+
+		err = applyMigrations(dbMigrations)
 		if err != nil {
 			errc <- err
 			return

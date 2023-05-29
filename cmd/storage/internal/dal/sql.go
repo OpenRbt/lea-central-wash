@@ -286,20 +286,22 @@ ORDER BY r.station_id,r.program_id
 	GROUP BY station_id
 	`
 	sqlCurrentMoney = `
-	SELECT station_id, 
-		   sum(banknotes) as banknotes, 
-		   sum(cars_total) as cars_total, 
-		   sum(coins) as coins, 
-		   sum(electronical) as electronical, 
-		   sum(service) as service,
-		   sum(bonuses) as bonuses
+	SELECT station_id,
+		   sum(banknotes)    as banknotes,
+		   sum(cars_total)   as cars_total,
+		   sum(coins)        as coins,
+		   sum(electronical) as electronical,
+		   sum(service)      as service,
+		   sum(bonuses)      as bonuses
 	FROM money_report
-	WHERE id > coalesce(
-		(SELECT last_money_report_id FROM money_collection WHERE station_id = :station_id
-		ORDER BY id DESC
-		LIMIT 1)
-		,0)
-		AND station_id = :station_id
+	WHERE ctime> coalesce(
+			(SELECT ctime
+			 FROM money_collection
+			 WHERE station_id = 1
+			 ORDER BY id DESC
+			 LIMIT 1)
+		, CAST('1970-01-01' AS timestamp))
+	  AND station_id = :station_id
 	GROUP BY station_id
 	`
 	sqlRelayStatReport = `
