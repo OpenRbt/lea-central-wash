@@ -134,9 +134,6 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		InfoHandler: InfoHandlerFunc(func(params InfoParams) InfoResponder {
 			return InfoNotImplemented()
 		}),
-		IsAuthorizedHandler: IsAuthorizedHandlerFunc(func(params IsAuthorizedParams) IsAuthorizedResponder {
-			return IsAuthorizedNotImplemented()
-		}),
 		KasseHandler: KasseHandlerFunc(func(params KasseParams) KasseResponder {
 			return KasseNotImplemented()
 		}),
@@ -382,8 +379,6 @@ type StorageAPI struct {
 	GetUsersHandler GetUsersHandler
 	// InfoHandler sets the operation handler for the info operation
 	InfoHandler InfoHandler
-	// IsAuthorizedHandler sets the operation handler for the is authorized operation
-	IsAuthorizedHandler IsAuthorizedHandler
 	// KasseHandler sets the operation handler for the kasse operation
 	KasseHandler KasseHandler
 	// LoadHandler sets the operation handler for the load operation
@@ -644,9 +639,6 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.InfoHandler == nil {
 		unregistered = append(unregistered, "InfoHandler")
-	}
-	if o.IsAuthorizedHandler == nil {
-		unregistered = append(unregistered, "IsAuthorizedHandler")
 	}
 	if o.KasseHandler == nil {
 		unregistered = append(unregistered, "KasseHandler")
@@ -1002,10 +994,6 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/info"] = NewInfo(o.context, o.InfoHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/is-authorized"] = NewIsAuthorized(o.context, o.IsAuthorizedHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

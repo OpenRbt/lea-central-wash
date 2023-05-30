@@ -200,11 +200,6 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.InfoNotImplemented()
 		})
 	}
-	if api.IsAuthorizedHandler == nil {
-		api.IsAuthorizedHandler = op.IsAuthorizedHandlerFunc(func(params op.IsAuthorizedParams) op.IsAuthorizedResponder {
-			return op.IsAuthorizedNotImplemented()
-		})
-	}
 	if api.KasseHandler == nil {
 		api.KasseHandler = op.KasseHandlerFunc(func(params op.KasseParams) op.KasseResponder {
 			return op.KasseNotImplemented()

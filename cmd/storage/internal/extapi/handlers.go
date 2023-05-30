@@ -251,21 +251,16 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 
 	station, bonusActive := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP)
 
-	isAuth := false
-	if station.UserID != "" {
-		isAuth = true
-	}
-
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
-		ServiceAmount:      newInt64(int64(station.ServiceMoney)),
-		BonusAmount:        int64(station.BonusMoney),
-		OpenStation:        &station.OpenStation,
-		ButtonID:           int64(station.ButtonID),
-		LastUpdate:         int64(station.LastUpdate),
-		LastDiscountUpdate: int64(station.LastDiscountUpdate),
-		SessionID:          station.CurrentSessionID,
-		BonusSystemActive:  bonusActive,
-		IsAuthorized:       &isAuth,
+		ServiceAmount:       newInt64(int64(station.ServiceMoney)),
+		BonusAmount:         int64(station.BonusMoney),
+		OpenStation:         &station.OpenStation,
+		ButtonID:            int64(station.ButtonID),
+		LastUpdate:          int64(station.LastUpdate),
+		LastDiscountUpdate:  int64(station.LastDiscountUpdate),
+		SessionID:           station.CurrentSessionID,
+		BonusSystemActive:   bonusActive,
+		AuthorizedSessionID: station.AuthorizedSessionID,
 	})
 }
 
@@ -1165,23 +1160,5 @@ func (svc *service) setBonuses(params op.SetBonusesParams) op.SetBonusesResponde
 		return op.NewSetBonusesUnauthorized()
 	default:
 		return op.NewSetBonusesInternalServerError()
-	}
-}
-
-func (svc *service) isAuthorized(params op.IsAuthorizedParams) op.IsAuthorizedResponder {
-	stationID, err := svc.getID(string(*params.Args.Hash))
-	if err != nil {
-		return op.NewIsAuthorizedNotFound()
-	}
-
-	err = svc.app.IsAuthorized(stationID)
-
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewIsAuthorizedOK().WithPayload(&model.IsAuthorized{
-			Authorized: true,
-		})
-	default:
-		return op.NewIsAuthorizedInternalServerError()
 	}
 }

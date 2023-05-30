@@ -90,8 +90,6 @@ type ClientService interface {
 
 	Info(params *InfoParams, opts ...ClientOption) (*InfoOK, error)
 
-	IsAuthorized(params *IsAuthorizedParams, opts ...ClientOption) (*IsAuthorizedOK, error)
-
 	Kasse(params *KasseParams, opts ...ClientOption) (*KasseOK, error)
 
 	Load(params *LoadParams, opts ...ClientOption) (*LoadOK, error)
@@ -1339,44 +1337,6 @@ func (a *Client) Info(params *InfoParams, opts ...ClientOption) (*InfoOK, error)
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for info: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
-IsAuthorized is authorized API
-*/
-func (a *Client) IsAuthorized(params *IsAuthorizedParams, opts ...ClientOption) (*IsAuthorizedOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewIsAuthorizedParams()
-	}
-	op := &runtime.ClientOperation{
-		ID:                 "isAuthorized",
-		Method:             "POST",
-		PathPattern:        "/is-authorized",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &IsAuthorizedReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*IsAuthorizedOK)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for isAuthorized: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

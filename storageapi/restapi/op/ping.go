@@ -198,6 +198,9 @@ func (o *PingBody) UnmarshalBinary(b []byte) error {
 // swagger:model PingOKBody
 type PingOKBody struct {
 
+	// authorized session ID
+	AuthorizedSessionID string `json:"AuthorizedSessionID,omitempty"`
+
 	// button ID
 	ButtonID int64 `json:"ButtonID,omitempty"`
 
@@ -206,9 +209,6 @@ type PingOKBody struct {
 
 	// bonus system active
 	BonusSystemActive bool `json:"bonusSystemActive,omitempty"`
-
-	// is authorized
-	IsAuthorized *bool `json:"isAuthorized,omitempty"`
 
 	// last discount update
 	LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
@@ -232,6 +232,9 @@ type PingOKBody struct {
 func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 	var props struct {
 
+		// authorized session ID
+		AuthorizedSessionID string `json:"AuthorizedSessionID,omitempty"`
+
 		// button ID
 		ButtonID int64 `json:"ButtonID,omitempty"`
 
@@ -240,9 +243,6 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 
 		// bonus system active
 		BonusSystemActive bool `json:"bonusSystemActive,omitempty"`
-
-		// is authorized
-		IsAuthorized *bool `json:"isAuthorized,omitempty"`
 
 		// last discount update
 		LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
@@ -268,10 +268,10 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
+	o.AuthorizedSessionID = props.AuthorizedSessionID
 	o.ButtonID = props.ButtonID
 	o.BonusAmount = props.BonusAmount
 	o.BonusSystemActive = props.BonusSystemActive
-	o.IsAuthorized = props.IsAuthorized
 	o.LastDiscountUpdate = props.LastDiscountUpdate
 	o.LastUpdate = props.LastUpdate
 	o.OpenStation = props.OpenStation
