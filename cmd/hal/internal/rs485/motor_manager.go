@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/modbusae200h"
 	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/requester"
 )
@@ -29,13 +30,15 @@ type MotorManager struct {
 	portReporter requester.PortReporter
 
 	requesterToDelete chan *requester.SequenceRequester
+	hwMetrics         app.HardwareMetrics
 }
 
-func NewMotorManager(ctx context.Context, portReporter requester.PortReporter, refreshDelay time.Duration) *MotorManager {
+func NewMotorManager(ctx context.Context, hwMetrics app.HardwareMetrics, portReporter requester.PortReporter, refreshDelay time.Duration) *MotorManager {
 	return &MotorManager{
 		ctx:               ctx,
 		refreshDelay:      refreshDelay,
 		portReporter:      portReporter,
+		hwMetrics:         hwMetrics,
 		requesterToDelete: make(chan *requester.SequenceRequester, requestersToDeleteMaxCnt),
 	}
 }
@@ -76,10 +79,12 @@ func (m *MotorManager) StopMotor(deviceID uint8) error {
 func (m *MotorManager) StopMotorAttempts(requester *requester.SequenceRequester, deviceID uint8, attempts int) error {
 	var lastError error
 	for attempt := 0; attempt < attemptsToPingDevice; attempt++ {
+		m.hwMetrics.RS485MotorRequestCounter.Inc(string(deviceID))
 		a := requester.HighPriorityStopMotor(deviceID)
 		if a.Err == nil {
 			return nil
 		} else {
+			m.hwMetrics.RS485MotorRequestFailCounter.Inc(string(deviceID))
 			lastError = a.Err
 		}
 	}
@@ -110,10 +115,12 @@ func (m *MotorManager) StartMotor(deviceID uint8) error {
 func (m *MotorManager) StartMotorAttempts(requester *requester.SequenceRequester, deviceID uint8, attempts int) error {
 	var lastError error
 	for attempt := 0; attempt < attemptsToPingDevice; attempt++ {
+		m.hwMetrics.RS485MotorRequestCounter.Inc(string(deviceID))
 		a := requester.HighPriorityStartMotor(deviceID)
 		if a.Err == nil {
 			return nil
 		} else {
+			m.hwMetrics.RS485MotorRequestFailCounter.Inc(string(deviceID))
 			lastError = a.Err
 		}
 	}
@@ -144,11 +151,13 @@ func (m *MotorManager) SetSpeedPercent(deviceID uint8, percent int16) error {
 func (m *MotorManager) SetSpeedPercentAttempts(requester *requester.SequenceRequester, deviceID uint8, percent int16, attempts int) error {
 	var lastError error
 	for attempt := 0; attempt < attemptsToPingDevice; attempt++ {
+		m.hwMetrics.RS485MotorRequestCounter.Inc(string(deviceID))
 		a := requester.HighPrioritySetSpeedPercent(deviceID, int(percent))
 		if a.Err == nil {
 			return nil
 		} else {
 			lastError = a.Err
+			m.hwMetrics.RS485MotorRequestFailCounter.Inc(string(deviceID))
 		}
 	}
 	return lastError
@@ -247,6 +256,21 @@ func (m *MotorManager) collectInfoIteration() int {
 		if devicesFound == 0 {
 			fmt.Printf("no devices found")
 			m.MarkSequenceRequesterToDelete(curRequester)
+		}
+
+		for k := uint8(0); k < requester.MAX_ALLOWED_DEVICES; k++ {
+			devFound := 0
+			for j := 0; j < m.SequenceRequesterCount(); j++ {
+				curRequester := m.SequenceRequester(i)
+				if curRequester != nil {
+					continue
+				}
+				if curRequester.HasDevice(k) {
+					devFound = 1
+					continue
+				}
+			}
+			m.hwMetrics.MotorDetected.SetGaugeByID(string(k), float64(devFound))
 		}
 		totalDevicesFound += devicesFound
 	}
