@@ -60,14 +60,6 @@ func (r *BonusRabbitWorker) ProcessMoneyReports() {
 	}
 }
 
-func (r *app) SendMessage(messageType string, payload interface{}) error {
-	if r.bonusSystemRabbitWorker == nil {
-		return ErrNoRabbitWorker
-	}
-
-	return r.bonusSystemRabbitWorker.publisherFunc(payload, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.MessageType(messageType))
-}
-
 func (r *BonusRabbitWorker) ProcessMessages() {
 	var lastMessageID int64
 
@@ -101,6 +93,14 @@ func (r *BonusRabbitWorker) ProcessMessages() {
 		}
 		time.Sleep(10 * time.Second)
 	}
+}
+
+func (a *app) SendMessage(messageType string, payload interface{}) error {
+	if a.bonusSystemRabbitWorker == nil {
+		return ErrNoRabbitWorker
+	}
+
+	return a.bonusSystemRabbitWorker.publisherFunc(payload, rabbit_vo.WashBonusService, rabbit_vo.WashBonusRoutingKey, rabbit_vo.MessageType(messageType))
 }
 
 func (a *app) PrepareRabbitMessage(messageType string, payload interface{}) error {

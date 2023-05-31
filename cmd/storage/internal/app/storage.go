@@ -3,6 +3,7 @@ package app
 import (
 	"errors"
 	"fmt"
+	uuid "github.com/satori/go.uuid"
 	"reflect"
 	"strconv"
 	"time"
@@ -931,6 +932,7 @@ func (a *app) SetBonuses(stationID StationID, bonuses int) error {
 		msg := session.BonusReward{
 			SessionID: station.SessionID,
 			Amount:    bonuses,
+			UUID:      uuid.NewV4().String(),
 		}
 
 		err = a.PrepareRabbitMessage(string(rabbit_vo.SessionBonusRewardMessageType), msg)

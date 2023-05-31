@@ -28,7 +28,7 @@ require (
 )
 
 require (
-	github.com/OpenRbt/share_business/wash_rabbit v0.0.0-20230521233546-9127ef9ba68c
+	github.com/OpenRbt/share_business/wash_rabbit v0.0.0-20230531081845-5b5c1deeccad
 	github.com/rabbitmq/amqp091-go v1.7.0
 	github.com/wagslane/go-rabbitmq v0.12.3
 	google.golang.org/grpc v1.50.1
