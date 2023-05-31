@@ -42,7 +42,6 @@ type HardwareAccessLayer struct {
 	portRev2Board map[string]*Rev2Board
 	dispencer     *Rev1DispencerBoard
 	motorManager  rs485.MotorManager
-	hwMetrics     app.HardwareMetrics
 	Errors        chan PostError
 }
 
@@ -211,34 +210,33 @@ func (r *Rev1DispencerBoard) Run() error {
 }
 
 func (r *Rev1DispencerBoard) workingLoop() {
-	duration := 800 * time.Millisecond
-	timer := time.NewTimer(duration)
+	tick := time.Tick(800 * time.Millisecond)
 	for {
-		<-timer.C
-		timer.Stop()
-		if r.GetAllowedPing() {
-			err := r.SendPing()
-			if err != nil {
-				r.resourcesMu.Lock()
-				r.errorCount++
-				errCount := r.errorCount
-				r.resourcesMu.Unlock()
-				if errCount >= 5 {
-					fmt.Println("Delete Rev1DispenserBoard")
+		select {
+		case <-tick:
+			if r.GetAllowedPing() {
+				err := r.SendPing()
+				if err != nil {
 					r.resourcesMu.Lock()
-					r.toRemove = true
+					r.errorCount++
+					errCount := r.errorCount
 					r.resourcesMu.Unlock()
-					return
+					if errCount >= 5 {
+						fmt.Println("Delete Rev1DispenserBoard")
+						r.resourcesMu.Lock()
+						r.toRemove = true
+						r.resourcesMu.Unlock()
+						return
+					}
+				} else {
+					r.resourcesMu.Lock()
+					r.errorCount = 0
+					r.resourcesMu.Unlock()
 				}
 			} else {
-				r.resourcesMu.Lock()
-				r.errorCount = 0
-				r.resourcesMu.Unlock()
+				r.SetAllowedPing(true)
 			}
-		} else {
-			r.SetAllowedPing(true)
 		}
-		timer.Reset(duration)
 	}
 }
 
@@ -459,15 +457,12 @@ func (r *Rev2Board) Run() error {
 }
 
 func (r *Rev2Board) workingLoop() {
-	duration := 800 * time.Millisecond
-	timer := time.NewTimer(duration)
+	tick := time.Tick(800 * time.Millisecond)
 	var cmd app.RelayConfig
 	for {
 		select {
-		case <-timer.C:
-			timer.Stop()
+		case <-tick:
 			stationNumber, err := r.SendPing()
-			timer.Reset(duration)
 			if err != nil {
 				r.errorCount++
 				if r.errorCount >= 5 {
@@ -742,13 +737,12 @@ func (h *HardwareAccessLayer) workingLoop() ([]app.ControlBoard, error) {
 }
 
 // NewHardwareAccessLayer is just a constructor
-func NewHardwareAccessLayer(newMetrics app.HardwareMetrics) (app.HardwareAccessLayer, error) {
+func NewHardwareAccessLayer() (app.HardwareAccessLayer, error) {
 	res := &HardwareAccessLayer{
 		ports:         make(map[string]*ports),
 		portRev2Board: make(map[string]*Rev2Board),
-		hwMetrics:     newMetrics,
 	}
-	res.motorManager = *rs485.NewMotorManager(context.Background(), newMetrics, res, time.Second*10)
+	res.motorManager = *rs485.NewMotorManager(context.Background(), res, time.Second*10)
 	return res, nil
 }
 
@@ -849,7 +843,7 @@ func (h *HardwareDebugAccessLayer) RunProgram(id int32, cfg app.RelayConfig) (er
 }
 
 // Run2Programs
-func (h *HardwareDebugAccessLayer) Run2Programs(id int32, secondID int32, cfg app.RelayConfig) (err error) {
+func (h HardwareDebugAccessLayer) Run2Programs(id int32, secondID int32, cfg app.RelayConfig) (err error) {
 	err = h.RunProgram(id, cfg)
 	if err != nil {
 		return err

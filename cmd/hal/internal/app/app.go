@@ -67,29 +67,3 @@ type DispenserStatus struct {
 	Milliliters           int64
 	ErrorCommandDispenser error
 }
-
-type HardwareMetrics struct {
-	MotorDetected GaugeMetric
-	BoardDetected GaugeMetric
-
-	// MotorSpeedGauge Motor actual speed by id
-	MotorSpeedGauge GaugeMetric
-
-	// MotorDesiredSpeedGauge Motor desired speed by id
-	MotorDesiredSpeedGauge GaugeMetric
-
-	// MotorRunning indicates 1 for running motor and zero for stopped. By id.
-	MotorRunning GaugeMetric
-
-	//RS485MotorRequestCounter, Total number of requests to a motor by id
-	RS485MotorRequestCounter     CounterMetric
-	RS485MotorRequestFailCounter CounterMetric
-}
-
-type GaugeMetric interface {
-	SetGaugeByID(id string, newValue float64)
-}
-
-type CounterMetric interface {
-	Inc(id string)
-}

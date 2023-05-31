@@ -33,7 +33,7 @@ func NewFrequencyGenerator(PortName string, communicationSpeed uint, defaultMoto
 		DataBits: 8,                  // default, optional
 		Parity:   modbus.PARITY_NONE, // default, optional
 		StopBits: 2,                  // default if no parity, optional
-		Timeout:  200 * time.Millisecond,
+		Timeout:  300 * time.Millisecond,
 	})
 
 	if err != nil {
