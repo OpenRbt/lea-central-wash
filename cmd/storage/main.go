@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
+	"github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 	"os"
 	"os/user"
 	"path"
@@ -37,6 +38,9 @@ import (
 )
 
 const (
+	dbTimeoutMigrations     = 5 * time.Minute
+	dbIdleTimeoutMigrations = 10 * time.Minute
+
 	connectTimeout  = 3 * time.Second // must be less than swarm's deploy.update_config.monitor
 	dbTimeout       = 3 * time.Second
 	dbIdleTimeout   = 10 * time.Second
@@ -105,8 +109,6 @@ func init() { //nolint:gochecknoinits
 
 	flag.StringVar(&cfg.rabbit.Url, "rabbit.host", def.RabbitHost, "host for service connections")
 	flag.StringVar(&cfg.rabbit.Port, "rabbit.port", def.RabbitPort, "port for service connections")
-	flag.StringVar(&cfg.rabbit.ServerID, "rabbit.user", def.RabbitUser, "user for service connections")
-	flag.StringVar(&cfg.rabbit.ServerKey, "rabbit.pass", def.RabbitPassword, "password for service connections")
 
 	flag.StringVar(&RabbitCertPath, "pathCert", def.RabbitCertPath, "path to cert Rabbit")
 
@@ -211,21 +213,76 @@ func connectDB(ctx context.Context) (*sqlx.DB, error) {
 	return sqlx.NewDb(db, "postgres"), nil
 }
 
+func connectDBMigrations(ctx context.Context) (*sqlx.DB, error) {
+	cfg.db.ConnectTimeout = connectTimeout
+	cfg.db.SSLMode = pqx.SSLDisable
+	cfg.db.DefaultTransactionIsolation = sql.LevelSerializable
+	cfg.db.StatementTimeout = dbTimeoutMigrations
+	cfg.db.LockTimeout = dbTimeoutMigrations
+	cfg.db.IdleInTransactionSessionTimeout = dbIdleTimeoutMigrations
+
+	db, err := sql.Open("pqx", cfg.db.FormatDSN())
+	if err != nil {
+		return nil, err
+	}
+	db.SetMaxOpenConns(dbMaxOpenConns)
+	db.SetMaxIdleConns(dbParallelConns)
+
+	err = db.PingContext(ctx)
+	for err != nil {
+		nextErr := db.PingContext(ctx)
+		if nextErr == context.DeadlineExceeded {
+			return nil, errors.Wrap(err, "connect to postgres")
+		}
+		err = nextErr
+	}
+
+	return sqlx.NewDb(db, "postgres"), nil
+}
+func applyMigrations(db *sqlx.DB) error {
+	goose.Init("postgres")
+	if db == nil {
+		return errors.New("db not connected")
+	}
+	if cfg.goose != "" {
+		return goose.Run(db.DB, cfg.gooseDir, cfg.goose)
+	}
+	err := goose.UpTo(db.DB, cfg.gooseDir, migration.CurrentVersion)
+	if err != nil {
+		return err
+	}
+
+	must.NoErr(os.Setenv(schemaver.EnvLocation, "goose-"+cfg.db.FormatURL()))
+
+	return nil
+
+}
+
 func run(db *sqlx.DB, errc chan<- error) {
 	goose.Init("postgres")
 	var repo app.Repo
 	if db != nil {
-		if cfg.goose != "" {
-			errc <- goose.Run(db.DB, cfg.gooseDir, cfg.goose)
-			return
+		var err error
+		var dbMigrations *sqlx.DB
+
+		count := 0
+
+		for dbMigrations == nil {
+			ctx, cancel := context.WithTimeout(context.Background(), connectTimeout)
+			dbMigrations, err = connectDBMigrations(ctx)
+			if err != nil {
+				log.Warn("Warning: DB is not connected", "count", count, "err", err)
+			}
+			count++
+			cancel()
 		}
-		err := goose.UpTo(db.DB, cfg.gooseDir, migration.CurrentVersion)
+		defer dbMigrations.Close()
+
+		err = applyMigrations(dbMigrations)
 		if err != nil {
 			errc <- err
 			return
 		}
-
-		must.NoErr(os.Setenv(schemaver.EnvLocation, "goose-"+cfg.db.FormatURL()))
 
 		schemaVer, _ := schemaver.New()
 		repo = dal.New(db, schemaVer)
@@ -260,12 +317,13 @@ func run(db *sqlx.DB, errc chan<- error) {
 	} else {
 		cfg.rabbit.ServerID = rabbitCfg.ServerID
 		cfg.rabbit.ServerKey = rabbitCfg.ServerKey
-		rabbitWorker, err := rabbit.NewClient(cfg.rabbit, appl, RabbitCertPath)
+		rabbitClient, err := rabbit.NewClient(cfg.rabbit, appl, RabbitCertPath)
 		if err != nil {
 			log.Err("failed to init rabbit client", "error", err)
 		} else {
 			log.Info("Serve rabbit client")
-			appl.AssignRabbitPub(rabbitWorker.SendMessage)
+
+			appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitClient.SendMessage)
 			appl.FetchSessions()
 		}
 	}

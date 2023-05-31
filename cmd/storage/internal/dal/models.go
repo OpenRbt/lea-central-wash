@@ -2,9 +2,8 @@ package dal
 
 import (
 	"encoding/json"
-	"strings"
-
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"strings"
 )
 
 func appSetUsers(v []resUser) []app.UserData {
@@ -160,6 +159,7 @@ func appCollectionReportsByDate(r []resCollectionReportByDate) (res []app.Collec
 			Coins:        r[i].Coins,
 			Electronical: r[i].Electronical,
 			Service:      r[i].Service,
+			Bonuses:      r[i].Bonuses,
 			Ctime:        r[i].Ctime,
 			User:         r[i].User,
 		})
@@ -308,5 +308,52 @@ func appStationConfigString(a resGetStationConfigString) *app.StationConfigStrin
 		Description: a.Description,
 		Note:        a.Note,
 		StationID:   a.StationID,
+	}
+}
+
+func appRabbitMessages(a []resRabbitMessage) []app.RabbitMessage {
+	res := []app.RabbitMessage{}
+	for _, msg := range a {
+		res = append(res, appRabbitMessage(msg))
+	}
+	return res
+}
+
+func appRabbitMessage(a resRabbitMessage) app.RabbitMessage {
+	return app.RabbitMessage{
+		ID:          app.RabbitMessageID(a.ID),
+		MessageType: a.MessageType,
+		Payload:     a.Payload,
+		CreatedAt:   a.CreatedAt,
+		IsSent:      a.Sent,
+		SentAt:      a.SentAt,
+	}
+}
+func appRabbitMoneyReports(r []resRabbitMoneyReport) []app.RabbitMoneyReport {
+	res := []app.RabbitMoneyReport{}
+	for _, rabbitReport := range r {
+		res = append(res, appRabbitMoneyReport(rabbitReport))
+	}
+	return res
+}
+
+func appRabbitMoneyReport(r resRabbitMoneyReport) app.RabbitMoneyReport {
+	return app.RabbitMoneyReport{
+		ID:          app.RabbitMessageID(r.ID),
+		MessageType: r.MessageType,
+		MoneyReport: app.MoneyReport{
+			StationID:    app.StationID(r.StationID),
+			Banknotes:    r.Banknotes,
+			CarsTotal:    r.CarsTotal,
+			Coins:        r.Coins,
+			Electronical: r.Electronical,
+			Service:      r.Service,
+			Bonuses:      r.Bonuses,
+			SessionID:    r.SessionID,
+		},
+		CreatedAt:   r.CreatedAt,
+		IsSent:      r.Sent,
+		SentAt:      r.SentAt,
+		MessageUUID: r.MessageUUID.UUID,
 	}
 }

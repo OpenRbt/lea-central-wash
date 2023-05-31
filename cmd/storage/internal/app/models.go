@@ -72,6 +72,7 @@ type CollectionReport struct {
 	Coins        int
 	Electronical int
 	Service      int
+	Bonuses      int
 	Ctime        time.Time
 }
 
@@ -83,6 +84,7 @@ type CollectionReportWithUser struct {
 	Coins        int
 	Electronical int
 	Service      int
+	Bonuses      int
 	Ctime        time.Time
 	User         string
 }
