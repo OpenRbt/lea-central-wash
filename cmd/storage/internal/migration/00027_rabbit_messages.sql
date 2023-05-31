@@ -21,7 +21,8 @@ create table bonus_rabbit_money_report_send_log(
    money_report_id      integer not null references money_report(id),
    created_at   timestamp          not null,
    sent         bool default false not null,
-   sent_at      timestamp
+   sent_at      timestamp,
+   message_uuid uuid not null
 );
 
 create index rabbit_send_log_sent_target_index
