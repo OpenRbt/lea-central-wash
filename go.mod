@@ -29,8 +29,8 @@ require (
 
 require (
 	github.com/OpenRbt/share_business/wash_rabbit v0.0.0-20230531081845-5b5c1deeccad
-	github.com/rabbitmq/amqp091-go v1.7.0
 	github.com/prometheus/client_golang v0.9.3
+	github.com/satori/go.uuid v1.2.0
 	github.com/wagslane/go-rabbitmq v0.12.3
 	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.28.1
@@ -136,9 +136,9 @@ require (
 	github.com/prometheus/procfs v0.0.0-20190507164030-5867b95ac084 // indirect
 	github.com/quasilyte/go-ruleguard v0.2.0 // indirect
 	github.com/quasilyte/regex/syntax v0.0.0-20200407221936-30656e2c4a95 // indirect
+	github.com/rabbitmq/amqp091-go v1.7.0 // indirect
 	github.com/ryancurrah/gomodguard v1.1.0 // indirect
 	github.com/ryanrolds/sqlclosecheck v0.3.0 // indirect
-	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/securego/gosec/v2 v2.5.0 // indirect
 	github.com/shazow/go-diff v0.0.0-20160112020656-b6b7b6733b8c // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect

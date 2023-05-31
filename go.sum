@@ -58,8 +58,6 @@ github.com/Masterminds/sprig/v3 v3.2.3/go.mod h1:rXcFaZ2zZbLRJv/xSysmlgIM1u11eBa
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/OpenPeeDeeP/depguard v1.0.1 h1:VlW4R6jmBIv3/u1JNlawEvJMM4J+dPORPaZasQee8Us=
 github.com/OpenPeeDeeP/depguard v1.0.1/go.mod h1:xsIw86fROiiwelg+jB2uM9PiKihMMmUx/1V+TNhjQvM=
-github.com/OpenRbt/share_business/wash_rabbit v0.0.0-20230521233546-9127ef9ba68c h1:lX/7c7DipGAIH9ToYXrX5af0Z+sN6W4wSEihXpwr/zI=
-github.com/OpenRbt/share_business/wash_rabbit v0.0.0-20230521233546-9127ef9ba68c/go.mod h1:wHiw3GqLVMbuLTETv6zaXmy1JEa5Wgj4RBSJW2arV+Y=
 github.com/OpenRbt/share_business/wash_rabbit v0.0.0-20230531081845-5b5c1deeccad h1:+Qj3j6DULJKcUhSa3YPiP4ZdAV88eRGEhgkTM/DjI6Y=
 github.com/OpenRbt/share_business/wash_rabbit v0.0.0-20230531081845-5b5c1deeccad/go.mod h1:wHiw3GqLVMbuLTETv6zaXmy1JEa5Wgj4RBSJW2arV+Y=
 github.com/PuerkitoBio/goquery v1.6.1 h1:FgjbQZKl5HTmcn4sKBgvx8vv63nhyhIpv7lJpFGCWpk=
