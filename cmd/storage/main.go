@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
+	"github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 	"os"
 	"os/user"
 	"path"
@@ -108,8 +109,6 @@ func init() { //nolint:gochecknoinits
 
 	flag.StringVar(&cfg.rabbit.Url, "rabbit.host", def.RabbitHost, "host for service connections")
 	flag.StringVar(&cfg.rabbit.Port, "rabbit.port", def.RabbitPort, "port for service connections")
-	flag.StringVar(&cfg.rabbit.ServerID, "rabbit.user", def.RabbitUser, "user for service connections")
-	flag.StringVar(&cfg.rabbit.ServerKey, "rabbit.pass", def.RabbitPassword, "password for service connections")
 
 	flag.StringVar(&RabbitCertPath, "pathCert", def.RabbitCertPath, "path to cert Rabbit")
 
@@ -226,7 +225,6 @@ func connectDBMigrations(ctx context.Context) (*sqlx.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	db.SetMaxOpenConns(dbMaxOpenConns)
 	db.SetMaxIdleConns(dbParallelConns)
 
@@ -246,12 +244,18 @@ func applyMigrations(db *sqlx.DB) error {
 	if db == nil {
 		return errors.New("db not connected")
 	}
-
 	if cfg.goose != "" {
 		return goose.Run(db.DB, cfg.gooseDir, cfg.goose)
 	}
+	err := goose.UpTo(db.DB, cfg.gooseDir, migration.CurrentVersion)
+	if err != nil {
+		return err
+	}
 
-	return goose.UpTo(db.DB, cfg.gooseDir, migration.CurrentVersion)
+	must.NoErr(os.Setenv(schemaver.EnvLocation, "goose-"+cfg.db.FormatURL()))
+
+	return nil
+
 }
 
 func run(db *sqlx.DB, errc chan<- error) {
@@ -279,8 +283,6 @@ func run(db *sqlx.DB, errc chan<- error) {
 			errc <- err
 			return
 		}
-
-		must.NoErr(os.Setenv(schemaver.EnvLocation, "goose-"+cfg.db.FormatURL()))
 
 		schemaVer, _ := schemaver.New()
 		repo = dal.New(db, schemaVer)
@@ -315,12 +317,13 @@ func run(db *sqlx.DB, errc chan<- error) {
 	} else {
 		cfg.rabbit.ServerID = rabbitCfg.ServerID
 		cfg.rabbit.ServerKey = rabbitCfg.ServerKey
-		rabbitWorker, err := rabbit.NewClient(cfg.rabbit, appl, RabbitCertPath)
+		rabbitClient, err := rabbit.NewClient(cfg.rabbit, appl, RabbitCertPath)
 		if err != nil {
 			log.Err("failed to init rabbit client", "error", err)
 		} else {
 			log.Info("Serve rabbit client")
-			appl.AssignRabbitPub(rabbitWorker.SendMessage)
+
+			appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitClient.SendMessage)
 			appl.FetchSessions()
 		}
 	}

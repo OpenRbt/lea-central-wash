@@ -1,6 +1,7 @@
 package dal
 
 import (
+	uuid "github.com/satori/go.uuid"
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
@@ -168,7 +169,7 @@ INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical
 VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :bonuses, :ctime, :session_id)
 	`
 	sqlAddCollectionReport = `
-	INSERT INTO money_collection (station_id, user_id, banknotes, cars_total, coins, electronical, service, last_money_report_id, ctime) 
+	INSERT INTO money_collection (station_id, user_id, banknotes, cars_total, coins, electronical, service, bonuses, last_money_report_id, ctime) 
 	(
 	SELECT station_id, 
 			   :user_id,
@@ -177,6 +178,7 @@ VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, 
 			   sum(coins) as coins, 
 			   sum(electronical) as electronical, 
 			   sum(service) as service,
+			   sum(bonuses) as bonuses,
 			   max(id) as max_id,
 			   :ctime
 		FROM money_report
@@ -194,7 +196,7 @@ ORDER BY id DESC
 LIMIT 1
 	`
 	sqlLastCollectionReport = `
-SELECT station_id, banknotes, cars_total, coins, electronical, service, ctime FROM money_collection WHERE station_id = :station_id
+SELECT station_id, banknotes, cars_total, coins, electronical, service, ctime, bonuses FROM money_collection WHERE station_id = :station_id
 ORDER BY id DESC
 LIMIT 1
 	`
@@ -206,6 +208,7 @@ LIMIT 1
 		mc.coins, 
 		mc.electronical, 
 		mc.service,
+		mc.bonuses,
 		mc.ctime,
 		COALESCE(u.login, '')  "user"
 	FROM money_collection mc
@@ -627,6 +630,58 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 			description = :description,
 			note = :note
 	`
+
+	sqlGetUnsendedRabbitMessages = `
+	select id, message_type, payload, created_at, sent, sent_at 
+	from bonus_rabbit_send_log 
+	where sent = false AND id > :last_id
+	order by id
+	limit 100
+	`
+
+	sqlMarkRabbitMessageAsSent = `
+	UPDATE bonus_rabbit_send_log SET sent = TRUE, sent_at = :ctime WHERE id = :id
+	`
+
+	sqlAddRabbitMessage = `
+	INSERT INTO bonus_rabbit_send_log (message_type,payload,created_at) VALUES (:message_type,:payload,:created_at)
+	`
+
+	sqlAddRabbitMoneyReport = `
+	INSERT INTO bonus_rabbit_money_report_send_log (message_type,money_report_id,created_at, message_uuid) VALUES (:message_type,:money_report_id,:created_at,:message_uuid)
+	`
+
+	sqlGetUnsendedRabbitMoneyReports = `
+		select rabbit.id,
+		   rabbit.message_type,
+		   rabbit.created_at,
+		   rabbit.sent,
+		   rabbit.sent_at,
+		   report.station_id,
+		   report.banknotes,
+		   report.cars_total,
+		   report.coins,
+		   report.electronical,
+		   report.service,
+		   report.bonuses,
+		   report.session_id,
+		   rabbit.message_uuid
+		from bonus_rabbit_money_report_send_log rabbit
+			LEFT JOIN money_report report on rabbit.money_report_id = report.id
+		where rabbit.sent = false AND rabbit.id > :last_id
+		order by rabbit.id
+		limit 100
+	`
+
+	sqlAddMoneyReportForRabbitMessage = `
+INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, bonuses, ctime, session_id)  
+VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :bonuses, :ctime, :session_id)
+returning id
+	`
+
+	sqlMarkRabbitMoneyReportAsSent = `
+	UPDATE bonus_rabbit_money_report_send_log SET sent = TRUE, sent_at = :ctime WHERE id = :id
+	`
 )
 
 type (
@@ -898,6 +953,7 @@ type (
 		Coins        int
 		Electronical int
 		Service      int
+		Bonuses      int
 		Ctime        time.Time
 		User         string
 	}
@@ -1004,6 +1060,29 @@ type (
 		Description string
 		Note        string
 	}
+
+	argGetUnsendedRabbitMessages struct {
+		LastID int64
+	}
+
+	argAddRabbitMoneyReport struct {
+		MessageType   string
+		MoneyReportID int
+		CreatedAt     time.Time
+		MessageUUID   uuid.NullUUID
+	}
+
+	argAddRabbitMessage struct {
+		MessageType string
+		Payload     []byte
+		CreatedAt   time.Time
+	}
+
+	argMarkRabbitMessageAsSent struct {
+		ID    int64
+		Ctime time.Time
+	}
+
 	resGetConfigInt struct {
 		Name        string
 		Value       int64
@@ -1064,5 +1143,31 @@ type (
 		Description string
 		Note        string
 		StationID   app.StationID
+	}
+
+	resRabbitMessage struct {
+		ID          int64
+		MessageType string
+		Payload     []byte
+		CreatedAt   time.Time
+		Sent        bool
+		SentAt      *time.Time
+	}
+	resRabbitMoneyReport struct {
+		ID            int64
+		MessageType   string
+		MoneyReportID int
+		StationID     int
+		Banknotes     int
+		CarsTotal     int
+		Coins         int
+		Electronical  int
+		Service       int
+		Bonuses       int
+		SessionID     string
+		CreatedAt     time.Time
+		Sent          bool
+		SentAt        *time.Time
+		MessageUUID   uuid.NullUUID
 	}
 )

@@ -2,6 +2,7 @@ package app
 
 import (
 	"errors"
+	uuid "github.com/satori/go.uuid"
 	"sync"
 	"time"
 
@@ -33,6 +34,8 @@ const (
 	parameterNameTimeZone = "TIMEZONE"
 )
 
+const RabbitWorkerScheduleInterval = time.Minute
+
 // Errors.
 var (
 	ErrNotFound                 = errors.New("not found")
@@ -46,7 +49,9 @@ var (
 	ErrStationProgramMustUnique = errors.New("programID and buttonID must be unique")
 	ErrUserIsNotAuthorized      = errors.New("user is not authorized")
 
-	ErrServiceNotConfigured = errors.New("service not configured")
+	ErrServiceNotConfigured    = errors.New("service not configured")
+	ErrRabbitMessageBadPayload = errors.New("bad RabbitMessagePayloadData")
+	ErrNoRabbitWorker          = errors.New("rabbit worker not initialized")
 )
 
 var testApp = false
@@ -139,7 +144,7 @@ type (
 		SetStationConfigInt(auth *Auth, config StationConfigInt) error
 		SetStationConfigBool(auth *Auth, config StationConfigBool) error
 		SetStationConfigString(auth *Auth, config StationConfigString) error
-		
+
 		CreateSession(url string, stationID StationID) (string, string, error)
 		RefreshSession(stationID StationID) (string, int64, error)
 		EndSession(stationID StationID, sessionID BonusSessionID) error
@@ -148,12 +153,15 @@ type (
 
 		GetRabbitConfig() (RabbitConfig, error)
 		SetExternalServicesActive(active bool)
-		AssignRabbitPub(func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error)
 		SetNextSession(stationID StationID) error
-		RequestSessionsFromService(count int, postID int) error
+		RequestSessionsFromService(count int, stationID StationID) error
 		AddSessionsToPool(stationID StationID, sessionsIDs ...string) error
 		AssignSessionUser(sessionID string, userID string) error
 		AssignSessionBonuses(sessionID string, amount int) error
+
+		InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error)
+		PrepareRabbitMessage(messageType string, payload interface{}) error
+		SaveMoneyReportAndMessage(report RabbitMoneyReport) (err error)
 	}
 
 	// Repo is a DAL interface.
@@ -232,6 +240,13 @@ type (
 		SetStationConfigString(config StationConfigString) error
 
 		SetConfigIntIfNotExists(ConfigInt) error
+
+		SaveMoneyReportAndMessage(report RabbitMoneyReport) (err error)
+		AddRabbitMessage(message RabbitMessage) error
+		GetUnsendedRabbitMessages(lastMessageID int64) ([]RabbitMessage, error)
+		GetUnsendedMoneyReports(lastMessageID int64) (rabbitMoneyReports []RabbitMoneyReport, err error)
+		MarkRabbitMoneyReportAsSent(id int64) (err error)
+		MarkRabbitMessageAsSent(id int64) (err error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -288,6 +303,8 @@ type app struct {
 
 	extServicesActive     bool
 	servicesPublisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error
+
+	bonusSystemRabbitWorker *BonusRabbitWorker
 }
 
 // New creates and returns new App.
@@ -300,6 +317,7 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 		hardware:         hardware,
 		volumeCorrection: 1000,
 	}
+
 	stationConfig, err := appl.repo.GetStationConfigInt(ParameterNameVolumeCoef, StationID(1))
 	if err != nil {
 		log.PrintErr(err)
@@ -438,4 +456,25 @@ type StationConfig struct {
 type SessionsRequest struct {
 	Count  int `json:"new_sessions_amount"`
 	PostID int `json:"post_id"`
+}
+
+type RabbitMessageID int64
+
+type RabbitMessage struct {
+	ID          RabbitMessageID
+	MessageType string
+	Payload     interface{}
+	CreatedAt   time.Time
+	IsSent      bool
+	SentAt      *time.Time
+}
+
+type RabbitMoneyReport struct {
+	ID          RabbitMessageID
+	MessageType string
+	MoneyReport MoneyReport
+	MessageUUID uuid.UUID
+	CreatedAt   time.Time
+	IsSent      bool
+	SentAt      *time.Time
 }

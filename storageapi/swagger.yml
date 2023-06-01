@@ -194,6 +194,8 @@ definitions:
         type: integer
       service:
         type: integer
+      bonuses:
+        type: integer
       ctime:
         type: integer
   
@@ -211,6 +213,8 @@ definitions:
       electronical:
         type: integer
       service:
+        type: integer
+      bonuses:
         type: integer
       ctime:
         type: integer

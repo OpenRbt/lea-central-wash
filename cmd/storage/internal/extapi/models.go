@@ -152,6 +152,7 @@ func apiCollectionReport(v app.CollectionReport) *model.CollectionReport {
 		Coins:        int64(v.Coins),
 		Electronical: int64(v.Electronical),
 		Service:      int64(v.Service),
+		Bonuses:      int64(v.Bonuses),
 		Ctime:        v.Ctime.Unix(),
 	}
 }
@@ -333,6 +334,7 @@ func apiCollectionReportWithUser(reports []app.CollectionReportWithUser) (res []
 			Coins:        int64(reports[i].Coins),
 			Electronical: int64(reports[i].Electronical),
 			Service:      int64(reports[i].Service),
+			Bonuses:      int64(reports[i].Bonuses),
 			Ctime:        reports[i].Ctime.Unix(),
 			User:         reports[i].User,
 		})
