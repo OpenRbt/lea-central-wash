@@ -300,7 +300,7 @@ ORDER BY r.station_id,r.program_id
 	WHERE ctime> coalesce(
 			(SELECT ctime
 			 FROM money_collection
-			 WHERE station_id = 1
+			 WHERE station_id = :station_id
 			 ORDER BY id DESC
 			 LIMIT 1)
 		, CAST('1970-01-01' AS timestamp))
