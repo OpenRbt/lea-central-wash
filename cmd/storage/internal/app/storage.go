@@ -3,10 +3,11 @@ package app
 import (
 	"errors"
 	"fmt"
-	uuid "github.com/satori/go.uuid"
 	"reflect"
 	"strconv"
 	"time"
+
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/OpenRbt/share_business/wash_rabbit/entity/session"
 	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
@@ -186,7 +187,7 @@ func (a *app) refreshDiscounts() {
 	}
 	for {
 		log.Debug("checkDiscounts", "time", time.Now().UTC())
-		err := a.checkDiscounts(time.Now().UTC().Add(time.Duration(a.cfg.TimeZone.Value)))
+		err := a.checkDiscounts(time.Now().UTC().Add(time.Minute * time.Duration(a.cfg.TimeZone.Value)))
 		if err != nil {
 			log.PrintErr(err)
 		}
