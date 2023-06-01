@@ -70,7 +70,7 @@ func main() {
 	}
 	// Let's handle metrics
 	http.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe(":2112", nil)
+	go http.ListenAndServe(":2112", nil)
 
 	var hardware app.HardwareAccessLayer
 	var errHardware error
