@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	uuid "github.com/satori/go.uuid"
 	"runtime"
 	"strconv"
 	"strings"
@@ -1075,5 +1076,121 @@ func (r *repo) SetStationConfigString(config app.StationConfigString) (err error
 		}
 		return err
 	})
+	return
+}
+
+func (r *repo) AddRabbitMessage(message app.RabbitMessage) (err error) {
+	bytes, ok := message.Payload.([]byte)
+	if !ok {
+		return app.ErrRabbitMessageBadPayload
+	}
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlAddRabbitMessage, argAddRabbitMessage{
+			MessageType: message.MessageType,
+			Payload:     bytes,
+			CreatedAt:   time.Now().UTC(),
+		})
+
+		return err
+	})
+	return
+}
+
+func (r *repo) GetUnsendedRabbitMessages(lastMessageID int64) (messages []app.RabbitMessage, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res []resRabbitMessage
+		err := tx.NamedSelectContext(ctx, &res, sqlGetUnsendedRabbitMessages, argGetUnsendedRabbitMessages{
+			LastID: lastMessageID,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		messages = appRabbitMessages(res)
+
+		return nil
+	})
+	return
+}
+
+func (r *repo) MarkRabbitMessageAsSent(id int64) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlMarkRabbitMessageAsSent, argMarkRabbitMessageAsSent{
+			ID:    id,
+			Ctime: time.Now().UTC(),
+		})
+
+		return err
+	})
+
+	return
+}
+
+func (r *repo) GetUnsendedMoneyReports(lastMessageID int64) (rabbitMoneyReports []app.RabbitMoneyReport, err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		res := []resRabbitMoneyReport{}
+		err := tx.NamedSelectContext(ctx, &res, sqlGetUnsendedRabbitMoneyReports, argGetUnsendedRabbitMessages{
+			LastID: lastMessageID,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		rabbitMoneyReports = appRabbitMoneyReports(res)
+
+		return nil
+	})
+	return
+}
+
+func (r *repo) SaveMoneyReportAndMessage(report app.RabbitMoneyReport) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		now := time.Now().UTC()
+		id := 0
+		stmt, err := tx.PrepareNamed(sqlAddMoneyReportForRabbitMessage)
+		if err != nil {
+			return err
+		}
+
+		err = stmt.Get(&id, argAddMoneyReport{
+			StationID:    report.MoneyReport.StationID,
+			Banknotes:    report.MoneyReport.Banknotes,
+			CarsTotal:    report.MoneyReport.CarsTotal,
+			Coins:        report.MoneyReport.Coins,
+			Electronical: report.MoneyReport.Electronical,
+			Service:      report.MoneyReport.Service,
+			Bonuses:      report.MoneyReport.Bonuses,
+			Ctime:        now,
+			SessionID:    report.MoneyReport.SessionID,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		_, err = tx.NamedExec(sqlAddRabbitMoneyReport, argAddRabbitMoneyReport{
+			MessageType:   report.MessageType,
+			MoneyReportID: id,
+			CreatedAt:     now,
+			MessageUUID:   uuid.NullUUID{UUID: uuid.NewV4(), Valid: true},
+		})
+
+		return err
+	})
+	return
+}
+
+func (r *repo) MarkRabbitMoneyReportAsSent(id int64) (err error) {
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExec(sqlMarkRabbitMoneyReportAsSent, argMarkRabbitMessageAsSent{
+			ID:    id,
+			Ctime: time.Now().UTC(),
+		})
+
+		return err
+	})
+
 	return
 }

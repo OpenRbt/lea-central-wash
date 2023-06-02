@@ -3178,6 +3178,9 @@ func init() {
         "banknotes": {
           "type": "integer"
         },
+        "bonuses": {
+          "type": "integer"
+        },
         "carsTotal": {
           "type": "integer"
         },
@@ -3202,6 +3205,9 @@ func init() {
       "type": "object",
       "properties": {
         "banknotes": {
+          "type": "integer"
+        },
+        "bonuses": {
           "type": "integer"
         },
         "carsTotal": {
@@ -7026,6 +7032,9 @@ func init() {
         "banknotes": {
           "type": "integer"
         },
+        "bonuses": {
+          "type": "integer"
+        },
         "carsTotal": {
           "type": "integer"
         },
@@ -7050,6 +7059,9 @@ func init() {
       "type": "object",
       "properties": {
         "banknotes": {
+          "type": "integer"
+        },
+        "bonuses": {
           "type": "integer"
         },
         "carsTotal": {

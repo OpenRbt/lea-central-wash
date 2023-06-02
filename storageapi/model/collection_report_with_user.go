@@ -22,6 +22,9 @@ type CollectionReportWithUser struct {
 	// banknotes
 	Banknotes int64 `json:"banknotes,omitempty"`
 
+	// bonuses
+	Bonuses int64 `json:"bonuses,omitempty"`
+
 	// cars total
 	CarsTotal int64 `json:"carsTotal,omitempty"`
 
@@ -50,6 +53,9 @@ func (m *CollectionReportWithUser) UnmarshalJSON(data []byte) error {
 
 		// banknotes
 		Banknotes int64 `json:"banknotes,omitempty"`
+
+		// bonuses
+		Bonuses int64 `json:"bonuses,omitempty"`
 
 		// cars total
 		CarsTotal int64 `json:"carsTotal,omitempty"`
@@ -80,6 +86,7 @@ func (m *CollectionReportWithUser) UnmarshalJSON(data []byte) error {
 	}
 
 	m.Banknotes = props.Banknotes
+	m.Bonuses = props.Bonuses
 	m.CarsTotal = props.CarsTotal
 	m.Coins = props.Coins
 	m.Ctime = props.Ctime
