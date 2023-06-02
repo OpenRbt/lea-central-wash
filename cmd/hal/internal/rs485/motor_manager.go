@@ -3,6 +3,7 @@ package rs485
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"sync"
 	"time"
 
@@ -26,6 +27,7 @@ type MotorManager struct {
 
 	sequenceRequesters     []*requester.SequenceRequester
 	sequenceRequesterMutex sync.RWMutex
+	motorInRequester       [app.MAX_ALLOWED_DEVICES + 1]int8
 
 	portReporter requester.PortReporter
 
@@ -81,12 +83,12 @@ func (m *MotorManager) StopMotor(deviceID uint8) error {
 func (m *MotorManager) StopMotorAttempts(requester *requester.SequenceRequester, deviceID uint8, attempts int) error {
 	var lastError error
 	for attempt := 0; attempt < attemptsToPingDevice; attempt++ {
-		m.hwMetrics.RS485MotorRequestCounter.Inc(string(deviceID))
+		m.hwMetrics.RS485MotorRequestCounter.Inc(strconv.Itoa(int(deviceID)))
 		a := requester.HighPriorityStopMotor(deviceID)
 		if a.Err == nil {
 			return nil
 		} else {
-			m.hwMetrics.RS485MotorRequestFailCounter.Inc(string(deviceID))
+			m.hwMetrics.RS485MotorRequestFailCounter.Inc(strconv.Itoa(int(deviceID)))
 			lastError = a.Err
 		}
 	}
@@ -120,12 +122,12 @@ func (m *MotorManager) StartMotor(deviceID uint8) error {
 func (m *MotorManager) StartMotorAttempts(requester *requester.SequenceRequester, deviceID uint8, attempts int) error {
 	var lastError error
 	for attempt := 0; attempt < attemptsToPingDevice; attempt++ {
-		m.hwMetrics.RS485MotorRequestCounter.Inc(string(deviceID))
+		m.hwMetrics.RS485MotorRequestCounter.Inc(strconv.Itoa(int(deviceID)))
 		a := requester.HighPriorityStartMotor(deviceID)
 		if a.Err == nil {
 			return nil
 		} else {
-			m.hwMetrics.RS485MotorRequestFailCounter.Inc(string(deviceID))
+			m.hwMetrics.RS485MotorRequestFailCounter.Inc(strconv.Itoa(int(deviceID)))
 			lastError = a.Err
 		}
 	}
@@ -156,13 +158,13 @@ func (m *MotorManager) SetSpeedPercent(deviceID uint8, percent int16) error {
 func (m *MotorManager) SetSpeedPercentAttempts(requester *requester.SequenceRequester, deviceID uint8, percent int16, attempts int) error {
 	var lastError error
 	for attempt := 0; attempt < attemptsToPingDevice; attempt++ {
-		m.hwMetrics.RS485MotorRequestCounter.Inc(string(deviceID))
+		m.hwMetrics.RS485MotorRequestCounter.Inc(strconv.Itoa(int(deviceID)))
 		a := requester.HighPrioritySetSpeedPercent(deviceID, int(percent))
 		if a.Err == nil {
 			return nil
 		} else {
 			lastError = a.Err
-			m.hwMetrics.RS485MotorRequestFailCounter.Inc(string(deviceID))
+			m.hwMetrics.RS485MotorRequestFailCounter.Inc(strconv.Itoa(int(deviceID)))
 		}
 	}
 	return lastError
@@ -188,6 +190,29 @@ func (m *MotorManager) AddSequenceRequester(r *requester.SequenceRequester) {
 	m.sequenceRequesterMutex.Lock()
 	defer m.sequenceRequesterMutex.Unlock()
 	m.sequenceRequesters = append(m.sequenceRequesters, r)
+}
+func (m *MotorManager) RemoveSequenceRequester(k *requester.SequenceRequester) {
+	// Let's delete the requester
+	fmt.Println("mm requester to delete")
+	m.sequenceRequesterMutex.Lock()
+	for i := range m.sequenceRequesters {
+		if m.sequenceRequesters[i] == k {
+			lastElementIndex := len(m.sequenceRequesters) - 1
+			m.sequenceRequesters[i] = m.sequenceRequesters[lastElementIndex]
+			m.sequenceRequesters = m.sequenceRequesters[:lastElementIndex]
+		}
+		k.Destroy()
+		for j := 1; j <= app.MAX_ALLOWED_DEVICES; j++ {
+			if m.motorInRequester[j] == int8(i) {
+				m.motorInRequester[j] = -1
+			}
+		}
+	}
+	if m.portReporter != nil {
+		m.portReporter.FreePort(k.Port())
+	}
+
+	m.sequenceRequesterMutex.Unlock()
 }
 
 func (m *MotorManager) Run() error {
@@ -218,21 +243,7 @@ func (m *MotorManager) workingLoop() {
 			m.collectInfoIteration()
 			timer.Reset(m.refreshDelay)
 		case k := <-m.requesterToDelete:
-			// Let's delete the requester
-			fmt.Println("mm requester to delete")
-			m.sequenceRequesterMutex.Lock()
-			for i := range m.sequenceRequesters {
-				if m.sequenceRequesters[i] == k {
-					lastElementIndex := len(m.sequenceRequesters) - 1
-					m.sequenceRequesters[i] = m.sequenceRequesters[lastElementIndex]
-					m.sequenceRequesters = m.sequenceRequesters[:lastElementIndex]
-				}
-				k.Destroy()
-			}
-			if m.portReporter != nil {
-				m.portReporter.FreePort(k.Port())
-			}
-			m.sequenceRequesterMutex.Unlock()
+			m.RemoveSequenceRequester(k)
 		}
 	}
 }
@@ -263,7 +274,9 @@ func (m *MotorManager) collectInfoIteration() int {
 			m.MarkSequenceRequesterToDelete(curRequester)
 		}
 
-		for k := uint8(0); k < requester.MAX_ALLOWED_DEVICES; k++ {
+		// Let's see which devices were found after the scan
+
+		for k := uint8(0); k < app.MAX_ALLOWED_DEVICES; k++ {
 			devFound := 0
 			for j := 0; j < m.SequenceRequesterCount(); j++ {
 				curRequester := m.SequenceRequester(i)
@@ -275,7 +288,7 @@ func (m *MotorManager) collectInfoIteration() int {
 					continue
 				}
 			}
-			m.hwMetrics.MotorDetected.SetGaugeByID(string(k), float64(devFound))
+			m.hwMetrics.MotorDetected.SetGaugeByID(strconv.Itoa(int(k)), float64(devFound))
 		}
 		totalDevicesFound += devicesFound
 	}
@@ -305,7 +318,7 @@ func (m *MotorManager) CheckAndGetSequenceRequencerPort(port string) (*requester
 	}
 
 	deviceFound := false
-	for i := uint8(1); i < requester.MAX_ALLOWED_DEVICES; i++ {
+	for i := uint8(1); i < app.MAX_ALLOWED_DEVICES; i++ {
 		maxSpeed, err := mDriver.MaxSpeed(i)
 		if err != nil { //Let's just do 2 attempts
 			maxSpeed, err = mDriver.MaxSpeed(i)

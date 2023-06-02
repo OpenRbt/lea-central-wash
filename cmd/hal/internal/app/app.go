@@ -4,6 +4,8 @@ import (
 	"errors"
 )
 
+const MAX_ALLOWED_DEVICES = 6
+
 var (
 	ErrNotFound            = errors.New("not found")
 	ErrNotFoundDispenser   = errors.New("not found Dispenser")

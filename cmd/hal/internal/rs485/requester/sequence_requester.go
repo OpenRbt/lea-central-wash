@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"sync"
-)
 
-const MAX_ALLOWED_DEVICES = 6
+	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/app"
+)
 
 type MotorDriver interface {
 	StopMotor(device uint8) error
@@ -103,7 +103,7 @@ type SequenceRequester struct {
 	AnswerChannels      []chan Answer
 	AnswerChannelsMutex sync.RWMutex
 
-	devs      [MAX_ALLOWED_DEVICES + 1]bool
+	devs      [app.MAX_ALLOWED_DEVICES + 1]bool
 	devsMutex sync.RWMutex
 
 	driver MotorDriver
@@ -119,7 +119,7 @@ func (s *SequenceRequester) Destroy() {
 }
 
 func (s *SequenceRequester) HasDevice(deviceID uint8) bool {
-	if deviceID > MAX_ALLOWED_DEVICES {
+	if deviceID > app.MAX_ALLOWED_DEVICES {
 		return false
 	}
 	s.devsMutex.RLock()
@@ -260,7 +260,8 @@ func (s *SequenceRequester) PullAnswerChannel() (chan Answer, error) {
 
 func (s *SequenceRequester) ScanDevices(attempts int) int {
 	res := 0
-	for i := uint8(1); i <= MAX_ALLOWED_DEVICES; i++ {
+	var foundDevices [app.MAX_ALLOWED_DEVICES + 1]bool
+	for i := uint8(1); i <= app.MAX_ALLOWED_DEVICES; i++ {
 		fmt.Printf("trying device #%d\n", i)
 		maxAttempts := 1
 		if s.HasDevice(i) {
@@ -271,6 +272,7 @@ func (s *SequenceRequester) ScanDevices(attempts int) int {
 		fmt.Printf("trying device #%d, answered=%+v\n", i, deviceAnswered)
 		if deviceAnswered {
 			res++
+			foundDevices[i] = true
 		}
 		s.setDeviceAvailability(i, deviceAnswered)
 	}
@@ -278,7 +280,7 @@ func (s *SequenceRequester) ScanDevices(attempts int) int {
 }
 
 func (s *SequenceRequester) setDeviceAvailability(deviceID uint8, availability bool) {
-	if deviceID > MAX_ALLOWED_DEVICES {
+	if deviceID > app.MAX_ALLOWED_DEVICES {
 		return
 	}
 	s.devsMutex.Lock()
