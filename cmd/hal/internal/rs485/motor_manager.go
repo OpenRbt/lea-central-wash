@@ -31,9 +31,10 @@ type MotorManager struct {
 
 	portReporter requester.PortReporter
 
-	requesterToDelete chan *requester.SequenceRequester
-	hwMetrics         app.HardwareMetrics
-	devicesModel      FreqGenModel
+	requesterToDelete   chan *requester.SequenceRequester
+	hwMetrics           app.HardwareMetrics
+	devicesModel        FreqGenModel
+	lastReportedDevices app.DevicesList
 }
 
 func NewMotorManager(ctx context.Context, hwMetrics app.HardwareMetrics,
@@ -191,6 +192,7 @@ func (m *MotorManager) AddSequenceRequester(r *requester.SequenceRequester) {
 	defer m.sequenceRequesterMutex.Unlock()
 	m.sequenceRequesters = append(m.sequenceRequesters, r)
 }
+
 func (m *MotorManager) RemoveSequenceRequester(k *requester.SequenceRequester) {
 	// Let's delete the requester
 	fmt.Println("mm requester to delete")
@@ -248,14 +250,15 @@ func (m *MotorManager) workingLoop() {
 	}
 }
 
-func (m *MotorManager) collectInfoIteration() int {
+func (m *MotorManager) collectInfoIteration() int8 {
 	fmt.Print("collect info iteration\n")
 	m.sequenceRequesterMutex.RLock()
 	N := len(m.sequenceRequesters)
 	m.sequenceRequesterMutex.RUnlock()
 
 	fmt.Printf("sequence requesters count:%d \n", N)
-	totalDevicesFound := 0
+	finalDevicesList := app.NewDeviceList()
+
 	for i := 0; i <= N; i++ {
 		var curRequester *requester.SequenceRequester
 		curRequester = nil
@@ -268,32 +271,27 @@ func (m *MotorManager) collectInfoIteration() int {
 			break // means we reached end of the cycle
 		}
 		fmt.Printf("scan devices engaged\n")
-		devicesFound := curRequester.ScanDevices(3)
-		if devicesFound == 0 {
+		devicesFound := curRequester.ScanDevices(3, finalDevicesList)
+		finalDevicesList.AddRange(devicesFound)
+		if devicesFound.Count() == 0 {
 			fmt.Printf("no devices found")
 			m.MarkSequenceRequesterToDelete(curRequester)
 		}
-
-		// Let's see which devices were found after the scan
-
-		for k := uint8(0); k < app.MAX_ALLOWED_DEVICES; k++ {
-			devFound := 0
-			for j := 0; j < m.SequenceRequesterCount(); j++ {
-				curRequester := m.SequenceRequester(i)
-				if curRequester != nil {
-					continue
-				}
-				if curRequester.HasDevice(k) {
-					devFound = 1
-					continue
-				}
-			}
-			m.hwMetrics.MotorDetected.SetGaugeByID(strconv.Itoa(int(k)), float64(devFound))
-		}
-		totalDevicesFound += devicesFound
 	}
-	fmt.Printf("found %d devices, from %d requests\n", totalDevicesFound, N)
-	return totalDevicesFound
+
+	m.lastReportedDevices.Clean()
+	m.lastReportedDevices.AddRange(finalDevicesList)
+
+	for i := int8(1); i <= app.MAX_ALLOWED_DEVICES; i++ {
+		devFound := 0
+		if finalDevicesList.Contains(i) {
+			devFound = 1
+		}
+		m.hwMetrics.MotorDetected.SetGaugeByID(strconv.Itoa(int(i)), float64(devFound))
+	}
+
+	fmt.Printf("found %d devices, from %d requests\n", finalDevicesList.Count(), N)
+	return finalDevicesList.Count()
 }
 
 func (m *MotorManager) MarkSequenceRequesterToDelete(r *requester.SequenceRequester) {

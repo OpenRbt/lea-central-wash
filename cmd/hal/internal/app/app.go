@@ -15,6 +15,7 @@ var (
 	ErrReadAnswerDispenser = errors.New("error in read answer from Dispenser")
 	ErrDispenserNotRespond = errors.New("dispenser is not responding")
 	ErrModelDoesNotExist   = errors.New("model does not exist")
+	ErrWrongIndex          = errors.New("wrong index")
 )
 
 type MotorDriver interface {

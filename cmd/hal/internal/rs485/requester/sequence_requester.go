@@ -258,12 +258,15 @@ func (s *SequenceRequester) PullAnswerChannel() (chan Answer, error) {
 	return res, nil
 }
 
-func (s *SequenceRequester) ScanDevices(attempts int) int {
-	res := 0
-	var foundDevices [app.MAX_ALLOWED_DEVICES + 1]bool
+func (s *SequenceRequester) ScanDevices(attempts int, allDevices *app.DevicesList) *app.DevicesList {
+	res := app.NewDeviceList()
 	for i := uint8(1); i <= app.MAX_ALLOWED_DEVICES; i++ {
 		fmt.Printf("trying device #%d\n", i)
 		maxAttempts := 1
+		if allDevices.Contains(int8(i)) && !s.HasDevice(i) {
+			// Means this device is on another line
+			continue
+		}
 		if s.HasDevice(i) {
 			// we need to ping existing device more than others
 			maxAttempts = attempts
@@ -271,8 +274,7 @@ func (s *SequenceRequester) ScanDevices(attempts int) int {
 		deviceAnswered := s.SpecificDeviceReplies(i, maxAttempts)
 		fmt.Printf("trying device #%d, answered=%+v\n", i, deviceAnswered)
 		if deviceAnswered {
-			res++
-			foundDevices[i] = true
+			res.AddDevice(int8(i))
 		}
 		s.setDeviceAvailability(i, deviceAnswered)
 	}
