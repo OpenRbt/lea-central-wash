@@ -163,7 +163,7 @@ func (f *FrequencyGenerator) StopMotor(deviceID uint8) error {
 	f.modbusMutex.Lock()
 	defer f.modbusMutex.Unlock()
 	f.client.SetUnitId(deviceID)
-	err := f.client.WriteBytes(0x1000, []byte{0x5})
+	err := f.client.WriteRegister(0x1000, 0x5)
 	if err != nil {
 		return err
 	}
