@@ -196,19 +196,19 @@ func (m *MotorManager) RemoveSequenceRequester(k *requester.SequenceRequester) {
 	// Let's delete the requester
 	fmt.Println("mm requester to delete")
 	m.sequenceRequesterMutex.Lock()
+	defer m.sequenceRequesterMutex.Unlock()
 	for i := range m.sequenceRequesters {
 		if m.sequenceRequesters[i] == k {
 			lastElementIndex := len(m.sequenceRequesters) - 1
 			m.sequenceRequesters[i] = m.sequenceRequesters[lastElementIndex]
 			m.sequenceRequesters = m.sequenceRequesters[:lastElementIndex]
+			break
 		}
-		k.Destroy()
 	}
+	k.Destroy()
 	if m.portReporter != nil {
 		m.portReporter.FreePort(k.Port())
 	}
-
-	m.sequenceRequesterMutex.Unlock()
 }
 
 func (m *MotorManager) Run() error {
