@@ -94,8 +94,11 @@ func NewRequest(t RequestType, deviceID uint8, val uint16) Request {
 }
 
 type SequenceRequester struct {
-	ctx      context.Context
-	waitChan chan struct{}
+	ctx            context.Context
+	waitChan       chan struct{}
+	destroyed      bool
+	initialized    bool
+	destroyedMutex sync.RWMutex
 
 	highPriorityQueue chan *RequestWrapper
 	lowPriorityQueue  chan *RequestWrapper
@@ -114,6 +117,15 @@ func (s *SequenceRequester) Port() string {
 }
 
 func (s *SequenceRequester) Destroy() {
+	if !s.initialized {
+		fmt.Printf("SEQUENCE REQUESTER IS NOT INITIALIZED\n")
+	}
+	s.destroyedMutex.Lock()
+	defer s.destroyedMutex.Unlock()
+	if s.destroyed {
+		return
+	}
+	s.destroyed = true
 	s.driver.Destroy()
 	close(s.waitChan)
 }
@@ -224,6 +236,7 @@ func NewSequenceRequester(ctx context.Context, motorDriver MotorDriver) *Sequenc
 		AnswerChannels:    make([]chan Answer, 0, 2*commandsInBuffer),
 		driver:            motorDriver,
 		waitChan:          make(chan struct{}),
+		initialized:       true,
 	}
 	N := cap(res.AnswerChannels)
 	for i := 0; i < N; i++ {

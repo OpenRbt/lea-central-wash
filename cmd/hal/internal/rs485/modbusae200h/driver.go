@@ -120,6 +120,7 @@ func (f *FrequencyGenerator) SetSpeedPercent(deviceID uint8, percent int16) erro
 	fmt.Printf("final value %d percent, low %d, high %d\n", percent, LowVal, HighVal)
 	err := f.client.WriteBytes(0x2000, []byte{byte(HighVal), byte(LowVal)})
 	if err != nil {
+		fmt.Printf("%s: id:%d, driver: cant set speed %+v\n", f.portName, deviceID, err)
 		return err
 	}
 	return nil
@@ -152,7 +153,7 @@ func (f *FrequencyGenerator) StartMotor(deviceID uint8) error {
 	//cmd := []byte{0x0, 0x01}
 	err := f.client.WriteBytes(0x1000, cmd)
 	if err != nil {
-		fmt.Printf("driver: cant start %+v\n", err)
+		fmt.Printf("%s: id:%d, driver: cant start %+v\n", f.portName, deviceID, err)
 		return err
 	}
 
@@ -165,6 +166,7 @@ func (f *FrequencyGenerator) StopMotor(deviceID uint8) error {
 	f.client.SetUnitId(deviceID)
 	err := f.client.WriteRegister(0x1000, 0x5)
 	if err != nil {
+		fmt.Printf("%s: id:%d, driver: cant stop %+v\n", f.portName, deviceID, err)
 		return err
 	}
 	return nil

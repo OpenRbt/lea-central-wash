@@ -27,7 +27,6 @@ type MotorManager struct {
 
 	sequenceRequesters     []*requester.SequenceRequester
 	sequenceRequesterMutex sync.RWMutex
-	motorInRequester       [app.MAX_ALLOWED_DEVICES + 1]int8
 
 	portReporter requester.PortReporter
 
@@ -204,11 +203,6 @@ func (m *MotorManager) RemoveSequenceRequester(k *requester.SequenceRequester) {
 			m.sequenceRequesters = m.sequenceRequesters[:lastElementIndex]
 		}
 		k.Destroy()
-		for j := 1; j <= app.MAX_ALLOWED_DEVICES; j++ {
-			if m.motorInRequester[j] == int8(i) {
-				m.motorInRequester[j] = -1
-			}
-		}
 	}
 	if m.portReporter != nil {
 		m.portReporter.FreePort(k.Port())
