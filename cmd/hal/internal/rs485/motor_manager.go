@@ -294,6 +294,8 @@ func (m *MotorManager) MarkSequenceRequesterToDelete(r *requester.SequenceReques
 }
 
 func (m *MotorManager) Destroy() {
+	m.sequenceRequesterMutex.Lock()
+	defer m.sequenceRequesterMutex.Unlock()
 	for i := range m.sequenceRequesters {
 		m.sequenceRequesters[i].Destroy()
 		m.portReporter.FreePort(m.sequenceRequesters[i].Port())
