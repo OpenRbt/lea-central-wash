@@ -40,6 +40,8 @@ import (
 const (
 	dbTimeoutMigrations     = 5 * time.Minute
 	dbIdleTimeoutMigrations = 10 * time.Minute
+	dbServiceTimeout        = 5 * time.Minute
+	dbServiceIdleTimeout    = 10 * time.Minute
 
 	connectTimeout  = 3 * time.Second // must be less than swarm's deploy.update_config.monitor
 	dbTimeout       = 3 * time.Second
@@ -165,6 +167,7 @@ func main() { //nolint:gocyclo
 	log.Info("started", "version", ver)
 
 	var db *sqlx.DB
+	var serviceDB *sqlx.DB
 	var err error
 	count := 0
 	if !useMemDB {
@@ -177,9 +180,19 @@ func main() { //nolint:gocyclo
 			count++
 			cancel()
 		}
+		count = 0
+		for serviceDB == nil {
+			ctx, cancel := context.WithTimeout(context.Background(), connectTimeout)
+			serviceDB, err = connectDBMaintenance(ctx)
+			if err != nil {
+				log.Warn("Warning: DB for service actions is not connected", "count", count, "err", err)
+			}
+			count++
+			cancel()
+		}
 	}
 	errc := make(chan error)
-	go run(db, errc)
+	go run(db, serviceDB, errc)
 	if err := <-errc; err != nil {
 		log.Fatal(err)
 	}
@@ -239,6 +252,35 @@ func connectDBMigrations(ctx context.Context) (*sqlx.DB, error) {
 
 	return sqlx.NewDb(db, "postgres"), nil
 }
+
+func connectDBMaintenance(ctx context.Context) (*sqlx.DB, error) {
+	cfg.db.ConnectTimeout = connectTimeout
+	cfg.db.SSLMode = pqx.SSLDisable
+	cfg.db.DefaultTransactionIsolation = sql.LevelSerializable
+	cfg.db.StatementTimeout = dbServiceTimeout
+	cfg.db.LockTimeout = dbServiceTimeout
+	cfg.db.IdleInTransactionSessionTimeout = dbServiceIdleTimeout
+
+	db, err := sql.Open("pqx", cfg.db.FormatDSN())
+	if err != nil {
+		return nil, err
+	}
+	db.SetMaxOpenConns(dbMaxOpenConns)
+	db.SetMaxIdleConns(dbParallelConns)
+
+	err = db.PingContext(ctx)
+	for err != nil {
+		nextErr := db.PingContext(ctx)
+		if nextErr == context.DeadlineExceeded {
+			return nil, errors.Wrap(err, "connect to postgres")
+		}
+		err = nextErr
+	}
+
+	return sqlx.NewDb(db, "postgres"), nil
+
+}
+
 func applyMigrations(db *sqlx.DB) error {
 	goose.Init("postgres")
 	if db == nil {
@@ -258,7 +300,7 @@ func applyMigrations(db *sqlx.DB) error {
 
 }
 
-func run(db *sqlx.DB, errc chan<- error) {
+func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 	goose.Init("postgres")
 	var repo app.Repo
 	if db != nil {
@@ -285,7 +327,7 @@ func run(db *sqlx.DB, errc chan<- error) {
 		}
 
 		schemaVer, _ := schemaver.New()
-		repo = dal.New(db, schemaVer)
+		repo = dal.New(db, maintenanceDBConn, schemaVer)
 	} else {
 		log.Info("USING MEM DB")
 		repo = memdb.New()

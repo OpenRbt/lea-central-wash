@@ -322,3 +322,11 @@ func (t *DB) SaveMoneyReportAndMessage(report app.RabbitMoneyReport) (err error)
 func (t *DB) MarkRabbitMoneyReportAsSent(id int64) (err error) {
 	return nil
 }
+
+func (t *DB) RefreshMotorStatsCurrent() (err error) {
+	return nil
+}
+
+func (t *DB) RefreshMotorStatsDates() (err error) {
+	return nil
+}

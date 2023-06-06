@@ -234,46 +234,30 @@ VALUES 	(:relay_report_id, :relay_id, :switched_count, :total_time_on)
 	`
 
 	sqlCurentStationReport = `
-SELECT r.station_id, r.program_id, coalesce(p.name, '') as program_name, sum(r.time_on) as time_on ,sum(r.pump_time_on) as pump_time_on FROM relay_report r
-LEFT JOIN program p on p.id = r.program_id
-WHERE r.id > coalesce(
-	(SELECT last_relay_report_id FROM reset_relay_report WHERE station_id = r.station_id
-	ORDER BY id DESC
-	LIMIT 1)
-	,0)
-AND (r.station_id = :station_id or CAST(:station_id AS INT) is NULL)
-GROUP BY r.station_id,r.program_id,coalesce(p.name, '')
-ORDER BY r.station_id,r.program_id
+SELECT station_id, program_id, program_name, time_on, pump_time_on 
+FROM mv_current_program_stat 
+WHERE station_id = :station_id OR CAST(:station_id AS INT) IS NULL
 `
 	sqlCurentRelayStat = `
-	SELECT p.station_id, r.relay_id, sum(r.switched_count) as switched_count, sum(r.total_time_on) as total_time_on
-	FROM relay_stat r
-	JOIN relay_report p on r.relay_report_id = p.id
-	WHERE p.id > coalesce(
-		(SELECT last_relay_report_id FROM reset_relay_report WHERE station_id = p.station_id
-		ORDER BY id DESC
-		LIMIT 1)
-		,0)
-	AND (station_id = :station_id or CAST(:station_id AS INT) is NULL)
-	Group BY p.station_id, r.relay_id
-	ORDER BY p.station_id, r.relay_id
+SELECT station_id, relay_id, switched_count, total_time_on
+FROM mv_current_relay_stat
+WHERE station_id = :station_id OR CAST(:station_id AS INT) IS NULL
 	`
 	sqlDatesStationReport = `
-SELECT r.station_id, r.program_id, coalesce(p.name, '') as program_name, sum(r.time_on) as time_on ,sum(r.pump_time_on) as pump_time_on FROM relay_report r
-LEFT JOIN program p on p.id = r.program_id
-WHERE r.ctime >= :start_date AND r.ctime <= :end_date
-AND (r.station_id = :station_id or CAST(:station_id AS INT) is NULL)
-GROUP BY r.station_id,r.program_id,coalesce(p.name, '')
-ORDER BY r.station_id,r.program_id
+SELECT station_id, program_id, program_name, sum(time_on) as time_on, sum(pump_time_on) as pump_time_on
+FROM mv_program_stat_dates
+WHERE date >= :start_date AND date <= :end_date
+  AND (station_id = :station_id or CAST(:station_id AS INT) is NULL)
+GROUP BY station_id, program_id, program_name
+ORDER BY station_id,program_id
 `
 	sqlDatesRelayStat = `
-	SELECT p.station_id, r.relay_id, sum(r.switched_count) as switched_count, sum(r.total_time_on) as total_time_on
-	FROM relay_stat r
-	JOIN relay_report p on r.relay_report_id = p.id
-	WHERE p.ctime >= :start_date AND p.ctime <= :end_date
-	AND (station_id = :station_id or CAST(:station_id AS INT) is NULL)
-	Group BY p.station_id, r.relay_id
-	ORDER BY p.station_id, r.relay_id
+SELECT station_id, relay_id, sum(switched_count) as switched_count, sum(total_time_on) as total_time_on
+FROM mv_relay_stat_dates
+WHERE date >= :start_date AND date <= :end_date
+  AND (station_id = :station_id or CAST(:station_id AS INT) is NULL)
+GROUP BY station_id, relay_id
+ORDER BY station_id,relay_id
 	`
 
 	sqlMoneyReport = `
@@ -682,6 +666,10 @@ returning id
 	sqlMarkRabbitMoneyReportAsSent = `
 	UPDATE bonus_rabbit_money_report_send_log SET sent = TRUE, sent_at = :ctime WHERE id = :id
 	`
+	sqlRefreshMotorStatsCurrent   = `refresh materialized view mv_current_relay_stat`
+	sqlRefreshProgramStatsCurrent = `refresh materialized view mv_current_program_stat`
+	sqlRefreshMotorStatsDates     = `refresh materialized view mv_relay_stat_dates`
+	sqlRefreshProgramStatsDates   = `refresh materialized view mv_program_stat_dates`
 )
 
 type (
