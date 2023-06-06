@@ -1124,6 +1124,9 @@ func (a *app) SaveMoneyReportAndMessage(report RabbitMoneyReport) (err error) {
 }
 
 func (a *app) refreshMotorStatsCurrent() {
+	if testApp {
+		return
+	}
 	for {
 		startAt := time.Now().UTC()
 		log.Debug("refreshing current motor stats", "time", time.Now().UTC())
@@ -1148,6 +1151,9 @@ func (a *app) refreshMotorStatsCurrent() {
 }
 
 func (a *app) refreshMotorStatsDates() {
+	if testApp {
+		return
+	}
 	for {
 		startAt := time.Now().UTC()
 		log.Debug("refreshing available motor stats by dates", "time", time.Now().UTC())
