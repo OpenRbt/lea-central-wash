@@ -875,27 +875,29 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 	return sessionID, fmt.Sprintf(QrUrl, url, sessionID), nil
 }
 
-func (a *app) RefreshSession(stationID StationID) (string, int64, error) {
-	panic("Not implemented")
-}
-
 func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
 	station := a.stations[stationID]
 
-	if station.PreviousSessionID != string(sessionID) {
+	endingSession := string(sessionID)
+	if station.PreviousSessionID != endingSession && station.CurrentSessionID != endingSession {
 		return ErrSessionNotFound
 	}
 
+	if station.CurrentSessionID == endingSession {
+		station.CurrentSessionID = ""
+	}
+
+	station.PreviousSessionID = ""
 	station.UserID = ""
 	a.stations[stationID] = station
 	var err error
 
 	if a.bonusSystemRabbitWorker != nil {
 		msg := session.StateChange{
-			SessionID: string(sessionID),
+			SessionID: endingSession,
 			State:     rabbit_vo.SessionStateFinish,
 		}
 		eventErr := a.PrepareRabbitMessage(string(rabbit_vo.SessionStateMessageType), msg)

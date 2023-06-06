@@ -89,8 +89,8 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		EditAdvertisingCampaignHandler: EditAdvertisingCampaignHandlerFunc(func(params EditAdvertisingCampaignParams, principal *storageapi.Profile) EditAdvertisingCampaignResponder {
 			return EditAdvertisingCampaignNotImplemented()
 		}),
-		EndhSessionHandler: EndhSessionHandlerFunc(func(params EndhSessionParams) EndhSessionResponder {
-			return EndhSessionNotImplemented()
+		EndSessionHandler: EndSessionHandlerFunc(func(params EndSessionParams) EndSessionResponder {
+			return EndSessionNotImplemented()
 		}),
 		GetConfigVarBoolHandler: GetConfigVarBoolHandlerFunc(func(params GetConfigVarBoolParams, principal *storageapi.Profile) GetConfigVarBoolResponder {
 			return GetConfigVarBoolNotImplemented()
@@ -163,9 +163,6 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		ProgramsHandler: ProgramsHandlerFunc(func(params ProgramsParams) ProgramsResponder {
 			return ProgramsNotImplemented()
-		}),
-		RefreshSessionHandler: RefreshSessionHandlerFunc(func(params RefreshSessionParams) RefreshSessionResponder {
-			return RefreshSessionNotImplemented()
 		}),
 		ResetStationStatHandler: ResetStationStatHandlerFunc(func(params ResetStationStatParams, principal *storageapi.Profile) ResetStationStatResponder {
 			return ResetStationStatNotImplemented()
@@ -349,8 +346,8 @@ type StorageAPI struct {
 	DispenserStopHandler DispenserStopHandler
 	// EditAdvertisingCampaignHandler sets the operation handler for the edit advertising campaign operation
 	EditAdvertisingCampaignHandler EditAdvertisingCampaignHandler
-	// EndhSessionHandler sets the operation handler for the endh session operation
-	EndhSessionHandler EndhSessionHandler
+	// EndSessionHandler sets the operation handler for the end session operation
+	EndSessionHandler EndSessionHandler
 	// GetConfigVarBoolHandler sets the operation handler for the get config var bool operation
 	GetConfigVarBoolHandler GetConfigVarBoolHandler
 	// GetConfigVarIntHandler sets the operation handler for the get config var int operation
@@ -399,8 +396,6 @@ type StorageAPI struct {
 	PressButtonHandler PressButtonHandler
 	// ProgramsHandler sets the operation handler for the programs operation
 	ProgramsHandler ProgramsHandler
-	// RefreshSessionHandler sets the operation handler for the refresh session operation
-	RefreshSessionHandler RefreshSessionHandler
 	// ResetStationStatHandler sets the operation handler for the reset station stat operation
 	ResetStationStatHandler ResetStationStatHandler
 	// Run2ProgramHandler sets the operation handler for the run2 program operation
@@ -595,8 +590,8 @@ func (o *StorageAPI) Validate() error {
 	if o.EditAdvertisingCampaignHandler == nil {
 		unregistered = append(unregistered, "EditAdvertisingCampaignHandler")
 	}
-	if o.EndhSessionHandler == nil {
-		unregistered = append(unregistered, "EndhSessionHandler")
+	if o.EndSessionHandler == nil {
+		unregistered = append(unregistered, "EndSessionHandler")
 	}
 	if o.GetConfigVarBoolHandler == nil {
 		unregistered = append(unregistered, "GetConfigVarBoolHandler")
@@ -669,9 +664,6 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.ProgramsHandler == nil {
 		unregistered = append(unregistered, "ProgramsHandler")
-	}
-	if o.RefreshSessionHandler == nil {
-		unregistered = append(unregistered, "RefreshSessionHandler")
 	}
 	if o.ResetStationStatHandler == nil {
 		unregistered = append(unregistered, "ResetStationStatHandler")
@@ -937,7 +929,7 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/end-session"] = NewEndhSession(o.context, o.EndhSessionHandler)
+	o.handlers["POST"]["/end-session"] = NewEndSession(o.context, o.EndSessionHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
@@ -1034,10 +1026,6 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/programs"] = NewPrograms(o.context, o.ProgramsHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/refresh-session"] = NewRefreshSession(o.context, o.RefreshSessionHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

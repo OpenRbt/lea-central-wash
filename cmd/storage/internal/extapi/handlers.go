@@ -1111,37 +1111,30 @@ func (svc *service) createSession(params op.CreateSessionParams) op.CreateSessio
 	case nil:
 		return op.NewCreateSessionOK().WithPayload(apiCreateSession(sessionId, QR))
 	default:
+		log.PrintErr(err, "stationID", stationID)
 		return op.NewCreateSessionInternalServerError()
 	}
 }
 
-func (svc *service) refreshSession(params op.RefreshSessionParams) op.RefreshSessionResponder {
+func (svc *service) endSession(params op.EndSessionParams) op.EndSessionResponder {
 	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
-		return op.NewRefreshSessionNotFound()
+		return op.NewEndSessionNotFound()
 	}
 
-	sessionId, receiveAmount, err := svc.app.RefreshSession(stationID)
+	sessionID := *params.Args.SessionID
+
+	err = svc.app.EndSession(stationID, app.BonusSessionID(sessionID))
+	if err == nil {
+		return op.NewEndSessionNoContent()
+	}
+
+	log.PrintErr(err, "sessionID", sessionID)
 	switch errors.Cause(err) {
-	case nil:
-		return op.NewRefreshSessionOK().WithPayload(apiRefreshSession(sessionId, int(receiveAmount)))
+	case app.ErrSessionNotFound:
+		return op.NewEndSessionNotFound()
 	default:
-		return op.NewRefreshSessionInternalServerError()
-	}
-}
-
-func (svc *service) endSession(params op.EndhSessionParams) op.EndhSessionResponder {
-	stationID, err := svc.getID(string(*params.Args.Hash))
-	if err != nil {
-		return op.NewEndhSessionNotFound()
-	}
-
-	err = svc.app.EndSession(stationID, app.BonusSessionID(*params.Args.SessionID))
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewEndhSessionNoContent()
-	default:
-		return op.NewEndhSessionInternalServerError()
+		return op.NewEndSessionInternalServerError()
 	}
 }
 
@@ -1151,11 +1144,14 @@ func (svc *service) setBonuses(params op.SetBonusesParams) op.SetBonusesResponde
 		return op.NewSetBonusesNotFound()
 	}
 
-	err = svc.app.SetBonuses(stationID, int(params.Args.Bonuses))
-
-	switch errors.Cause(err) {
-	case nil:
+	bonusAmount := int(params.Args.Bonuses)
+	err = svc.app.SetBonuses(stationID, bonusAmount)
+	if err == nil {
 		return op.NewSetBonusesNoContent()
+	}
+
+	log.PrintErr(err, "stationID", stationID, "Bonus amount", bonusAmount)
+	switch errors.Cause(err) {
 	case app.ErrUserIsNotAuthorized:
 		return op.NewSetBonusesUnauthorized()
 	default:

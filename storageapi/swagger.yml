@@ -76,20 +76,6 @@ definitions:
         type: string
       QR:
         type: string
-
-  SessionRefresh:
-    type: object
-    properties:
-      userID:
-        type: string
-      receiveAmount:
-        type: integer
-  
-  IsAuthorized:
-    type: object
-    properties:
-      authorized:
-        type: boolean
   
   ConfigVarInt:
     type: object
@@ -2460,34 +2446,9 @@ paths:
         500:
           description: Internal error
 
-  /refresh-session:
-    post:
-      operationId: "refreshSession"
-      parameters:
-        - name: args
-          required: true
-          in: body
-          schema:
-            title: "RefreshSession"
-            type: object
-            required:
-              - hash
-            properties:
-              hash:
-                type: string
-      responses:
-        200:
-          description: OK
-          schema:
-            $ref: '#/definitions/SessionRefresh'
-        404:
-          description: hash not found
-        500:
-          description: Internal error
-
   /end-session:
     post:
-      operationId: "endhSession"
+      operationId: "endSession"
       parameters:
         - name: args
           required: true

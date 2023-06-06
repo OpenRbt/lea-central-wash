@@ -30,8 +30,8 @@ require (
 require (
 	github.com/OpenRbt/share_business/wash_rabbit v0.0.0-20230531081845-5b5c1deeccad
 	github.com/prometheus/client_golang v0.9.3
-	github.com/satori/go.uuid v1.2.0
 	github.com/rabbitmq/amqp091-go v1.7.0
+	github.com/satori/go.uuid v1.2.0
 	github.com/wagslane/go-rabbitmq v0.12.3
 	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.28.1

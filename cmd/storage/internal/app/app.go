@@ -147,7 +147,6 @@ type (
 		SetStationConfigString(auth *Auth, config StationConfigString) error
 
 		CreateSession(url string, stationID StationID) (string, string, error)
-		RefreshSession(stationID StationID) (string, int64, error)
 		EndSession(stationID StationID, sessionID BonusSessionID) error
 		SetBonuses(stationID StationID, bonuses int) error
 
