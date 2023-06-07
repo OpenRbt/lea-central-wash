@@ -29,7 +29,7 @@ require (
 
 require (
 	github.com/OpenRbt/share_business/wash_rabbit v0.0.0-20230531081845-5b5c1deeccad
-	github.com/prometheus/client_golang v0.9.3
+	github.com/prometheus/client_golang v1.11.1
 	github.com/rabbitmq/amqp091-go v1.7.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/wagslane/go-rabbitmq v0.12.3
@@ -47,9 +47,10 @@ require (
 	github.com/OpenPeeDeeP/depguard v1.0.1 // indirect
 	github.com/andybalholm/cascadia v1.1.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
-	github.com/beorn7/perks v1.0.0 // indirect
+	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bombsimon/wsl/v3 v3.1.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.0 // indirect
+	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/daixiang0/gci v0.2.4 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/denis-tingajkin/go-header v0.3.1 // indirect
@@ -132,9 +133,9 @@ require (
 	github.com/powerman/dockerize v0.13.1 // indirect
 	github.com/powerman/goose v2.7.0-rc4.0.20200329145851-5c15923690fa+incompatible // indirect
 	github.com/powerman/tail v0.1.0 // indirect
-	github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4 // indirect
-	github.com/prometheus/common v0.4.0 // indirect
-	github.com/prometheus/procfs v0.0.0-20190507164030-5867b95ac084 // indirect
+	github.com/prometheus/client_model v0.2.0 // indirect
+	github.com/prometheus/common v0.26.0 // indirect
+	github.com/prometheus/procfs v0.6.0 // indirect
 	github.com/quasilyte/go-ruleguard v0.2.0 // indirect
 	github.com/quasilyte/regex/syntax v0.0.0-20200407221936-30656e2c4a95 // indirect
 	github.com/ryancurrah/gomodguard v1.1.0 // indirect
