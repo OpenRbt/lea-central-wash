@@ -62,6 +62,7 @@ type MoneyReport struct {
 	Service      int
 	Bonuses      int
 	SessionID    string
+	QrMoney      int
 }
 
 // CollectionReport is how much was collected from a station + when
@@ -73,6 +74,7 @@ type CollectionReport struct {
 	Electronical int
 	Service      int
 	Bonuses      int
+	QrMoney      int
 	Ctime        time.Time
 }
 
@@ -85,6 +87,7 @@ type CollectionReportWithUser struct {
 	Electronical int
 	Service      int
 	Bonuses      int
+	QrMoney      int
 	Ctime        time.Time
 	User         string
 }

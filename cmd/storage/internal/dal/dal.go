@@ -350,6 +350,7 @@ func (r *repo) SaveMoneyReport(report app.MoneyReport) (err error) {
 			Bonuses:      report.Bonuses,
 			Ctime:        time.Now().UTC(),
 			SessionID:    report.SessionID,
+			QrMoney:      report.QrMoney,
 		})
 		return err
 	})

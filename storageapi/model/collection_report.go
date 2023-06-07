@@ -40,6 +40,9 @@ type CollectionReport struct {
 	// id
 	ID int64 `json:"id,omitempty"`
 
+	// qr money
+	QrMoney int64 `json:"qrMoney,omitempty"`
+
 	// service
 	Service int64 `json:"service,omitempty"`
 }
@@ -69,6 +72,9 @@ func (m *CollectionReport) UnmarshalJSON(data []byte) error {
 		// id
 		ID int64 `json:"id,omitempty"`
 
+		// qr money
+		QrMoney int64 `json:"qrMoney,omitempty"`
+
 		// service
 		Service int64 `json:"service,omitempty"`
 	}
@@ -86,6 +92,7 @@ func (m *CollectionReport) UnmarshalJSON(data []byte) error {
 	m.Ctime = props.Ctime
 	m.Electronical = props.Electronical
 	m.ID = props.ID
+	m.QrMoney = props.QrMoney
 	m.Service = props.Service
 	return nil
 }

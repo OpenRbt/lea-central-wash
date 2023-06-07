@@ -165,11 +165,11 @@ SET deleted = true, hash = null
 WHERE id = :id
 	`
 	sqlAddMoneyReport = `
-INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, bonuses, ctime, session_id)  
-VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :bonuses, :ctime, :session_id)
+INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, bonuses, ctime, session_id, qr_money)  
+VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :bonuses, :ctime, :session_id, :qr_money)
 	`
 	sqlAddCollectionReport = `
-	INSERT INTO money_collection (station_id, user_id, banknotes, cars_total, coins, electronical, service, bonuses, last_money_report_id, ctime) 
+	INSERT INTO money_collection (station_id, user_id, banknotes, cars_total, coins, electronical, service, bonuses,qr_money, last_money_report_id, ctime) 
 	(
 	SELECT station_id, 
 			   :user_id,
@@ -179,6 +179,7 @@ VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, 
 			   sum(electronical) as electronical, 
 			   sum(service) as service,
 			   sum(bonuses) as bonuses,
+			   sum(qr_money) as qr_money,
 			   max(id) as max_id,
 			   :ctime
 		FROM money_report
@@ -191,12 +192,12 @@ VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, 
 	)	
 	`
 	sqlLastMoneyReport = `
-SELECT station_id, banknotes, cars_total, coins, electronical, service, bonuses, session_id FROM money_report WHERE station_id = :station_id
+SELECT station_id, banknotes, cars_total, coins, electronical, service, bonuses, session_id, qr_money FROM money_report WHERE station_id = :station_id
 ORDER BY id DESC
 LIMIT 1
 	`
 	sqlLastCollectionReport = `
-SELECT station_id, banknotes, cars_total, coins, electronical, service, ctime, bonuses FROM money_collection WHERE station_id = :station_id
+SELECT station_id, banknotes, cars_total, coins, electronical, service, ctime, bonuses,qr_money FROM money_collection WHERE station_id = :station_id
 ORDER BY id DESC
 LIMIT 1
 	`
@@ -210,6 +211,7 @@ LIMIT 1
 		mc.service,
 		mc.bonuses,
 		mc.ctime,
+		mc.qr_money,
 		COALESCE(u.login, '')  "user"
 	FROM money_collection mc
 	LEFT JOIN users u ON u.id = mc.user_id
@@ -267,7 +269,8 @@ ORDER BY station_id,relay_id
 		   sum(coins) as coins, 
 		   sum(electronical) as electronical, 
 		   sum(service) as service,
-		   sum(bonuses) as bonuses
+		   sum(bonuses) as bonuses,
+		   sum(qr_money) as qr_money
 	FROM money_report
 	WHERE :start_date < ctime AND ctime <= :end_date AND station_id = :station_id
 	GROUP BY station_id
@@ -279,7 +282,8 @@ ORDER BY station_id,relay_id
 		   sum(coins)        as coins,
 		   sum(electronical) as electronical,
 		   sum(service)      as service,
-		   sum(bonuses)      as bonuses
+		   sum(bonuses)      as bonuses,
+		   sum(qr_money) as qr_money
 	FROM money_report
 	WHERE ctime> coalesce(
 			(SELECT ctime
@@ -649,6 +653,7 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 		   report.service,
 		   report.bonuses,
 		   report.session_id,
+		   report.qr_money,
 		   rabbit.message_uuid
 		from bonus_rabbit_money_report_send_log rabbit
 			LEFT JOIN money_report report on rabbit.money_report_id = report.id
@@ -658,8 +663,8 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 	`
 
 	sqlAddMoneyReportForRabbitMessage = `
-INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, bonuses, ctime, session_id)  
-VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :bonuses, :ctime, :session_id)
+INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, bonuses, ctime, session_id,qr_money)  
+VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :bonuses, :ctime, :session_id,:qr_money)
 returning id
 	`
 
@@ -942,6 +947,7 @@ type (
 		Electronical int
 		Service      int
 		Bonuses      int
+		QrMoney      int
 		Ctime        time.Time
 		User         string
 	}
@@ -983,6 +989,7 @@ type (
 		Bonuses      int
 		Ctime        time.Time
 		SessionID    string
+		QrMoney      int
 	}
 	argAdvertisingCampaign struct {
 		DefaultDiscount  int64
@@ -1153,6 +1160,7 @@ type (
 		Service       int
 		Bonuses       int
 		SessionID     string
+		QrMoney       int
 		CreatedAt     time.Time
 		Sent          bool
 		SentAt        *time.Time

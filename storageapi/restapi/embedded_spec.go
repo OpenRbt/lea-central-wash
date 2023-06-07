@@ -3196,6 +3196,9 @@ func init() {
         "id": {
           "type": "integer"
         },
+        "qrMoney": {
+          "type": "integer"
+        },
         "service": {
           "type": "integer"
         }
@@ -3223,6 +3226,9 @@ func init() {
           "type": "integer"
         },
         "id": {
+          "type": "integer"
+        },
+        "qrMoney": {
           "type": "integer"
         },
         "service": {
@@ -3405,6 +3411,9 @@ func init() {
         },
         "hash": {
           "$ref": "#/definitions/Hash"
+        },
+        "qrMoney": {
+          "type": "integer"
         },
         "service": {
           "type": "integer"
@@ -7050,6 +7059,9 @@ func init() {
         "id": {
           "type": "integer"
         },
+        "qrMoney": {
+          "type": "integer"
+        },
         "service": {
           "type": "integer"
         }
@@ -7077,6 +7089,9 @@ func init() {
           "type": "integer"
         },
         "id": {
+          "type": "integer"
+        },
+        "qrMoney": {
           "type": "integer"
         },
         "service": {
@@ -7259,6 +7274,9 @@ func init() {
         },
         "hash": {
           "$ref": "#/definitions/Hash"
+        },
+        "qrMoney": {
+          "type": "integer"
         },
         "service": {
           "type": "integer"
