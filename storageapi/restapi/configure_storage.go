@@ -125,9 +125,9 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.EditAdvertisingCampaignNotImplemented()
 		})
 	}
-	if api.EndhSessionHandler == nil {
-		api.EndhSessionHandler = op.EndhSessionHandlerFunc(func(params op.EndhSessionParams) op.EndhSessionResponder {
-			return op.EndhSessionNotImplemented()
+	if api.EndSessionHandler == nil {
+		api.EndSessionHandler = op.EndSessionHandlerFunc(func(params op.EndSessionParams) op.EndSessionResponder {
+			return op.EndSessionNotImplemented()
 		})
 	}
 	if api.GetConfigVarBoolHandler == nil {
@@ -200,11 +200,6 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.InfoNotImplemented()
 		})
 	}
-	if api.IsAuthorizedHandler == nil {
-		api.IsAuthorizedHandler = op.IsAuthorizedHandlerFunc(func(params op.IsAuthorizedParams) op.IsAuthorizedResponder {
-			return op.IsAuthorizedNotImplemented()
-		})
-	}
 	if api.KasseHandler == nil {
 		api.KasseHandler = op.KasseHandlerFunc(func(params op.KasseParams) op.KasseResponder {
 			return op.KasseNotImplemented()
@@ -253,11 +248,6 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.ProgramsHandler == nil {
 		api.ProgramsHandler = op.ProgramsHandlerFunc(func(params op.ProgramsParams) op.ProgramsResponder {
 			return op.ProgramsNotImplemented()
-		})
-	}
-	if api.RefreshSessionHandler == nil {
-		api.RefreshSessionHandler = op.RefreshSessionHandlerFunc(func(params op.RefreshSessionParams) op.RefreshSessionResponder {
-			return op.RefreshSessionNotImplemented()
 		})
 	}
 	if api.ResetStationStatHandler == nil {

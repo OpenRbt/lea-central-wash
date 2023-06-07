@@ -48,6 +48,7 @@ var (
 	ErrUnknownStation           = errors.New("unknown station")
 	ErrStationProgramMustUnique = errors.New("programID and buttonID must be unique")
 	ErrUserIsNotAuthorized      = errors.New("user is not authorized")
+	ErrSessionNotFound          = errors.New("session not found")
 
 	ErrServiceNotConfigured    = errors.New("service not configured")
 	ErrRabbitMessageBadPayload = errors.New("bad RabbitMessagePayloadData")
@@ -146,9 +147,7 @@ type (
 		SetStationConfigString(auth *Auth, config StationConfigString) error
 
 		CreateSession(url string, stationID StationID) (string, string, error)
-		RefreshSession(stationID StationID) (string, int64, error)
 		EndSession(stationID StationID, sessionID BonusSessionID) error
-		IsAuthorized(stationID StationID) error
 		SetBonuses(stationID StationID, bonuses int) error
 
 		GetRabbitConfig() (RabbitConfig, error)

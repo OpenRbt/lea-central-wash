@@ -536,10 +536,3 @@ func apiCreateSession(sessionID string, QR string) *model.Session {
 		QR: QR,
 	}
 }
-
-func apiRefreshSession(UserID string, receiveAmount int) *model.SessionRefresh {
-	return &model.SessionRefresh{
-		UserID:        UserID,
-		ReceiveAmount: int64(receiveAmount),
-	}
-}
