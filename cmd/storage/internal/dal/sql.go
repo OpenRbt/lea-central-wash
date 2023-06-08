@@ -248,7 +248,7 @@ WHERE station_id = :station_id OR CAST(:station_id AS INT) IS NULL
 	sqlDatesStationReport = `
 SELECT station_id, program_id, program_name, sum(time_on) as time_on, sum(pump_time_on) as pump_time_on
 FROM mv_program_stat_dates
-WHERE date >= :start_date AND date <= :end_date
+WHERE date_hours >= :start_date AND date_hours <= :end_date
   AND (station_id = :station_id or CAST(:station_id AS INT) is NULL)
 GROUP BY station_id, program_id, program_name
 ORDER BY station_id,program_id
@@ -256,7 +256,7 @@ ORDER BY station_id,program_id
 	sqlDatesRelayStat = `
 SELECT station_id, relay_id, sum(switched_count) as switched_count, sum(total_time_on) as total_time_on
 FROM mv_relay_stat_dates
-WHERE date >= :start_date AND date <= :end_date
+WHERE date_hours >= :start_date AND date_hours <= :end_date
   AND (station_id = :station_id or CAST(:station_id AS INT) is NULL)
 GROUP BY station_id, relay_id
 ORDER BY station_id,relay_id

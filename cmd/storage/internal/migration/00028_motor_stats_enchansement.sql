@@ -8,7 +8,7 @@ SELECT p.station_id,
        r.relay_id,
        sum(r.switched_count)      as switched_count,
        sum(r.total_time_on)       as total_time_on,
-       date_trunc('day', p.ctime) as date
+       date_trunc('hour', p.ctime) as date_hours
 FROM relay_stat r
          JOIN relay_report p on r.relay_report_id = p.id
 Group BY p.station_id, r.relay_id, date
@@ -22,7 +22,7 @@ SELECT r.station_id,
        coalesce(p.name, '')       as program_name,
        sum(r.time_on)             as time_on,
        sum(r.pump_time_on)        as pump_time_on,
-       date_trunc('day', r.ctime) as date
+       date_trunc('hour', r.ctime) as date_hours
 FROM relay_report r
          LEFT JOIN program p on p.id = r.program_id
 GROUP BY r.station_id, r.program_id, coalesce(p.name, ''), date
