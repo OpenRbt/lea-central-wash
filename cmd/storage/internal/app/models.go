@@ -35,21 +35,23 @@ type UpdatePasswordData struct {
 
 // StationData represents current status of a station
 type StationData struct {
-	ID                 StationID
-	SessionID          string
-	UserID             string
-	Name               string
-	ServiceMoney       int
-	BonusMoney         int
-	LastPing           time.Time
-	RunProgram         time.Time
-	OpenStation        bool
-	CurrentBalance     int
-	CurrentProgram     int
-	ButtonID           int
-	LastUpdate         int
-	LastDiscountUpdate int64
-	IP                 string
+	ID                  StationID
+	CurrentSessionID    string
+	PreviousSessionID   string
+	AuthorizedSessionID string
+	UserID              string
+	Name                string
+	ServiceMoney        int
+	BonusMoney          int
+	LastPing            time.Time
+	RunProgram          time.Time
+	OpenStation         bool
+	CurrentBalance      int
+	CurrentProgram      int
+	ButtonID            int
+	LastUpdate          int
+	LastDiscountUpdate  int64
+	IP                  string
 }
 
 // MoneyReport is just to represent money in a station. All known kinds of money
