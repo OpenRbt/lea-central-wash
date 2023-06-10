@@ -283,12 +283,16 @@ type (
 )
 
 type app struct {
-	repo                  Repo
-	stations              map[StationID]StationData
-	stationsSessionsPool  map[StationID]chan string
-	stationsMutex         sync.Mutex
-	programs              map[int64]Program
-	programsMutex         sync.Mutex
+	repo          Repo
+	stations      map[StationID]StationData
+	stationsMutex sync.RWMutex
+
+	stationsSessionsPool    map[StationID]chan string
+	stationSessionPoolMutex sync.RWMutex
+
+	programs      map[int64]Program
+	programsMutex sync.RWMutex
+
 	programsDiscounts     ProgramsDiscount
 	programsDiscountMutex sync.Mutex
 	kasseSvc              KasseSvc

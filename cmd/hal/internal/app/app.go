@@ -4,6 +4,8 @@ import (
 	"errors"
 )
 
+const MAX_ALLOWED_DEVICES = 6
+
 var (
 	ErrNotFound            = errors.New("not found")
 	ErrNotFoundDispenser   = errors.New("not found Dispenser")
@@ -12,6 +14,8 @@ var (
 	ErrInCommandFok        = errors.New("error in command FOK")
 	ErrReadAnswerDispenser = errors.New("error in read answer from Dispenser")
 	ErrDispenserNotRespond = errors.New("dispenser is not responding")
+	ErrModelDoesNotExist   = errors.New("model does not exist")
+	ErrWrongIndex          = errors.New("wrong index")
 )
 
 type MotorDriver interface {
@@ -81,7 +85,7 @@ type HardwareMetrics struct {
 	// MotorRunning indicates 1 for running motor and zero for stopped. By id.
 	MotorRunning GaugeMetric
 
-	//RS485MotorRequestCounter, Total number of requests to a motor by id
+	// RS485MotorRequestCounter, Total number of requests to a motor by id
 	RS485MotorRequestCounter     CounterMetric
 	RS485MotorRequestFailCounter CounterMetric
 }

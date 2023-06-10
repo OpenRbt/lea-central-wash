@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"sync"
-)
 
-const MAX_ALLOWED_DEVICES = 6
+	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/app"
+)
 
 type MotorDriver interface {
 	StopMotor(device uint8) error
@@ -94,8 +94,11 @@ func NewRequest(t RequestType, deviceID uint8, val uint16) Request {
 }
 
 type SequenceRequester struct {
-	ctx      context.Context
-	waitChan chan struct{}
+	ctx            context.Context
+	waitChan       chan struct{}
+	destroyed      bool
+	initialized    bool
+	destroyedMutex sync.RWMutex
 
 	highPriorityQueue chan *RequestWrapper
 	lowPriorityQueue  chan *RequestWrapper
@@ -103,7 +106,7 @@ type SequenceRequester struct {
 	AnswerChannels      []chan Answer
 	AnswerChannelsMutex sync.RWMutex
 
-	devs      [MAX_ALLOWED_DEVICES + 1]bool
+	devs      [app.MAX_ALLOWED_DEVICES + 1]bool
 	devsMutex sync.RWMutex
 
 	driver MotorDriver
@@ -114,12 +117,21 @@ func (s *SequenceRequester) Port() string {
 }
 
 func (s *SequenceRequester) Destroy() {
+	if !s.initialized {
+		fmt.Printf("SEQUENCE REQUESTER IS NOT INITIALIZED\n")
+	}
+	s.destroyedMutex.Lock()
+	defer s.destroyedMutex.Unlock()
+	if s.destroyed {
+		return
+	}
+	s.destroyed = true
 	s.driver.Destroy()
 	close(s.waitChan)
 }
 
 func (s *SequenceRequester) HasDevice(deviceID uint8) bool {
-	if deviceID > MAX_ALLOWED_DEVICES {
+	if deviceID > app.MAX_ALLOWED_DEVICES {
 		return false
 	}
 	s.devsMutex.RLock()
@@ -224,6 +236,7 @@ func NewSequenceRequester(ctx context.Context, motorDriver MotorDriver) *Sequenc
 		AnswerChannels:    make([]chan Answer, 0, 2*commandsInBuffer),
 		driver:            motorDriver,
 		waitChan:          make(chan struct{}),
+		initialized:       true,
 	}
 	N := cap(res.AnswerChannels)
 	for i := 0; i < N; i++ {
@@ -258,14 +271,23 @@ func (s *SequenceRequester) PullAnswerChannel() (chan Answer, error) {
 	return res, nil
 }
 
-func (s *SequenceRequester) ScanDevices(attempts int) int {
-	res := 0
-	for i := uint8(1); i <= MAX_ALLOWED_DEVICES; i++ {
+func (s *SequenceRequester) ScanDevices(attempts int, allDevices *app.DevicesList) *app.DevicesList {
+	res := app.NewDeviceList()
+	for i := uint8(1); i <= app.MAX_ALLOWED_DEVICES; i++ {
 		fmt.Printf("trying device #%d\n", i)
-		deviceAnswered := s.SpecificDeviceReplies(i, attempts)
+		maxAttempts := 1
+		if allDevices.Contains(int8(i)) && !s.HasDevice(i) {
+			// Means this device is on another line
+			continue
+		}
+		if s.HasDevice(i) {
+			// we need to ping existing device more than others
+			maxAttempts = attempts
+		}
+		deviceAnswered := s.SpecificDeviceReplies(i, maxAttempts)
 		fmt.Printf("trying device #%d, answered=%+v\n", i, deviceAnswered)
 		if deviceAnswered {
-			res++
+			res.AddDevice(int8(i))
 		}
 		s.setDeviceAvailability(i, deviceAnswered)
 	}
@@ -273,7 +295,7 @@ func (s *SequenceRequester) ScanDevices(attempts int) int {
 }
 
 func (s *SequenceRequester) setDeviceAvailability(deviceID uint8, availability bool) {
-	if deviceID > MAX_ALLOWED_DEVICES {
+	if deviceID > app.MAX_ALLOWED_DEVICES {
 		return
 	}
 	s.devsMutex.Lock()
@@ -331,6 +353,7 @@ func (s *SequenceRequester) HighPriorityStopMotor(deviceID uint8) Answer {
 func (s *SequenceRequester) runRequest(currentQueue chan *RequestWrapper, request Request) Answer {
 	curChan, err := s.PullAnswerChannel()
 	if err != nil {
+		fmt.Println("ERROR! NO ANSWER CHANNELS AVAILABLE")
 		return Answer{
 			R:   request,
 			Err: err,

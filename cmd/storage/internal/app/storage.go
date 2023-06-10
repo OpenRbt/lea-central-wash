@@ -99,13 +99,14 @@ func (a *app) loadStations() error {
 }
 
 func (a *app) FetchSessions() (err error) {
+	a.stationsMutex.RLock()
+	defer a.stationsMutex.RUnlock()
 	for i := range a.stations {
 		err = a.RequestSessionsFromService(5, a.stations[i].ID)
 		if err != nil {
 			return
 		}
 	}
-
 	return
 }
 
@@ -114,8 +115,8 @@ func (a *app) Set(station StationData) error {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
-	if value, exist := a.stations[station.ID]; exist {
-		value = station
+	if _, exist := a.stations[station.ID]; exist {
+		value := station
 		a.stations[station.ID] = value
 	} else {
 		return ErrNotFound
@@ -125,14 +126,14 @@ func (a *app) Set(station StationData) error {
 
 // Ping sets the time of the last ping and returns service money.
 func (a *app) Ping(id StationID, balance, program int, stationIP string) (StationData, bool) {
-	a.stationsMutex.Lock()
-	defer a.stationsMutex.Unlock()
+	a.stationsMutex.RLock()
 	var station StationData
 	if v, ok := a.stations[id]; ok {
 		station = v
 	} else {
 		station = StationData{}
 	}
+	a.stationsMutex.RUnlock()
 	oldStation := station
 	station.LastPing = time.Now()
 	station.ServiceMoney = 0
@@ -146,10 +147,13 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) (Statio
 	if oldStation.CurrentProgram != station.CurrentProgram {
 		station.RunProgram = time.Now()
 		if oldStation.CurrentProgram > 0 {
-			go a.saveStationStat(id, oldStation.CurrentProgram, time.Now().Sub(oldStation.RunProgram))
+			go a.saveStationStat(id, oldStation.CurrentProgram, time.Since(oldStation.RunProgram))
 		}
 	}
+	a.stationsMutex.Lock()
 	a.stations[id] = station
+	a.stationsMutex.Unlock()
+
 	oldStation.LastUpdate = a.lastUpdate
 	oldStation.LastDiscountUpdate = a.lastDiscountUpdate
 
@@ -160,7 +164,7 @@ func (a *app) checkStationOnline() {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 	for i := range a.stations {
-		if a.stations[i].CurrentProgram > 0 && time.Now().Sub(a.stations[i].LastPing).Seconds() > 5 {
+		if a.stations[i].CurrentProgram > 0 && time.Since(a.stations[i].LastPing).Seconds() > 5 {
 			station := a.stations[i]
 			station.CurrentProgram = 0
 			if a.stations[i].CurrentProgram != station.CurrentProgram {
@@ -171,7 +175,6 @@ func (a *app) checkStationOnline() {
 			a.stations[i] = station
 		}
 	}
-	return
 }
 
 func (a *app) runCheckStationOnline() {
@@ -192,7 +195,7 @@ func (a *app) refreshDiscounts() {
 			log.PrintErr(err)
 		}
 		start := time.Now().Truncate(time.Minute).Add(time.Minute)
-		time.Sleep(start.Sub(time.Now()))
+		time.Sleep(time.Until(start))
 	}
 }
 
@@ -243,8 +246,8 @@ func (a *app) PressButton(id StationID, buttonID int64) (err error) {
 
 // Get accepts exising hash and returns StationData
 func (a *app) Get(id StationID) (StationData, error) {
-	a.stationsMutex.Lock()
-	defer a.stationsMutex.Unlock()
+	a.stationsMutex.RLock()
+	defer a.stationsMutex.RUnlock()
 
 	// TODO: if error - return empty StationData, not nil
 	value, exist := a.stations[id]
@@ -492,8 +495,8 @@ func (a *app) StatusReport() StatusReport {
 		report.KasseStatus = StatusOffline
 	}
 
-	a.stationsMutex.Lock()
-	defer a.stationsMutex.Unlock()
+	a.stationsMutex.RLock()
+	defer a.stationsMutex.RUnlock()
 	for _, v := range a.stations {
 		var status Status
 		if v.LastPing.Add(durationStationOffline).After(time.Now()) {
@@ -501,9 +504,9 @@ func (a *app) StatusReport() StatusReport {
 		} else {
 			status = StatusOffline
 		}
-		a.programsMutex.Lock()
+		a.programsMutex.RLock()
 		programName := a.programs[int64(v.CurrentProgram)].Name
-		a.programsMutex.Unlock()
+		a.programsMutex.RUnlock()
 		report.Stations = append(report.Stations, StationStatus{
 			ID:             v.ID,
 			Name:           v.Name,
@@ -520,8 +523,8 @@ func (a *app) StatusReport() StatusReport {
 func (a *app) StatusCollection() StatusCollection {
 	status := StatusCollection{}
 
-	a.stationsMutex.Lock()
-	defer a.stationsMutex.Unlock()
+	a.stationsMutex.RLock()
+	defer a.stationsMutex.RUnlock()
 
 	for _, v := range a.stations {
 		report, err := a.repo.LastCollectionReport(v.ID)
@@ -857,6 +860,7 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 	sessionID := station.CurrentSessionID
 	a.stationsMutex.Unlock()
 
+
 	if a.bonusSystemRabbitWorker != nil {
 		msg := session.StateChange{
 			SessionID: sessionID,
@@ -1024,15 +1028,15 @@ func (a *app) RequestSessionsFromService(count int, stationID StationID) error {
 }
 
 func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) error {
+	a.stationSessionPoolMutex.Lock()
 	val, ok := a.stationsSessionsPool[stationID]
+	a.stationSessionPoolMutex.Unlock()
 	if !ok {
 		return errors.New("no sessions available")
 	}
-
 	for _, session := range sessionsIDs {
 		val <- session
 	}
-
 	return nil
 }
 

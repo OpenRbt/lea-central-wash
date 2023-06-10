@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/rsutil"
 	"github.com/simonvetter/modbus"
 )
 
@@ -26,13 +27,13 @@ func (f *FrequencyGenerator) Destroy() error {
 	return err
 }
 
-func NewFrequencyGenerator(PortName string, communicationSpeed uint, defaultMotorSpeed int) (*FrequencyGenerator, error) {
+func NewFrequencyGenerator(cfg rsutil.RS485Config) (*FrequencyGenerator, error) {
 	client, err := modbus.NewClient(&modbus.ClientConfiguration{
-		URL:      "rtu:///dev/" + PortName,
-		Speed:    communicationSpeed, // default
-		DataBits: 8,                  // default, optional
-		Parity:   modbus.PARITY_NONE, // default, optional
-		StopBits: 2,                  // default if no parity, optional
+		URL:      "rtu:///dev/" + cfg.PortName,
+		Speed:    cfg.CommunicationSpeed, // default
+		DataBits: 8,                      // default, optional
+		Parity:   modbus.PARITY_NONE,     // default, optional
+		StopBits: 2,                      // default if no parity, optional
 		Timeout:  200 * time.Millisecond,
 	})
 
@@ -40,9 +41,9 @@ func NewFrequencyGenerator(PortName string, communicationSpeed uint, defaultMoto
 		return nil, err
 	}
 	res := &FrequencyGenerator{
-		portName:     PortName,
+		portName:     cfg.PortName,
 		client:       client,
-		nominalSpeed: defaultMotorSpeed,
+		nominalSpeed: cfg.DefaultMotorSpeed,
 	}
 
 	err = client.Open()
@@ -119,6 +120,7 @@ func (f *FrequencyGenerator) SetSpeedPercent(deviceID uint8, percent int16) erro
 	fmt.Printf("final value %d percent, low %d, high %d\n", percent, LowVal, HighVal)
 	err := f.client.WriteBytes(0x2000, []byte{byte(HighVal), byte(LowVal)})
 	if err != nil {
+		fmt.Printf("%s: id:%d, driver: cant set speed %+v\n", f.portName, deviceID, err)
 		return err
 	}
 	return nil
@@ -151,7 +153,7 @@ func (f *FrequencyGenerator) StartMotor(deviceID uint8) error {
 	//cmd := []byte{0x0, 0x01}
 	err := f.client.WriteBytes(0x1000, cmd)
 	if err != nil {
-		fmt.Printf("driver: cant start %+v\n", err)
+		fmt.Printf("%s: id:%d, driver: cant start %+v\n", f.portName, deviceID, err)
 		return err
 	}
 
@@ -162,8 +164,9 @@ func (f *FrequencyGenerator) StopMotor(deviceID uint8) error {
 	f.modbusMutex.Lock()
 	defer f.modbusMutex.Unlock()
 	f.client.SetUnitId(deviceID)
-	err := f.client.WriteBytes(0x1000, []byte{0x5})
+	err := f.client.WriteRegister(0x1000, 0x5)
 	if err != nil {
+		fmt.Printf("%s: id:%d, driver: cant stop %+v\n", f.portName, deviceID, err)
 		return err
 	}
 	return nil
