@@ -198,9 +198,9 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 				// port is not found in our dictionary
 				err = h.checkAndAddPort(f.Name())
 				if err == nil {
-					fmt.Printf("New device is added [%s]\n", f.Name())
+					fmt.Printf("New board is added [%s]\n", f.Name())
 				} else {
-					fmt.Printf("New device is not added [%s], err [%+v]\n", f.Name(), err)
+					fmt.Printf("New board is not added [%s], err [%+v]\n", f.Name(), err)
 				}
 			}
 		}
