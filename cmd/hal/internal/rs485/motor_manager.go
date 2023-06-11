@@ -48,6 +48,36 @@ func NewMotorManager(ctx context.Context, hwMetrics app.HardwareMetrics,
 	}
 }
 
+func (m *MotorManager) DeviceInfo() string {
+	N := len(m.sequenceRequesters)
+	m.sequenceRequesterMutex.RUnlock()
+
+	result := make(map[string][]uint8)
+
+	for i := 0; i <= N; i++ {
+		var curRequester *requester.SequenceRequester
+		curRequester = nil
+		m.sequenceRequesterMutex.RLock()
+		if i < len(m.sequenceRequesters) {
+			curRequester = m.sequenceRequesters[i]
+		}
+		m.sequenceRequesterMutex.RUnlock()
+		if curRequester == nil {
+			break // means we reached end of the cycle
+		}
+
+		curPort := curRequester.Port()
+		result[curPort] = make([]uint8, 0, app.MAX_ALLOWED_DEVICES)
+		for j := uint8(1); j <= app.MAX_ALLOWED_DEVICES; j++ {
+			if curRequester.HasDevice(j) {
+				result[curRequester.Port()] = append(result[curRequester.Port()], j)
+			}
+		}
+	}
+
+	return fmt.Sprintf("%+v", result)
+}
+
 func (m *MotorManager) TryAddDevice(devName string) error {
 	requester, err := m.CheckAndGetSequenceRequencerPort(devName)
 	if err != nil {

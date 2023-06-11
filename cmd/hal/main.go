@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -19,6 +20,7 @@ import (
 )
 
 var (
+	apiHardware   app.HardwareAccessLayer
 	motorDetected = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "hal_motor_detected",
 		Help: "Motor detected",
@@ -68,9 +70,6 @@ func main() {
 		RS485MotorRequestCounter:     hwmetrics.NewCounterMetric(rs485MotorRequestCounter),
 		RS485MotorRequestFailCounter: hwmetrics.NewCounterMetric(rs485MotorRequestFailCounter),
 	}
-	// Let's handle metrics
-	http.Handle("/metrics", promhttp.Handler())
-	go http.ListenAndServe(":2112", nil)
 
 	var hardware app.HardwareAccessLayer
 	var errHardware error
@@ -82,6 +81,15 @@ func main() {
 	if errHardware != nil {
 		log.Println("HARDWARE IS NOT WORKING")
 	}
+	apiHardware = hardware
+
+	// Let's handle metrics
+	http.Handle("/metrics", promhttp.Handler())
+
+	// Let's handle hw info... In the next iteration it must be
+	// rebuild properly, without global variables
+	http.HandleFunc("/hw", handleHardwareInfo)
+	go http.ListenAndServe(":2112", nil)
 
 	halHandler := xgrpc.New(hardware)
 
@@ -100,4 +108,8 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func handleHardwareInfo(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(w, "%+v", apiHardware.DeviceInfo())
 }
