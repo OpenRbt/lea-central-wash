@@ -11,10 +11,10 @@ SELECT p.station_id,
        date_trunc('hour', p.ctime) as date_hours
 FROM relay_stat r
          JOIN relay_report p on r.relay_report_id = p.id
-Group BY p.station_id, r.relay_id, date
+Group BY p.station_id, r.relay_id, date_hours
 ORDER BY p.station_id,r.relay_id;
 
-create index on mv_relay_stat_dates (station_id,date);
+create index on mv_relay_stat_dates (station_id,date_hours);
 
 CREATE MATERIALIZED VIEW mv_program_stat_dates as
 SELECT r.station_id,
@@ -25,10 +25,10 @@ SELECT r.station_id,
        date_trunc('hour', r.ctime) as date_hours
 FROM relay_report r
          LEFT JOIN program p on p.id = r.program_id
-GROUP BY r.station_id, r.program_id, coalesce(p.name, ''), date
+GROUP BY r.station_id, r.program_id, coalesce(p.name, ''), date_hours
 ORDER BY r.station_id, r.program_id;
 
-create index on mv_program_stat_dates (station_id,date);
+create index on mv_program_stat_dates (station_id,date_hours);
 
 CREATE MATERIALIZED VIEW mv_current_relay_stat as
 SELECT p.station_id, r.relay_id, sum(r.switched_count) as switched_count, sum(r.total_time_on) as total_time_on
