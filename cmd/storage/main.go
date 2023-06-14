@@ -5,13 +5,14 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
-	"github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 	"os"
 	"os/user"
 	"path"
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit"
 
@@ -107,8 +108,6 @@ func init() { //nolint:gochecknoinits
 
 	flag.StringVar(&cfg.rabbit.Url, "rabbit.host", def.RabbitHost, "host for service connections")
 	flag.StringVar(&cfg.rabbit.Port, "rabbit.port", def.RabbitPort, "port for service connections")
-	flag.StringVar(&cfg.rabbit.ServerID, "rabbit.user", def.RabbitUser, "user for service connections")
-	flag.StringVar(&cfg.rabbit.ServerKey, "rabbit.pass", def.RabbitPassword, "password for service connections")
 
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",
@@ -168,7 +167,7 @@ func main() { //nolint:gocyclo
 	if !useMemDB {
 		for db == nil {
 			ctx, cancel := context.WithTimeout(context.Background(), connectTimeout)
-			db, err = connectDB(ctx)
+			db, err = connectDB(ctx, dbTimeout, dbIdleTimeout)
 			if err != nil {
 				log.Warn("Warning: DB is not connected", "count", count, "err", err)
 			}
@@ -184,13 +183,13 @@ func main() { //nolint:gocyclo
 	log.Info("finished", "version", ver)
 }
 
-func connectDB(ctx context.Context) (*sqlx.DB, error) {
+func connectDB(ctx context.Context, timeout time.Duration, idleTimeout time.Duration) (*sqlx.DB, error) {
 	cfg.db.ConnectTimeout = connectTimeout
 	cfg.db.SSLMode = pqx.SSLDisable
 	cfg.db.DefaultTransactionIsolation = sql.LevelSerializable
-	cfg.db.StatementTimeout = dbTimeout
-	cfg.db.LockTimeout = dbTimeout
-	cfg.db.IdleInTransactionSessionTimeout = dbIdleTimeout
+	cfg.db.StatementTimeout = timeout
+	cfg.db.LockTimeout = timeout
+	cfg.db.IdleInTransactionSessionTimeout = idleTimeout
 
 	db, err := sql.Open("pqx", cfg.db.FormatDSN())
 	if err != nil {
@@ -211,32 +210,6 @@ func connectDB(ctx context.Context) (*sqlx.DB, error) {
 	return sqlx.NewDb(db, "postgres"), nil
 }
 
-func connectDBMigrations(ctx context.Context) (*sqlx.DB, error) {
-	cfg.db.ConnectTimeout = connectTimeout
-	cfg.db.SSLMode = pqx.SSLDisable
-	cfg.db.DefaultTransactionIsolation = sql.LevelSerializable
-	cfg.db.StatementTimeout = dbTimeoutMigrations
-	cfg.db.LockTimeout = dbTimeoutMigrations
-	cfg.db.IdleInTransactionSessionTimeout = dbIdleTimeoutMigrations
-
-	db, err := sql.Open("pqx", cfg.db.FormatDSN())
-	if err != nil {
-		return nil, err
-	}
-	db.SetMaxOpenConns(dbMaxOpenConns)
-	db.SetMaxIdleConns(dbParallelConns)
-
-	err = db.PingContext(ctx)
-	for err != nil {
-		nextErr := db.PingContext(ctx)
-		if nextErr == context.DeadlineExceeded {
-			return nil, errors.Wrap(err, "connect to postgres")
-		}
-		err = nextErr
-	}
-
-	return sqlx.NewDb(db, "postgres"), nil
-}
 func applyMigrations(db *sqlx.DB) error {
 	goose.Init("postgres")
 	if db == nil {
@@ -267,22 +240,27 @@ func run(db *sqlx.DB, errc chan<- error) {
 
 		for dbMigrations == nil {
 			ctx, cancel := context.WithTimeout(context.Background(), connectTimeout)
-			dbMigrations, err = connectDBMigrations(ctx)
+			dbMigrations, err = connectDB(ctx, dbTimeoutMigrations, dbIdleTimeoutMigrations)
 			if err != nil {
 				log.Warn("Warning: DB is not connected", "count", count, "err", err)
 			}
 			count++
 			cancel()
 		}
-		defer dbMigrations.Close()
 
 		err = applyMigrations(dbMigrations)
 		if err != nil {
 			errc <- err
 			return
 		}
+		dbMigrations.Close()
 
-		schemaVer, _ := schemaver.New()
+		schemaVer, err := schemaver.New()
+		if err != nil {
+			errc <- err
+			return
+		}
+
 		repo = dal.New(db, schemaVer)
 	} else {
 		log.Info("USING MEM DB")
@@ -310,20 +288,13 @@ func run(db *sqlx.DB, errc chan<- error) {
 	appl := app.New(repo, kasse, weather, client)
 
 	rabbitCfg, err := appl.GetRabbitConfig()
-	if err != nil {
-		log.Warn("no wash_bonus config found! skipping wash_bonus service initialization")
-	} else {
+	if err == nil {
 		cfg.rabbit.ServerID = rabbitCfg.ServerID
 		cfg.rabbit.ServerKey = rabbitCfg.ServerKey
-		rabbitWorker, err := rabbit.NewClient(cfg.rabbit, appl)
-		if err != nil {
-			log.Err("failed to init rabbit client", "error", err)
-		} else {
-			log.Info("Serve rabbit client")
 
-			appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitWorker.SendMessage)
-			appl.FetchSessions()
-		}
+		go initRabbitClient(cfg.rabbit, appl)
+	} else {
+		log.Warn("no wash_bonus config found! skipping wash_bonus service initialization")
 	}
 
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
@@ -343,5 +314,26 @@ func waitUntilSysTimeIsCorrect() {
 		t1 := time.NewTimer(time.Minute)
 		<-t1.C
 		sysDate = (time.Now()).UTC()
+	}
+}
+
+func initRabbitClient(cfg rabbit.Config, appl app.App) {
+	for {
+		rabbitWorker, err := rabbit.NewClient(cfg, appl)
+		if err != nil {
+			if strings.Contains(err.Error(), "username or password not allowed") {
+				log.Err("Failed to init rabbit client due to wrong credentials", "error", err)
+				return
+			}
+
+			log.Err("Failed to init rabbit client", "error", err)
+			time.Sleep(5 * time.Second)
+			continue
+		}
+
+		log.Info("Serve rabbit client")
+		appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitWorker.SendMessage)
+		appl.FetchSessions()
+		return
 	}
 }

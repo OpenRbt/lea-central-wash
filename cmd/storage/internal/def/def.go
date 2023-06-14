@@ -59,8 +59,6 @@ var (
 
 	RabbitHost     = strGetenv("RABBIT_HOST", "app.openwashing.com")
 	RabbitPort     = strGetenv("RABBIT_PORT", "4043")
-	RabbitUser     = strGetenv("RABBIT_USER", "")
-	RabbitPassword = strGetenv("RABBIT_PASSWORD", "")
 )
 
 var initErr error

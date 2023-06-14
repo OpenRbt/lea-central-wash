@@ -3,9 +3,10 @@ package app
 import (
 	"encoding/json"
 	"fmt"
+	"time"
+
 	"github.com/OpenRbt/share_business/wash_rabbit/entity/session"
 	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
-	"time"
 )
 
 type BonusRabbitWorker struct {
@@ -91,7 +92,7 @@ func (r *BonusRabbitWorker) ProcessMessages() {
 				}
 			}
 		}
-		time.Sleep(10 * time.Second)
+		time.Sleep(3 * time.Second)
 	}
 }
 
