@@ -1,0 +1,12 @@
+[Unit]
+Description=Hal Server
+
+[Service]
+ExecStart=/home/administrator/projects/lea-central-wash/hal
+WorkingDirectory=/home/administrator/projects/lea-central-wash
+Restart=always
+User=administrator
+
+[Install]
+WantedBy=multi-user.target
+
