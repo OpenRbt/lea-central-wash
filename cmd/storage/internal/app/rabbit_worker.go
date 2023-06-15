@@ -3,6 +3,7 @@ package app
 import (
 	"encoding/json"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/OpenRbt/share_business/wash_rabbit/entity/session"
@@ -10,10 +11,25 @@ import (
 )
 
 type BonusRabbitWorker struct {
-	repo       Repo
-	routingKey string
+	repo            Repo
+	routingKey      string
+	messageMutex    sync.RWMutex
+	lastMessageTime int64
 
 	publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error
+}
+
+func (r *BonusRabbitWorker) SetLastMessageTime(t int64) {
+	r.messageMutex.Lock()
+	r.lastMessageTime = t
+	r.messageMutex.Unlock()
+}
+
+func (r *BonusRabbitWorker) GetLastMessageTime() int64 {
+	r.messageMutex.Lock()
+	t := r.lastMessageTime
+	r.messageMutex.Unlock()
+	return t
 }
 
 func (r *BonusRabbitWorker) ProcessMoneyReports() {
@@ -63,6 +79,7 @@ func (r *BonusRabbitWorker) ProcessMoneyReports() {
 
 func (r *BonusRabbitWorker) ProcessMessages() {
 	var lastMessageID int64
+	var lastMessageTime int64
 
 	for {
 		lastMessageID = 0
@@ -92,7 +109,13 @@ func (r *BonusRabbitWorker) ProcessMessages() {
 				}
 			}
 		}
-		time.Sleep(3 * time.Second)
+		for i := 0; i < 10; i++ {
+			time.Sleep(1 * time.Second)
+			if lastMessageTime < r.GetLastMessageTime() {
+				lastMessageTime = r.GetLastMessageTime()
+				break
+			}
+		}
 	}
 }
 
@@ -115,6 +138,10 @@ func (a *app) PrepareRabbitMessage(messageType string, payload interface{}) erro
 			MessageType: messageType,
 			Payload:     bytes,
 		})
+
+		if a.bonusSystemRabbitWorker != nil {
+			a.bonusSystemRabbitWorker.SetLastMessageTime(time.Now().Unix())
+		}
 
 		return err
 	}
