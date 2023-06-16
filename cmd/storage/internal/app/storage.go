@@ -102,7 +102,7 @@ func (a *app) FetchSessions() (err error) {
 	a.stationsMutex.RLock()
 	defer a.stationsMutex.RUnlock()
 	for i := range a.stations {
-		err = a.RequestSessionsFromService(10, a.stations[i].ID)
+		err = a.RequestSessionsFromService(5, a.stations[i].ID)
 		if err != nil {
 			return
 		}
@@ -545,10 +545,7 @@ func (a *app) SetStation(station SetStation) error {
 		return err
 	}
 	a.loadStations()
-	if a.bonusSystemRabbitWorker != nil {
-		a.RequestSessionsFromService(10, station.ID)
-	}
-
+	a.RequestSessionsFromService(5, station.ID)
 	err = a.updateConfig("SetStation")
 	return err
 }
@@ -851,10 +848,6 @@ func isValidDayOfWeek(dayOfWeek int, weekDay []string) bool {
 }
 
 func (a *app) CreateSession(url string, stationID StationID) (string, string, error) {
-	if a.bonusSystemRabbitWorker == nil {
-		return "", "", ErrNoRabbitWorker
-	}
-
 	QrUrl := "%s/#/?sessionID=%s"
 
 	err := a.SetNextSession(stationID)
@@ -867,25 +860,26 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 	sessionID := station.CurrentSessionID
 	a.stationsMutex.Unlock()
 
-	msg := session.StateChange{
-		SessionID: sessionID,
-		State:     rabbit_vo.SessionStateStart,
-	}
 
-	eventErr := a.PrepareRabbitMessage(string(rabbit_vo.SessionStateMessageType), msg)
-	if eventErr != nil {
-		log.Err("failed preparing RabbitMessage for send session creation to bonus service", "error", eventErr)
-		return "", "", err
+	if a.bonusSystemRabbitWorker != nil {
+		msg := session.StateChange{
+			SessionID: sessionID,
+			State:     rabbit_vo.SessionStateStart,
+		}
+
+		eventErr := a.PrepareRabbitMessage(string(rabbit_vo.SessionStateMessageType), msg)
+		if eventErr != nil {
+			log.Err("failed preparing RabbitMessage for send session creation to bonus service", "error", eventErr)
+			return "", "", err
+		}
+	} else {
+		log.Warn("not found rabbit worker for bonus service")
 	}
 
 	return sessionID, fmt.Sprintf(QrUrl, url, sessionID), nil
 }
 
 func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
-	if a.bonusSystemRabbitWorker == nil {
-		return ErrNoRabbitWorker
-	}
-
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
@@ -905,23 +899,23 @@ func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 	a.stations[stationID] = station
 	var err error
 
-	msg := session.StateChange{
-		SessionID: endingSession,
-		State:     rabbit_vo.SessionStateFinish,
-	}
-	eventErr := a.PrepareRabbitMessage(string(rabbit_vo.SessionStateMessageType), msg)
-	if eventErr != nil {
-		log.Err("failed preparing RabbitMessage for send finish session to bonus service", "error", err)
+	if a.bonusSystemRabbitWorker != nil {
+		msg := session.StateChange{
+			SessionID: endingSession,
+			State:     rabbit_vo.SessionStateFinish,
+		}
+		eventErr := a.PrepareRabbitMessage(string(rabbit_vo.SessionStateMessageType), msg)
+		if eventErr != nil {
+			log.Err("failed preparing RabbitMessage for send finish session to bonus service", "error", err)
+		}
+	} else {
+		log.Warn("not found rabbit worker for bonus service")
 	}
 
 	return err
 }
 
 func (a *app) SetBonuses(stationID StationID, bonuses int) error {
-	if a.bonusSystemRabbitWorker == nil {
-		return ErrNoRabbitWorker
-	}
-
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
 
@@ -931,15 +925,20 @@ func (a *app) SetBonuses(stationID StationID, bonuses int) error {
 		return ErrUserIsNotAuthorized
 	}
 
-	msg := session.BonusReward{
-		SessionID: station.AuthorizedSessionID,
-		Amount:    bonuses,
-		UUID:      uuid.NewV4().String(),
-	}
+	var err error
+	if a.bonusSystemRabbitWorker != nil {
+		msg := session.BonusReward{
+			SessionID: station.AuthorizedSessionID,
+			Amount:    bonuses,
+			UUID:      uuid.NewV4().String(),
+		}
 
-	err := a.PrepareRabbitMessage(string(rabbit_vo.SessionBonusRewardMessageType), msg)
-	if err != nil {
-		log.Err("failed preparing RabbitMessage for reward with bonuses to bonus service", "error", err)
+		err = a.PrepareRabbitMessage(string(rabbit_vo.SessionBonusRewardMessageType), msg)
+		if err != nil {
+			log.Err("failed preparing RabbitMessage for reward with bonuses to bonus service", "error", err)
+		}
+	} else {
+		log.Warn("not found rabbit worker for bonus service")
 	}
 
 	return err
@@ -968,12 +967,21 @@ func (a *app) GetRabbitConfig() (cfg RabbitConfig, err error) {
 	cfg.ServerID = serverID.Value
 	cfg.ServerKey = serverKey.Value
 
+	if err != nil {
+		err = ErrServiceNotConfigured
+		return
+	}
 	return
 }
 
-func (a *app) SetNextSession(stationID StationID) (err error) {
+func (a *app) SetNextSession(stationID StationID) (err error) { // Создаем новую сессию для указанной станции? Устанавливает сессию из очереди, если нет сессии, то ошибка
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
+
+	if a.bonusSystemRabbitWorker == nil {
+		log.Err("can`t assign next session, not found rabbit worker for bonus service")
+		return nil
+	}
 
 	if station, ok := a.stations[stationID]; ok {
 		sessionsPool := a.stationsSessionsPool[stationID]
@@ -990,7 +998,7 @@ func (a *app) SetNextSession(stationID StationID) (err error) {
 			}
 			fallthrough
 		case sessionsCount < 5:
-			err = a.RequestSessionsFromService(10, stationID)
+			err = a.RequestSessionsFromService(5, stationID)
 			if err != nil {
 				return err
 			}
@@ -1003,7 +1011,7 @@ func (a *app) SetNextSession(stationID StationID) (err error) {
 		}
 	}
 
-	return ErrUnknownStation
+	return errors.New("not found station with StationID")
 }
 
 func (a *app) RequestSessionsFromService(count int, stationID StationID) error {
