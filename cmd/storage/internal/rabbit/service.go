@@ -12,6 +12,7 @@ import (
 )
 
 func (s *Service) ProcessBonusMessage(d rabbitmq.Delivery) (action rabbitmq.Action) { // Обработка сообщения на основе типа. В зависимости от типа происходят нужные действия
+	// Debug fmt.Printf("ProcessBonusMessage type %v, body %v \n", d.Type, string(d.Body))
 	switch rabbit_vo.MessageType(d.Type) {
 	case rabbit_vo.SessionCreatedMessageType:
 		var msg session.PostSessions
@@ -46,7 +47,7 @@ func (s *Service) ProcessBonusMessage(d rabbitmq.Delivery) (action rabbitmq.Acti
 			return
 		}
 
-		err = s.app.AssignSessionBonuses(msg.SessionID, int(msg.Amount))
+		err = s.app.AssignSessionBonuses(msg.SessionID, int(msg.Amount), app.StationID(int(msg.Post)))
 		if err != nil {
 			action = rabbitmq.NackDiscard
 			return

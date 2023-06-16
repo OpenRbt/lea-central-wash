@@ -1,6 +1,6 @@
 module github.com/DiaElectronics/lea-central-wash
 
-go 1.20
+go 1.18
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.1
@@ -28,7 +28,7 @@ require (
 )
 
 require (
-	github.com/OpenRbt/share_business/wash_rabbit v0.0.0-20230531095502-1cf52129677b
+	github.com/OpenRbt/share_business/wash_rabbit v0.0.0-20230616094254-16c73121f2e5
 	github.com/prometheus/client_golang v1.15.1
 	github.com/rabbitmq/amqp091-go v1.8.1
 	github.com/satori/go.uuid v1.2.0
