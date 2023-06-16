@@ -255,7 +255,7 @@ func run(db *sqlx.DB, errc chan<- error) {
 		}
 		dbMigrations.Close()
 
-		schemaVer, err := schemaver.New()
+		schemaVer, _ := schemaver.New()
 		repo = dal.New(db, schemaVer)
 	} else {
 		log.Info("USING MEM DB")
