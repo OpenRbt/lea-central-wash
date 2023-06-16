@@ -1107,13 +1107,11 @@ func (svc *service) createSession(params op.CreateSessionParams) op.CreateSessio
 	}
 
 	sessionId, QR, err := svc.app.CreateSession(def.OpenwashingURL, stationID)
-	if err == nil {
-		return op.NewCreateSessionOK().WithPayload(apiCreateSession(sessionId, QR))
-	}
-
-	log.PrintErr(err, "stationID", stationID)
 	switch errors.Cause(err) {
+	case nil:
+		return op.NewCreateSessionOK().WithPayload(apiCreateSession(sessionId, QR))
 	default:
+		log.PrintErr(err, "stationID", stationID)
 		return op.NewCreateSessionInternalServerError()
 	}
 }

@@ -2,10 +2,9 @@ package app
 
 import (
 	"errors"
+	uuid "github.com/satori/go.uuid"
 	"sync"
 	"time"
-
-	uuid "github.com/satori/go.uuid"
 
 	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 
