@@ -240,7 +240,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		log.Info("post ping: wrong address", "address", params.HTTPRequest.RemoteAddr)
 		stationIP = ""
 	}
-	log.Info("post ping", "time", time.Now(), "hash", *params.Args.Hash, "ip", stationIP)
+	//log.Info("post ping", "time", time.Now(), "hash", *params.Args.Hash, "ip", stationIP)
 	stationID, err := svc.getIDAndAddHash(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("post ping: not found", "hash", params.Args.Hash, "ip", stationIP)
@@ -626,16 +626,16 @@ func (svc *service) runProgram(params op.RunProgramParams) op.RunProgramResponde
 	}
 	err = svc.app.RunProgram(stationID, *params.Args.ProgramID, *params.Args.Preflight)
 
-	log.Info("runProgram", "programID", *params.Args.ProgramID, "stationID", stationID, "preflight", *params.Args.Preflight, "ip", params.HTTPRequest.RemoteAddr)
+	// log.Info("runProgram", "programID", *params.Args.ProgramID, "stationID", stationID, "preflight", *params.Args.Preflight, "ip", params.HTTPRequest.RemoteAddr)
 
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewRunProgramNoContent()
 	case app.ErrNotFound:
-		log.PrintErr(err, "hash", params.Args.Hash, "stationID", stationID, "programID", *params.Args.ProgramID, "ip", params.HTTPRequest.RemoteAddr)
+		// log.PrintErr(err, "hash", params.Args.Hash, "stationID", stationID, "programID", *params.Args.ProgramID, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewRunProgramNotFound().WithPayload("program or relay board not found")
 	default:
-		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		// log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
 		return op.NewRunProgramInternalServerError()
 	}
 }
@@ -1113,6 +1113,8 @@ func (svc *service) createSession(params op.CreateSessionParams) op.CreateSessio
 
 	log.PrintErr(err, "stationID", stationID)
 	switch errors.Cause(err) {
+	case app.ErrSessionNotFound:
+		return op.NewCreateSessionNotFound()
 	default:
 		return op.NewCreateSessionInternalServerError()
 	}

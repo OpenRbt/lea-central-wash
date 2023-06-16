@@ -87,7 +87,7 @@ func (a *app) loadStations() error {
 			ID:   res[i].ID,
 			Name: res[i].Name,
 		}
-		sessionsPool[res[i].ID] = make(chan string, 10)
+		sessionsPool[res[i].ID] = make(chan string, 30)
 	}
 
 	a.stationsMutex.Lock()
@@ -855,8 +855,6 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 		return "", "", ErrNoRabbitWorker
 	}
 
-	QrUrl := "%s/#/?sessionID=%s"
-
 	err := a.SetNextSession(stationID)
 	if err != nil {
 		return "", "", err
@@ -878,12 +876,21 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 		return "", "", err
 	}
 
-	return sessionID, fmt.Sprintf(QrUrl, url, sessionID), nil
+	return sessionID, fmt.Sprintf(qrUrl, url, sessionID), nil
 }
 
 func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 	if a.bonusSystemRabbitWorker == nil {
 		return ErrNoRabbitWorker
+	}
+
+	msg := session.StateChange{
+		SessionID: string(sessionID),
+		State:     rabbit_vo.SessionStateFinish,
+	}
+	eventErr := a.PrepareRabbitMessage(string(rabbit_vo.SessionStateMessageType), msg)
+	if eventErr != nil {
+		log.Err("failed preparing RabbitMessage for send finish session to bonus service", "error", eventErr)
 	}
 
 	a.stationsMutex.Lock()
@@ -892,29 +899,23 @@ func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 	station := a.stations[stationID]
 
 	endingSession := string(sessionID)
-	if station.PreviousSessionID != endingSession && station.CurrentSessionID != endingSession {
-		return ErrSessionNotFound
-	}
 
 	if station.CurrentSessionID == endingSession {
 		station.CurrentSessionID = ""
 	}
 
-	station.PreviousSessionID = ""
-	station.UserID = ""
+	if station.AuthorizedSessionID == endingSession {
+		station.AuthorizedSessionID = ""
+		station.UserID = ""
+	}
+
+	if station.PreviousSessionID == endingSession {
+		station.PreviousSessionID = ""
+	}
+
 	a.stations[stationID] = station
-	var err error
 
-	msg := session.StateChange{
-		SessionID: endingSession,
-		State:     rabbit_vo.SessionStateFinish,
-	}
-	eventErr := a.PrepareRabbitMessage(string(rabbit_vo.SessionStateMessageType), msg)
-	if eventErr != nil {
-		log.Err("failed preparing RabbitMessage for send finish session to bonus service", "error", err)
-	}
-
-	return err
+	return nil
 }
 
 func (a *app) SetBonuses(stationID StationID, bonuses int) error {
@@ -980,6 +981,12 @@ func (a *app) SetNextSession(stationID StationID) (err error) {
 		sessionsCount := len(sessionsPool)
 
 		switch {
+		case sessionsCount == 0:
+			err = a.RequestSessionsFromService(10, stationID)
+			if err != nil {
+				return err
+			}
+			return ErrSessionNotFound
 		case sessionsCount > 0:
 			station.PreviousSessionID = station.CurrentSessionID
 			station.CurrentSessionID = <-sessionsPool
@@ -994,11 +1001,6 @@ func (a *app) SetNextSession(stationID StationID) (err error) {
 			if err != nil {
 				return err
 			}
-
-			sessionsPool = a.stationsSessionsPool[stationID]
-			station.CurrentSessionID = <-sessionsPool
-
-			a.stations[stationID] = station
 			return nil
 		}
 	}
@@ -1026,7 +1028,11 @@ func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) erro
 	if !ok {
 		return errors.New("no sessions available")
 	}
+
 	for _, session := range sessionsIDs {
+		if cap(val) <= len(val) {
+			break
+		}
 		val <- session
 	}
 	return nil
@@ -1035,7 +1041,6 @@ func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) erro
 func (a *app) AssignSessionUser(sessionID string, userID string) error {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
-
 	//TODO: add a better way for station search?
 	for id, data := range a.stations {
 		if data.CurrentSessionID == sessionID {
@@ -1050,40 +1055,45 @@ func (a *app) AssignSessionUser(sessionID string, userID string) error {
 	return nil
 }
 
-func (a *app) AssignSessionBonuses(sessionID string, amount int) error {
+func (a *app) addStationBonuses(sessionID string, amount int, post StationID) error {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
-
-	for k, v := range a.stations {
-		if v.AuthorizedSessionID == sessionID {
-			oldStation := v
-			oldStation.BonusMoney += amount
-			a.stations[k] = oldStation
-
-			if a.bonusSystemRabbitWorker != nil {
-				msg := session.BonusChargeConfirm{
-					SessionID: sessionID,
-					Amount:    int64(amount),
-				}
-
-				err := a.PrepareRabbitMessage(string(rabbit_vo.SessionBonusConfirmMessageType), msg)
-				if err != nil {
-					log.Err("failed preparing RabbitMessage for bonuses assign to bonus service", "error", err)
-					return err
-				}
-			} else {
-				log.Warn("not found rabbit worker for bonus service")
-			}
-
+	v, ok := a.stations[post]
+	if ok {
+		if v.AuthorizedSessionID == sessionID && time.Since(v.LastPing).Seconds() < 5 {
+			v.BonusMoney += amount
+			a.stations[post] = v
 			return nil
+		}
+	}
+	return ErrNotFound
+}
+
+func (a *app) AssignSessionBonuses(sessionID string, amount int, post StationID) error {
+	err := a.addStationBonuses(sessionID, amount, post)
+	if err != nil {
+		log.Err("AssignSessionBonuses not found session or post")
+		if a.bonusSystemRabbitWorker != nil {
+			msg := session.BonusChargeDiscard{SessionID: sessionID, Amount: int64(amount)}
+			err := a.PrepareRabbitMessage(string(rabbit_vo.SessionBonusDiscardMessageType), msg)
+			if err != nil {
+				log.Err("failed preparing RabbitMessage for bonuses discard to bonus service", "error", err)
+				return err
+			}
+		} else {
+			log.Warn("not found rabbit worker for bonus service")
 		}
 	}
 
 	if a.bonusSystemRabbitWorker != nil {
-		msg := session.BonusChargeDiscard{SessionID: sessionID, Amount: int64(amount)}
-		err := a.PrepareRabbitMessage(string(rabbit_vo.SessionBonusDiscardMessageType), msg)
+		msg := session.BonusChargeConfirm{
+			SessionID: sessionID,
+			Amount:    int64(amount),
+		}
+
+		err := a.PrepareRabbitMessage(string(rabbit_vo.SessionBonusConfirmMessageType), msg)
 		if err != nil {
-			log.Err("failed preparing RabbitMessage for bonuses discard to bonus service", "error", err)
+			log.Err("failed preparing RabbitMessage for bonuses assign to bonus service", "error", err)
 			return err
 		}
 	} else {

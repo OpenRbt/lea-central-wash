@@ -35,6 +35,8 @@ const (
 	parameterNameTimeZone = "TIMEZONE"
 )
 
+const qrUrl = "%s/#/?sessionID=%s"
+
 const RabbitWorkerScheduleInterval = time.Minute
 
 // Errors.
@@ -157,7 +159,7 @@ type (
 		RequestSessionsFromService(count int, stationID StationID) error
 		AddSessionsToPool(stationID StationID, sessionsIDs ...string) error
 		AssignSessionUser(sessionID string, userID string) error
-		AssignSessionBonuses(sessionID string, amount int) error
+		AssignSessionBonuses(sessionID string, amount int, post StationID) error
 
 		InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error)
 		PrepareRabbitMessage(messageType string, payload interface{}) error
