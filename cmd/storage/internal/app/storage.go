@@ -899,7 +899,6 @@ func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 	station := a.stations[stationID]
 
 	endingSession := string(sessionID)
-	log.Info("EndSession", "endingSession", endingSession, "PreviousSessionID", station.PreviousSessionID, "CurrentSessionID", station.CurrentSessionID, "AuthorizedSessionID", station.AuthorizedSessionID)
 
 	if station.CurrentSessionID == endingSession {
 		station.CurrentSessionID = ""
