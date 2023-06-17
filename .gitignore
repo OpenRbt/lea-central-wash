@@ -8,6 +8,8 @@
 cmd/hal/main
 cmd/storage/storage
 /storage
+/hal
+/main
 
 # Test binary, build with `go test -c`
 *.test
