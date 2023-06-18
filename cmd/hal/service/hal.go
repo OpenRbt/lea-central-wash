@@ -321,6 +321,31 @@ func (h *HardwareAccessLayer) MeasureVolumeMilliliters(measureVolume int, statio
 	return nil
 }
 
+func (h *HardwareAccessLayer) DeviceInfo() string {
+
+	// rs485 motors
+	motorManagerInfo := h.motorManager.DeviceInfo()
+
+	// control boards
+	resBoard := make(map[string]int32)
+	for i := int32(1); i < app.MAX_ALLOWED_DEVICES; i++ {
+		brd, err := h.ControlBoard(i)
+		if err == nil {
+			resBoard[brd.Port()] = i
+		}
+	}
+
+	// ports in use
+	resPorts := make(map[string]int32)
+	h.portsMu.RLock()
+	for key := range h.ports {
+		resPorts[key] = 1
+	}
+	h.portsMu.RUnlock()
+
+	return fmt.Sprintf("RS485:\n%+v\n\nBoards:\n%+v\n\nPorts in use:\n%+v\n", motorManagerInfo, resBoard, resPorts)
+}
+
 func (h *HardwareAccessLayer) DispenserStop(cfg app.RelayConfig) error {
 	r := h.dispencer
 	if r == nil {
@@ -889,10 +914,17 @@ func (r *Rev2DebugBoard) RunConfig(config app.RelayConfig) {
 		log.Printf("Relay ID=%d, timeon=%d, timeoff=%d", config.Timings[i].ID, config.Timings[i].TimeOn, config.Timings[i].TimeOff)
 	}
 }
+func (r *Rev2DebugBoard) Port() string {
+	return "debugUSB0"
+}
 
 // MyPosition returns current post position
 func (r *Rev2DebugBoard) MyPosition() (int, error) {
 	return r.stationNumber, nil
+}
+
+func (r *Rev2Board) Port() string {
+	return r.osPath
 }
 
 // StopAll just stops all relays

@@ -39,11 +39,13 @@ type HardwareAccessLayer interface {
 	GetLevel() int
 	DispenserStop(cfg RelayConfig) error
 	FreePort(portName string)
+	DeviceInfo() string
 }
 
 // ControlBoard represents one board (even virtual) to control relays
 type ControlBoard interface {
 	StopAll() error
+	Port() string
 	MyPosition() (int, error)
 	RunConfig(config RelayConfig)
 }
@@ -73,8 +75,9 @@ type DispenserStatus struct {
 }
 
 type HardwareMetrics struct {
-	MotorDetected GaugeMetric
-	BoardDetected GaugeMetric
+	MotorDetected   GaugeMetric
+	MotorSerialPort GaugeMetric
+	BoardDetected   GaugeMetric
 
 	// MotorSpeedGauge Motor actual speed by id
 	MotorSpeedGauge GaugeMetric
