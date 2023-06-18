@@ -322,8 +322,11 @@ func (h *HardwareAccessLayer) MeasureVolumeMilliliters(measureVolume int, statio
 }
 
 func (h *HardwareAccessLayer) DeviceInfo() string {
+
+	// rs485 motors
 	motorManagerInfo := h.motorManager.DeviceInfo()
 
+	// control boards
 	resBoard := make(map[string]int32)
 	for i := int32(1); i < app.MAX_ALLOWED_DEVICES; i++ {
 		brd, err := h.ControlBoard(i)
@@ -331,7 +334,16 @@ func (h *HardwareAccessLayer) DeviceInfo() string {
 			resBoard[brd.Port()] = i
 		}
 	}
-	return fmt.Sprintf("RS485:%+v\nBoards:%+v\n", motorManagerInfo, resBoard)
+
+	// ports in use
+	resPorts := make(map[string]int32)
+	h.portsMu.RLock()
+	for key := range h.ports {
+		resPorts[key] = 1
+	}
+	h.portsMu.RUnlock()
+
+	return fmt.Sprintf("RS485:\n%+v\n\nBoards:\n%+v\n\nPorts in use:\n%+v\n", motorManagerInfo, resBoard, resPorts)
 }
 
 func (h *HardwareAccessLayer) DispenserStop(cfg app.RelayConfig) error {
