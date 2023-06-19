@@ -3396,7 +3396,8 @@ func init() {
       "type": "string",
       "enum": [
         "localGPIO",
-        "danBoard"
+        "danBoard",
+        "all"
       ]
     },
     "RelayConfig": {
@@ -7156,7 +7157,8 @@ func init() {
       "type": "string",
       "enum": [
         "localGPIO",
-        "danBoard"
+        "danBoard",
+        "all"
       ]
     },
     "RelayConfig": {
