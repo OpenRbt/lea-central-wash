@@ -35,6 +35,9 @@ const (
 
 	// RelayBoardDanBoard captures enum value "danBoard"
 	RelayBoardDanBoard RelayBoard = "danBoard"
+
+	// RelayBoardAll captures enum value "all"
+	RelayBoardAll RelayBoard = "all"
 )
 
 // for schema
@@ -42,7 +45,7 @@ var relayBoardEnum []interface{}
 
 func init() {
 	var res []RelayBoard
-	if err := json.Unmarshal([]byte(`["localGPIO","danBoard"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["localGPIO","danBoard","all"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

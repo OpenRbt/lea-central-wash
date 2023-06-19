@@ -155,7 +155,7 @@ definitions:
 
   RelayBoard:
     type: string
-    enum: [ "localGPIO", "danBoard" ]
+    enum: [ "localGPIO", "danBoard", "all" ]
 
   StatusCollectionReport:
     type: object
