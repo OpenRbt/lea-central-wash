@@ -29,10 +29,10 @@ func NewSaveRelay(ctx *middleware.Context, handler SaveRelayHandler) *SaveRelay 
 	return &SaveRelay{Context: ctx, Handler: handler}
 }
 
-/*
-	SaveRelay swagger:route POST /save-relay saveRelay
+/* SaveRelay swagger:route POST /save-relay saveRelay
 
 SaveRelay save relay API
+
 */
 type SaveRelay struct {
 	Context *middleware.Context

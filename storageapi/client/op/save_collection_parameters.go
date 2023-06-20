@@ -52,12 +52,10 @@ func NewSaveCollectionParamsWithHTTPClient(client *http.Client) *SaveCollectionP
 	}
 }
 
-/*
-SaveCollectionParams contains all the parameters to send to the API endpoint
+/* SaveCollectionParams contains all the parameters to send to the API endpoint
+   for the save collection operation.
 
-	for the save collection operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type SaveCollectionParams struct {
 

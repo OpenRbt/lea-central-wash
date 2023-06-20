@@ -52,12 +52,10 @@ func NewLoadFromStationParamsWithHTTPClient(client *http.Client) *LoadFromStatio
 	}
 }
 
-/*
-LoadFromStationParams contains all the parameters to send to the API endpoint
+/* LoadFromStationParams contains all the parameters to send to the API endpoint
+   for the load from station operation.
 
-	for the load from station operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type LoadFromStationParams struct {
 

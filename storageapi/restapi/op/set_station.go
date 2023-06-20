@@ -29,10 +29,10 @@ func NewSetStation(ctx *middleware.Context, handler SetStationHandler) *SetStati
 	return &SetStation{Context: ctx, Handler: handler}
 }
 
-/*
-	SetStation swagger:route POST /set-station setStation
+/* SetStation swagger:route POST /set-station setStation
 
 SetStation set station API
+
 */
 type SetStation struct {
 	Context *middleware.Context

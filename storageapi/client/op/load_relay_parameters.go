@@ -52,12 +52,10 @@ func NewLoadRelayParamsWithHTTPClient(client *http.Client) *LoadRelayParams {
 	}
 }
 
-/*
-LoadRelayParams contains all the parameters to send to the API endpoint
+/* LoadRelayParams contains all the parameters to send to the API endpoint
+   for the load relay operation.
 
-	for the load relay operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type LoadRelayParams struct {
 

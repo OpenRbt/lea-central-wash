@@ -52,12 +52,10 @@ func NewLoadParamsWithHTTPClient(client *http.Client) *LoadParams {
 	}
 }
 
-/*
-LoadParams contains all the parameters to send to the API endpoint
+/* LoadParams contains all the parameters to send to the API endpoint
+   for the load operation.
 
-	for the load operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type LoadParams struct {
 

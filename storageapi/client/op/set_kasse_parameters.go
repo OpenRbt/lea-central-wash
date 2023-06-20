@@ -54,12 +54,10 @@ func NewSetKasseParamsWithHTTPClient(client *http.Client) *SetKasseParams {
 	}
 }
 
-/*
-SetKasseParams contains all the parameters to send to the API endpoint
+/* SetKasseParams contains all the parameters to send to the API endpoint
+   for the set kasse operation.
 
-	for the set kasse operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type SetKasseParams struct {
 

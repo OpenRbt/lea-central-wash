@@ -39,10 +39,10 @@ func NewUpdateUserPassword(ctx *middleware.Context, handler UpdateUserPasswordHa
 	return &UpdateUserPassword{Context: ctx, Handler: handler}
 }
 
-/*
-	UpdateUserPassword swagger:route POST /user-password updateUserPassword
+/* UpdateUserPassword swagger:route POST /user-password updateUserPassword
 
 UpdateUserPassword update user password API
+
 */
 type UpdateUserPassword struct {
 	Context *middleware.Context
@@ -244,6 +244,7 @@ func (o *UpdateUserPasswordBody) ContextValidate(ctx context.Context, formats st
 func (o *UpdateUserPasswordBody) contextValidateLogin(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Login != nil {
+
 		if err := o.Login.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
@@ -260,6 +261,7 @@ func (o *UpdateUserPasswordBody) contextValidateLogin(ctx context.Context, forma
 func (o *UpdateUserPasswordBody) contextValidateNewPassword(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.NewPassword != nil {
+
 		if err := o.NewPassword.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "newPassword")
@@ -276,6 +278,7 @@ func (o *UpdateUserPasswordBody) contextValidateNewPassword(ctx context.Context,
 func (o *UpdateUserPasswordBody) contextValidateOldPassword(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.OldPassword != nil {
+
 		if err := o.OldPassword.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "oldPassword")

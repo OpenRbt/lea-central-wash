@@ -17,8 +17,7 @@ import (
 // ProgramsOKCode is the HTTP code returned for type ProgramsOK
 const ProgramsOKCode int = 200
 
-/*
-ProgramsOK OK
+/*ProgramsOK OK
 
 swagger:response programsOK
 */
@@ -67,8 +66,7 @@ func (o *ProgramsOK) ProgramsResponder() {}
 // ProgramsInternalServerErrorCode is the HTTP code returned for type ProgramsInternalServerError
 const ProgramsInternalServerErrorCode int = 500
 
-/*
-ProgramsInternalServerError internal error
+/*ProgramsInternalServerError internal error
 
 swagger:response programsInternalServerError
 */

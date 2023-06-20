@@ -29,10 +29,10 @@ func NewSaveMoney(ctx *middleware.Context, handler SaveMoneyHandler) *SaveMoney 
 	return &SaveMoney{Context: ctx, Handler: handler}
 }
 
-/*
-	SaveMoney swagger:route POST /save-money saveMoney
+/* SaveMoney swagger:route POST /save-money saveMoney
 
 SaveMoney save money API
+
 */
 type SaveMoney struct {
 	Context *middleware.Context

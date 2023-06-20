@@ -38,10 +38,10 @@ func NewStationByHash(ctx *middleware.Context, handler StationByHashHandler) *St
 	return &StationByHash{Context: ctx, Handler: handler}
 }
 
-/*
-	StationByHash swagger:route POST /station-by-hash stationByHash
+/* StationByHash swagger:route POST /station-by-hash stationByHash
 
 StationByHash station by hash API
+
 */
 type StationByHash struct {
 	Context *middleware.Context
@@ -148,6 +148,7 @@ func (o *StationByHashBody) ContextValidate(ctx context.Context, formats strfmt.
 func (o *StationByHashBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

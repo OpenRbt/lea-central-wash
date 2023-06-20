@@ -17,8 +17,7 @@ import (
 // GetStationDiscountsOKCode is the HTTP code returned for type GetStationDiscountsOK
 const GetStationDiscountsOKCode int = 200
 
-/*
-GetStationDiscountsOK OK
+/*GetStationDiscountsOK OK
 
 swagger:response getStationDiscountsOK
 */
@@ -67,8 +66,7 @@ func (o *GetStationDiscountsOK) GetStationDiscountsResponder() {}
 // GetStationDiscountsNotFoundCode is the HTTP code returned for type GetStationDiscountsNotFound
 const GetStationDiscountsNotFoundCode int = 404
 
-/*
-GetStationDiscountsNotFound Not found
+/*GetStationDiscountsNotFound Not found
 
 swagger:response getStationDiscountsNotFound
 */
@@ -94,8 +92,7 @@ func (o *GetStationDiscountsNotFound) GetStationDiscountsResponder() {}
 // GetStationDiscountsInternalServerErrorCode is the HTTP code returned for type GetStationDiscountsInternalServerError
 const GetStationDiscountsInternalServerErrorCode int = 500
 
-/*
-GetStationDiscountsInternalServerError Internal error
+/*GetStationDiscountsInternalServerError Internal error
 
 swagger:response getStationDiscountsInternalServerError
 */

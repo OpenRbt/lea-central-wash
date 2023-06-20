@@ -31,10 +31,10 @@ func NewSetConfigVarBool(ctx *middleware.Context, handler SetConfigVarBoolHandle
 	return &SetConfigVarBool{Context: ctx, Handler: handler}
 }
 
-/*
-	SetConfigVarBool swagger:route POST /set-config-var-bool setConfigVarBool
+/* SetConfigVarBool swagger:route POST /set-config-var-bool setConfigVarBool
 
 SetConfigVarBool set config var bool API
+
 */
 type SetConfigVarBool struct {
 	Context *middleware.Context

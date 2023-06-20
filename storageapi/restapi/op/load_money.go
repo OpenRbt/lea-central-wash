@@ -38,10 +38,10 @@ func NewLoadMoney(ctx *middleware.Context, handler LoadMoneyHandler) *LoadMoney 
 	return &LoadMoney{Context: ctx, Handler: handler}
 }
 
-/*
-	LoadMoney swagger:route POST /load-money loadMoney
+/* LoadMoney swagger:route POST /load-money loadMoney
 
 LoadMoney load money API
+
 */
 type LoadMoney struct {
 	Context *middleware.Context
@@ -148,6 +148,7 @@ func (o *LoadMoneyBody) ContextValidate(ctx context.Context, formats strfmt.Regi
 func (o *LoadMoneyBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

@@ -51,7 +51,7 @@ func (o *ResetStationStatReader) ReadResponse(response runtime.ClientResponse, c
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /reset-station-stat] resetStationStat", response, response.Code())
 	}
 }
 
@@ -60,8 +60,7 @@ func NewResetStationStatNoContent() *ResetStationStatNoContent {
 	return &ResetStationStatNoContent{}
 }
 
-/*
-ResetStationStatNoContent describes a response with status code 204, with default header values.
+/* ResetStationStatNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -116,8 +115,7 @@ func NewResetStationStatUnauthorized() *ResetStationStatUnauthorized {
 	return &ResetStationStatUnauthorized{}
 }
 
-/*
-ResetStationStatUnauthorized describes a response with status code 401, with default header values.
+/* ResetStationStatUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -172,8 +170,7 @@ func NewResetStationStatForbidden() *ResetStationStatForbidden {
 	return &ResetStationStatForbidden{}
 }
 
-/*
-ResetStationStatForbidden describes a response with status code 403, with default header values.
+/* ResetStationStatForbidden describes a response with status code 403, with default header values.
 
 Access forbiddenn
 */
@@ -228,8 +225,7 @@ func NewResetStationStatInternalServerError() *ResetStationStatInternalServerErr
 	return &ResetStationStatInternalServerError{}
 }
 
-/*
-ResetStationStatInternalServerError describes a response with status code 500, with default header values.
+/* ResetStationStatInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -279,8 +275,7 @@ func (o *ResetStationStatInternalServerError) readResponse(response runtime.Clie
 	return nil
 }
 
-/*
-ResetStationStatBody ArgResetStationStat
+/*ResetStationStatBody ArgResetStationStat
 swagger:model ResetStationStatBody
 */
 type ResetStationStatBody struct {

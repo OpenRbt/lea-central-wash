@@ -17,8 +17,7 @@ import (
 // LoadRelayOKCode is the HTTP code returned for type LoadRelayOK
 const LoadRelayOKCode int = 200
 
-/*
-LoadRelayOK OK
+/*LoadRelayOK OK
 
 swagger:response loadRelayOK
 */
@@ -64,8 +63,7 @@ func (o *LoadRelayOK) LoadRelayResponder() {}
 // LoadRelayNotFoundCode is the HTTP code returned for type LoadRelayNotFound
 const LoadRelayNotFoundCode int = 404
 
-/*
-LoadRelayNotFound not found
+/*LoadRelayNotFound not found
 
 swagger:response loadRelayNotFound
 */
@@ -91,8 +89,7 @@ func (o *LoadRelayNotFound) LoadRelayResponder() {}
 // LoadRelayInternalServerErrorCode is the HTTP code returned for type LoadRelayInternalServerError
 const LoadRelayInternalServerErrorCode int = 500
 
-/*
-LoadRelayInternalServerError internal error
+/*LoadRelayInternalServerError internal error
 
 swagger:response loadRelayInternalServerError
 */

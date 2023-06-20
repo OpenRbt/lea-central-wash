@@ -134,6 +134,11 @@ func (m *StationReport) ContextValidate(ctx context.Context, formats strfmt.Regi
 func (m *StationReport) contextValidateMoneyReport(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.MoneyReport != nil {
+
+		if swag.IsZero(m.MoneyReport) { // not required
+			return nil
+		}
+
 		if err := m.MoneyReport.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("moneyReport")
@@ -152,6 +157,11 @@ func (m *StationReport) contextValidateRelayStats(ctx context.Context, formats s
 	for i := 0; i < len(m.RelayStats); i++ {
 
 		if m.RelayStats[i] != nil {
+
+			if swag.IsZero(m.RelayStats[i]) { // not required
+				return nil
+			}
+
 			if err := m.RelayStats[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relayStats" + "." + strconv.Itoa(i))

@@ -29,10 +29,10 @@ func NewSetProgram(ctx *middleware.Context, handler SetProgramHandler) *SetProgr
 	return &SetProgram{Context: ctx, Handler: handler}
 }
 
-/*
-	SetProgram swagger:route POST /set-program setProgram
+/* SetProgram swagger:route POST /set-program setProgram
 
 SetProgram set program API
+
 */
 type SetProgram struct {
 	Context *middleware.Context

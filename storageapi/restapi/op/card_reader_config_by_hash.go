@@ -38,10 +38,10 @@ func NewCardReaderConfigByHash(ctx *middleware.Context, handler CardReaderConfig
 	return &CardReaderConfigByHash{Context: ctx, Handler: handler}
 }
 
-/*
-	CardReaderConfigByHash swagger:route POST /card-reader-config-by-hash cardReaderConfigByHash
+/* CardReaderConfigByHash swagger:route POST /card-reader-config-by-hash cardReaderConfigByHash
 
 CardReaderConfigByHash card reader config by hash API
+
 */
 type CardReaderConfigByHash struct {
 	Context *middleware.Context
@@ -148,6 +148,7 @@ func (o *CardReaderConfigByHashBody) ContextValidate(ctx context.Context, format
 func (o *CardReaderConfigByHashBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

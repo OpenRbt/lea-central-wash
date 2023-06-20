@@ -15,8 +15,7 @@ import (
 // SetKasseNoContentCode is the HTTP code returned for type SetKasseNoContent
 const SetKasseNoContentCode int = 204
 
-/*
-SetKasseNoContent OK
+/*SetKasseNoContent OK
 
 swagger:response setKasseNoContent
 */
@@ -42,8 +41,7 @@ func (o *SetKasseNoContent) SetKasseResponder() {}
 // SetKasseInternalServerErrorCode is the HTTP code returned for type SetKasseInternalServerError
 const SetKasseInternalServerErrorCode int = 500
 
-/*
-SetKasseInternalServerError internal error
+/*SetKasseInternalServerError internal error
 
 swagger:response setKasseInternalServerError
 */

@@ -157,6 +157,11 @@ func (m *StationStat) contextValidateProgramStats(ctx context.Context, formats s
 	for i := 0; i < len(m.ProgramStats); i++ {
 
 		if m.ProgramStats[i] != nil {
+
+			if swag.IsZero(m.ProgramStats[i]) { // not required
+				return nil
+			}
+
 			if err := m.ProgramStats[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("programStats" + "." + strconv.Itoa(i))
@@ -177,6 +182,11 @@ func (m *StationStat) contextValidateRelayStats(ctx context.Context, formats str
 	for i := 0; i < len(m.RelayStats); i++ {
 
 		if m.RelayStats[i] != nil {
+
+			if swag.IsZero(m.RelayStats[i]) { // not required
+				return nil
+			}
+
 			if err := m.RelayStats[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relayStats" + "." + strconv.Itoa(i))

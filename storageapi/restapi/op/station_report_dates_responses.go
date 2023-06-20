@@ -17,8 +17,7 @@ import (
 // StationReportDatesOKCode is the HTTP code returned for type StationReportDatesOK
 const StationReportDatesOKCode int = 200
 
-/*
-StationReportDatesOK OK
+/*StationReportDatesOK OK
 
 swagger:response stationReportDatesOK
 */
@@ -64,8 +63,7 @@ func (o *StationReportDatesOK) StationReportDatesResponder() {}
 // StationReportDatesNotFoundCode is the HTTP code returned for type StationReportDatesNotFound
 const StationReportDatesNotFoundCode int = 404
 
-/*
-StationReportDatesNotFound not found
+/*StationReportDatesNotFound not found
 
 swagger:response stationReportDatesNotFound
 */
@@ -91,8 +89,7 @@ func (o *StationReportDatesNotFound) StationReportDatesResponder() {}
 // StationReportDatesInternalServerErrorCode is the HTTP code returned for type StationReportDatesInternalServerError
 const StationReportDatesInternalServerErrorCode int = 500
 
-/*
-StationReportDatesInternalServerError internal error
+/*StationReportDatesInternalServerError internal error
 
 swagger:response stationReportDatesInternalServerError
 */

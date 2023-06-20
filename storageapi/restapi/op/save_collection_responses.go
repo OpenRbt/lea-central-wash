@@ -15,8 +15,7 @@ import (
 // SaveCollectionNoContentCode is the HTTP code returned for type SaveCollectionNoContent
 const SaveCollectionNoContentCode int = 204
 
-/*
-SaveCollectionNoContent OK
+/*SaveCollectionNoContent OK
 
 swagger:response saveCollectionNoContent
 */
@@ -42,8 +41,7 @@ func (o *SaveCollectionNoContent) SaveCollectionResponder() {}
 // SaveCollectionUnauthorizedCode is the HTTP code returned for type SaveCollectionUnauthorized
 const SaveCollectionUnauthorizedCode int = 401
 
-/*
-SaveCollectionUnauthorized PIN is missing or invalid
+/*SaveCollectionUnauthorized PIN is missing or invalid
 
 swagger:response saveCollectionUnauthorized
 */
@@ -69,8 +67,7 @@ func (o *SaveCollectionUnauthorized) SaveCollectionResponder() {}
 // SaveCollectionNotFoundCode is the HTTP code returned for type SaveCollectionNotFound
 const SaveCollectionNotFoundCode int = 404
 
-/*
-SaveCollectionNotFound not found
+/*SaveCollectionNotFound not found
 
 swagger:response saveCollectionNotFound
 */
@@ -96,8 +93,7 @@ func (o *SaveCollectionNotFound) SaveCollectionResponder() {}
 // SaveCollectionInternalServerErrorCode is the HTTP code returned for type SaveCollectionInternalServerError
 const SaveCollectionInternalServerErrorCode int = 500
 
-/*
-SaveCollectionInternalServerError internal error
+/*SaveCollectionInternalServerError internal error
 
 swagger:response saveCollectionInternalServerError
 */

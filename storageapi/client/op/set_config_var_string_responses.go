@@ -33,7 +33,7 @@ func (o *SetConfigVarStringReader) ReadResponse(response runtime.ClientResponse,
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /set-config-var-string] setConfigVarString", response, response.Code())
 	}
 }
 
@@ -42,8 +42,7 @@ func NewSetConfigVarStringNoContent() *SetConfigVarStringNoContent {
 	return &SetConfigVarStringNoContent{}
 }
 
-/*
-SetConfigVarStringNoContent describes a response with status code 204, with default header values.
+/* SetConfigVarStringNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -98,8 +97,7 @@ func NewSetConfigVarStringInternalServerError() *SetConfigVarStringInternalServe
 	return &SetConfigVarStringInternalServerError{}
 }
 
-/*
-SetConfigVarStringInternalServerError describes a response with status code 500, with default header values.
+/* SetConfigVarStringInternalServerError describes a response with status code 500, with default header values.
 
 Internal error
 */

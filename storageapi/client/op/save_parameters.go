@@ -52,12 +52,10 @@ func NewSaveParamsWithHTTPClient(client *http.Client) *SaveParams {
 	}
 }
 
-/*
-SaveParams contains all the parameters to send to the API endpoint
+/* SaveParams contains all the parameters to send to the API endpoint
+   for the save operation.
 
-	for the save operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type SaveParams struct {
 

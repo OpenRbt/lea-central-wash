@@ -52,12 +52,10 @@ func NewStationReportCurrentMoneyParamsWithHTTPClient(client *http.Client) *Stat
 	}
 }
 
-/*
-StationReportCurrentMoneyParams contains all the parameters to send to the API endpoint
+/* StationReportCurrentMoneyParams contains all the parameters to send to the API endpoint
+   for the station report current money operation.
 
-	for the station report current money operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type StationReportCurrentMoneyParams struct {
 

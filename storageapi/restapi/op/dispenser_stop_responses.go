@@ -15,8 +15,7 @@ import (
 // DispenserStopNoContentCode is the HTTP code returned for type DispenserStopNoContent
 const DispenserStopNoContentCode int = 204
 
-/*
-DispenserStopNoContent OK
+/*DispenserStopNoContent OK
 
 swagger:response dispenserStopNoContent
 */
@@ -42,8 +41,7 @@ func (o *DispenserStopNoContent) DispenserStopResponder() {}
 // DispenserStopNotFoundCode is the HTTP code returned for type DispenserStopNotFound
 const DispenserStopNotFoundCode int = 404
 
-/*
-DispenserStopNotFound not found
+/*DispenserStopNotFound not found
 
 swagger:response dispenserStopNotFound
 */
@@ -87,8 +85,7 @@ func (o *DispenserStopNotFound) DispenserStopResponder() {}
 // DispenserStopInternalServerErrorCode is the HTTP code returned for type DispenserStopInternalServerError
 const DispenserStopInternalServerErrorCode int = 500
 
-/*
-DispenserStopInternalServerError internal error
+/*DispenserStopInternalServerError internal error
 
 swagger:response dispenserStopInternalServerError
 */

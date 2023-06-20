@@ -52,12 +52,10 @@ func NewGetPingParamsWithHTTPClient(client *http.Client) *GetPingParams {
 	}
 }
 
-/*
-GetPingParams contains all the parameters to send to the API endpoint
+/* GetPingParams contains all the parameters to send to the API endpoint
+   for the get ping operation.
 
-	for the get ping operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type GetPingParams struct {
 	timeout    time.Duration

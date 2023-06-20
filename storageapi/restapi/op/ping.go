@@ -38,10 +38,10 @@ func NewPing(ctx *middleware.Context, handler PingHandler) *Ping {
 	return &Ping{Context: ctx, Handler: handler}
 }
 
-/*
-	Ping swagger:route POST /ping ping
+/* Ping swagger:route POST /ping ping
 
 Ping ping API
+
 */
 type Ping struct {
 	Context *middleware.Context
@@ -162,6 +162,7 @@ func (o *PingBody) ContextValidate(ctx context.Context, formats strfmt.Registry)
 func (o *PingBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

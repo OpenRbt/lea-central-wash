@@ -38,10 +38,10 @@ func NewDispenserStop(ctx *middleware.Context, handler DispenserStopHandler) *Di
 	return &DispenserStop{Context: ctx, Handler: handler}
 }
 
-/*
-	DispenserStop swagger:route POST /stop-dispenser dispenserStop
+/* DispenserStop swagger:route POST /stop-dispenser dispenserStop
 
 DispenserStop dispenser stop API
+
 */
 type DispenserStop struct {
 	Context *middleware.Context
@@ -170,6 +170,7 @@ func (o *DispenserStopBody) ContextValidate(ctx context.Context, formats strfmt.
 func (o *DispenserStopBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

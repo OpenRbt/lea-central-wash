@@ -284,6 +284,11 @@ func (m *AdvertisingCampaign) contextValidateDiscountPrograms(ctx context.Contex
 	for i := 0; i < len(m.DiscountPrograms); i++ {
 
 		if m.DiscountPrograms[i] != nil {
+
+			if swag.IsZero(m.DiscountPrograms[i]) { // not required
+				return nil
+			}
+
 			if err := m.DiscountPrograms[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("discountPrograms" + "." + strconv.Itoa(i))

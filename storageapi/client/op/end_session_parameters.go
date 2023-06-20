@@ -52,12 +52,10 @@ func NewEndSessionParamsWithHTTPClient(client *http.Client) *EndSessionParams {
 	}
 }
 
-/*
-EndSessionParams contains all the parameters to send to the API endpoint
+/* EndSessionParams contains all the parameters to send to the API endpoint
+   for the end session operation.
 
-	for the end session operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type EndSessionParams struct {
 

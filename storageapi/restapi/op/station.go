@@ -36,10 +36,10 @@ func NewStation(ctx *middleware.Context, handler StationHandler) *Station {
 	return &Station{Context: ctx, Handler: handler}
 }
 
-/*
-	Station swagger:route POST /station station
+/* Station swagger:route POST /station station
 
 Station station API
+
 */
 type Station struct {
 	Context *middleware.Context

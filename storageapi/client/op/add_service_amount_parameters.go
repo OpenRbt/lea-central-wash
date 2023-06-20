@@ -52,12 +52,10 @@ func NewAddServiceAmountParamsWithHTTPClient(client *http.Client) *AddServiceAmo
 	}
 }
 
-/*
-AddServiceAmountParams contains all the parameters to send to the API endpoint
+/* AddServiceAmountParams contains all the parameters to send to the API endpoint
+   for the add service amount operation.
 
-	for the add service amount operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type AddServiceAmountParams struct {
 

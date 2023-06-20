@@ -304,6 +304,11 @@ func (m *UserConfig) ContextValidate(ctx context.Context, formats strfmt.Registr
 func (m *UserConfig) contextValidateFirstName(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.FirstName != nil {
+
+		if swag.IsZero(m.FirstName) { // not required
+			return nil
+		}
+
 		if err := m.FirstName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("firstName")
@@ -320,6 +325,11 @@ func (m *UserConfig) contextValidateFirstName(ctx context.Context, formats strfm
 func (m *UserConfig) contextValidateIsAdmin(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.IsAdmin != nil {
+
+		if swag.IsZero(m.IsAdmin) { // not required
+			return nil
+		}
+
 		if err := m.IsAdmin.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("isAdmin")
@@ -336,6 +346,11 @@ func (m *UserConfig) contextValidateIsAdmin(ctx context.Context, formats strfmt.
 func (m *UserConfig) contextValidateIsEngineer(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.IsEngineer != nil {
+
+		if swag.IsZero(m.IsEngineer) { // not required
+			return nil
+		}
+
 		if err := m.IsEngineer.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("isEngineer")
@@ -352,6 +367,11 @@ func (m *UserConfig) contextValidateIsEngineer(ctx context.Context, formats strf
 func (m *UserConfig) contextValidateIsOperator(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.IsOperator != nil {
+
+		if swag.IsZero(m.IsOperator) { // not required
+			return nil
+		}
+
 		if err := m.IsOperator.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("isOperator")
@@ -368,6 +388,11 @@ func (m *UserConfig) contextValidateIsOperator(ctx context.Context, formats strf
 func (m *UserConfig) contextValidateLastName(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.LastName != nil {
+
+		if swag.IsZero(m.LastName) { // not required
+			return nil
+		}
+
 		if err := m.LastName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("lastName")
@@ -384,6 +409,7 @@ func (m *UserConfig) contextValidateLastName(ctx context.Context, formats strfmt
 func (m *UserConfig) contextValidateLogin(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Login != nil {
+
 		if err := m.Login.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("login")
@@ -400,6 +426,11 @@ func (m *UserConfig) contextValidateLogin(ctx context.Context, formats strfmt.Re
 func (m *UserConfig) contextValidateMiddleName(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.MiddleName != nil {
+
+		if swag.IsZero(m.MiddleName) { // not required
+			return nil
+		}
+
 		if err := m.MiddleName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("middleName")

@@ -15,8 +15,7 @@ import (
 // LoadFromStationOKCode is the HTTP code returned for type LoadFromStationOK
 const LoadFromStationOKCode int = 200
 
-/*
-LoadFromStationOK OK
+/*LoadFromStationOK OK
 
 swagger:response loadFromStationOK
 */
@@ -60,8 +59,7 @@ func (o *LoadFromStationOK) LoadFromStationResponder() {}
 // LoadFromStationNotFoundCode is the HTTP code returned for type LoadFromStationNotFound
 const LoadFromStationNotFoundCode int = 404
 
-/*
-LoadFromStationNotFound not found
+/*LoadFromStationNotFound not found
 
 swagger:response loadFromStationNotFound
 */
@@ -87,8 +85,7 @@ func (o *LoadFromStationNotFound) LoadFromStationResponder() {}
 // LoadFromStationInternalServerErrorCode is the HTTP code returned for type LoadFromStationInternalServerError
 const LoadFromStationInternalServerErrorCode int = 500
 
-/*
-LoadFromStationInternalServerError internal error
+/*LoadFromStationInternalServerError internal error
 
 swagger:response loadFromStationInternalServerError
 */

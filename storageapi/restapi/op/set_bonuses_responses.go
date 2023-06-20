@@ -15,8 +15,7 @@ import (
 // SetBonusesNoContentCode is the HTTP code returned for type SetBonusesNoContent
 const SetBonusesNoContentCode int = 204
 
-/*
-SetBonusesNoContent OK
+/*SetBonusesNoContent OK
 
 swagger:response setBonusesNoContent
 */
@@ -42,8 +41,7 @@ func (o *SetBonusesNoContent) SetBonusesResponder() {}
 // SetBonusesUnauthorizedCode is the HTTP code returned for type SetBonusesUnauthorized
 const SetBonusesUnauthorizedCode int = 401
 
-/*
-SetBonusesUnauthorized user not authorized
+/*SetBonusesUnauthorized user not authorized
 
 swagger:response setBonusesUnauthorized
 */
@@ -69,8 +67,7 @@ func (o *SetBonusesUnauthorized) SetBonusesResponder() {}
 // SetBonusesNotFoundCode is the HTTP code returned for type SetBonusesNotFound
 const SetBonusesNotFoundCode int = 404
 
-/*
-SetBonusesNotFound hash not found
+/*SetBonusesNotFound hash not found
 
 swagger:response setBonusesNotFound
 */
@@ -96,8 +93,7 @@ func (o *SetBonusesNotFound) SetBonusesResponder() {}
 // SetBonusesInternalServerErrorCode is the HTTP code returned for type SetBonusesInternalServerError
 const SetBonusesInternalServerErrorCode int = 500
 
-/*
-SetBonusesInternalServerError Internal error
+/*SetBonusesInternalServerError Internal error
 
 swagger:response setBonusesInternalServerError
 */

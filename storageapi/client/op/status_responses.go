@@ -36,7 +36,7 @@ func (o *StatusReader) ReadResponse(response runtime.ClientResponse, consumer ru
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /status] status", response, response.Code())
 	}
 }
 
@@ -45,8 +45,7 @@ func NewStatusOK() *StatusOK {
 	return &StatusOK{}
 }
 
-/*
-StatusOK describes a response with status code 200, with default header values.
+/* StatusOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -113,8 +112,7 @@ func NewStatusInternalServerError() *StatusInternalServerError {
 	return &StatusInternalServerError{}
 }
 
-/*
-StatusInternalServerError describes a response with status code 500, with default header values.
+/* StatusInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

@@ -61,7 +61,7 @@ func (o *StationCollectionReportDatesReader) ReadResponse(response runtime.Clien
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /station-collection-report-dates] stationCollectionReportDates", response, response.Code())
 	}
 }
 
@@ -70,8 +70,7 @@ func NewStationCollectionReportDatesOK() *StationCollectionReportDatesOK {
 	return &StationCollectionReportDatesOK{}
 }
 
-/*
-StationCollectionReportDatesOK describes a response with status code 200, with default header values.
+/* StationCollectionReportDatesOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -138,8 +137,7 @@ func NewStationCollectionReportDatesUnauthorized() *StationCollectionReportDates
 	return &StationCollectionReportDatesUnauthorized{}
 }
 
-/*
-StationCollectionReportDatesUnauthorized describes a response with status code 401, with default header values.
+/* StationCollectionReportDatesUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -194,8 +192,7 @@ func NewStationCollectionReportDatesForbidden() *StationCollectionReportDatesFor
 	return &StationCollectionReportDatesForbidden{}
 }
 
-/*
-StationCollectionReportDatesForbidden describes a response with status code 403, with default header values.
+/* StationCollectionReportDatesForbidden describes a response with status code 403, with default header values.
 
 Access forbiddenn
 */
@@ -250,8 +247,7 @@ func NewStationCollectionReportDatesNotFound() *StationCollectionReportDatesNotF
 	return &StationCollectionReportDatesNotFound{}
 }
 
-/*
-StationCollectionReportDatesNotFound describes a response with status code 404, with default header values.
+/* StationCollectionReportDatesNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -306,8 +302,7 @@ func NewStationCollectionReportDatesInternalServerError() *StationCollectionRepo
 	return &StationCollectionReportDatesInternalServerError{}
 }
 
-/*
-StationCollectionReportDatesInternalServerError describes a response with status code 500, with default header values.
+/* StationCollectionReportDatesInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -357,8 +352,7 @@ func (o *StationCollectionReportDatesInternalServerError) readResponse(response 
 	return nil
 }
 
-/*
-StationCollectionReportDatesBody ArgCollectionReportDates
+/*StationCollectionReportDatesBody ArgCollectionReportDates
 swagger:model StationCollectionReportDatesBody
 */
 type StationCollectionReportDatesBody struct {
@@ -427,8 +421,7 @@ func (o *StationCollectionReportDatesBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*
-StationCollectionReportDatesOKBody ResponseStationCollectionReportDates
+/*StationCollectionReportDatesOKBody ResponseStationCollectionReportDates
 swagger:model StationCollectionReportDatesOKBody
 */
 type StationCollectionReportDatesOKBody struct {
@@ -517,6 +510,11 @@ func (o *StationCollectionReportDatesOKBody) contextValidateCollectionReports(ct
 	for i := 0; i < len(o.CollectionReports); i++ {
 
 		if o.CollectionReports[i] != nil {
+
+			if swag.IsZero(o.CollectionReports[i]) { // not required
+				return nil
+			}
+
 			if err := o.CollectionReports[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stationCollectionReportDatesOK" + "." + "collectionReports" + "." + strconv.Itoa(i))

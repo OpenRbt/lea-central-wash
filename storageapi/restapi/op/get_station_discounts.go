@@ -34,10 +34,10 @@ func NewGetStationDiscounts(ctx *middleware.Context, handler GetStationDiscounts
 	return &GetStationDiscounts{Context: ctx, Handler: handler}
 }
 
-/*
-	GetStationDiscounts swagger:route POST /get-station-discounts getStationDiscounts
+/* GetStationDiscounts swagger:route POST /get-station-discounts getStationDiscounts
 
 GetStationDiscounts get station discounts API
+
 */
 type GetStationDiscounts struct {
 	Context *middleware.Context

@@ -54,12 +54,10 @@ func NewEditAdvertisingCampaignParamsWithHTTPClient(client *http.Client) *EditAd
 	}
 }
 
-/*
-EditAdvertisingCampaignParams contains all the parameters to send to the API endpoint
+/* EditAdvertisingCampaignParams contains all the parameters to send to the API endpoint
+   for the edit advertising campaign operation.
 
-	for the edit advertising campaign operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type EditAdvertisingCampaignParams struct {
 

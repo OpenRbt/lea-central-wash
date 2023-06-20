@@ -54,12 +54,10 @@ func NewSetStationConfigVarIntParamsWithHTTPClient(client *http.Client) *SetStat
 	}
 }
 
-/*
-SetStationConfigVarIntParams contains all the parameters to send to the API endpoint
+/* SetStationConfigVarIntParams contains all the parameters to send to the API endpoint
+   for the set station config var int operation.
 
-	for the set station config var int operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type SetStationConfigVarIntParams struct {
 

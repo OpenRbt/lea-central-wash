@@ -48,7 +48,7 @@ func (o *LoadRelayReader) ReadResponse(response runtime.ClientResponse, consumer
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /load-relay] loadRelay", response, response.Code())
 	}
 }
 
@@ -57,8 +57,7 @@ func NewLoadRelayOK() *LoadRelayOK {
 	return &LoadRelayOK{}
 }
 
-/*
-LoadRelayOK describes a response with status code 200, with default header values.
+/* LoadRelayOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -125,8 +124,7 @@ func NewLoadRelayNotFound() *LoadRelayNotFound {
 	return &LoadRelayNotFound{}
 }
 
-/*
-LoadRelayNotFound describes a response with status code 404, with default header values.
+/* LoadRelayNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -181,8 +179,7 @@ func NewLoadRelayInternalServerError() *LoadRelayInternalServerError {
 	return &LoadRelayInternalServerError{}
 }
 
-/*
-LoadRelayInternalServerError describes a response with status code 500, with default header values.
+/* LoadRelayInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -232,8 +229,7 @@ func (o *LoadRelayInternalServerError) readResponse(response runtime.ClientRespo
 	return nil
 }
 
-/*
-LoadRelayBody load relay body
+/*LoadRelayBody load relay body
 swagger:model LoadRelayBody
 */
 type LoadRelayBody struct {
@@ -317,6 +313,7 @@ func (o *LoadRelayBody) ContextValidate(ctx context.Context, formats strfmt.Regi
 func (o *LoadRelayBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

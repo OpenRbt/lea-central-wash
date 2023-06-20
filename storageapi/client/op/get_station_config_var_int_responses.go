@@ -48,7 +48,7 @@ func (o *GetStationConfigVarIntReader) ReadResponse(response runtime.ClientRespo
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /get-station-config-var-int] getStationConfigVarInt", response, response.Code())
 	}
 }
 
@@ -57,8 +57,7 @@ func NewGetStationConfigVarIntOK() *GetStationConfigVarIntOK {
 	return &GetStationConfigVarIntOK{}
 }
 
-/*
-GetStationConfigVarIntOK describes a response with status code 200, with default header values.
+/* GetStationConfigVarIntOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -125,8 +124,7 @@ func NewGetStationConfigVarIntNotFound() *GetStationConfigVarIntNotFound {
 	return &GetStationConfigVarIntNotFound{}
 }
 
-/*
-GetStationConfigVarIntNotFound describes a response with status code 404, with default header values.
+/* GetStationConfigVarIntNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -181,8 +179,7 @@ func NewGetStationConfigVarIntInternalServerError() *GetStationConfigVarIntInter
 	return &GetStationConfigVarIntInternalServerError{}
 }
 
-/*
-GetStationConfigVarIntInternalServerError describes a response with status code 500, with default header values.
+/* GetStationConfigVarIntInternalServerError describes a response with status code 500, with default header values.
 
 Internal error
 */
@@ -232,8 +229,7 @@ func (o *GetStationConfigVarIntInternalServerError) readResponse(response runtim
 	return nil
 }
 
-/*
-GetStationConfigVarIntBody ArgGetStationConfigVar
+/*GetStationConfigVarIntBody ArgGetStationConfigVar
 swagger:model GetStationConfigVarIntBody
 */
 type GetStationConfigVarIntBody struct {

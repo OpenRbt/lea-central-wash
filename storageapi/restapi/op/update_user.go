@@ -39,10 +39,10 @@ func NewUpdateUser(ctx *middleware.Context, handler UpdateUserHandler) *UpdateUs
 	return &UpdateUser{Context: ctx, Handler: handler}
 }
 
-/*
-	UpdateUser swagger:route PUT /user updateUser
+/* UpdateUser swagger:route PUT /user updateUser
 
 UpdateUser update user API
+
 */
 type UpdateUser struct {
 	Context *middleware.Context
@@ -297,6 +297,11 @@ func (o *UpdateUserBody) ContextValidate(ctx context.Context, formats strfmt.Reg
 func (o *UpdateUserBody) contextValidateFirstName(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.FirstName != nil {
+
+		if swag.IsZero(o.FirstName) { // not required
+			return nil
+		}
+
 		if err := o.FirstName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "firstName")
@@ -313,6 +318,11 @@ func (o *UpdateUserBody) contextValidateFirstName(ctx context.Context, formats s
 func (o *UpdateUserBody) contextValidateIsAdmin(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.IsAdmin != nil {
+
+		if swag.IsZero(o.IsAdmin) { // not required
+			return nil
+		}
+
 		if err := o.IsAdmin.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "isAdmin")
@@ -329,6 +339,11 @@ func (o *UpdateUserBody) contextValidateIsAdmin(ctx context.Context, formats str
 func (o *UpdateUserBody) contextValidateIsEngineer(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.IsEngineer != nil {
+
+		if swag.IsZero(o.IsEngineer) { // not required
+			return nil
+		}
+
 		if err := o.IsEngineer.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "isEngineer")
@@ -345,6 +360,11 @@ func (o *UpdateUserBody) contextValidateIsEngineer(ctx context.Context, formats 
 func (o *UpdateUserBody) contextValidateIsOperator(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.IsOperator != nil {
+
+		if swag.IsZero(o.IsOperator) { // not required
+			return nil
+		}
+
 		if err := o.IsOperator.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "isOperator")
@@ -361,6 +381,11 @@ func (o *UpdateUserBody) contextValidateIsOperator(ctx context.Context, formats 
 func (o *UpdateUserBody) contextValidateLastName(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.LastName != nil {
+
+		if swag.IsZero(o.LastName) { // not required
+			return nil
+		}
+
 		if err := o.LastName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "lastName")
@@ -377,6 +402,7 @@ func (o *UpdateUserBody) contextValidateLastName(ctx context.Context, formats st
 func (o *UpdateUserBody) contextValidateLogin(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Login != nil {
+
 		if err := o.Login.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
@@ -393,6 +419,11 @@ func (o *UpdateUserBody) contextValidateLogin(ctx context.Context, formats strfm
 func (o *UpdateUserBody) contextValidateMiddleName(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.MiddleName != nil {
+
+		if swag.IsZero(o.MiddleName) { // not required
+			return nil
+		}
+
 		if err := o.MiddleName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "middleName")

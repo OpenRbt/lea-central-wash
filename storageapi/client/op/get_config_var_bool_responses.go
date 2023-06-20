@@ -46,7 +46,7 @@ func (o *GetConfigVarBoolReader) ReadResponse(response runtime.ClientResponse, c
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /get-config-var-bool] getConfigVarBool", response, response.Code())
 	}
 }
 
@@ -55,8 +55,7 @@ func NewGetConfigVarBoolOK() *GetConfigVarBoolOK {
 	return &GetConfigVarBoolOK{}
 }
 
-/*
-GetConfigVarBoolOK describes a response with status code 200, with default header values.
+/* GetConfigVarBoolOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -123,8 +122,7 @@ func NewGetConfigVarBoolNotFound() *GetConfigVarBoolNotFound {
 	return &GetConfigVarBoolNotFound{}
 }
 
-/*
-GetConfigVarBoolNotFound describes a response with status code 404, with default header values.
+/* GetConfigVarBoolNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -179,8 +177,7 @@ func NewGetConfigVarBoolInternalServerError() *GetConfigVarBoolInternalServerErr
 	return &GetConfigVarBoolInternalServerError{}
 }
 
-/*
-GetConfigVarBoolInternalServerError describes a response with status code 500, with default header values.
+/* GetConfigVarBoolInternalServerError describes a response with status code 500, with default header values.
 
 Internal error
 */
@@ -230,8 +227,7 @@ func (o *GetConfigVarBoolInternalServerError) readResponse(response runtime.Clie
 	return nil
 }
 
-/*
-GetConfigVarBoolBody ArgGetConfigVar
+/*GetConfigVarBoolBody ArgGetConfigVar
 swagger:model GetConfigVarBoolBody
 */
 type GetConfigVarBoolBody struct {

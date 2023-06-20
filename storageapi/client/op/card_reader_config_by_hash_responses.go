@@ -48,7 +48,7 @@ func (o *CardReaderConfigByHashReader) ReadResponse(response runtime.ClientRespo
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /card-reader-config-by-hash] cardReaderConfigByHash", response, response.Code())
 	}
 }
 
@@ -57,8 +57,7 @@ func NewCardReaderConfigByHashOK() *CardReaderConfigByHashOK {
 	return &CardReaderConfigByHashOK{}
 }
 
-/*
-CardReaderConfigByHashOK describes a response with status code 200, with default header values.
+/* CardReaderConfigByHashOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -125,8 +124,7 @@ func NewCardReaderConfigByHashNotFound() *CardReaderConfigByHashNotFound {
 	return &CardReaderConfigByHashNotFound{}
 }
 
-/*
-CardReaderConfigByHashNotFound describes a response with status code 404, with default header values.
+/* CardReaderConfigByHashNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -181,8 +179,7 @@ func NewCardReaderConfigByHashInternalServerError() *CardReaderConfigByHashInter
 	return &CardReaderConfigByHashInternalServerError{}
 }
 
-/*
-CardReaderConfigByHashInternalServerError describes a response with status code 500, with default header values.
+/* CardReaderConfigByHashInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -232,8 +229,7 @@ func (o *CardReaderConfigByHashInternalServerError) readResponse(response runtim
 	return nil
 }
 
-/*
-CardReaderConfigByHashBody ArgCardReaderConfigByCash
+/*CardReaderConfigByHashBody ArgCardReaderConfigByCash
 swagger:model CardReaderConfigByHashBody
 */
 type CardReaderConfigByHashBody struct {
@@ -317,6 +313,7 @@ func (o *CardReaderConfigByHashBody) ContextValidate(ctx context.Context, format
 func (o *CardReaderConfigByHashBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

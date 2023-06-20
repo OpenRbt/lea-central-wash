@@ -36,10 +36,10 @@ func NewDelStation(ctx *middleware.Context, handler DelStationHandler) *DelStati
 	return &DelStation{Context: ctx, Handler: handler}
 }
 
-/*
-	DelStation swagger:route POST /del-station delStation
+/* DelStation swagger:route POST /del-station delStation
 
 DelStation del station API
+
 */
 type DelStation struct {
 	Context *middleware.Context

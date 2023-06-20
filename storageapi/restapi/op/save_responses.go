@@ -15,8 +15,7 @@ import (
 // SaveNoContentCode is the HTTP code returned for type SaveNoContent
 const SaveNoContentCode int = 204
 
-/*
-SaveNoContent OK
+/*SaveNoContent OK
 
 swagger:response saveNoContent
 */
@@ -42,8 +41,7 @@ func (o *SaveNoContent) SaveResponder() {}
 // SaveNotFoundCode is the HTTP code returned for type SaveNotFound
 const SaveNotFoundCode int = 404
 
-/*
-SaveNotFound not found
+/*SaveNotFound not found
 
 swagger:response saveNotFound
 */
@@ -69,8 +67,7 @@ func (o *SaveNotFound) SaveResponder() {}
 // SaveInternalServerErrorCode is the HTTP code returned for type SaveInternalServerError
 const SaveInternalServerErrorCode int = 500
 
-/*
-SaveInternalServerError internal error
+/*SaveInternalServerError internal error
 
 swagger:response saveInternalServerError
 */

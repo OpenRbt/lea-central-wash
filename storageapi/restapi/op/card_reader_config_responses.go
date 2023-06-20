@@ -17,8 +17,7 @@ import (
 // CardReaderConfigOKCode is the HTTP code returned for type CardReaderConfigOK
 const CardReaderConfigOKCode int = 200
 
-/*
-CardReaderConfigOK OK
+/*CardReaderConfigOK OK
 
 swagger:response cardReaderConfigOK
 */
@@ -64,8 +63,7 @@ func (o *CardReaderConfigOK) CardReaderConfigResponder() {}
 // CardReaderConfigNotFoundCode is the HTTP code returned for type CardReaderConfigNotFound
 const CardReaderConfigNotFoundCode int = 404
 
-/*
-CardReaderConfigNotFound not found
+/*CardReaderConfigNotFound not found
 
 swagger:response cardReaderConfigNotFound
 */
@@ -91,8 +89,7 @@ func (o *CardReaderConfigNotFound) CardReaderConfigResponder() {}
 // CardReaderConfigInternalServerErrorCode is the HTTP code returned for type CardReaderConfigInternalServerError
 const CardReaderConfigInternalServerErrorCode int = 500
 
-/*
-CardReaderConfigInternalServerError internal error
+/*CardReaderConfigInternalServerError internal error
 
 swagger:response cardReaderConfigInternalServerError
 */

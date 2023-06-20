@@ -43,7 +43,7 @@ func (o *AddServiceAmountReader) ReadResponse(response runtime.ClientResponse, c
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /add-service-amount] addServiceAmount", response, response.Code())
 	}
 }
 
@@ -52,8 +52,7 @@ func NewAddServiceAmountNoContent() *AddServiceAmountNoContent {
 	return &AddServiceAmountNoContent{}
 }
 
-/*
-AddServiceAmountNoContent describes a response with status code 204, with default header values.
+/* AddServiceAmountNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -108,8 +107,7 @@ func NewAddServiceAmountNotFound() *AddServiceAmountNotFound {
 	return &AddServiceAmountNotFound{}
 }
 
-/*
-AddServiceAmountNotFound describes a response with status code 404, with default header values.
+/* AddServiceAmountNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -164,8 +162,7 @@ func NewAddServiceAmountInternalServerError() *AddServiceAmountInternalServerErr
 	return &AddServiceAmountInternalServerError{}
 }
 
-/*
-AddServiceAmountInternalServerError describes a response with status code 500, with default header values.
+/* AddServiceAmountInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -215,8 +212,7 @@ func (o *AddServiceAmountInternalServerError) readResponse(response runtime.Clie
 	return nil
 }
 
-/*
-AddServiceAmountBody ArgAddServiceAmount
+/*AddServiceAmountBody ArgAddServiceAmount
 swagger:model AddServiceAmountBody
 */
 type AddServiceAmountBody struct {

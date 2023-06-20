@@ -123,6 +123,11 @@ func (m *StationsVariables) contextValidateKeyPairs(ctx context.Context, formats
 	for i := 0; i < len(m.KeyPairs); i++ {
 
 		if m.KeyPairs[i] != nil {
+
+			if swag.IsZero(m.KeyPairs[i]) { // not required
+				return nil
+			}
+
 			if err := m.KeyPairs[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("keyPairs" + "." + strconv.Itoa(i))

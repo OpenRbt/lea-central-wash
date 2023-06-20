@@ -15,8 +15,7 @@ import (
 // SetStationButtonNoContentCode is the HTTP code returned for type SetStationButtonNoContent
 const SetStationButtonNoContentCode int = 204
 
-/*
-SetStationButtonNoContent OK
+/*SetStationButtonNoContent OK
 
 swagger:response setStationButtonNoContent
 */
@@ -42,8 +41,7 @@ func (o *SetStationButtonNoContent) SetStationButtonResponder() {}
 // SetStationButtonUnprocessableEntityCode is the HTTP code returned for type SetStationButtonUnprocessableEntity
 const SetStationButtonUnprocessableEntityCode int = 422
 
-/*
-SetStationButtonUnprocessableEntity validation error
+/*SetStationButtonUnprocessableEntity validation error
 
 swagger:response setStationButtonUnprocessableEntity
 */
@@ -87,8 +85,7 @@ func (o *SetStationButtonUnprocessableEntity) SetStationButtonResponder() {}
 // SetStationButtonInternalServerErrorCode is the HTTP code returned for type SetStationButtonInternalServerError
 const SetStationButtonInternalServerErrorCode int = 500
 
-/*
-SetStationButtonInternalServerError internal error
+/*SetStationButtonInternalServerError internal error
 
 swagger:response setStationButtonInternalServerError
 */

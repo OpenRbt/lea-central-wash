@@ -48,7 +48,7 @@ func (o *PressButtonReader) ReadResponse(response runtime.ClientResponse, consum
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /press-button] pressButton", response, response.Code())
 	}
 }
 
@@ -57,8 +57,7 @@ func NewPressButtonNoContent() *PressButtonNoContent {
 	return &PressButtonNoContent{}
 }
 
-/*
-PressButtonNoContent describes a response with status code 204, with default header values.
+/* PressButtonNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -113,8 +112,7 @@ func NewPressButtonNotFound() *PressButtonNotFound {
 	return &PressButtonNotFound{}
 }
 
-/*
-PressButtonNotFound describes a response with status code 404, with default header values.
+/* PressButtonNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -179,8 +177,7 @@ func NewPressButtonInternalServerError() *PressButtonInternalServerError {
 	return &PressButtonInternalServerError{}
 }
 
-/*
-PressButtonInternalServerError describes a response with status code 500, with default header values.
+/* PressButtonInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -230,8 +227,7 @@ func (o *PressButtonInternalServerError) readResponse(response runtime.ClientRes
 	return nil
 }
 
-/*
-PressButtonBody ArgPressButton
+/*PressButtonBody ArgPressButton
 swagger:model PressButtonBody
 */
 type PressButtonBody struct {
@@ -337,6 +333,7 @@ func (o *PressButtonBody) ContextValidate(ctx context.Context, formats strfmt.Re
 func (o *PressButtonBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

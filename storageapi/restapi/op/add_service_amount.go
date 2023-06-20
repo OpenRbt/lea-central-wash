@@ -34,10 +34,10 @@ func NewAddServiceAmount(ctx *middleware.Context, handler AddServiceAmountHandle
 	return &AddServiceAmount{Context: ctx, Handler: handler}
 }
 
-/*
-	AddServiceAmount swagger:route POST /add-service-amount addServiceAmount
+/* AddServiceAmount swagger:route POST /add-service-amount addServiceAmount
 
 AddServiceAmount add service amount API
+
 */
 type AddServiceAmount struct {
 	Context *middleware.Context

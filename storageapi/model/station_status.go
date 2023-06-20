@@ -170,6 +170,10 @@ func (m *StationStatus) ContextValidate(ctx context.Context, formats strfmt.Regi
 
 func (m *StationStatus) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
+	if swag.IsZero(m.Hash) { // not required
+		return nil
+	}
+
 	if err := m.Hash.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("hash")
@@ -183,6 +187,10 @@ func (m *StationStatus) contextValidateHash(ctx context.Context, formats strfmt.
 }
 
 func (m *StationStatus) contextValidateStatus(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Status) { // not required
+		return nil
+	}
 
 	if err := m.Status.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {

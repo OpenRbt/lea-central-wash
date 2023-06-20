@@ -15,8 +15,7 @@ import (
 // SaveRelayNoContentCode is the HTTP code returned for type SaveRelayNoContent
 const SaveRelayNoContentCode int = 204
 
-/*
-SaveRelayNoContent OK
+/*SaveRelayNoContent OK
 
 swagger:response saveRelayNoContent
 */
@@ -42,8 +41,7 @@ func (o *SaveRelayNoContent) SaveRelayResponder() {}
 // SaveRelayNotFoundCode is the HTTP code returned for type SaveRelayNotFound
 const SaveRelayNotFoundCode int = 404
 
-/*
-SaveRelayNotFound not found
+/*SaveRelayNotFound not found
 
 swagger:response saveRelayNotFound
 */
@@ -69,8 +67,7 @@ func (o *SaveRelayNotFound) SaveRelayResponder() {}
 // SaveRelayInternalServerErrorCode is the HTTP code returned for type SaveRelayInternalServerError
 const SaveRelayInternalServerErrorCode int = 500
 
-/*
-SaveRelayInternalServerError internal error
+/*SaveRelayInternalServerError internal error
 
 swagger:response saveRelayInternalServerError
 */

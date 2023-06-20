@@ -38,10 +38,10 @@ func NewRunProgram(ctx *middleware.Context, handler RunProgramHandler) *RunProgr
 	return &RunProgram{Context: ctx, Handler: handler}
 }
 
-/*
-	RunProgram swagger:route POST /run-program runProgram
+/* RunProgram swagger:route POST /run-program runProgram
 
 RunProgram run program API
+
 */
 type RunProgram struct {
 	Context *middleware.Context
@@ -192,6 +192,7 @@ func (o *RunProgramBody) ContextValidate(ctx context.Context, formats strfmt.Reg
 func (o *RunProgramBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

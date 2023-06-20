@@ -47,7 +47,7 @@ func (o *SaveReader) ReadResponse(response runtime.ClientResponse, consumer runt
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /save] save", response, response.Code())
 	}
 }
 
@@ -56,8 +56,7 @@ func NewSaveNoContent() *SaveNoContent {
 	return &SaveNoContent{}
 }
 
-/*
-SaveNoContent describes a response with status code 204, with default header values.
+/* SaveNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -112,8 +111,7 @@ func NewSaveNotFound() *SaveNotFound {
 	return &SaveNotFound{}
 }
 
-/*
-SaveNotFound describes a response with status code 404, with default header values.
+/* SaveNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -168,8 +166,7 @@ func NewSaveInternalServerError() *SaveInternalServerError {
 	return &SaveInternalServerError{}
 }
 
-/*
-SaveInternalServerError describes a response with status code 500, with default header values.
+/* SaveInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -219,8 +216,7 @@ func (o *SaveInternalServerError) readResponse(response runtime.ClientResponse, 
 	return nil
 }
 
-/*
-SaveBody ArgSave
+/*SaveBody ArgSave
 swagger:model SaveBody
 */
 type SaveBody struct {
@@ -341,6 +337,7 @@ func (o *SaveBody) ContextValidate(ctx context.Context, formats strfmt.Registry)
 func (o *SaveBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
@@ -357,6 +354,7 @@ func (o *SaveBody) contextValidateHash(ctx context.Context, formats strfmt.Regis
 func (o *SaveBody) contextValidateKeyPair(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.KeyPair != nil {
+
 		if err := o.KeyPair.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "keyPair")

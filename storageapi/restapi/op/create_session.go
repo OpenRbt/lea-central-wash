@@ -36,10 +36,10 @@ func NewCreateSession(ctx *middleware.Context, handler CreateSessionHandler) *Cr
 	return &CreateSession{Context: ctx, Handler: handler}
 }
 
-/*
-	CreateSession swagger:route POST /create-session createSession
+/* CreateSession swagger:route POST /create-session createSession
 
 CreateSession create session API
+
 */
 type CreateSession struct {
 	Context *middleware.Context

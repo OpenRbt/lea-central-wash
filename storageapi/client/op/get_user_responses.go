@@ -36,7 +36,7 @@ func (o *GetUserReader) ReadResponse(response runtime.ClientResponse, consumer r
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /user] getUser", response, response.Code())
 	}
 }
 
@@ -45,8 +45,7 @@ func NewGetUserOK() *GetUserOK {
 	return &GetUserOK{}
 }
 
-/*
-GetUserOK describes a response with status code 200, with default header values.
+/* GetUserOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -113,8 +112,7 @@ func NewGetUserUnauthorized() *GetUserUnauthorized {
 	return &GetUserUnauthorized{}
 }
 
-/*
-GetUserUnauthorized describes a response with status code 401, with default header values.
+/* GetUserUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */

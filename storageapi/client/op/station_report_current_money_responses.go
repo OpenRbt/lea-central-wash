@@ -48,7 +48,7 @@ func (o *StationReportCurrentMoneyReader) ReadResponse(response runtime.ClientRe
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /station-report-current-money] stationReportCurrentMoney", response, response.Code())
 	}
 }
 
@@ -57,8 +57,7 @@ func NewStationReportCurrentMoneyOK() *StationReportCurrentMoneyOK {
 	return &StationReportCurrentMoneyOK{}
 }
 
-/*
-StationReportCurrentMoneyOK describes a response with status code 200, with default header values.
+/* StationReportCurrentMoneyOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -125,8 +124,7 @@ func NewStationReportCurrentMoneyNotFound() *StationReportCurrentMoneyNotFound {
 	return &StationReportCurrentMoneyNotFound{}
 }
 
-/*
-StationReportCurrentMoneyNotFound describes a response with status code 404, with default header values.
+/* StationReportCurrentMoneyNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -181,8 +179,7 @@ func NewStationReportCurrentMoneyInternalServerError() *StationReportCurrentMone
 	return &StationReportCurrentMoneyInternalServerError{}
 }
 
-/*
-StationReportCurrentMoneyInternalServerError describes a response with status code 500, with default header values.
+/* StationReportCurrentMoneyInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -232,8 +229,7 @@ func (o *StationReportCurrentMoneyInternalServerError) readResponse(response run
 	return nil
 }
 
-/*
-StationReportCurrentMoneyBody ArgStationReportCurrentMoney
+/*StationReportCurrentMoneyBody ArgStationReportCurrentMoney
 swagger:model StationReportCurrentMoneyBody
 */
 type StationReportCurrentMoneyBody struct {

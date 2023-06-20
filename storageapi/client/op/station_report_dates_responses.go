@@ -48,7 +48,7 @@ func (o *StationReportDatesReader) ReadResponse(response runtime.ClientResponse,
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /station-report-dates] stationReportDates", response, response.Code())
 	}
 }
 
@@ -57,8 +57,7 @@ func NewStationReportDatesOK() *StationReportDatesOK {
 	return &StationReportDatesOK{}
 }
 
-/*
-StationReportDatesOK describes a response with status code 200, with default header values.
+/* StationReportDatesOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -125,8 +124,7 @@ func NewStationReportDatesNotFound() *StationReportDatesNotFound {
 	return &StationReportDatesNotFound{}
 }
 
-/*
-StationReportDatesNotFound describes a response with status code 404, with default header values.
+/* StationReportDatesNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -181,8 +179,7 @@ func NewStationReportDatesInternalServerError() *StationReportDatesInternalServe
 	return &StationReportDatesInternalServerError{}
 }
 
-/*
-StationReportDatesInternalServerError describes a response with status code 500, with default header values.
+/* StationReportDatesInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -232,8 +229,7 @@ func (o *StationReportDatesInternalServerError) readResponse(response runtime.Cl
 	return nil
 }
 
-/*
-StationReportDatesBody ArgStationReportDates
+/*StationReportDatesBody ArgStationReportDates
 swagger:model StationReportDatesBody
 */
 type StationReportDatesBody struct {

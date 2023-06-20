@@ -48,7 +48,7 @@ func (o *CardReaderConfigReader) ReadResponse(response runtime.ClientResponse, c
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /card-reader-config] cardReaderConfig", response, response.Code())
 	}
 }
 
@@ -57,8 +57,7 @@ func NewCardReaderConfigOK() *CardReaderConfigOK {
 	return &CardReaderConfigOK{}
 }
 
-/*
-CardReaderConfigOK describes a response with status code 200, with default header values.
+/* CardReaderConfigOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -125,8 +124,7 @@ func NewCardReaderConfigNotFound() *CardReaderConfigNotFound {
 	return &CardReaderConfigNotFound{}
 }
 
-/*
-CardReaderConfigNotFound describes a response with status code 404, with default header values.
+/* CardReaderConfigNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -181,8 +179,7 @@ func NewCardReaderConfigInternalServerError() *CardReaderConfigInternalServerErr
 	return &CardReaderConfigInternalServerError{}
 }
 
-/*
-CardReaderConfigInternalServerError describes a response with status code 500, with default header values.
+/* CardReaderConfigInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -232,8 +229,7 @@ func (o *CardReaderConfigInternalServerError) readResponse(response runtime.Clie
 	return nil
 }
 
-/*
-CardReaderConfigBody ArgCardReaderConfig
+/*CardReaderConfigBody ArgCardReaderConfig
 swagger:model CardReaderConfigBody
 */
 type CardReaderConfigBody struct {

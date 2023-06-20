@@ -42,7 +42,7 @@ func (o *StationByHashReader) ReadResponse(response runtime.ClientResponse, cons
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /station-by-hash] stationByHash", response, response.Code())
 	}
 }
 
@@ -51,8 +51,7 @@ func NewStationByHashOK() *StationByHashOK {
 	return &StationByHashOK{}
 }
 
-/*
-StationByHashOK describes a response with status code 200, with default header values.
+/* StationByHashOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -117,8 +116,7 @@ func NewStationByHashInternalServerError() *StationByHashInternalServerError {
 	return &StationByHashInternalServerError{}
 }
 
-/*
-StationByHashInternalServerError describes a response with status code 500, with default header values.
+/* StationByHashInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -168,8 +166,7 @@ func (o *StationByHashInternalServerError) readResponse(response runtime.ClientR
 	return nil
 }
 
-/*
-StationByHashBody ArgStationByHash
+/*StationByHashBody ArgStationByHash
 swagger:model StationByHashBody
 */
 type StationByHashBody struct {
@@ -253,6 +250,7 @@ func (o *StationByHashBody) ContextValidate(ctx context.Context, formats strfmt.
 func (o *StationByHashBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

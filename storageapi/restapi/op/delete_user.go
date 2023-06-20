@@ -39,10 +39,10 @@ func NewDeleteUser(ctx *middleware.Context, handler DeleteUserHandler) *DeleteUs
 	return &DeleteUser{Context: ctx, Handler: handler}
 }
 
-/*
-	DeleteUser swagger:route DELETE /user deleteUser
+/* DeleteUser swagger:route DELETE /user deleteUser
 
 DeleteUser delete user API
+
 */
 type DeleteUser struct {
 	Context *middleware.Context
@@ -162,6 +162,7 @@ func (o *DeleteUserBody) ContextValidate(ctx context.Context, formats strfmt.Reg
 func (o *DeleteUserBody) contextValidateLogin(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Login != nil {
+
 		if err := o.Login.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")

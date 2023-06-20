@@ -51,7 +51,7 @@ func (o *SetStationReader) ReadResponse(response runtime.ClientResponse, consume
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /set-station] setStation", response, response.Code())
 	}
 }
 
@@ -60,8 +60,7 @@ func NewSetStationNoContent() *SetStationNoContent {
 	return &SetStationNoContent{}
 }
 
-/*
-SetStationNoContent describes a response with status code 204, with default header values.
+/* SetStationNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -116,8 +115,7 @@ func NewSetStationUnauthorized() *SetStationUnauthorized {
 	return &SetStationUnauthorized{}
 }
 
-/*
-SetStationUnauthorized describes a response with status code 401, with default header values.
+/* SetStationUnauthorized describes a response with status code 401, with default header values.
 
 Access denied. It will happen when you try to change the ID at the station online.
 */
@@ -172,8 +170,7 @@ func NewSetStationNotFound() *SetStationNotFound {
 	return &SetStationNotFound{}
 }
 
-/*
-SetStationNotFound describes a response with status code 404, with default header values.
+/* SetStationNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -228,8 +225,7 @@ func NewSetStationUnprocessableEntity() *SetStationUnprocessableEntity {
 	return &SetStationUnprocessableEntity{}
 }
 
-/*
-SetStationUnprocessableEntity describes a response with status code 422, with default header values.
+/* SetStationUnprocessableEntity describes a response with status code 422, with default header values.
 
 validation error
 */
@@ -284,8 +280,7 @@ func NewSetStationInternalServerError() *SetStationInternalServerError {
 	return &SetStationInternalServerError{}
 }
 
-/*
-SetStationInternalServerError describes a response with status code 500, with default header values.
+/* SetStationInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

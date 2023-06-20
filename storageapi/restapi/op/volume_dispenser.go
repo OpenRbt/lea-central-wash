@@ -38,10 +38,10 @@ func NewVolumeDispenser(ctx *middleware.Context, handler VolumeDispenserHandler)
 	return &VolumeDispenser{Context: ctx, Handler: handler}
 }
 
-/*
-	VolumeDispenser swagger:route POST /volume-dispenser volumeDispenser
+/* VolumeDispenser swagger:route POST /volume-dispenser volumeDispenser
 
 VolumeDispenser volume dispenser API
+
 */
 type VolumeDispenser struct {
 	Context *middleware.Context
@@ -148,6 +148,7 @@ func (o *VolumeDispenserBody) ContextValidate(ctx context.Context, formats strfm
 func (o *VolumeDispenserBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

@@ -17,8 +17,7 @@ import (
 // StationsVariablesOKCode is the HTTP code returned for type StationsVariablesOK
 const StationsVariablesOKCode int = 200
 
-/*
-StationsVariablesOK OK
+/*StationsVariablesOK OK
 
 swagger:response stationsVariablesOK
 */
@@ -67,8 +66,7 @@ func (o *StationsVariablesOK) StationsVariablesResponder() {}
 // StationsVariablesInternalServerErrorCode is the HTTP code returned for type StationsVariablesInternalServerError
 const StationsVariablesInternalServerErrorCode int = 500
 
-/*
-StationsVariablesInternalServerError internal error
+/*StationsVariablesInternalServerError internal error
 
 swagger:response stationsVariablesInternalServerError
 */

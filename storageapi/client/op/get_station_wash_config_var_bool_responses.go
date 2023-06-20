@@ -48,7 +48,7 @@ func (o *GetStationWashConfigVarBoolReader) ReadResponse(response runtime.Client
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /get-wash-config-var-bool] getStationWashConfigVarBool", response, response.Code())
 	}
 }
 
@@ -57,8 +57,7 @@ func NewGetStationWashConfigVarBoolOK() *GetStationWashConfigVarBoolOK {
 	return &GetStationWashConfigVarBoolOK{}
 }
 
-/*
-GetStationWashConfigVarBoolOK describes a response with status code 200, with default header values.
+/* GetStationWashConfigVarBoolOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -125,8 +124,7 @@ func NewGetStationWashConfigVarBoolNotFound() *GetStationWashConfigVarBoolNotFou
 	return &GetStationWashConfigVarBoolNotFound{}
 }
 
-/*
-GetStationWashConfigVarBoolNotFound describes a response with status code 404, with default header values.
+/* GetStationWashConfigVarBoolNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -181,8 +179,7 @@ func NewGetStationWashConfigVarBoolInternalServerError() *GetStationWashConfigVa
 	return &GetStationWashConfigVarBoolInternalServerError{}
 }
 
-/*
-GetStationWashConfigVarBoolInternalServerError describes a response with status code 500, with default header values.
+/* GetStationWashConfigVarBoolInternalServerError describes a response with status code 500, with default header values.
 
 Internal error
 */
@@ -232,8 +229,7 @@ func (o *GetStationWashConfigVarBoolInternalServerError) readResponse(response r
 	return nil
 }
 
-/*
-GetStationWashConfigVarBoolBody ArgGetStationConfigVar
+/*GetStationWashConfigVarBoolBody ArgGetStationConfigVar
 swagger:model GetStationWashConfigVarBoolBody
 */
 type GetStationWashConfigVarBoolBody struct {

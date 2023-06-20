@@ -52,12 +52,10 @@ func NewCardReaderConfigByHashParamsWithHTTPClient(client *http.Client) *CardRea
 	}
 }
 
-/*
-CardReaderConfigByHashParams contains all the parameters to send to the API endpoint
+/* CardReaderConfigByHashParams contains all the parameters to send to the API endpoint
+   for the card reader config by hash operation.
 
-	for the card reader config by hash operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type CardReaderConfigByHashParams struct {
 

@@ -31,10 +31,10 @@ func NewAddAdvertisingCampaign(ctx *middleware.Context, handler AddAdvertisingCa
 	return &AddAdvertisingCampaign{Context: ctx, Handler: handler}
 }
 
-/*
-	AddAdvertisingCampaign swagger:route POST /add-advertising-campaign addAdvertisingCampaign
+/* AddAdvertisingCampaign swagger:route POST /add-advertising-campaign addAdvertisingCampaign
 
 AddAdvertisingCampaign add advertising campaign API
+
 */
 type AddAdvertisingCampaign struct {
 	Context *middleware.Context

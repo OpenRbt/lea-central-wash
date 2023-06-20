@@ -40,10 +40,10 @@ func NewStationCollectionReportDates(ctx *middleware.Context, handler StationCol
 	return &StationCollectionReportDates{Context: ctx, Handler: handler}
 }
 
-/*
-	StationCollectionReportDates swagger:route POST /station-collection-report-dates stationCollectionReportDates
+/* StationCollectionReportDates swagger:route POST /station-collection-report-dates stationCollectionReportDates
 
 StationCollectionReportDates station collection report dates API
+
 */
 type StationCollectionReportDates struct {
 	Context *middleware.Context
@@ -237,6 +237,11 @@ func (o *StationCollectionReportDatesOKBody) contextValidateCollectionReports(ct
 	for i := 0; i < len(o.CollectionReports); i++ {
 
 		if o.CollectionReports[i] != nil {
+
+			if swag.IsZero(o.CollectionReports[i]) { // not required
+				return nil
+			}
+
 			if err := o.CollectionReports[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stationCollectionReportDatesOK" + "." + "collectionReports" + "." + strconv.Itoa(i))

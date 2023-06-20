@@ -31,10 +31,10 @@ func NewSetConfigVarInt(ctx *middleware.Context, handler SetConfigVarIntHandler)
 	return &SetConfigVarInt{Context: ctx, Handler: handler}
 }
 
-/*
-	SetConfigVarInt swagger:route POST /set-config-var-int setConfigVarInt
+/* SetConfigVarInt swagger:route POST /set-config-var-int setConfigVarInt
 
 SetConfigVarInt set config var int API
+
 */
 type SetConfigVarInt struct {
 	Context *middleware.Context

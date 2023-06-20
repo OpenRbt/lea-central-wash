@@ -52,12 +52,10 @@ func NewGetLevelParamsWithHTTPClient(client *http.Client) *GetLevelParams {
 	}
 }
 
-/*
-GetLevelParams contains all the parameters to send to the API endpoint
+/* GetLevelParams contains all the parameters to send to the API endpoint
+   for the get level operation.
 
-	for the get level operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type GetLevelParams struct {
 

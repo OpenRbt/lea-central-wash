@@ -17,8 +17,7 @@ import (
 // StationProgramByHashOKCode is the HTTP code returned for type StationProgramByHashOK
 const StationProgramByHashOKCode int = 200
 
-/*
-StationProgramByHashOK OK
+/*StationProgramByHashOK OK
 
 swagger:response stationProgramByHashOK
 */
@@ -64,8 +63,7 @@ func (o *StationProgramByHashOK) StationProgramByHashResponder() {}
 // StationProgramByHashInternalServerErrorCode is the HTTP code returned for type StationProgramByHashInternalServerError
 const StationProgramByHashInternalServerErrorCode int = 500
 
-/*
-StationProgramByHashInternalServerError internal error
+/*StationProgramByHashInternalServerError internal error
 
 swagger:response stationProgramByHashInternalServerError
 */

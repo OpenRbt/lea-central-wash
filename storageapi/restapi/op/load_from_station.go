@@ -38,10 +38,10 @@ func NewLoadFromStation(ctx *middleware.Context, handler LoadFromStationHandler)
 	return &LoadFromStation{Context: ctx, Handler: handler}
 }
 
-/*
-	LoadFromStation swagger:route POST /load-from-station loadFromStation
+/* LoadFromStation swagger:route POST /load-from-station loadFromStation
 
 LoadFromStation load from station API
+
 */
 type LoadFromStation struct {
 	Context *middleware.Context
@@ -198,6 +198,7 @@ func (o *LoadFromStationBody) ContextValidate(ctx context.Context, formats strfm
 func (o *LoadFromStationBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

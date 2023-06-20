@@ -17,8 +17,7 @@ import (
 // StatusCollectionOKCode is the HTTP code returned for type StatusCollectionOK
 const StatusCollectionOKCode int = 200
 
-/*
-StatusCollectionOK OK
+/*StatusCollectionOK OK
 
 swagger:response statusCollectionOK
 */
@@ -64,8 +63,7 @@ func (o *StatusCollectionOK) StatusCollectionResponder() {}
 // StatusCollectionUnauthorizedCode is the HTTP code returned for type StatusCollectionUnauthorized
 const StatusCollectionUnauthorizedCode int = 401
 
-/*
-StatusCollectionUnauthorized PIN is missing or invalid
+/*StatusCollectionUnauthorized PIN is missing or invalid
 
 swagger:response statusCollectionUnauthorized
 */
@@ -91,8 +89,7 @@ func (o *StatusCollectionUnauthorized) StatusCollectionResponder() {}
 // StatusCollectionInternalServerErrorCode is the HTTP code returned for type StatusCollectionInternalServerError
 const StatusCollectionInternalServerErrorCode int = 500
 
-/*
-StatusCollectionInternalServerError internal error
+/*StatusCollectionInternalServerError internal error
 
 swagger:response statusCollectionInternalServerError
 */

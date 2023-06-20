@@ -52,12 +52,10 @@ func NewGetStationDiscountsParamsWithHTTPClient(client *http.Client) *GetStation
 	}
 }
 
-/*
-GetStationDiscountsParams contains all the parameters to send to the API endpoint
+/* GetStationDiscountsParams contains all the parameters to send to the API endpoint
+   for the get station discounts operation.
 
-	for the get station discounts operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type GetStationDiscountsParams struct {
 
