@@ -1173,6 +1173,8 @@ func (a *app) refreshMotorStatsDates() {
 		}
 
 		log.Debug("refreshing available motor stats by dates complete!", "elapsed_time", completeAt.Sub(startAt))
-		time.Sleep(time.Hour * 1)
+
+		nextRefreshTime := time.Now().Truncate(time.Hour).Add(time.Hour)
+		time.Sleep(time.Until(nextRefreshTime))
 	}
 }
