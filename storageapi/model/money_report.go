@@ -40,6 +40,9 @@ type MoneyReport struct {
 	// Required: true
 	Hash *Hash `json:"hash"`
 
+	// qr money
+	QrMoney int64 `json:"qrMoney,omitempty"`
+
 	// service
 	Service int64 `json:"service,omitempty"`
 
@@ -70,6 +73,9 @@ func (m *MoneyReport) UnmarshalJSON(data []byte) error {
 		// Required: true
 		Hash *Hash `json:"hash"`
 
+		// qr money
+		QrMoney int64 `json:"qrMoney,omitempty"`
+
 		// service
 		Service int64 `json:"service,omitempty"`
 
@@ -89,6 +95,7 @@ func (m *MoneyReport) UnmarshalJSON(data []byte) error {
 	m.Coins = props.Coins
 	m.Electronical = props.Electronical
 	m.Hash = props.Hash
+	m.QrMoney = props.QrMoney
 	m.Service = props.Service
 	m.SessionID = props.SessionID
 	return nil

@@ -162,6 +162,7 @@ func appCollectionReportsByDate(r []resCollectionReportByDate) (res []app.Collec
 			Bonuses:      r[i].Bonuses,
 			Ctime:        r[i].Ctime,
 			User:         r[i].User,
+			QrMoney:      r[i].QrMoney,
 		})
 	}
 	return res
@@ -350,6 +351,7 @@ func appRabbitMoneyReport(r resRabbitMoneyReport) app.RabbitMoneyReport {
 			Service:      r.Service,
 			Bonuses:      r.Bonuses,
 			SessionID:    r.SessionID,
+			QrMoney:      r.QrMoney,
 		},
 		CreatedAt:   r.CreatedAt,
 		IsSent:      r.Sent,

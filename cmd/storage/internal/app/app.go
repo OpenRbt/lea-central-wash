@@ -27,12 +27,14 @@ const ParameterNameVolumeCoef = "VOLUME_COEF"
 
 // Key aliases
 const (
-	TemperatureCurrent    = "curr_temp"
-	MeteoInfo             = "meteoinfo"
-	OpenWeather           = "openWeather"
-	Ipify                 = "ipify"
-	relayTimeoutSec       = 5
-	parameterNameTimeZone = "TIMEZONE"
+	TemperatureCurrent                      = "curr_temp"
+	MeteoInfo                               = "meteoinfo"
+	OpenWeather                             = "openWeather"
+	Ipify                                   = "ipify"
+	relayTimeoutSec                         = 5
+	parameterNameTimeZone                   = "TIMEZONE"
+	parameterNameLastMotorStatsUpdate       = "LAST_MOTOR_STATS_UPDATE"
+	parameterNameLastMotorStatsByDateUpdate = "LAST_MOTOR_STATS_DATE_UPDATE"
 )
 
 const qrUrl = "%s/#/?sessionID=%s"
@@ -162,8 +164,6 @@ type (
 		AssignSessionBonuses(sessionID string, amount int, post StationID) error
 
 		InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error)
-		PrepareRabbitMessage(messageType string, payload interface{}) error
-		SaveMoneyReportAndMessage(report RabbitMoneyReport) (err error)
 	}
 
 	// Repo is a DAL interface.
@@ -249,6 +249,9 @@ type (
 		GetUnsendedMoneyReports(lastMessageID int64) (rabbitMoneyReports []RabbitMoneyReport, err error)
 		MarkRabbitMoneyReportAsSent(id int64) (err error)
 		MarkRabbitMessageAsSent(id int64) (err error)
+
+		RefreshMotorStatsCurrent() (err error)
+		RefreshMotorStatsDates() (err error)
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -352,6 +355,8 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 	appl.stationsMutex.Unlock()
 	go appl.runCheckStationOnline()
 	go appl.refreshDiscounts()
+	go appl.refreshMotorStatsCurrent()
+	go appl.refreshMotorStatsDates()
 	return appl
 }
 

@@ -129,6 +129,7 @@ func apiMoneyReport(data *app.MoneyReport) *model.MoneyReport {
 		Electronical: int64(data.Electronical),
 		Service:      int64(data.Service),
 		Bonuses:      int64(data.Bonuses),
+		QrMoney:      int64(data.QrMoney),
 	}
 }
 
@@ -153,6 +154,7 @@ func apiCollectionReport(v app.CollectionReport) *model.CollectionReport {
 		Electronical: int64(v.Electronical),
 		Service:      int64(v.Service),
 		Bonuses:      int64(v.Bonuses),
+		QrMoney:      int64(v.QrMoney),
 		Ctime:        v.Ctime.Unix(),
 	}
 }
@@ -335,6 +337,7 @@ func apiCollectionReportWithUser(reports []app.CollectionReportWithUser) (res []
 			Electronical: int64(reports[i].Electronical),
 			Service:      int64(reports[i].Service),
 			Bonuses:      int64(reports[i].Bonuses),
+			QrMoney:      int64(reports[i].QrMoney),
 			Ctime:        reports[i].Ctime.Unix(),
 			User:         reports[i].User,
 		})

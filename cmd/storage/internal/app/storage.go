@@ -1119,3 +1119,59 @@ func (a *app) InitBonusRabbitWorker(routingKey string, publisherFunc func(msg in
 func (a *app) SaveMoneyReportAndMessage(report RabbitMoneyReport) (err error) {
 	return a.repo.SaveMoneyReportAndMessage(report)
 }
+
+func (a *app) refreshMotorStatsCurrent() {
+	if testApp {
+		return
+	}
+	for {
+		startAt := time.Now().UTC()
+		log.Debug("refreshing current motor stats", "time", time.Now().UTC())
+		err := a.repo.RefreshMotorStatsCurrent()
+		if err != nil {
+			log.PrintErr(err)
+		}
+
+		completeAt := time.Now().UTC()
+
+		err = a.repo.SetConfigInt(ConfigInt{
+			Name:  parameterNameLastMotorStatsUpdate,
+			Value: completeAt.Unix(),
+		})
+		if err != nil {
+			log.PrintErr(err)
+		}
+
+		log.Debug("refreshing current motor stats complete!", "elapsed_time", completeAt.Sub(startAt))
+		time.Sleep(time.Minute * 10)
+	}
+}
+
+func (a *app) refreshMotorStatsDates() {
+	if testApp {
+		return
+	}
+	for {
+		startAt := time.Now().UTC()
+		log.Debug("refreshing available motor stats by dates", "time", time.Now().UTC())
+		err := a.repo.RefreshMotorStatsDates()
+		if err != nil {
+			log.PrintErr(err)
+		}
+
+		completeAt := time.Now().UTC()
+
+		err = a.repo.SetConfigInt(ConfigInt{
+			Name:  parameterNameLastMotorStatsByDateUpdate,
+			Value: completeAt.Unix(),
+		})
+		if err != nil {
+			log.PrintErr(err)
+		}
+
+		log.Debug("refreshing available motor stats by dates complete!", "elapsed_time", completeAt.Sub(startAt))
+
+		nextRefreshTime := time.Now().Truncate(time.Hour).Add(time.Hour)
+		time.Sleep(time.Until(nextRefreshTime))
+	}
+}

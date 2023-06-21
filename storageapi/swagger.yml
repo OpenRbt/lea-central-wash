@@ -184,6 +184,8 @@ definitions:
         type: integer
       ctime:
         type: integer
+      qrMoney:
+        type: integer
   
   CollectionReportWithUser:
     type: object
@@ -206,6 +208,8 @@ definitions:
         type: integer
       user:
         type: string
+      qrMoney:
+        type: integer
   
   MoneyReport:
     type: object
@@ -228,6 +232,8 @@ definitions:
         $ref: '#/definitions/Hash'
       sessionId:
         type: string
+      qrMoney:
+        type: integer
 
   RelayReport:
     type: object

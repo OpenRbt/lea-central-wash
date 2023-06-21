@@ -165,11 +165,11 @@ SET deleted = true, hash = null
 WHERE id = :id
 	`
 	sqlAddMoneyReport = `
-INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, bonuses, ctime, session_id)  
-VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :bonuses, :ctime, :session_id)
+INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, bonuses, ctime, session_id, qr_money)  
+VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :bonuses, :ctime, :session_id, :qr_money)
 	`
 	sqlAddCollectionReport = `
-	INSERT INTO money_collection (station_id, user_id, banknotes, cars_total, coins, electronical, service, bonuses, last_money_report_id, ctime) 
+	INSERT INTO money_collection (station_id, user_id, banknotes, cars_total, coins, electronical, service, bonuses,qr_money, last_money_report_id, ctime) 
 	(
 	SELECT station_id, 
 			   :user_id,
@@ -179,6 +179,7 @@ VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, 
 			   sum(electronical) as electronical, 
 			   sum(service) as service,
 			   sum(bonuses) as bonuses,
+			   sum(qr_money) as qr_money,
 			   max(id) as max_id,
 			   :ctime
 		FROM money_report
@@ -191,12 +192,12 @@ VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, 
 	)	
 	`
 	sqlLastMoneyReport = `
-SELECT station_id, banknotes, cars_total, coins, electronical, service, bonuses, session_id FROM money_report WHERE station_id = :station_id
+SELECT station_id, banknotes, cars_total, coins, electronical, service, bonuses, session_id, qr_money FROM money_report WHERE station_id = :station_id
 ORDER BY id DESC
 LIMIT 1
 	`
 	sqlLastCollectionReport = `
-SELECT station_id, banknotes, cars_total, coins, electronical, service, ctime, bonuses FROM money_collection WHERE station_id = :station_id
+SELECT station_id, banknotes, cars_total, coins, electronical, service, ctime, bonuses,qr_money FROM money_collection WHERE station_id = :station_id
 ORDER BY id DESC
 LIMIT 1
 	`
@@ -210,6 +211,7 @@ LIMIT 1
 		mc.service,
 		mc.bonuses,
 		mc.ctime,
+		mc.qr_money,
 		COALESCE(u.login, '')  "user"
 	FROM money_collection mc
 	LEFT JOIN users u ON u.id = mc.user_id
@@ -234,46 +236,30 @@ VALUES 	(:relay_report_id, :relay_id, :switched_count, :total_time_on)
 	`
 
 	sqlCurentStationReport = `
-SELECT r.station_id, r.program_id, coalesce(p.name, '') as program_name, sum(r.time_on) as time_on ,sum(r.pump_time_on) as pump_time_on FROM relay_report r
-LEFT JOIN program p on p.id = r.program_id
-WHERE r.id > coalesce(
-	(SELECT last_relay_report_id FROM reset_relay_report WHERE station_id = r.station_id
-	ORDER BY id DESC
-	LIMIT 1)
-	,0)
-AND (r.station_id = :station_id or CAST(:station_id AS INT) is NULL)
-GROUP BY r.station_id,r.program_id,coalesce(p.name, '')
-ORDER BY r.station_id,r.program_id
+SELECT station_id, program_id, program_name, time_on, pump_time_on 
+FROM mv_current_program_stat 
+WHERE station_id = :station_id OR CAST(:station_id AS INT) IS NULL
 `
 	sqlCurentRelayStat = `
-	SELECT p.station_id, r.relay_id, sum(r.switched_count) as switched_count, sum(r.total_time_on) as total_time_on
-	FROM relay_stat r
-	JOIN relay_report p on r.relay_report_id = p.id
-	WHERE p.id > coalesce(
-		(SELECT last_relay_report_id FROM reset_relay_report WHERE station_id = p.station_id
-		ORDER BY id DESC
-		LIMIT 1)
-		,0)
-	AND (station_id = :station_id or CAST(:station_id AS INT) is NULL)
-	Group BY p.station_id, r.relay_id
-	ORDER BY p.station_id, r.relay_id
+SELECT station_id, relay_id, switched_count, total_time_on
+FROM mv_current_relay_stat
+WHERE station_id = :station_id OR CAST(:station_id AS INT) IS NULL
 	`
 	sqlDatesStationReport = `
-SELECT r.station_id, r.program_id, coalesce(p.name, '') as program_name, sum(r.time_on) as time_on ,sum(r.pump_time_on) as pump_time_on FROM relay_report r
-LEFT JOIN program p on p.id = r.program_id
-WHERE r.ctime >= :start_date AND r.ctime <= :end_date
-AND (r.station_id = :station_id or CAST(:station_id AS INT) is NULL)
-GROUP BY r.station_id,r.program_id,coalesce(p.name, '')
-ORDER BY r.station_id,r.program_id
+SELECT station_id, program_id, program_name, sum(time_on) as time_on, sum(pump_time_on) as pump_time_on
+FROM mv_program_stat_dates
+WHERE date_hours >= :start_date AND date_hours <= :end_date
+  AND (station_id = :station_id or CAST(:station_id AS INT) is NULL)
+GROUP BY station_id, program_id, program_name
+ORDER BY station_id,program_id
 `
 	sqlDatesRelayStat = `
-	SELECT p.station_id, r.relay_id, sum(r.switched_count) as switched_count, sum(r.total_time_on) as total_time_on
-	FROM relay_stat r
-	JOIN relay_report p on r.relay_report_id = p.id
-	WHERE p.ctime >= :start_date AND p.ctime <= :end_date
-	AND (station_id = :station_id or CAST(:station_id AS INT) is NULL)
-	Group BY p.station_id, r.relay_id
-	ORDER BY p.station_id, r.relay_id
+SELECT station_id, relay_id, sum(switched_count) as switched_count, sum(total_time_on) as total_time_on
+FROM mv_relay_stat_dates
+WHERE date_hours >= :start_date AND date_hours <= :end_date
+  AND (station_id = :station_id or CAST(:station_id AS INT) is NULL)
+GROUP BY station_id, relay_id
+ORDER BY station_id,relay_id
 	`
 
 	sqlMoneyReport = `
@@ -283,7 +269,8 @@ ORDER BY r.station_id,r.program_id
 		   sum(coins) as coins, 
 		   sum(electronical) as electronical, 
 		   sum(service) as service,
-		   sum(bonuses) as bonuses
+		   sum(bonuses) as bonuses,
+		   sum(qr_money) as qr_money
 	FROM money_report
 	WHERE :start_date < ctime AND ctime <= :end_date AND station_id = :station_id
 	GROUP BY station_id
@@ -295,7 +282,8 @@ ORDER BY r.station_id,r.program_id
 		   sum(coins)        as coins,
 		   sum(electronical) as electronical,
 		   sum(service)      as service,
-		   sum(bonuses)      as bonuses
+		   sum(bonuses)      as bonuses,
+		   sum(qr_money) as qr_money
 	FROM money_report
 	WHERE ctime> coalesce(
 			(SELECT ctime
@@ -665,6 +653,7 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 		   report.service,
 		   report.bonuses,
 		   report.session_id,
+		   report.qr_money,
 		   rabbit.message_uuid
 		from bonus_rabbit_money_report_send_log rabbit
 			LEFT JOIN money_report report on rabbit.money_report_id = report.id
@@ -674,14 +663,18 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 	`
 
 	sqlAddMoneyReportForRabbitMessage = `
-INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, bonuses, ctime, session_id)  
-VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :bonuses, :ctime, :session_id)
+INSERT INTO money_report (station_id, banknotes, cars_total, coins, electronical, service, bonuses, ctime, session_id,qr_money)  
+VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, :bonuses, :ctime, :session_id,:qr_money)
 returning id
 	`
 
 	sqlMarkRabbitMoneyReportAsSent = `
 	UPDATE bonus_rabbit_money_report_send_log SET sent = TRUE, sent_at = :ctime WHERE id = :id
 	`
+	sqlRefreshMotorStatsCurrent   = `refresh materialized view mv_current_relay_stat`
+	sqlRefreshProgramStatsCurrent = `refresh materialized view mv_current_program_stat`
+	sqlRefreshMotorStatsDates     = `refresh materialized view mv_relay_stat_dates`
+	sqlRefreshProgramStatsDates   = `refresh materialized view mv_program_stat_dates`
 )
 
 type (
@@ -954,6 +947,7 @@ type (
 		Electronical int
 		Service      int
 		Bonuses      int
+		QrMoney      int
 		Ctime        time.Time
 		User         string
 	}
@@ -995,6 +989,7 @@ type (
 		Bonuses      int
 		Ctime        time.Time
 		SessionID    string
+		QrMoney      int
 	}
 	argAdvertisingCampaign struct {
 		DefaultDiscount  int64
@@ -1165,6 +1160,7 @@ type (
 		Service       int
 		Bonuses       int
 		SessionID     string
+		QrMoney       int
 		CreatedAt     time.Time
 		Sent          bool
 		SentAt        *time.Time

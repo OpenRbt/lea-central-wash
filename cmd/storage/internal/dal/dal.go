@@ -43,15 +43,17 @@ func rollback(tx *sqlxx.Tx) {
 }
 
 type repo struct {
-	db        *sqlxx.DB
-	schemaVer *schemaver.SchemaVer
+	db            *sqlxx.DB
+	maintenanceDB *sqlxx.DB
+	schemaVer     *schemaver.SchemaVer
 }
 
 // New creates and returns new Repo.
-func New(db *sqlx.DB, schemaVer *schemaver.SchemaVer) app.Repo {
+func New(db *sqlx.DB, maintenanceDB *sqlx.DB, schemaVer *schemaver.SchemaVer) app.Repo {
 	return &repo{
-		db:        sqlxx.NewDB(db),
-		schemaVer: schemaVer,
+		db:            sqlxx.NewDB(db),
+		maintenanceDB: sqlxx.NewDB(maintenanceDB),
+		schemaVer:     schemaVer,
 	}
 }
 
@@ -61,6 +63,23 @@ func (r *repo) tx(ctx Ctx, opts *sql.TxOptions, f func(*sqlxx.Tx) error) (err er
 	methodName := names[len(names)-1]
 	return pqx.Serialize(func() error {
 		tx, err := r.db.BeginTxx(ctx, opts)
+		if err == nil {
+			defer rollback(tx)
+			err = errors.Wrap(f(tx), methodName)
+		}
+		if err == nil {
+			return tx.Commit()
+		}
+		return err
+	})
+}
+
+func (r *repo) txMaintenance(ctx Ctx, opts *sql.TxOptions, f func(*sqlxx.Tx) error) (err error) {
+	pc, _, _, _ := runtime.Caller(2)
+	names := strings.Split(runtime.FuncForPC(pc).Name(), ".")
+	methodName := names[len(names)-1]
+	return pqx.Serialize(func() error {
+		tx, err := r.maintenanceDB.BeginTxx(ctx, opts)
 		if err == nil {
 			defer rollback(tx)
 			err = errors.Wrap(f(tx), methodName)
@@ -331,6 +350,7 @@ func (r *repo) SaveMoneyReport(report app.MoneyReport) (err error) {
 			Bonuses:      report.Bonuses,
 			Ctime:        time.Now().UTC(),
 			SessionID:    report.SessionID,
+			QrMoney:      report.QrMoney,
 		})
 		return err
 	})
@@ -1188,6 +1208,36 @@ func (r *repo) MarkRabbitMoneyReportAsSent(id int64) (err error) {
 			ID:    id,
 			Ctime: time.Now().UTC(),
 		})
+
+		return err
+	})
+
+	return
+}
+
+func (r *repo) RefreshMotorStatsCurrent() (err error) {
+	err = r.txMaintenance(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.Exec(sqlRefreshMotorStatsCurrent)
+		if err != nil {
+			return err
+		}
+
+		_, err = tx.Exec(sqlRefreshProgramStatsCurrent)
+
+		return err
+	})
+
+	return
+}
+
+func (r *repo) RefreshMotorStatsDates() (err error) {
+	err = r.txMaintenance(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.Exec(sqlRefreshMotorStatsDates)
+		if err != nil {
+			return err
+		}
+
+		_, err = tx.Exec(sqlRefreshProgramStatsDates)
 
 		return err
 	})
