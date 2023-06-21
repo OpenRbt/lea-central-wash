@@ -36,10 +36,10 @@ func NewGetStationWashConfigVarBool(ctx *middleware.Context, handler GetStationW
 	return &GetStationWashConfigVarBool{Context: ctx, Handler: handler}
 }
 
-/*
-	GetStationWashConfigVarBool swagger:route POST /get-wash-config-var-bool getStationWashConfigVarBool
+/* GetStationWashConfigVarBool swagger:route POST /get-wash-config-var-bool getStationWashConfigVarBool
 
 GetStationWashConfigVarBool get station wash config var bool API
+
 */
 type GetStationWashConfigVarBool struct {
 	Context *middleware.Context

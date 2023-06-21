@@ -36,10 +36,10 @@ func NewGetStationWashConfigVarString(ctx *middleware.Context, handler GetStatio
 	return &GetStationWashConfigVarString{Context: ctx, Handler: handler}
 }
 
-/*
-	GetStationWashConfigVarString swagger:route POST /get-wash-config-var-string getStationWashConfigVarString
+/* GetStationWashConfigVarString swagger:route POST /get-wash-config-var-string getStationWashConfigVarString
 
 GetStationWashConfigVarString get station wash config var string API
+
 */
 type GetStationWashConfigVarString struct {
 	Context *middleware.Context

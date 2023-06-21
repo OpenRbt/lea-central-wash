@@ -37,10 +37,10 @@ func NewStationButton(ctx *middleware.Context, handler StationButtonHandler) *St
 	return &StationButton{Context: ctx, Handler: handler}
 }
 
-/*
-	StationButton swagger:route POST /station-button stationButton
+/* StationButton swagger:route POST /station-button stationButton
 
 StationButton station button API
+
 */
 type StationButton struct {
 	Context *middleware.Context
@@ -230,6 +230,11 @@ func (o *StationButtonOKBody) contextValidateButtons(ctx context.Context, format
 	for i := 0; i < len(o.Buttons); i++ {
 
 		if o.Buttons[i] != nil {
+
+			if swag.IsZero(o.Buttons[i]) { // not required
+				return nil
+			}
+
 			if err := o.Buttons[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stationButtonOK" + "." + "buttons" + "." + strconv.Itoa(i))

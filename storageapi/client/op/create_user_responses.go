@@ -60,7 +60,7 @@ func (o *CreateUserReader) ReadResponse(response runtime.ClientResponse, consume
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /user] createUser", response, response.Code())
 	}
 }
 
@@ -69,8 +69,7 @@ func NewCreateUserCreated() *CreateUserCreated {
 	return &CreateUserCreated{}
 }
 
-/*
-CreateUserCreated describes a response with status code 201, with default header values.
+/* CreateUserCreated describes a response with status code 201, with default header values.
 
 OK
 */
@@ -137,8 +136,7 @@ func NewCreateUserUnauthorized() *CreateUserUnauthorized {
 	return &CreateUserUnauthorized{}
 }
 
-/*
-CreateUserUnauthorized describes a response with status code 401, with default header values.
+/* CreateUserUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -193,8 +191,7 @@ func NewCreateUserForbidden() *CreateUserForbidden {
 	return &CreateUserForbidden{}
 }
 
-/*
-CreateUserForbidden describes a response with status code 403, with default header values.
+/* CreateUserForbidden describes a response with status code 403, with default header values.
 
 Access forbidden
 */
@@ -249,8 +246,7 @@ func NewCreateUserConflict() *CreateUserConflict {
 	return &CreateUserConflict{}
 }
 
-/*
-CreateUserConflict describes a response with status code 409, with default header values.
+/* CreateUserConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
@@ -317,8 +313,7 @@ func NewCreateUserInternalServerError() *CreateUserInternalServerError {
 	return &CreateUserInternalServerError{}
 }
 
-/*
-CreateUserInternalServerError describes a response with status code 500, with default header values.
+/* CreateUserInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -368,8 +363,7 @@ func (o *CreateUserInternalServerError) readResponse(response runtime.ClientResp
 	return nil
 }
 
-/*
-CreateUserBody ArgUserCreate
+/*CreateUserBody ArgUserCreate
 swagger:model CreateUserBody
 */
 type CreateUserBody struct {
@@ -629,6 +623,11 @@ func (o *CreateUserBody) ContextValidate(ctx context.Context, formats strfmt.Reg
 func (o *CreateUserBody) contextValidateFirstName(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.FirstName != nil {
+
+		if swag.IsZero(o.FirstName) { // not required
+			return nil
+		}
+
 		if err := o.FirstName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "firstName")
@@ -645,6 +644,11 @@ func (o *CreateUserBody) contextValidateFirstName(ctx context.Context, formats s
 func (o *CreateUserBody) contextValidateIsAdmin(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.IsAdmin != nil {
+
+		if swag.IsZero(o.IsAdmin) { // not required
+			return nil
+		}
+
 		if err := o.IsAdmin.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "isAdmin")
@@ -661,6 +665,11 @@ func (o *CreateUserBody) contextValidateIsAdmin(ctx context.Context, formats str
 func (o *CreateUserBody) contextValidateIsEngineer(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.IsEngineer != nil {
+
+		if swag.IsZero(o.IsEngineer) { // not required
+			return nil
+		}
+
 		if err := o.IsEngineer.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "isEngineer")
@@ -677,6 +686,11 @@ func (o *CreateUserBody) contextValidateIsEngineer(ctx context.Context, formats 
 func (o *CreateUserBody) contextValidateIsOperator(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.IsOperator != nil {
+
+		if swag.IsZero(o.IsOperator) { // not required
+			return nil
+		}
+
 		if err := o.IsOperator.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "isOperator")
@@ -693,6 +707,11 @@ func (o *CreateUserBody) contextValidateIsOperator(ctx context.Context, formats 
 func (o *CreateUserBody) contextValidateLastName(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.LastName != nil {
+
+		if swag.IsZero(o.LastName) { // not required
+			return nil
+		}
+
 		if err := o.LastName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "lastName")
@@ -709,6 +728,7 @@ func (o *CreateUserBody) contextValidateLastName(ctx context.Context, formats st
 func (o *CreateUserBody) contextValidateLogin(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Login != nil {
+
 		if err := o.Login.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
@@ -725,6 +745,11 @@ func (o *CreateUserBody) contextValidateLogin(ctx context.Context, formats strfm
 func (o *CreateUserBody) contextValidateMiddleName(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.MiddleName != nil {
+
+		if swag.IsZero(o.MiddleName) { // not required
+			return nil
+		}
+
 		if err := o.MiddleName.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "middleName")
@@ -741,6 +766,7 @@ func (o *CreateUserBody) contextValidateMiddleName(ctx context.Context, formats 
 func (o *CreateUserBody) contextValidatePassword(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Password != nil {
+
 		if err := o.Password.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "password")
@@ -772,8 +798,7 @@ func (o *CreateUserBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*
-CreateUserConflictBody ResponseUserCreateConflict
+/*CreateUserConflictBody ResponseUserCreateConflict
 swagger:model CreateUserConflictBody
 */
 type CreateUserConflictBody struct {
@@ -870,8 +895,7 @@ func (o *CreateUserConflictBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*
-CreateUserCreatedBody ResponseUserCreate
+/*CreateUserCreatedBody ResponseUserCreate
 swagger:model CreateUserCreatedBody
 */
 type CreateUserCreatedBody struct {

@@ -52,12 +52,10 @@ func NewAdvertisingCampaignByIDParamsWithHTTPClient(client *http.Client) *Advert
 	}
 }
 
-/*
-AdvertisingCampaignByIDParams contains all the parameters to send to the API endpoint
+/* AdvertisingCampaignByIDParams contains all the parameters to send to the API endpoint
+   for the advertising campaign by ID operation.
 
-	for the advertising campaign by ID operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type AdvertisingCampaignByIDParams struct {
 

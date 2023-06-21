@@ -38,10 +38,10 @@ func NewGetLevel(ctx *middleware.Context, handler GetLevelHandler) *GetLevel {
 	return &GetLevel{Context: ctx, Handler: handler}
 }
 
-/*
-	GetLevel swagger:route POST /getLevel getLevel
+/* GetLevel swagger:route POST /getLevel getLevel
 
 GetLevel get level API
+
 */
 type GetLevel struct {
 	Context *middleware.Context
@@ -148,6 +148,7 @@ func (o *GetLevelBody) ContextValidate(ctx context.Context, formats strfmt.Regis
 func (o *GetLevelBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

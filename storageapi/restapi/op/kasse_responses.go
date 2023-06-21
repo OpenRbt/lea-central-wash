@@ -17,8 +17,7 @@ import (
 // KasseOKCode is the HTTP code returned for type KasseOK
 const KasseOKCode int = 200
 
-/*
-KasseOK OK
+/*KasseOK OK
 
 swagger:response kasseOK
 */
@@ -64,8 +63,7 @@ func (o *KasseOK) KasseResponder() {}
 // KasseNotFoundCode is the HTTP code returned for type KasseNotFound
 const KasseNotFoundCode int = 404
 
-/*
-KasseNotFound not found
+/*KasseNotFound not found
 
 swagger:response kasseNotFound
 */
@@ -91,8 +89,7 @@ func (o *KasseNotFound) KasseResponder() {}
 // KasseInternalServerErrorCode is the HTTP code returned for type KasseInternalServerError
 const KasseInternalServerErrorCode int = 500
 
-/*
-KasseInternalServerError internal error
+/*KasseInternalServerError internal error
 
 swagger:response kasseInternalServerError
 */

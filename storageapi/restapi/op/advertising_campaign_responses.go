@@ -17,8 +17,7 @@ import (
 // AdvertisingCampaignOKCode is the HTTP code returned for type AdvertisingCampaignOK
 const AdvertisingCampaignOKCode int = 200
 
-/*
-AdvertisingCampaignOK OK
+/*AdvertisingCampaignOK OK
 
 swagger:response advertisingCampaignOK
 */
@@ -67,8 +66,7 @@ func (o *AdvertisingCampaignOK) AdvertisingCampaignResponder() {}
 // AdvertisingCampaignUnauthorizedCode is the HTTP code returned for type AdvertisingCampaignUnauthorized
 const AdvertisingCampaignUnauthorizedCode int = 401
 
-/*
-AdvertisingCampaignUnauthorized PIN is missing or invalid
+/*AdvertisingCampaignUnauthorized PIN is missing or invalid
 
 swagger:response advertisingCampaignUnauthorized
 */
@@ -94,8 +92,7 @@ func (o *AdvertisingCampaignUnauthorized) AdvertisingCampaignResponder() {}
 // AdvertisingCampaignForbiddenCode is the HTTP code returned for type AdvertisingCampaignForbidden
 const AdvertisingCampaignForbiddenCode int = 403
 
-/*
-AdvertisingCampaignForbidden Access forbiddenn
+/*AdvertisingCampaignForbidden Access forbiddenn
 
 swagger:response advertisingCampaignForbidden
 */
@@ -121,8 +118,7 @@ func (o *AdvertisingCampaignForbidden) AdvertisingCampaignResponder() {}
 // AdvertisingCampaignInternalServerErrorCode is the HTTP code returned for type AdvertisingCampaignInternalServerError
 const AdvertisingCampaignInternalServerErrorCode int = 500
 
-/*
-AdvertisingCampaignInternalServerError internal error
+/*AdvertisingCampaignInternalServerError internal error
 
 swagger:response advertisingCampaignInternalServerError
 */

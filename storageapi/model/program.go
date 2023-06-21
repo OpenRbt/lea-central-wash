@@ -262,6 +262,11 @@ func (m *Program) contextValidatePreflightRelays(ctx context.Context, formats st
 	for i := 0; i < len(m.PreflightRelays); i++ {
 
 		if m.PreflightRelays[i] != nil {
+
+			if swag.IsZero(m.PreflightRelays[i]) { // not required
+				return nil
+			}
+
 			if err := m.PreflightRelays[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("preflightRelays" + "." + strconv.Itoa(i))
@@ -282,6 +287,11 @@ func (m *Program) contextValidateRelays(ctx context.Context, formats strfmt.Regi
 	for i := 0; i < len(m.Relays); i++ {
 
 		if m.Relays[i] != nil {
+
+			if swag.IsZero(m.Relays[i]) { // not required
+				return nil
+			}
+
 			if err := m.Relays[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relays" + "." + strconv.Itoa(i))

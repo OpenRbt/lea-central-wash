@@ -38,10 +38,10 @@ func NewSave(ctx *middleware.Context, handler SaveHandler) *Save {
 	return &Save{Context: ctx, Handler: handler}
 }
 
-/*
-	Save swagger:route POST /save save
+/* Save swagger:route POST /save save
 
 Save save API
+
 */
 type Save struct {
 	Context *middleware.Context
@@ -185,6 +185,7 @@ func (o *SaveBody) ContextValidate(ctx context.Context, formats strfmt.Registry)
 func (o *SaveBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
@@ -201,6 +202,7 @@ func (o *SaveBody) contextValidateHash(ctx context.Context, formats strfmt.Regis
 func (o *SaveBody) contextValidateKeyPair(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.KeyPair != nil {
+
 		if err := o.KeyPair.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "keyPair")

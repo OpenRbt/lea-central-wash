@@ -38,10 +38,10 @@ func NewMeasureVolumeMilliliters(ctx *middleware.Context, handler MeasureVolumeM
 	return &MeasureVolumeMilliliters{Context: ctx, Handler: handler}
 }
 
-/*
-	MeasureVolumeMilliliters swagger:route POST /run-dispenser measureVolumeMilliliters
+/* MeasureVolumeMilliliters swagger:route POST /run-dispenser measureVolumeMilliliters
 
 MeasureVolumeMilliliters measure volume milliliters API
+
 */
 type MeasureVolumeMilliliters struct {
 	Context *middleware.Context
@@ -214,6 +214,7 @@ func (o *MeasureVolumeMillilitersBody) ContextValidate(ctx context.Context, form
 func (o *MeasureVolumeMillilitersBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

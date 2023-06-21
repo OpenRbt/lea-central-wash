@@ -17,8 +17,7 @@ import (
 // GetUsersOKCode is the HTTP code returned for type GetUsersOK
 const GetUsersOKCode int = 200
 
-/*
-GetUsersOK OK
+/*GetUsersOK OK
 
 swagger:response getUsersOK
 */
@@ -64,8 +63,7 @@ func (o *GetUsersOK) GetUsersResponder() {}
 // GetUsersUnauthorizedCode is the HTTP code returned for type GetUsersUnauthorized
 const GetUsersUnauthorizedCode int = 401
 
-/*
-GetUsersUnauthorized PIN is missing or invalid
+/*GetUsersUnauthorized PIN is missing or invalid
 
 swagger:response getUsersUnauthorized
 */
@@ -91,8 +89,7 @@ func (o *GetUsersUnauthorized) GetUsersResponder() {}
 // GetUsersForbiddenCode is the HTTP code returned for type GetUsersForbidden
 const GetUsersForbiddenCode int = 403
 
-/*
-GetUsersForbidden Access forbidden
+/*GetUsersForbidden Access forbidden
 
 swagger:response getUsersForbidden
 */
@@ -118,8 +115,7 @@ func (o *GetUsersForbidden) GetUsersResponder() {}
 // GetUsersInternalServerErrorCode is the HTTP code returned for type GetUsersInternalServerError
 const GetUsersInternalServerErrorCode int = 500
 
-/*
-GetUsersInternalServerError internal error
+/*GetUsersInternalServerError internal error
 
 swagger:response getUsersInternalServerError
 */

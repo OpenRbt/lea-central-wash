@@ -38,10 +38,10 @@ func NewPressButton(ctx *middleware.Context, handler PressButtonHandler) *PressB
 	return &PressButton{Context: ctx, Handler: handler}
 }
 
-/*
-	PressButton swagger:route POST /press-button pressButton
+/* PressButton swagger:route POST /press-button pressButton
 
 PressButton press button API
+
 */
 type PressButton struct {
 	Context *middleware.Context
@@ -170,6 +170,7 @@ func (o *PressButtonBody) ContextValidate(ctx context.Context, formats strfmt.Re
 func (o *PressButtonBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

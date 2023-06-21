@@ -47,7 +47,7 @@ func (o *SaveIfNotExistsReader) ReadResponse(response runtime.ClientResponse, co
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /save-if-not-exists] saveIfNotExists", response, response.Code())
 	}
 }
 
@@ -56,8 +56,7 @@ func NewSaveIfNotExistsNoContent() *SaveIfNotExistsNoContent {
 	return &SaveIfNotExistsNoContent{}
 }
 
-/*
-SaveIfNotExistsNoContent describes a response with status code 204, with default header values.
+/* SaveIfNotExistsNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -112,8 +111,7 @@ func NewSaveIfNotExistsNotFound() *SaveIfNotExistsNotFound {
 	return &SaveIfNotExistsNotFound{}
 }
 
-/*
-SaveIfNotExistsNotFound describes a response with status code 404, with default header values.
+/* SaveIfNotExistsNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -168,8 +166,7 @@ func NewSaveIfNotExistsInternalServerError() *SaveIfNotExistsInternalServerError
 	return &SaveIfNotExistsInternalServerError{}
 }
 
-/*
-SaveIfNotExistsInternalServerError describes a response with status code 500, with default header values.
+/* SaveIfNotExistsInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -219,8 +216,7 @@ func (o *SaveIfNotExistsInternalServerError) readResponse(response runtime.Clien
 	return nil
 }
 
-/*
-SaveIfNotExistsBody ArgSaveIfNotExists
+/*SaveIfNotExistsBody ArgSaveIfNotExists
 swagger:model SaveIfNotExistsBody
 */
 type SaveIfNotExistsBody struct {
@@ -341,6 +337,7 @@ func (o *SaveIfNotExistsBody) ContextValidate(ctx context.Context, formats strfm
 func (o *SaveIfNotExistsBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
@@ -357,6 +354,7 @@ func (o *SaveIfNotExistsBody) contextValidateHash(ctx context.Context, formats s
 func (o *SaveIfNotExistsBody) contextValidateKeyPair(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.KeyPair != nil {
+
 		if err := o.KeyPair.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "keyPair")

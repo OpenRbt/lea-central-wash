@@ -52,12 +52,10 @@ func NewCardReaderConfigParamsWithHTTPClient(client *http.Client) *CardReaderCon
 	}
 }
 
-/*
-CardReaderConfigParams contains all the parameters to send to the API endpoint
+/* CardReaderConfigParams contains all the parameters to send to the API endpoint
+   for the card reader config operation.
 
-	for the card reader config operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type CardReaderConfigParams struct {
 

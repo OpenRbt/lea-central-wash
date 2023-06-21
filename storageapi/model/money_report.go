@@ -149,6 +149,7 @@ func (m *MoneyReport) ContextValidate(ctx context.Context, formats strfmt.Regist
 func (m *MoneyReport) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Hash != nil {
+
 		if err := m.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("hash")

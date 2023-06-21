@@ -45,7 +45,7 @@ func (o *EndSessionReader) ReadResponse(response runtime.ClientResponse, consume
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /end-session] endSession", response, response.Code())
 	}
 }
 
@@ -54,8 +54,7 @@ func NewEndSessionNoContent() *EndSessionNoContent {
 	return &EndSessionNoContent{}
 }
 
-/*
-EndSessionNoContent describes a response with status code 204, with default header values.
+/* EndSessionNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -110,8 +109,7 @@ func NewEndSessionNotFound() *EndSessionNotFound {
 	return &EndSessionNotFound{}
 }
 
-/*
-EndSessionNotFound describes a response with status code 404, with default header values.
+/* EndSessionNotFound describes a response with status code 404, with default header values.
 
 hash not found
 */
@@ -166,8 +164,7 @@ func NewEndSessionInternalServerError() *EndSessionInternalServerError {
 	return &EndSessionInternalServerError{}
 }
 
-/*
-EndSessionInternalServerError describes a response with status code 500, with default header values.
+/* EndSessionInternalServerError describes a response with status code 500, with default header values.
 
 Internal error
 */
@@ -217,8 +214,7 @@ func (o *EndSessionInternalServerError) readResponse(response runtime.ClientResp
 	return nil
 }
 
-/*
-EndSessionBody ArgEndSession
+/*EndSessionBody ArgEndSession
 swagger:model EndSessionBody
 */
 type EndSessionBody struct {

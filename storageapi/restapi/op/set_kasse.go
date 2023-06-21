@@ -29,10 +29,10 @@ func NewSetKasse(ctx *middleware.Context, handler SetKasseHandler) *SetKasse {
 	return &SetKasse{Context: ctx, Handler: handler}
 }
 
-/*
-	SetKasse swagger:route POST /set-kasse setKasse
+/* SetKasse swagger:route POST /set-kasse setKasse
 
 SetKasse set kasse API
+
 */
 type SetKasse struct {
 	Context *middleware.Context

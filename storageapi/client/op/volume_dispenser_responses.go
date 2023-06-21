@@ -54,7 +54,7 @@ func (o *VolumeDispenserReader) ReadResponse(response runtime.ClientResponse, co
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /volume-dispenser] VolumeDispenser", response, response.Code())
 	}
 }
 
@@ -63,8 +63,7 @@ func NewVolumeDispenserOK() *VolumeDispenserOK {
 	return &VolumeDispenserOK{}
 }
 
-/*
-VolumeDispenserOK describes a response with status code 200, with default header values.
+/* VolumeDispenserOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -131,8 +130,7 @@ func NewVolumeDispenserNoContent() *VolumeDispenserNoContent {
 	return &VolumeDispenserNoContent{}
 }
 
-/*
-VolumeDispenserNoContent describes a response with status code 204, with default header values.
+/* VolumeDispenserNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -187,8 +185,7 @@ func NewVolumeDispenserNotFound() *VolumeDispenserNotFound {
 	return &VolumeDispenserNotFound{}
 }
 
-/*
-VolumeDispenserNotFound describes a response with status code 404, with default header values.
+/* VolumeDispenserNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -253,8 +250,7 @@ func NewVolumeDispenserInternalServerError() *VolumeDispenserInternalServerError
 	return &VolumeDispenserInternalServerError{}
 }
 
-/*
-VolumeDispenserInternalServerError describes a response with status code 500, with default header values.
+/* VolumeDispenserInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -304,8 +300,7 @@ func (o *VolumeDispenserInternalServerError) readResponse(response runtime.Clien
 	return nil
 }
 
-/*
-VolumeDispenserBody VolumeDispenser
+/*VolumeDispenserBody VolumeDispenser
 swagger:model VolumeDispenserBody
 */
 type VolumeDispenserBody struct {
@@ -389,6 +384,7 @@ func (o *VolumeDispenserBody) ContextValidate(ctx context.Context, formats strfm
 func (o *VolumeDispenserBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
@@ -420,8 +416,7 @@ func (o *VolumeDispenserBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*
-VolumeDispenserOKBody ResponseVolumeDispenser
+/*VolumeDispenserOKBody ResponseVolumeDispenser
 swagger:model VolumeDispenserOKBody
 */
 type VolumeDispenserOKBody struct {

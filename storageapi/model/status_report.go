@@ -145,6 +145,10 @@ func (m *StatusReport) ContextValidate(ctx context.Context, formats strfmt.Regis
 
 func (m *StatusReport) contextValidateKasseStatus(ctx context.Context, formats strfmt.Registry) error {
 
+	if swag.IsZero(m.KasseStatus) { // not required
+		return nil
+	}
+
 	if err := m.KasseStatus.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("kasse_status")
@@ -162,6 +166,11 @@ func (m *StatusReport) contextValidateStations(ctx context.Context, formats strf
 	for i := 0; i < len(m.Stations); i++ {
 
 		if m.Stations[i] != nil {
+
+			if swag.IsZero(m.Stations[i]) { // not required
+				return nil
+			}
+
 			if err := m.Stations[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stations" + "." + strconv.Itoa(i))

@@ -15,8 +15,7 @@ import (
 // SetConfigVarBoolNoContentCode is the HTTP code returned for type SetConfigVarBoolNoContent
 const SetConfigVarBoolNoContentCode int = 204
 
-/*
-SetConfigVarBoolNoContent OK
+/*SetConfigVarBoolNoContent OK
 
 swagger:response setConfigVarBoolNoContent
 */
@@ -42,8 +41,7 @@ func (o *SetConfigVarBoolNoContent) SetConfigVarBoolResponder() {}
 // SetConfigVarBoolInternalServerErrorCode is the HTTP code returned for type SetConfigVarBoolInternalServerError
 const SetConfigVarBoolInternalServerErrorCode int = 500
 
-/*
-SetConfigVarBoolInternalServerError Internal error
+/*SetConfigVarBoolInternalServerError Internal error
 
 swagger:response setConfigVarBoolInternalServerError
 */

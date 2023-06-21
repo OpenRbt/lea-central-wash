@@ -52,12 +52,10 @@ func NewResetStationStatParamsWithHTTPClient(client *http.Client) *ResetStationS
 	}
 }
 
-/*
-ResetStationStatParams contains all the parameters to send to the API endpoint
+/* ResetStationStatParams contains all the parameters to send to the API endpoint
+   for the reset station stat operation.
 
-	for the reset station stat operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type ResetStationStatParams struct {
 

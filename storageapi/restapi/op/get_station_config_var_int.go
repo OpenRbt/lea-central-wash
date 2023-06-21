@@ -38,10 +38,10 @@ func NewGetStationConfigVarInt(ctx *middleware.Context, handler GetStationConfig
 	return &GetStationConfigVarInt{Context: ctx, Handler: handler}
 }
 
-/*
-	GetStationConfigVarInt swagger:route POST /get-station-config-var-int getStationConfigVarInt
+/* GetStationConfigVarInt swagger:route POST /get-station-config-var-int getStationConfigVarInt
 
 GetStationConfigVarInt get station config var int API
+
 */
 type GetStationConfigVarInt struct {
 	Context *middleware.Context

@@ -36,7 +36,7 @@ func (o *StationsVariablesReader) ReadResponse(response runtime.ClientResponse, 
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /stations-variables] stationsVariables", response, response.Code())
 	}
 }
 
@@ -45,8 +45,7 @@ func NewStationsVariablesOK() *StationsVariablesOK {
 	return &StationsVariablesOK{}
 }
 
-/*
-StationsVariablesOK describes a response with status code 200, with default header values.
+/* StationsVariablesOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -111,8 +110,7 @@ func NewStationsVariablesInternalServerError() *StationsVariablesInternalServerE
 	return &StationsVariablesInternalServerError{}
 }
 
-/*
-StationsVariablesInternalServerError describes a response with status code 500, with default header values.
+/* StationsVariablesInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

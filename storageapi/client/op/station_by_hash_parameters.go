@@ -52,12 +52,10 @@ func NewStationByHashParamsWithHTTPClient(client *http.Client) *StationByHashPar
 	}
 }
 
-/*
-StationByHashParams contains all the parameters to send to the API endpoint
+/* StationByHashParams contains all the parameters to send to the API endpoint
+   for the station by hash operation.
 
-	for the station by hash operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type StationByHashParams struct {
 

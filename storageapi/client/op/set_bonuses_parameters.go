@@ -52,12 +52,10 @@ func NewSetBonusesParamsWithHTTPClient(client *http.Client) *SetBonusesParams {
 	}
 }
 
-/*
-SetBonusesParams contains all the parameters to send to the API endpoint
+/* SetBonusesParams contains all the parameters to send to the API endpoint
+   for the set bonuses operation.
 
-	for the set bonuses operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type SetBonusesParams struct {
 

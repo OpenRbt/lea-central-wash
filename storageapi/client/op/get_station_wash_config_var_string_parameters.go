@@ -52,12 +52,10 @@ func NewGetStationWashConfigVarStringParamsWithHTTPClient(client *http.Client) *
 	}
 }
 
-/*
-GetStationWashConfigVarStringParams contains all the parameters to send to the API endpoint
+/* GetStationWashConfigVarStringParams contains all the parameters to send to the API endpoint
+   for the get station wash config var string operation.
 
-	for the get station wash config var string operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type GetStationWashConfigVarStringParams struct {
 

@@ -48,7 +48,7 @@ func (o *LoadMoneyReader) ReadResponse(response runtime.ClientResponse, consumer
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /load-money] loadMoney", response, response.Code())
 	}
 }
 
@@ -57,8 +57,7 @@ func NewLoadMoneyOK() *LoadMoneyOK {
 	return &LoadMoneyOK{}
 }
 
-/*
-LoadMoneyOK describes a response with status code 200, with default header values.
+/* LoadMoneyOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -125,8 +124,7 @@ func NewLoadMoneyNotFound() *LoadMoneyNotFound {
 	return &LoadMoneyNotFound{}
 }
 
-/*
-LoadMoneyNotFound describes a response with status code 404, with default header values.
+/* LoadMoneyNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -181,8 +179,7 @@ func NewLoadMoneyInternalServerError() *LoadMoneyInternalServerError {
 	return &LoadMoneyInternalServerError{}
 }
 
-/*
-LoadMoneyInternalServerError describes a response with status code 500, with default header values.
+/* LoadMoneyInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -232,8 +229,7 @@ func (o *LoadMoneyInternalServerError) readResponse(response runtime.ClientRespo
 	return nil
 }
 
-/*
-LoadMoneyBody ArgLoadMoney
+/*LoadMoneyBody ArgLoadMoney
 swagger:model LoadMoneyBody
 */
 type LoadMoneyBody struct {
@@ -317,6 +313,7 @@ func (o *LoadMoneyBody) ContextValidate(ctx context.Context, formats strfmt.Regi
 func (o *LoadMoneyBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

@@ -15,8 +15,7 @@ import (
 // Run2ProgramNoContentCode is the HTTP code returned for type Run2ProgramNoContent
 const Run2ProgramNoContentCode int = 204
 
-/*
-Run2ProgramNoContent OK
+/*Run2ProgramNoContent OK
 
 swagger:response run2ProgramNoContent
 */
@@ -42,8 +41,7 @@ func (o *Run2ProgramNoContent) Run2ProgramResponder() {}
 // Run2ProgramNotFoundCode is the HTTP code returned for type Run2ProgramNotFound
 const Run2ProgramNotFoundCode int = 404
 
-/*
-Run2ProgramNotFound not found
+/*Run2ProgramNotFound not found
 
 swagger:response run2ProgramNotFound
 */
@@ -87,8 +85,7 @@ func (o *Run2ProgramNotFound) Run2ProgramResponder() {}
 // Run2ProgramInternalServerErrorCode is the HTTP code returned for type Run2ProgramInternalServerError
 const Run2ProgramInternalServerErrorCode int = 500
 
-/*
-Run2ProgramInternalServerError internal error
+/*Run2ProgramInternalServerError internal error
 
 swagger:response run2ProgramInternalServerError
 */

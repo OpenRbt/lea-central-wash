@@ -29,10 +29,10 @@ func NewStationsVariables(ctx *middleware.Context, handler StationsVariablesHand
 	return &StationsVariables{Context: ctx, Handler: handler}
 }
 
-/*
-	StationsVariables swagger:route POST /stations-variables stationsVariables
+/* StationsVariables swagger:route POST /stations-variables stationsVariables
 
 StationsVariables stations variables API
+
 */
 type StationsVariables struct {
 	Context *middleware.Context

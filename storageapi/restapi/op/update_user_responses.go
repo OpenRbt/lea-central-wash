@@ -15,8 +15,7 @@ import (
 // UpdateUserCreatedCode is the HTTP code returned for type UpdateUserCreated
 const UpdateUserCreatedCode int = 201
 
-/*
-UpdateUserCreated OK
+/*UpdateUserCreated OK
 
 swagger:response updateUserCreated
 */
@@ -62,8 +61,7 @@ func (o *UpdateUserCreated) UpdateUserResponder() {}
 // UpdateUserUnauthorizedCode is the HTTP code returned for type UpdateUserUnauthorized
 const UpdateUserUnauthorizedCode int = 401
 
-/*
-UpdateUserUnauthorized PIN is missing or invalid
+/*UpdateUserUnauthorized PIN is missing or invalid
 
 swagger:response updateUserUnauthorized
 */
@@ -89,8 +87,7 @@ func (o *UpdateUserUnauthorized) UpdateUserResponder() {}
 // UpdateUserForbiddenCode is the HTTP code returned for type UpdateUserForbidden
 const UpdateUserForbiddenCode int = 403
 
-/*
-UpdateUserForbidden Access forbidden
+/*UpdateUserForbidden Access forbidden
 
 swagger:response updateUserForbidden
 */
@@ -116,8 +113,7 @@ func (o *UpdateUserForbidden) UpdateUserResponder() {}
 // UpdateUserNotFoundCode is the HTTP code returned for type UpdateUserNotFound
 const UpdateUserNotFoundCode int = 404
 
-/*
-UpdateUserNotFound Not found
+/*UpdateUserNotFound Not found
 
 swagger:response updateUserNotFound
 */
@@ -143,8 +139,7 @@ func (o *UpdateUserNotFound) UpdateUserResponder() {}
 // UpdateUserInternalServerErrorCode is the HTTP code returned for type UpdateUserInternalServerError
 const UpdateUserInternalServerErrorCode int = 500
 
-/*
-UpdateUserInternalServerError internal error
+/*UpdateUserInternalServerError internal error
 
 swagger:response updateUserInternalServerError
 */

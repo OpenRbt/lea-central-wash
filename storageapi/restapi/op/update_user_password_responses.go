@@ -15,8 +15,7 @@ import (
 // UpdateUserPasswordCreatedCode is the HTTP code returned for type UpdateUserPasswordCreated
 const UpdateUserPasswordCreatedCode int = 201
 
-/*
-UpdateUserPasswordCreated OK
+/*UpdateUserPasswordCreated OK
 
 swagger:response updateUserPasswordCreated
 */
@@ -62,8 +61,7 @@ func (o *UpdateUserPasswordCreated) UpdateUserPasswordResponder() {}
 // UpdateUserPasswordUnauthorizedCode is the HTTP code returned for type UpdateUserPasswordUnauthorized
 const UpdateUserPasswordUnauthorizedCode int = 401
 
-/*
-UpdateUserPasswordUnauthorized PIN is missing or invalid
+/*UpdateUserPasswordUnauthorized PIN is missing or invalid
 
 swagger:response updateUserPasswordUnauthorized
 */
@@ -89,8 +87,7 @@ func (o *UpdateUserPasswordUnauthorized) UpdateUserPasswordResponder() {}
 // UpdateUserPasswordForbiddenCode is the HTTP code returned for type UpdateUserPasswordForbidden
 const UpdateUserPasswordForbiddenCode int = 403
 
-/*
-UpdateUserPasswordForbidden Access forbidden
+/*UpdateUserPasswordForbidden Access forbidden
 
 swagger:response updateUserPasswordForbidden
 */
@@ -116,8 +113,7 @@ func (o *UpdateUserPasswordForbidden) UpdateUserPasswordResponder() {}
 // UpdateUserPasswordNotFoundCode is the HTTP code returned for type UpdateUserPasswordNotFound
 const UpdateUserPasswordNotFoundCode int = 404
 
-/*
-UpdateUserPasswordNotFound not found
+/*UpdateUserPasswordNotFound not found
 
 swagger:response updateUserPasswordNotFound
 */
@@ -143,8 +139,7 @@ func (o *UpdateUserPasswordNotFound) UpdateUserPasswordResponder() {}
 // UpdateUserPasswordInternalServerErrorCode is the HTTP code returned for type UpdateUserPasswordInternalServerError
 const UpdateUserPasswordInternalServerErrorCode int = 500
 
-/*
-UpdateUserPasswordInternalServerError internal error
+/*UpdateUserPasswordInternalServerError internal error
 
 swagger:response updateUserPasswordInternalServerError
 */

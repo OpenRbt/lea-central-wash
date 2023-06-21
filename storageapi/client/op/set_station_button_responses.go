@@ -47,7 +47,7 @@ func (o *SetStationButtonReader) ReadResponse(response runtime.ClientResponse, c
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /set-station-button] setStationButton", response, response.Code())
 	}
 }
 
@@ -56,8 +56,7 @@ func NewSetStationButtonNoContent() *SetStationButtonNoContent {
 	return &SetStationButtonNoContent{}
 }
 
-/*
-SetStationButtonNoContent describes a response with status code 204, with default header values.
+/* SetStationButtonNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -112,8 +111,7 @@ func NewSetStationButtonUnprocessableEntity() *SetStationButtonUnprocessableEnti
 	return &SetStationButtonUnprocessableEntity{}
 }
 
-/*
-SetStationButtonUnprocessableEntity describes a response with status code 422, with default header values.
+/* SetStationButtonUnprocessableEntity describes a response with status code 422, with default header values.
 
 validation error
 */
@@ -178,8 +176,7 @@ func NewSetStationButtonInternalServerError() *SetStationButtonInternalServerErr
 	return &SetStationButtonInternalServerError{}
 }
 
-/*
-SetStationButtonInternalServerError describes a response with status code 500, with default header values.
+/* SetStationButtonInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -229,8 +226,7 @@ func (o *SetStationButtonInternalServerError) readResponse(response runtime.Clie
 	return nil
 }
 
-/*
-SetStationButtonBody ArgSetStationButton
+/*SetStationButtonBody ArgSetStationButton
 swagger:model SetStationButtonBody
 */
 type SetStationButtonBody struct {
@@ -344,6 +340,11 @@ func (o *SetStationButtonBody) contextValidateButtons(ctx context.Context, forma
 	for i := 0; i < len(o.Buttons); i++ {
 
 		if o.Buttons[i] != nil {
+
+			if swag.IsZero(o.Buttons[i]) { // not required
+				return nil
+			}
+
 			if err := o.Buttons[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("args" + "." + "buttons" + "." + strconv.Itoa(i))
@@ -377,8 +378,7 @@ func (o *SetStationButtonBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*
-SetStationButtonParamsBodyButtonsItems0 set station button params body buttons items0
+/*SetStationButtonParamsBodyButtonsItems0 set station button params body buttons items0
 swagger:model SetStationButtonParamsBodyButtonsItems0
 */
 type SetStationButtonParamsBodyButtonsItems0 struct {

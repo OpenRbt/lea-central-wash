@@ -48,7 +48,7 @@ func (o *LoadFromStationReader) ReadResponse(response runtime.ClientResponse, co
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /load-from-station] loadFromStation", response, response.Code())
 	}
 }
 
@@ -57,8 +57,7 @@ func NewLoadFromStationOK() *LoadFromStationOK {
 	return &LoadFromStationOK{}
 }
 
-/*
-LoadFromStationOK describes a response with status code 200, with default header values.
+/* LoadFromStationOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -123,8 +122,7 @@ func NewLoadFromStationNotFound() *LoadFromStationNotFound {
 	return &LoadFromStationNotFound{}
 }
 
-/*
-LoadFromStationNotFound describes a response with status code 404, with default header values.
+/* LoadFromStationNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -179,8 +177,7 @@ func NewLoadFromStationInternalServerError() *LoadFromStationInternalServerError
 	return &LoadFromStationInternalServerError{}
 }
 
-/*
-LoadFromStationInternalServerError describes a response with status code 500, with default header values.
+/* LoadFromStationInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -230,8 +227,7 @@ func (o *LoadFromStationInternalServerError) readResponse(response runtime.Clien
 	return nil
 }
 
-/*
-LoadFromStationBody ArgLoadFromStation
+/*LoadFromStationBody ArgLoadFromStation
 swagger:model LoadFromStationBody
 */
 type LoadFromStationBody struct {
@@ -365,6 +361,7 @@ func (o *LoadFromStationBody) ContextValidate(ctx context.Context, formats strfm
 func (o *LoadFromStationBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

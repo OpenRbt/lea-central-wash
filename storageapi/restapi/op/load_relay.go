@@ -38,10 +38,10 @@ func NewLoadRelay(ctx *middleware.Context, handler LoadRelayHandler) *LoadRelay 
 	return &LoadRelay{Context: ctx, Handler: handler}
 }
 
-/*
-	LoadRelay swagger:route POST /load-relay loadRelay
+/* LoadRelay swagger:route POST /load-relay loadRelay
 
 LoadRelay load relay API
+
 */
 type LoadRelay struct {
 	Context *middleware.Context
@@ -148,6 +148,7 @@ func (o *LoadRelayBody) ContextValidate(ctx context.Context, formats strfmt.Regi
 func (o *LoadRelayBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

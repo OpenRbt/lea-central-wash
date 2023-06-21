@@ -52,12 +52,10 @@ func NewVolumeDispenserParamsWithHTTPClient(client *http.Client) *VolumeDispense
 	}
 }
 
-/*
-VolumeDispenserParams contains all the parameters to send to the API endpoint
+/* VolumeDispenserParams contains all the parameters to send to the API endpoint
+   for the volume dispenser operation.
 
-	for the volume dispenser operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type VolumeDispenserParams struct {
 

@@ -60,7 +60,7 @@ func (o *UpdateUserPasswordReader) ReadResponse(response runtime.ClientResponse,
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /user-password] updateUserPassword", response, response.Code())
 	}
 }
 
@@ -69,8 +69,7 @@ func NewUpdateUserPasswordCreated() *UpdateUserPasswordCreated {
 	return &UpdateUserPasswordCreated{}
 }
 
-/*
-UpdateUserPasswordCreated describes a response with status code 201, with default header values.
+/* UpdateUserPasswordCreated describes a response with status code 201, with default header values.
 
 OK
 */
@@ -137,8 +136,7 @@ func NewUpdateUserPasswordUnauthorized() *UpdateUserPasswordUnauthorized {
 	return &UpdateUserPasswordUnauthorized{}
 }
 
-/*
-UpdateUserPasswordUnauthorized describes a response with status code 401, with default header values.
+/* UpdateUserPasswordUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -193,8 +191,7 @@ func NewUpdateUserPasswordForbidden() *UpdateUserPasswordForbidden {
 	return &UpdateUserPasswordForbidden{}
 }
 
-/*
-UpdateUserPasswordForbidden describes a response with status code 403, with default header values.
+/* UpdateUserPasswordForbidden describes a response with status code 403, with default header values.
 
 Access forbidden
 */
@@ -249,8 +246,7 @@ func NewUpdateUserPasswordNotFound() *UpdateUserPasswordNotFound {
 	return &UpdateUserPasswordNotFound{}
 }
 
-/*
-UpdateUserPasswordNotFound describes a response with status code 404, with default header values.
+/* UpdateUserPasswordNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -305,8 +301,7 @@ func NewUpdateUserPasswordInternalServerError() *UpdateUserPasswordInternalServe
 	return &UpdateUserPasswordInternalServerError{}
 }
 
-/*
-UpdateUserPasswordInternalServerError describes a response with status code 500, with default header values.
+/* UpdateUserPasswordInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -356,8 +351,7 @@ func (o *UpdateUserPasswordInternalServerError) readResponse(response runtime.Cl
 	return nil
 }
 
-/*
-UpdateUserPasswordBody ArgUserPassword
+/*UpdateUserPasswordBody ArgUserPassword
 swagger:model UpdateUserPasswordBody
 */
 type UpdateUserPasswordBody struct {
@@ -523,6 +517,7 @@ func (o *UpdateUserPasswordBody) ContextValidate(ctx context.Context, formats st
 func (o *UpdateUserPasswordBody) contextValidateLogin(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Login != nil {
+
 		if err := o.Login.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "login")
@@ -539,6 +534,7 @@ func (o *UpdateUserPasswordBody) contextValidateLogin(ctx context.Context, forma
 func (o *UpdateUserPasswordBody) contextValidateNewPassword(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.NewPassword != nil {
+
 		if err := o.NewPassword.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "newPassword")
@@ -555,6 +551,7 @@ func (o *UpdateUserPasswordBody) contextValidateNewPassword(ctx context.Context,
 func (o *UpdateUserPasswordBody) contextValidateOldPassword(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.OldPassword != nil {
+
 		if err := o.OldPassword.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "oldPassword")
@@ -586,8 +583,7 @@ func (o *UpdateUserPasswordBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*
-UpdateUserPasswordCreatedBody ResponseUserPassword
+/*UpdateUserPasswordCreatedBody ResponseUserPassword
 swagger:model UpdateUserPasswordCreatedBody
 */
 type UpdateUserPasswordCreatedBody struct {

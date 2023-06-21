@@ -17,8 +17,7 @@ import (
 // AdvertisingCampaignByIDOKCode is the HTTP code returned for type AdvertisingCampaignByIDOK
 const AdvertisingCampaignByIDOKCode int = 200
 
-/*
-AdvertisingCampaignByIDOK OK
+/*AdvertisingCampaignByIDOK OK
 
 swagger:response advertisingCampaignByIdOK
 */
@@ -64,8 +63,7 @@ func (o *AdvertisingCampaignByIDOK) AdvertisingCampaignByIDResponder() {}
 // AdvertisingCampaignByIDUnauthorizedCode is the HTTP code returned for type AdvertisingCampaignByIDUnauthorized
 const AdvertisingCampaignByIDUnauthorizedCode int = 401
 
-/*
-AdvertisingCampaignByIDUnauthorized PIN is missing or invalid
+/*AdvertisingCampaignByIDUnauthorized PIN is missing or invalid
 
 swagger:response advertisingCampaignByIdUnauthorized
 */
@@ -91,8 +89,7 @@ func (o *AdvertisingCampaignByIDUnauthorized) AdvertisingCampaignByIDResponder()
 // AdvertisingCampaignByIDForbiddenCode is the HTTP code returned for type AdvertisingCampaignByIDForbidden
 const AdvertisingCampaignByIDForbiddenCode int = 403
 
-/*
-AdvertisingCampaignByIDForbidden Access forbiddenn
+/*AdvertisingCampaignByIDForbidden Access forbiddenn
 
 swagger:response advertisingCampaignByIdForbidden
 */
@@ -118,8 +115,7 @@ func (o *AdvertisingCampaignByIDForbidden) AdvertisingCampaignByIDResponder() {}
 // AdvertisingCampaignByIDNotFoundCode is the HTTP code returned for type AdvertisingCampaignByIDNotFound
 const AdvertisingCampaignByIDNotFoundCode int = 404
 
-/*
-AdvertisingCampaignByIDNotFound not found
+/*AdvertisingCampaignByIDNotFound not found
 
 swagger:response advertisingCampaignByIdNotFound
 */
@@ -145,8 +141,7 @@ func (o *AdvertisingCampaignByIDNotFound) AdvertisingCampaignByIDResponder() {}
 // AdvertisingCampaignByIDInternalServerErrorCode is the HTTP code returned for type AdvertisingCampaignByIDInternalServerError
 const AdvertisingCampaignByIDInternalServerErrorCode int = 500
 
-/*
-AdvertisingCampaignByIDInternalServerError internal error
+/*AdvertisingCampaignByIDInternalServerError internal error
 
 swagger:response advertisingCampaignByIdInternalServerError
 */

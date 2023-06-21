@@ -52,12 +52,10 @@ func NewStationButtonParamsWithHTTPClient(client *http.Client) *StationButtonPar
 	}
 }
 
-/*
-StationButtonParams contains all the parameters to send to the API endpoint
+/* StationButtonParams contains all the parameters to send to the API endpoint
+   for the station button operation.
 
-	for the station button operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type StationButtonParams struct {
 

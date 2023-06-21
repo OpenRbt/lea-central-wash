@@ -52,12 +52,10 @@ func NewDelAdvertisingCampaignParamsWithHTTPClient(client *http.Client) *DelAdve
 	}
 }
 
-/*
-DelAdvertisingCampaignParams contains all the parameters to send to the API endpoint
+/* DelAdvertisingCampaignParams contains all the parameters to send to the API endpoint
+   for the del advertising campaign operation.
 
-	for the del advertising campaign operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type DelAdvertisingCampaignParams struct {
 

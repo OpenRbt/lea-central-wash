@@ -38,10 +38,10 @@ func NewSaveIfNotExists(ctx *middleware.Context, handler SaveIfNotExistsHandler)
 	return &SaveIfNotExists{Context: ctx, Handler: handler}
 }
 
-/*
-	SaveIfNotExists swagger:route POST /save-if-not-exists saveIfNotExists
+/* SaveIfNotExists swagger:route POST /save-if-not-exists saveIfNotExists
 
 SaveIfNotExists save if not exists API
+
 */
 type SaveIfNotExists struct {
 	Context *middleware.Context
@@ -185,6 +185,7 @@ func (o *SaveIfNotExistsBody) ContextValidate(ctx context.Context, formats strfm
 func (o *SaveIfNotExistsBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")
@@ -201,6 +202,7 @@ func (o *SaveIfNotExistsBody) contextValidateHash(ctx context.Context, formats s
 func (o *SaveIfNotExistsBody) contextValidateKeyPair(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.KeyPair != nil {
+
 		if err := o.KeyPair.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "keyPair")

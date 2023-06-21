@@ -33,7 +33,7 @@ func (o *SetKasseReader) ReadResponse(response runtime.ClientResponse, consumer 
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /set-kasse] setKasse", response, response.Code())
 	}
 }
 
@@ -42,8 +42,7 @@ func NewSetKasseNoContent() *SetKasseNoContent {
 	return &SetKasseNoContent{}
 }
 
-/*
-SetKasseNoContent describes a response with status code 204, with default header values.
+/* SetKasseNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -98,8 +97,7 @@ func NewSetKasseInternalServerError() *SetKasseInternalServerError {
 	return &SetKasseInternalServerError{}
 }
 
-/*
-SetKasseInternalServerError describes a response with status code 500, with default header values.
+/* SetKasseInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

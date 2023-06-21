@@ -162,6 +162,11 @@ func (m *StationPrograms) contextValidatePrograms(ctx context.Context, formats s
 	for i := 0; i < len(m.Programs); i++ {
 
 		if m.Programs[i] != nil {
+
+			if swag.IsZero(m.Programs[i]) { // not required
+				return nil
+			}
+
 			if err := m.Programs[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("programs" + "." + strconv.Itoa(i))
@@ -178,6 +183,10 @@ func (m *StationPrograms) contextValidatePrograms(ctx context.Context, formats s
 }
 
 func (m *StationPrograms) contextValidateRelayBoard(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.RelayBoard) { // not required
+		return nil
+	}
 
 	if err := m.RelayBoard.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
@@ -293,6 +302,11 @@ func (m *StationProgramsProgramsItems0) ContextValidate(ctx context.Context, for
 func (m *StationProgramsProgramsItems0) contextValidateProgram(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Program != nil {
+
+		if swag.IsZero(m.Program) { // not required
+			return nil
+		}
+
 		if err := m.Program.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("program")

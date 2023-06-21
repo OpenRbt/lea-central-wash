@@ -15,8 +15,7 @@ import (
 // ResetStationStatNoContentCode is the HTTP code returned for type ResetStationStatNoContent
 const ResetStationStatNoContentCode int = 204
 
-/*
-ResetStationStatNoContent OK
+/*ResetStationStatNoContent OK
 
 swagger:response resetStationStatNoContent
 */
@@ -42,8 +41,7 @@ func (o *ResetStationStatNoContent) ResetStationStatResponder() {}
 // ResetStationStatUnauthorizedCode is the HTTP code returned for type ResetStationStatUnauthorized
 const ResetStationStatUnauthorizedCode int = 401
 
-/*
-ResetStationStatUnauthorized PIN is missing or invalid
+/*ResetStationStatUnauthorized PIN is missing or invalid
 
 swagger:response resetStationStatUnauthorized
 */
@@ -69,8 +67,7 @@ func (o *ResetStationStatUnauthorized) ResetStationStatResponder() {}
 // ResetStationStatForbiddenCode is the HTTP code returned for type ResetStationStatForbidden
 const ResetStationStatForbiddenCode int = 403
 
-/*
-ResetStationStatForbidden Access forbiddenn
+/*ResetStationStatForbidden Access forbiddenn
 
 swagger:response resetStationStatForbidden
 */
@@ -96,8 +93,7 @@ func (o *ResetStationStatForbidden) ResetStationStatResponder() {}
 // ResetStationStatInternalServerErrorCode is the HTTP code returned for type ResetStationStatInternalServerError
 const ResetStationStatInternalServerErrorCode int = 500
 
-/*
-ResetStationStatInternalServerError internal error
+/*ResetStationStatInternalServerError internal error
 
 swagger:response resetStationStatInternalServerError
 */

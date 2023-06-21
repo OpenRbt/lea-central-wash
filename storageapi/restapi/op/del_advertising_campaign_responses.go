@@ -15,8 +15,7 @@ import (
 // DelAdvertisingCampaignNoContentCode is the HTTP code returned for type DelAdvertisingCampaignNoContent
 const DelAdvertisingCampaignNoContentCode int = 204
 
-/*
-DelAdvertisingCampaignNoContent OK
+/*DelAdvertisingCampaignNoContent OK
 
 swagger:response delAdvertisingCampaignNoContent
 */
@@ -42,8 +41,7 @@ func (o *DelAdvertisingCampaignNoContent) DelAdvertisingCampaignResponder() {}
 // DelAdvertisingCampaignUnauthorizedCode is the HTTP code returned for type DelAdvertisingCampaignUnauthorized
 const DelAdvertisingCampaignUnauthorizedCode int = 401
 
-/*
-DelAdvertisingCampaignUnauthorized PIN is missing or invalid
+/*DelAdvertisingCampaignUnauthorized PIN is missing or invalid
 
 swagger:response delAdvertisingCampaignUnauthorized
 */
@@ -69,8 +67,7 @@ func (o *DelAdvertisingCampaignUnauthorized) DelAdvertisingCampaignResponder() {
 // DelAdvertisingCampaignForbiddenCode is the HTTP code returned for type DelAdvertisingCampaignForbidden
 const DelAdvertisingCampaignForbiddenCode int = 403
 
-/*
-DelAdvertisingCampaignForbidden Access forbiddenn
+/*DelAdvertisingCampaignForbidden Access forbiddenn
 
 swagger:response delAdvertisingCampaignForbidden
 */
@@ -96,8 +93,7 @@ func (o *DelAdvertisingCampaignForbidden) DelAdvertisingCampaignResponder() {}
 // DelAdvertisingCampaignInternalServerErrorCode is the HTTP code returned for type DelAdvertisingCampaignInternalServerError
 const DelAdvertisingCampaignInternalServerErrorCode int = 500
 
-/*
-DelAdvertisingCampaignInternalServerError internal error
+/*DelAdvertisingCampaignInternalServerError internal error
 
 swagger:response delAdvertisingCampaignInternalServerError
 */

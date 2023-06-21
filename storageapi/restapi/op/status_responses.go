@@ -17,8 +17,7 @@ import (
 // StatusOKCode is the HTTP code returned for type StatusOK
 const StatusOKCode int = 200
 
-/*
-StatusOK OK
+/*StatusOK OK
 
 swagger:response statusOK
 */
@@ -64,8 +63,7 @@ func (o *StatusOK) StatusResponder() {}
 // StatusInternalServerErrorCode is the HTTP code returned for type StatusInternalServerError
 const StatusInternalServerErrorCode int = 500
 
-/*
-StatusInternalServerError internal error
+/*StatusInternalServerError internal error
 
 swagger:response statusInternalServerError
 */

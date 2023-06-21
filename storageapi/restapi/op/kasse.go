@@ -29,10 +29,10 @@ func NewKasse(ctx *middleware.Context, handler KasseHandler) *Kasse {
 	return &Kasse{Context: ctx, Handler: handler}
 }
 
-/*
-	Kasse swagger:route POST /kasse kasse
+/* Kasse swagger:route POST /kasse kasse
 
 Kasse kasse API
+
 */
 type Kasse struct {
 	Context *middleware.Context

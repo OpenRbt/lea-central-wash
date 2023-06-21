@@ -38,10 +38,10 @@ func NewSaveCollection(ctx *middleware.Context, handler SaveCollectionHandler) *
 	return &SaveCollection{Context: ctx, Handler: handler}
 }
 
-/*
-	SaveCollection swagger:route POST /save-collection saveCollection
+/* SaveCollection swagger:route POST /save-collection saveCollection
 
 SaveCollection save collection API
+
 */
 type SaveCollection struct {
 	Context *middleware.Context

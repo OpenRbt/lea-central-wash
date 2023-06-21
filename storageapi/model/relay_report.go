@@ -142,6 +142,7 @@ func (m *RelayReport) ContextValidate(ctx context.Context, formats strfmt.Regist
 func (m *RelayReport) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Hash != nil {
+
 		if err := m.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("hash")
@@ -160,6 +161,11 @@ func (m *RelayReport) contextValidateRelayStats(ctx context.Context, formats str
 	for i := 0; i < len(m.RelayStats); i++ {
 
 		if m.RelayStats[i] != nil {
+
+			if swag.IsZero(m.RelayStats[i]) { // not required
+				return nil
+			}
+
 			if err := m.RelayStats[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relayStats" + "." + strconv.Itoa(i))

@@ -27,7 +27,7 @@ func (o *GetPingReader) ReadResponse(response runtime.ClientResponse, consumer r
 		}
 		return result, nil
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /ping] getPing", response, response.Code())
 	}
 }
 
@@ -36,8 +36,7 @@ func NewGetPingOK() *GetPingOK {
 	return &GetPingOK{}
 }
 
-/*
-GetPingOK describes a response with status code 200, with default header values.
+/* GetPingOK describes a response with status code 200, with default header values.
 
 OK
 */

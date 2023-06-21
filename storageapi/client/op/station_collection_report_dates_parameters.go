@@ -52,12 +52,10 @@ func NewStationCollectionReportDatesParamsWithHTTPClient(client *http.Client) *S
 	}
 }
 
-/*
-StationCollectionReportDatesParams contains all the parameters to send to the API endpoint
+/* StationCollectionReportDatesParams contains all the parameters to send to the API endpoint
+   for the station collection report dates operation.
 
-	for the station collection report dates operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type StationCollectionReportDatesParams struct {
 

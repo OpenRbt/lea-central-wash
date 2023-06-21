@@ -48,7 +48,7 @@ func (o *LoadReader) ReadResponse(response runtime.ClientResponse, consumer runt
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /load] load", response, response.Code())
 	}
 }
 
@@ -57,8 +57,7 @@ func NewLoadOK() *LoadOK {
 	return &LoadOK{}
 }
 
-/*
-LoadOK describes a response with status code 200, with default header values.
+/* LoadOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -123,8 +122,7 @@ func NewLoadNotFound() *LoadNotFound {
 	return &LoadNotFound{}
 }
 
-/*
-LoadNotFound describes a response with status code 404, with default header values.
+/* LoadNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -179,8 +177,7 @@ func NewLoadInternalServerError() *LoadInternalServerError {
 	return &LoadInternalServerError{}
 }
 
-/*
-LoadInternalServerError describes a response with status code 500, with default header values.
+/* LoadInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -230,8 +227,7 @@ func (o *LoadInternalServerError) readResponse(response runtime.ClientResponse, 
 	return nil
 }
 
-/*
-LoadBody ArgLoad
+/*LoadBody ArgLoad
 swagger:model LoadBody
 */
 type LoadBody struct {
@@ -343,6 +339,7 @@ func (o *LoadBody) ContextValidate(ctx context.Context, formats strfmt.Registry)
 func (o *LoadBody) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
 
 	if o.Hash != nil {
+
 		if err := o.Hash.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("args" + "." + "hash")

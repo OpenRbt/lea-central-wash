@@ -15,8 +15,7 @@ import (
 // SaveIfNotExistsNoContentCode is the HTTP code returned for type SaveIfNotExistsNoContent
 const SaveIfNotExistsNoContentCode int = 204
 
-/*
-SaveIfNotExistsNoContent OK
+/*SaveIfNotExistsNoContent OK
 
 swagger:response saveIfNotExistsNoContent
 */
@@ -42,8 +41,7 @@ func (o *SaveIfNotExistsNoContent) SaveIfNotExistsResponder() {}
 // SaveIfNotExistsNotFoundCode is the HTTP code returned for type SaveIfNotExistsNotFound
 const SaveIfNotExistsNotFoundCode int = 404
 
-/*
-SaveIfNotExistsNotFound not found
+/*SaveIfNotExistsNotFound not found
 
 swagger:response saveIfNotExistsNotFound
 */
@@ -69,8 +67,7 @@ func (o *SaveIfNotExistsNotFound) SaveIfNotExistsResponder() {}
 // SaveIfNotExistsInternalServerErrorCode is the HTTP code returned for type SaveIfNotExistsInternalServerError
 const SaveIfNotExistsInternalServerErrorCode int = 500
 
-/*
-SaveIfNotExistsInternalServerError internal error
+/*SaveIfNotExistsInternalServerError internal error
 
 swagger:response saveIfNotExistsInternalServerError
 */
