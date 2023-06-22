@@ -686,6 +686,15 @@ func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
 		return err
 	}
 
+	_, err = s.Write([]byte(";"))
+	if err != nil {
+		return err
+	}
+	err = s.Flush()
+	if err != nil {
+		return err
+	}
+
 	_, err = s.Write([]byte("UID;"))
 	if err != nil {
 		return err
