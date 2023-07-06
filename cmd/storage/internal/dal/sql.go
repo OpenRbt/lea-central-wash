@@ -1,8 +1,9 @@
 package dal
 
 import (
-	uuid "github.com/satori/go.uuid"
 	"time"
+
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 )
@@ -183,11 +184,12 @@ VALUES 	(:station_id, :banknotes, :cars_total, :coins, :electronical, :service, 
 			   max(id) as max_id,
 			   :ctime
 		FROM money_report
-	WHERE station_id = :station_id and id > coalesce(
-	(SELECT last_money_report_id FROM money_collection WHERE station_id = :station_id
-	ORDER BY id DESC
-	LIMIT 1)
-	,0)
+	WHERE station_id = :station_id and ctime > coalesce((
+		SELECT ctime FROM money_collection WHERE station_id = :station_id
+			ORDER BY id DESC
+			LIMIT 1
+		), (SELECT TIMESTAMP 'epoch')
+	)
 	GROUP BY station_id
 	)	
 	`

@@ -304,19 +304,20 @@ func (a *app) OpenStation(id StationID) error {
 // Checks pairment of hash in report and ID in the map
 // Returns ErrNotFound in case of hash or ID failure
 func (a *app) SaveMoneyReport(report MoneyReport) error {
-	err := a.repo.SaveMoneyReport(report)
-	if err != nil {
-		log.Err("failed to save moneyReport", "err", err)
-		return err
-	}
-
 	if report.SessionID != "" {
-		a.repo.SaveMoneyReportAndMessage(RabbitMoneyReport{
+		err := a.repo.SaveMoneyReportAndMessage(RabbitMoneyReport{
 			MessageType: string(rabbit_vo.SessionMoneyReportMessageType),
 			MoneyReport: report,
 		})
+		if err != nil {
+			log.Err("failed to save moneyReport", "err", err)
+			return err
+		}
+
+		return nil
 	}
-	return nil
+
+	return a.repo.SaveMoneyReport(report)
 }
 
 // SaveCollectionReport gets app.CollectionReport struct
