@@ -72,7 +72,6 @@ func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 		svc.ProcessBonusMessage,
 		cfg.ServerID,
 		rabbitmq.WithConsumerOptionsExchangeName(string(vo.WashBonusService)),
-		rabbitmq.WithConsumerOptionsConsumerExclusive,
 		rabbitmq.WithConsumerOptionsRoutingKey(cfg.ServerID),
 	)
 
