@@ -92,6 +92,8 @@ func (a *app) loadStations() error {
 
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
+	a.stationSessionPoolMutex.Lock()
+	defer a.stationSessionPoolMutex.Unlock()
 	a.stations = stations
 	a.stationsSessionsPool = sessionsPool
 
@@ -975,11 +977,14 @@ func (a *app) GetRabbitConfig() (cfg RabbitConfig, err error) {
 
 func (a *app) SetNextSession(stationID StationID) (err error) {
 	a.stationsMutex.Lock()
-	defer a.stationsMutex.Unlock()
 
 	if station, ok := a.stations[stationID]; ok {
+		a.stationsMutex.Unlock()
+
+		a.stationSessionPoolMutex.Lock()
 		sessionsPool := a.stationsSessionsPool[stationID]
 		sessionsCount := len(sessionsPool)
+		a.stationSessionPoolMutex.Unlock()
 
 		switch {
 		case sessionsCount == 0:
@@ -989,11 +994,18 @@ func (a *app) SetNextSession(stationID StationID) (err error) {
 			}
 			return ErrSessionNotFound
 		case sessionsCount > 0:
+			a.stationsMutex.Lock()
 			station.PreviousSessionID = station.CurrentSessionID
+			a.stationsMutex.Unlock()
+
+			a.stationSessionPoolMutex.Lock()
 			station.CurrentSessionID = <-sessionsPool
+			a.stationSessionPoolMutex.Unlock()
 
 			if sessionsCount >= 5 {
+				a.stationsMutex.Lock()
 				a.stations[stationID] = station
+				a.stationsMutex.Unlock()
 				return nil
 			}
 			fallthrough
@@ -1004,6 +1016,8 @@ func (a *app) SetNextSession(stationID StationID) (err error) {
 			}
 			return nil
 		}
+	} else {
+		a.stationsMutex.Unlock()
 	}
 
 	return ErrUnknownStation
@@ -1024,17 +1038,19 @@ func (a *app) RequestSessionsFromService(count int, stationID StationID) error {
 
 func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) error {
 	a.stationSessionPoolMutex.Lock()
+	defer a.stationSessionPoolMutex.Unlock()
+
 	val, ok := a.stationsSessionsPool[stationID]
-	a.stationSessionPoolMutex.Unlock()
 	if !ok {
 		return errors.New("no sessions available")
 	}
 
 	for _, session := range sessionsIDs {
-		if cap(val) <= len(val) {
-			break
+		select {
+		case val <- session:
+		default:
+			return nil
 		}
-		val <- session
 	}
 	return nil
 }
