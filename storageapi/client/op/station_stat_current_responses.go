@@ -61,7 +61,8 @@ func NewStationStatCurrentOK() *StationStatCurrentOK {
 	return &StationStatCurrentOK{}
 }
 
-/* StationStatCurrentOK describes a response with status code 200, with default header values.
+/*
+StationStatCurrentOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -126,7 +127,8 @@ func NewStationStatCurrentUnauthorized() *StationStatCurrentUnauthorized {
 	return &StationStatCurrentUnauthorized{}
 }
 
-/* StationStatCurrentUnauthorized describes a response with status code 401, with default header values.
+/*
+StationStatCurrentUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -181,7 +183,8 @@ func NewStationStatCurrentForbidden() *StationStatCurrentForbidden {
 	return &StationStatCurrentForbidden{}
 }
 
-/* StationStatCurrentForbidden describes a response with status code 403, with default header values.
+/*
+StationStatCurrentForbidden describes a response with status code 403, with default header values.
 
 Access forbiddenn
 */
@@ -236,7 +239,8 @@ func NewStationStatCurrentInternalServerError() *StationStatCurrentInternalServe
 	return &StationStatCurrentInternalServerError{}
 }
 
-/* StationStatCurrentInternalServerError describes a response with status code 500, with default header values.
+/*
+StationStatCurrentInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -286,7 +290,8 @@ func (o *StationStatCurrentInternalServerError) readResponse(response runtime.Cl
 	return nil
 }
 
-/*StationStatCurrentBody ArgStationStat
+/*
+StationStatCurrentBody ArgStationStat
 swagger:model StationStatCurrentBody
 */
 type StationStatCurrentBody struct {

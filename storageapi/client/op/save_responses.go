@@ -56,7 +56,8 @@ func NewSaveNoContent() *SaveNoContent {
 	return &SaveNoContent{}
 }
 
-/* SaveNoContent describes a response with status code 204, with default header values.
+/*
+SaveNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -111,7 +112,8 @@ func NewSaveNotFound() *SaveNotFound {
 	return &SaveNotFound{}
 }
 
-/* SaveNotFound describes a response with status code 404, with default header values.
+/*
+SaveNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -166,7 +168,8 @@ func NewSaveInternalServerError() *SaveInternalServerError {
 	return &SaveInternalServerError{}
 }
 
-/* SaveInternalServerError describes a response with status code 500, with default header values.
+/*
+SaveInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -216,7 +219,8 @@ func (o *SaveInternalServerError) readResponse(response runtime.ClientResponse, 
 	return nil
 }
 
-/*SaveBody ArgSave
+/*
+SaveBody ArgSave
 swagger:model SaveBody
 */
 type SaveBody struct {

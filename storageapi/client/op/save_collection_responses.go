@@ -60,7 +60,8 @@ func NewSaveCollectionNoContent() *SaveCollectionNoContent {
 	return &SaveCollectionNoContent{}
 }
 
-/* SaveCollectionNoContent describes a response with status code 204, with default header values.
+/*
+SaveCollectionNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -115,7 +116,8 @@ func NewSaveCollectionUnauthorized() *SaveCollectionUnauthorized {
 	return &SaveCollectionUnauthorized{}
 }
 
-/* SaveCollectionUnauthorized describes a response with status code 401, with default header values.
+/*
+SaveCollectionUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -170,7 +172,8 @@ func NewSaveCollectionNotFound() *SaveCollectionNotFound {
 	return &SaveCollectionNotFound{}
 }
 
-/* SaveCollectionNotFound describes a response with status code 404, with default header values.
+/*
+SaveCollectionNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -225,7 +228,8 @@ func NewSaveCollectionInternalServerError() *SaveCollectionInternalServerError {
 	return &SaveCollectionInternalServerError{}
 }
 
-/* SaveCollectionInternalServerError describes a response with status code 500, with default header values.
+/*
+SaveCollectionInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -275,7 +279,8 @@ func (o *SaveCollectionInternalServerError) readResponse(response runtime.Client
 	return nil
 }
 
-/*SaveCollectionBody save collection body
+/*
+SaveCollectionBody save collection body
 swagger:model SaveCollectionBody
 */
 type SaveCollectionBody struct {

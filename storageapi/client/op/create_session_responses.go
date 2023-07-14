@@ -57,7 +57,8 @@ func NewCreateSessionOK() *CreateSessionOK {
 	return &CreateSessionOK{}
 }
 
-/* CreateSessionOK describes a response with status code 200, with default header values.
+/*
+CreateSessionOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -124,7 +125,8 @@ func NewCreateSessionNotFound() *CreateSessionNotFound {
 	return &CreateSessionNotFound{}
 }
 
-/* CreateSessionNotFound describes a response with status code 404, with default header values.
+/*
+CreateSessionNotFound describes a response with status code 404, with default header values.
 
 hash not found
 */
@@ -179,7 +181,8 @@ func NewCreateSessionInternalServerError() *CreateSessionInternalServerError {
 	return &CreateSessionInternalServerError{}
 }
 
-/* CreateSessionInternalServerError describes a response with status code 500, with default header values.
+/*
+CreateSessionInternalServerError describes a response with status code 500, with default header values.
 
 Internal error
 */
@@ -229,7 +232,8 @@ func (o *CreateSessionInternalServerError) readResponse(response runtime.ClientR
 	return nil
 }
 
-/*CreateSessionBody CreateSession
+/*
+CreateSessionBody CreateSession
 swagger:model CreateSessionBody
 */
 type CreateSessionBody struct {

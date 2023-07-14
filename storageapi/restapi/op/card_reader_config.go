@@ -36,10 +36,10 @@ func NewCardReaderConfig(ctx *middleware.Context, handler CardReaderConfigHandle
 	return &CardReaderConfig{Context: ctx, Handler: handler}
 }
 
-/* CardReaderConfig swagger:route POST /card-reader-config cardReaderConfig
+/*
+	CardReaderConfig swagger:route POST /card-reader-config cardReaderConfig
 
 CardReaderConfig card reader config API
-
 */
 type CardReaderConfig struct {
 	Context *middleware.Context

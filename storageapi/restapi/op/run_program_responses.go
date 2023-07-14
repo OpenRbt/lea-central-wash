@@ -15,7 +15,8 @@ import (
 // RunProgramNoContentCode is the HTTP code returned for type RunProgramNoContent
 const RunProgramNoContentCode int = 204
 
-/*RunProgramNoContent OK
+/*
+RunProgramNoContent OK
 
 swagger:response runProgramNoContent
 */
@@ -41,7 +42,8 @@ func (o *RunProgramNoContent) RunProgramResponder() {}
 // RunProgramNotFoundCode is the HTTP code returned for type RunProgramNotFound
 const RunProgramNotFoundCode int = 404
 
-/*RunProgramNotFound not found
+/*
+RunProgramNotFound not found
 
 swagger:response runProgramNotFound
 */
@@ -85,7 +87,8 @@ func (o *RunProgramNotFound) RunProgramResponder() {}
 // RunProgramInternalServerErrorCode is the HTTP code returned for type RunProgramInternalServerError
 const RunProgramInternalServerErrorCode int = 500
 
-/*RunProgramInternalServerError internal error
+/*
+RunProgramInternalServerError internal error
 
 swagger:response runProgramInternalServerError
 */

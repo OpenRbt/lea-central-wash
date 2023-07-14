@@ -38,10 +38,10 @@ func NewDispenserStop(ctx *middleware.Context, handler DispenserStopHandler) *Di
 	return &DispenserStop{Context: ctx, Handler: handler}
 }
 
-/* DispenserStop swagger:route POST /stop-dispenser dispenserStop
+/*
+	DispenserStop swagger:route POST /stop-dispenser dispenserStop
 
 DispenserStop dispenser stop API
-
 */
 type DispenserStop struct {
 	Context *middleware.Context

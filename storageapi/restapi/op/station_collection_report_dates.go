@@ -40,10 +40,10 @@ func NewStationCollectionReportDates(ctx *middleware.Context, handler StationCol
 	return &StationCollectionReportDates{Context: ctx, Handler: handler}
 }
 
-/* StationCollectionReportDates swagger:route POST /station-collection-report-dates stationCollectionReportDates
+/*
+	StationCollectionReportDates swagger:route POST /station-collection-report-dates stationCollectionReportDates
 
 StationCollectionReportDates station collection report dates API
-
 */
 type StationCollectionReportDates struct {
 	Context *middleware.Context

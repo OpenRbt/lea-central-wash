@@ -42,7 +42,8 @@ func NewSetConfigVarBoolNoContent() *SetConfigVarBoolNoContent {
 	return &SetConfigVarBoolNoContent{}
 }
 
-/* SetConfigVarBoolNoContent describes a response with status code 204, with default header values.
+/*
+SetConfigVarBoolNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -97,7 +98,8 @@ func NewSetConfigVarBoolInternalServerError() *SetConfigVarBoolInternalServerErr
 	return &SetConfigVarBoolInternalServerError{}
 }
 
-/* SetConfigVarBoolInternalServerError describes a response with status code 500, with default header values.
+/*
+SetConfigVarBoolInternalServerError describes a response with status code 500, with default header values.
 
 Internal error
 */

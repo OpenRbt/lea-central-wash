@@ -1650,7 +1650,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/MoneyReport"
+              "$ref": "#/definitions/MoneyReportCreation"
             }
           }
         ],
@@ -1689,6 +1689,22 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/server/info": {
+      "get": {
+        "operationId": "getServerInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ServerInfo"
+            }
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -3305,6 +3321,35 @@ func init() {
     },
     "MoneyReport": {
       "type": "object",
+      "properties": {
+        "banknotes": {
+          "type": "integer"
+        },
+        "bonuses": {
+          "type": "integer"
+        },
+        "carsTotal": {
+          "type": "integer"
+        },
+        "coins": {
+          "type": "integer"
+        },
+        "electronical": {
+          "type": "integer"
+        },
+        "qrMoney": {
+          "type": "integer"
+        },
+        "service": {
+          "type": "integer"
+        },
+        "sessionId": {
+          "type": "string"
+        }
+      }
+    },
+    "MoneyReportCreation": {
+      "type": "object",
       "required": [
         "hash"
       ],
@@ -3453,6 +3498,14 @@ func init() {
         },
         "totalTimeOn": {
           "type": "integer"
+        }
+      }
+    },
+    "ServerInfo": {
+      "type": "object",
+      "properties": {
+        "bonusServiceURL": {
+          "type": "string"
         }
       }
     },
@@ -5421,7 +5474,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/MoneyReport"
+              "$ref": "#/definitions/MoneyReportCreation"
             }
           }
         ],
@@ -5460,6 +5513,22 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/server/info": {
+      "get": {
+        "operationId": "getServerInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ServerInfo"
+            }
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -7073,6 +7142,35 @@ func init() {
     },
     "MoneyReport": {
       "type": "object",
+      "properties": {
+        "banknotes": {
+          "type": "integer"
+        },
+        "bonuses": {
+          "type": "integer"
+        },
+        "carsTotal": {
+          "type": "integer"
+        },
+        "coins": {
+          "type": "integer"
+        },
+        "electronical": {
+          "type": "integer"
+        },
+        "qrMoney": {
+          "type": "integer"
+        },
+        "service": {
+          "type": "integer"
+        },
+        "sessionId": {
+          "type": "string"
+        }
+      }
+    },
+    "MoneyReportCreation": {
+      "type": "object",
       "required": [
         "hash"
       ],
@@ -7223,6 +7321,14 @@ func init() {
         },
         "totalTimeOn": {
           "type": "integer"
+        }
+      }
+    },
+    "ServerInfo": {
+      "type": "object",
+      "properties": {
+        "bonusServiceURL": {
+          "type": "string"
         }
       }
     },

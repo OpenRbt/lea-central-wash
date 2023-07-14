@@ -104,6 +104,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		GetPingHandler: GetPingHandlerFunc(func(params GetPingParams) GetPingResponder {
 			return GetPingNotImplemented()
 		}),
+		GetServerInfoHandler: GetServerInfoHandlerFunc(func(params GetServerInfoParams) GetServerInfoResponder {
+			return GetServerInfoNotImplemented()
+		}),
 		GetStationConfigVarBoolHandler: GetStationConfigVarBoolHandlerFunc(func(params GetStationConfigVarBoolParams, principal *storageapi.Profile) GetStationConfigVarBoolResponder {
 			return GetStationConfigVarBoolNotImplemented()
 		}),
@@ -356,6 +359,8 @@ type StorageAPI struct {
 	GetConfigVarStringHandler GetConfigVarStringHandler
 	// GetPingHandler sets the operation handler for the get ping operation
 	GetPingHandler GetPingHandler
+	// GetServerInfoHandler sets the operation handler for the get server info operation
+	GetServerInfoHandler GetServerInfoHandler
 	// GetStationConfigVarBoolHandler sets the operation handler for the get station config var bool operation
 	GetStationConfigVarBoolHandler GetStationConfigVarBoolHandler
 	// GetStationConfigVarIntHandler sets the operation handler for the get station config var int operation
@@ -604,6 +609,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.GetPingHandler == nil {
 		unregistered = append(unregistered, "GetPingHandler")
+	}
+	if o.GetServerInfoHandler == nil {
+		unregistered = append(unregistered, "GetServerInfoHandler")
 	}
 	if o.GetStationConfigVarBoolHandler == nil {
 		unregistered = append(unregistered, "GetStationConfigVarBoolHandler")
@@ -946,6 +954,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/ping"] = NewGetPing(o.context, o.GetPingHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/server/info"] = NewGetServerInfo(o.context, o.GetServerInfoHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

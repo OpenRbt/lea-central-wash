@@ -54,10 +54,12 @@ func NewSetProgramParamsWithHTTPClient(client *http.Client) *SetProgramParams {
 	}
 }
 
-/* SetProgramParams contains all the parameters to send to the API endpoint
-   for the set program operation.
+/*
+SetProgramParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the set program operation.
+
+	Typically these are written to a http.Request.
 */
 type SetProgramParams struct {
 

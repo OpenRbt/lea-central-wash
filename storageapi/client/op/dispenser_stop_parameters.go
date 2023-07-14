@@ -52,10 +52,12 @@ func NewDispenserStopParamsWithHTTPClient(client *http.Client) *DispenserStopPar
 	}
 }
 
-/* DispenserStopParams contains all the parameters to send to the API endpoint
-   for the dispenser stop operation.
+/*
+DispenserStopParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the dispenser stop operation.
+
+	Typically these are written to a http.Request.
 */
 type DispenserStopParams struct {
 

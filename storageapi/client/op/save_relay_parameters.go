@@ -54,10 +54,12 @@ func NewSaveRelayParamsWithHTTPClient(client *http.Client) *SaveRelayParams {
 	}
 }
 
-/* SaveRelayParams contains all the parameters to send to the API endpoint
-   for the save relay operation.
+/*
+SaveRelayParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the save relay operation.
+
+	Typically these are written to a http.Request.
 */
 type SaveRelayParams struct {
 

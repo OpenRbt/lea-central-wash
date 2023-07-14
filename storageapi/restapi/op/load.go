@@ -38,10 +38,10 @@ func NewLoad(ctx *middleware.Context, handler LoadHandler) *Load {
 	return &Load{Context: ctx, Handler: handler}
 }
 
-/* Load swagger:route POST /load load
+/*
+	Load swagger:route POST /load load
 
 Load load API
-
 */
 type Load struct {
 	Context *middleware.Context

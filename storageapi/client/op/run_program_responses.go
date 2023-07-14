@@ -57,7 +57,8 @@ func NewRunProgramNoContent() *RunProgramNoContent {
 	return &RunProgramNoContent{}
 }
 
-/* RunProgramNoContent describes a response with status code 204, with default header values.
+/*
+RunProgramNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -112,7 +113,8 @@ func NewRunProgramNotFound() *RunProgramNotFound {
 	return &RunProgramNotFound{}
 }
 
-/* RunProgramNotFound describes a response with status code 404, with default header values.
+/*
+RunProgramNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -177,7 +179,8 @@ func NewRunProgramInternalServerError() *RunProgramInternalServerError {
 	return &RunProgramInternalServerError{}
 }
 
-/* RunProgramInternalServerError describes a response with status code 500, with default header values.
+/*
+RunProgramInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -227,7 +230,8 @@ func (o *RunProgramInternalServerError) readResponse(response runtime.ClientResp
 	return nil
 }
 
-/*RunProgramBody ArgRunProgram
+/*
+RunProgramBody ArgRunProgram
 swagger:model RunProgramBody
 */
 type RunProgramBody struct {

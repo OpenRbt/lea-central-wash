@@ -55,7 +55,8 @@ func NewSetCardReaderConfigNoContent() *SetCardReaderConfigNoContent {
 	return &SetCardReaderConfigNoContent{}
 }
 
-/* SetCardReaderConfigNoContent describes a response with status code 204, with default header values.
+/*
+SetCardReaderConfigNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -110,7 +111,8 @@ func NewSetCardReaderConfigNotFound() *SetCardReaderConfigNotFound {
 	return &SetCardReaderConfigNotFound{}
 }
 
-/* SetCardReaderConfigNotFound describes a response with status code 404, with default header values.
+/*
+SetCardReaderConfigNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -165,7 +167,8 @@ func NewSetCardReaderConfigUnprocessableEntity() *SetCardReaderConfigUnprocessab
 	return &SetCardReaderConfigUnprocessableEntity{}
 }
 
-/* SetCardReaderConfigUnprocessableEntity describes a response with status code 422, with default header values.
+/*
+SetCardReaderConfigUnprocessableEntity describes a response with status code 422, with default header values.
 
 validation error
 */
@@ -230,7 +233,8 @@ func NewSetCardReaderConfigInternalServerError() *SetCardReaderConfigInternalSer
 	return &SetCardReaderConfigInternalServerError{}
 }
 
-/* SetCardReaderConfigInternalServerError describes a response with status code 500, with default header values.
+/*
+SetCardReaderConfigInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

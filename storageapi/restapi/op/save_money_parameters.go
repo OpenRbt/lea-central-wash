@@ -38,7 +38,7 @@ type SaveMoneyParams struct {
 	  Required: true
 	  In: body
 	*/
-	Args *model.MoneyReport
+	Args *model.MoneyReportCreation
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -52,7 +52,7 @@ func (o *SaveMoneyParams) BindRequest(r *http.Request, route *middleware.Matched
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body model.MoneyReport
+		var body model.MoneyReportCreation
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
 				res = append(res, errors.Required("args", "body", ""))

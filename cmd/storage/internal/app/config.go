@@ -8,7 +8,8 @@ import (
 
 type (
 	AppConfig struct {
-		TimeZone ConfigInt
+		TimeZone        ConfigInt
+		BonusServiceURL string
 	}
 )
 
@@ -22,7 +23,8 @@ func (a *app) loadConfig() error {
 		return err
 	}
 	cfg := AppConfig{
-		TimeZone: *timezone,
+		TimeZone:        *timezone,
+		BonusServiceURL: def.OpenwashingURL,
 	}
 	a.cfgMutex.Lock()
 	defer a.cfgMutex.Unlock()

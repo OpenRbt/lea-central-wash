@@ -48,7 +48,8 @@ func NewSaveRelayNoContent() *SaveRelayNoContent {
 	return &SaveRelayNoContent{}
 }
 
-/* SaveRelayNoContent describes a response with status code 204, with default header values.
+/*
+SaveRelayNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -103,7 +104,8 @@ func NewSaveRelayNotFound() *SaveRelayNotFound {
 	return &SaveRelayNotFound{}
 }
 
-/* SaveRelayNotFound describes a response with status code 404, with default header values.
+/*
+SaveRelayNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -158,7 +160,8 @@ func NewSaveRelayInternalServerError() *SaveRelayInternalServerError {
 	return &SaveRelayInternalServerError{}
 }
 
-/* SaveRelayInternalServerError describes a response with status code 500, with default header values.
+/*
+SaveRelayInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

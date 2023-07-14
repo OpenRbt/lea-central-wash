@@ -163,6 +163,7 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.CreateSessionHandler = op.CreateSessionHandlerFunc(svc.createSession)
 	api.EndSessionHandler = op.EndSessionHandlerFunc(svc.endSession)
 	api.SetBonusesHandler = op.SetBonusesHandlerFunc(svc.setBonuses)
+	api.GetServerInfoHandler = op.GetServerInfoHandlerFunc(svc.getServerInfo)
 
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host

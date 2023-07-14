@@ -54,7 +54,8 @@ func NewOpenStationNoContent() *OpenStationNoContent {
 	return &OpenStationNoContent{}
 }
 
-/* OpenStationNoContent describes a response with status code 204, with default header values.
+/*
+OpenStationNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -109,7 +110,8 @@ func NewOpenStationNotFound() *OpenStationNotFound {
 	return &OpenStationNotFound{}
 }
 
-/* OpenStationNotFound describes a response with status code 404, with default header values.
+/*
+OpenStationNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -164,7 +166,8 @@ func NewOpenStationInternalServerError() *OpenStationInternalServerError {
 	return &OpenStationInternalServerError{}
 }
 
-/* OpenStationInternalServerError describes a response with status code 500, with default header values.
+/*
+OpenStationInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -214,7 +217,8 @@ func (o *OpenStationInternalServerError) readResponse(response runtime.ClientRes
 	return nil
 }
 
-/*OpenStationBody ArgOpenStation
+/*
+OpenStationBody ArgOpenStation
 swagger:model OpenStationBody
 */
 type OpenStationBody struct {

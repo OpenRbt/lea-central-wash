@@ -36,10 +36,10 @@ func NewEndSession(ctx *middleware.Context, handler EndSessionHandler) *EndSessi
 	return &EndSession{Context: ctx, Handler: handler}
 }
 
-/* EndSession swagger:route POST /end-session endSession
+/*
+	EndSession swagger:route POST /end-session endSession
 
 EndSession end session API
-
 */
 type EndSession struct {
 	Context *middleware.Context

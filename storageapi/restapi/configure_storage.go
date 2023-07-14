@@ -150,6 +150,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.GetPingNotImplemented()
 		})
 	}
+	if api.GetServerInfoHandler == nil {
+		api.GetServerInfoHandler = op.GetServerInfoHandlerFunc(func(params op.GetServerInfoParams) op.GetServerInfoResponder {
+			return op.GetServerInfoNotImplemented()
+		})
+	}
 	if api.GetStationConfigVarBoolHandler == nil {
 		api.GetStationConfigVarBoolHandler = op.GetStationConfigVarBoolHandlerFunc(func(params op.GetStationConfigVarBoolParams, principal *storageapi.Profile) op.GetStationConfigVarBoolResponder {
 			return op.GetStationConfigVarBoolNotImplemented()

@@ -50,7 +50,8 @@ func NewStationButtonOK() *StationButtonOK {
 	return &StationButtonOK{}
 }
 
-/* StationButtonOK describes a response with status code 200, with default header values.
+/*
+StationButtonOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -117,7 +118,8 @@ func NewStationButtonInternalServerError() *StationButtonInternalServerError {
 	return &StationButtonInternalServerError{}
 }
 
-/* StationButtonInternalServerError describes a response with status code 500, with default header values.
+/*
+StationButtonInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -167,7 +169,8 @@ func (o *StationButtonInternalServerError) readResponse(response runtime.ClientR
 	return nil
 }
 
-/*StationButtonBody ArgStationButton
+/*
+StationButtonBody ArgStationButton
 swagger:model StationButtonBody
 */
 type StationButtonBody struct {
@@ -248,7 +251,8 @@ func (o *StationButtonBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*StationButtonOKBody ResponseStationButton
+/*
+StationButtonOKBody ResponseStationButton
 swagger:model StationButtonOKBody
 */
 type StationButtonOKBody struct {
@@ -372,7 +376,8 @@ func (o *StationButtonOKBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*StationButtonOKBodyButtonsItems0 station button o k body buttons items0
+/*
+StationButtonOKBodyButtonsItems0 station button o k body buttons items0
 swagger:model StationButtonOKBodyButtonsItems0
 */
 type StationButtonOKBodyButtonsItems0 struct {

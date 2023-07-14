@@ -17,7 +17,8 @@ import (
 // StationStatDatesOKCode is the HTTP code returned for type StationStatDatesOK
 const StationStatDatesOKCode int = 200
 
-/*StationStatDatesOK OK
+/*
+StationStatDatesOK OK
 
 swagger:response stationStatDatesOK
 */
@@ -66,7 +67,8 @@ func (o *StationStatDatesOK) StationStatDatesResponder() {}
 // StationStatDatesUnauthorizedCode is the HTTP code returned for type StationStatDatesUnauthorized
 const StationStatDatesUnauthorizedCode int = 401
 
-/*StationStatDatesUnauthorized PIN is missing or invalid
+/*
+StationStatDatesUnauthorized PIN is missing or invalid
 
 swagger:response stationStatDatesUnauthorized
 */
@@ -92,7 +94,8 @@ func (o *StationStatDatesUnauthorized) StationStatDatesResponder() {}
 // StationStatDatesForbiddenCode is the HTTP code returned for type StationStatDatesForbidden
 const StationStatDatesForbiddenCode int = 403
 
-/*StationStatDatesForbidden Access forbiddenn
+/*
+StationStatDatesForbidden Access forbiddenn
 
 swagger:response stationStatDatesForbidden
 */
@@ -118,7 +121,8 @@ func (o *StationStatDatesForbidden) StationStatDatesResponder() {}
 // StationStatDatesInternalServerErrorCode is the HTTP code returned for type StationStatDatesInternalServerError
 const StationStatDatesInternalServerErrorCode int = 500
 
-/*StationStatDatesInternalServerError internal error
+/*
+StationStatDatesInternalServerError internal error
 
 swagger:response stationStatDatesInternalServerError
 */

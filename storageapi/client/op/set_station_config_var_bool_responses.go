@@ -48,7 +48,8 @@ func NewSetStationConfigVarBoolNoContent() *SetStationConfigVarBoolNoContent {
 	return &SetStationConfigVarBoolNoContent{}
 }
 
-/* SetStationConfigVarBoolNoContent describes a response with status code 204, with default header values.
+/*
+SetStationConfigVarBoolNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -103,7 +104,8 @@ func NewSetStationConfigVarBoolNotFound() *SetStationConfigVarBoolNotFound {
 	return &SetStationConfigVarBoolNotFound{}
 }
 
-/* SetStationConfigVarBoolNotFound describes a response with status code 404, with default header values.
+/*
+SetStationConfigVarBoolNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -158,7 +160,8 @@ func NewSetStationConfigVarBoolInternalServerError() *SetStationConfigVarBoolInt
 	return &SetStationConfigVarBoolInternalServerError{}
 }
 
-/* SetStationConfigVarBoolInternalServerError describes a response with status code 500, with default header values.
+/*
+SetStationConfigVarBoolInternalServerError describes a response with status code 500, with default header values.
 
 Internal error
 */

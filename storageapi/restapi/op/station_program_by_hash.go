@@ -38,10 +38,10 @@ func NewStationProgramByHash(ctx *middleware.Context, handler StationProgramByHa
 	return &StationProgramByHash{Context: ctx, Handler: handler}
 }
 
-/* StationProgramByHash swagger:route POST /station-program-by-hash stationProgramByHash
+/*
+	StationProgramByHash swagger:route POST /station-program-by-hash stationProgramByHash
 
 StationProgramByHash station program by hash API
-
 */
 type StationProgramByHash struct {
 	Context *middleware.Context

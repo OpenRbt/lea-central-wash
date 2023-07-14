@@ -57,7 +57,8 @@ func NewGetStationWashConfigVarStringOK() *GetStationWashConfigVarStringOK {
 	return &GetStationWashConfigVarStringOK{}
 }
 
-/* GetStationWashConfigVarStringOK describes a response with status code 200, with default header values.
+/*
+GetStationWashConfigVarStringOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -124,7 +125,8 @@ func NewGetStationWashConfigVarStringNotFound() *GetStationWashConfigVarStringNo
 	return &GetStationWashConfigVarStringNotFound{}
 }
 
-/* GetStationWashConfigVarStringNotFound describes a response with status code 404, with default header values.
+/*
+GetStationWashConfigVarStringNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -179,7 +181,8 @@ func NewGetStationWashConfigVarStringInternalServerError() *GetStationWashConfig
 	return &GetStationWashConfigVarStringInternalServerError{}
 }
 
-/* GetStationWashConfigVarStringInternalServerError describes a response with status code 500, with default header values.
+/*
+GetStationWashConfigVarStringInternalServerError describes a response with status code 500, with default header values.
 
 Internal error
 */
@@ -229,7 +232,8 @@ func (o *GetStationWashConfigVarStringInternalServerError) readResponse(response
 	return nil
 }
 
-/*GetStationWashConfigVarStringBody ArgGetStationConfigVar
+/*
+GetStationWashConfigVarStringBody ArgGetStationConfigVar
 swagger:model GetStationWashConfigVarStringBody
 */
 type GetStationWashConfigVarStringBody struct {

@@ -52,10 +52,12 @@ func NewPressButtonParamsWithHTTPClient(client *http.Client) *PressButtonParams 
 	}
 }
 
-/* PressButtonParams contains all the parameters to send to the API endpoint
-   for the press button operation.
+/*
+PressButtonParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the press button operation.
+
+	Typically these are written to a http.Request.
 */
 type PressButtonParams struct {
 

@@ -15,7 +15,8 @@ import (
 // CreateUserCreatedCode is the HTTP code returned for type CreateUserCreated
 const CreateUserCreatedCode int = 201
 
-/*CreateUserCreated OK
+/*
+CreateUserCreated OK
 
 swagger:response createUserCreated
 */
@@ -61,7 +62,8 @@ func (o *CreateUserCreated) CreateUserResponder() {}
 // CreateUserUnauthorizedCode is the HTTP code returned for type CreateUserUnauthorized
 const CreateUserUnauthorizedCode int = 401
 
-/*CreateUserUnauthorized PIN is missing or invalid
+/*
+CreateUserUnauthorized PIN is missing or invalid
 
 swagger:response createUserUnauthorized
 */
@@ -87,7 +89,8 @@ func (o *CreateUserUnauthorized) CreateUserResponder() {}
 // CreateUserForbiddenCode is the HTTP code returned for type CreateUserForbidden
 const CreateUserForbiddenCode int = 403
 
-/*CreateUserForbidden Access forbidden
+/*
+CreateUserForbidden Access forbidden
 
 swagger:response createUserForbidden
 */
@@ -113,7 +116,8 @@ func (o *CreateUserForbidden) CreateUserResponder() {}
 // CreateUserConflictCode is the HTTP code returned for type CreateUserConflict
 const CreateUserConflictCode int = 409
 
-/*CreateUserConflict Conflict
+/*
+CreateUserConflict Conflict
 
 swagger:response createUserConflict
 */
@@ -159,7 +163,8 @@ func (o *CreateUserConflict) CreateUserResponder() {}
 // CreateUserInternalServerErrorCode is the HTTP code returned for type CreateUserInternalServerError
 const CreateUserInternalServerErrorCode int = 500
 
-/*CreateUserInternalServerError internal error
+/*
+CreateUserInternalServerError internal error
 
 swagger:response createUserInternalServerError
 */

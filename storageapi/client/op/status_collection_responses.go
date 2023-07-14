@@ -51,7 +51,8 @@ func NewStatusCollectionOK() *StatusCollectionOK {
 	return &StatusCollectionOK{}
 }
 
-/* StatusCollectionOK describes a response with status code 200, with default header values.
+/*
+StatusCollectionOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -118,7 +119,8 @@ func NewStatusCollectionUnauthorized() *StatusCollectionUnauthorized {
 	return &StatusCollectionUnauthorized{}
 }
 
-/* StatusCollectionUnauthorized describes a response with status code 401, with default header values.
+/*
+StatusCollectionUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -173,7 +175,8 @@ func NewStatusCollectionInternalServerError() *StatusCollectionInternalServerErr
 	return &StatusCollectionInternalServerError{}
 }
 
-/* StatusCollectionInternalServerError describes a response with status code 500, with default header values.
+/*
+StatusCollectionInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
