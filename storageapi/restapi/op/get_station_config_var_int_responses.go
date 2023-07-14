@@ -17,7 +17,8 @@ import (
 // GetStationConfigVarIntOKCode is the HTTP code returned for type GetStationConfigVarIntOK
 const GetStationConfigVarIntOKCode int = 200
 
-/*GetStationConfigVarIntOK OK
+/*
+GetStationConfigVarIntOK OK
 
 swagger:response getStationConfigVarIntOK
 */
@@ -63,7 +64,8 @@ func (o *GetStationConfigVarIntOK) GetStationConfigVarIntResponder() {}
 // GetStationConfigVarIntNotFoundCode is the HTTP code returned for type GetStationConfigVarIntNotFound
 const GetStationConfigVarIntNotFoundCode int = 404
 
-/*GetStationConfigVarIntNotFound Not found
+/*
+GetStationConfigVarIntNotFound Not found
 
 swagger:response getStationConfigVarIntNotFound
 */
@@ -89,7 +91,8 @@ func (o *GetStationConfigVarIntNotFound) GetStationConfigVarIntResponder() {}
 // GetStationConfigVarIntInternalServerErrorCode is the HTTP code returned for type GetStationConfigVarIntInternalServerError
 const GetStationConfigVarIntInternalServerErrorCode int = 500
 
-/*GetStationConfigVarIntInternalServerError Internal error
+/*
+GetStationConfigVarIntInternalServerError Internal error
 
 swagger:response getStationConfigVarIntInternalServerError
 */

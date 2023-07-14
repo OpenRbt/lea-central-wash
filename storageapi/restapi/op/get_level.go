@@ -38,10 +38,10 @@ func NewGetLevel(ctx *middleware.Context, handler GetLevelHandler) *GetLevel {
 	return &GetLevel{Context: ctx, Handler: handler}
 }
 
-/* GetLevel swagger:route POST /getLevel getLevel
+/*
+	GetLevel swagger:route POST /getLevel getLevel
 
 GetLevel get level API
-
 */
 type GetLevel struct {
 	Context *middleware.Context

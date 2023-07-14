@@ -17,7 +17,8 @@ import (
 // CreateSessionOKCode is the HTTP code returned for type CreateSessionOK
 const CreateSessionOKCode int = 200
 
-/*CreateSessionOK OK
+/*
+CreateSessionOK OK
 
 swagger:response createSessionOK
 */
@@ -63,7 +64,8 @@ func (o *CreateSessionOK) CreateSessionResponder() {}
 // CreateSessionNotFoundCode is the HTTP code returned for type CreateSessionNotFound
 const CreateSessionNotFoundCode int = 404
 
-/*CreateSessionNotFound hash not found
+/*
+CreateSessionNotFound hash not found
 
 swagger:response createSessionNotFound
 */
@@ -89,7 +91,8 @@ func (o *CreateSessionNotFound) CreateSessionResponder() {}
 // CreateSessionInternalServerErrorCode is the HTTP code returned for type CreateSessionInternalServerError
 const CreateSessionInternalServerErrorCode int = 500
 
-/*CreateSessionInternalServerError Internal error
+/*
+CreateSessionInternalServerError Internal error
 
 swagger:response createSessionInternalServerError
 */

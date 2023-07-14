@@ -15,7 +15,8 @@ import (
 // GetLevelOKCode is the HTTP code returned for type GetLevelOK
 const GetLevelOKCode int = 200
 
-/*GetLevelOK OK
+/*
+GetLevelOK OK
 
 swagger:response getLevelOK
 */
@@ -61,7 +62,8 @@ func (o *GetLevelOK) GetLevelResponder() {}
 // GetLevelNoContentCode is the HTTP code returned for type GetLevelNoContent
 const GetLevelNoContentCode int = 204
 
-/*GetLevelNoContent OK
+/*
+GetLevelNoContent OK
 
 swagger:response getLevelNoContent
 */
@@ -87,7 +89,8 @@ func (o *GetLevelNoContent) GetLevelResponder() {}
 // GetLevelNotFoundCode is the HTTP code returned for type GetLevelNotFound
 const GetLevelNotFoundCode int = 404
 
-/*GetLevelNotFound not found
+/*
+GetLevelNotFound not found
 
 swagger:response getLevelNotFound
 */
@@ -131,7 +134,8 @@ func (o *GetLevelNotFound) GetLevelResponder() {}
 // GetLevelInternalServerErrorCode is the HTTP code returned for type GetLevelInternalServerError
 const GetLevelInternalServerErrorCode int = 500
 
-/*GetLevelInternalServerError internal error
+/*
+GetLevelInternalServerError internal error
 
 swagger:response getLevelInternalServerError
 */

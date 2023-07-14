@@ -52,10 +52,12 @@ func NewGetStationWashConfigVarBoolParamsWithHTTPClient(client *http.Client) *Ge
 	}
 }
 
-/* GetStationWashConfigVarBoolParams contains all the parameters to send to the API endpoint
-   for the get station wash config var bool operation.
+/*
+GetStationWashConfigVarBoolParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get station wash config var bool operation.
+
+	Typically these are written to a http.Request.
 */
 type GetStationWashConfigVarBoolParams struct {
 

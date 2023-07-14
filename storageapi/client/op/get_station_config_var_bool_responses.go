@@ -57,7 +57,8 @@ func NewGetStationConfigVarBoolOK() *GetStationConfigVarBoolOK {
 	return &GetStationConfigVarBoolOK{}
 }
 
-/* GetStationConfigVarBoolOK describes a response with status code 200, with default header values.
+/*
+GetStationConfigVarBoolOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -124,7 +125,8 @@ func NewGetStationConfigVarBoolNotFound() *GetStationConfigVarBoolNotFound {
 	return &GetStationConfigVarBoolNotFound{}
 }
 
-/* GetStationConfigVarBoolNotFound describes a response with status code 404, with default header values.
+/*
+GetStationConfigVarBoolNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -179,7 +181,8 @@ func NewGetStationConfigVarBoolInternalServerError() *GetStationConfigVarBoolInt
 	return &GetStationConfigVarBoolInternalServerError{}
 }
 
-/* GetStationConfigVarBoolInternalServerError describes a response with status code 500, with default header values.
+/*
+GetStationConfigVarBoolInternalServerError describes a response with status code 500, with default header values.
 
 Internal error
 */
@@ -229,7 +232,8 @@ func (o *GetStationConfigVarBoolInternalServerError) readResponse(response runti
 	return nil
 }
 
-/*GetStationConfigVarBoolBody ArgGetStationConfigVar
+/*
+GetStationConfigVarBoolBody ArgGetStationConfigVar
 swagger:model GetStationConfigVarBoolBody
 */
 type GetStationConfigVarBoolBody struct {

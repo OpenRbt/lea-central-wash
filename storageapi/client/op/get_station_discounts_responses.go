@@ -55,7 +55,8 @@ func NewGetStationDiscountsOK() *GetStationDiscountsOK {
 	return &GetStationDiscountsOK{}
 }
 
-/* GetStationDiscountsOK describes a response with status code 200, with default header values.
+/*
+GetStationDiscountsOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -120,7 +121,8 @@ func NewGetStationDiscountsNotFound() *GetStationDiscountsNotFound {
 	return &GetStationDiscountsNotFound{}
 }
 
-/* GetStationDiscountsNotFound describes a response with status code 404, with default header values.
+/*
+GetStationDiscountsNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -175,7 +177,8 @@ func NewGetStationDiscountsInternalServerError() *GetStationDiscountsInternalSer
 	return &GetStationDiscountsInternalServerError{}
 }
 
-/* GetStationDiscountsInternalServerError describes a response with status code 500, with default header values.
+/*
+GetStationDiscountsInternalServerError describes a response with status code 500, with default header values.
 
 Internal error
 */
@@ -225,7 +228,8 @@ func (o *GetStationDiscountsInternalServerError) readResponse(response runtime.C
 	return nil
 }
 
-/*GetStationDiscountsBody ArgGetStationDiscounts
+/*
+GetStationDiscountsBody ArgGetStationDiscounts
 swagger:model GetStationDiscountsBody
 */
 type GetStationDiscountsBody struct {

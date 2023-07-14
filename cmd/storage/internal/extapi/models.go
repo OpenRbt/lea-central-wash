@@ -539,3 +539,9 @@ func apiCreateSession(sessionID string, QR string) *model.Session {
 		QR: QR,
 	}
 }
+
+func apiGetServerInfo(bonusServiceURL string) *model.ServerInfo {
+	return &model.ServerInfo{
+		BonusServiceURL: bonusServiceURL,
+	}
+}

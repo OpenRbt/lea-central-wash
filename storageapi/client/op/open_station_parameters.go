@@ -52,10 +52,12 @@ func NewOpenStationParamsWithHTTPClient(client *http.Client) *OpenStationParams 
 	}
 }
 
-/* OpenStationParams contains all the parameters to send to the API endpoint
-   for the open station operation.
+/*
+OpenStationParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the open station operation.
+
+	Typically these are written to a http.Request.
 */
 type OpenStationParams struct {
 

@@ -37,10 +37,10 @@ func NewSetStationButton(ctx *middleware.Context, handler SetStationButtonHandle
 	return &SetStationButton{Context: ctx, Handler: handler}
 }
 
-/* SetStationButton swagger:route POST /set-station-button setStationButton
+/*
+	SetStationButton swagger:route POST /set-station-button setStationButton
 
 SetStationButton set station button API
-
 */
 type SetStationButton struct {
 	Context *middleware.Context

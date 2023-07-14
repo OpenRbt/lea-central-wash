@@ -63,7 +63,8 @@ func NewGetLevelOK() *GetLevelOK {
 	return &GetLevelOK{}
 }
 
-/* GetLevelOK describes a response with status code 200, with default header values.
+/*
+GetLevelOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -130,7 +131,8 @@ func NewGetLevelNoContent() *GetLevelNoContent {
 	return &GetLevelNoContent{}
 }
 
-/* GetLevelNoContent describes a response with status code 204, with default header values.
+/*
+GetLevelNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -185,7 +187,8 @@ func NewGetLevelNotFound() *GetLevelNotFound {
 	return &GetLevelNotFound{}
 }
 
-/* GetLevelNotFound describes a response with status code 404, with default header values.
+/*
+GetLevelNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -250,7 +253,8 @@ func NewGetLevelInternalServerError() *GetLevelInternalServerError {
 	return &GetLevelInternalServerError{}
 }
 
-/* GetLevelInternalServerError describes a response with status code 500, with default header values.
+/*
+GetLevelInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -300,7 +304,8 @@ func (o *GetLevelInternalServerError) readResponse(response runtime.ClientRespon
 	return nil
 }
 
-/*GetLevelBody ArgGetLevel
+/*
+GetLevelBody ArgGetLevel
 swagger:model GetLevelBody
 */
 type GetLevelBody struct {
@@ -416,7 +421,8 @@ func (o *GetLevelBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*GetLevelOKBody ResponseGetLevel
+/*
+GetLevelOKBody ResponseGetLevel
 swagger:model GetLevelOKBody
 */
 type GetLevelOKBody struct {

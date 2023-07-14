@@ -60,7 +60,8 @@ func NewSetBonusesNoContent() *SetBonusesNoContent {
 	return &SetBonusesNoContent{}
 }
 
-/* SetBonusesNoContent describes a response with status code 204, with default header values.
+/*
+SetBonusesNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -115,7 +116,8 @@ func NewSetBonusesUnauthorized() *SetBonusesUnauthorized {
 	return &SetBonusesUnauthorized{}
 }
 
-/* SetBonusesUnauthorized describes a response with status code 401, with default header values.
+/*
+SetBonusesUnauthorized describes a response with status code 401, with default header values.
 
 user not authorized
 */
@@ -170,7 +172,8 @@ func NewSetBonusesNotFound() *SetBonusesNotFound {
 	return &SetBonusesNotFound{}
 }
 
-/* SetBonusesNotFound describes a response with status code 404, with default header values.
+/*
+SetBonusesNotFound describes a response with status code 404, with default header values.
 
 hash not found
 */
@@ -225,7 +228,8 @@ func NewSetBonusesInternalServerError() *SetBonusesInternalServerError {
 	return &SetBonusesInternalServerError{}
 }
 
-/* SetBonusesInternalServerError describes a response with status code 500, with default header values.
+/*
+SetBonusesInternalServerError describes a response with status code 500, with default header values.
 
 Internal error
 */
@@ -275,7 +279,8 @@ func (o *SetBonusesInternalServerError) readResponse(response runtime.ClientResp
 	return nil
 }
 
-/*SetBonusesBody ArgSetBonuses
+/*
+SetBonusesBody ArgSetBonuses
 swagger:model SetBonusesBody
 */
 type SetBonusesBody struct {

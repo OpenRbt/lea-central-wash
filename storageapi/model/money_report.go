@@ -10,10 +10,8 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // MoneyReport money report
@@ -35,10 +33,6 @@ type MoneyReport struct {
 
 	// electronical
 	Electronical int64 `json:"electronical,omitempty"`
-
-	// hash
-	// Required: true
-	Hash *Hash `json:"hash"`
 
 	// qr money
 	QrMoney int64 `json:"qrMoney,omitempty"`
@@ -69,10 +63,6 @@ func (m *MoneyReport) UnmarshalJSON(data []byte) error {
 		// electronical
 		Electronical int64 `json:"electronical,omitempty"`
 
-		// hash
-		// Required: true
-		Hash *Hash `json:"hash"`
-
 		// qr money
 		QrMoney int64 `json:"qrMoney,omitempty"`
 
@@ -94,7 +84,6 @@ func (m *MoneyReport) UnmarshalJSON(data []byte) error {
 	m.CarsTotal = props.CarsTotal
 	m.Coins = props.Coins
 	m.Electronical = props.Electronical
-	m.Hash = props.Hash
 	m.QrMoney = props.QrMoney
 	m.Service = props.Service
 	m.SessionID = props.SessionID
@@ -103,70 +92,11 @@ func (m *MoneyReport) UnmarshalJSON(data []byte) error {
 
 // Validate validates this money report
 func (m *MoneyReport) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateHash(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
 	return nil
 }
 
-func (m *MoneyReport) validateHash(formats strfmt.Registry) error {
-
-	if err := validate.Required("hash", "body", m.Hash); err != nil {
-		return err
-	}
-
-	if err := validate.Required("hash", "body", m.Hash); err != nil {
-		return err
-	}
-
-	if m.Hash != nil {
-		if err := m.Hash.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("hash")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("hash")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// ContextValidate validate this money report based on the context it is used
+// ContextValidate validates this money report based on context it is used
 func (m *MoneyReport) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateHash(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *MoneyReport) contextValidateHash(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Hash != nil {
-
-		if err := m.Hash.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("hash")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("hash")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 

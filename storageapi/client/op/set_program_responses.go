@@ -42,7 +42,8 @@ func NewSetProgramNoContent() *SetProgramNoContent {
 	return &SetProgramNoContent{}
 }
 
-/* SetProgramNoContent describes a response with status code 204, with default header values.
+/*
+SetProgramNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -97,7 +98,8 @@ func NewSetProgramInternalServerError() *SetProgramInternalServerError {
 	return &SetProgramInternalServerError{}
 }
 
-/* SetProgramInternalServerError describes a response with status code 500, with default header values.
+/*
+SetProgramInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

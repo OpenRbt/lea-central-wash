@@ -213,6 +213,26 @@ definitions:
   
   MoneyReport:
     type: object
+    properties:
+      carsTotal:
+        type: integer
+      coins:
+        type: integer
+      banknotes:
+        type: integer
+      electronical:
+        type: integer
+      service:
+        type: integer
+      bonuses:
+        type: integer
+      sessionId:
+        type: string
+      qrMoney:
+        type: integer 
+
+  MoneyReportCreation:
+    type: object
     required:
       - hash
     properties:
@@ -584,6 +604,12 @@ definitions:
     type: array
     items:
       $ref: '#/definitions/ButtonDiscount'
+
+  ServerInfo:
+    type: object
+    properties:
+      bonusServiceURL: 
+        type: string
 
 consumes:
   - application/json
@@ -1417,7 +1443,7 @@ paths:
           required: true
           in: body
           schema:
-            $ref: '#/definitions/MoneyReport'
+            $ref: '#/definitions/MoneyReportCreation'
       responses:
         204:
           description: OK
@@ -2502,5 +2528,16 @@ paths:
           description: user not authorized
         404:
           description: hash not found
+        500:
+          description: Internal error
+
+  /server/info:
+    get:
+      operationId: "getServerInfo"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ServerInfo'
         500:
           description: Internal error

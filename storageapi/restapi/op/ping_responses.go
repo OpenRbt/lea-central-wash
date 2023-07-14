@@ -15,7 +15,8 @@ import (
 // PingOKCode is the HTTP code returned for type PingOK
 const PingOKCode int = 200
 
-/*PingOK OK
+/*
+PingOK OK
 
 swagger:response pingOK
 */

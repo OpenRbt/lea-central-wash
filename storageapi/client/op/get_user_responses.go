@@ -45,7 +45,8 @@ func NewGetUserOK() *GetUserOK {
 	return &GetUserOK{}
 }
 
-/* GetUserOK describes a response with status code 200, with default header values.
+/*
+GetUserOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -112,7 +113,8 @@ func NewGetUserUnauthorized() *GetUserUnauthorized {
 	return &GetUserUnauthorized{}
 }
 
-/* GetUserUnauthorized describes a response with status code 401, with default header values.
+/*
+GetUserUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */

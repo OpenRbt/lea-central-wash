@@ -15,7 +15,8 @@ import (
 // EndSessionNoContentCode is the HTTP code returned for type EndSessionNoContent
 const EndSessionNoContentCode int = 204
 
-/*EndSessionNoContent OK
+/*
+EndSessionNoContent OK
 
 swagger:response endSessionNoContent
 */
@@ -41,7 +42,8 @@ func (o *EndSessionNoContent) EndSessionResponder() {}
 // EndSessionNotFoundCode is the HTTP code returned for type EndSessionNotFound
 const EndSessionNotFoundCode int = 404
 
-/*EndSessionNotFound hash not found
+/*
+EndSessionNotFound hash not found
 
 swagger:response endSessionNotFound
 */
@@ -67,7 +69,8 @@ func (o *EndSessionNotFound) EndSessionResponder() {}
 // EndSessionInternalServerErrorCode is the HTTP code returned for type EndSessionInternalServerError
 const EndSessionInternalServerErrorCode int = 500
 
-/*EndSessionInternalServerError Internal error
+/*
+EndSessionInternalServerError Internal error
 
 swagger:response endSessionInternalServerError
 */

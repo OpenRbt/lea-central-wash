@@ -15,7 +15,8 @@ import (
 // SetStationConfigVarBoolNoContentCode is the HTTP code returned for type SetStationConfigVarBoolNoContent
 const SetStationConfigVarBoolNoContentCode int = 204
 
-/*SetStationConfigVarBoolNoContent OK
+/*
+SetStationConfigVarBoolNoContent OK
 
 swagger:response setStationConfigVarBoolNoContent
 */
@@ -41,7 +42,8 @@ func (o *SetStationConfigVarBoolNoContent) SetStationConfigVarBoolResponder() {}
 // SetStationConfigVarBoolNotFoundCode is the HTTP code returned for type SetStationConfigVarBoolNotFound
 const SetStationConfigVarBoolNotFoundCode int = 404
 
-/*SetStationConfigVarBoolNotFound Not found
+/*
+SetStationConfigVarBoolNotFound Not found
 
 swagger:response setStationConfigVarBoolNotFound
 */
@@ -67,7 +69,8 @@ func (o *SetStationConfigVarBoolNotFound) SetStationConfigVarBoolResponder() {}
 // SetStationConfigVarBoolInternalServerErrorCode is the HTTP code returned for type SetStationConfigVarBoolInternalServerError
 const SetStationConfigVarBoolInternalServerErrorCode int = 500
 
-/*SetStationConfigVarBoolInternalServerError Internal error
+/*
+SetStationConfigVarBoolInternalServerError Internal error
 
 swagger:response setStationConfigVarBoolInternalServerError
 */

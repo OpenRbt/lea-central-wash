@@ -36,10 +36,10 @@ func NewSetBonuses(ctx *middleware.Context, handler SetBonusesHandler) *SetBonus
 	return &SetBonuses{Context: ctx, Handler: handler}
 }
 
-/* SetBonuses swagger:route POST /set-bonuses setBonuses
+/*
+	SetBonuses swagger:route POST /set-bonuses setBonuses
 
 SetBonuses set bonuses API
-
 */
 type SetBonuses struct {
 	Context *middleware.Context

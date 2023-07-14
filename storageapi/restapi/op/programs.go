@@ -36,10 +36,10 @@ func NewPrograms(ctx *middleware.Context, handler ProgramsHandler) *Programs {
 	return &Programs{Context: ctx, Handler: handler}
 }
 
-/* Programs swagger:route POST /programs programs
+/*
+	Programs swagger:route POST /programs programs
 
 Programs programs API
-
 */
 type Programs struct {
 	Context *middleware.Context

@@ -57,7 +57,8 @@ func NewMeasureVolumeMillilitersNoContent() *MeasureVolumeMillilitersNoContent {
 	return &MeasureVolumeMillilitersNoContent{}
 }
 
-/* MeasureVolumeMillilitersNoContent describes a response with status code 204, with default header values.
+/*
+MeasureVolumeMillilitersNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -112,7 +113,8 @@ func NewMeasureVolumeMillilitersNotFound() *MeasureVolumeMillilitersNotFound {
 	return &MeasureVolumeMillilitersNotFound{}
 }
 
-/* MeasureVolumeMillilitersNotFound describes a response with status code 404, with default header values.
+/*
+MeasureVolumeMillilitersNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -177,7 +179,8 @@ func NewMeasureVolumeMillilitersInternalServerError() *MeasureVolumeMillilitersI
 	return &MeasureVolumeMillilitersInternalServerError{}
 }
 
-/* MeasureVolumeMillilitersInternalServerError describes a response with status code 500, with default header values.
+/*
+MeasureVolumeMillilitersInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -227,7 +230,8 @@ func (o *MeasureVolumeMillilitersInternalServerError) readResponse(response runt
 	return nil
 }
 
-/*MeasureVolumeMillilitersBody ArgMeasureVolumeMilliliters
+/*
+MeasureVolumeMillilitersBody ArgMeasureVolumeMilliliters
 swagger:model MeasureVolumeMillilitersBody
 */
 type MeasureVolumeMillilitersBody struct {

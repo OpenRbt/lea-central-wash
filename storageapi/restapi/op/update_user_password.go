@@ -39,10 +39,10 @@ func NewUpdateUserPassword(ctx *middleware.Context, handler UpdateUserPasswordHa
 	return &UpdateUserPassword{Context: ctx, Handler: handler}
 }
 
-/* UpdateUserPassword swagger:route POST /user-password updateUserPassword
+/*
+	UpdateUserPassword swagger:route POST /user-password updateUserPassword
 
 UpdateUserPassword update user password API
-
 */
 type UpdateUserPassword struct {
 	Context *middleware.Context

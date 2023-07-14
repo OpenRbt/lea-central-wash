@@ -15,7 +15,8 @@ import (
 // OpenStationNoContentCode is the HTTP code returned for type OpenStationNoContent
 const OpenStationNoContentCode int = 204
 
-/*OpenStationNoContent OK
+/*
+OpenStationNoContent OK
 
 swagger:response openStationNoContent
 */
@@ -41,7 +42,8 @@ func (o *OpenStationNoContent) OpenStationResponder() {}
 // OpenStationNotFoundCode is the HTTP code returned for type OpenStationNotFound
 const OpenStationNotFoundCode int = 404
 
-/*OpenStationNotFound not found
+/*
+OpenStationNotFound not found
 
 swagger:response openStationNotFound
 */
@@ -67,7 +69,8 @@ func (o *OpenStationNotFound) OpenStationResponder() {}
 // OpenStationInternalServerErrorCode is the HTTP code returned for type OpenStationInternalServerError
 const OpenStationInternalServerErrorCode int = 500
 
-/*OpenStationInternalServerError internal error
+/*
+OpenStationInternalServerError internal error
 
 swagger:response openStationInternalServerError
 */

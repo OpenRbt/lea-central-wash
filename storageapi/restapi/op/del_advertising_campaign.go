@@ -38,10 +38,10 @@ func NewDelAdvertisingCampaign(ctx *middleware.Context, handler DelAdvertisingCa
 	return &DelAdvertisingCampaign{Context: ctx, Handler: handler}
 }
 
-/* DelAdvertisingCampaign swagger:route POST /del-advertising-campaign delAdvertisingCampaign
+/*
+	DelAdvertisingCampaign swagger:route POST /del-advertising-campaign delAdvertisingCampaign
 
 DelAdvertisingCampaign del advertising campaign API
-
 */
 type DelAdvertisingCampaign struct {
 	Context *middleware.Context

@@ -38,10 +38,10 @@ func NewLoadMoney(ctx *middleware.Context, handler LoadMoneyHandler) *LoadMoney 
 	return &LoadMoney{Context: ctx, Handler: handler}
 }
 
-/* LoadMoney swagger:route POST /load-money loadMoney
+/*
+	LoadMoney swagger:route POST /load-money loadMoney
 
 LoadMoney load money API
-
 */
 type LoadMoney struct {
 	Context *middleware.Context

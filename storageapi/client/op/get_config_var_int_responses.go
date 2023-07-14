@@ -55,7 +55,8 @@ func NewGetConfigVarIntOK() *GetConfigVarIntOK {
 	return &GetConfigVarIntOK{}
 }
 
-/* GetConfigVarIntOK describes a response with status code 200, with default header values.
+/*
+GetConfigVarIntOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -122,7 +123,8 @@ func NewGetConfigVarIntNotFound() *GetConfigVarIntNotFound {
 	return &GetConfigVarIntNotFound{}
 }
 
-/* GetConfigVarIntNotFound describes a response with status code 404, with default header values.
+/*
+GetConfigVarIntNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -177,7 +179,8 @@ func NewGetConfigVarIntInternalServerError() *GetConfigVarIntInternalServerError
 	return &GetConfigVarIntInternalServerError{}
 }
 
-/* GetConfigVarIntInternalServerError describes a response with status code 500, with default header values.
+/*
+GetConfigVarIntInternalServerError describes a response with status code 500, with default header values.
 
 Internal error
 */
@@ -227,7 +230,8 @@ func (o *GetConfigVarIntInternalServerError) readResponse(response runtime.Clien
 	return nil
 }
 
-/*GetConfigVarIntBody ArgGetConfigVar
+/*
+GetConfigVarIntBody ArgGetConfigVar
 swagger:model GetConfigVarIntBody
 */
 type GetConfigVarIntBody struct {
