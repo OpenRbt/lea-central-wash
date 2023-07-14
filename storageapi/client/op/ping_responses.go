@@ -45,7 +45,8 @@ func NewPingOK() *PingOK {
 	return &PingOK{}
 }
 
-/* PingOK describes a response with status code 200, with default header values.
+/*
+PingOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -107,7 +108,8 @@ func (o *PingOK) readResponse(response runtime.ClientResponse, consumer runtime.
 	return nil
 }
 
-/*PingBody ArgPing
+/*
+PingBody ArgPing
 swagger:model PingBody
 */
 type PingBody struct {
@@ -237,7 +239,8 @@ func (o *PingBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*PingOKBody ResponsePing
+/*
+PingOKBody ResponsePing
 swagger:model PingOKBody
 */
 type PingOKBody struct {

@@ -48,7 +48,8 @@ func NewSaveMoneyNoContent() *SaveMoneyNoContent {
 	return &SaveMoneyNoContent{}
 }
 
-/* SaveMoneyNoContent describes a response with status code 204, with default header values.
+/*
+SaveMoneyNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -103,7 +104,8 @@ func NewSaveMoneyNotFound() *SaveMoneyNotFound {
 	return &SaveMoneyNotFound{}
 }
 
-/* SaveMoneyNotFound describes a response with status code 404, with default header values.
+/*
+SaveMoneyNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -158,7 +160,8 @@ func NewSaveMoneyInternalServerError() *SaveMoneyInternalServerError {
 	return &SaveMoneyInternalServerError{}
 }
 
-/* SaveMoneyInternalServerError describes a response with status code 500, with default header values.
+/*
+SaveMoneyInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

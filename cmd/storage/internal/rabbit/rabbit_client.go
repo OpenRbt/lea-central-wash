@@ -11,7 +11,7 @@ import (
 )
 
 type Config struct {
-	Url       string
+	URL       string
 	Port      string
 	ServerID  string
 	ServerKey string
@@ -29,7 +29,7 @@ type Service struct {
 func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 	//TODO: add rabbit variables extraction from repo
 
-	connString := fmt.Sprintf("amqps://%s:%s@%s:%s/", cfg.ServerID, cfg.ServerKey, cfg.Url, cfg.Port)
+	connString := fmt.Sprintf("amqps://%s:%s@%s:%s/", cfg.ServerID, cfg.ServerKey, cfg.URL, cfg.Port)
 	rabbitConf := rabbitmq.Config{
 		SASL: []amqp.Authentication{
 			&amqp.PlainAuth{

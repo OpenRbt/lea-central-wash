@@ -51,7 +51,8 @@ func NewKasseOK() *KasseOK {
 	return &KasseOK{}
 }
 
-/* KasseOK describes a response with status code 200, with default header values.
+/*
+KasseOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -118,7 +119,8 @@ func NewKasseNotFound() *KasseNotFound {
 	return &KasseNotFound{}
 }
 
-/* KasseNotFound describes a response with status code 404, with default header values.
+/*
+KasseNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -173,7 +175,8 @@ func NewKasseInternalServerError() *KasseInternalServerError {
 	return &KasseInternalServerError{}
 }
 
-/* KasseInternalServerError describes a response with status code 500, with default header values.
+/*
+KasseInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

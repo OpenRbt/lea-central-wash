@@ -15,7 +15,8 @@ import (
 // SetProgramNoContentCode is the HTTP code returned for type SetProgramNoContent
 const SetProgramNoContentCode int = 204
 
-/*SetProgramNoContent OK
+/*
+SetProgramNoContent OK
 
 swagger:response setProgramNoContent
 */
@@ -41,7 +42,8 @@ func (o *SetProgramNoContent) SetProgramResponder() {}
 // SetProgramInternalServerErrorCode is the HTTP code returned for type SetProgramInternalServerError
 const SetProgramInternalServerErrorCode int = 500
 
-/*SetProgramInternalServerError internal error
+/*
+SetProgramInternalServerError internal error
 
 swagger:response setProgramInternalServerError
 */

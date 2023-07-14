@@ -36,10 +36,10 @@ func NewStationReportCurrentMoney(ctx *middleware.Context, handler StationReport
 	return &StationReportCurrentMoney{Context: ctx, Handler: handler}
 }
 
-/* StationReportCurrentMoney swagger:route POST /station-report-current-money stationReportCurrentMoney
+/*
+	StationReportCurrentMoney swagger:route POST /station-report-current-money stationReportCurrentMoney
 
 StationReportCurrentMoney station report current money API
-
 */
 type StationReportCurrentMoney struct {
 	Context *middleware.Context

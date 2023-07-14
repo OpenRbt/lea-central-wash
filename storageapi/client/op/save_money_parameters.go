@@ -54,15 +54,17 @@ func NewSaveMoneyParamsWithHTTPClient(client *http.Client) *SaveMoneyParams {
 	}
 }
 
-/* SaveMoneyParams contains all the parameters to send to the API endpoint
-   for the save money operation.
+/*
+SaveMoneyParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the save money operation.
+
+	Typically these are written to a http.Request.
 */
 type SaveMoneyParams struct {
 
 	// Args.
-	Args *model.MoneyReport
+	Args *model.MoneyReportCreation
 
 	timeout    time.Duration
 	Context    context.Context
@@ -118,13 +120,13 @@ func (o *SaveMoneyParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithArgs adds the args to the save money params
-func (o *SaveMoneyParams) WithArgs(args *model.MoneyReport) *SaveMoneyParams {
+func (o *SaveMoneyParams) WithArgs(args *model.MoneyReportCreation) *SaveMoneyParams {
 	o.SetArgs(args)
 	return o
 }
 
 // SetArgs adds the args to the save money params
-func (o *SaveMoneyParams) SetArgs(args *model.MoneyReport) {
+func (o *SaveMoneyParams) SetArgs(args *model.MoneyReportCreation) {
 	o.Args = args
 }
 

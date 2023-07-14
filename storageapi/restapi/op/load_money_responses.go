@@ -17,7 +17,8 @@ import (
 // LoadMoneyOKCode is the HTTP code returned for type LoadMoneyOK
 const LoadMoneyOKCode int = 200
 
-/*LoadMoneyOK OK
+/*
+LoadMoneyOK OK
 
 swagger:response loadMoneyOK
 */
@@ -63,7 +64,8 @@ func (o *LoadMoneyOK) LoadMoneyResponder() {}
 // LoadMoneyNotFoundCode is the HTTP code returned for type LoadMoneyNotFound
 const LoadMoneyNotFoundCode int = 404
 
-/*LoadMoneyNotFound not found
+/*
+LoadMoneyNotFound not found
 
 swagger:response loadMoneyNotFound
 */
@@ -89,7 +91,8 @@ func (o *LoadMoneyNotFound) LoadMoneyResponder() {}
 // LoadMoneyInternalServerErrorCode is the HTTP code returned for type LoadMoneyInternalServerError
 const LoadMoneyInternalServerErrorCode int = 500
 
-/*LoadMoneyInternalServerError internal error
+/*
+LoadMoneyInternalServerError internal error
 
 swagger:response loadMoneyInternalServerError
 */

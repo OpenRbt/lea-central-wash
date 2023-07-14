@@ -36,10 +36,10 @@ func NewStationStatCurrent(ctx *middleware.Context, handler StationStatCurrentHa
 	return &StationStatCurrent{Context: ctx, Handler: handler}
 }
 
-/* StationStatCurrent swagger:route POST /station-stat-current stationStatCurrent
+/*
+	StationStatCurrent swagger:route POST /station-stat-current stationStatCurrent
 
 StationStatCurrent station stat current API
-
 */
 type StationStatCurrent struct {
 	Context *middleware.Context

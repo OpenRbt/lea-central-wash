@@ -52,10 +52,12 @@ func NewGetConfigVarStringParamsWithHTTPClient(client *http.Client) *GetConfigVa
 	}
 }
 
-/* GetConfigVarStringParams contains all the parameters to send to the API endpoint
-   for the get config var string operation.
+/*
+GetConfigVarStringParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get config var string operation.
+
+	Typically these are written to a http.Request.
 */
 type GetConfigVarStringParams struct {
 

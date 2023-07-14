@@ -31,10 +31,10 @@ func NewGetUsers(ctx *middleware.Context, handler GetUsersHandler) *GetUsers {
 	return &GetUsers{Context: ctx, Handler: handler}
 }
 
-/* GetUsers swagger:route GET /users getUsers
+/*
+	GetUsers swagger:route GET /users getUsers
 
 GetUsers get users API
-
 */
 type GetUsers struct {
 	Context *middleware.Context

@@ -1107,9 +1107,9 @@ func (svc *service) createSession(params op.CreateSessionParams) op.CreateSessio
 		return op.NewCreateSessionNotFound()
 	}
 
-	sessionId, QR, err := svc.app.CreateSession(def.OpenwashingURL, stationID)
+	sessionID, QR, err := svc.app.CreateSession(def.OpenwashingURL, stationID)
 	if err == nil {
-		return op.NewCreateSessionOK().WithPayload(apiCreateSession(sessionId, QR))
+		return op.NewCreateSessionOK().WithPayload(apiCreateSession(sessionID, QR))
 	}
 
 	log.PrintErr(err, "stationID", stationID)
@@ -1162,4 +1162,9 @@ func (svc *service) setBonuses(params op.SetBonusesParams) op.SetBonusesResponde
 	default:
 		return op.NewSetBonusesInternalServerError()
 	}
+}
+
+func (svc *service) getServerInfo(params op.GetServerInfoParams) op.GetServerInfoResponder {
+	info := svc.app.GetServerInfo()
+	return op.NewGetServerInfoOK().WithPayload(apiGetServerInfo(info.BonusServiceURL))
 }

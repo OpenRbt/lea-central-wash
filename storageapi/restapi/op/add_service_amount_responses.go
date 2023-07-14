@@ -15,7 +15,8 @@ import (
 // AddServiceAmountNoContentCode is the HTTP code returned for type AddServiceAmountNoContent
 const AddServiceAmountNoContentCode int = 204
 
-/*AddServiceAmountNoContent OK
+/*
+AddServiceAmountNoContent OK
 
 swagger:response addServiceAmountNoContent
 */
@@ -41,7 +42,8 @@ func (o *AddServiceAmountNoContent) AddServiceAmountResponder() {}
 // AddServiceAmountNotFoundCode is the HTTP code returned for type AddServiceAmountNotFound
 const AddServiceAmountNotFoundCode int = 404
 
-/*AddServiceAmountNotFound not found
+/*
+AddServiceAmountNotFound not found
 
 swagger:response addServiceAmountNotFound
 */
@@ -67,7 +69,8 @@ func (o *AddServiceAmountNotFound) AddServiceAmountResponder() {}
 // AddServiceAmountInternalServerErrorCode is the HTTP code returned for type AddServiceAmountInternalServerError
 const AddServiceAmountInternalServerErrorCode int = 500
 
-/*AddServiceAmountInternalServerError internal error
+/*
+AddServiceAmountInternalServerError internal error
 
 swagger:response addServiceAmountInternalServerError
 */

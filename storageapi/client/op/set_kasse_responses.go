@@ -42,7 +42,8 @@ func NewSetKasseNoContent() *SetKasseNoContent {
 	return &SetKasseNoContent{}
 }
 
-/* SetKasseNoContent describes a response with status code 204, with default header values.
+/*
+SetKasseNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -97,7 +98,8 @@ func NewSetKasseInternalServerError() *SetKasseInternalServerError {
 	return &SetKasseInternalServerError{}
 }
 
-/* SetKasseInternalServerError describes a response with status code 500, with default header values.
+/*
+SetKasseInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

@@ -15,7 +15,8 @@ import (
 // SetStationConfigVarIntNoContentCode is the HTTP code returned for type SetStationConfigVarIntNoContent
 const SetStationConfigVarIntNoContentCode int = 204
 
-/*SetStationConfigVarIntNoContent OK
+/*
+SetStationConfigVarIntNoContent OK
 
 swagger:response setStationConfigVarIntNoContent
 */
@@ -41,7 +42,8 @@ func (o *SetStationConfigVarIntNoContent) SetStationConfigVarIntResponder() {}
 // SetStationConfigVarIntNotFoundCode is the HTTP code returned for type SetStationConfigVarIntNotFound
 const SetStationConfigVarIntNotFoundCode int = 404
 
-/*SetStationConfigVarIntNotFound Not found
+/*
+SetStationConfigVarIntNotFound Not found
 
 swagger:response setStationConfigVarIntNotFound
 */
@@ -67,7 +69,8 @@ func (o *SetStationConfigVarIntNotFound) SetStationConfigVarIntResponder() {}
 // SetStationConfigVarIntInternalServerErrorCode is the HTTP code returned for type SetStationConfigVarIntInternalServerError
 const SetStationConfigVarIntInternalServerErrorCode int = 500
 
-/*SetStationConfigVarIntInternalServerError Internal error
+/*
+SetStationConfigVarIntInternalServerError Internal error
 
 swagger:response setStationConfigVarIntInternalServerError
 */

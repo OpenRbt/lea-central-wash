@@ -37,7 +37,7 @@ const (
 	parameterNameLastMotorStatsByDateUpdate = "LAST_MOTOR_STATS_DATE_UPDATE"
 )
 
-const qrUrl = "%s/#/?sessionID=%s"
+const qrURL = "%s/#/?sessionID=%s"
 
 const RabbitWorkerScheduleInterval = time.Minute
 
@@ -156,6 +156,7 @@ type (
 		SetBonuses(stationID StationID, bonuses int) error
 
 		GetRabbitConfig() (RabbitConfig, error)
+		GetServerInfo() ServerInfo
 		SetExternalServicesActive(active bool)
 		SetNextSession(stationID StationID) error
 		RequestSessionsFromService(count int, stationID StationID) error
@@ -488,4 +489,8 @@ type RabbitMoneyReport struct {
 	CreatedAt   time.Time
 	IsSent      bool
 	SentAt      *time.Time
+}
+
+type ServerInfo struct {
+	BonusServiceURL string `json:"bonusServiceURL,omitempty"`
 }

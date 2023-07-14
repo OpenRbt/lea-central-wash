@@ -54,7 +54,8 @@ func NewEndSessionNoContent() *EndSessionNoContent {
 	return &EndSessionNoContent{}
 }
 
-/* EndSessionNoContent describes a response with status code 204, with default header values.
+/*
+EndSessionNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -109,7 +110,8 @@ func NewEndSessionNotFound() *EndSessionNotFound {
 	return &EndSessionNotFound{}
 }
 
-/* EndSessionNotFound describes a response with status code 404, with default header values.
+/*
+EndSessionNotFound describes a response with status code 404, with default header values.
 
 hash not found
 */
@@ -164,7 +166,8 @@ func NewEndSessionInternalServerError() *EndSessionInternalServerError {
 	return &EndSessionInternalServerError{}
 }
 
-/* EndSessionInternalServerError describes a response with status code 500, with default header values.
+/*
+EndSessionInternalServerError describes a response with status code 500, with default header values.
 
 Internal error
 */
@@ -214,7 +217,8 @@ func (o *EndSessionInternalServerError) readResponse(response runtime.ClientResp
 	return nil
 }
 
-/*EndSessionBody ArgEndSession
+/*
+EndSessionBody ArgEndSession
 swagger:model EndSessionBody
 */
 type EndSessionBody struct {

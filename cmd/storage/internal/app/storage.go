@@ -10,7 +10,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/OpenRbt/share_business/wash_rabbit/entity/session"
-	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
+	rabbitVo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
 
 	"github.com/powerman/structlog"
 	"golang.org/x/crypto/bcrypt"
@@ -308,7 +308,7 @@ func (a *app) OpenStation(id StationID) error {
 func (a *app) SaveMoneyReport(report MoneyReport) error {
 	if report.SessionID != "" {
 		err := a.repo.SaveMoneyReportAndMessage(RabbitMoneyReport{
-			MessageType: string(rabbit_vo.SessionMoneyReportMessageType),
+			MessageType: string(rabbitVo.SessionMoneyReportMessageType),
 			MoneyReport: report,
 		})
 		if err != nil {
@@ -869,17 +869,19 @@ func (a *app) CreateSession(url string, stationID StationID) (string, string, er
 	a.stationsMutex.Unlock()
 
 	msg := session.StateChange{
-		SessionID: sessionID,
-		State:     rabbit_vo.SessionStateStart,
+		SessionID:      sessionID,
+		State:          rabbitVo.SessionStateStart,
+		AdditionalData: nil,
 	}
 
-	eventErr := a.PrepareRabbitMessage(string(rabbit_vo.SessionStateMessageType), msg)
+	eventErr := a.PrepareRabbitMessage(string(rabbitVo.SessionStateMessageType), msg)
 	if eventErr != nil {
 		log.Err("failed preparing RabbitMessage for send session creation to bonus service", "error", eventErr)
+
 		return "", "", err
 	}
 
-	return sessionID, fmt.Sprintf(qrUrl, url, sessionID), nil
+	return sessionID, fmt.Sprintf(qrURL, url, sessionID), nil
 }
 
 func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
@@ -888,10 +890,11 @@ func (a *app) EndSession(stationID StationID, sessionID BonusSessionID) error {
 	}
 
 	msg := session.StateChange{
-		SessionID: string(sessionID),
-		State:     rabbit_vo.SessionStateFinish,
+		SessionID:      string(sessionID),
+		State:          rabbitVo.SessionStateFinish,
+		AdditionalData: nil,
 	}
-	eventErr := a.PrepareRabbitMessage(string(rabbit_vo.SessionStateMessageType), msg)
+	eventErr := a.PrepareRabbitMessage(string(rabbitVo.SessionStateMessageType), msg)
 	if eventErr != nil {
 		log.Err("failed preparing RabbitMessage for send finish session to bonus service", "error", eventErr)
 	}
@@ -941,7 +944,7 @@ func (a *app) SetBonuses(stationID StationID, bonuses int) error {
 		UUID:      uuid.NewV4().String(),
 	}
 
-	err := a.PrepareRabbitMessage(string(rabbit_vo.SessionBonusRewardMessageType), msg)
+	err := a.PrepareRabbitMessage(string(rabbitVo.SessionBonusRewardMessageType), msg)
 	if err != nil {
 		log.Err("failed preparing RabbitMessage for reward with bonuses to bonus service", "error", err)
 	}
@@ -949,7 +952,7 @@ func (a *app) SetBonuses(stationID StationID, bonuses int) error {
 	return err
 }
 
-func (a *app) AssignRabbitPub(publishFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error) {
+func (a *app) AssignRabbitPub(publishFunc func(msg interface{}, service rabbitVo.Service, target rabbitVo.RoutingKey, messageType rabbitVo.MessageType) error) {
 	a.servicesPublisherFunc = publishFunc
 }
 func (a *app) SetExternalServicesActive(active bool) {
@@ -960,13 +963,15 @@ func (a *app) GetRabbitConfig() (cfg RabbitConfig, err error) {
 	serverID, err := a.repo.GetConfigString("server_id")
 	if err != nil {
 		err = ErrServiceNotConfigured
-		return
+
+		return cfg, err
 	}
 
 	serverKey, err := a.repo.GetConfigString("server_key")
 	if err != nil {
 		err = ErrServiceNotConfigured
-		return
+
+		return cfg, err
 	}
 
 	cfg.ServerID = serverID.Value
@@ -1027,7 +1032,7 @@ func (a *app) RequestSessionsFromService(count int, stationID StationID) error {
 	var err error
 
 	msg := session.RequestSessions{NewSessionsAmount: int64(count), PostID: int64(stationID)}
-	err = a.SendMessage(string(rabbit_vo.SessionRequestMessageType), msg)
+	err = a.SendMessage(string(rabbitVo.SessionRequestMessageType), msg)
 	if errors.Is(err, ErrNoRabbitWorker) {
 		log.Err("not found rabbit worker for bonus service, no sessions will retrieved", "error", err)
 		err = nil
@@ -1092,7 +1097,7 @@ func (a *app) AssignSessionBonuses(sessionID string, amount int, post StationID)
 		log.Err("AssignSessionBonuses not found session or post")
 		if a.bonusSystemRabbitWorker != nil {
 			msg := session.BonusChargeDiscard{SessionID: sessionID, Amount: int64(amount)}
-			err := a.PrepareRabbitMessage(string(rabbit_vo.SessionBonusDiscardMessageType), msg)
+			err := a.PrepareRabbitMessage(string(rabbitVo.SessionBonusDiscardMessageType), msg)
 			if err != nil {
 				log.Err("failed preparing RabbitMessage for bonuses discard to bonus service", "error", err)
 				return err
@@ -1108,7 +1113,7 @@ func (a *app) AssignSessionBonuses(sessionID string, amount int, post StationID)
 			Amount:    int64(amount),
 		}
 
-		err := a.PrepareRabbitMessage(string(rabbit_vo.SessionBonusConfirmMessageType), msg)
+		err := a.PrepareRabbitMessage(string(rabbitVo.SessionBonusConfirmMessageType), msg)
 		if err != nil {
 			log.Err("failed preparing RabbitMessage for bonuses assign to bonus service", "error", err)
 			return err
@@ -1120,7 +1125,7 @@ func (a *app) AssignSessionBonuses(sessionID string, amount int, post StationID)
 	return nil
 }
 
-func (a *app) InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error) {
+func (a *app) InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbitVo.Service, target rabbitVo.RoutingKey, messageType rabbitVo.MessageType) error) {
 	worker := BonusRabbitWorker{
 		repo:          a.repo,
 		routingKey:    routingKey,
@@ -1133,7 +1138,7 @@ func (a *app) InitBonusRabbitWorker(routingKey string, publisherFunc func(msg in
 	go worker.ProcessMoneyReports()
 }
 
-func (a *app) SaveMoneyReportAndMessage(report RabbitMoneyReport) (err error) {
+func (a *app) SaveMoneyReportAndMessage(report RabbitMoneyReport) error {
 	return a.repo.SaveMoneyReportAndMessage(report)
 }
 
@@ -1190,5 +1195,11 @@ func (a *app) refreshMotorStatsDates() {
 
 		nextRefreshTime := time.Now().Truncate(time.Hour).Add(time.Hour)
 		time.Sleep(time.Until(nextRefreshTime))
+	}
+}
+
+func (a *app) GetServerInfo() ServerInfo {
+	return ServerInfo{
+		BonusServiceURL: a.cfg.BonusServiceURL,
 	}
 }

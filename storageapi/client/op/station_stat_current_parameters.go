@@ -52,10 +52,12 @@ func NewStationStatCurrentParamsWithHTTPClient(client *http.Client) *StationStat
 	}
 }
 
-/* StationStatCurrentParams contains all the parameters to send to the API endpoint
-   for the station stat current operation.
+/*
+StationStatCurrentParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the station stat current operation.
+
+	Typically these are written to a http.Request.
 */
 type StationStatCurrentParams struct {
 

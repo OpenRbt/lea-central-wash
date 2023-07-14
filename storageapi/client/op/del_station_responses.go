@@ -54,7 +54,8 @@ func NewDelStationNoContent() *DelStationNoContent {
 	return &DelStationNoContent{}
 }
 
-/* DelStationNoContent describes a response with status code 204, with default header values.
+/*
+DelStationNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -109,7 +110,8 @@ func NewDelStationNotFound() *DelStationNotFound {
 	return &DelStationNotFound{}
 }
 
-/* DelStationNotFound describes a response with status code 404, with default header values.
+/*
+DelStationNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -164,7 +166,8 @@ func NewDelStationInternalServerError() *DelStationInternalServerError {
 	return &DelStationInternalServerError{}
 }
 
-/* DelStationInternalServerError describes a response with status code 500, with default header values.
+/*
+DelStationInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -214,7 +217,8 @@ func (o *DelStationInternalServerError) readResponse(response runtime.ClientResp
 	return nil
 }
 
-/*DelStationBody ArgDelStation
+/*
+DelStationBody ArgDelStation
 swagger:model DelStationBody
 */
 type DelStationBody struct {

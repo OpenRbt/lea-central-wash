@@ -15,7 +15,8 @@ import (
 // SaveMoneyNoContentCode is the HTTP code returned for type SaveMoneyNoContent
 const SaveMoneyNoContentCode int = 204
 
-/*SaveMoneyNoContent OK
+/*
+SaveMoneyNoContent OK
 
 swagger:response saveMoneyNoContent
 */
@@ -41,7 +42,8 @@ func (o *SaveMoneyNoContent) SaveMoneyResponder() {}
 // SaveMoneyNotFoundCode is the HTTP code returned for type SaveMoneyNotFound
 const SaveMoneyNotFoundCode int = 404
 
-/*SaveMoneyNotFound not found
+/*
+SaveMoneyNotFound not found
 
 swagger:response saveMoneyNotFound
 */
@@ -67,7 +69,8 @@ func (o *SaveMoneyNotFound) SaveMoneyResponder() {}
 // SaveMoneyInternalServerErrorCode is the HTTP code returned for type SaveMoneyInternalServerError
 const SaveMoneyInternalServerErrorCode int = 500
 
-/*SaveMoneyInternalServerError internal error
+/*
+SaveMoneyInternalServerError internal error
 
 swagger:response saveMoneyInternalServerError
 */

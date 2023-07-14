@@ -57,7 +57,8 @@ func NewLoadMoneyOK() *LoadMoneyOK {
 	return &LoadMoneyOK{}
 }
 
-/* LoadMoneyOK describes a response with status code 200, with default header values.
+/*
+LoadMoneyOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -124,7 +125,8 @@ func NewLoadMoneyNotFound() *LoadMoneyNotFound {
 	return &LoadMoneyNotFound{}
 }
 
-/* LoadMoneyNotFound describes a response with status code 404, with default header values.
+/*
+LoadMoneyNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -179,7 +181,8 @@ func NewLoadMoneyInternalServerError() *LoadMoneyInternalServerError {
 	return &LoadMoneyInternalServerError{}
 }
 
-/* LoadMoneyInternalServerError describes a response with status code 500, with default header values.
+/*
+LoadMoneyInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -229,7 +232,8 @@ func (o *LoadMoneyInternalServerError) readResponse(response runtime.ClientRespo
 	return nil
 }
 
-/*LoadMoneyBody ArgLoadMoney
+/*
+LoadMoneyBody ArgLoadMoney
 swagger:model LoadMoneyBody
 */
 type LoadMoneyBody struct {

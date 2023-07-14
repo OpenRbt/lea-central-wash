@@ -57,7 +57,8 @@ func NewDispenserStopNoContent() *DispenserStopNoContent {
 	return &DispenserStopNoContent{}
 }
 
-/* DispenserStopNoContent describes a response with status code 204, with default header values.
+/*
+DispenserStopNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -112,7 +113,8 @@ func NewDispenserStopNotFound() *DispenserStopNotFound {
 	return &DispenserStopNotFound{}
 }
 
-/* DispenserStopNotFound describes a response with status code 404, with default header values.
+/*
+DispenserStopNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -177,7 +179,8 @@ func NewDispenserStopInternalServerError() *DispenserStopInternalServerError {
 	return &DispenserStopInternalServerError{}
 }
 
-/* DispenserStopInternalServerError describes a response with status code 500, with default header values.
+/*
+DispenserStopInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -227,7 +230,8 @@ func (o *DispenserStopInternalServerError) readResponse(response runtime.ClientR
 	return nil
 }
 
-/*DispenserStopBody ArgDispenserStop
+/*
+DispenserStopBody ArgDispenserStop
 swagger:model DispenserStopBody
 */
 type DispenserStopBody struct {

@@ -15,7 +15,8 @@ import (
 // GetPingOKCode is the HTTP code returned for type GetPingOK
 const GetPingOKCode int = 200
 
-/*GetPingOK OK
+/*
+GetPingOK OK
 
 swagger:response getPingOK
 */

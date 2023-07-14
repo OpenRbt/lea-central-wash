@@ -74,6 +74,7 @@ var (
 		extapi     extapi.Config
 		kasse      svckasse.Config
 		rabbit     rabbit.Config
+		storage    app.AppConfig
 		hal        hal.Config
 		testBoards bool
 	}
@@ -108,8 +109,10 @@ func init() { //nolint:gochecknoinits
 	flag.IntVar(&cfg.extapi.WriteTimeout, "extapi.write-timeout", def.WriteTimeout, "server timeout for writing in seconds")
 	flag.IntVar(&startDelaySec, "delay", def.StartDelaySec, "startup delay in seconds")
 
-	flag.StringVar(&cfg.rabbit.Url, "rabbit.host", def.RabbitHost, "host for service connections")
+	flag.StringVar(&cfg.rabbit.URL, "rabbit.host", def.RabbitHost, "host for service connections")
 	flag.StringVar(&cfg.rabbit.Port, "rabbit.port", def.RabbitPort, "port for service connections")
+
+	flag.StringVar(&cfg.storage.BonusServiceURL, "storage.bonus-service-url", def.OpenwashingURL, "URL of bonus service")
 
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",

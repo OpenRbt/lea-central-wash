@@ -57,7 +57,8 @@ func NewStationReportDatesOK() *StationReportDatesOK {
 	return &StationReportDatesOK{}
 }
 
-/* StationReportDatesOK describes a response with status code 200, with default header values.
+/*
+StationReportDatesOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -124,7 +125,8 @@ func NewStationReportDatesNotFound() *StationReportDatesNotFound {
 	return &StationReportDatesNotFound{}
 }
 
-/* StationReportDatesNotFound describes a response with status code 404, with default header values.
+/*
+StationReportDatesNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -179,7 +181,8 @@ func NewStationReportDatesInternalServerError() *StationReportDatesInternalServe
 	return &StationReportDatesInternalServerError{}
 }
 
-/* StationReportDatesInternalServerError describes a response with status code 500, with default header values.
+/*
+StationReportDatesInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -229,7 +232,8 @@ func (o *StationReportDatesInternalServerError) readResponse(response runtime.Cl
 	return nil
 }
 
-/*StationReportDatesBody ArgStationReportDates
+/*
+StationReportDatesBody ArgStationReportDates
 swagger:model StationReportDatesBody
 */
 type StationReportDatesBody struct {

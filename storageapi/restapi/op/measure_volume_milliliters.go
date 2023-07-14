@@ -38,10 +38,10 @@ func NewMeasureVolumeMilliliters(ctx *middleware.Context, handler MeasureVolumeM
 	return &MeasureVolumeMilliliters{Context: ctx, Handler: handler}
 }
 
-/* MeasureVolumeMilliliters swagger:route POST /run-dispenser measureVolumeMilliliters
+/*
+	MeasureVolumeMilliliters swagger:route POST /run-dispenser measureVolumeMilliliters
 
 MeasureVolumeMilliliters measure volume milliliters API
-
 */
 type MeasureVolumeMilliliters struct {
 	Context *middleware.Context

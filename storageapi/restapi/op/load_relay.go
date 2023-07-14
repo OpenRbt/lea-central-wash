@@ -38,10 +38,10 @@ func NewLoadRelay(ctx *middleware.Context, handler LoadRelayHandler) *LoadRelay 
 	return &LoadRelay{Context: ctx, Handler: handler}
 }
 
-/* LoadRelay swagger:route POST /load-relay loadRelay
+/*
+	LoadRelay swagger:route POST /load-relay loadRelay
 
 LoadRelay load relay API
-
 */
 type LoadRelay struct {
 	Context *middleware.Context

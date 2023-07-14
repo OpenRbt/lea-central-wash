@@ -54,10 +54,12 @@ func NewSetConfigVarBoolParamsWithHTTPClient(client *http.Client) *SetConfigVarB
 	}
 }
 
-/* SetConfigVarBoolParams contains all the parameters to send to the API endpoint
-   for the set config var bool operation.
+/*
+SetConfigVarBoolParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the set config var bool operation.
+
+	Typically these are written to a http.Request.
 */
 type SetConfigVarBoolParams struct {
 

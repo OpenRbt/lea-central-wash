@@ -69,7 +69,8 @@ func NewAdvertisingCampaignByIDOK() *AdvertisingCampaignByIDOK {
 	return &AdvertisingCampaignByIDOK{}
 }
 
-/* AdvertisingCampaignByIDOK describes a response with status code 200, with default header values.
+/*
+AdvertisingCampaignByIDOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -136,7 +137,8 @@ func NewAdvertisingCampaignByIDUnauthorized() *AdvertisingCampaignByIDUnauthoriz
 	return &AdvertisingCampaignByIDUnauthorized{}
 }
 
-/* AdvertisingCampaignByIDUnauthorized describes a response with status code 401, with default header values.
+/*
+AdvertisingCampaignByIDUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -191,7 +193,8 @@ func NewAdvertisingCampaignByIDForbidden() *AdvertisingCampaignByIDForbidden {
 	return &AdvertisingCampaignByIDForbidden{}
 }
 
-/* AdvertisingCampaignByIDForbidden describes a response with status code 403, with default header values.
+/*
+AdvertisingCampaignByIDForbidden describes a response with status code 403, with default header values.
 
 Access forbiddenn
 */
@@ -246,7 +249,8 @@ func NewAdvertisingCampaignByIDNotFound() *AdvertisingCampaignByIDNotFound {
 	return &AdvertisingCampaignByIDNotFound{}
 }
 
-/* AdvertisingCampaignByIDNotFound describes a response with status code 404, with default header values.
+/*
+AdvertisingCampaignByIDNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -301,7 +305,8 @@ func NewAdvertisingCampaignByIDInternalServerError() *AdvertisingCampaignByIDInt
 	return &AdvertisingCampaignByIDInternalServerError{}
 }
 
-/* AdvertisingCampaignByIDInternalServerError describes a response with status code 500, with default header values.
+/*
+AdvertisingCampaignByIDInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -351,7 +356,8 @@ func (o *AdvertisingCampaignByIDInternalServerError) readResponse(response runti
 	return nil
 }
 
-/*AdvertisingCampaignByIDBody ArgAdvertisingCampaignByID
+/*
+AdvertisingCampaignByIDBody ArgAdvertisingCampaignByID
 swagger:model AdvertisingCampaignByIDBody
 */
 type AdvertisingCampaignByIDBody struct {

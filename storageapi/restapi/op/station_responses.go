@@ -17,7 +17,8 @@ import (
 // StationOKCode is the HTTP code returned for type StationOK
 const StationOKCode int = 200
 
-/*StationOK OK
+/*
+StationOK OK
 
 swagger:response stationOK
 */
@@ -63,7 +64,8 @@ func (o *StationOK) StationResponder() {}
 // StationUnauthorizedCode is the HTTP code returned for type StationUnauthorized
 const StationUnauthorizedCode int = 401
 
-/*StationUnauthorized Access denied. It will happen when you try to change the ID at the station online.
+/*
+StationUnauthorized Access denied. It will happen when you try to change the ID at the station online.
 
 swagger:response stationUnauthorized
 */
@@ -89,7 +91,8 @@ func (o *StationUnauthorized) StationResponder() {}
 // StationNotFoundCode is the HTTP code returned for type StationNotFound
 const StationNotFoundCode int = 404
 
-/*StationNotFound not found
+/*
+StationNotFound not found
 
 swagger:response stationNotFound
 */
@@ -115,7 +118,8 @@ func (o *StationNotFound) StationResponder() {}
 // StationInternalServerErrorCode is the HTTP code returned for type StationInternalServerError
 const StationInternalServerErrorCode int = 500
 
-/*StationInternalServerError internal error
+/*
+StationInternalServerError internal error
 
 swagger:response stationInternalServerError
 */

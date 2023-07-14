@@ -52,10 +52,12 @@ func NewStationsVariablesParamsWithHTTPClient(client *http.Client) *StationsVari
 	}
 }
 
-/* StationsVariablesParams contains all the parameters to send to the API endpoint
-   for the stations variables operation.
+/*
+StationsVariablesParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the stations variables operation.
+
+	Typically these are written to a http.Request.
 */
 type StationsVariablesParams struct {
 	timeout    time.Duration

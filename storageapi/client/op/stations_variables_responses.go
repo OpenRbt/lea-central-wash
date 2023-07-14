@@ -45,7 +45,8 @@ func NewStationsVariablesOK() *StationsVariablesOK {
 	return &StationsVariablesOK{}
 }
 
-/* StationsVariablesOK describes a response with status code 200, with default header values.
+/*
+StationsVariablesOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -110,7 +111,8 @@ func NewStationsVariablesInternalServerError() *StationsVariablesInternalServerE
 	return &StationsVariablesInternalServerError{}
 }
 
-/* StationsVariablesInternalServerError describes a response with status code 500, with default header values.
+/*
+StationsVariablesInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */

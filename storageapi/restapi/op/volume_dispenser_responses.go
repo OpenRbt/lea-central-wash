@@ -15,7 +15,8 @@ import (
 // VolumeDispenserOKCode is the HTTP code returned for type VolumeDispenserOK
 const VolumeDispenserOKCode int = 200
 
-/*VolumeDispenserOK OK
+/*
+VolumeDispenserOK OK
 
 swagger:response volumeDispenserOK
 */
@@ -61,7 +62,8 @@ func (o *VolumeDispenserOK) VolumeDispenserResponder() {}
 // VolumeDispenserNoContentCode is the HTTP code returned for type VolumeDispenserNoContent
 const VolumeDispenserNoContentCode int = 204
 
-/*VolumeDispenserNoContent OK
+/*
+VolumeDispenserNoContent OK
 
 swagger:response volumeDispenserNoContent
 */
@@ -87,7 +89,8 @@ func (o *VolumeDispenserNoContent) VolumeDispenserResponder() {}
 // VolumeDispenserNotFoundCode is the HTTP code returned for type VolumeDispenserNotFound
 const VolumeDispenserNotFoundCode int = 404
 
-/*VolumeDispenserNotFound not found
+/*
+VolumeDispenserNotFound not found
 
 swagger:response volumeDispenserNotFound
 */
@@ -131,7 +134,8 @@ func (o *VolumeDispenserNotFound) VolumeDispenserResponder() {}
 // VolumeDispenserInternalServerErrorCode is the HTTP code returned for type VolumeDispenserInternalServerError
 const VolumeDispenserInternalServerErrorCode int = 500
 
-/*VolumeDispenserInternalServerError internal error
+/*
+VolumeDispenserInternalServerError internal error
 
 swagger:response volumeDispenserInternalServerError
 */

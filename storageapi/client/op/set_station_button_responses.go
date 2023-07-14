@@ -56,7 +56,8 @@ func NewSetStationButtonNoContent() *SetStationButtonNoContent {
 	return &SetStationButtonNoContent{}
 }
 
-/* SetStationButtonNoContent describes a response with status code 204, with default header values.
+/*
+SetStationButtonNoContent describes a response with status code 204, with default header values.
 
 OK
 */
@@ -111,7 +112,8 @@ func NewSetStationButtonUnprocessableEntity() *SetStationButtonUnprocessableEnti
 	return &SetStationButtonUnprocessableEntity{}
 }
 
-/* SetStationButtonUnprocessableEntity describes a response with status code 422, with default header values.
+/*
+SetStationButtonUnprocessableEntity describes a response with status code 422, with default header values.
 
 validation error
 */
@@ -176,7 +178,8 @@ func NewSetStationButtonInternalServerError() *SetStationButtonInternalServerErr
 	return &SetStationButtonInternalServerError{}
 }
 
-/* SetStationButtonInternalServerError describes a response with status code 500, with default header values.
+/*
+SetStationButtonInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -226,7 +229,8 @@ func (o *SetStationButtonInternalServerError) readResponse(response runtime.Clie
 	return nil
 }
 
-/*SetStationButtonBody ArgSetStationButton
+/*
+SetStationButtonBody ArgSetStationButton
 swagger:model SetStationButtonBody
 */
 type SetStationButtonBody struct {
@@ -378,7 +382,8 @@ func (o *SetStationButtonBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*SetStationButtonParamsBodyButtonsItems0 set station button params body buttons items0
+/*
+SetStationButtonParamsBodyButtonsItems0 set station button params body buttons items0
 swagger:model SetStationButtonParamsBodyButtonsItems0
 */
 type SetStationButtonParamsBodyButtonsItems0 struct {

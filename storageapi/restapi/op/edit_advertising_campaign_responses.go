@@ -15,7 +15,8 @@ import (
 // EditAdvertisingCampaignNoContentCode is the HTTP code returned for type EditAdvertisingCampaignNoContent
 const EditAdvertisingCampaignNoContentCode int = 204
 
-/*EditAdvertisingCampaignNoContent OK
+/*
+EditAdvertisingCampaignNoContent OK
 
 swagger:response editAdvertisingCampaignNoContent
 */
@@ -41,7 +42,8 @@ func (o *EditAdvertisingCampaignNoContent) EditAdvertisingCampaignResponder() {}
 // EditAdvertisingCampaignUnauthorizedCode is the HTTP code returned for type EditAdvertisingCampaignUnauthorized
 const EditAdvertisingCampaignUnauthorizedCode int = 401
 
-/*EditAdvertisingCampaignUnauthorized PIN is missing or invalid
+/*
+EditAdvertisingCampaignUnauthorized PIN is missing or invalid
 
 swagger:response editAdvertisingCampaignUnauthorized
 */
@@ -67,7 +69,8 @@ func (o *EditAdvertisingCampaignUnauthorized) EditAdvertisingCampaignResponder()
 // EditAdvertisingCampaignForbiddenCode is the HTTP code returned for type EditAdvertisingCampaignForbidden
 const EditAdvertisingCampaignForbiddenCode int = 403
 
-/*EditAdvertisingCampaignForbidden Access forbiddenn
+/*
+EditAdvertisingCampaignForbidden Access forbiddenn
 
 swagger:response editAdvertisingCampaignForbidden
 */
@@ -93,7 +96,8 @@ func (o *EditAdvertisingCampaignForbidden) EditAdvertisingCampaignResponder() {}
 // EditAdvertisingCampaignInternalServerErrorCode is the HTTP code returned for type EditAdvertisingCampaignInternalServerError
 const EditAdvertisingCampaignInternalServerErrorCode int = 500
 
-/*EditAdvertisingCampaignInternalServerError internal error
+/*
+EditAdvertisingCampaignInternalServerError internal error
 
 swagger:response editAdvertisingCampaignInternalServerError
 */

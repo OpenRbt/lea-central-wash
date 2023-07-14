@@ -70,7 +70,8 @@ func NewStationCollectionReportDatesOK() *StationCollectionReportDatesOK {
 	return &StationCollectionReportDatesOK{}
 }
 
-/* StationCollectionReportDatesOK describes a response with status code 200, with default header values.
+/*
+StationCollectionReportDatesOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -137,7 +138,8 @@ func NewStationCollectionReportDatesUnauthorized() *StationCollectionReportDates
 	return &StationCollectionReportDatesUnauthorized{}
 }
 
-/* StationCollectionReportDatesUnauthorized describes a response with status code 401, with default header values.
+/*
+StationCollectionReportDatesUnauthorized describes a response with status code 401, with default header values.
 
 PIN is missing or invalid
 */
@@ -192,7 +194,8 @@ func NewStationCollectionReportDatesForbidden() *StationCollectionReportDatesFor
 	return &StationCollectionReportDatesForbidden{}
 }
 
-/* StationCollectionReportDatesForbidden describes a response with status code 403, with default header values.
+/*
+StationCollectionReportDatesForbidden describes a response with status code 403, with default header values.
 
 Access forbiddenn
 */
@@ -247,7 +250,8 @@ func NewStationCollectionReportDatesNotFound() *StationCollectionReportDatesNotF
 	return &StationCollectionReportDatesNotFound{}
 }
 
-/* StationCollectionReportDatesNotFound describes a response with status code 404, with default header values.
+/*
+StationCollectionReportDatesNotFound describes a response with status code 404, with default header values.
 
 not found
 */
@@ -302,7 +306,8 @@ func NewStationCollectionReportDatesInternalServerError() *StationCollectionRepo
 	return &StationCollectionReportDatesInternalServerError{}
 }
 
-/* StationCollectionReportDatesInternalServerError describes a response with status code 500, with default header values.
+/*
+StationCollectionReportDatesInternalServerError describes a response with status code 500, with default header values.
 
 internal error
 */
@@ -352,7 +357,8 @@ func (o *StationCollectionReportDatesInternalServerError) readResponse(response 
 	return nil
 }
 
-/*StationCollectionReportDatesBody ArgCollectionReportDates
+/*
+StationCollectionReportDatesBody ArgCollectionReportDates
 swagger:model StationCollectionReportDatesBody
 */
 type StationCollectionReportDatesBody struct {
@@ -421,7 +427,8 @@ func (o *StationCollectionReportDatesBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*StationCollectionReportDatesOKBody ResponseStationCollectionReportDates
+/*
+StationCollectionReportDatesOKBody ResponseStationCollectionReportDates
 swagger:model StationCollectionReportDatesOKBody
 */
 type StationCollectionReportDatesOKBody struct {

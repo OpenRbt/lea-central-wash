@@ -52,10 +52,12 @@ func NewMeasureVolumeMillilitersParamsWithHTTPClient(client *http.Client) *Measu
 	}
 }
 
-/* MeasureVolumeMillilitersParams contains all the parameters to send to the API endpoint
-   for the measure volume milliliters operation.
+/*
+MeasureVolumeMillilitersParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the measure volume milliliters operation.
+
+	Typically these are written to a http.Request.
 */
 type MeasureVolumeMillilitersParams struct {
 

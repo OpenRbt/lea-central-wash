@@ -15,7 +15,8 @@ import (
 // PressButtonNoContentCode is the HTTP code returned for type PressButtonNoContent
 const PressButtonNoContentCode int = 204
 
-/*PressButtonNoContent OK
+/*
+PressButtonNoContent OK
 
 swagger:response pressButtonNoContent
 */
@@ -41,7 +42,8 @@ func (o *PressButtonNoContent) PressButtonResponder() {}
 // PressButtonNotFoundCode is the HTTP code returned for type PressButtonNotFound
 const PressButtonNotFoundCode int = 404
 
-/*PressButtonNotFound not found
+/*
+PressButtonNotFound not found
 
 swagger:response pressButtonNotFound
 */
@@ -85,7 +87,8 @@ func (o *PressButtonNotFound) PressButtonResponder() {}
 // PressButtonInternalServerErrorCode is the HTTP code returned for type PressButtonInternalServerError
 const PressButtonInternalServerErrorCode int = 500
 
-/*PressButtonInternalServerError internal error
+/*
+PressButtonInternalServerError internal error
 
 swagger:response pressButtonInternalServerError
 */

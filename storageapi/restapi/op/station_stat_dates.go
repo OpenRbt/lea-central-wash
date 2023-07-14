@@ -38,10 +38,10 @@ func NewStationStatDates(ctx *middleware.Context, handler StationStatDatesHandle
 	return &StationStatDates{Context: ctx, Handler: handler}
 }
 
-/* StationStatDates swagger:route POST /station-stat-dates stationStatDates
+/*
+	StationStatDates swagger:route POST /station-stat-dates stationStatDates
 
 StationStatDates station stat dates API
-
 */
 type StationStatDates struct {
 	Context *middleware.Context

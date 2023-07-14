@@ -38,10 +38,10 @@ func NewPing(ctx *middleware.Context, handler PingHandler) *Ping {
 	return &Ping{Context: ctx, Handler: handler}
 }
 
-/* Ping swagger:route POST /ping ping
+/*
+	Ping swagger:route POST /ping ping
 
 Ping ping API
-
 */
 type Ping struct {
 	Context *middleware.Context
