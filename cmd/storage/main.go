@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit"
 
