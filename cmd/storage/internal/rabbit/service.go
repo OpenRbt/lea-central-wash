@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/OpenRbt/share_business/wash_rabbit/entity/session"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/session"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
+	rabbit_vo "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 	"github.com/wagslane/go-rabbitmq"
 )
 
@@ -34,7 +34,7 @@ func (s *Service) ProcessBonusMessage(d rabbitmq.Delivery) (action rabbitmq.Acti
 			return
 		}
 
-		err = s.app.AssignSessionUser(msg.SessionID, msg.UserID)
+		err = s.app.AssignSessionUser(msg.SessionID, msg.UserID, app.StationID(msg.Post))
 		if err != nil {
 			action = rabbitmq.NackDiscard
 			return
@@ -47,7 +47,7 @@ func (s *Service) ProcessBonusMessage(d rabbitmq.Delivery) (action rabbitmq.Acti
 			return
 		}
 
-		err = s.app.AssignSessionBonuses(msg.SessionID, int(msg.Amount), app.StationID(int(msg.Post)))
+		err = s.app.AssignSessionBonuses(msg.SessionID, int(msg.Amount), app.StationID(msg.Post))
 		if err != nil {
 			action = rabbitmq.NackDiscard
 			return

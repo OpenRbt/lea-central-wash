@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/OpenRbt/share_business/wash_rabbit/entity/session"
-	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/session"
+	rabbit_vo "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 )
 
 type BonusRabbitWorker struct {

@@ -9,8 +9,8 @@ import (
 
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/OpenRbt/share_business/wash_rabbit/entity/session"
-	rabbitVo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/session"
+	rabbitVo "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 
 	"github.com/powerman/structlog"
 	"golang.org/x/crypto/bcrypt"
@@ -1060,19 +1060,18 @@ func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) erro
 	return nil
 }
 
-func (a *app) AssignSessionUser(sessionID string, userID string) error {
+func (a *app) AssignSessionUser(sessionID string, userID string, post StationID) error {
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
-	//TODO: add a better way for station search?
-	for id, data := range a.stations {
-		if data.CurrentSessionID == sessionID {
-			data.UserID = userID
-			data.AuthorizedSessionID = sessionID
-			a.stations[id] = data
 
-			break
-		}
+	data, ok := a.stations[post]
+	if !ok || data.CurrentSessionID != sessionID {
+		return ErrNotFound
 	}
+
+	data.UserID = userID
+	data.AuthorizedSessionID = sessionID
+	a.stations[post] = data
 
 	return nil
 }

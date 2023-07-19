@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	"github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/wagslane/go-rabbitmq"
 )
