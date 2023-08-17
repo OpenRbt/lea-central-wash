@@ -343,7 +343,7 @@ func initRabbitClient(cfg rabbit.Config, appl app.App) {
 		}
 
 		log.Info("Serve rabbit client")
-		appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitWorker.SendMessage)
+		appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitWorker.SendMessage, rabbitWorker.IsConnected)
 		appl.FetchSessions()
 		return
 	}
