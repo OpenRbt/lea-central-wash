@@ -1,6 +1,7 @@
 package rabbit
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 
@@ -8,56 +9,62 @@ import (
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	rabbit_vo "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
-	"github.com/wagslane/go-rabbitmq"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-func (s *Service) ProcessBonusMessage(d rabbitmq.Delivery) (action rabbitmq.Action) { // Обработка сообщения на основе типа. В зависимости от типа происходят нужные действия
-	// Debug fmt.Printf("ProcessBonusMessage type %v, body %v \n", d.Type, string(d.Body))
+func (s *Service) ProcessBonusMessage(d amqp.Delivery) error { // Обработка сообщения на основе типа. В зависимости от типа происходят нужные действия
+	// Debug s.log.Debug("ProcessBonusMessage", "type", d.Type, "body", string(d.Body))
 	switch rabbit_vo.MessageType(d.Type) {
 	case rabbit_vo.SessionCreatedMessageType:
 		var msg session.PostSessions
 		err := json.Unmarshal(d.Body, &msg)
 		if err != nil {
-			action = rabbitmq.NackDiscard
-			return
+			d.Nack(false, false)
+			return err
 		}
 		err = s.app.AddSessionsToPool(app.StationID(msg.PostID), msg.NewSessions...)
 		if err != nil {
-			action = rabbitmq.NackDiscard
-			return
+			d.Nack(false, false)
+			return err
 		}
+		d.Ack(false)
 	case rabbit_vo.SessionUserMessageType:
 		var msg session.UserAssign
 		err := json.Unmarshal(d.Body, &msg)
 		if err != nil {
-			action = rabbitmq.NackDiscard
-			return
+			d.Nack(false, false)
+			return err
 		}
 
 		err = s.app.AssignSessionUser(msg.SessionID, msg.UserID, app.StationID(msg.Post))
 		if err != nil {
-			action = rabbitmq.NackDiscard
-			return
+			d.Nack(false, false)
+			return err
 		}
+		d.Ack(false)
 	case rabbit_vo.SessionBonusChargeMessageType:
 		var msg session.BonusCharge
 		err := json.Unmarshal(d.Body, &msg)
 		if err != nil {
-			action = rabbitmq.NackDiscard
-			return
+			d.Nack(false, false)
+			return err
 		}
 
 		err = s.app.AssignSessionBonuses(msg.SessionID, int(msg.Amount), app.StationID(msg.Post))
 		if err != nil {
-			action = rabbitmq.NackDiscard
-			return
+			d.Nack(false, false)
+			return err
 		}
+		d.Ack(false)
+	case rabbit_vo.PingMessageType:
+		d.Ack(false)
 
 	default:
-		action = rabbitmq.NackDiscard
+		d.Nack(false, false)
+		return nil
 	}
 
-	return
+	return nil
 }
 
 func (s *Service) SendMessage(msg interface{}, service rabbit_vo.Service, routingKey rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) (err error) {
@@ -74,14 +81,20 @@ func (s *Service) SendMessage(msg interface{}, service rabbit_vo.Service, routin
 		return err
 	}
 
+	message := amqp.Publishing{}
+	message.Body = jsonMsg
+	message.Type = string(messageType)
+	message.UserId = serverID.Value
+
 	switch service {
 	case rabbit_vo.WashBonusService:
-		return s.bonusSvcPub.Publish(
-			jsonMsg,
-			[]string{string(routingKey)},
-			rabbitmq.WithPublishOptionsExchange(string(rabbit_vo.WashBonusService)),
-			rabbitmq.WithPublishOptionsType(string(messageType)),
-			rabbitmq.WithPublishOptionsUserID(serverID.Value),
+		return s.bonusSvcPub.PublishWithContext(
+			context.Background(),
+			string(rabbit_vo.WashBonusService),
+			string(routingKey),
+			false,
+			false,
+			message,
 		)
 	default:
 		return errors.New("unknown service")
