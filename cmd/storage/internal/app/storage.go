@@ -159,7 +159,12 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) (Statio
 	oldStation.LastUpdate = a.lastUpdate
 	oldStation.LastDiscountUpdate = a.lastDiscountUpdate
 
-	return oldStation, a.bonusSystemRabbitWorker != nil
+	bonusSystemActive := false
+	if a.bonusSystemRabbitWorker != nil {
+		bonusSystemActive = a.bonusSystemRabbitWorker.IsConnected()
+	}
+
+	return oldStation, bonusSystemActive
 }
 
 func (a *app) checkStationOnline() {
@@ -1124,11 +1129,12 @@ func (a *app) AssignSessionBonuses(sessionID string, amount int, post StationID)
 	return nil
 }
 
-func (a *app) InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbitVo.Service, target rabbitVo.RoutingKey, messageType rabbitVo.MessageType) error) {
+func (a *app) InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbitVo.Service, target rabbitVo.RoutingKey, messageType rabbitVo.MessageType) error, isConnected func() bool) {
 	worker := BonusRabbitWorker{
 		repo:          a.repo,
 		routingKey:    routingKey,
 		publisherFunc: publisherFunc,
+		isConnected:   isConnected,
 	}
 
 	a.bonusSystemRabbitWorker = &worker

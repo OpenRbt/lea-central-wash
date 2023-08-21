@@ -164,7 +164,7 @@ type (
 		AssignSessionUser(sessionID string, userID string, post StationID) error
 		AssignSessionBonuses(sessionID string, amount int, post StationID) error
 
-		InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error)
+		InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error, isConnected func() bool)
 	}
 
 	// Repo is a DAL interface.
