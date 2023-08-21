@@ -7,7 +7,7 @@ import (
 
 	uuid "github.com/satori/go.uuid"
 
-	rabbit_vo "github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
+	rabbit_vo "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 
 	"github.com/DiaElectronics/lea-central-wash/storageapi"
 )
@@ -161,10 +161,10 @@ type (
 		SetNextSession(stationID StationID) error
 		RequestSessionsFromService(count int, stationID StationID) error
 		AddSessionsToPool(stationID StationID, sessionsIDs ...string) error
-		AssignSessionUser(sessionID string, userID string) error
+		AssignSessionUser(sessionID string, userID string, post StationID) error
 		AssignSessionBonuses(sessionID string, amount int, post StationID) error
 
-		InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error)
+		InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error, isConnected func() bool)
 	}
 
 	// Repo is a DAL interface.

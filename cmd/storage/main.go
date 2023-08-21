@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/OpenRbt/share_business/wash_rabbit/entity/vo"
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit"
 
@@ -343,7 +343,7 @@ func initRabbitClient(cfg rabbit.Config, appl app.App) {
 		}
 
 		log.Info("Serve rabbit client")
-		appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitWorker.SendMessage)
+		appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitWorker.SendMessage, rabbitWorker.IsConnected)
 		appl.FetchSessions()
 		return
 	}
