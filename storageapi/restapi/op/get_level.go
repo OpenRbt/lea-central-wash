@@ -6,9 +6,7 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -72,25 +70,6 @@ type GetLevelBody struct {
 	// hash
 	// Required: true
 	Hash *model.Hash `json:"hash"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *GetLevelBody) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// hash
-		// Required: true
-		Hash *model.Hash `json:"hash"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	o.Hash = props.Hash
-	return nil
 }
 
 // Validate validates this get level body
@@ -188,25 +167,6 @@ type GetLevelOKBody struct {
 	// level
 	// Required: true
 	Level *int64 `json:"level"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *GetLevelOKBody) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// level
-		// Required: true
-		Level *int64 `json:"level"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	o.Level = props.Level
-	return nil
 }
 
 // Validate validates this get level o k body

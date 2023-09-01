@@ -240,6 +240,16 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.OpenStationNotImplemented()
 		})
 	}
+	if api.PayHandler == nil {
+		api.PayHandler = op.PayHandlerFunc(func(params op.PayParams) op.PayResponder {
+			return op.PayNotImplemented()
+		})
+	}
+	if api.PayReceivedHandler == nil {
+		api.PayReceivedHandler = op.PayReceivedHandlerFunc(func(params op.PayReceivedParams) op.PayReceivedResponder {
+			return op.PayReceivedNotImplemented()
+		})
+	}
 	if api.PingHandler == nil {
 		api.PingHandler = op.PingHandlerFunc(func(params op.PingParams) op.PingResponder {
 			return op.PingNotImplemented()

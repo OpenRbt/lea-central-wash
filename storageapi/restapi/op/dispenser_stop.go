@@ -6,9 +6,7 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -76,30 +74,6 @@ type DispenserStopBody struct {
 	// stop program ID
 	// Required: true
 	StopProgramID *int64 `json:"stopProgramID"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *DispenserStopBody) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// hash
-		// Required: true
-		Hash *model.Hash `json:"hash"`
-
-		// stop program ID
-		// Required: true
-		StopProgramID *int64 `json:"stopProgramID"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	o.Hash = props.Hash
-	o.StopProgramID = props.StopProgramID
-	return nil
 }
 
 // Validate validates this dispenser stop body
