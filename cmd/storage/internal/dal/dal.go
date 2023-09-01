@@ -47,14 +47,19 @@ type repo struct {
 	db            *sqlxx.DB
 	maintenanceDB *sqlxx.DB
 	schemaVer     *schemaver.SchemaVer
+	PaymentsRep
 }
 
 // New creates and returns new Repo.
-func New(db *sqlx.DB, maintenanceDB *sqlx.DB, schemaVer *schemaver.SchemaVer) app.Repo {
+func New(db *sqlx.DB, maintenanceDB *sqlx.DB, schemaVer *schemaver.SchemaVer) *repo {
 	return &repo{
 		db:            sqlxx.NewDB(db),
 		maintenanceDB: sqlxx.NewDB(maintenanceDB),
 		schemaVer:     schemaVer,
+		PaymentsRep: PaymentsRep{
+			payments:        make(map[postID]*app.Payment),
+			paymentsByOrder: make(map[orderID]*app.Payment),
+		},
 	}
 }
 

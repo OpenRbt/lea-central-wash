@@ -167,6 +167,11 @@ type (
 		AssignSessionBonuses(sessionID string, amount int, post StationID) error
 
 		InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error, isConnected func() bool)
+
+		// sbp
+		SbpWorkerInterface
+		InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error
+		GetSbpConfig() (cfg SbpRabbitConfig, err error)
 	}
 
 	// Repo is a DAL interface.
@@ -319,6 +324,8 @@ type app struct {
 	servicesPublisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error
 
 	bonusSystemRabbitWorker *BonusRabbitWorker
+	// sbp
+	SbpWorker
 }
 
 // New creates and returns new App.

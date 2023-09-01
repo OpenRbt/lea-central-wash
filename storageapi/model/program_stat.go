@@ -6,9 +6,7 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -27,32 +25,6 @@ type ProgramStat struct {
 
 	// time on
 	TimeOn int64 `json:"timeOn,omitempty"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (m *ProgramStat) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// program ID
-		ProgramID int64 `json:"programID,omitempty"`
-
-		// program name
-		ProgramName string `json:"programName,omitempty"`
-
-		// time on
-		TimeOn int64 `json:"timeOn,omitempty"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	m.ProgramID = props.ProgramID
-	m.ProgramName = props.ProgramName
-	m.TimeOn = props.TimeOn
-	return nil
 }
 
 // Validate validates this program stat

@@ -6,7 +6,6 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 
@@ -38,42 +37,6 @@ type KasseConfig struct {
 	// tax
 	// Enum: [TAX_VAT110 TAX_VAT0 TAX_NO TAX_VAT120]
 	Tax string `json:"tax,omitempty"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (m *KasseConfig) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// cashier
-		// Min Length: 1
-		Cashier string `json:"cashier,omitempty"`
-
-		// cashier i n n
-		// Max Length: 12
-		// Min Length: 12
-		// Pattern: ^[0123456789]{12}$
-		CashierINN string `json:"cashierINN,omitempty"`
-
-		// receipt item name
-		// Min Length: 1
-		ReceiptItemName string `json:"receiptItemName,omitempty"`
-
-		// tax
-		// Enum: [TAX_VAT110 TAX_VAT0 TAX_NO TAX_VAT120]
-		Tax string `json:"tax,omitempty"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	m.Cashier = props.Cashier
-	m.CashierINN = props.CashierINN
-	m.ReceiptItemName = props.ReceiptItemName
-	m.Tax = props.Tax
-	return nil
 }
 
 // Validate validates this kasse config

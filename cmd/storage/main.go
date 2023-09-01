@@ -36,6 +36,8 @@ import (
 	"github.com/powerman/narada4d/schemaver"
 	"github.com/powerman/pqx"
 	"github.com/powerman/structlog"
+
+	sbpclient "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/sbp-client"
 )
 
 const (
@@ -66,17 +68,19 @@ var (
 	ver = strings.Join(strings.Fields(strings.Join([]string{gitVersion, gitBranch, gitRevision, buildDate}, " ")), " ")
 	log = structlog.New()
 	cfg struct {
-		version    bool
-		logLevel   string
-		db         pqx.Config
-		goose      string
-		gooseDir   string
-		extapi     extapi.Config
-		kasse      svckasse.Config
-		rabbit     rabbit.Config
-		storage    app.AppConfig
-		hal        hal.Config
-		testBoards bool
+		version                    bool
+		logLevel                   string
+		db                         pqx.Config
+		goose                      string
+		gooseDir                   string
+		extapi                     extapi.Config
+		kasse                      svckasse.Config
+		rabbit                     rabbit.Config
+		sbpRabbitConfig            rabbit.Config
+		sbpPaymentExpirationPeriod time.Duration
+		storage                    app.AppConfig
+		hal                        hal.Config
+		testBoards                 bool
 	}
 )
 
@@ -113,6 +117,11 @@ func init() { //nolint:gochecknoinits
 	flag.StringVar(&cfg.rabbit.Port, "rabbit.port", def.RabbitPort, "port for service connections")
 
 	flag.StringVar(&cfg.storage.BonusServiceURL, "storage.bonus-service-url", def.OpenwashingURL, "URL of bonus service")
+
+	// sbp
+	flag.StringVar(&cfg.sbpRabbitConfig.URL, "sbp-rabbit.host", def.SbpRabbitHost, "sbp rabbit host for service connections")
+	flag.StringVar(&cfg.sbpRabbitConfig.Port, "sbp-rabbit.port", def.SbpRabbitPort, "sbp rabbit port for service connections")
+	flag.DurationVar(&cfg.sbpPaymentExpirationPeriod, "sbp.sbpPaymentExpirationPeriod", def.SbpPaymentExpirationPeriod, "sbp payment expiration period")
 
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",
@@ -248,6 +257,7 @@ func applyMigrations(db *sqlx.DB) error {
 func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 	goose.Init("postgres")
 	var repo app.Repo
+	var sbpRepo app.SbpRepInterface
 	if db != nil {
 		var err error
 		var dbMigrations *sqlx.DB
@@ -272,7 +282,9 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 		dbMigrations.Close()
 
 		schemaVer, _ := schemaver.New()
-		repo = dal.New(db, maintenanceDBConn, schemaVer)
+		repository := dal.New(db, maintenanceDBConn, schemaVer)
+		repo = repository
+		sbpRepo = repository
 	} else {
 		log.Info("USING MEM DB")
 		repo = memdb.New()
@@ -298,6 +310,7 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 
 	appl := app.New(repo, kasse, weather, client)
 
+	// bonus
 	rabbitCfg, err := appl.GetRabbitConfig()
 	if err == nil {
 		cfg.rabbit.ServerID = rabbitCfg.ServerID
@@ -308,6 +321,10 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 		log.Warn("no wash_bonus config found! skipping wash_bonus service initialization")
 	}
 
+	// sbp
+	initSbpclient(cfg.sbpRabbitConfig.URL, cfg.sbpRabbitConfig.Port, appl, sbpRepo, cfg.sbpPaymentExpirationPeriod)
+
+	// server
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
 	if err != nil {
 		errc <- err
@@ -346,5 +363,58 @@ func initRabbitClient(cfg rabbit.Config, appl app.App) {
 		appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitWorker.SendMessage, rabbitWorker.IsConnected)
 		appl.FetchSessions()
 		return
+	}
+}
+
+// initSbpclient ...
+func initSbpclient(url string, port string, appl app.App, rep app.SbpRepInterface, sbpPaymentExpirationPeriod time.Duration) {
+	sbpConfig, err := appl.GetSbpConfig()
+	if err == nil {
+		go func() {
+			for {
+
+				// rabbit client
+				sbpConfig := sbpclient.Config{
+					URL:             url,
+					Port:            port,
+					ServerID:        sbpConfig.ServerID,
+					ServerPassword:  sbpConfig.ServerPassword,
+					SbpGeneratedKey: sbpConfig.ServerSbpKey,
+				}
+				var sbpRabbitClient *sbpclient.Service
+				sbpRabbitClient, err = sbpclient.NewSbpRabbitClient(sbpConfig, appl)
+				if err != nil {
+					if strings.Contains(err.Error(), "username or password not allowed") {
+						log.Err("Failed to init sbp client due to wrong credentials", "error", err)
+						return
+					}
+
+					log.Err("Failed to init sbp client", "error", err)
+					time.Sleep(5 * time.Second)
+					continue
+				}
+
+				// rabbit worker
+				//isConnectedFunc := sbpRabbitWorker.IsConnected
+				sbpWorkerConfig := app.SbpRabbitWorkerConfig{
+					ServerID:                     sbpConfig.ServerID,
+					ServiceSbpKey:                sbpConfig.SbpGeneratedKey,
+					SbpBroker:                    sbpRabbitClient,
+					SbpRep:                       rep,
+					NotificationExpirationPeriod: sbpPaymentExpirationPeriod,
+				}
+
+				err = appl.InitSbpRabbitWorker(sbpWorkerConfig)
+				if err != nil {
+					log.Err("Failed to init sbp sbp rabbit worker", "error", err)
+				}
+				appl.FetchSessions()
+
+				log.Info("serve sbp rabbit client")
+				return
+			}
+		}()
+	} else {
+		log.Warn("no wash_bonus config found! skipping wash_bonus service initialization")
 	}
 }

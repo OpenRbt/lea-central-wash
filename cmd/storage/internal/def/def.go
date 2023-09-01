@@ -2,6 +2,7 @@
 package def
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -59,6 +60,10 @@ var (
 
 	RabbitHost = strGetenv("RABBIT_HOST", "app.openwashing.com")
 	RabbitPort = strGetenv("RABBIT_PORT", "4043")
+
+	SbpRabbitHost              = strGetenv("SBP_RABBIT_HOST", "app.openwashing.com")
+	SbpRabbitPort              = strGetenv("SBP_RABBIT_PORT", "4043")
+	SbpPaymentExpirationPeriod = durationGetenv("SBP_PAYMENT_EXPIRATION_PERIOD", time.Minute*10)
 )
 
 var initErr error
@@ -131,6 +136,19 @@ func strGetenv(name, def string) string {
 		return def
 	}
 	return value
+}
+
+func durationGetenv(name string, def time.Duration) time.Duration {
+	value := os.Getenv(name)
+	if value == "" {
+		d, err := time.ParseDuration(value)
+		if err != nil {
+			fmt.Println(err)
+			return def
+		}
+		return d
+	}
+	return def
 }
 
 func swaggerEndpoint() (host string, port int, basePath string) {
