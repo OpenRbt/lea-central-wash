@@ -55,7 +55,7 @@ type Service struct {
 func NewSbpRabbitClient(cfg Config, app app.App) (svc *Service, err error) {
 	//TODO: add rabbit variables extraction from repo
 
-	connString := fmt.Sprintf("amqp://%s:%s@%s:%s/", cfg.ServerID, cfg.ServerPassword, cfg.URL, cfg.Port)
+	connString := fmt.Sprintf("amqps://%s:%s@%s:%s/", cfg.ServerID, cfg.ServerPassword, cfg.URL, cfg.Port)
 	rabbitConf := amqp.Config{
 		SASL: []amqp.Authentication{
 			&amqp.PlainAuth{
