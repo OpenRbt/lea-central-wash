@@ -11,22 +11,22 @@ const (
 	// set
 	SetPaymentURL = `
 	UPDATE public.sbp_payments
-	SET url_pay = $1
+	SET url_pay = $1, updated_at = NOW()
 	WHERE order_id = $2;
 	`
 	SetPaymentConfirmed = `
 	UPDATE public.sbp_payments
-	SET confirmed = true
+	SET confirmed = true, updated_at = NOW()
 	WHERE order_id = $1;
 	`
 	SetPaymentReceived = `
 	UPDATE public.sbp_payments
-	SET openwash_received = true
+	SET openwash_received = true, updated_at = NOW()
 	WHERE order_id = $1;
 	`
 	SetPaymentCanceled = `
 	UPDATE public.sbp_payments
-	SET canceled = true
+	SET canceled = true, updated_at = NOW()
 	WHERE order_id = $1;
 	`
 	// get

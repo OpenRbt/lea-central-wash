@@ -56,10 +56,7 @@ func New(db *sqlx.DB, maintenanceDB *sqlx.DB, schemaVer *schemaver.SchemaVer) *r
 		db:            sqlxx.NewDB(db),
 		maintenanceDB: sqlxx.NewDB(maintenanceDB),
 		schemaVer:     schemaVer,
-		PaymentsRep: PaymentsRep{
-			payments:        make(map[postID]*app.Payment),
-			paymentsByOrder: make(map[orderID]*app.Payment),
-		},
+		PaymentsRep:   PaymentsRep{},
 	}
 }
 
