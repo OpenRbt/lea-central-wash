@@ -68,6 +68,10 @@ func (a *app) SetConfigString(auth *Auth, config ConfigString) error {
 	return a.repo.SetConfigString(config)
 }
 
+func (a *app) DeleteConfigString(auth *Auth, name string) error {
+	return a.repo.DeleteConfigString(name)
+}
+
 func (a *app) GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error) {
 	return a.repo.GetStationConfigInt(name, stationID)
 }

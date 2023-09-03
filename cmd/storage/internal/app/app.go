@@ -143,6 +143,8 @@ type (
 		SetConfigBool(auth *Auth, config ConfigBool) error
 		SetConfigString(auth *Auth, config ConfigString) error
 
+		DeleteConfigString(auth *Auth, name string) error
+
 		GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error)
 		GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error)
 		GetStationConfigString(name string, stationID StationID) (*StationConfigString, error)
@@ -239,6 +241,8 @@ type (
 		SetConfigInt(config ConfigInt) error
 		SetConfigBool(config ConfigBool) error
 		SetConfigString(config ConfigString) error
+
+		DeleteConfigString(name string) error
 
 		GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error)
 		GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error)
