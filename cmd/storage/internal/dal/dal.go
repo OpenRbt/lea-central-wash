@@ -1004,6 +1004,14 @@ func (r *repo) SetConfigString(config app.ConfigString) (err error) {
 	return
 }
 
+func (r *repo) DeleteConfigString(name string) error {
+	_, err := r.db.NamedExec(sqlDeleteConfigString, argGetConfig{
+		Name: name,
+	})
+
+	return err
+}
+
 func (r *repo) GetStationConfigInt(name string, stationID app.StationID) (cfg *app.StationConfigInt, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		res := resGetStationConfigInt{}

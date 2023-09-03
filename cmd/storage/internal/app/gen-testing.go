@@ -113,31 +113,31 @@ func (mr *MockAppMockRecorder) AdvertisingCampaignByID(auth, id interface{}) *go
 }
 
 // AssignSessionBonuses mocks base method.
-func (m *MockApp) AssignSessionBonuses(sessionID string, amount int) error {
+func (m *MockApp) AssignSessionBonuses(sessionID string, amount int, post StationID) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AssignSessionBonuses", sessionID, amount)
+	ret := m.ctrl.Call(m, "AssignSessionBonuses", sessionID, amount, post)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // AssignSessionBonuses indicates an expected call of AssignSessionBonuses.
-func (mr *MockAppMockRecorder) AssignSessionBonuses(sessionID, amount interface{}) *gomock.Call {
+func (mr *MockAppMockRecorder) AssignSessionBonuses(sessionID, amount, post interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssignSessionBonuses", reflect.TypeOf((*MockApp)(nil).AssignSessionBonuses), sessionID, amount)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssignSessionBonuses", reflect.TypeOf((*MockApp)(nil).AssignSessionBonuses), sessionID, amount, post)
 }
 
 // AssignSessionUser mocks base method.
-func (m *MockApp) AssignSessionUser(sessionID, userID string) error {
+func (m *MockApp) AssignSessionUser(sessionID, userID string, post StationID) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AssignSessionUser", sessionID, userID)
+	ret := m.ctrl.Call(m, "AssignSessionUser", sessionID, userID, post)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // AssignSessionUser indicates an expected call of AssignSessionUser.
-func (mr *MockAppMockRecorder) AssignSessionUser(sessionID, userID interface{}) *gomock.Call {
+func (mr *MockAppMockRecorder) AssignSessionUser(sessionID, userID, post interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssignSessionUser", reflect.TypeOf((*MockApp)(nil).AssignSessionUser), sessionID, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssignSessionUser", reflect.TypeOf((*MockApp)(nil).AssignSessionUser), sessionID, userID, post)
 }
 
 // CardReaderConfig mocks base method.
@@ -227,6 +227,20 @@ func (m *MockApp) DelStation(id StationID) error {
 func (mr *MockAppMockRecorder) DelStation(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DelStation", reflect.TypeOf((*MockApp)(nil).DelStation), id)
+}
+
+// DeleteConfigString mocks base method.
+func (m *MockApp) DeleteConfigString(auth *Auth, name string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteConfigString", auth, name)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteConfigString indicates an expected call of DeleteConfigString.
+func (mr *MockAppMockRecorder) DeleteConfigString(auth, name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteConfigString", reflect.TypeOf((*MockApp)(nil).DeleteConfigString), auth, name)
 }
 
 // DeleteUser mocks base method.
@@ -389,6 +403,20 @@ func (mr *MockAppMockRecorder) GetRabbitConfig() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRabbitConfig", reflect.TypeOf((*MockApp)(nil).GetRabbitConfig))
 }
 
+// GetServerInfo mocks base method.
+func (m *MockApp) GetServerInfo() ServerInfo {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetServerInfo")
+	ret0, _ := ret[0].(ServerInfo)
+	return ret0
+}
+
+// GetServerInfo indicates an expected call of GetServerInfo.
+func (mr *MockAppMockRecorder) GetServerInfo() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServerInfo", reflect.TypeOf((*MockApp)(nil).GetServerInfo))
+}
+
 // GetStationConfigBool mocks base method.
 func (m *MockApp) GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error) {
 	m.ctrl.T.Helper()
@@ -480,29 +508,15 @@ func (mr *MockAppMockRecorder) Info() *gomock.Call {
 }
 
 // InitBonusRabbitWorker mocks base method.
-func (m *MockApp) InitBonusRabbitWorker(routingKey string, publisherFunc func(interface{}, vo.Service, vo.RoutingKey, vo.MessageType) error) {
+func (m *MockApp) InitBonusRabbitWorker(routingKey string, publisherFunc func(interface{}, vo.Service, vo.RoutingKey, vo.MessageType) error, isConnected func() bool) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "InitBonusRabbitWorker", routingKey, publisherFunc)
+	m.ctrl.Call(m, "InitBonusRabbitWorker", routingKey, publisherFunc, isConnected)
 }
 
 // InitBonusRabbitWorker indicates an expected call of InitBonusRabbitWorker.
-func (mr *MockAppMockRecorder) InitBonusRabbitWorker(routingKey, publisherFunc interface{}) *gomock.Call {
+func (mr *MockAppMockRecorder) InitBonusRabbitWorker(routingKey, publisherFunc, isConnected interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitBonusRabbitWorker", reflect.TypeOf((*MockApp)(nil).InitBonusRabbitWorker), routingKey, publisherFunc)
-}
-
-// IsAuthorized mocks base method.
-func (m *MockApp) IsAuthorized(stationID StationID) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IsAuthorized", stationID)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// IsAuthorized indicates an expected call of IsAuthorized.
-func (mr *MockAppMockRecorder) IsAuthorized(stationID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsAuthorized", reflect.TypeOf((*MockApp)(nil).IsAuthorized), stationID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitBonusRabbitWorker", reflect.TypeOf((*MockApp)(nil).InitBonusRabbitWorker), routingKey, publisherFunc, isConnected)
 }
 
 // IsEnabled mocks base method.
@@ -634,22 +648,6 @@ func (m *MockApp) Programs(id *int64) ([]Program, error) {
 func (mr *MockAppMockRecorder) Programs(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Programs", reflect.TypeOf((*MockApp)(nil).Programs), id)
-}
-
-// RefreshSession mocks base method.
-func (m *MockApp) RefreshSession(stationID StationID) (string, int64, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RefreshSession", stationID)
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(int64)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// RefreshSession indicates an expected call of RefreshSession.
-func (mr *MockAppMockRecorder) RefreshSession(stationID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshSession", reflect.TypeOf((*MockApp)(nil).RefreshSession), stationID)
 }
 
 // RelayReportCurrent mocks base method.
@@ -1421,6 +1419,20 @@ func (m *MockRepo) DelStation(arg0 StationID) error {
 func (mr *MockRepoMockRecorder) DelStation(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DelStation", reflect.TypeOf((*MockRepo)(nil).DelStation), arg0)
+}
+
+// DeleteConfigString mocks base method.
+func (m *MockRepo) DeleteConfigString(name string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteConfigString", name)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteConfigString indicates an expected call of DeleteConfigString.
+func (mr *MockRepoMockRecorder) DeleteConfigString(name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteConfigString", reflect.TypeOf((*MockRepo)(nil).DeleteConfigString), name)
 }
 
 // DeleteUser mocks base method.
