@@ -5,11 +5,12 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	uuid "github.com/satori/go.uuid"
 	"runtime"
 	"strconv"
 	"strings"
 	"time"
+
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/migration"
@@ -992,6 +993,14 @@ func (r *repo) SetConfigString(config app.ConfigString) (err error) {
 		return err
 	})
 	return
+}
+
+func (r *repo) DeleteConfigString(name string) error {
+	_, err := r.db.NamedExec(sqlDeleteConfigString, argGetConfig{
+		Name: name,
+	})
+
+	return err
 }
 
 func (r *repo) GetStationConfigInt(name string, stationID app.StationID) (cfg *app.StationConfigInt, err error) {

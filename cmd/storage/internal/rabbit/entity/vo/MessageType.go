@@ -19,4 +19,6 @@ const (
 
 	AdminServerRegisteredMessageType MessageType = "admin_service/server/registered"
 	AdminServerUpdatedMessageType    MessageType = "admin_service/server/updated"
+
+	WashServerDeletionMessageType MessageType = "bonus_service/wash_server/delete"
 )

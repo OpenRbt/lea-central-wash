@@ -574,6 +574,10 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 			note = :note
 	`
 
+	sqlDeleteConfigString = `
+		DELETE FROM config_vars_string WHERE name = UPPER(:name)
+	`
+
 	sqlGetStationConfigInt = `
 	SELECT name, value, description, note, station_id
 	FROM station_config_vars_int
