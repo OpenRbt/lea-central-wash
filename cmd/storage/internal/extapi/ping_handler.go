@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
 )
 
@@ -25,15 +26,19 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 	station, bonusActive := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP)
 
 	stationIDString := fmt.Sprintf("%d", stationID)
-	lastPayment, err := svc.app.GetLastPayment(stationIDString)
-	if err != nil {
-		log.Info("post ping: failed get last payment request", "stationID", stationIDString)
-		stationIP = ""
-	}
-
 	var amount int64
-	if lastPayment.Confirmed && !lastPayment.Canceled {
-		amount = lastPayment.Amount
+	var lastPayment app.Payment
+	if !svc.app.IsSbpRabbitWorkerInit() {
+		log.PrintErr("sbp rabbit worker isn't init")
+	} else {
+		lastPayment, err = svc.app.GetLastPayment(stationIDString)
+		if err != nil {
+			log.Info("post ping: failed get last payment request", "stationID", stationIDString)
+			stationIP = ""
+		}
+		if lastPayment.Confirmed && !lastPayment.Canceled {
+			amount = lastPayment.Amount
+		}
 	}
 
 	return op.NewPingOK().WithPayload(&op.PingOKBody{

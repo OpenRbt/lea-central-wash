@@ -169,7 +169,8 @@ type (
 		// sbp
 		SbpWorkerInterface
 		InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error
-		GetSbpConfig() (cfg SbpRabbitConfig, err error)
+		IsSbpRabbitWorkerInit() bool
+		GetSbpConfig(envServerSbpID string, envServerSbpPassword string) (cfg SbpRabbitConfig, err error)
 	}
 
 	// Repo is a DAL interface.
@@ -321,7 +322,7 @@ type app struct {
 
 	bonusSystemRabbitWorker *BonusRabbitWorker
 	// sbp
-	SbpWorker
+	*SbpWorker
 }
 
 // New creates and returns new App.

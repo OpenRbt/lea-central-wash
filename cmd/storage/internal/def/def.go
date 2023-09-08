@@ -2,7 +2,6 @@
 package def
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -33,37 +32,42 @@ const (
 var (
 	oapiHost, _, oapiBasePath = swaggerEndpoint()
 
-	TestTimeFactor     = floatGetenv("GO_TEST_TIME_FACTOR", 1.0)
+	TestTimeFactor     = floatGetEnv("GO_TEST_TIME_FACTOR", 1.0)
 	TestSecond         = time.Duration(float64(time.Second) * TestTimeFactor)
-	DBHost             = strGetenv("STORAGE_DB_HOST", "")
-	DBPort             = intGetenv("STORAGE_DB_PORT", 5432)
-	DBUser             = strGetenv("STORAGE_DB_USER", "")
-	DBPass             = strGetenv("STORAGE_DB_PASS", "")
-	DBName             = strGetenv("STORAGE_DB_NAME", "")
-	DBSchema           = strGetenv("STORAGE_DB_SCHEMA", "public")
-	GooseDir           = strGetenv("GOOSE_DIR", "cmd/storage/internal/migration")
-	ExtAPIHost         = strGetenv("STORAGE_EXT_HOST", oapiHost)
-	ExtAPIPort         = intGetenv("STORAGE_EXT_PORT", 8020)
-	ExtAPIBasePath     = strGetenv("STORAGE_EXT_BASEPATH", oapiBasePath)
-	KasseEndpoint      = strGetenv("STORAGE_KASSE_ENDPOINT", "https://localhost:8443")
-	HALEndpoint        = strGetenv("STORAGE_HAL_ENDPOINT", ":8099")
+	DBHost             = strGetEnv("STORAGE_DB_HOST", "")
+	DBPort             = intGetEnv("STORAGE_DB_PORT", 5432)
+	DBUser             = strGetEnv("STORAGE_DB_USER", "")
+	DBPass             = strGetEnv("STORAGE_DB_PASS", "")
+	DBName             = strGetEnv("STORAGE_DB_NAME", "")
+	DBSchema           = strGetEnv("STORAGE_DB_SCHEMA", "public")
+	GooseDir           = strGetEnv("GOOSE_DIR", "cmd/storage/internal/migration")
+	ExtAPIHost         = strGetEnv("STORAGE_EXT_HOST", oapiHost)
+	ExtAPIPort         = intGetEnv("STORAGE_EXT_PORT", 8020)
+	ExtAPIBasePath     = strGetEnv("STORAGE_EXT_BASEPATH", oapiBasePath)
+	KasseEndpoint      = strGetEnv("STORAGE_KASSE_ENDPOINT", "https://localhost:8443")
+	HALEndpoint        = strGetEnv("STORAGE_HAL_ENDPOINT", ":8099")
 	MeteoInfoBaseURL   = "https://meteoinfo.ru/pogoda"
 	OpenWeatherBaseURL = "http://api.openweathermap.org/data/2.5/weather"
-	OpenWeatherAPIKey  = strGetenv("OPENWEATHER_API_KEY", "")
+	OpenWeatherAPIKey  = strGetEnv("OPENWEATHER_API_KEY", "")
 	IpifyBaseURL       = "https://geo.ipify.org/api/v1"
-	IpifyAPIKey        = strGetenv("IPIFY_API_KEY", "")
-	CleanupTimeout     = intGetenv("STORAGE_API_CLEANUP_TIMEOUT", 5)
-	ReadTimeout        = intGetenv("STORAGE_API_READ_TIMEOUT", 2)
-	WriteTimeout       = intGetenv("STORAGE_API_WRITE_TIMEOUT", 2)
-	StartDelaySec      = intGetenv("STORAGE_START_DELAY", 30)
-	OpenwashingURL     = strGetenv("OPENWASHING_URL", "https://app.openwashing.com")
+	IpifyAPIKey        = strGetEnv("IPIFY_API_KEY", "")
+	CleanupTimeout     = intGetEnv("STORAGE_API_CLEANUP_TIMEOUT", 5)
+	ReadTimeout        = intGetEnv("STORAGE_API_READ_TIMEOUT", 2)
+	WriteTimeout       = intGetEnv("STORAGE_API_WRITE_TIMEOUT", 2)
+	StartDelaySec      = intGetEnv("STORAGE_START_DELAY", 30)
+	OpenwashingURL     = strGetEnv("OPENWASHING_URL", "https://app.openwashing.com")
 
-	RabbitHost = strGetenv("RABBIT_HOST", "app.openwashing.com")
-	RabbitPort = strGetenv("RABBIT_PORT", "4043")
+	RabbitHost = strGetEnv("RABBIT_HOST", "app.openwashing.com")
+	RabbitPort = strGetEnv("RABBIT_PORT", "4043")
 
-	SbpRabbitHost              = strGetenv("SBP_RABBIT_HOST", "app.openwashing.com")
-	SbpRabbitPort              = strGetenv("SBP_RABBIT_PORT", "4043")
-	SbpPaymentExpirationPeriod = durationGetenv("SBP_PAYMENT_EXPIRATION_PERIOD", time.Minute*10)
+	// sbp
+	SbpRabbitHost              = strGetEnv("SBP_RABBIT_HOST", "app.openwashing.com")
+	SbpRabbitPort              = strGetEnv("SBP_RABBIT_PORT", "4043")
+	SbpRabbitSecure            = boolGetEnv("SBP_RABBIT_SECURE", true)
+	SbpPaymentExpirationPeriod = durationGetEnv("SBP_PAYMENT_EXPIRATION_PERIOD", time.Minute*10)
+	SbpEnvNameServerID         = strGetEnv("SBP_ENV_NAME_SERVER_ID", "SBP_SERVER_ID")
+	SbpEnvNameServerPassword   = strGetEnv("SBP_ENV_NAME_SERVER_PASSWORD", "SBP_SERVER_PASSWORD")
+	//
 )
 
 var initErr error
@@ -104,7 +108,7 @@ func Init() error {
 	return initErr
 }
 
-func floatGetenv(name string, def float64) float64 {
+func floatGetEnv(name string, def float64) float64 {
 	value := os.Getenv(name)
 	if value == "" {
 		return def
@@ -117,7 +121,7 @@ func floatGetenv(name string, def float64) float64 {
 	return v
 }
 
-func intGetenv(name string, def int) int {
+func intGetEnv(name string, def int) int {
 	value := os.Getenv(name)
 	if value == "" {
 		return def
@@ -130,7 +134,7 @@ func intGetenv(name string, def int) int {
 	return i
 }
 
-func strGetenv(name, def string) string {
+func strGetEnv(name, def string) string {
 	value := os.Getenv(name)
 	if value == "" {
 		return def
@@ -138,12 +142,25 @@ func strGetenv(name, def string) string {
 	return value
 }
 
-func durationGetenv(name string, def time.Duration) time.Duration {
+func boolGetEnv(name string, def bool) bool {
+	value := os.Getenv(name)
+	if value == "" {
+		return def
+	}
+	v, err := strconv.ParseBool(value)
+	if err != nil {
+		initErr = errors.Errorf("failed to parse %q=%q as bool: %v", name, value, err)
+		return def
+	}
+	return v
+}
+
+func durationGetEnv(name string, def time.Duration) time.Duration {
 	value := os.Getenv(name)
 	if value == "" {
 		d, err := time.ParseDuration(value)
 		if err != nil {
-			fmt.Println(err)
+			initErr = errors.Errorf("failed to parse %q=%q as duration: %v", name, value, err)
 			return def
 		}
 		return d

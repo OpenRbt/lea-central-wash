@@ -10,6 +10,10 @@ import (
 
 // pay ...
 func (svc *service) pay(params op.PayParams) op.PayResponder {
+	if !svc.app.IsSbpRabbitWorkerInit() {
+		log.PrintErr("sbp rabbit worker isn't init")
+		return op.NewPayInternalServerError()
+	}
 	var hash string
 	if params.Args.Hash != nil {
 		hash = *params.Args.Hash
@@ -41,6 +45,10 @@ func (svc *service) pay(params op.PayParams) op.PayResponder {
 
 // payReceived ...
 func (svc *service) payReceived(params op.PayReceivedParams) op.PayReceivedResponder {
+	if !svc.app.IsSbpRabbitWorkerInit() {
+		log.PrintErr("sbp rabbit worker isn't init")
+		return op.NewPayReceivedInternalServerError()
+	}
 	var hash string
 	if params.Args.Hash != nil {
 		hash = *params.Args.Hash

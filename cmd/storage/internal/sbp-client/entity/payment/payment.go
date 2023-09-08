@@ -2,15 +2,15 @@ package payment
 
 // PayRequest ...
 type PayRequest struct {
-	Amount     int64  `json:"amount"`
-	ServerID   string `json:"server_id"`
-	PostID     string `json:"post_id"`
-	ServiceKey string `json:"service_key"`
-	OrderID    string `json:"order_id"`
+	WashID  string `json:"wash_id"`
+	PostID  string `json:"post_id"`
+	OrderID string `json:"order_id"`
+	Amount  int64  `json:"amount"`
 }
 
 // PayResponse ...
 type PayResponse struct {
+	WashID  string `json:"wash_id"`
 	PostID  string `json:"post_id"`
 	OrderID string `json:"order_id"`
 	UrlPay  string `json:"url_pay"`
@@ -18,23 +18,22 @@ type PayResponse struct {
 
 // PayСancellationRequest ...
 type PayСancellationRequest struct {
-	ServerID   string `json:"server_id"`
-	PostID     string `json:"post_id"`
-	ServiceKey string `json:"service_key"`
-	OrderID    string `json:"order_id"`
+	WashID  string `json:"wash_id"`
+	PostID  string `json:"post_id"`
+	OrderID string `json:"order_id"`
 }
 
 // PayNotifcation ...
 type PayNotifcation struct {
-	ServerID string `json:"server_id"`
-	PostID   string `json:"post_id"`
-	OrderID  string `json:"order_id"`
-	Status   string `json:"status"`
+	WashID  string `json:"wash_id"`
+	PostID  string `json:"post_id"`
+	OrderID string `json:"order_id"`
+	Status  string `json:"status"`
 }
 
 // PayError ...
 type PayError struct {
-	ServerID  string `json:"server_id"`
+	WashID    string `json:"wash_id"`
 	PostID    string `json:"post_id"`
 	OrderID   string `json:"order_id"`
 	ErrorCode int64  `json:"error_code"`

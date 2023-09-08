@@ -8,29 +8,22 @@ import (
 // SbpRabbitWorkerConfig ...
 type SbpRabbitWorkerConfig struct {
 	ServerID                     string
-	ServiceSbpKey                string
+	ServerPassword               string
 	SbpRep                       SbpRepInterface
 	SbpBroker                    SbpBrokerInterface
 	NotificationExpirationPeriod time.Duration
 }
 
 // GetSbpConfig ...
-func (a *app) GetSbpConfig() (cfg SbpRabbitConfig, err error) {
-	serverID, err := a.repo.GetConfigString("server_id")
+func (a *app) GetSbpConfig(envServerSbpID string, envServerSbpPassword string) (cfg SbpRabbitConfig, err error) {
+	serverID, err := a.repo.GetConfigString(envServerSbpID)
 	if err != nil {
 		err = ErrServiceNotConfigured
 
 		return cfg, err
 	}
 
-	serverKey, err := a.repo.GetConfigString("server_key")
-	if err != nil {
-		err = ErrServiceNotConfigured
-
-		return cfg, err
-	}
-
-	serverSbpKey, err := a.repo.GetConfigString("server_sbp_key")
+	serverPassword, err := a.repo.GetConfigString(envServerSbpPassword)
 	if err != nil {
 		err = ErrServiceNotConfigured
 
@@ -38,8 +31,7 @@ func (a *app) GetSbpConfig() (cfg SbpRabbitConfig, err error) {
 	}
 
 	cfg.ServerID = serverID.Value
-	cfg.ServerPassword = serverKey.Value
-	cfg.ServerSbpKey = serverSbpKey.Value
+	cfg.ServerPassword = serverPassword.Value
 	return
 }
 
@@ -49,8 +41,8 @@ func (a *app) InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error {
 		fmt.Errorf("InitSbpRabbitWorker: sbpBroker is empty")
 	}
 
-	if config.ServiceSbpKey == "" {
-		fmt.Errorf("InitSbpRabbitWorker: serviceSbpKey is empty")
+	if config.ServerPassword == "" {
+		fmt.Errorf("InitSbpRabbitWorker: serviceSbpPassword is empty")
 	}
 
 	if config.SbpBroker == nil {
@@ -61,9 +53,8 @@ func (a *app) InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error {
 		fmt.Errorf("InitSbpRabbitWorker: SbpRep = nil")
 	}
 
-	a.SbpWorker = SbpWorker{
+	a.SbpWorker = &SbpWorker{
 		serverID:                     config.ServerID,
-		serviceSbpKey:                config.ServiceSbpKey,
 		sbpRep:                       config.SbpRep,
 		sbpBroker:                    config.SbpBroker,
 		notificationExpirationPeriod: config.NotificationExpirationPeriod,
@@ -73,4 +64,9 @@ func (a *app) InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error {
 	go a.SbpWorker.CancelExpiratedNotOpenwashReceivedPayments()
 
 	return nil
+}
+
+// IsSbpRabbitWorkerInit
+func (a *app) IsSbpRabbitWorkerInit() bool {
+	return a.SbpWorker == nil
 }

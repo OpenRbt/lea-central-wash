@@ -13,7 +13,6 @@ import (
 // SbpWorker ...
 type SbpWorker struct {
 	serverID                     string
-	serviceSbpKey                string
 	sbpRep                       SbpRepInterface
 	sbpBroker                    SbpBrokerInterface
 	notificationExpirationPeriod time.Duration
@@ -23,7 +22,6 @@ type SbpWorker struct {
 type SbpRabbitConfig struct {
 	ServerID       string
 	ServerPassword string
-	ServerSbpKey   string
 }
 
 // SbpWorkerInterface ...
@@ -135,11 +133,10 @@ func (w *SbpWorker) SendPaymentRequest(postID string, amount int64) error {
 
 	// send to sbp-client
 	brokerReq := paymentEntities.PayRequest{
-		Amount:     amount,
-		ServerID:   w.serverID,
-		PostID:     postID,
-		OrderID:    dbReq.OrderId,
-		ServiceKey: w.serviceSbpKey,
+		Amount:  amount,
+		WashID:  w.serverID,
+		PostID:  postID,
+		OrderID: dbReq.OrderId,
 	}
 	err = w.sbpBroker.SendPaymentRequest(brokerReq)
 	if err != nil {
@@ -229,10 +226,9 @@ func (w *SbpWorker) expirationCheck(lastPayment Payment) error {
 func (w *SbpWorker) paymentCancel(serverID, postID, orderID string) error {
 	if orderID != "" {
 		cancelReq := paymentEntities.PayСancellationRequest{
-			ServerID:   serverID,
-			PostID:     postID,
-			ServiceKey: w.serviceSbpKey,
-			OrderID:    orderID,
+			WashID:  serverID,
+			PostID:  postID,
+			OrderID: orderID,
 		}
 
 		// cancelPayment

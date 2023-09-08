@@ -14,12 +14,12 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-type Config struct {
-	URL             string
-	Port            string
-	ServerID        string
-	ServerPassword  string
-	SbpGeneratedKey string
+type RabbitConfig struct {
+	URL            string
+	Port           string
+	ServerID       string
+	ServerPassword string
+	Secure         bool
 }
 
 const (
@@ -33,7 +33,7 @@ const (
 type Service struct {
 	sync.Mutex
 	app app.App
-	cfg Config
+	cfg RabbitConfig
 
 	conn           *amqp.Connection
 	done           chan struct{}
@@ -44,7 +44,6 @@ type Service struct {
 	isConnected  int32
 	attempts     int8
 	serverID     string
-	serverSbpKey string
 	log          *structlog.Logger
 	sbpClientPub *amqp.Channel
 	sbpClientSub *amqp.Channel
@@ -52,10 +51,15 @@ type Service struct {
 	connString   string
 }
 
-func NewSbpRabbitClient(cfg Config, app app.App) (svc *Service, err error) {
+func NewSbpRabbitClient(cfg RabbitConfig, app app.App) (svc *Service, err error) {
 	//TODO: add rabbit variables extraction from repo
 
-	connString := fmt.Sprintf("amqps://%s:%s@%s:%s/", cfg.ServerID, cfg.ServerPassword, cfg.URL, cfg.Port)
+	connString := ""
+	if cfg.Secure {
+		connString = fmt.Sprintf("amqps://%s:%s@%s:%s/", cfg.ServerID, cfg.ServerPassword, cfg.URL, cfg.Port)
+	} else {
+		connString = fmt.Sprintf("amqp://%s:%s@%s:%s/", cfg.ServerID, cfg.ServerPassword, cfg.URL, cfg.Port)
+	}
 	rabbitConf := amqp.Config{
 		SASL: []amqp.Authentication{
 			&amqp.PlainAuth{
@@ -73,14 +77,13 @@ func NewSbpRabbitClient(cfg Config, app app.App) (svc *Service, err error) {
 	}
 
 	svc = &Service{
-		app:          app,
-		log:          structlog.New(),
-		rabbitConf:   &rabbitConf,
-		connString:   connString,
-		serverID:     cfg.ServerID,
-		serverSbpKey: cfg.SbpGeneratedKey,
-		cfg:          cfg,
-		done:         make(chan struct{}),
+		app:        app,
+		log:        structlog.New(),
+		rabbitConf: &rabbitConf,
+		connString: connString,
+		serverID:   cfg.ServerID,
+		cfg:        cfg,
+		done:       make(chan struct{}),
 	}
 
 	err = svc.connect()
@@ -203,7 +206,7 @@ func (s *Service) connect() error {
 		return err
 	}
 	_, err = s.sbpClientSub.QueueDeclare(
-		s.serverSbpKey,
+		s.serverID,
 		false,
 		false,
 		false,
@@ -217,8 +220,8 @@ func (s *Service) connect() error {
 	}
 
 	err = s.sbpClientSub.QueueBind(
-		s.serverSbpKey,
-		s.serverSbpKey,
+		s.serverID,
+		s.serverID,
 		string(sbpvo.LeaWashService),
 		false,
 		nil,
@@ -230,7 +233,7 @@ func (s *Service) connect() error {
 	}
 
 	delivery, err := s.sbpClientSub.Consume(
-		s.serverSbpKey,
+		s.serverID,
 		"",
 		false,
 		false,
