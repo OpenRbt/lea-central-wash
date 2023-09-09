@@ -135,15 +135,10 @@ func (s *Service) sendMessage(msg interface{}, messageType rabbit_vo.MessageType
 		}
 	}
 
-	serverID, err := s.app.GetConfigString(nil, "server_id")
-	if err != nil {
-		return err
-	}
-
 	message := amqp.Publishing{}
 	message.Body = jsonMsg
 	message.Type = string(messageType)
-	message.UserId = serverID.Value
+	message.UserId = s.serverID
 
 	exchangeName := string(rabbit_vo.SbpClientService)
 	routingKeyString := string(rabbit_vo.RoutingKeySbpClient)

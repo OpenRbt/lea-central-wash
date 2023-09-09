@@ -29,11 +29,11 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 	var amount int64
 	var lastPayment app.Payment
 	if !svc.app.IsSbpRabbitWorkerInit() {
-		log.PrintErr("sbp rabbit worker isn't init")
+		log.PrintErr("get last payment request failed: sbp rabbit worker isn't init")
 	} else {
 		lastPayment, err = svc.app.GetLastPayment(stationIDString)
 		if err != nil {
-			log.Info("post ping: failed get last payment request", "stationID", stationIDString)
+			log.Info("get last payment request failed:", "stationID", stationIDString)
 			stationIP = ""
 		}
 		if lastPayment.Confirmed && !lastPayment.Canceled {

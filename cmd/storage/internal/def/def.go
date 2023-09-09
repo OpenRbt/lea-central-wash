@@ -158,14 +158,14 @@ func boolGetEnv(name string, def bool) bool {
 func durationGetEnv(name string, def time.Duration) time.Duration {
 	value := os.Getenv(name)
 	if value == "" {
-		d, err := time.ParseDuration(value)
-		if err != nil {
-			initErr = errors.Errorf("failed to parse %q=%q as duration: %v", name, value, err)
-			return def
-		}
-		return d
+		return def
 	}
-	return def
+	d, err := time.ParseDuration(value)
+	if err != nil {
+		initErr = errors.Errorf("failed to parse %q=%q as duration: %v", name, value, err)
+		return def
+	}
+	return d
 }
 
 func swaggerEndpoint() (host string, port int, basePath string) {

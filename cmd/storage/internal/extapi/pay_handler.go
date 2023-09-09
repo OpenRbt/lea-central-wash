@@ -11,7 +11,7 @@ import (
 // pay ...
 func (svc *service) pay(params op.PayParams) op.PayResponder {
 	if !svc.app.IsSbpRabbitWorkerInit() {
-		log.PrintErr("sbp rabbit worker isn't init")
+		log.PrintErr("payment request failed: sbp rabbit worker isn't init")
 		return op.NewPayInternalServerError()
 	}
 	var hash string
@@ -30,7 +30,7 @@ func (svc *service) pay(params op.PayParams) op.PayResponder {
 	postID := fmt.Sprintf("%d", stationID)
 	err = svc.app.SendPaymentRequest(postID, int64(payAmount))
 	if err != nil {
-		log.PrintErr(err, "stationID", stationID, "pay amount", payAmount)
+		log.PrintErr("payment request failed:", err, "stationID", stationID, "pay amount", payAmount)
 
 		switch errors.Cause(err) {
 		case app.ErrUserIsNotAuthorized:
@@ -46,7 +46,7 @@ func (svc *service) pay(params op.PayParams) op.PayResponder {
 // payReceived ...
 func (svc *service) payReceived(params op.PayReceivedParams) op.PayReceivedResponder {
 	if !svc.app.IsSbpRabbitWorkerInit() {
-		log.PrintErr("sbp rabbit worker isn't init")
+		log.PrintErr("set payment received failed: sbp rabbit worker isn't init")
 		return op.NewPayReceivedInternalServerError()
 	}
 	var hash string
@@ -67,7 +67,7 @@ func (svc *service) payReceived(params op.PayReceivedParams) op.PayReceivedRespo
 	// logic method
 	err = svc.app.SetPaymentReceived(qrOrderID)
 	if err != nil {
-		log.PrintErr(err, "stationID", stationID, "orderId", qrOrderID)
+		log.PrintErr("set payment received failed:", err, "stationID", stationID, "orderId", qrOrderID)
 
 		switch errors.Cause(err) {
 		case app.ErrUserIsNotAuthorized:

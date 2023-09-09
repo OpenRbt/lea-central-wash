@@ -68,5 +68,5 @@ func (a *app) InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error {
 
 // IsSbpRabbitWorkerInit
 func (a *app) IsSbpRabbitWorkerInit() bool {
-	return a.SbpWorker == nil
+	return a.SbpWorker != nil
 }
