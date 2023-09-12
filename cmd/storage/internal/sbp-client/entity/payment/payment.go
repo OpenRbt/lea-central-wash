@@ -14,6 +14,7 @@ type PayResponse struct {
 	PostID  string `json:"post_id"`
 	OrderID string `json:"order_id"`
 	UrlPay  string `json:"url_pay"`
+	Failed  bool   `json:"failed"`
 }
 
 // PayСancellationRequest ...
@@ -29,13 +30,4 @@ type PayNotifcation struct {
 	PostID  string `json:"post_id"`
 	OrderID string `json:"order_id"`
 	Status  string `json:"status"`
-}
-
-// PayError ...
-type PayError struct {
-	WashID    string `json:"wash_id"`
-	PostID    string `json:"post_id"`
-	OrderID   string `json:"order_id"`
-	ErrorCode int64  `json:"error_code"`
-	ErrorDesc string `json:"error_desc"`
 }

@@ -28,6 +28,22 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 				return err
 			}
 
+			if msg.Failed {
+				err = s.app.SetPaymentCanceled(msg.OrderID)
+				if err != nil {
+					err = d.Nack(false, false)
+					if err != nil {
+						return err
+					}
+					return err
+				}
+
+				err = d.Ack(false)
+				if err != nil {
+					return err
+				}
+			}
+
 			err = s.app.SetPaymentURL(msg.OrderID, msg.UrlPay)
 			if err != nil {
 				err = d.Nack(false, false)
@@ -73,35 +89,6 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 			}
 		}
 
-	// payment error
-	case rabbit_vo.MessageTypePaymentError:
-		{
-			var msg paymentEntities.PayError
-			err := json.Unmarshal(d.Body, &msg)
-			if err != nil {
-				err = d.Nack(false, false)
-				if err != nil {
-					return err
-				}
-				return err
-			}
-
-			s.log.Err("sbp payment request error:", "post_id", msg.PostID, "desc", msg.ErrorDesc)
-
-			err = s.app.SetPaymentCanceled(msg.OrderID)
-			if err != nil {
-				err = d.Nack(false, false)
-				if err != nil {
-					return err
-				}
-				return err
-			}
-
-			err = d.Ack(false)
-			if err != nil {
-				return err
-			}
-		}
 	default:
 		{
 			err := d.Nack(false, false)
