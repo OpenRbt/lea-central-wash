@@ -55,8 +55,8 @@ func (svc *service) payReceived(params op.PayReceivedParams) op.PayReceivedRespo
 	}
 
 	var qrOrderID string
-	if params.Args.QrOrderID != "" {
-		qrOrderID = params.Args.QrOrderID
+	if params.Args.QrOrderID != nil {
+		qrOrderID = *params.Args.QrOrderID
 	}
 
 	stationID, err := svc.getID(hash)

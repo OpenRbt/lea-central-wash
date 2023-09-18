@@ -290,7 +290,8 @@ type PayReceivedBody struct {
 	Hash *string `json:"hash"`
 
 	// qr order Id
-	QrOrderID string `json:"qrOrderId,omitempty"`
+	// Required: true
+	QrOrderID *string `json:"qrOrderId"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
@@ -302,7 +303,8 @@ func (o *PayReceivedBody) UnmarshalJSON(data []byte) error {
 		Hash *string `json:"hash"`
 
 		// qr order Id
-		QrOrderID string `json:"qrOrderId,omitempty"`
+		// Required: true
+		QrOrderID *string `json:"qrOrderId"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -324,6 +326,10 @@ func (o *PayReceivedBody) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := o.validateQrOrderID(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -333,6 +339,15 @@ func (o *PayReceivedBody) Validate(formats strfmt.Registry) error {
 func (o *PayReceivedBody) validateHash(formats strfmt.Registry) error {
 
 	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *PayReceivedBody) validateQrOrderID(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"qrOrderId", "body", o.QrOrderID); err != nil {
 		return err
 	}
 

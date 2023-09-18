@@ -34,7 +34,6 @@ const (
 	SELECT *
 	FROM public.sbp_payments
 	WHERE post_id = $1
-	AND openwash_received != true
 	ORDER BY created_at DESC
 	LIMIT 1;
 	`

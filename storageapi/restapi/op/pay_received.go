@@ -70,7 +70,8 @@ type PayReceivedBody struct {
 	Hash *string `json:"hash"`
 
 	// qr order Id
-	QrOrderID string `json:"qrOrderId,omitempty"`
+	// Required: true
+	QrOrderID *string `json:"qrOrderId"`
 }
 
 // Validate validates this pay received body
@@ -78,6 +79,10 @@ func (o *PayReceivedBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateHash(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateQrOrderID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -90,6 +95,15 @@ func (o *PayReceivedBody) Validate(formats strfmt.Registry) error {
 func (o *PayReceivedBody) validateHash(formats strfmt.Registry) error {
 
 	if err := validate.Required("args"+"."+"hash", "body", o.Hash); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *PayReceivedBody) validateQrOrderID(formats strfmt.Registry) error {
+
+	if err := validate.Required("args"+"."+"qrOrderId", "body", o.QrOrderID); err != nil {
 		return err
 	}
 

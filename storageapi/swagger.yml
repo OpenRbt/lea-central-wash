@@ -2593,7 +2593,7 @@ paths:
             type: object
             required:
               - hash
-              - order_id
+              - qrOrderId
             properties:
               hash:
                 type: string

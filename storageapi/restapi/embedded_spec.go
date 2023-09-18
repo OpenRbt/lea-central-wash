@@ -1228,7 +1228,7 @@ func init() {
               "title": "pay_received",
               "required": [
                 "hash",
-                "order_id"
+                "qrOrderId"
               ],
               "properties": {
                 "hash": {
@@ -5151,7 +5151,7 @@ func init() {
               "title": "pay_received",
               "required": [
                 "hash",
-                "order_id"
+                "qrOrderId"
               ],
               "properties": {
                 "hash": {

@@ -36,6 +36,11 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 			log.Info("get last payment request failed:", "stationID", stationIDString)
 			stationIP = ""
 		}
+
+		if lastPayment.OpenwashReceived {
+			lastPayment = app.Payment{}
+		}
+
 		if lastPayment.Confirmed && !lastPayment.Canceled {
 			amount = lastPayment.Amount
 		}
