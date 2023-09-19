@@ -26,7 +26,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 	station, bonusActive := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP)
 
 	stationIDString := fmt.Sprintf("%d", stationID)
-	var amount int64
+
 	var lastPayment app.Payment
 	if !svc.app.IsSbpRabbitWorkerInit() {
 		log.PrintErr("get last payment request failed: sbp rabbit worker isn't init")
@@ -37,12 +37,8 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 			stationIP = ""
 		}
 
-		if lastPayment.OpenwashReceived {
+		if lastPayment.OpenwashReceived || lastPayment.Canceled {
 			lastPayment = app.Payment{}
-		}
-
-		if lastPayment.Confirmed && !lastPayment.Canceled {
-			amount = lastPayment.Amount
 		}
 	}
 
@@ -57,7 +53,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		BonusSystemActive:   bonusActive,
 		AuthorizedSessionID: station.AuthorizedSessionID,
 		// sbp
-		QrMoney:   &amount,
+		QrMoney:   &lastPayment.Amount,
 		QrOrderID: &lastPayment.OrderId,
 		QrURL:     &lastPayment.UrlPay,
 		QrFailed:  &lastPayment.Canceled,

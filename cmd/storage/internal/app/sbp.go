@@ -74,7 +74,8 @@ type Payment struct {
 
 // CancelExpiratedNotOpenwashReceivedPayments ...
 func (w *SbpWorker) CancelExpiratedNotOpenwashReceivedPayments() {
-	t := time.NewTicker(w.notificationExpirationPeriod)
+	// minute
+	t := time.NewTicker(time.Minute)
 	for {
 		// get last payments
 		reqs, err := w.sbpRep.GetActualPayments()
@@ -87,8 +88,8 @@ func (w *SbpWorker) CancelExpiratedNotOpenwashReceivedPayments() {
 		<-t.C
 		for i := 0; i < len(reqs); i++ {
 			// expiration check
-			period := time.Since(reqs[i].UpdatedAt)
-			if period >= w.notificationExpirationPeriod*3 {
+			period := -time.Since(reqs[i].UpdatedAt)
+			if period >= w.notificationExpirationPeriod {
 				err := w.paymentCancel(reqs[i].ServerID, reqs[i].PostID, reqs[i].OrderId)
 				if err != nil {
 					err = fmt.Errorf("process messages orderID = %s failed: %w", reqs[i].OrderId, err)

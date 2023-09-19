@@ -411,7 +411,6 @@ func initSbpClient(
 	if err == nil {
 		go func() {
 			for {
-
 				// rabbit client
 				sbpConfig := sbpclient.RabbitConfig{
 					URL:            url,
