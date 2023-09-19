@@ -40,6 +40,10 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		if lastPayment.OpenwashReceived || lastPayment.Canceled {
 			lastPayment = app.Payment{}
 		}
+
+		if !lastPayment.Confirmed {
+			lastPayment.Amount = 0
+		}
 	}
 
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
