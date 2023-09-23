@@ -88,8 +88,8 @@ func (w *SbpWorker) CancelExpiratedNotOpenwashReceivedPayments() {
 		<-t.C
 		for i := 0; i < len(reqs); i++ {
 			// expiration check
-			period := time.Until(reqs[i].UpdatedAt)
-			if period >= w.notificationExpirationPeriod {
+			period := time.Now().Sub(reqs[i].UpdatedAt)
+			if period >= w.notificationExpirationPeriod && !reqs[i].UpdatedAt.IsZero() {
 				err := w.paymentCancel(reqs[i].ServerID, reqs[i].PostID, reqs[i].OrderId)
 				if err != nil {
 					err = fmt.Errorf("process messages orderID = %s failed: %w", reqs[i].OrderId, err)
