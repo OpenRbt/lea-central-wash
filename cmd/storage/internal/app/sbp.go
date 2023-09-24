@@ -88,7 +88,7 @@ func (w *SbpWorker) CancelExpiratedNotOpenwashReceivedPayments() {
 		<-t.C
 		for i := 0; i < len(reqs); i++ {
 			// expiration check
-			period := time.Now().Sub(reqs[i].UpdatedAt)
+			period := time.Since(reqs[i].UpdatedAt).Abs()
 			if period >= w.notificationExpirationPeriod && !reqs[i].UpdatedAt.IsZero() {
 				err := w.paymentCancel(reqs[i].ServerID, reqs[i].PostID, reqs[i].OrderId)
 				if err != nil {
@@ -125,7 +125,7 @@ func (w *SbpWorker) SendPaymentRequest(postID string, amount int64) error {
 		Confirmed:        false,
 		OpenwashReceived: false,
 		CreatedAt:        time.Now(),
-		UpdatedAt:        time.Time{},
+		UpdatedAt:        time.Now(),
 	}
 	err = w.sbpRep.SavePayment(dbReq)
 	if err != nil {
