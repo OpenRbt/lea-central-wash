@@ -14,10 +14,12 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		log.Info("post ping: wrong address", "address", params.HTTPRequest.RemoteAddr)
 		stationIP = ""
 	}
+
 	//log.Info("post ping", "time", time.Now(), "hash", *params.Args.Hash, "ip", stationIP)
 	stationID, err := svc.getIDAndAddHash(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("post ping: not found", "hash", params.Args.Hash, "ip", stationIP)
+
 		return op.NewPingOK().WithPayload(&op.PingOKBody{
 			ServiceAmount: newInt64(int64(0)),
 		})
@@ -28,13 +30,13 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 	stationIDString := fmt.Sprintf("%d", stationID)
 
 	var lastPayment app.Payment
+
 	if !svc.app.IsSbpRabbitWorkerInit() {
 		log.PrintErr("get last payment request failed: sbp rabbit worker isn't init")
 	} else {
 		lastPayment, err = svc.app.GetLastPayment(stationIDString)
 		if err != nil {
 			log.Info("get last payment request failed:", "stationID", stationIDString)
-			stationIP = ""
 		}
 
 		if lastPayment.OpenwashReceived || lastPayment.Canceled {
@@ -46,19 +48,23 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		}
 	}
 
+	orderID := ""
+	if !lastPayment.OrderID.IsNil() {
+		orderID = lastPayment.OrderID.String()
+	}
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
 		ServiceAmount:       newInt64(int64(station.ServiceMoney)),
 		BonusAmount:         int64(station.BonusMoney),
 		OpenStation:         &station.OpenStation,
 		ButtonID:            int64(station.ButtonID),
 		LastUpdate:          int64(station.LastUpdate),
-		LastDiscountUpdate:  int64(station.LastDiscountUpdate),
+		LastDiscountUpdate:  station.LastDiscountUpdate,
 		SessionID:           station.CurrentSessionID,
 		BonusSystemActive:   bonusActive,
 		AuthorizedSessionID: station.AuthorizedSessionID,
 		// sbp
 		QrMoney:   &lastPayment.Amount,
-		QrOrderID: &lastPayment.OrderId,
+		QrOrderID: &orderID,
 		QrURL:     &lastPayment.UrlPay,
 		QrFailed:  &lastPayment.Canceled,
 	})

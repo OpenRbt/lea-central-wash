@@ -7,6 +7,7 @@ import (
 
 	paymentEntities "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/sbp-client/entity/payment"
 	rabbit_vo "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/sbp-client/entity/vo"
+	"github.com/gofrs/uuid"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -29,8 +30,9 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 			}
 
 			if msg.Failed {
-				err = s.app.SetPaymentCanceled(msg.OrderID)
+				err = s.app.SetPaymentCanceled(uuid.FromStringOrNil(msg.OrderID))
 				if err != nil {
+					s.log.PrintErr("")
 					err = d.Nack(false, false)
 					if err != nil {
 						return err
@@ -44,7 +46,7 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 				}
 			}
 
-			err = s.app.SetPaymentURL(msg.OrderID, msg.UrlPay)
+			err = s.app.SetPaymentURL(uuid.FromStringOrNil(msg.OrderID), msg.UrlPay)
 			if err != nil {
 				err = d.Nack(false, false)
 				if err != nil {
@@ -73,7 +75,7 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 			}
 
 			if strings.ToLower(msg.Status) == "confirmed" {
-				err = s.app.SetPaymentConfirmed(msg.OrderID)
+				err = s.app.SetPaymentConfirmed(uuid.FromStringOrNil(msg.OrderID))
 				if err != nil {
 					err = d.Nack(false, false)
 					if err != nil {

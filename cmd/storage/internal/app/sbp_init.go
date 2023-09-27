@@ -1,7 +1,7 @@
 package app
 
 import (
-	"fmt"
+	"errors"
 	"time"
 )
 
@@ -38,19 +38,19 @@ func (a *app) GetSbpConfig(envServerSbpID string, envServerSbpPassword string) (
 // InitSbpRabbitWorker ...
 func (a *app) InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error {
 	if config.ServerID == "" {
-		fmt.Errorf("InitSbpRabbitWorker: sbpBroker is empty")
+		return errors.New("InitSbpRabbitWorker: sbpBroker is empty")
 	}
 
 	if config.ServerPassword == "" {
-		fmt.Errorf("InitSbpRabbitWorker: serviceSbpPassword is empty")
+		return errors.New("InitSbpRabbitWorker: serviceSbpPassword is empty")
 	}
 
 	if config.SbpBroker == nil {
-		fmt.Errorf("InitSbpRabbitWorker: sbpBroker = nil")
+		return errors.New("InitSbpRabbitWorker: sbpBroker = nil")
 	}
 
 	if config.SbpRep == nil {
-		fmt.Errorf("InitSbpRabbitWorker: SbpRep = nil")
+		return errors.New("InitSbpRabbitWorker: SbpRep = nil")
 	}
 
 	a.SbpWorker = &SbpWorker{

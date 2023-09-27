@@ -5,6 +5,7 @@ import (
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
+	"github.com/gofrs/uuid"
 	"github.com/pkg/errors"
 )
 
@@ -65,7 +66,7 @@ func (svc *service) payReceived(params op.PayReceivedParams) op.PayReceivedRespo
 	}
 
 	// logic method
-	err = svc.app.SetPaymentReceived(qrOrderID)
+	err = svc.app.SetPaymentReceived(uuid.FromStringOrNil(qrOrderID))
 	if err != nil {
 		log.PrintErr("set payment received failed:", err, "stationID", stationID, "orderId", qrOrderID)
 
