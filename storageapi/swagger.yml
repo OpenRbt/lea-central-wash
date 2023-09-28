@@ -1615,6 +1615,10 @@ paths:
             required:
               - serviceAmount
               - openStation
+              - qrMoney
+              - qrUrl
+              - qrOrderId
+              - qrFailed
             properties:
               serviceAmount:
                 type: integer
@@ -1623,6 +1627,14 @@ paths:
               bonusAmount:
                 type: integer
               bonusSystemActive:
+                type: boolean
+              qrMoney:
+                type: integer
+              qrUrl:
+                type: string
+              qrOrderId:
+                type: string
+              qrFailed:
                 type: boolean
               openStation:
                 type: boolean
@@ -2539,5 +2551,60 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/ServerInfo'
+        500:
+          description: Internal error
+
+  /pay:
+    post:
+      operationId: "pay"
+      parameters: 
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "pay"
+            type: object
+            required:
+              - hash
+            properties:
+              hash:
+                type: string
+              amount:
+                type: integer
+      responses:
+        204:
+          description: OK
+        401:
+          description: user not authorized
+        404:
+          description: hash not found
+        500:
+          description: Internal error
+
+  /pay/received:
+    post:
+      operationId: "pay_received"
+      parameters: 
+        - name: args
+          required: true
+          in: body
+          schema:
+            title: "pay_received"
+            type: object
+            required:
+              - hash
+              - qrOrderId
+            properties:
+              hash:
+                type: string
+              qrOrderId:
+                type: string
+      responses:
+        204:
+          description: OK
+        401:
+          description: user not authorized
+        404:
+          description: hash not found
         500:
           description: Internal error

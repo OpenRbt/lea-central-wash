@@ -6,9 +6,7 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -67,24 +65,6 @@ type GetStationDiscountsBody struct {
 
 	// hash
 	Hash string `json:"hash,omitempty"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *GetStationDiscountsBody) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// hash
-		Hash string `json:"hash,omitempty"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	o.Hash = props.Hash
-	return nil
 }
 
 // Validate validates this get station discounts body
