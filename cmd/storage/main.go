@@ -36,6 +36,8 @@ import (
 	"github.com/powerman/narada4d/schemaver"
 	"github.com/powerman/pqx"
 	"github.com/powerman/structlog"
+
+	sbpclient "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/sbp-client"
 )
 
 const (
@@ -74,11 +76,36 @@ var (
 		extapi     extapi.Config
 		kasse      svckasse.Config
 		rabbit     rabbit.Config
+		sbp        sbpConfig
 		storage    app.AppConfig
 		hal        hal.Config
 		testBoards bool
 	}
 )
+
+// sbp
+type sbpConfig struct {
+	RabbitURL    string
+	RabbitPort   string
+	RabbitSecure bool
+
+	EnvNameServerID       string
+	EnvNameServerPassword string
+
+	PaymentExpirationPeriod time.Duration
+}
+
+// readSbpConfigFromFlag ...
+func readSbpConfigFromFlag() {
+	flag.StringVar(&cfg.sbp.RabbitURL, "sbp.RabbitURL", def.SbpRabbitHost, "sbp rabbit host for service connections")
+	flag.StringVar(&cfg.sbp.RabbitPort, "sbp.RabbitPort", def.SbpRabbitPort, "sbp rabbit port for service connections")
+	flag.BoolVar(&cfg.sbp.RabbitSecure, "sbp.RabbitSecure", def.SbpRabbitSecure, "sbp rabbit secure for service connections")
+
+	flag.StringVar(&cfg.sbp.EnvNameServerID, "sbp.EnvNameServerID", def.SbpEnvNameServerID, "sbp env name for server_id")
+	flag.StringVar(&cfg.sbp.EnvNameServerPassword, "sbp.EnvNameServerPassword", def.SbpEnvNameServerPassword, "sbp env name for server_password")
+
+	flag.DurationVar(&cfg.sbp.PaymentExpirationPeriod, "sbp.PaymentExpirationPeriod", def.SbpPaymentExpirationPeriod, "sbp payment expiration period")
+}
 
 // init provides common initialization for both app and tests.
 func init() { //nolint:gochecknoinits
@@ -113,6 +140,9 @@ func init() { //nolint:gochecknoinits
 	flag.StringVar(&cfg.rabbit.Port, "rabbit.port", def.RabbitPort, "port for service connections")
 
 	flag.StringVar(&cfg.storage.BonusServiceURL, "storage.bonus-service-url", def.OpenwashingURL, "URL of bonus service")
+
+	// sbp
+	readSbpConfigFromFlag()
 
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",
@@ -248,6 +278,7 @@ func applyMigrations(db *sqlx.DB) error {
 func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 	goose.Init("postgres")
 	var repo app.Repo
+	var sbpRepo app.SbpRepInterface
 	if db != nil {
 		var err error
 		var dbMigrations *sqlx.DB
@@ -272,7 +303,9 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 		dbMigrations.Close()
 
 		schemaVer, _ := schemaver.New()
-		repo = dal.New(db, maintenanceDBConn, schemaVer)
+		repository := dal.New(db, maintenanceDBConn, schemaVer)
+		repo = repository
+		sbpRepo = repository
 	} else {
 		log.Info("USING MEM DB")
 		repo = memdb.New()
@@ -298,6 +331,7 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 
 	appl := app.New(repo, kasse, weather, client)
 
+	// bonus
 	rabbitCfg, err := appl.GetRabbitConfig()
 	if err == nil {
 		cfg.rabbit.ServerID = rabbitCfg.ServerID
@@ -308,6 +342,19 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 		log.Warn("no wash_bonus config found! skipping wash_bonus service initialization")
 	}
 
+	// init sbp
+	initSbpClient(
+		cfg.sbp.RabbitURL,
+		cfg.sbp.RabbitPort,
+		cfg.sbp.RabbitSecure,
+		appl,
+		sbpRepo,
+		cfg.sbp.PaymentExpirationPeriod,
+		cfg.sbp.EnvNameServerID,
+		cfg.sbp.EnvNameServerPassword,
+	)
+
+	// server
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
 	if err != nil {
 		errc <- err
@@ -347,4 +394,63 @@ func initRabbitClient(cfg rabbit.Config, appl app.App) {
 		appl.FetchSessions()
 		return
 	}
+}
+
+// initSbpClient ...
+func initSbpClient(
+	url string,
+	port string,
+	secure bool,
+	appl app.App,
+	rep app.SbpRepInterface,
+	sbpPaymentExpirationPeriod time.Duration,
+	envServerSbpID string,
+	envServerSbpPassword string,
+) {
+	sbpConfig, err := appl.GetSbpConfig(envServerSbpID, envServerSbpPassword)
+	if err != nil {
+		log.Warn("sbp configuration not found! skipping sbp service initialization")
+	}
+	go func() {
+		for {
+			// rabbit client
+			sbpConfig := sbpclient.RabbitConfig{
+				URL:            url,
+				Port:           port,
+				ServerID:       sbpConfig.ServerID,
+				ServerPassword: sbpConfig.ServerPassword,
+				Secure:         secure,
+			}
+			var sbpRabbitClient *sbpclient.Service
+			sbpRabbitClient, err = sbpclient.NewSbpRabbitClient(sbpConfig, appl)
+			if err != nil {
+				if strings.Contains(err.Error(), "username or password not allowed") {
+					log.Err("Failed to init sbp client due to wrong credentials", "error", err)
+					return
+				}
+
+				log.Err("Failed to init sbp client", "error", err)
+				time.Sleep(5 * time.Second)
+				continue
+			}
+
+			// rabbit worker
+			//isConnectedFunc := sbpRabbitWorker.IsConnected
+			sbpWorkerConfig := app.SbpRabbitWorkerConfig{
+				ServerID:                     sbpConfig.ServerID,
+				ServerPassword:               sbpConfig.ServerPassword,
+				SbpBroker:                    sbpRabbitClient,
+				SbpRep:                       rep,
+				NotificationExpirationPeriod: sbpPaymentExpirationPeriod,
+			}
+
+			err = appl.InitSbpRabbitWorker(sbpWorkerConfig)
+			if err != nil {
+				log.Err("Failed to init sbp sbp rabbit worker", "error", err)
+			}
+
+			log.Info("serve sbp rabbit client")
+			return
+		}
+	}()
 }

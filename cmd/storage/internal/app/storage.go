@@ -960,6 +960,7 @@ func (a *app) SetBonuses(stationID StationID, bonuses int) error {
 func (a *app) AssignRabbitPub(publishFunc func(msg interface{}, service rabbitVo.Service, target rabbitVo.RoutingKey, messageType rabbitVo.MessageType) error) {
 	a.servicesPublisherFunc = publishFunc
 }
+
 func (a *app) SetExternalServicesActive(active bool) {
 	a.extServicesActive = active
 }

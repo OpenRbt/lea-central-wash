@@ -8,6 +8,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -47,14 +48,18 @@ type repo struct {
 	db            *sqlxx.DB
 	maintenanceDB *sqlxx.DB
 	schemaVer     *schemaver.SchemaVer
+	PaymentsRep
 }
 
 // New creates and returns new Repo.
-func New(db *sqlx.DB, maintenanceDB *sqlx.DB, schemaVer *schemaver.SchemaVer) app.Repo {
+func New(db *sqlx.DB, maintenanceDB *sqlx.DB, schemaVer *schemaver.SchemaVer) *repo {
 	return &repo{
 		db:            sqlxx.NewDB(db),
 		maintenanceDB: sqlxx.NewDB(maintenanceDB),
 		schemaVer:     schemaVer,
+		PaymentsRep: PaymentsRep{
+			RWMutex: &sync.RWMutex{},
+		},
 	}
 }
 
