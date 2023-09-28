@@ -158,12 +158,6 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		OpenStationHandler: OpenStationHandlerFunc(func(params OpenStationParams) OpenStationResponder {
 			return OpenStationNotImplemented()
 		}),
-		PayHandler: PayHandlerFunc(func(params PayParams) PayResponder {
-			return PayNotImplemented()
-		}),
-		PayReceivedHandler: PayReceivedHandlerFunc(func(params PayReceivedParams) PayReceivedResponder {
-			return PayReceivedNotImplemented()
-		}),
 		PingHandler: PingHandlerFunc(func(params PingParams) PingResponder {
 			return PingNotImplemented()
 		}),
@@ -401,10 +395,6 @@ type StorageAPI struct {
 	MeasureVolumeMillilitersHandler MeasureVolumeMillilitersHandler
 	// OpenStationHandler sets the operation handler for the open station operation
 	OpenStationHandler OpenStationHandler
-	// PayHandler sets the operation handler for the pay operation
-	PayHandler PayHandler
-	// PayReceivedHandler sets the operation handler for the pay received operation
-	PayReceivedHandler PayReceivedHandler
 	// PingHandler sets the operation handler for the ping operation
 	PingHandler PingHandler
 	// PressButtonHandler sets the operation handler for the press button operation
@@ -673,12 +663,6 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.OpenStationHandler == nil {
 		unregistered = append(unregistered, "OpenStationHandler")
-	}
-	if o.PayHandler == nil {
-		unregistered = append(unregistered, "PayHandler")
-	}
-	if o.PayReceivedHandler == nil {
-		unregistered = append(unregistered, "PayReceivedHandler")
 	}
 	if o.PingHandler == nil {
 		unregistered = append(unregistered, "PingHandler")
@@ -1042,14 +1026,6 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/open-station"] = NewOpenStation(o.context, o.OpenStationHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/pay"] = NewPay(o.context, o.PayHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/pay/received"] = NewPayReceived(o.context, o.PayReceivedHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
