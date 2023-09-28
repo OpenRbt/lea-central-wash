@@ -1695,7 +1695,7 @@ func (a *Client) PayReceived(params *PayReceivedParams, opts ...ClientOption) (*
 		params = NewPayReceivedParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "pay_received",
+		ID:                 "payReceived",
 		Method:             "POST",
 		PathPattern:        "/pay/received",
 		ProducesMediaTypes: []string{"application/json"},
@@ -1720,7 +1720,7 @@ func (a *Client) PayReceived(params *PayReceivedParams, opts ...ClientOption) (*
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for pay_received: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for payReceived: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

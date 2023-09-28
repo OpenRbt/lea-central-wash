@@ -126,6 +126,7 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/StationStatus'
+          
 
   StationStatus:
     type: object
@@ -2583,13 +2584,13 @@ paths:
 
   /pay/received:
     post:
-      operationId: "pay_received"
+      operationId: "payReceived"
       parameters: 
         - name: args
           required: true
           in: body
           schema:
-            title: "pay_received"
+            title: "payReceived"
             type: object
             required:
               - hash
@@ -2606,5 +2607,7 @@ paths:
           description: user not authorized
         404:
           description: hash not found
+        400:
+          description: Bad Request
         500:
           description: Internal error

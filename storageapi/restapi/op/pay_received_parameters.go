@@ -26,7 +26,7 @@ func NewPayReceivedParams() PayReceivedParams {
 // PayReceivedParams contains all the bound params for the pay received operation
 // typically these are obtained from a http.Request
 //
-// swagger:parameters pay_received
+// swagger:parameters payReceived
 type PayReceivedParams struct {
 
 	// HTTP Request Object

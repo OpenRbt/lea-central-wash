@@ -1217,7 +1217,7 @@ func init() {
     },
     "/pay/received": {
       "post": {
-        "operationId": "pay_received",
+        "operationId": "payReceived",
         "parameters": [
           {
             "name": "args",
@@ -1225,7 +1225,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "pay_received",
+              "title": "payReceived",
               "required": [
                 "hash",
                 "qrOrderId"
@@ -1244,6 +1244,9 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "401": {
             "description": "user not authorized"
@@ -5140,7 +5143,7 @@ func init() {
     },
     "/pay/received": {
       "post": {
-        "operationId": "pay_received",
+        "operationId": "payReceived",
         "parameters": [
           {
             "name": "args",
@@ -5148,7 +5151,7 @@ func init() {
             "required": true,
             "schema": {
               "type": "object",
-              "title": "pay_received",
+              "title": "payReceived",
               "required": [
                 "hash",
                 "qrOrderId"
@@ -5167,6 +5170,9 @@ func init() {
         "responses": {
           "204": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "401": {
             "description": "user not authorized"

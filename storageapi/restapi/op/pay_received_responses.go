@@ -39,6 +39,33 @@ func (o *PayReceivedNoContent) WriteResponse(rw http.ResponseWriter, producer ru
 
 func (o *PayReceivedNoContent) PayReceivedResponder() {}
 
+// PayReceivedBadRequestCode is the HTTP code returned for type PayReceivedBadRequest
+const PayReceivedBadRequestCode int = 400
+
+/*
+PayReceivedBadRequest Bad Request
+
+swagger:response payReceivedBadRequest
+*/
+type PayReceivedBadRequest struct {
+}
+
+// NewPayReceivedBadRequest creates PayReceivedBadRequest with default headers values
+func NewPayReceivedBadRequest() *PayReceivedBadRequest {
+
+	return &PayReceivedBadRequest{}
+}
+
+// WriteResponse to the client
+func (o *PayReceivedBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(400)
+}
+
+func (o *PayReceivedBadRequest) PayReceivedResponder() {}
+
 // PayReceivedUnauthorizedCode is the HTTP code returned for type PayReceivedUnauthorized
 const PayReceivedUnauthorizedCode int = 401
 

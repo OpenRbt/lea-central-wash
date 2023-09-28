@@ -32,6 +32,12 @@ func (o *PayReceivedReader) ReadResponse(response runtime.ClientResponse, consum
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewPayReceivedBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 401:
 		result := NewPayReceivedUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -51,7 +57,7 @@ func (o *PayReceivedReader) ReadResponse(response runtime.ClientResponse, consum
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("[POST /pay/received] pay_received", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /pay/received] payReceived", response, response.Code())
 	}
 }
 
@@ -107,6 +113,62 @@ func (o *PayReceivedNoContent) String() string {
 }
 
 func (o *PayReceivedNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewPayReceivedBadRequest creates a PayReceivedBadRequest with default headers values
+func NewPayReceivedBadRequest() *PayReceivedBadRequest {
+	return &PayReceivedBadRequest{}
+}
+
+/*
+PayReceivedBadRequest describes a response with status code 400, with default header values.
+
+Bad Request
+*/
+type PayReceivedBadRequest struct {
+}
+
+// IsSuccess returns true when this pay received bad request response has a 2xx status code
+func (o *PayReceivedBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this pay received bad request response has a 3xx status code
+func (o *PayReceivedBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this pay received bad request response has a 4xx status code
+func (o *PayReceivedBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this pay received bad request response has a 5xx status code
+func (o *PayReceivedBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this pay received bad request response a status code equal to that given
+func (o *PayReceivedBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the pay received bad request response
+func (o *PayReceivedBadRequest) Code() int {
+	return 400
+}
+
+func (o *PayReceivedBadRequest) Error() string {
+	return fmt.Sprintf("[POST /pay/received][%d] payReceivedBadRequest ", 400)
+}
+
+func (o *PayReceivedBadRequest) String() string {
+	return fmt.Sprintf("[POST /pay/received][%d] payReceivedBadRequest ", 400)
+}
+
+func (o *PayReceivedBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }
@@ -280,7 +342,7 @@ func (o *PayReceivedInternalServerError) readResponse(response runtime.ClientRes
 }
 
 /*
-PayReceivedBody pay_received
+PayReceivedBody payReceived
 swagger:model PayReceivedBody
 */
 type PayReceivedBody struct {

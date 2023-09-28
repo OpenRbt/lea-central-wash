@@ -66,7 +66,12 @@ func (svc *service) payReceived(params op.PayReceivedParams) op.PayReceivedRespo
 	}
 
 	// logic method
-	err = svc.app.SetPaymentReceived(uuid.FromStringOrNil(qrOrderID))
+	qrOrderIDUuid := uuid.FromStringOrNil(qrOrderID)
+	if qrOrderIDUuid.IsNil() {
+		log.PrintErr("set payment received failed: orderID = nil")
+		return op.NewPayReceivedBadRequest()
+	}
+	err = svc.app.SetPaymentReceived(qrOrderIDUuid)
 	if err != nil {
 		log.PrintErr("set payment received failed:", err, "stationID", stationID, "orderId", qrOrderID)
 

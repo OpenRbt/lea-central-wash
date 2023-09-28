@@ -408,51 +408,49 @@ func initSbpClient(
 	envServerSbpPassword string,
 ) {
 	sbpConfig, err := appl.GetSbpConfig(envServerSbpID, envServerSbpPassword)
-	if err == nil {
-		go func() {
-			for {
-				// rabbit client
-				sbpConfig := sbpclient.RabbitConfig{
-					URL:            url,
-					Port:           port,
-					ServerID:       sbpConfig.ServerID,
-					ServerPassword: sbpConfig.ServerPassword,
-					Secure:         secure,
-				}
-				var sbpRabbitClient *sbpclient.Service
-				sbpRabbitClient, err = sbpclient.NewSbpRabbitClient(sbpConfig, appl)
-				if err != nil {
-					if strings.Contains(err.Error(), "username or password not allowed") {
-						log.Err("Failed to init sbp client due to wrong credentials", "error", err)
-						return
-					}
-
-					log.Err("Failed to init sbp client", "error", err)
-					time.Sleep(5 * time.Second)
-					continue
-				}
-
-				// rabbit worker
-				//isConnectedFunc := sbpRabbitWorker.IsConnected
-				sbpWorkerConfig := app.SbpRabbitWorkerConfig{
-					ServerID:                     sbpConfig.ServerID,
-					ServerPassword:               sbpConfig.ServerPassword,
-					SbpBroker:                    sbpRabbitClient,
-					SbpRep:                       rep,
-					NotificationExpirationPeriod: sbpPaymentExpirationPeriod,
-				}
-
-				err = appl.InitSbpRabbitWorker(sbpWorkerConfig)
-				if err != nil {
-					log.Err("Failed to init sbp sbp rabbit worker", "error", err)
-				}
-				appl.FetchSessions()
-
-				log.Info("serve sbp rabbit client")
-				return
-			}
-		}()
-	} else {
+	if err != nil {
 		log.Warn("sbp configuration not found! skipping sbp service initialization")
 	}
+	go func() {
+		for {
+			// rabbit client
+			sbpConfig := sbpclient.RabbitConfig{
+				URL:            url,
+				Port:           port,
+				ServerID:       sbpConfig.ServerID,
+				ServerPassword: sbpConfig.ServerPassword,
+				Secure:         secure,
+			}
+			var sbpRabbitClient *sbpclient.Service
+			sbpRabbitClient, err = sbpclient.NewSbpRabbitClient(sbpConfig, appl)
+			if err != nil {
+				if strings.Contains(err.Error(), "username or password not allowed") {
+					log.Err("Failed to init sbp client due to wrong credentials", "error", err)
+					return
+				}
+
+				log.Err("Failed to init sbp client", "error", err)
+				time.Sleep(5 * time.Second)
+				continue
+			}
+
+			// rabbit worker
+			//isConnectedFunc := sbpRabbitWorker.IsConnected
+			sbpWorkerConfig := app.SbpRabbitWorkerConfig{
+				ServerID:                     sbpConfig.ServerID,
+				ServerPassword:               sbpConfig.ServerPassword,
+				SbpBroker:                    sbpRabbitClient,
+				SbpRep:                       rep,
+				NotificationExpirationPeriod: sbpPaymentExpirationPeriod,
+			}
+
+			err = appl.InitSbpRabbitWorker(sbpWorkerConfig)
+			if err != nil {
+				log.Err("Failed to init sbp sbp rabbit worker", "error", err)
+			}
+
+			log.Info("serve sbp rabbit client")
+			return
+		}
+	}()
 }

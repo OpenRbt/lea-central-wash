@@ -60,7 +60,7 @@ func (o *PayReceived) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// PayReceivedBody pay_received
+// PayReceivedBody payReceived
 //
 // swagger:model PayReceivedBody
 type PayReceivedBody struct {

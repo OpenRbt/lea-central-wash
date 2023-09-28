@@ -32,7 +32,7 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 			if msg.Failed {
 				err = s.app.SetPaymentCanceled(uuid.FromStringOrNil(msg.OrderID))
 				if err != nil {
-					s.log.PrintErr("")
+					s.log.PrintErr("PaymentResponse error: %s", err.Error())
 					err = d.Nack(false, false)
 					if err != nil {
 						return err
