@@ -1174,89 +1174,6 @@ func init() {
         }
       }
     },
-    "/pay": {
-      "post": {
-        "operationId": "pay",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "title": "pay",
-              "required": [
-                "hash"
-              ],
-              "properties": {
-                "amount": {
-                  "type": "integer"
-                },
-                "hash": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "user not authorized"
-          },
-          "404": {
-            "description": "hash not found"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
-      }
-    },
-    "/pay/received": {
-      "post": {
-        "operationId": "pay_received",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "title": "pay_received",
-              "required": [
-                "hash",
-                "qrOrderId"
-              ],
-              "properties": {
-                "hash": {
-                  "type": "string"
-                },
-                "qrOrderId": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "user not authorized"
-          },
-          "404": {
-            "description": "hash not found"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
-      }
-    },
     "/ping": {
       "get": {
         "operationId": "getPing",
@@ -1301,11 +1218,7 @@ func init() {
               "title": "ResponsePing",
               "required": [
                 "serviceAmount",
-                "openStation",
-                "qrMoney",
-                "qrUrl",
-                "qrOrderId",
-                "qrFailed"
+                "openStation"
               ],
               "properties": {
                 "AuthorizedSessionID": {
@@ -1328,18 +1241,6 @@ func init() {
                 },
                 "openStation": {
                   "type": "boolean"
-                },
-                "qrFailed": {
-                  "type": "boolean"
-                },
-                "qrMoney": {
-                  "type": "integer"
-                },
-                "qrOrderId": {
-                  "type": "string"
-                },
-                "qrUrl": {
-                  "type": "string"
                 },
                 "serviceAmount": {
                   "type": "integer"
@@ -5097,89 +4998,6 @@ func init() {
         }
       }
     },
-    "/pay": {
-      "post": {
-        "operationId": "pay",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "title": "pay",
-              "required": [
-                "hash"
-              ],
-              "properties": {
-                "amount": {
-                  "type": "integer"
-                },
-                "hash": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "user not authorized"
-          },
-          "404": {
-            "description": "hash not found"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
-      }
-    },
-    "/pay/received": {
-      "post": {
-        "operationId": "pay_received",
-        "parameters": [
-          {
-            "name": "args",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "title": "pay_received",
-              "required": [
-                "hash",
-                "qrOrderId"
-              ],
-              "properties": {
-                "hash": {
-                  "type": "string"
-                },
-                "qrOrderId": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "user not authorized"
-          },
-          "404": {
-            "description": "hash not found"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
-      }
-    },
     "/ping": {
       "get": {
         "operationId": "getPing",
@@ -5224,11 +5042,7 @@ func init() {
               "title": "ResponsePing",
               "required": [
                 "serviceAmount",
-                "openStation",
-                "qrMoney",
-                "qrUrl",
-                "qrOrderId",
-                "qrFailed"
+                "openStation"
               ],
               "properties": {
                 "AuthorizedSessionID": {
@@ -5251,18 +5065,6 @@ func init() {
                 },
                 "openStation": {
                   "type": "boolean"
-                },
-                "qrFailed": {
-                  "type": "boolean"
-                },
-                "qrMoney": {
-                  "type": "integer"
-                },
-                "qrOrderId": {
-                  "type": "string"
-                },
-                "qrUrl": {
-                  "type": "string"
                 },
                 "serviceAmount": {
                   "type": "integer"

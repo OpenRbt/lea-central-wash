@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -70,6 +72,25 @@ type VolumeDispenserBody struct {
 	// hash
 	// Required: true
 	Hash *model.Hash `json:"hash"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *VolumeDispenserBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Hash = props.Hash
+	return nil
 }
 
 // Validate validates this volume dispenser body
@@ -171,6 +192,30 @@ type VolumeDispenserOKBody struct {
 	// volume
 	// Required: true
 	Volume *int64 `json:"volume"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *VolumeDispenserOKBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// status
+		// Required: true
+		Status *string `json:"status"`
+
+		// volume
+		// Required: true
+		Volume *int64 `json:"volume"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Status = props.Status
+	o.Volume = props.Volume
+	return nil
 }
 
 // Validate validates this volume dispenser o k body

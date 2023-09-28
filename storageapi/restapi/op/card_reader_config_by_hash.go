@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -70,6 +72,25 @@ type CardReaderConfigByHashBody struct {
 	// hash
 	// Required: true
 	Hash *model.Hash `json:"hash"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *CardReaderConfigByHashBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Hash = props.Hash
+	return nil
 }
 
 // Validate validates this card reader config by hash body

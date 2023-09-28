@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -76,6 +78,33 @@ type PingBody struct {
 	// hash
 	// Required: true
 	Hash *model.Hash `json:"hash"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *PingBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// current balance
+		CurrentBalance int64 `json:"currentBalance,omitempty"`
+
+		// current program
+		CurrentProgram int64 `json:"currentProgram,omitempty"`
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.CurrentBalance = props.CurrentBalance
+	o.CurrentProgram = props.CurrentProgram
+	o.Hash = props.Hash
+	return nil
 }
 
 // Validate validates this ping body
@@ -192,22 +221,6 @@ type PingOKBody struct {
 	// Required: true
 	OpenStation *bool `json:"openStation"`
 
-	// qr failed
-	// Required: true
-	QrFailed *bool `json:"qrFailed"`
-
-	// qr money
-	// Required: true
-	QrMoney *int64 `json:"qrMoney"`
-
-	// qr order Id
-	// Required: true
-	QrOrderID *string `json:"qrOrderId"`
-
-	// qr Url
-	// Required: true
-	QrURL *string `json:"qrUrl"`
-
 	// service amount
 	// Required: true
 	ServiceAmount *int64 `json:"serviceAmount"`
@@ -216,27 +229,63 @@ type PingOKBody struct {
 	SessionID string `json:"sessionID,omitempty"`
 }
 
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *PingOKBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// authorized session ID
+		AuthorizedSessionID string `json:"AuthorizedSessionID,omitempty"`
+
+		// button ID
+		ButtonID int64 `json:"ButtonID,omitempty"`
+
+		// bonus amount
+		BonusAmount int64 `json:"bonusAmount,omitempty"`
+
+		// bonus system active
+		BonusSystemActive bool `json:"bonusSystemActive,omitempty"`
+
+		// last discount update
+		LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
+
+		// last update
+		LastUpdate int64 `json:"lastUpdate,omitempty"`
+
+		// open station
+		// Required: true
+		OpenStation *bool `json:"openStation"`
+
+		// service amount
+		// Required: true
+		ServiceAmount *int64 `json:"serviceAmount"`
+
+		// session ID
+		SessionID string `json:"sessionID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.AuthorizedSessionID = props.AuthorizedSessionID
+	o.ButtonID = props.ButtonID
+	o.BonusAmount = props.BonusAmount
+	o.BonusSystemActive = props.BonusSystemActive
+	o.LastDiscountUpdate = props.LastDiscountUpdate
+	o.LastUpdate = props.LastUpdate
+	o.OpenStation = props.OpenStation
+	o.ServiceAmount = props.ServiceAmount
+	o.SessionID = props.SessionID
+	return nil
+}
+
 // Validate validates this ping o k body
 func (o *PingOKBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateOpenStation(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateQrFailed(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateQrMoney(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateQrOrderID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateQrURL(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -253,42 +302,6 @@ func (o *PingOKBody) Validate(formats strfmt.Registry) error {
 func (o *PingOKBody) validateOpenStation(formats strfmt.Registry) error {
 
 	if err := validate.Required("pingOK"+"."+"openStation", "body", o.OpenStation); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *PingOKBody) validateQrFailed(formats strfmt.Registry) error {
-
-	if err := validate.Required("pingOK"+"."+"qrFailed", "body", o.QrFailed); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *PingOKBody) validateQrMoney(formats strfmt.Registry) error {
-
-	if err := validate.Required("pingOK"+"."+"qrMoney", "body", o.QrMoney); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *PingOKBody) validateQrOrderID(formats strfmt.Registry) error {
-
-	if err := validate.Required("pingOK"+"."+"qrOrderId", "body", o.QrOrderID); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *PingOKBody) validateQrURL(formats strfmt.Registry) error {
-
-	if err := validate.Required("pingOK"+"."+"qrUrl", "body", o.QrURL); err != nil {
 		return err
 	}
 

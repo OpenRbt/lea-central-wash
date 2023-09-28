@@ -71,12 +71,8 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.PinCodeAuth = authAccess.CheckAuth
 	api.LoadHandler = op.LoadHandlerFunc(svc.load)
 	api.LoadFromStationHandler = op.LoadFromStationHandlerFunc(svc.loadFromStation)
-
-	// ping
 	api.PingHandler = op.PingHandlerFunc(svc.ping)
 	api.GetPingHandler = op.GetPingHandlerFunc(svc.getPing)
-	//
-
 	api.SaveHandler = op.SaveHandlerFunc(svc.save)
 	api.InfoHandler = op.InfoHandlerFunc(svc.info)
 
@@ -169,11 +165,6 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.SetBonusesHandler = op.SetBonusesHandlerFunc(svc.setBonuses)
 	api.GetServerInfoHandler = op.GetServerInfoHandlerFunc(svc.getServerInfo)
 
-	// sbp
-	api.PayHandler = op.PayHandlerFunc(svc.pay)
-	api.PayReceivedHandler = op.PayReceivedHandlerFunc(svc.payReceived)
-
-	// server
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port

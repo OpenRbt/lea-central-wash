@@ -248,7 +248,6 @@ require (
 
 require (
 	github.com/Masterminds/sprig/v3 v3.2.3 // indirect
-	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/simonvetter/modbus v1.6.0

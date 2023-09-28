@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -82,6 +84,40 @@ type Run2ProgramBody struct {
 	// program ID 2
 	// Required: true
 	ProgramID2 *int64 `json:"programID2"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *Run2ProgramBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+
+		// preflight
+		// Required: true
+		Preflight *bool `json:"preflight"`
+
+		// program ID
+		// Required: true
+		ProgramID *int64 `json:"programID"`
+
+		// program ID 2
+		// Required: true
+		ProgramID2 *int64 `json:"programID2"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Hash = props.Hash
+	o.Preflight = props.Preflight
+	o.ProgramID = props.ProgramID
+	o.ProgramID2 = props.ProgramID2
+	return nil
 }
 
 // Validate validates this run2 program body

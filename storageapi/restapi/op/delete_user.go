@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -84,6 +86,25 @@ type DeleteUserBody struct {
 	// login
 	// Required: true
 	Login *model.Login `json:"login"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *DeleteUserBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// login
+		// Required: true
+		Login *model.Login `json:"login"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Login = props.Login
+	return nil
 }
 
 // Validate validates this delete user body
@@ -185,6 +206,30 @@ type DeleteUserConflictBody struct {
 	// message
 	// Required: true
 	Message *string `json:"message"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *DeleteUserConflictBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// code
+		// Required: true
+		Code *int64 `json:"code"`
+
+		// message
+		// Required: true
+		Message *string `json:"message"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Code = props.Code
+	o.Message = props.Message
+	return nil
 }
 
 // Validate validates this delete user conflict body
