@@ -7,7 +7,6 @@ import (
 
 	paymentEntities "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/sbp-client/entity/payment"
 	rabbit_vo "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/sbp-client/entity/vo"
-	"github.com/gofrs/uuid"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -75,7 +74,7 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 			}
 
 			if strings.ToLower(msg.Status) == "confirmed" {
-				err = s.app.SetPaymentConfirmed(uuid.FromStringOrNil(msg.OrderID))
+				err = s.app.SetPaymentConfirmed(msg.OrderID)
 				if err != nil {
 					err = d.Nack(false, false)
 					if err != nil {
@@ -91,6 +90,35 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 			}
 		}
 
+	// payment error
+	case rabbit_vo.MessageTypePaymentError:
+		{
+			var msg paymentEntities.PayError
+			err := json.Unmarshal(d.Body, &msg)
+			if err != nil {
+				err = d.Nack(false, false)
+				if err != nil {
+					return err
+				}
+				return err
+			}
+
+			s.log.Err("sbp payment request error:", "post_id", msg.PostID, "desc", msg.ErrorDesc)
+
+			err = s.app.SetPaymentCanceled(msg.OrderID)
+			if err != nil {
+				err = d.Nack(false, false)
+				if err != nil {
+					return err
+				}
+				return err
+			}
+
+			err = d.Ack(false)
+			if err != nil {
+				return err
+			}
+		}
 	default:
 		{
 			err := d.Nack(false, false)
@@ -124,10 +152,15 @@ func (s *Service) sendMessage(msg interface{}, messageType rabbit_vo.MessageType
 		}
 	}
 
+	serverID, err := s.app.GetConfigString(nil, "server_id")
+	if err != nil {
+		return err
+	}
+
 	message := amqp.Publishing{}
 	message.Body = jsonMsg
 	message.Type = string(messageType)
-	message.UserId = s.serverID
+	message.UserId = serverID.Value
 
 	exchangeName := string(rabbit_vo.SbpClientService)
 	routingKeyString := string(rabbit_vo.RoutingKeySbpClient)

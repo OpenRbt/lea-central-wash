@@ -2594,7 +2594,7 @@ paths:
             type: object
             required:
               - hash
-              - qrOrderId
+              - order_id
             properties:
               hash:
                 type: string

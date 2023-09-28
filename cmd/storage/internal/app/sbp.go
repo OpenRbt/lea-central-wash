@@ -1,6 +1,7 @@
 package app
 
 import (
+	"crypto/rand"
 	"errors"
 	"fmt"
 	"time"
@@ -12,6 +13,7 @@ import (
 // SbpWorker ...
 type SbpWorker struct {
 	serverID                     string
+	serviceSbpKey                string
 	sbpRep                       SbpRepInterface
 	sbpBroker                    SbpBrokerInterface
 	notificationExpirationPeriod time.Duration
@@ -21,18 +23,18 @@ type SbpWorker struct {
 type SbpRabbitConfig struct {
 	ServerID       string
 	ServerPassword string
+	ServerSbpKey   string
 }
 
 // SbpWorkerInterface ...
 type SbpWorkerInterface interface {
-	// send
 	SendPaymentRequest(postID string, amount int64) error
-	// set
-	SetPaymentURL(orderID uuid.UUID, urlPay string) error
-	SetPaymentConfirmed(orderID uuid.UUID) error
-	SetPaymentReceived(orderID uuid.UUID) error
-	SetPaymentCanceled(orderID uuid.UUID) (err error)
-	// get
+
+	SetPaymentURL(orderId string, urlPay string) error
+	SetPaymentConfirmed(orderId string) error
+	SetPaymentReceived(orderId string) error
+	SetPaymentCanceled(postID string) (err error)
+
 	GetLastPayment(postID string) (Payment, error)
 }
 
@@ -45,14 +47,12 @@ type SbpBrokerInterface interface {
 // SbpRepInterface ...
 type SbpRepInterface interface {
 	SavePayment(req Payment) error
-
 	SetPaymentURL(orderID uuid.UUID, urlPay string) error
 	SetPaymentConfirmed(orderID uuid.UUID) (err error)
 	SetPaymentReceived(orderID uuid.UUID) (err error)
 	SetPaymentCanceled(orderID uuid.UUID) (err error)
-
 	GetLastPayment(postID string) (Payment, error)
-	GetPaymentByOrderID(orderID uuid.UUID) (Payment, error)
+	GetPaymentByOrderID(orderId string) (Payment, error)
 	GetActualPayments() ([]Payment, error)
 }
 
@@ -60,9 +60,9 @@ var _ = SbpWorkerInterface(&SbpWorker{})
 
 // Payment ...
 type Payment struct {
-	ServerID         uuid.UUID
-	OrderID          uuid.UUID
+	ServerID         string
 	PostID           string
+	OrderId          string
 	UrlPay           string
 	Amount           int64
 	Canceled         bool
@@ -74,8 +74,7 @@ type Payment struct {
 
 // CancelExpiratedNotOpenwashReceivedPayments ...
 func (w *SbpWorker) CancelExpiratedNotOpenwashReceivedPayments() {
-	// minute
-	t := time.NewTicker(time.Minute)
+	t := time.NewTicker(w.notificationExpirationPeriod)
 	for {
 		// get last payments
 		reqs, err := w.sbpRep.GetActualPayments()
@@ -88,11 +87,11 @@ func (w *SbpWorker) CancelExpiratedNotOpenwashReceivedPayments() {
 		<-t.C
 		for i := 0; i < len(reqs); i++ {
 			// expiration check
-			period := time.Since(reqs[i].UpdatedAt.UTC()).Abs()
-			if period >= w.notificationExpirationPeriod && !reqs[i].UpdatedAt.IsZero() {
-				err := w.paymentCancel(reqs[i].ServerID, reqs[i].PostID, reqs[i].OrderID)
+			period := time.Since(reqs[i].UpdatedAt)
+			if period >= w.notificationExpirationPeriod*3 {
+				err := w.paymentCancel(reqs[i].ServerID, reqs[i].PostID, reqs[i].OrderId)
 				if err != nil {
-					err = fmt.Errorf("process messages orderID = %s failed: %w", reqs[i].OrderID, err)
+					err = fmt.Errorf("process messages orderID = %s failed: %w", reqs[i].OrderId, err)
 					if log.Err(err) != nil {
 						fmt.Println(err)
 					}
@@ -114,16 +113,16 @@ func (w *SbpWorker) SendPaymentRequest(postID string, amount int64) error {
 	}
 
 	dbReq := Payment{
-		ServerID:         uuid.FromStringOrNil(w.serverID),
+		ServerID:         w.serverID,
 		PostID:           postID,
-		OrderID:          orderID,
+		OrderId:          orderID.String(),
 		UrlPay:           "",
 		Amount:           amount,
 		Canceled:         false,
 		Confirmed:        false,
 		OpenwashReceived: false,
 		CreatedAt:        time.Now(),
-		UpdatedAt:        time.Now(),
+		UpdatedAt:        time.Time{},
 	}
 	err = w.sbpRep.SavePayment(dbReq)
 	if err != nil {
@@ -131,10 +130,11 @@ func (w *SbpWorker) SendPaymentRequest(postID string, amount int64) error {
 	}
 
 	brokerReq := paymentEntities.PayRequest{
-		Amount:  amount,
-		WashID:  w.serverID,
-		PostID:  postID,
-		OrderID: dbReq.OrderID.String(),
+		Amount:     amount,
+		ServerID:   w.serverID,
+		PostID:     postID,
+		OrderID:    dbReq.OrderId,
+		ServiceKey: w.serviceSbpKey,
 	}
 	err = w.sbpBroker.SendPaymentRequest(brokerReq)
 	if err != nil {
@@ -191,6 +191,7 @@ func (w *SbpWorker) SetPaymentReceived(orderID uuid.UUID) error {
 	if orderID.IsNil() {
 		return errors.New("SetPaymentReceived: orderID = nil")
 	}
+
 	// get payment request by orderID
 	payment, err := w.sbpRep.GetPaymentByOrderID(orderID)
 	if err != nil {
@@ -228,9 +229,10 @@ func (w *SbpWorker) paymentCancel(serverID uuid.UUID, postID string, orderID uui
 	}
 	if !orderID.IsNil() {
 		cancelReq := paymentEntities.PayСancellationRequest{
-			WashID:  serverID.String(),
-			PostID:  postID,
-			OrderID: orderID.String(),
+			ServerID:   serverID,
+			PostID:     postID,
+			ServiceKey: w.serviceSbpKey,
+			OrderID:    orderID,
 		}
 
 		// cancelPayment
@@ -247,4 +249,31 @@ func (w *SbpWorker) paymentCancel(serverID uuid.UUID, postID string, orderID uui
 	}
 
 	return nil
+}
+
+// generateOrderID ...
+func generateOrderID() (uuid.UUID, error) {
+	// Генерируем случайные байты для UUID
+	randomBytes := make([]byte, 15)
+	_, err := rand.Read(randomBytes)
+	if err != nil {
+		return uuid.UUID{}, err
+	}
+
+	// Получаем текущее время
+	now := time.Now()
+
+	// Преобразуем текущее время в байты
+	timeBytes := now.UTC().UnixNano()
+
+	// Копируем байты времени в начало случайных байтов
+	randomBytes = append(randomBytes, byte(timeBytes))
+
+	// Создаем UUID из байтов
+	uuid, err := uuid.FromBytes(randomBytes)
+	if err != nil {
+		return uuid, err
+	}
+
+	return uuid, nil
 }

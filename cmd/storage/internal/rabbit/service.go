@@ -56,6 +56,22 @@ func (s *Service) ProcessBonusMessage(d amqp.Delivery) error { // Обработ
 			return err
 		}
 		d.Ack(false)
+	case rabbit_vo.WashServerDeletionMessageType:
+		err := s.app.DeleteConfigString(nil, "server_id")
+		if err != nil {
+			d.Nack(false, false)
+
+			return err
+		}
+
+		err = s.app.DeleteConfigString(nil, "server_key")
+		if err != nil {
+			d.Nack(false, false)
+
+			return err
+		}
+
+		d.Ack(false)
 	case rabbit_vo.PingMessageType:
 		d.Ack(false)
 

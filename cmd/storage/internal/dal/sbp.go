@@ -16,7 +16,7 @@ import (
 type postID string
 
 // orderID ...
-type orderID uuid.UUID
+type orderID string
 
 // PaymentsRep ...
 type PaymentsRep struct {
@@ -58,9 +58,12 @@ type dalSbpPayment struct {
 func convertPaymentToDal(payment app.Payment) dalSbpPayment {
 	postID, _ := strconv.ParseInt(payment.PostID, 10, 64)
 	return dalSbpPayment{
-		ServerID: payment.ServerID,
+		ServerID: uuid.FromStringOrNil(payment.ServerID),
 		PostID:   int32(postID),
-		OrderID:  payment.OrderID,
+		OrderID: sql.NullString{
+			String: payment.OrderId,
+			Valid:  true,
+		},
 		URLPay: sql.NullString{
 			String: payment.UrlPay,
 			Valid:  true,
@@ -89,9 +92,9 @@ func convertPaymentToDal(payment app.Payment) dalSbpPayment {
 // convertPaymentToApp ...
 func convertPaymentToApp(payment dalSbpPayment) app.Payment {
 	return app.Payment{
-		ServerID:         payment.ServerID,
+		ServerID:         payment.ServerID.String(),
 		PostID:           fmt.Sprintf("%d", payment.PostID),
-		OrderID:          payment.OrderID,
+		OrderId:          payment.OrderID.String,
 		UrlPay:           payment.URLPay.String,
 		Amount:           payment.Amount,
 		Canceled:         payment.Canceled.Bool,
@@ -107,13 +110,23 @@ var _ = app.SbpRepInterface(&repo{})
 
 // SavePayment ...
 func (r *repo) SavePayment(req app.Payment) error {
+	r.payments[postID(req.PostID)] = &req
+	r.paymentsByOrder[orderID(req.OrderId)] = &req
 
 	// db
 	dbReq := func(tx *sqlxx.Tx) error {
 		arg := convertPaymentToDal(req)
-		_, err := tx.NamedExec(
-			SavePayment,
-			&arg,
+		_, err := tx.Exec(SavePayment,
+			arg.ServerID,
+			arg.PostID,
+			arg.OrderID,
+			arg.URLPay,
+			arg.Amount,
+			arg.Canceled,
+			arg.Confirmed,
+			arg.OpenWashReceived,
+			arg.CreatedAt,
+			arg.UpdatedAt,
 		)
 		return err
 	}
@@ -128,14 +141,16 @@ func (r *repo) SavePayment(req app.Payment) error {
 }
 
 // SetPaymentURL ...
-func (r *repo) SetPaymentURL(orderID uuid.UUID, urlPay string) error {
+func (r *repo) SetPaymentURL(orderId string, urlPay string) error {
+	val, ok := r.paymentsByOrder[orderID(orderId)]
+	if ok {
+		val.UpdatedAt = time.Now()
+		val.UrlPay = urlPay
+	}
+
 	// db
 	dbReq := func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(SetPaymentURL, map[string]interface{}{
-			"url_pay":    urlPay,
-			"order_id":   orderID,
-			"updated_at": time.Now().UTC(),
-		})
+		_, err := tx.Exec(SetPaymentURL, urlPay, orderId)
 		return err
 	}
 	err := r.tx(ctx, nil, dbReq)
@@ -149,13 +164,16 @@ func (r *repo) SetPaymentURL(orderID uuid.UUID, urlPay string) error {
 }
 
 // SetPaymentCanceled ...
-func (r *repo) SetPaymentCanceled(orderID uuid.UUID) (err error) {
+func (r *repo) SetPaymentCanceled(orderId string) (err error) {
+	val, ok := r.paymentsByOrder[orderID(orderId)]
+	if ok {
+		val.UpdatedAt = time.Now()
+		val.Canceled = true
+	}
+
 	// db
 	dbReq := func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(SetPaymentCanceled, map[string]interface{}{
-			"order_id":   orderID,
-			"updated_at": time.Now().UTC(),
-		})
+		_, err := tx.Exec(SetPaymentCanceled, orderId)
 		return err
 	}
 	err = r.tx(ctx, nil, dbReq)
@@ -169,13 +187,16 @@ func (r *repo) SetPaymentCanceled(orderID uuid.UUID) (err error) {
 }
 
 // SetPaymentConfirmed ...
-func (r *repo) SetPaymentConfirmed(orderID uuid.UUID) (err error) {
+func (r *repo) SetPaymentConfirmed(orderId string) (err error) {
+	val, ok := r.paymentsByOrder[orderID(orderId)]
+	if ok {
+		val.UpdatedAt = time.Now()
+		val.Confirmed = true
+	}
+
 	// db
 	dbReq := func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(SetPaymentConfirmed, map[string]interface{}{
-			"order_id":   orderID,
-			"updated_at": time.Now().UTC(),
-		})
+		_, err := tx.Exec(SetPaymentConfirmed, orderId)
 		return err
 	}
 	err = r.tx(ctx, nil, dbReq)
@@ -189,13 +210,16 @@ func (r *repo) SetPaymentConfirmed(orderID uuid.UUID) (err error) {
 }
 
 // SetPaymentReceived ...
-func (r *repo) SetPaymentReceived(orderID uuid.UUID) (err error) {
+func (r *repo) SetPaymentReceived(orderId string) (err error) {
+	val, ok := r.paymentsByOrder[orderID(orderId)]
+	if ok {
+		val.UpdatedAt = time.Now()
+		val.OpenwashReceived = true
+	}
+
 	// db
 	dbReq := func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(SetPaymentReceived, map[string]interface{}{
-			"order_id":   orderID,
-			"updated_at": time.Now().UTC(),
-		})
+		_, err := tx.Exec(SetPaymentReceived, orderId)
 		return err
 	}
 	err = r.tx(ctx, nil, dbReq)
@@ -217,25 +241,27 @@ func (r *repo) GetLastPayment(postId string) (app.Payment, error) {
 
 	// from db
 	resp := app.Payment{}
-	dbReq := func(tx *sqlxx.Tx) error {
-		var res dalSbpPayment
-		err := tx.NamedGetContext(ctx, &res, GetLastPayment, map[string]interface{}{
-			"post_id": postId,
-		})
-		switch {
-		case err == sql.ErrNoRows:
-			return app.ErrNotFound
-		case err != nil:
-			return err
+	val, ok := r.payments[postID(postId)]
+	if ok && !val.OpenwashReceived && !val.Canceled {
+		resp = *val
+	} else {
+		dbReq := func(tx *sqlxx.Tx) error {
+			var res dalSbpPayment
+			err := tx.GetContext(ctx, &res, GetLastPayment, postId)
+			switch {
+			case err == sql.ErrNoRows:
+				return app.ErrNotFound
+			case err != nil:
+				return err
+			}
+			resp = convertPaymentToApp(res)
+			return nil
 		}
-		resp = convertPaymentToApp(res)
-		return nil
+		err := r.tx(ctx, nil, dbReq)
+		if err != nil {
+			return resp, err
+		}
 	}
-	err := r.tx(ctx, nil, dbReq)
-	if err != nil {
-		return resp, err
-	}
-
 	r.PaymentsRep.SetLastPayment(&resp)
 
 	return resp, nil
@@ -244,48 +270,58 @@ func (r *repo) GetLastPayment(postId string) (app.Payment, error) {
 // GetActualPayments() ...
 func (r *repo) GetActualPayments() ([]app.Payment, error) {
 	resp := []app.Payment{}
-	dbReq := func(tx *sqlxx.Tx) error {
-		var res []dalSbpPayment
-		err := tx.SelectContext(ctx, &res, GetActualPayments)
-		switch {
-		case err == sql.ErrNoRows:
-			return app.ErrNotFound
-		case err != nil:
-			return err
+	for _, p := range r.payments {
+		if !p.Canceled && p.Confirmed && !p.OpenwashReceived {
+			resp = append(resp, *p)
 		}
-
-		for _, p := range res {
-			resp = append(resp, convertPaymentToApp(p))
-		}
-		return nil
 	}
-	err := r.tx(ctx, nil, dbReq)
-	if err != nil {
-		return resp, err
+	if len(resp) == 0 {
+		dbReq := func(tx *sqlxx.Tx) error {
+			var res []dalSbpPayment
+			err := tx.SelectContext(ctx, &res, GetActualPayments)
+			switch {
+			case err == sql.ErrNoRows:
+				return app.ErrNotFound
+			case err != nil:
+				return err
+			}
+
+			for _, p := range res {
+				resp = append(resp, convertPaymentToApp(p))
+			}
+			return nil
+		}
+		err := r.tx(ctx, nil, dbReq)
+		if err != nil {
+			return resp, err
+		}
 	}
 	return resp, nil
 }
 
 // GetPaymentByOrderID ...
-func (r *repo) GetPaymentByOrderID(orderID uuid.UUID) (app.Payment, error) {
+func (r *repo) GetPaymentByOrderID(orderId string) (app.Payment, error) {
 	resp := app.Payment{}
-	dbReq := func(tx *sqlxx.Tx) error {
-		var res dalSbpPayment
-		err := tx.NamedGetContext(ctx, &res, GetPaymentByOrderID, map[string]interface{}{
-			"order_id": orderID,
-		})
-		switch {
-		case err == sql.ErrNoRows:
-			return app.ErrNotFound
-		case err != nil:
-			return err
+	val, ok := r.paymentsByOrder[orderID(orderId)]
+	if ok {
+		resp = *val
+	} else {
+		dbReq := func(tx *sqlxx.Tx) error {
+			var res dalSbpPayment
+			err := tx.GetContext(ctx, &res, GetPaymentByOrderID, orderId)
+			switch {
+			case err == sql.ErrNoRows:
+				return app.ErrNotFound
+			case err != nil:
+				return err
+			}
+			resp = convertPaymentToApp(res)
+			return nil
 		}
-		resp = convertPaymentToApp(res)
-		return nil
-	}
-	err := r.tx(ctx, nil, dbReq)
-	if err != nil {
-		return resp, err
+		err := r.tx(ctx, nil, dbReq)
+		if err != nil {
+			return resp, err
+		}
 	}
 
 	return resp, nil

@@ -912,6 +912,9 @@ func (r *repo) GetConfigInt(name string) (cfg *app.ConfigInt, err error) {
 		err := tx.NamedGetContext(ctx, &res, sqlGetConfigInt, argGetConfig{
 			Name: name,
 		})
+		if err == sql.ErrNoRows {
+			return app.ErrNotFound
+		}
 		if err != nil {
 			return err
 		}
@@ -926,6 +929,9 @@ func (r *repo) GetConfigBool(name string) (cfg *app.ConfigBool, err error) {
 		err := tx.NamedGetContext(ctx, &res, sqlGetConfigBool, argGetConfig{
 			Name: name,
 		})
+		if err == sql.ErrNoRows {
+			return app.ErrNotFound
+		}
 		if err != nil {
 			return err
 		}
@@ -940,6 +946,9 @@ func (r *repo) GetConfigString(name string) (cfg *app.ConfigString, err error) {
 		err := tx.NamedGetContext(ctx, &res, sqlGetConfigString, argGetConfig{
 			Name: name,
 		})
+		if err == sql.ErrNoRows {
+			return app.ErrNotFound
+		}
 		if err != nil {
 			return err
 		}
@@ -998,6 +1007,14 @@ func (r *repo) SetConfigString(config app.ConfigString) (err error) {
 		return err
 	})
 	return
+}
+
+func (r *repo) DeleteConfigString(name string) error {
+	_, err := r.db.NamedExec(sqlDeleteConfigString, argGetConfig{
+		Name: name,
+	})
+
+	return err
 }
 
 func (r *repo) GetStationConfigInt(name string, stationID app.StationID) (cfg *app.StationConfigInt, err error) {

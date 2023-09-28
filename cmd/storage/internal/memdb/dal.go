@@ -330,3 +330,7 @@ func (t *DB) RefreshMotorStatsCurrent() (err error) {
 func (t *DB) RefreshMotorStatsDates() (err error) {
 	return nil
 }
+
+func (t *DB) DeleteConfigString(name string) error {
+	return nil
+}

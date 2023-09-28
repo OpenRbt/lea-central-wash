@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
 )
 
@@ -14,12 +13,10 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		log.Info("post ping: wrong address", "address", params.HTTPRequest.RemoteAddr)
 		stationIP = ""
 	}
-
 	//log.Info("post ping", "time", time.Now(), "hash", *params.Args.Hash, "ip", stationIP)
 	stationID, err := svc.getIDAndAddHash(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("post ping: not found", "hash", params.Args.Hash, "ip", stationIP)
-
 		return op.NewPingOK().WithPayload(&op.PingOKBody{
 			ServiceAmount: newInt64(int64(0)),
 		})
@@ -28,43 +25,30 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 	station, bonusActive := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP)
 
 	stationIDString := fmt.Sprintf("%d", stationID)
-
-	var lastPayment app.Payment
-
-	if !svc.app.IsSbpRabbitWorkerInit() {
-		log.PrintErr("get last payment request failed: sbp rabbit worker isn't init")
-	} else {
-		lastPayment, err = svc.app.GetLastPayment(stationIDString)
-		if err != nil {
-			log.Info("get last payment request failed:", "stationID", stationIDString)
-		}
-
-		if lastPayment.OpenwashReceived || lastPayment.Canceled {
-			lastPayment = app.Payment{}
-		}
-
-		if !lastPayment.Confirmed {
-			lastPayment.Amount = 0
-		}
+	lastPayment, err := svc.app.GetLastPayment(stationIDString)
+	if err != nil {
+		log.Info("post ping: failed get last payment request", "stationID", stationIDString)
+		stationIP = ""
 	}
 
-	orderID := ""
-	if !lastPayment.OrderID.IsNil() {
-		orderID = lastPayment.OrderID.String()
+	var amount int64
+	if lastPayment.Confirmed && !lastPayment.Canceled {
+		amount = lastPayment.Amount
 	}
+
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
 		ServiceAmount:       newInt64(int64(station.ServiceMoney)),
 		BonusAmount:         int64(station.BonusMoney),
 		OpenStation:         &station.OpenStation,
 		ButtonID:            int64(station.ButtonID),
 		LastUpdate:          int64(station.LastUpdate),
-		LastDiscountUpdate:  station.LastDiscountUpdate,
+		LastDiscountUpdate:  int64(station.LastDiscountUpdate),
 		SessionID:           station.CurrentSessionID,
 		BonusSystemActive:   bonusActive,
 		AuthorizedSessionID: station.AuthorizedSessionID,
 		// sbp
-		QrMoney:   &lastPayment.Amount,
-		QrOrderID: &orderID,
+		QrMoney:   &amount,
+		QrOrderID: &lastPayment.OrderId,
 		QrURL:     &lastPayment.UrlPay,
 		QrFailed:  &lastPayment.Canceled,
 	})

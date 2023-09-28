@@ -5,16 +5,11 @@ import (
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
-	"github.com/gofrs/uuid"
 	"github.com/pkg/errors"
 )
 
 // pay ...
 func (svc *service) pay(params op.PayParams) op.PayResponder {
-	if !svc.app.IsSbpRabbitWorkerInit() {
-		log.PrintErr("payment request failed: sbp rabbit worker isn't init")
-		return op.NewPayInternalServerError()
-	}
 	var hash string
 	if params.Args.Hash != nil {
 		hash = *params.Args.Hash
@@ -31,7 +26,7 @@ func (svc *service) pay(params op.PayParams) op.PayResponder {
 	postID := fmt.Sprintf("%d", stationID)
 	err = svc.app.SendPaymentRequest(postID, int64(payAmount))
 	if err != nil {
-		log.PrintErr("payment request failed:", err, "stationID", stationID, "pay amount", payAmount)
+		log.PrintErr(err, "stationID", stationID, "pay amount", payAmount)
 
 		switch errors.Cause(err) {
 		case app.ErrUserIsNotAuthorized:
@@ -46,18 +41,14 @@ func (svc *service) pay(params op.PayParams) op.PayResponder {
 
 // payReceived ...
 func (svc *service) payReceived(params op.PayReceivedParams) op.PayReceivedResponder {
-	if !svc.app.IsSbpRabbitWorkerInit() {
-		log.PrintErr("set payment received failed: sbp rabbit worker isn't init")
-		return op.NewPayReceivedInternalServerError()
-	}
 	var hash string
 	if params.Args.Hash != nil {
 		hash = *params.Args.Hash
 	}
 
 	var qrOrderID string
-	if params.Args.QrOrderID != nil {
-		qrOrderID = *params.Args.QrOrderID
+	if params.Args.QrOrderID != "" {
+		qrOrderID = params.Args.QrOrderID
 	}
 
 	stationID, err := svc.getID(hash)
@@ -72,8 +63,9 @@ func (svc *service) payReceived(params op.PayReceivedParams) op.PayReceivedRespo
 		return op.NewPayReceivedBadRequest()
 	}
 	err = svc.app.SetPaymentReceived(qrOrderIDUuid)
+
 	if err != nil {
-		log.PrintErr("set payment received failed:", err, "stationID", stationID, "orderId", qrOrderID)
+		log.PrintErr(err, "stationID", stationID, "orderId", qrOrderID)
 
 		switch errors.Cause(err) {
 		case app.ErrUserIsNotAuthorized:
