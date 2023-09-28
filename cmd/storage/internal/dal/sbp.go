@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
@@ -19,16 +20,33 @@ type orderID uuid.UUID
 
 // PaymentsRep ...
 type PaymentsRep struct {
+	LastPayment *app.Payment
+	RWMutex     *sync.RWMutex
+}
+
+// SetLastPayment ...
+func (paymentsRep *PaymentsRep) SetLastPayment(p *app.Payment) {
+	paymentsRep.RWMutex.Lock()
+	paymentsRep.LastPayment = p
+	paymentsRep.RWMutex.Unlock()
+}
+
+// GetLastPayment ...
+func (paymentsRep *PaymentsRep) GetLastPayment() (resp app.Payment) {
+	paymentsRep.RWMutex.RLock()
+	resp = *paymentsRep.LastPayment
+	paymentsRep.RWMutex.RUnlock()
+	return resp
 }
 
 // dalSbpPayment ...
 type dalSbpPayment struct {
 	ID               int64          `db:"id"`
-	ServerID         uuid.UUID      `db:"server_id"`
+	Amount           int64          `db:"amount"`
 	PostID           int32          `db:"post_id"`
+	ServerID         uuid.UUID      `db:"server_id"`
 	OrderID          uuid.UUID      `db:"order_id"`
 	URLPay           sql.NullString `db:"url_pay"`
-	Amount           int64          `db:"amount"`
 	Canceled         sql.NullBool   `db:"canceled"`
 	Confirmed        sql.NullBool   `db:"confirmed"`
 	OpenWashReceived sql.NullBool   `db:"openwash_received"`
@@ -104,6 +122,8 @@ func (r *repo) SavePayment(req app.Payment) error {
 		return err
 	}
 
+	r.PaymentsRep.SetLastPayment(&req)
+
 	return nil
 }
 
@@ -123,6 +143,8 @@ func (r *repo) SetPaymentURL(orderID uuid.UUID, urlPay string) error {
 		return err
 	}
 
+	r.PaymentsRep.SetLastPayment(nil)
+
 	return nil
 }
 
@@ -140,6 +162,8 @@ func (r *repo) SetPaymentCanceled(orderID uuid.UUID) (err error) {
 	if err != nil {
 		return err
 	}
+
+	r.PaymentsRep.SetLastPayment(nil)
 
 	return nil
 }
@@ -159,6 +183,8 @@ func (r *repo) SetPaymentConfirmed(orderID uuid.UUID) (err error) {
 		return err
 	}
 
+	r.PaymentsRep.SetLastPayment(nil)
+
 	return nil
 }
 
@@ -176,12 +202,20 @@ func (r *repo) SetPaymentReceived(orderID uuid.UUID) (err error) {
 	if err != nil {
 		return err
 	}
+	r.PaymentsRep.SetLastPayment(nil)
 
 	return nil
 }
 
 // GetLastPayment ...
 func (r *repo) GetLastPayment(postId string) (app.Payment, error) {
+	// from ram
+	p := r.PaymentsRep.GetLastPayment()
+	if !p.OrderID.IsNil() {
+		return p, nil
+	}
+
+	// from db
 	resp := app.Payment{}
 	dbReq := func(tx *sqlxx.Tx) error {
 		var res dalSbpPayment
@@ -201,6 +235,8 @@ func (r *repo) GetLastPayment(postId string) (app.Payment, error) {
 	if err != nil {
 		return resp, err
 	}
+
+	r.PaymentsRep.SetLastPayment(&resp)
 
 	return resp, nil
 }

@@ -8,6 +8,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -56,7 +57,9 @@ func New(db *sqlx.DB, maintenanceDB *sqlx.DB, schemaVer *schemaver.SchemaVer) *r
 		db:            sqlxx.NewDB(db),
 		maintenanceDB: sqlxx.NewDB(maintenanceDB),
 		schemaVer:     schemaVer,
-		PaymentsRep:   PaymentsRep{},
+		PaymentsRep: PaymentsRep{
+			RWMutex: &sync.RWMutex{},
+		},
 	}
 }
 
