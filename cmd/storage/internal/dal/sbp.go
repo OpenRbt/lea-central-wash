@@ -97,8 +97,8 @@ func convertPaymentToApp(payment dalSbpPayment) app.Payment {
 		Canceled:         payment.Canceled.Bool,
 		Confirmed:        payment.Confirmed.Bool,
 		OpenwashReceived: payment.OpenWashReceived.Bool,
-		CreatedAt:        payment.CreatedAt,
-		UpdatedAt:        payment.UpdatedAt.Time,
+		CreatedAt:        payment.CreatedAt.UTC(),
+		UpdatedAt:        payment.UpdatedAt.Time.UTC(),
 	}
 }
 
