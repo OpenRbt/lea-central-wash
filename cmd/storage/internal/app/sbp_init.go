@@ -38,19 +38,19 @@ func (a *app) GetSbpConfig(envServerSbpID string, envServerSbpPassword string) (
 // InitSbpRabbitWorker ...
 func (a *app) InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error {
 	if config.ServerID == "" {
-		return errors.New("InitSbpRabbitWorker: sbpBroker is empty")
+		return errors.New("InitSbpRabbitWorker: sbp broker is empty")
 	}
 
 	if config.ServerPassword == "" {
-		return errors.New("InitSbpRabbitWorker: serviceSbpPassword is empty")
+		return errors.New("InitSbpRabbitWorker: service sbp password is empty")
 	}
 
 	if config.SbpBroker == nil {
-		return errors.New("InitSbpRabbitWorker: sbpBroker = nil")
+		return errors.New("InitSbpRabbitWorker: sbp broker = nil")
 	}
 
 	if config.SbpRep == nil {
-		return errors.New("InitSbpRabbitWorker: SbpRep = nil")
+		return errors.New("InitSbpRabbitWorker: sbp rep = nil")
 	}
 
 	a.SbpWorker = &SbpWorker{

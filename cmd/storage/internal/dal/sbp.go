@@ -34,7 +34,9 @@ func (paymentsRep *PaymentsRep) SetLastPayment(p *app.Payment) {
 // GetLastPayment ...
 func (paymentsRep *PaymentsRep) GetLastPayment() (resp app.Payment) {
 	paymentsRep.RWMutex.RLock()
-	resp = *paymentsRep.LastPayment
+	if paymentsRep.LastPayment != nil {
+		resp = *paymentsRep.LastPayment
+	}
 	paymentsRep.RWMutex.RUnlock()
 	return resp
 }
