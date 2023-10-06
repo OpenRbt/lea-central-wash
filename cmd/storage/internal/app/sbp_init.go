@@ -61,7 +61,9 @@ func (a *app) InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error {
 	}
 
 	// Cancel Expirated Not OpenwashReceived Payments
-	go a.SbpWorker.CancelExpiratedNotOpenwashReceivedPayments()
+	a.SbpWorker.CancelExpiratedNotOpenwashReceivedPayments()
+	// repeat
+	go Repeat(a.SbpWorker.CancelExpiratedNotOpenwashReceivedPayments, time.Minute)
 
 	return nil
 }
