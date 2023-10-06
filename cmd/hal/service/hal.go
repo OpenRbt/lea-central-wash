@@ -564,6 +564,7 @@ func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
 	fmt.Println(finalCmd)
 	_, err := r.openPort.Write([]byte(finalCmd))
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 
@@ -571,6 +572,7 @@ func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
 	buf := make([]byte, 32)
 	N, err := r.openPort.Read(buf)
 	if err != nil {
+		r.openPort.Flush()
 		fmt.Println(err)
 		if err == io.EOF {
 			fmt.Println("EOF ")
