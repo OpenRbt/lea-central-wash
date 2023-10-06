@@ -69,7 +69,7 @@ type Rev1DispencerBoard struct {
 	openPort              *serial.Port
 	toRemove              bool
 	errorCount            int
-	lastVolume            string
+	lastVolume            int64
 	allowedPing           bool
 	stopDispenser         bool
 	ErrorCommandDispenser error
@@ -123,17 +123,17 @@ func (r *Rev1DispencerBoard) GetStopDispenser() bool {
 	return t
 }
 
-func (r *Rev1DispencerBoard) SetLastVolume(str string) {
+func (r *Rev1DispencerBoard) SetLastVolume(volume int64) {
 	r.resourcesMu.Lock()
-	r.lastVolume = str
+	r.lastVolume = volume
 	r.resourcesMu.Unlock()
 }
 
-func (r *Rev1DispencerBoard) GetLastVolume() string {
+func (r *Rev1DispencerBoard) GetLastVolume() int64 {
 	r.resourcesMu.Lock()
-	str := r.lastVolume
+	volume := r.lastVolume
 	r.resourcesMu.Unlock()
-	return str
+	return volume
 }
 
 func (r *Rev1DispencerBoard) SetAllowedPing(t bool) {
@@ -287,9 +287,8 @@ func (h *HardwareAccessLayer) Volume() app.DispenserStatus {
 }
 
 func (r *Rev1DispencerBoard) volume() app.DispenserStatus {
-	l, _ := strconv.ParseInt(r.GetLastVolume(), 10, 64)
 	return app.DispenserStatus{
-		Milliliters:           l,
+		Milliliters:           int64(r.GetLastVolume()),
 		ErrorCommandDispenser: r.GetErrComandDispenser(),
 	}
 }
@@ -364,13 +363,13 @@ func (r *Rev1DispencerBoard) dispenserStop() error {
 
 func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board app.ControlBoard) error {
 	r.SetAllowedPing(false)
-	r.SetLastVolume("0")
+	r.SetLastVolume(0)
 	r.SetErrComandDispenser(nil)
 	countErrRead := 0
 	stopDispenser := 0
 	startFluid := 20
 	buf := make([]byte, 32)
-	cmdd := "S" + strconv.Itoa(measureVolume)
+	cmdd := "S" + strconv.Itoa(measureVolume) + ";"
 	exi := false
 	fmt.Println("In measure")
 	for i := 0; i < 10; i++ {
@@ -419,11 +418,16 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 					stopDispenser++
 				}
 				N, err := r.openPort.Read(buf)
-				if err == nil {
+				if err == nil && N > 2 {
+					countErrRead = 0
 					ans := string(buf[0 : N-2])
-					l, _ := strconv.ParseInt(r.GetLastVolume(), 10, 64)
-					v, _ := strconv.ParseInt(ans[1:N-3], 10, 64)
-					if v-l < 1 {
+					v, err := strconv.ParseInt(ans[1:N-3], 10, 64)
+					fmt.Printf("Current volume: %d", v)
+					if err != nil {
+						v = r.GetLastVolume()
+						fmt.Println(err)
+					}
+					if v-r.GetLastVolume() < 1 {
 						countErr += 1
 						if countErr >= 50 {
 							relay := r.GetCommandStopRev2Board()
@@ -439,14 +443,14 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 						}
 					} else {
 						countErr = 0
-						r.SetLastVolume(ans[1 : N-3])
+						r.SetLastVolume(v)
 					}
-					if ans[0] == 'F' {
+					if ans[0] == 'F' || v > int64(measureVolume) {
 						fmt.Println("Finish command ", measureVolume, " Successfully!")
 						relay := r.GetCommandStopRev2Board()
 						board.RunConfig(relay)
 						countErr = 0
-						r.SetLastVolume(ans[1 : N-3])
+						r.SetLastVolume(v)
 						_, err = r.openPort.Write([]byte("FOK;"))
 						if err != nil {
 							r.SetErrComandDispenser(app.ErrInCommandFok)
@@ -465,8 +469,6 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 						fmt.Println("Error read answer")
 						fmt.Println("Error in command ", measureVolume)
 						return err
-					} else {
-						countErrRead = 0
 					}
 				}
 			}
@@ -764,12 +766,21 @@ func (h *HardwareAccessLayer) workingLoop() ([]app.ControlBoard, error) {
 		h.portsMu.Lock()
 		for t {
 			t = false
-			for key := range h.ports {
-				if h.ports[key].toRemove {
-					delete(h.ports, key)
+			for key := range h.portRev2Board {
+				if h.portRev2Board[key].toRemove {
+					h.portRev2Board[key].openPort.Close()
+					delete(h.ports, h.portRev2Board[key].osPath)
+					delete(h.portRev2Board, key)
 					t = true
 					break
 				}
+			}
+		}
+		if h.dispencer != nil {
+			if h.dispencer.toRemove {
+				h.dispencer.openPort.Close()
+				delete(h.ports, h.dispencer.osPath)
+				h.dispencer = nil
 			}
 		}
 		h.portsMu.Unlock()
