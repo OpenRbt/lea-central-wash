@@ -462,12 +462,12 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 					}
 				} else {
 					countErrRead += 1
+					fmt.Println("Error read answer dispenser")
 					if countErrRead > 5 {
 						relay := r.GetCommandStopRev2Board()
 						board.RunConfig(relay)
 						_, _ = r.openPort.Write([]byte("FOK;"))
 						r.SetErrComandDispenser(app.ErrReadAnswerDispenser)
-						fmt.Println("Error read answer")
 						fmt.Println("Error in command ", measureVolume)
 						return err
 					}
