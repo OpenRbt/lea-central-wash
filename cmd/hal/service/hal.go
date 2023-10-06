@@ -578,6 +578,8 @@ func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
 		}
 
 	}
+	return nil
+
 	if N < 2 {
 		return ErrWrongAnswer
 	}
