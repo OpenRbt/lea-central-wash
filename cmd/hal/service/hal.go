@@ -186,6 +186,7 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 
 	for _, f := range files {
 		if strings.HasPrefix(f.Name(), "ttyUSB") {
+			fmt.Printf("map ports: %v\n", h.ports)
 			_, portExists := h.portByKey(f.Name())
 			if !portExists {
 				fmt.Printf("trying to check as RS485 %s \n", f.Name())
@@ -566,6 +567,7 @@ func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
 		return err
 	}
 
+	time.Sleep(20 * time.Millisecond)
 	buf := make([]byte, 32)
 	N, err := r.openPort.Read(buf)
 	if err != nil {
