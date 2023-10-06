@@ -422,7 +422,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 					countErrRead = 0
 					ans := string(buf[0 : N-2])
 					v, err := strconv.ParseInt(ans[1:N-3], 10, 64)
-					fmt.Printf("Current volume: %d", v)
+					fmt.Printf("Current volume: %d\n", v)
 					if err != nil {
 						v = r.GetLastVolume()
 						fmt.Println(err)
