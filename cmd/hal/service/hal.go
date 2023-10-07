@@ -407,7 +407,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int) error {
 		}
 	}
 	if exi {
-		tick := time.Tick(210 * time.Millisecond)
+		tick := time.Tick(200 * time.Millisecond)
 		var countErr int = 0
 		for {
 			select {
