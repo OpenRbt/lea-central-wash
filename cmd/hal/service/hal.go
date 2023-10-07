@@ -487,9 +487,10 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int) error {
 				} else {
 					countErrRead += 1
 					fmt.Println("Error read answer dispenser")
-					if countErrRead > 2 {
-						r.reconnect()
-					}
+					r.openPort.Flush()
+					//if countErrRead > 2 {
+					//	r.reconnect()
+					//}
 					if countErrRead > 5 {
 						err := r.RunCommandStopRev2Board()
 						if err != nil {
@@ -549,9 +550,10 @@ func (r *Rev2Board) workingLoop() {
 					r.toRemove = true
 					return
 				}
-				if r.errorCount > 2 {
-					r.reconnect()
-				}
+				r.openPort.Flush()
+				//if r.errorCount > 2 {
+				//	r.reconnect()
+				//}
 				err = r.runCommand(cmd)
 			}
 		}
