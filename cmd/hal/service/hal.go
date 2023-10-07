@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -586,19 +585,12 @@ func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
 		return err
 	}
 
-	time.Sleep(20 * time.Millisecond)
 	buf := make([]byte, 32)
 	N, err := r.openPort.Read(buf)
 	if err != nil {
-		r.openPort.Flush()
 		fmt.Println(err)
-		if err == io.EOF {
-			fmt.Println("EOF ")
-			// return err
-		}
-
+		return err
 	}
-	return nil
 
 	if N < 2 {
 		return ErrWrongAnswer
