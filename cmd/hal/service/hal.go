@@ -98,7 +98,7 @@ func NewDispencerBoard(osPath string, openPort *serial.Port, runOnRev2Board func
 		allowedPing:           true,
 		stopDispenser:         false,
 		ErrorCommandDispenser: nil,
-		timeoutSec:            2,
+		timeoutSec:            3,
 		runOnRev2Board:        runOnRev2Board,
 	}
 }
@@ -187,7 +187,6 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 
 	for _, f := range files {
 		if strings.HasPrefix(f.Name(), "ttyUSB") {
-			fmt.Printf("map ports: %v\n", h.ports)
 			_, portExists := h.portByKey(f.Name())
 			if !portExists {
 				fmt.Printf("trying to check as RS485 %s \n", f.Name())
