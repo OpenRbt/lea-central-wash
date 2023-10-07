@@ -364,7 +364,7 @@ func (r *Rev1DispencerBoard) dispenserStop() error {
 
 func (r *Rev1DispencerBoard) reconnect() error {
 	r.openPort.Close()
-	time.Sleep(50 * time.Millisecond)
+	time.Sleep(20 * time.Millisecond)
 	c := &serial.Config{Name: "/dev/" + r.osPath, Baud: 38400, ReadTimeout: time.Millisecond * 100}
 	s, err := serial.OpenPort(c)
 	if err == nil {
@@ -487,10 +487,9 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int) error {
 				} else {
 					countErrRead += 1
 					fmt.Println("Error read answer dispenser")
-					r.openPort.Flush()
-					//if countErrRead > 2 {
-					//	r.reconnect()
-					//}
+					if countErrRead > 2 {
+						r.reconnect()
+					}
 					if countErrRead > 5 {
 						err := r.RunCommandStopRev2Board()
 						if err != nil {
@@ -550,10 +549,9 @@ func (r *Rev2Board) workingLoop() {
 					r.toRemove = true
 					return
 				}
-				r.openPort.Flush()
-				//if r.errorCount > 2 {
-				//	r.reconnect()
-				//}
+				if r.errorCount > 1 {
+					r.reconnect()
+				}
 				err = r.runCommand(cmd)
 			}
 		}
@@ -562,7 +560,7 @@ func (r *Rev2Board) workingLoop() {
 
 func (r *Rev2Board) reconnect() error {
 	r.openPort.Close()
-	time.Sleep(50 * time.Millisecond)
+	time.Sleep(20 * time.Millisecond)
 	c := &serial.Config{Name: "/dev/" + r.osPath, Baud: 38400, ReadTimeout: time.Millisecond * 100}
 	s, err := serial.OpenPort(c)
 	if err == nil {
