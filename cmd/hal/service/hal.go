@@ -76,6 +76,7 @@ type Rev1DispencerBoard struct {
 	commandStopRev2Board  app.RelayConfig
 	commandStartRev2Board app.RelayConfig
 	timeoutSec            int
+	runOnRev2Board        func(int32, app.RelayConfig) error
 }
 
 // NewRev2Board is a constructor, using USB to communicate
@@ -90,7 +91,7 @@ func NewRev2Board(osPath string, openPort *serial.Port) *Rev2Board {
 }
 
 // NewDispencerBoard is a constructor
-func NewDispencerBoard(osPath string, openPort *serial.Port) *Rev1DispencerBoard {
+func NewDispencerBoard(osPath string, openPort *serial.Port, runOnRev2Board func(int32, app.RelayConfig) error) *Rev1DispencerBoard {
 	return &Rev1DispencerBoard{
 		osPath:                osPath,
 		openPort:              openPort,
@@ -99,6 +100,7 @@ func NewDispencerBoard(osPath string, openPort *serial.Port) *Rev1DispencerBoard
 		stopDispenser:         false,
 		ErrorCommandDispenser: nil,
 		timeoutSec:            2,
+		runOnRev2Board:        runOnRev2Board,
 	}
 }
 
@@ -162,18 +164,18 @@ func (r *Rev1DispencerBoard) GetErrComandDispenser() error {
 	return err
 }
 
-func (r *Rev1DispencerBoard) GetCommandStartRev2Board() app.RelayConfig {
+func (r *Rev1DispencerBoard) RunCommandStartRev2Board() error {
 	r.resourcesMu.Lock()
 	relay := r.commandStartRev2Board
 	r.resourcesMu.Unlock()
-	return relay
+	return r.runOnRev2Board(1, relay)
 }
 
-func (r *Rev1DispencerBoard) GetCommandStopRev2Board() app.RelayConfig {
+func (r *Rev1DispencerBoard) RunCommandStopRev2Board() error {
 	r.resourcesMu.Lock()
 	relay := r.commandStopRev2Board
 	r.resourcesMu.Unlock()
-	return relay
+	return r.runOnRev2Board(1, relay)
 }
 
 // CollectAvailableSerialPorts reads /dev directory and find all ttyUSB* devices
@@ -317,7 +319,7 @@ func (h *HardwareAccessLayer) MeasureVolumeMilliliters(measureVolume int, statio
 	r.commandStartRev2Board = stCfg
 	r.resourcesMu.Unlock()
 	r.SetStopDispenser(false)
-	go r.measureVolumeMilliliters(measureVolume, board)
+	go r.measureVolumeMilliliters(measureVolume)
 	return nil
 }
 
@@ -362,7 +364,7 @@ func (r *Rev1DispencerBoard) dispenserStop() error {
 	return nil
 }
 
-func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board app.ControlBoard) error {
+func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int) error {
 	r.SetAllowedPing(false)
 	r.SetLastVolume(0)
 	r.SetErrComandDispenser(nil)
@@ -398,15 +400,16 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 			select {
 			case <-tick:
 				if startFluid > 5 {
-					relay := r.GetCommandStartRev2Board()
-					board.RunConfig(relay)
-					startFluid = 0
+					err := r.RunCommandStartRev2Board()
+					if err != nil {
+						fmt.Printf("error RunCommandStartRev2Board: %s\n", err)
+					} else {
+						startFluid = 0
+					}
 				}
 				startFluid++
 				r.SetAllowedPing(false)
 				if r.GetStopDispenser() {
-					relay := r.GetCommandStopRev2Board()
-					board.RunConfig(relay)
 					if stopDispenser > 0 {
 						_, err := r.openPort.Write([]byte("FOK;"))
 						if err != nil {
@@ -416,23 +419,30 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 						}
 						return nil
 					}
-					stopDispenser++
+					err := r.RunCommandStopRev2Board()
+					if err != nil {
+						fmt.Printf("error RunCommandStopRev2Board: %s\n", err)
+					} else {
+						stopDispenser++
+					}
 				}
 				N, err := r.openPort.Read(buf)
 				if err == nil && N > 2 {
 					countErrRead = 0
 					ans := string(buf[0 : N-2])
 					v, err := strconv.ParseInt(ans[1:N-3], 10, 64)
-					fmt.Printf("Current volume: %d\n", v)
 					if err != nil {
 						v = r.GetLastVolume()
 						fmt.Println(err)
 					}
+					fmt.Printf("Current volume: %d\n", v)
 					if v-r.GetLastVolume() < 1 {
 						countErr += 1
 						if countErr >= 50 {
-							relay := r.GetCommandStopRev2Board()
-							board.RunConfig(relay)
+							err := r.RunCommandStopRev2Board()
+							if err != nil {
+								fmt.Printf("error RunCommandStopRev2Board: %s\n", err)
+							}
 							_, err = r.openPort.Write([]byte("ERR;"))
 							N, err = r.openPort.Read(buf)
 							ans = string(buf[0 : N-2])
@@ -448,8 +458,10 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 					}
 					if ans[0] == 'F' || v > int64(measureVolume) {
 						fmt.Println("Finish command ", measureVolume, " Successfully!")
-						relay := r.GetCommandStopRev2Board()
-						board.RunConfig(relay)
+						err := r.RunCommandStopRev2Board()
+						if err != nil {
+							fmt.Printf("error RunCommandStopRev2Board: %s\n", err)
+						}
 						countErr = 0
 						r.SetLastVolume(v)
 						_, err = r.openPort.Write([]byte("FOK;"))
@@ -464,8 +476,12 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 					countErrRead += 1
 					fmt.Println("Error read answer dispenser")
 					if countErrRead > 5 {
-						relay := r.GetCommandStopRev2Board()
-						board.RunConfig(relay)
+						err := r.RunCommandStopRev2Board()
+						if err != nil {
+							fmt.Printf("error RunCommandStopRev2Board: %s\n", err)
+						} else {
+							stopDispenser++
+						}
 						_, _ = r.openPort.Write([]byte("FOK;"))
 						r.SetErrComandDispenser(app.ErrReadAnswerDispenser)
 						fmt.Println("Error in command ", measureVolume)
@@ -477,8 +493,10 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 	}
 	r.SetErrComandDispenser(app.ErrDispenserNotRespond)
 	fmt.Println("Dispenser is not responding")
-	relay := r.GetCommandStopRev2Board()
-	board.RunConfig(relay)
+	err := r.RunCommandStopRev2Board()
+	if err != nil {
+		fmt.Printf("error RunCommandStopRev2Board: %s\n", err)
+	}
 	return app.ErrDispenserNotRespond
 }
 
@@ -721,7 +739,7 @@ func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
 	ans := string(buf[0:N])
 	fmt.Printf("answer is [%s]\n", ans)
 	if dispenserAnswer == ans {
-		sensor := NewDispencerBoard(key, s)
+		sensor := NewDispencerBoard(key, s, h.runOnRev2Board)
 		port := NewPorts(key, s)
 		h.addDispencerBoard(key, sensor)
 		h.addPort(key, port)
