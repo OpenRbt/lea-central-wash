@@ -363,6 +363,20 @@ func (r *Rev1DispencerBoard) dispenserStop() error {
 	return nil
 }
 
+func (r *Rev1DispencerBoard) reconnect() error {
+	r.openPort.Close()
+	time.Sleep(50 * time.Millisecond)
+	c := &serial.Config{Name: "/dev/" + r.osPath, Baud: 38400, ReadTimeout: time.Millisecond * 100}
+	s, err := serial.OpenPort(c)
+	if err == nil {
+		r.openPort = s
+		fmt.Printf("reconnect OK\n")
+	} else {
+		fmt.Printf("reconnect err: %s\n", err)
+	}
+	return err
+}
+
 func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int) error {
 	r.SetAllowedPing(false)
 	r.SetLastVolume(0)
@@ -381,7 +395,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int) error {
 			r.SetErrComandDispenser(err)
 		} else {
 			N, err := r.openPort.Read(buf)
-			if err == nil {
+			if err == nil && N > 1 {
 				ans := string(buf[0 : N-2])
 				if ans == "SOK;" {
 					fmt.Println("Start command ", measureVolume)
@@ -475,16 +489,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int) error {
 					countErrRead += 1
 					fmt.Println("Error read answer dispenser")
 					if countErrRead > 2 {
-						r.openPort.Close()
-						time.Sleep(50 * time.Millisecond)
-						c := &serial.Config{Name: "/dev/" + r.osPath, Baud: 38400, ReadTimeout: time.Millisecond * 100}
-						s, err := serial.OpenPort(c)
-						if err == nil {
-							r.openPort = s
-							fmt.Printf("reconnect OK\n")
-						} else {
-							fmt.Printf("reconnect err: %s\n", err)
-						}
+						r.reconnect()
 					}
 					if countErrRead > 5 {
 						err := r.RunCommandStopRev2Board()
@@ -545,10 +550,27 @@ func (r *Rev2Board) workingLoop() {
 					r.toRemove = true
 					return
 				}
+				if r.errorCount > 2 {
+					r.reconnect()
+				}
 				err = r.runCommand(cmd)
 			}
 		}
 	}
+}
+
+func (r *Rev2Board) reconnect() error {
+	r.openPort.Close()
+	time.Sleep(50 * time.Millisecond)
+	c := &serial.Config{Name: "/dev/" + r.osPath, Baud: 38400, ReadTimeout: time.Millisecond * 100}
+	s, err := serial.OpenPort(c)
+	if err == nil {
+		r.openPort = s
+		fmt.Printf("reconnect OK\n")
+	} else {
+		fmt.Printf("reconnect err: %s\n", err)
+	}
+	return err
 }
 
 func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
