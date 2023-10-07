@@ -474,12 +474,17 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int) error {
 				} else {
 					countErrRead += 1
 					fmt.Println("Error read answer dispenser")
-					r.openPort.Close()
-					time.Sleep(50 * time.Millisecond)
-					c := &serial.Config{Name: "/dev/" + r.osPath, Baud: 38400, ReadTimeout: time.Millisecond * 100}
-					s, err := serial.OpenPort(c)
-					if err == nil {
-						r.openPort = s
+					if countErrRead > 2 {
+						r.openPort.Close()
+						time.Sleep(50 * time.Millisecond)
+						c := &serial.Config{Name: "/dev/" + r.osPath, Baud: 38400, ReadTimeout: time.Millisecond * 100}
+						s, err := serial.OpenPort(c)
+						if err == nil {
+							r.openPort = s
+							fmt.Printf("reconnect OK\n")
+						} else {
+							fmt.Printf("reconnect err: %s\n", err)
+						}
 					}
 					if countErrRead > 5 {
 						err := r.RunCommandStopRev2Board()
