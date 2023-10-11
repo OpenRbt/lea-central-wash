@@ -473,7 +473,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int) error {
 						countErr = 0
 						r.SetLastVolume(v)
 					}
-					if ans[0] == 'F' || v > int64(measureVolume) {
+					if ans[0] == 'F' || v >= int64(measureVolume) {
 						fmt.Println("Finish command ", measureVolume, " Successfully!")
 						err := r.RunCommandStopRev2Board()
 						if err != nil {
