@@ -64,7 +64,7 @@ var (
 	SbpRabbitHost              = strGetEnv("SBP_RABBIT_HOST", "app.openwashing.com")
 	SbpRabbitPort              = strGetEnv("SBP_RABBIT_PORT", "4043")
 	SbpRabbitSecure            = boolGetEnv("SBP_RABBIT_SECURE", true)
-	SbpPaymentExpirationPeriod = durationGetEnv("SBP_PAYMENT_EXPIRATION_PERIOD", time.Minute*10)
+	SbpPaymentExpirationPeriod = durationGetEnv("SBP_PAYMENT_EXPIRATION_PERIOD", time.Minute*5)
 	SbpEnvNameServerID         = strGetEnv("SBP_ENV_NAME_SERVER_ID", "SBP_SERVER_ID")
 	SbpEnvNameServerPassword   = strGetEnv("SBP_ENV_NAME_SERVER_PASSWORD", "SBP_SERVER_PASSWORD")
 	//
