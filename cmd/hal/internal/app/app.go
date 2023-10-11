@@ -91,6 +91,9 @@ type HardwareMetrics struct {
 	// RS485MotorRequestCounter, Total number of requests to a motor by id
 	RS485MotorRequestCounter     CounterMetric
 	RS485MotorRequestFailCounter CounterMetric
+
+	Rev2BoardReconnectCounter     CounterMetric
+	Rev1DispencerReconnectCounter CounterMetric
 }
 
 type GaugeMetric interface {

@@ -54,6 +54,7 @@ type Rev2Board struct {
 	stationNumber int
 	errorCount    int
 	Commands      chan app.RelayConfig
+	hwMetrics     app.HardwareMetrics
 }
 
 type ports struct {
@@ -76,21 +77,23 @@ type Rev1DispencerBoard struct {
 	commandStartRev2Board app.RelayConfig
 	timeoutSec            int
 	runOnRev2Board        func(int32, app.RelayConfig) error
+	hwMetrics             app.HardwareMetrics
 }
 
 // NewRev2Board is a constructor, using USB to communicate
-func NewRev2Board(osPath string, openPort *serial.Port) *Rev2Board {
+func NewRev2Board(osPath string, openPort *serial.Port, hwMetrics app.HardwareMetrics) *Rev2Board {
 	return &Rev2Board{
 		osPath:        osPath,
 		openPort:      openPort,
 		stationNumber: -1,
 		toRemove:      false,
 		Commands:      make(chan app.RelayConfig),
+		hwMetrics:     hwMetrics,
 	}
 }
 
 // NewDispencerBoard is a constructor
-func NewDispencerBoard(osPath string, openPort *serial.Port, runOnRev2Board func(int32, app.RelayConfig) error) *Rev1DispencerBoard {
+func NewDispencerBoard(osPath string, openPort *serial.Port, runOnRev2Board func(int32, app.RelayConfig) error, hwMetrics app.HardwareMetrics) *Rev1DispencerBoard {
 	return &Rev1DispencerBoard{
 		osPath:                osPath,
 		openPort:              openPort,
@@ -100,6 +103,7 @@ func NewDispencerBoard(osPath string, openPort *serial.Port, runOnRev2Board func
 		ErrorCommandDispenser: nil,
 		timeoutSec:            3,
 		runOnRev2Board:        runOnRev2Board,
+		hwMetrics:             hwMetrics,
 	}
 }
 
@@ -363,6 +367,7 @@ func (r *Rev1DispencerBoard) dispenserStop() error {
 }
 
 func (r *Rev1DispencerBoard) reconnect() error {
+	r.hwMetrics.Rev1DispencerReconnectCounter.Inc("1")
 	r.openPort.Close()
 	time.Sleep(20 * time.Millisecond)
 	c := &serial.Config{Name: "/dev/" + r.osPath, Baud: 38400, ReadTimeout: time.Millisecond * 100}
@@ -559,6 +564,7 @@ func (r *Rev2Board) workingLoop() {
 }
 
 func (r *Rev2Board) reconnect() error {
+	r.hwMetrics.Rev2BoardReconnectCounter.Inc(strconv.Itoa(r.stationNumber))
 	r.openPort.Close()
 	time.Sleep(20 * time.Millisecond)
 	c := &serial.Config{Name: "/dev/" + r.osPath, Baud: 38400, ReadTimeout: time.Millisecond * 100}
@@ -764,7 +770,7 @@ func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
 	ans := string(buf[0:N])
 	fmt.Printf("answer is [%s]\n", ans)
 	if dispenserAnswer == ans {
-		sensor := NewDispencerBoard(key, s, h.runOnRev2Board)
+		sensor := NewDispencerBoard(key, s, h.runOnRev2Board, h.hwMetrics)
 		port := NewPorts(key, s)
 		h.addDispencerBoard(key, sensor)
 		h.addPort(key, port)
@@ -777,7 +783,7 @@ func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
 	}
 
 	fmt.Printf("uid is [%s]\n", foundStrings[1])
-	board := NewRev2Board(key, s)
+	board := NewRev2Board(key, s, h.hwMetrics)
 	port := NewPorts(key, s)
 	h.addRev2Board(key, board)
 	h.addPort(key, port)

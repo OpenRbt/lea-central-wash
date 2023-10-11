@@ -56,19 +56,31 @@ var (
 		Help: "Total number of failed requests",
 	},
 		[]string{"motor_id"})
+	rev2BoardReconnectCounter = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "hal_rev2_board_reconnect",
+		Help: "Total number of reconnect",
+	},
+		[]string{"post_id"})
+	rev1DispencerReconnectCounter = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "hal_rev1_dispencer_reconnect",
+		Help: "Total number of reconnect",
+	},
+		[]string{"id"})
 )
 
 func main() {
 	isDebug := flag.Bool("debug", false, "debug")
 
 	metricsHW := app.HardwareMetrics{
-		MotorDetected:                hwmetrics.NewGaugeMetric(motorDetected),
-		BoardDetected:                hwmetrics.NewGaugeMetric(boardDetected),
-		MotorSpeedGauge:              hwmetrics.NewGaugeMetric(motorSpeedGauge),
-		MotorDesiredSpeedGauge:       hwmetrics.NewGaugeMetric(motorDesiredSpeedGauge),
-		MotorRunning:                 hwmetrics.NewGaugeMetric(motorRunning),
-		RS485MotorRequestCounter:     hwmetrics.NewCounterMetric(rs485MotorRequestCounter),
-		RS485MotorRequestFailCounter: hwmetrics.NewCounterMetric(rs485MotorRequestFailCounter),
+		MotorDetected:                 hwmetrics.NewGaugeMetric(motorDetected),
+		BoardDetected:                 hwmetrics.NewGaugeMetric(boardDetected),
+		MotorSpeedGauge:               hwmetrics.NewGaugeMetric(motorSpeedGauge),
+		MotorDesiredSpeedGauge:        hwmetrics.NewGaugeMetric(motorDesiredSpeedGauge),
+		MotorRunning:                  hwmetrics.NewGaugeMetric(motorRunning),
+		RS485MotorRequestCounter:      hwmetrics.NewCounterMetric(rs485MotorRequestCounter),
+		RS485MotorRequestFailCounter:  hwmetrics.NewCounterMetric(rs485MotorRequestFailCounter),
+		Rev2BoardReconnectCounter:     hwmetrics.NewCounterMetric(rev2BoardReconnectCounter),
+		Rev1DispencerReconnectCounter: hwmetrics.NewCounterMetric(rev1DispencerReconnectCounter),
 	}
 
 	var hardware app.HardwareAccessLayer
