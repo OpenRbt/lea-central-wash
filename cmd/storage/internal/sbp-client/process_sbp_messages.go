@@ -14,6 +14,9 @@ import (
 
 // ProcessSbpMessage ...
 func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
+	// debug
+	// fmt.Println(d.Type)
+	//  fmt.Println(string(d.Body))
 	switch rabbit_vo.MessageType(d.Type) {
 
 	// payment response
@@ -30,9 +33,12 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 			}
 
 			if msg.Failed {
+				if msg.Error != "" {
+					s.log.PrintErr("Server response error", "err", msg.Error)
+				}
 				err = s.app.SetPaymentCanceled(uuid.FromStringOrNil(msg.OrderID))
 				if err != nil {
-					s.log.PrintErr("PaymentResponse error: %s", err.Error())
+					s.log.PrintErr("PaymentResponse error", "err", err.Error())
 					err = d.Nack(false, false)
 					if err != nil {
 						return err
@@ -44,6 +50,7 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 				if err != nil {
 					return err
 				}
+				return nil
 			}
 
 			err = s.app.SetPaymentURL(uuid.FromStringOrNil(msg.OrderID), msg.UrlPay)

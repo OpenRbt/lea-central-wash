@@ -411,6 +411,9 @@ func initSbpClient(
 	if err != nil {
 		log.Warn("sbp configuration not found! skipping sbp service initialization")
 	}
+	if sbpConfig.ServerID == "" || sbpConfig.ServerPassword == "" {
+		return
+	}
 	go func() {
 		for {
 			// rabbit client

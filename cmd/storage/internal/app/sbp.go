@@ -72,30 +72,34 @@ type Payment struct {
 	UpdatedAt        time.Time
 }
 
+// Repeat ...
+func Repeat(f func(), duration time.Duration) {
+	// minute
+	t := time.NewTicker(duration)
+	for {
+		<-t.C
+		f()
+	}
+}
+
 // CancelExpiratedNotOpenwashReceivedPayments ...
 func (w *SbpWorker) CancelExpiratedNotOpenwashReceivedPayments() {
-	// minute
-	t := time.NewTicker(time.Minute)
-	for {
-		// get last payments
-		reqs, err := w.sbpRep.GetActualPayments()
-		if err != nil {
-			err = fmt.Errorf("process messages failed: %w", err)
-			log.Err(err)
-		}
+	// get last payments
+	reqs, err := w.sbpRep.GetActualPayments()
+	if err != nil {
+		err = fmt.Errorf("process messages failed: %w", err)
+		log.Err(err)
+	}
 
-		// cancel
-		<-t.C
-		for i := 0; i < len(reqs); i++ {
-			// expiration check
-			period := time.Since(reqs[i].UpdatedAt.UTC()).Abs()
-			if period >= w.notificationExpirationPeriod && !reqs[i].UpdatedAt.IsZero() {
-				err := w.paymentCancel(reqs[i].ServerID, reqs[i].PostID, reqs[i].OrderID)
-				if err != nil {
-					err = fmt.Errorf("process messages orderID = %s failed: %w", reqs[i].OrderID, err)
-					if log.Err(err) != nil {
-						fmt.Println(err)
-					}
+	for i := 0; i < len(reqs); i++ {
+		// expiration check
+		period := time.Since(reqs[i].UpdatedAt.UTC()).Abs()
+		if period >= w.notificationExpirationPeriod && !reqs[i].UpdatedAt.IsZero() {
+			err := w.paymentCancel(reqs[i].ServerID, reqs[i].PostID, reqs[i].OrderID)
+			if err != nil {
+				err = fmt.Errorf("process messages orderID = %s failed: %w", reqs[i].OrderID, err)
+				if log.Err(err) != nil {
+					fmt.Println(err)
 				}
 			}
 		}
