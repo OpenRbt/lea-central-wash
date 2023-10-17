@@ -6,9 +6,7 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -42,52 +40,6 @@ type MoneyReport struct {
 
 	// session Id
 	SessionID string `json:"sessionId,omitempty"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (m *MoneyReport) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// banknotes
-		Banknotes int64 `json:"banknotes,omitempty"`
-
-		// bonuses
-		Bonuses int64 `json:"bonuses,omitempty"`
-
-		// cars total
-		CarsTotal int64 `json:"carsTotal,omitempty"`
-
-		// coins
-		Coins int64 `json:"coins,omitempty"`
-
-		// electronical
-		Electronical int64 `json:"electronical,omitempty"`
-
-		// qr money
-		QrMoney int64 `json:"qrMoney,omitempty"`
-
-		// service
-		Service int64 `json:"service,omitempty"`
-
-		// session Id
-		SessionID string `json:"sessionId,omitempty"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	m.Banknotes = props.Banknotes
-	m.Bonuses = props.Bonuses
-	m.CarsTotal = props.CarsTotal
-	m.Coins = props.Coins
-	m.Electronical = props.Electronical
-	m.QrMoney = props.QrMoney
-	m.Service = props.Service
-	m.SessionID = props.SessionID
-	return nil
 }
 
 // Validate validates this money report

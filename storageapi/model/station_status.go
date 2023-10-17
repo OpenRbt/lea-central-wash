@@ -6,9 +6,7 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -46,56 +44,6 @@ type StationStatus struct {
 
 	// status
 	Status Status `json:"status,omitempty"`
-}
-
-// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (m *StationStatus) UnmarshalJSON(data []byte) error {
-	var props struct {
-
-		// current balance
-		CurrentBalance int64 `json:"currentBalance,omitempty"`
-
-		// current program
-		CurrentProgram int64 `json:"currentProgram,omitempty"`
-
-		// current program name
-		CurrentProgramName string `json:"currentProgramName,omitempty"`
-
-		// hash
-		Hash Hash `json:"hash,omitempty"`
-
-		// id
-		ID int64 `json:"id,omitempty"`
-
-		// info
-		Info string `json:"info,omitempty"`
-
-		// ip
-		IP string `json:"ip,omitempty"`
-
-		// name
-		Name string `json:"name,omitempty"`
-
-		// status
-		Status Status `json:"status,omitempty"`
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&props); err != nil {
-		return err
-	}
-
-	m.CurrentBalance = props.CurrentBalance
-	m.CurrentProgram = props.CurrentProgram
-	m.CurrentProgramName = props.CurrentProgramName
-	m.Hash = props.Hash
-	m.ID = props.ID
-	m.Info = props.Info
-	m.IP = props.IP
-	m.Name = props.Name
-	m.Status = props.Status
-	return nil
 }
 
 // Validate validates this station status
