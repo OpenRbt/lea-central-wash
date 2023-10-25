@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
+	"github.com/OpenRbt/lea-central-wash/storageapi/restapi/op"
 )
 
 func (svc *service) ping(params op.PingParams) op.PingResponder {
@@ -59,10 +59,11 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		BonusSystemActive:   bonusActive,
 		AuthorizedSessionID: station.AuthorizedSessionID,
 		// sbp
-		QrMoney:   &lastPayment.Amount,
-		QrOrderID: &orderID,
-		QrURL:     &lastPayment.UrlPay,
-		QrFailed:  &lastPayment.Canceled,
+		QrMoney:         &lastPayment.Amount,
+		QrOrderID:       &orderID,
+		QrURL:           &lastPayment.UrlPay,
+		QrFailed:        &lastPayment.Canceled,
+		SbpSystemActive: svc.app.IsSbpAvailableForStation(stationID),
 	})
 }
 

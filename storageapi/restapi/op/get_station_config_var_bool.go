@@ -15,7 +15,7 @@ import (
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi"
+	"github.com/OpenRbt/lea-central-wash/storageapi"
 )
 
 // GetStationConfigVarBoolHandlerFunc turns a function with the right signature into a get station config var bool handler

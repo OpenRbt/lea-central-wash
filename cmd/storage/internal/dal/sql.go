@@ -5,7 +5,7 @@ import (
 
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 )
 
 const (

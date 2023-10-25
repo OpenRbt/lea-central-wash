@@ -6,10 +6,18 @@ package client
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"github.com/DiaElectronics/lea-central-wash/storageapi/client/op"
+	"net/http"
+
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
+	"github.com/go-openapi/spec"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+
+	"github.com/OpenRbt/lea-central-wash/storageapi"
+	"github.com/OpenRbt/lea-central-wash/storageapi/client"
+	"github.com/OpenRbt/lea-central-wash/storageapi/model"
 )
 
 // Default storage HTTP client.

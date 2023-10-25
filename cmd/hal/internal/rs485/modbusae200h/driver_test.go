@@ -5,7 +5,7 @@ package modbusae200h
 import (
 	"testing"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/rsutil"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/rs485/rsutil"
 )
 
 func TestClient(t *testing.T) {

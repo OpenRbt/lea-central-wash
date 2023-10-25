@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime/middleware"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi"
+	"github.com/OpenRbt/lea-central-wash/storageapi"
 )
 
 // SetStationConfigVarIntHandlerFunc turns a function with the right signature into a set station config var int handler

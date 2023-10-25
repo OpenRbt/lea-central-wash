@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/OpenRbt/lea-central-wash/storageapi/model"
 )
 
 // GetUsersReader is a Reader for the GetUsers structure.

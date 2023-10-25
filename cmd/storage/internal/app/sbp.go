@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	paymentEntities "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/sbp-client/entity/payment"
+	paymentEntities "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client/entity/payment"
 	"github.com/gofrs/uuid"
 )
 
@@ -40,6 +40,7 @@ type SbpWorkerInterface interface {
 type SbpBrokerInterface interface {
 	SendPaymentRequest(payRequest paymentEntities.PayRequest) (err error)
 	CancelPayment(payСancellationRequest paymentEntities.PayСancellationRequest) (err error)
+	Status() ServiceStatus
 }
 
 // SbpRepInterface ...

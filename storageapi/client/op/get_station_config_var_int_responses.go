@@ -18,7 +18,7 @@ import (
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/OpenRbt/lea-central-wash/storageapi/model"
 )
 
 // GetStationConfigVarIntReader is a Reader for the GetStationConfigVarInt structure.

@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 	"github.com/gofrs/uuid"
 	"github.com/powerman/sqlxx"
 )

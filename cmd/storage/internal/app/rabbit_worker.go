@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/session"
-	rabbit_vo "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/session"
+	rabbit_vo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 )
 
 type BonusRabbitWorker struct {
@@ -17,7 +17,7 @@ type BonusRabbitWorker struct {
 	lastMessageTime int64
 
 	publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error
-	isConnected   func() bool
+	status        func() ServiceStatus
 }
 
 func (r *BonusRabbitWorker) SetLastMessageTime(t int64) {
@@ -33,8 +33,8 @@ func (r *BonusRabbitWorker) GetLastMessageTime() int64 {
 	return t
 }
 
-func (r *BonusRabbitWorker) IsConnected() bool {
-	return r.isConnected()
+func (r *BonusRabbitWorker) Status() ServiceStatus {
+	return r.status()
 }
 
 func (r *BonusRabbitWorker) ProcessMoneyReports() {

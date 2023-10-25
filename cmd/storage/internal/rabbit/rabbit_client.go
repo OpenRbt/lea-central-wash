@@ -7,8 +7,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	rabbit_vo "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
+	rabbit_vo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 	"github.com/powerman/structlog"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -47,6 +47,12 @@ type Service struct {
 	bonusSvcSub *amqp.Channel
 	rabbitConf  *amqp.Config
 	connString  string
+
+	statusMu         sync.Mutex
+	disabledOnServer bool
+	lastErr          string
+	dateLastErr      *time.Time
+	unpaidStations   map[int]bool
 }
 
 func NewClient(cfg Config, app app.App) (svc *Service, err error) {
@@ -68,15 +74,18 @@ func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 		Locale:     "",
 		Dial:       nil,
 	}
-
 	svc = &Service{
-		app:        app,
-		log:        structlog.New(),
-		rabbitConf: &rabbitConf,
-		connString: connString,
-		serverID:   cfg.ServerID,
-		cfg:        cfg,
-		done:       make(chan struct{}),
+		app:              app,
+		log:              structlog.New(),
+		rabbitConf:       &rabbitConf,
+		connString:       connString,
+		serverID:         cfg.ServerID,
+		cfg:              cfg,
+		done:             make(chan struct{}),
+		disabledOnServer: false,
+		lastErr:          "",
+		dateLastErr:      nil,
+		unpaidStations:   map[int]bool{},
 	}
 	err = svc.connect()
 	if err != nil {
@@ -85,6 +94,34 @@ func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 
 	go svc.recon()
 	return
+}
+
+// Status return service status
+func (s *Service) Status() app.ServiceStatus {
+	s.statusMu.Lock()
+	if s.dateLastErr != nil {
+		if time.Now().UTC().Sub(*s.dateLastErr) > 24*time.Hour {
+			s.dateLastErr = nil
+			s.lastErr = ""
+		}
+	}
+	defer s.statusMu.Unlock()
+	return app.ServiceStatus{
+		Available:        true,
+		DisabledOnServer: s.disabledOnServer,
+		LastErr:          s.lastErr,
+		DateLastErr:      s.dateLastErr,
+		UnpaidStations:   s.unpaidStations,
+		IsConnected:      atomic.LoadInt32(&s.isConnected) == connected,
+	}
+}
+
+func (s *Service) setLastErr(err string) {
+	s.statusMu.Lock()
+	t := time.Now().UTC()
+	s.dateLastErr = &t
+	s.lastErr = err
+	s.statusMu.Unlock()
 }
 
 func (s *Service) handlerGoroutine(consumer *amqp.Channel, msgs <-chan amqp.Delivery, handler func(d amqp.Delivery) (err error)) {

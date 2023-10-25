@@ -5,10 +5,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/def"
-	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
-	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/def"
+	"github.com/OpenRbt/lea-central-wash/storageapi/model"
+	"github.com/OpenRbt/lea-central-wash/storageapi/restapi/op"
 	"github.com/pkg/errors"
 )
 
@@ -84,7 +84,7 @@ func (svc *service) setHash(id app.StationID, hash string) error {
 }
 
 func (svc *service) load(params op.LoadParams) op.LoadResponder {
-	log.Info("load", "hash", *params.Args.Hash, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
+	//log.Info("load", "hash", *params.Args.Hash, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
 	stationID, err := svc.getID(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("load: not found", "hash", params.Args.Hash, "key", *params.Args.Key, "ip", params.HTTPRequest.RemoteAddr)
@@ -239,7 +239,7 @@ func (svc *service) info(params op.InfoParams) op.InfoResponder {
 }
 
 func (svc *service) status(params op.StatusParams) op.StatusResponder {
-	log.Info("status", "ip", params.HTTPRequest.RemoteAddr)
+	//log.Info("status", "ip", params.HTTPRequest.RemoteAddr)
 	report := svc.app.StatusReport()
 	return op.NewStatusOK().WithPayload(svc.apiStatusReport(report))
 }

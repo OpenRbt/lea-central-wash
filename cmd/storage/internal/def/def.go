@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi"
+	"github.com/OpenRbt/lea-central-wash/storageapi/restapi"
 	"github.com/go-openapi/loads"
 	"github.com/go-openapi/swag"
 	"github.com/jmoiron/sqlx"

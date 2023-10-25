@@ -18,7 +18,7 @@ import (
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/OpenRbt/lea-central-wash/storageapi/model"
 )
 
 // PingReader is a Reader for the Ping structure.
@@ -283,6 +283,9 @@ type PingOKBody struct {
 	// Required: true
 	QrURL *string `json:"qrUrl"`
 
+	// sbp system active
+	SbpSystemActive bool `json:"sbpSystemActive,omitempty"`
+
 	// service amount
 	// Required: true
 	ServiceAmount *int64 `json:"serviceAmount"`
@@ -333,6 +336,9 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 		// Required: true
 		QrURL *string `json:"qrUrl"`
 
+		// sbp system active
+		SbpSystemActive bool `json:"sbpSystemActive,omitempty"`
+
 		// service amount
 		// Required: true
 		ServiceAmount *int64 `json:"serviceAmount"`
@@ -358,6 +364,7 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 	o.QrMoney = props.QrMoney
 	o.QrOrderID = props.QrOrderID
 	o.QrURL = props.QrURL
+	o.SbpSystemActive = props.SbpSystemActive
 	o.ServiceAmount = props.ServiceAmount
 	o.SessionID = props.SessionID
 	return nil

@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/session"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/session"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	rabbit_vo "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
+	rabbit_vo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
@@ -104,7 +104,7 @@ func (s *Service) SendMessage(msg interface{}, service rabbit_vo.Service, routin
 
 	switch service {
 	case rabbit_vo.WashBonusService:
-		return s.bonusSvcPub.PublishWithContext(
+		err = s.bonusSvcPub.PublishWithContext(
 			context.Background(),
 			string(rabbit_vo.WashBonusService),
 			string(routingKey),
@@ -112,6 +112,10 @@ func (s *Service) SendMessage(msg interface{}, service rabbit_vo.Service, routin
 			false,
 			message,
 		)
+		if err != nil {
+			s.setLastErr(err.Error())
+		}
+		return err
 	default:
 		return errors.New("unknown service")
 	}

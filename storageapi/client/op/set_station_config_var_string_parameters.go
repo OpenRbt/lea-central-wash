@@ -15,7 +15,7 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/OpenRbt/lea-central-wash/storageapi/model"
 )
 
 // NewSetStationConfigVarStringParams creates a new SetStationConfigVarStringParams object,

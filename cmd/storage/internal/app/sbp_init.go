@@ -72,3 +72,11 @@ func (a *app) InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error {
 func (a *app) IsSbpRabbitWorkerInit() bool {
 	return a.SbpWorker != nil
 }
+
+func (a *app) IsSbpAvailableForStation(stationID StationID) bool {
+	if a.SbpWorker == nil {
+		return false
+	}
+	status := a.SbpWorker.sbpBroker.Status()
+	return a.isServiceAvailableForStation(stationID, status)
+}

@@ -1,8 +1,8 @@
 package extapi
 
 import (
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
+	"github.com/OpenRbt/lea-central-wash/storageapi/restapi/op"
 	"github.com/pkg/errors"
 )
 

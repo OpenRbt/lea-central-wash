@@ -3,8 +3,8 @@ package hal
 import (
 	"context"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/api/xgrpc"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/api/xgrpc"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/emptypb"

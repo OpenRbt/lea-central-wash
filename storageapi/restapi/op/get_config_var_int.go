@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi"
+	"github.com/OpenRbt/lea-central-wash/storageapi"
 )
 
 // GetConfigVarIntHandlerFunc turns a function with the right signature into a get config var int handler
