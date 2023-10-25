@@ -1,4 +1,4 @@
-module github.com/DiaElectronics/lea-central-wash
+module github.com/OpenRbt/lea-central-wash
 
 go 1.18
 
@@ -28,12 +28,10 @@ require (
 )
 
 require (
-	github.com/OpenRbt/share_business/wash_rabbit v0.0.0-20230616094254-16c73121f2e5
-	github.com/google/martian v2.1.0+incompatible
+	github.com/golang/protobuf v1.5.3
 	github.com/prometheus/client_golang v1.15.1
 	github.com/rabbitmq/amqp091-go v1.8.1
 	github.com/satori/go.uuid v1.2.0
-	github.com/wagslane/go-rabbitmq v0.12.3
 	google.golang.org/grpc v1.55.0
 	google.golang.org/protobuf v1.30.0
 )
@@ -101,7 +99,6 @@ require (
 	github.com/goburrow/serial v0.1.0 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gofrs/flock v0.8.1 // indirect
-	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golangci/check v0.0.0-20180506172741-cfe4005ccda2 // indirect
 	github.com/golangci/depguard/v2 v2.0.2-0.20230601235138-ed68d3771f48 // indirect
 	github.com/golangci/dupl v0.0.0-20180902072040-3e9179ac440a // indirect

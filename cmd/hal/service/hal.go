@@ -13,8 +13,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/rs485"
 
 	"github.com/tarm/serial"
 )

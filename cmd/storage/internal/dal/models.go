@@ -2,8 +2,9 @@ package dal
 
 import (
 	"encoding/json"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
 	"strings"
+
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 )
 
 func appSetUsers(v []resUser) []app.UserData {

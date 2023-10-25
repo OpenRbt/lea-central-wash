@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/modbusae200h"
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/requester"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/rs485/modbusae200h"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/rs485/requester"
 )
 
 func TestMotorManagerWorking(t *testing.T) {

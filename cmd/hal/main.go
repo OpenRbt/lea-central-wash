@@ -7,10 +7,10 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/api/xgrpc"
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/hwmetrics"
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/service"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/api/xgrpc"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/hwmetrics"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/service"
 
 	"google.golang.org/grpc"
 

@@ -15,7 +15,7 @@ import (
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/OpenRbt/lea-central-wash/storageapi/model"
 )
 
 // PingHandlerFunc turns a function with the right signature into a ping handler
@@ -207,6 +207,9 @@ type PingOKBody struct {
 	// qr Url
 	// Required: true
 	QrURL *string `json:"qrUrl"`
+
+	// sbp system active
+	SbpSystemActive bool `json:"sbpSystemActive,omitempty"`
 
 	// service amount
 	// Required: true

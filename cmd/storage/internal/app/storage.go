@@ -9,8 +9,8 @@ import (
 
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/session"
-	rabbitVo "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/session"
+	rabbitVo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 
 	"github.com/powerman/structlog"
 	"golang.org/x/crypto/bcrypt"
@@ -161,7 +161,8 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) (Statio
 
 	bonusSystemActive := false
 	if a.bonusSystemRabbitWorker != nil {
-		bonusSystemActive = a.bonusSystemRabbitWorker.IsConnected()
+		status := a.bonusSystemRabbitWorker.Status()
+		bonusSystemActive = a.isServiceAvailableForStation(id, status)
 	}
 
 	return oldStation, bonusSystemActive
@@ -501,6 +502,17 @@ func (a *app) StatusReport() StatusReport {
 		report.KasseInfo = k
 	} else {
 		report.KasseStatus = StatusOffline
+	}
+	if a.bonusSystemRabbitWorker != nil {
+		report.BonusStatus = a.bonusSystemRabbitWorker.Status()
+	} else {
+		report.BonusStatus = ServiceStatus{Available: false}
+	}
+
+	if a.SbpWorker != nil {
+		report.SbpStatus = a.SbpWorker.sbpBroker.Status()
+	} else {
+		report.SbpStatus = ServiceStatus{Available: false}
 	}
 
 	a.stationsMutex.RLock()
@@ -1130,12 +1142,12 @@ func (a *app) AssignSessionBonuses(sessionID string, amount int, post StationID)
 	return nil
 }
 
-func (a *app) InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbitVo.Service, target rabbitVo.RoutingKey, messageType rabbitVo.MessageType) error, isConnected func() bool) {
+func (a *app) InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbitVo.Service, target rabbitVo.RoutingKey, messageType rabbitVo.MessageType) error, status func() ServiceStatus) {
 	worker := BonusRabbitWorker{
 		repo:          a.repo,
 		routingKey:    routingKey,
 		publisherFunc: publisherFunc,
-		isConnected:   isConnected,
+		status:        status,
 	}
 
 	a.bonusSystemRabbitWorker = &worker
@@ -1208,4 +1220,8 @@ func (a *app) GetServerInfo() ServerInfo {
 	return ServerInfo{
 		BonusServiceURL: a.cfg.BonusServiceURL,
 	}
+}
+func (a *app) isServiceAvailableForStation(station StationID, status ServiceStatus) bool {
+	v, ok := status.UnpaidStations[int(station)]
+	return status.Available && status.IsConnected && (!ok || !v) && !status.DisabledOnServer
 }

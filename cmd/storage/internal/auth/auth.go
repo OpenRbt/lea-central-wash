@@ -3,7 +3,7 @@ package auth
 import (
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 	oapierrors "github.com/go-openapi/errors"
 	"github.com/powerman/structlog"
 )

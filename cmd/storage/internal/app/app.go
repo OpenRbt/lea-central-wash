@@ -7,9 +7,9 @@ import (
 
 	uuid "github.com/satori/go.uuid"
 
-	rabbit_vo "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
+	rabbit_vo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi"
+	"github.com/OpenRbt/lea-central-wash/storageapi"
 )
 
 const durationStationOffline = time.Second * 10
@@ -166,12 +166,13 @@ type (
 		AssignSessionUser(sessionID string, userID string, post StationID) error
 		AssignSessionBonuses(sessionID string, amount int, post StationID) error
 
-		InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error, isConnected func() bool)
+		InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error, status func() ServiceStatus)
 
 		// sbp
 		SbpWorkerInterface
 		InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error
 		IsSbpRabbitWorkerInit() bool
+		IsSbpAvailableForStation(stationID StationID) bool
 		GetSbpConfig(envServerSbpID string, envServerSbpPassword string) (cfg SbpRabbitConfig, err error)
 	}
 
@@ -399,6 +400,8 @@ type StatusReport struct {
 	KasseStatus Status
 	LCWInfo     string
 	Stations    []StationStatus
+	BonusStatus ServiceStatus
+	SbpStatus   ServiceStatus
 }
 
 // StationStatus is used to display in the managment software

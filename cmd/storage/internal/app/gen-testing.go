@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 	time "time"
 
-	vo "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
+	vo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 	gomock "github.com/golang/mock/gomock"
 )
 

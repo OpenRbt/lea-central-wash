@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"strings"
 
-	paymentEntities "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/sbp-client/entity/payment"
-	rabbit_vo "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/sbp-client/entity/vo"
+	paymentEntities "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client/entity/payment"
+	rabbit_vo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client/entity/vo"
 	"github.com/gofrs/uuid"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -32,10 +32,11 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 				return err
 			}
 
+			if msg.Error != "" {
+				s.log.PrintErr("Server response error", "err", msg.Error)
+				s.setLastErr(msg.Error)
+			}
 			if msg.Failed {
-				if msg.Error != "" {
-					s.log.PrintErr("Server response error", "err", msg.Error)
-				}
 				err = s.app.SetPaymentCanceled(uuid.FromStringOrNil(msg.OrderID))
 				if err != nil {
 					s.log.PrintErr("PaymentResponse error", "err", err.Error())
@@ -113,12 +114,20 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 
 // SendPaymentRequest ...
 func (s *Service) SendPaymentRequest(payRequest paymentEntities.PayRequest) (err error) {
-	return s.sendMessage(payRequest, rabbit_vo.MessageTypePaymentRequest)
+	err = s.sendMessage(payRequest, rabbit_vo.MessageTypePaymentRequest)
+	if err != nil {
+		s.setLastErr(err.Error())
+	}
+	return err
 }
 
 // CancelPayment ...
 func (s *Service) CancelPayment(payСancellationRequest paymentEntities.PayСancellationRequest) (err error) {
-	return s.sendMessage(payСancellationRequest, rabbit_vo.MessageTypePaymentCancellationRequest)
+	err = s.sendMessage(payСancellationRequest, rabbit_vo.MessageTypePaymentCancellationRequest)
+	if err != nil {
+		s.setLastErr(err.Error())
+	}
+	return err
 }
 
 // sendMessage ...

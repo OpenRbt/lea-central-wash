@@ -3,7 +3,7 @@ package app
 import (
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/def"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/def"
 )
 
 type (
