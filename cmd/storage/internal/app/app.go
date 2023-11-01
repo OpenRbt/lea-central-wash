@@ -2,6 +2,7 @@ package app
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 
@@ -379,6 +380,10 @@ type Status int
 
 // StationID car wash station number
 type StationID int
+
+func (s StationID) String() string {
+	return fmt.Sprintf("%d", s)
+}
 
 // BonusSessionID external bonus session uuid
 type BonusSessionID string

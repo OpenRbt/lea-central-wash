@@ -58,7 +58,8 @@ func New(db *sqlx.DB, maintenanceDB *sqlx.DB, schemaVer *schemaver.SchemaVer) *r
 		maintenanceDB: sqlxx.NewDB(maintenanceDB),
 		schemaVer:     schemaVer,
 		PaymentsRep: PaymentsRep{
-			RWMutex: &sync.RWMutex{},
+			RWMutex:     &sync.RWMutex{},
+			LastPayment: make(map[int]*app.Payment),
 		},
 	}
 }

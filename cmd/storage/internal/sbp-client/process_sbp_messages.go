@@ -3,8 +3,10 @@ package sbpclient
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"strings"
 
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 	paymentEntities "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client/entity/payment"
 	rabbit_vo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client/entity/vo"
 	"github.com/gofrs/uuid"
@@ -15,8 +17,8 @@ import (
 // ProcessSbpMessage ...
 func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 	// debug
-	// fmt.Println(d.Type)
-	//  fmt.Println(string(d.Body))
+	fmt.Println(d.Type)
+	fmt.Println(string(d.Body))
 	switch rabbit_vo.MessageType(d.Type) {
 
 	// payment response
@@ -56,6 +58,7 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 
 			err = s.app.SetPaymentURL(uuid.FromStringOrNil(msg.OrderID), msg.UrlPay)
 			if err != nil {
+				s.log.PrintErr("SetPaymentURL error", "err", err.Error())
 				err = d.Nack(false, false)
 				if err != nil {
 					return err
@@ -113,8 +116,8 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 }
 
 // SendPaymentRequest ...
-func (s *Service) SendPaymentRequest(payRequest paymentEntities.PayRequest) (err error) {
-	err = s.sendMessage(payRequest, rabbit_vo.MessageTypePaymentRequest)
+func (s *Service) SendPaymentRequest(payRequest app.Payment) (err error) {
+	err = s.sendMessage(toPayRequest(payRequest), rabbit_vo.MessageTypePaymentRequest)
 	if err != nil {
 		s.setLastErr(err.Error())
 	}
@@ -122,8 +125,8 @@ func (s *Service) SendPaymentRequest(payRequest paymentEntities.PayRequest) (err
 }
 
 // CancelPayment ...
-func (s *Service) CancelPayment(payСancellationRequest paymentEntities.PayСancellationRequest) (err error) {
-	err = s.sendMessage(payСancellationRequest, rabbit_vo.MessageTypePaymentCancellationRequest)
+func (s *Service) CancelPayment(payСancellationRequest app.Payment) (err error) {
+	err = s.sendMessage(toPayСancellationRequest(payСancellationRequest), rabbit_vo.MessageTypePaymentCancellationRequest)
 	if err != nil {
 		s.setLastErr(err.Error())
 	}
@@ -155,4 +158,21 @@ func (s *Service) sendMessage(msg interface{}, messageType rabbit_vo.MessageType
 		false,
 		message,
 	)
+}
+
+func toPayRequest(payment app.Payment) paymentEntities.PayRequest {
+	return paymentEntities.PayRequest{
+		WashID:  payment.ServerID.String(),
+		PostID:  payment.PostID.String(),
+		OrderID: payment.OrderID.String(),
+		Amount:  payment.Amount,
+	}
+}
+
+func toPayСancellationRequest(payment app.Payment) paymentEntities.PayСancellationRequest {
+	return paymentEntities.PayСancellationRequest{
+		WashID:  payment.ServerID.String(),
+		PostID:  payment.PostID.String(),
+		OrderID: payment.OrderID.String(),
+	}
 }

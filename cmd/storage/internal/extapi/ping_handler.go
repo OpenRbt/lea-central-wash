@@ -1,7 +1,6 @@
 package extapi
 
 import (
-	"fmt"
 	"net"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
@@ -25,14 +24,12 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 
 	station, bonusActive := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP)
 
-	stationIDString := fmt.Sprintf("%d", stationID)
-
 	var lastPayment app.Payment
 
 	if svc.app.IsSbpRabbitWorkerInit() {
-		lastPayment, err = svc.app.GetLastPayment(stationIDString)
+		lastPayment, err = svc.app.GetLastPayment(stationID)
 		if err != nil {
-			log.Info("get last payment request failed:", "stationID", stationIDString)
+			log.Info("get last payment request failed:", "stationID", stationID)
 		}
 
 		if lastPayment.OpenwashReceived || lastPayment.Canceled {

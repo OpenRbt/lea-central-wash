@@ -75,7 +75,7 @@ func TestPaymentCase(t *testing.T) {
 	req := app.Payment{
 		ServerID:         uuidNew,
 		OrderID:          uuidNew,
-		PostID:           "3",
+		PostID:           3,
 		UrlPay:           "test url",
 		Amount:           0,
 		Canceled:         false,
