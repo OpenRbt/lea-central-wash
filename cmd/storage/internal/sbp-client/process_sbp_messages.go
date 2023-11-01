@@ -88,6 +88,7 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 			if strings.ToLower(msg.Status) == "confirmed" {
 				err = s.app.SetPaymentConfirmed(uuid.FromStringOrNil(msg.OrderID))
 				if err != nil {
+					s.log.PrintErr("SetPaymentConfirmed error", "err", err.Error())
 					err = d.Nack(false, false)
 					if err != nil {
 						return err

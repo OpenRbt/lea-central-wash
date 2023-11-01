@@ -302,7 +302,7 @@ func (s *Service) handlerGoroutine(consumer *amqp.Channel, msgs <-chan amqp.Deli
 		}
 		err := handler(msg)
 		if err != nil {
-			s.log.Err(err)
+			s.log.PrintErr("handlerGoroutine", "err", err)
 		}
 
 	}

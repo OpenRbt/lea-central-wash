@@ -1208,6 +1208,7 @@ func (r *repo) SaveMoneyReportAndMessage(report app.RabbitMoneyReport) (err erro
 			Bonuses:      report.MoneyReport.Bonuses,
 			Ctime:        now,
 			SessionID:    report.MoneyReport.SessionID,
+			QrMoney:      report.MoneyReport.QrMoney,
 		})
 
 		if err != nil {
