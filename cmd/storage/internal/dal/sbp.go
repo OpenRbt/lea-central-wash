@@ -2,8 +2,6 @@ package dal
 
 import (
 	"database/sql"
-	"fmt"
-	"strconv"
 	"sync"
 	"time"
 
@@ -12,32 +10,30 @@ import (
 	"github.com/powerman/sqlxx"
 )
 
-// postID ...
-type postID string
-
 // orderID ...
 type orderID uuid.UUID
 
 // PaymentsRep ...
 type PaymentsRep struct {
-	LastPayment *app.Payment
+	LastPayment map[int]*app.Payment
 	RWMutex     *sync.RWMutex
 }
 
 // SetLastPayment ...
-func (paymentsRep *PaymentsRep) SetLastPayment(p *app.Payment) {
+func (paymentsRep *PaymentsRep) SetLastPayment(postID int, p *app.Payment) {
 	paymentsRep.RWMutex.Lock()
-	paymentsRep.LastPayment = p
+	paymentsRep.LastPayment[postID] = p
 	paymentsRep.RWMutex.Unlock()
 }
 
 // GetLastPayment ...
-func (paymentsRep *PaymentsRep) GetLastPayment() (resp app.Payment) {
+func (paymentsRep *PaymentsRep) GetLastPayment(postID int) (resp app.Payment) {
 	paymentsRep.RWMutex.RLock()
-	if paymentsRep.LastPayment != nil {
-		resp = *paymentsRep.LastPayment
-	}
+	v, ok := paymentsRep.LastPayment[postID]
 	paymentsRep.RWMutex.RUnlock()
+	if ok && v != nil {
+		return *v
+	}
 	return resp
 }
 
@@ -45,7 +41,7 @@ func (paymentsRep *PaymentsRep) GetLastPayment() (resp app.Payment) {
 type dalSbpPayment struct {
 	ID               int64          `db:"id"`
 	Amount           int64          `db:"amount"`
-	PostID           int32          `db:"post_id"`
+	PostID           int            `db:"post_id"`
 	ServerID         uuid.UUID      `db:"server_id"`
 	OrderID          uuid.UUID      `db:"order_id"`
 	URLPay           sql.NullString `db:"url_pay"`
@@ -58,10 +54,9 @@ type dalSbpPayment struct {
 
 // convertPaymentToDal ...
 func convertPaymentToDal(payment app.Payment) dalSbpPayment {
-	postID, _ := strconv.ParseInt(payment.PostID, 10, 64)
 	return dalSbpPayment{
 		ServerID: payment.ServerID,
-		PostID:   int32(postID),
+		PostID:   int(payment.PostID),
 		OrderID:  payment.OrderID,
 		URLPay: sql.NullString{
 			String: payment.UrlPay,
@@ -92,7 +87,7 @@ func convertPaymentToDal(payment app.Payment) dalSbpPayment {
 func convertPaymentToApp(payment dalSbpPayment) app.Payment {
 	return app.Payment{
 		ServerID:         payment.ServerID,
-		PostID:           fmt.Sprintf("%d", payment.PostID),
+		PostID:           app.StationID(payment.PostID),
 		OrderID:          payment.OrderID,
 		UrlPay:           payment.URLPay.String,
 		Amount:           payment.Amount,
@@ -114,7 +109,7 @@ func (r *repo) SavePayment(req app.Payment) error {
 	dbReq := func(tx *sqlxx.Tx) error {
 		arg := convertPaymentToDal(req)
 		_, err := tx.NamedExec(
-			SavePayment,
+			savePayment,
 			&arg,
 		)
 		return err
@@ -124,7 +119,7 @@ func (r *repo) SavePayment(req app.Payment) error {
 		return err
 	}
 
-	r.PaymentsRep.SetLastPayment(&req)
+	r.PaymentsRep.SetLastPayment(int(req.PostID), &req)
 
 	return nil
 }
@@ -132,12 +127,16 @@ func (r *repo) SavePayment(req app.Payment) error {
 // SetPaymentURL ...
 func (r *repo) SetPaymentURL(orderID uuid.UUID, urlPay string) error {
 	// db
+	postID := int(0)
 	dbReq := func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(SetPaymentURL, map[string]interface{}{
+		err := tx.NamedGetContext(ctx, &postID, setPaymentURL, map[string]interface{}{
 			"url_pay":    urlPay,
 			"order_id":   orderID,
 			"updated_at": time.Now().UTC(),
 		})
+		if err == sql.ErrNoRows {
+			return app.ErrNotFound
+		}
 		return err
 	}
 	err := r.tx(ctx, nil, dbReq)
@@ -145,7 +144,7 @@ func (r *repo) SetPaymentURL(orderID uuid.UUID, urlPay string) error {
 		return err
 	}
 
-	r.PaymentsRep.SetLastPayment(nil)
+	r.PaymentsRep.SetLastPayment(postID, nil)
 
 	return nil
 }
@@ -153,11 +152,15 @@ func (r *repo) SetPaymentURL(orderID uuid.UUID, urlPay string) error {
 // SetPaymentCanceled ...
 func (r *repo) SetPaymentCanceled(orderID uuid.UUID) (err error) {
 	// db
+	postID := int(0)
 	dbReq := func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(SetPaymentCanceled, map[string]interface{}{
+		err := tx.NamedGetContext(ctx, &postID, setPaymentCanceled, map[string]interface{}{
 			"order_id":   orderID,
 			"updated_at": time.Now().UTC(),
 		})
+		if err == sql.ErrNoRows {
+			return app.ErrNotFound
+		}
 		return err
 	}
 	err = r.tx(ctx, nil, dbReq)
@@ -165,7 +168,7 @@ func (r *repo) SetPaymentCanceled(orderID uuid.UUID) (err error) {
 		return err
 	}
 
-	r.PaymentsRep.SetLastPayment(nil)
+	r.PaymentsRep.SetLastPayment(postID, nil)
 
 	return nil
 }
@@ -173,11 +176,15 @@ func (r *repo) SetPaymentCanceled(orderID uuid.UUID) (err error) {
 // SetPaymentConfirmed ...
 func (r *repo) SetPaymentConfirmed(orderID uuid.UUID) (err error) {
 	// db
+	postID := int(0)
 	dbReq := func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(SetPaymentConfirmed, map[string]interface{}{
+		err := tx.NamedGetContext(ctx, &postID, setPaymentConfirmed, map[string]interface{}{
 			"order_id":   orderID,
 			"updated_at": time.Now().UTC(),
 		})
+		if err == sql.ErrNoRows {
+			return app.ErrNotFound
+		}
 		return err
 	}
 	err = r.tx(ctx, nil, dbReq)
@@ -185,7 +192,7 @@ func (r *repo) SetPaymentConfirmed(orderID uuid.UUID) (err error) {
 		return err
 	}
 
-	r.PaymentsRep.SetLastPayment(nil)
+	r.PaymentsRep.SetLastPayment(postID, nil)
 
 	return nil
 }
@@ -193,26 +200,30 @@ func (r *repo) SetPaymentConfirmed(orderID uuid.UUID) (err error) {
 // SetPaymentReceived ...
 func (r *repo) SetPaymentReceived(orderID uuid.UUID) (err error) {
 	// db
+	postID := int(0)
 	dbReq := func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(SetPaymentReceived, map[string]interface{}{
+		err := tx.NamedGetContext(ctx, &postID, setPaymentReceived, map[string]interface{}{
 			"order_id":   orderID,
 			"updated_at": time.Now().UTC(),
 		})
+		if err == sql.ErrNoRows {
+			return app.ErrNotFound
+		}
 		return err
 	}
 	err = r.tx(ctx, nil, dbReq)
 	if err != nil {
 		return err
 	}
-	r.PaymentsRep.SetLastPayment(nil)
+	r.PaymentsRep.SetLastPayment(postID, nil)
 
 	return nil
 }
 
 // GetLastPayment ...
-func (r *repo) GetLastPayment(postId string) (app.Payment, error) {
+func (r *repo) GetLastPayment(postID app.StationID) (app.Payment, error) {
 	// from ram
-	p := r.PaymentsRep.GetLastPayment()
+	p := r.PaymentsRep.GetLastPayment(int(postID))
 	if !p.OrderID.IsNil() {
 		return p, nil
 	}
@@ -221,8 +232,8 @@ func (r *repo) GetLastPayment(postId string) (app.Payment, error) {
 	resp := app.Payment{}
 	dbReq := func(tx *sqlxx.Tx) error {
 		var res dalSbpPayment
-		err := tx.NamedGetContext(ctx, &res, GetLastPayment, map[string]interface{}{
-			"post_id": postId,
+		err := tx.NamedGetContext(ctx, &res, getLastPayment, map[string]interface{}{
+			"post_id": postID,
 		})
 		switch {
 		case err == sql.ErrNoRows:
@@ -238,7 +249,7 @@ func (r *repo) GetLastPayment(postId string) (app.Payment, error) {
 		return resp, err
 	}
 
-	r.PaymentsRep.SetLastPayment(&resp)
+	r.PaymentsRep.SetLastPayment(int(postID), &resp)
 
 	return resp, nil
 }
@@ -248,7 +259,7 @@ func (r *repo) GetActualPayments() ([]app.Payment, error) {
 	resp := []app.Payment{}
 	dbReq := func(tx *sqlxx.Tx) error {
 		var res []dalSbpPayment
-		err := tx.SelectContext(ctx, &res, GetActualPayments)
+		err := tx.SelectContext(ctx, &res, getActualPayments)
 		switch {
 		case err == sql.ErrNoRows:
 			return app.ErrNotFound
@@ -273,7 +284,7 @@ func (r *repo) GetPaymentByOrderID(orderID uuid.UUID) (app.Payment, error) {
 	resp := app.Payment{}
 	dbReq := func(tx *sqlxx.Tx) error {
 		var res dalSbpPayment
-		err := tx.NamedGetContext(ctx, &res, GetPaymentByOrderID, map[string]interface{}{
+		err := tx.NamedGetContext(ctx, &res, getPaymentByOrderID, map[string]interface{}{
 			"order_id": orderID,
 		})
 		switch {
