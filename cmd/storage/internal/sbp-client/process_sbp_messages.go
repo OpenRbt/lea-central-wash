@@ -3,7 +3,6 @@ package sbpclient
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
@@ -17,8 +16,8 @@ import (
 // ProcessSbpMessage ...
 func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 	// debug
-	fmt.Println(d.Type)
-	fmt.Println(string(d.Body))
+	// fmt.Println(d.Type)
+	// fmt.Println(string(d.Body))
 	switch rabbit_vo.MessageType(d.Type) {
 
 	// payment response
