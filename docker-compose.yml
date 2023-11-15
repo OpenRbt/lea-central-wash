@@ -1,0 +1,82 @@
+version: "3.9"
+
+volumes:
+  pg_db_data:
+      driver: local
+
+services:
+  hal:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        BINARY: hal
+    container_name: hal
+    ports:
+      - "8099:8099"
+    restart: always
+    cap_add:
+      - ALL
+    device_cgroup_rules:
+      - "c 188:* rmw"
+    volumes:
+      - "/dev:/dev:ro"
+      - "/run/udev:/run/udev:ro"
+    group_add:
+      - dialout
+  storage:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        BINARY: storage
+    container_name: storage
+    ports:
+      - "8020:8020"
+    restart: always
+    environment:
+      STORAGE_DB_HOST: lcw-pg
+      STORAGE_DB_NAME: wash
+      STORAGE_DB_USER: wash
+      STORAGE_DB_PASS: adm-pass-test
+      STORAGE_KASSE_ENDPOINT: https://online-kasse:8443
+      STORAGE_HAL_ENDPOINT: hal:8099
+    cap_add:
+      - ALL
+    depends_on:
+      - postgres
+      - hal
+    device_cgroup_rules:
+      - "c 188:* rmw"
+    volumes:
+      - "/dev:/dev:ro"
+      - "/run/udev:/run/udev:ro"
+    group_add:
+      - dialout
+  online-kasse:
+    image: romanfedyashov/lcw-kasse:v0.0.1
+    container_name: kasse
+    ports:
+      - "8443:8443"
+    restart: always
+    device_cgroup_rules:
+      - "c 189:* rmw"
+    volumes:
+      - "/dev:/dev:ro"
+      - "/run/udev:/run/udev:ro"
+    cap_add:
+      - ALL
+    group_add:
+      - dialout
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:14.5
+    container_name: lcw-pg
+    restart: always
+    volumes:
+      - pg_db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: wash
+      POSTGRES_USER: wash
+      POSTGRES_PASSWORD: adm-pass-test
