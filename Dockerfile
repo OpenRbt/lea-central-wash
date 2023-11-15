@@ -11,6 +11,9 @@ RUN go build -o service ./cmd/${BINARY}
 
 FROM ubuntu:22.04
 
+RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get install ca-certificates -y
+
 COPY --from=builder /src/service /app/service
 COPY --from=builder src/cmd/storage/internal/migration app/migration
 RUN chmod +x /app/service
