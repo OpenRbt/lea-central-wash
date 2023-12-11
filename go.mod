@@ -32,7 +32,7 @@ require (
 	github.com/ory/dockertest v3.3.5+incompatible
 	github.com/powerman/gotest v0.3.0
 	github.com/prometheus/client_golang v1.15.1
-	github.com/rabbitmq/amqp091-go v1.8.1
+	github.com/rabbitmq/amqp091-go v1.9.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/smartystreets/goconvey v1.8.0
 	google.golang.org/grpc v1.55.0

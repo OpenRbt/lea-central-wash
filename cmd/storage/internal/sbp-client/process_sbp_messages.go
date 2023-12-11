@@ -3,7 +3,9 @@ package sbpclient
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"strings"
+	"time"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 	paymentEntities "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client/entity/payment"
@@ -17,7 +19,7 @@ import (
 func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 	// debug
 	// fmt.Println(d.Type)
-	// fmt.Println(string(d.Body))
+	fmt.Println(string(d.Body))
 	switch rabbit_vo.MessageType(d.Type) {
 
 	// payment response
@@ -147,10 +149,11 @@ func (s *Service) sendMessage(msg interface{}, messageType rabbit_vo.MessageType
 	message.Body = jsonMsg
 	message.Type = string(messageType)
 	message.UserId = s.serverID
+	message.DeliveryMode = amqp.Persistent
 
 	exchangeName := string(rabbit_vo.SbpClientService)
 	routingKeyString := string(rabbit_vo.RoutingKeySbpClient)
-	return s.sbpClientPub.PublishWithContext(
+	dConfirmation, err := s.sbpClientPub.PublishWithDeferredConfirmWithContext(
 		context.Background(),
 		exchangeName,
 		routingKeyString,
@@ -158,6 +161,17 @@ func (s *Service) sendMessage(msg interface{}, messageType rabbit_vo.MessageType
 		false,
 		message,
 	)
+	if err != nil {
+		return err
+	}
+	select {
+	case <-time.After(time.Second * 10):
+		return app.ErrSendTimeout
+	case <-dConfirmation.Done():
+		fmt.Println("producer: delivered deferred confirm to handler")
+		break
+	}
+	return err
 }
 
 func toPayRequest(payment app.Payment) paymentEntities.PayRequest {
