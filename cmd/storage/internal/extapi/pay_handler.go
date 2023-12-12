@@ -3,8 +3,8 @@ package extapi
 import (
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 	"github.com/OpenRbt/lea-central-wash/storageapi/restapi/op"
-	"github.com/gofrs/uuid"
 	"github.com/pkg/errors"
+	uuid "github.com/satori/go.uuid"
 )
 
 // pay ...
@@ -64,7 +64,7 @@ func (svc *service) payReceived(params op.PayReceivedParams) op.PayReceivedRespo
 
 	// logic method
 	qrOrderIDUuid := uuid.FromStringOrNil(qrOrderID)
-	if qrOrderIDUuid.IsNil() {
+	if qrOrderIDUuid == uuid.Nil {
 		log.PrintErr("set payment received failed: orderID = nil")
 		return op.NewPayReceivedBadRequest()
 	}
