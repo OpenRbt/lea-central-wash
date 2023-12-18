@@ -126,6 +126,11 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/StationStatus'
+      bonus_status:
+        $ref: '#/definitions/ServiceStatus'
+      sbp_status:
+        $ref: '#/definitions/ServiceStatus'
+      
           
 
   StationStatus:
@@ -611,6 +616,26 @@ definitions:
     properties:
       bonusServiceURL: 
         type: string
+
+  ServiceStatus:
+    type: object
+    properties:
+      available: 
+        type: boolean
+      disabledOnServer: 
+        type: boolean
+      isConnected: 
+        type: boolean
+      lastErr: 
+        type: string
+      dateLastErrUTC: 
+        x-nullable: true
+        description: Unix time
+        type: integer
+      unpaidStations: 
+        type: array
+        items:
+          type: integer
 
 consumes:
   - application/json
@@ -1647,6 +1672,8 @@ paths:
                 type: integer
               AuthorizedSessionID:
                 type: string
+              sbpSystemActive:
+                type: boolean
 
     get:
       operationId: "getPing"

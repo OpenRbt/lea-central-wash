@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -15,7 +17,7 @@ import (
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi"
+	"github.com/OpenRbt/lea-central-wash/storageapi"
 )
 
 // GetStationConfigVarBoolHandlerFunc turns a function with the right signature into a get station config var bool handler
@@ -87,6 +89,30 @@ type GetStationConfigVarBoolBody struct {
 	// station ID
 	// Required: true
 	StationID *int64 `json:"stationID"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *GetStationConfigVarBoolBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// name
+		// Required: true
+		Name *string `json:"name"`
+
+		// station ID
+		// Required: true
+		StationID *int64 `json:"stationID"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Name = props.Name
+	o.StationID = props.StationID
+	return nil
 }
 
 // Validate validates this get station config var bool body

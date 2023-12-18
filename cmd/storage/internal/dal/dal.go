@@ -6,19 +6,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"runtime"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/migration"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
-	"github.com/powerman/narada4d/schemaver"
 	"github.com/powerman/pqx"
 	"github.com/powerman/sqlxx"
 	"github.com/powerman/structlog"
@@ -30,8 +27,6 @@ type Ctx = context.Context
 var log = structlog.New() //nolint:gochecknoglobals
 
 var ctx = context.Background() //nolint:gochecknoglobals
-
-var errSchemaVer = errors.New("unsupported DB schema version")
 
 func pqErrConflictIn(err error, constraint string) bool {
 	pqErr, ok := err.(*pq.Error)
@@ -47,18 +42,17 @@ func rollback(tx *sqlxx.Tx) {
 type repo struct {
 	db            *sqlxx.DB
 	maintenanceDB *sqlxx.DB
-	schemaVer     *schemaver.SchemaVer
 	PaymentsRep
 }
 
 // New creates and returns new Repo.
-func New(db *sqlx.DB, maintenanceDB *sqlx.DB, schemaVer *schemaver.SchemaVer) *repo {
+func New(db *sqlx.DB, maintenanceDB *sqlx.DB) *repo {
 	return &repo{
 		db:            sqlxx.NewDB(db),
 		maintenanceDB: sqlxx.NewDB(maintenanceDB),
-		schemaVer:     schemaVer,
 		PaymentsRep: PaymentsRep{
-			RWMutex: &sync.RWMutex{},
+			RWMutex:     &sync.RWMutex{},
+			LastPayment: make(map[int]*app.Payment),
 		},
 	}
 }
@@ -97,15 +91,9 @@ func (r *repo) txMaintenance(ctx Ctx, opts *sql.TxOptions, f func(*sqlxx.Tx) err
 	})
 }
 
-func (r *repo) schemaLock(f func() error) func() error {
-	target := strconv.Itoa(migration.CurrentVersion)
-	return func() error {
-		if ver := r.schemaVer.SharedLock(); ver != target {
-			return errors.Wrapf(errSchemaVer, "schema version %s, need %s", ver, target)
-		}
-		defer r.schemaVer.Unlock()
-		return f()
-	}
+// Close closes connection to DB.
+func (r *repo) Close() {
+	log.WarnIfFail(r.db.Close)
 }
 
 func (r *repo) User(login string) (user app.UserData, err error) {
@@ -1207,6 +1195,7 @@ func (r *repo) SaveMoneyReportAndMessage(report app.RabbitMoneyReport) (err erro
 			Bonuses:      report.MoneyReport.Bonuses,
 			Ctime:        now,
 			SessionID:    report.MoneyReport.SessionID,
+			QrMoney:      report.MoneyReport.QrMoney,
 		})
 
 		if err != nil {

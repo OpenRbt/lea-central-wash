@@ -6,14 +6,16 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi"
+	"github.com/OpenRbt/lea-central-wash/storageapi"
 )
 
 // AdvertisingCampaignHandlerFunc turns a function with the right signature into a advertising campaign handler
@@ -83,6 +85,28 @@ type AdvertisingCampaignBody struct {
 
 	// Unix time local
 	StartDate *int64 `json:"startDate,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *AdvertisingCampaignBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// Unix time local
+		EndDate *int64 `json:"endDate,omitempty"`
+
+		// Unix time local
+		StartDate *int64 `json:"startDate,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.EndDate = props.EndDate
+	o.StartDate = props.StartDate
+	return nil
 }
 
 // Validate validates this advertising campaign body

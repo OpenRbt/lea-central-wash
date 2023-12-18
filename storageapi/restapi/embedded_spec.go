@@ -1344,6 +1344,9 @@ func init() {
                 "qrUrl": {
                   "type": "string"
                 },
+                "sbpSystemActive": {
+                  "type": "boolean"
+                },
                 "serviceAmount": {
                   "type": "integer"
                 },
@@ -3611,6 +3614,34 @@ func init() {
         }
       }
     },
+    "ServiceStatus": {
+      "type": "object",
+      "properties": {
+        "available": {
+          "type": "boolean"
+        },
+        "dateLastErrUTC": {
+          "description": "Unix time",
+          "type": "integer",
+          "x-nullable": true
+        },
+        "disabledOnServer": {
+          "type": "boolean"
+        },
+        "isConnected": {
+          "type": "boolean"
+        },
+        "lastErr": {
+          "type": "string"
+        },
+        "unpaidStations": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      }
+    },
     "Session": {
       "type": "object",
       "properties": {
@@ -3877,6 +3908,9 @@ func init() {
     "StatusReport": {
       "type": "object",
       "properties": {
+        "bonus_status": {
+          "$ref": "#/definitions/ServiceStatus"
+        },
         "kasse_info": {
           "type": "string"
         },
@@ -3885,6 +3919,9 @@ func init() {
         },
         "lcw_info": {
           "type": "string"
+        },
+        "sbp_status": {
+          "$ref": "#/definitions/ServiceStatus"
         },
         "stations": {
           "type": "array",
@@ -5269,6 +5306,9 @@ func init() {
                 },
                 "qrUrl": {
                   "type": "string"
+                },
+                "sbpSystemActive": {
+                  "type": "boolean"
                 },
                 "serviceAmount": {
                   "type": "integer"
@@ -7536,6 +7576,34 @@ func init() {
         }
       }
     },
+    "ServiceStatus": {
+      "type": "object",
+      "properties": {
+        "available": {
+          "type": "boolean"
+        },
+        "dateLastErrUTC": {
+          "description": "Unix time",
+          "type": "integer",
+          "x-nullable": true
+        },
+        "disabledOnServer": {
+          "type": "boolean"
+        },
+        "isConnected": {
+          "type": "boolean"
+        },
+        "lastErr": {
+          "type": "string"
+        },
+        "unpaidStations": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      }
+    },
     "Session": {
       "type": "object",
       "properties": {
@@ -7805,6 +7873,9 @@ func init() {
     "StatusReport": {
       "type": "object",
       "properties": {
+        "bonus_status": {
+          "$ref": "#/definitions/ServiceStatus"
+        },
         "kasse_info": {
           "type": "string"
         },
@@ -7813,6 +7884,9 @@ func init() {
         },
         "lcw_info": {
           "type": "string"
+        },
+        "sbp_status": {
+          "$ref": "#/definitions/ServiceStatus"
         },
         "stations": {
           "type": "array",

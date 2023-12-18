@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -15,7 +17,7 @@ import (
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/OpenRbt/lea-central-wash/storageapi/model"
 )
 
 // MeasureVolumeMillilitersHandlerFunc turns a function with the right signature into a measure volume milliliters handler
@@ -82,6 +84,40 @@ type MeasureVolumeMillilitersBody struct {
 	// volume
 	// Required: true
 	Volume *int64 `json:"volume"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *MeasureVolumeMillilitersBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+
+		// start program ID
+		// Required: true
+		StartProgramID *int64 `json:"startProgramID"`
+
+		// stop program ID
+		// Required: true
+		StopProgramID *int64 `json:"stopProgramID"`
+
+		// volume
+		// Required: true
+		Volume *int64 `json:"volume"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Hash = props.Hash
+	o.StartProgramID = props.StartProgramID
+	o.StopProgramID = props.StopProgramID
+	o.Volume = props.Volume
+	return nil
 }
 
 // Validate validates this measure volume milliliters body

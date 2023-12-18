@@ -7,9 +7,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 
-	sbpvo "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/sbp-client/entity/vo"
+	sbpvo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client/entity/vo"
 	"github.com/powerman/structlog"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -30,6 +30,7 @@ const (
 	maxAttempts int8 = 5
 )
 
+type StationID app.StationID
 type Service struct {
 	sync.Mutex
 	app app.App
@@ -49,6 +50,12 @@ type Service struct {
 	sbpClientSub *amqp.Channel
 	rabbitConf   *amqp.Config
 	connString   string
+
+	statusMu         sync.Mutex
+	disabledOnServer bool
+	lastErr          string
+	dateLastErr      *time.Time
+	unpaidStations   map[int]bool
 }
 
 func NewSbpRabbitClient(cfg RabbitConfig, app app.App) (svc *Service, err error) {
@@ -77,13 +84,17 @@ func NewSbpRabbitClient(cfg RabbitConfig, app app.App) (svc *Service, err error)
 	}
 
 	svc = &Service{
-		app:        app,
-		log:        structlog.New(),
-		rabbitConf: &rabbitConf,
-		connString: connString,
-		serverID:   cfg.ServerID,
-		cfg:        cfg,
-		done:       make(chan struct{}),
+		app:              app,
+		log:              structlog.New(),
+		rabbitConf:       &rabbitConf,
+		connString:       connString,
+		serverID:         cfg.ServerID,
+		cfg:              cfg,
+		done:             make(chan struct{}),
+		disabledOnServer: false,
+		lastErr:          "",
+		dateLastErr:      nil,
+		unpaidStations:   map[int]bool{},
 	}
 
 	err = svc.connect()
@@ -98,6 +109,34 @@ func NewSbpRabbitClient(cfg RabbitConfig, app app.App) (svc *Service, err error)
 // IsConnected return connection status
 func (s *Service) IsConnected() bool {
 	return atomic.LoadInt32(&s.isConnected) == connected
+}
+
+// Status return service status
+func (s *Service) Status() app.ServiceStatus {
+	s.statusMu.Lock()
+	if s.dateLastErr != nil {
+		if time.Now().UTC().Sub(*s.dateLastErr) > 24*time.Hour {
+			s.dateLastErr = nil
+			s.lastErr = ""
+		}
+	}
+	defer s.statusMu.Unlock()
+	return app.ServiceStatus{
+		Available:        true,
+		DisabledOnServer: s.disabledOnServer,
+		LastErr:          s.lastErr,
+		DateLastErr:      s.dateLastErr,
+		UnpaidStations:   s.unpaidStations,
+		IsConnected:      atomic.LoadInt32(&s.isConnected) == connected,
+	}
+}
+
+func (s *Service) setLastErr(err string) {
+	s.statusMu.Lock()
+	t := time.Now().UTC()
+	s.dateLastErr = &t
+	s.lastErr = err
+	s.statusMu.Unlock()
 }
 
 // Close re-conn attempts
@@ -263,7 +302,7 @@ func (s *Service) handlerGoroutine(consumer *amqp.Channel, msgs <-chan amqp.Deli
 		}
 		err := handler(msg)
 		if err != nil {
-			s.log.Err(err)
+			s.log.PrintErr("handlerGoroutine", "err", err)
 		}
 
 	}

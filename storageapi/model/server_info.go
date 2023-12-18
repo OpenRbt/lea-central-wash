@@ -6,7 +6,9 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -19,6 +21,24 @@ type ServerInfo struct {
 
 	// bonus service URL
 	BonusServiceURL string `json:"bonusServiceURL,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *ServerInfo) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// bonus service URL
+		BonusServiceURL string `json:"bonusServiceURL,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.BonusServiceURL = props.BonusServiceURL
+	return nil
 }
 
 // Validate validates this server info

@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -15,7 +17,7 @@ import (
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/OpenRbt/lea-central-wash/storageapi/model"
 )
 
 // RunProgramHandlerFunc turns a function with the right signature into a run program handler
@@ -78,6 +80,35 @@ type RunProgramBody struct {
 	// program ID
 	// Required: true
 	ProgramID *int64 `json:"programID"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *RunProgramBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+
+		// preflight
+		// Required: true
+		Preflight *bool `json:"preflight"`
+
+		// program ID
+		// Required: true
+		ProgramID *int64 `json:"programID"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Hash = props.Hash
+	o.Preflight = props.Preflight
+	o.ProgramID = props.ProgramID
+	return nil
 }
 
 // Validate validates this run program body

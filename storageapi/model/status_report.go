@@ -6,7 +6,9 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -19,6 +21,9 @@ import (
 // swagger:model StatusReport
 type StatusReport struct {
 
+	// bonus status
+	BonusStatus *ServiceStatus `json:"bonus_status,omitempty"`
+
 	// kasse info
 	KasseInfo string `json:"kasse_info,omitempty"`
 
@@ -28,15 +33,64 @@ type StatusReport struct {
 	// lcw info
 	LcwInfo string `json:"lcw_info,omitempty"`
 
+	// sbp status
+	SbpStatus *ServiceStatus `json:"sbp_status,omitempty"`
+
 	// stations
 	Stations []*StationStatus `json:"stations"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *StatusReport) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// bonus status
+		BonusStatus *ServiceStatus `json:"bonus_status,omitempty"`
+
+		// kasse info
+		KasseInfo string `json:"kasse_info,omitempty"`
+
+		// kasse status
+		KasseStatus Status `json:"kasse_status,omitempty"`
+
+		// lcw info
+		LcwInfo string `json:"lcw_info,omitempty"`
+
+		// sbp status
+		SbpStatus *ServiceStatus `json:"sbp_status,omitempty"`
+
+		// stations
+		Stations []*StationStatus `json:"stations"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.BonusStatus = props.BonusStatus
+	m.KasseInfo = props.KasseInfo
+	m.KasseStatus = props.KasseStatus
+	m.LcwInfo = props.LcwInfo
+	m.SbpStatus = props.SbpStatus
+	m.Stations = props.Stations
+	return nil
 }
 
 // Validate validates this status report
 func (m *StatusReport) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateBonusStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateKasseStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateSbpStatus(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -47,6 +101,25 @@ func (m *StatusReport) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *StatusReport) validateBonusStatus(formats strfmt.Registry) error {
+	if swag.IsZero(m.BonusStatus) { // not required
+		return nil
+	}
+
+	if m.BonusStatus != nil {
+		if err := m.BonusStatus.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("bonus_status")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("bonus_status")
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -62,6 +135,25 @@ func (m *StatusReport) validateKasseStatus(formats strfmt.Registry) error {
 			return ce.ValidateName("kasse_status")
 		}
 		return err
+	}
+
+	return nil
+}
+
+func (m *StatusReport) validateSbpStatus(formats strfmt.Registry) error {
+	if swag.IsZero(m.SbpStatus) { // not required
+		return nil
+	}
+
+	if m.SbpStatus != nil {
+		if err := m.SbpStatus.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("sbp_status")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("sbp_status")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -97,7 +189,15 @@ func (m *StatusReport) validateStations(formats strfmt.Registry) error {
 func (m *StatusReport) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateBonusStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateKasseStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateSbpStatus(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -108,6 +208,27 @@ func (m *StatusReport) ContextValidate(ctx context.Context, formats strfmt.Regis
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *StatusReport) contextValidateBonusStatus(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.BonusStatus != nil {
+
+		if swag.IsZero(m.BonusStatus) { // not required
+			return nil
+		}
+
+		if err := m.BonusStatus.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("bonus_status")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("bonus_status")
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -124,6 +245,27 @@ func (m *StatusReport) contextValidateKasseStatus(ctx context.Context, formats s
 			return ce.ValidateName("kasse_status")
 		}
 		return err
+	}
+
+	return nil
+}
+
+func (m *StatusReport) contextValidateSbpStatus(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.SbpStatus != nil {
+
+		if swag.IsZero(m.SbpStatus) { // not required
+			return nil
+		}
+
+		if err := m.SbpStatus.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("sbp_status")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("sbp_status")
+			}
+			return err
+		}
 	}
 
 	return nil

@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 
 	"github.com/powerman/structlog"
 )

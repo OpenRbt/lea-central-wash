@@ -12,23 +12,23 @@ import (
 	"strings"
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/rabbit"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/hal"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/hal"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/auth"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/dal"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/def"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/extapi"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/flags"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/goose"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/memdb"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/migration"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/svckasse"
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/svcweather"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/auth"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/dal"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/def"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/extapi"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/flags"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/goose"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/memdb"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/migration"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/svckasse"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/svcweather"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 	"github.com/powerman/must"
@@ -37,7 +37,7 @@ import (
 	"github.com/powerman/pqx"
 	"github.com/powerman/structlog"
 
-	sbpclient "github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/sbp-client"
+	sbpclient "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client"
 )
 
 const (
@@ -302,8 +302,7 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 		}
 		dbMigrations.Close()
 
-		schemaVer, _ := schemaver.New()
-		repository := dal.New(db, maintenanceDBConn, schemaVer)
+		repository := dal.New(db, maintenanceDBConn)
 		repo = repository
 		sbpRepo = repository
 	} else {
@@ -390,7 +389,7 @@ func initRabbitClient(cfg rabbit.Config, appl app.App) {
 		}
 
 		log.Info("Serve rabbit client")
-		appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitWorker.SendMessage, rabbitWorker.IsConnected)
+		appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitWorker.SendMessage, rabbitWorker.Status)
 		appl.FetchSessions()
 		return
 	}

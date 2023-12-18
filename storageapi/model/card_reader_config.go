@@ -6,6 +6,7 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 
@@ -33,6 +34,38 @@ type CardReaderConfig struct {
 	// station ID
 	// Required: true
 	StationID *int64 `json:"stationID"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *CardReaderConfig) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// card reader type
+		// Enum: [NOT_USED VENDOTEK PAYMENT_WORLD]
+		CardReaderType string `json:"cardReaderType,omitempty"`
+
+		// host
+		Host string `json:"host,omitempty"`
+
+		// port
+		Port string `json:"port,omitempty"`
+
+		// station ID
+		// Required: true
+		StationID *int64 `json:"stationID"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.CardReaderType = props.CardReaderType
+	m.Host = props.Host
+	m.Port = props.Port
+	m.StationID = props.StationID
+	return nil
 }
 
 // Validate validates this card reader config

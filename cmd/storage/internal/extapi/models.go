@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
-	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
+	"github.com/OpenRbt/lea-central-wash/storageapi/model"
+	"github.com/OpenRbt/lea-central-wash/storageapi/restapi/op"
 )
 
 func appRelays(m []*model.RelayConfig) []app.Relay {
@@ -182,7 +182,31 @@ func (svc *service) apiStatusReport(v app.StatusReport) *model.StatusReport {
 		KasseStatus: apiStatus(v.KasseStatus),
 		LcwInfo:     v.LCWInfo,
 		Stations:    stationStatus,
+		SbpStatus:   apiServiceStatus(v.SbpStatus),
+		BonusStatus: apiServiceStatus(v.BonusStatus),
 	}
+}
+
+func apiServiceStatus(v app.ServiceStatus) *model.ServiceStatus {
+	unpaidStations := []int64{}
+	for key, val := range v.UnpaidStations {
+		if val {
+			unpaidStations = append(unpaidStations, int64(key))
+		}
+	}
+
+	status := &model.ServiceStatus{
+		Available:        v.Available,
+		DisabledOnServer: v.DisabledOnServer,
+		IsConnected:      v.IsConnected,
+		LastErr:          v.LastErr,
+		UnpaidStations:   unpaidStations,
+	}
+	if v.DateLastErr != nil {
+		t := v.DateLastErr.Unix()
+		status.DateLastErrUTC = &t
+	}
+	return status
 }
 
 func (svc *service) apiStationStatus(v app.StationStatus) *model.StationStatus {

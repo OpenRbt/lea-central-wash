@@ -1,11 +1,11 @@
 package rs485
 
 import (
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/esq500"
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/modbusae200h"
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/requester"
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/rsutil"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/rs485/esq500"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/rs485/modbusae200h"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/rs485/requester"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/rs485/rsutil"
 )
 
 type FreqGenModel int

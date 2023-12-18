@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -15,7 +17,7 @@ import (
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/OpenRbt/lea-central-wash/storageapi/model"
 )
 
 // PressButtonHandlerFunc turns a function with the right signature into a press button handler
@@ -74,6 +76,30 @@ type PressButtonBody struct {
 	// hash
 	// Required: true
 	Hash *model.Hash `json:"hash"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *PressButtonBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// button ID
+		// Required: true
+		ButtonID *int64 `json:"buttonID"`
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.ButtonID = props.ButtonID
+	o.Hash = props.Hash
+	return nil
 }
 
 // Validate validates this press button body

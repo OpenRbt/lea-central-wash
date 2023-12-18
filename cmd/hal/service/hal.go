@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -14,8 +13,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/rs485"
 
 	"github.com/tarm/serial"
 )
@@ -55,6 +54,7 @@ type Rev2Board struct {
 	stationNumber int
 	errorCount    int
 	Commands      chan app.RelayConfig
+	hwMetrics     app.HardwareMetrics
 }
 
 type ports struct {
@@ -69,28 +69,31 @@ type Rev1DispencerBoard struct {
 	openPort              *serial.Port
 	toRemove              bool
 	errorCount            int
-	lastVolume            string
+	lastVolume            int64
 	allowedPing           bool
 	stopDispenser         bool
 	ErrorCommandDispenser error
 	commandStopRev2Board  app.RelayConfig
 	commandStartRev2Board app.RelayConfig
 	timeoutSec            int
+	runOnRev2Board        func(int32, app.RelayConfig) error
+	hwMetrics             app.HardwareMetrics
 }
 
 // NewRev2Board is a constructor, using USB to communicate
-func NewRev2Board(osPath string, openPort *serial.Port) *Rev2Board {
+func NewRev2Board(osPath string, openPort *serial.Port, hwMetrics app.HardwareMetrics) *Rev2Board {
 	return &Rev2Board{
 		osPath:        osPath,
 		openPort:      openPort,
 		stationNumber: -1,
 		toRemove:      false,
 		Commands:      make(chan app.RelayConfig),
+		hwMetrics:     hwMetrics,
 	}
 }
 
 // NewDispencerBoard is a constructor
-func NewDispencerBoard(osPath string, openPort *serial.Port) *Rev1DispencerBoard {
+func NewDispencerBoard(osPath string, openPort *serial.Port, runOnRev2Board func(int32, app.RelayConfig) error, hwMetrics app.HardwareMetrics) *Rev1DispencerBoard {
 	return &Rev1DispencerBoard{
 		osPath:                osPath,
 		openPort:              openPort,
@@ -98,7 +101,9 @@ func NewDispencerBoard(osPath string, openPort *serial.Port) *Rev1DispencerBoard
 		allowedPing:           true,
 		stopDispenser:         false,
 		ErrorCommandDispenser: nil,
-		timeoutSec:            2,
+		timeoutSec:            3,
+		runOnRev2Board:        runOnRev2Board,
+		hwMetrics:             hwMetrics,
 	}
 }
 
@@ -123,17 +128,17 @@ func (r *Rev1DispencerBoard) GetStopDispenser() bool {
 	return t
 }
 
-func (r *Rev1DispencerBoard) SetLastVolume(str string) {
+func (r *Rev1DispencerBoard) SetLastVolume(volume int64) {
 	r.resourcesMu.Lock()
-	r.lastVolume = str
+	r.lastVolume = volume
 	r.resourcesMu.Unlock()
 }
 
-func (r *Rev1DispencerBoard) GetLastVolume() string {
+func (r *Rev1DispencerBoard) GetLastVolume() int64 {
 	r.resourcesMu.Lock()
-	str := r.lastVolume
+	volume := r.lastVolume
 	r.resourcesMu.Unlock()
-	return str
+	return volume
 }
 
 func (r *Rev1DispencerBoard) SetAllowedPing(t bool) {
@@ -162,18 +167,18 @@ func (r *Rev1DispencerBoard) GetErrComandDispenser() error {
 	return err
 }
 
-func (r *Rev1DispencerBoard) GetCommandStartRev2Board() app.RelayConfig {
+func (r *Rev1DispencerBoard) RunCommandStartRev2Board() error {
 	r.resourcesMu.Lock()
 	relay := r.commandStartRev2Board
 	r.resourcesMu.Unlock()
-	return relay
+	return r.runOnRev2Board(1, relay)
 }
 
-func (r *Rev1DispencerBoard) GetCommandStopRev2Board() app.RelayConfig {
+func (r *Rev1DispencerBoard) RunCommandStopRev2Board() error {
 	r.resourcesMu.Lock()
 	relay := r.commandStopRev2Board
 	r.resourcesMu.Unlock()
-	return relay
+	return r.runOnRev2Board(1, relay)
 }
 
 // CollectAvailableSerialPorts reads /dev directory and find all ttyUSB* devices
@@ -287,9 +292,8 @@ func (h *HardwareAccessLayer) Volume() app.DispenserStatus {
 }
 
 func (r *Rev1DispencerBoard) volume() app.DispenserStatus {
-	l, _ := strconv.ParseInt(r.GetLastVolume(), 10, 64)
 	return app.DispenserStatus{
-		Milliliters:           l,
+		Milliliters:           int64(r.GetLastVolume()),
 		ErrorCommandDispenser: r.GetErrComandDispenser(),
 	}
 }
@@ -317,7 +321,7 @@ func (h *HardwareAccessLayer) MeasureVolumeMilliliters(measureVolume int, statio
 	r.commandStartRev2Board = stCfg
 	r.resourcesMu.Unlock()
 	r.SetStopDispenser(false)
-	go r.measureVolumeMilliliters(measureVolume, board)
+	go r.measureVolumeMilliliters(measureVolume)
 	return nil
 }
 
@@ -362,15 +366,30 @@ func (r *Rev1DispencerBoard) dispenserStop() error {
 	return nil
 }
 
-func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board app.ControlBoard) error {
+func (r *Rev1DispencerBoard) reconnect() error {
+	r.hwMetrics.Rev1DispencerReconnectCounter.Inc("1")
+	r.openPort.Close()
+	time.Sleep(20 * time.Millisecond)
+	c := &serial.Config{Name: "/dev/" + r.osPath, Baud: 38400, ReadTimeout: time.Millisecond * 100}
+	s, err := serial.OpenPort(c)
+	if err == nil {
+		r.openPort = s
+		fmt.Printf("reconnect OK\n")
+	} else {
+		fmt.Printf("reconnect err: %s\n", err)
+	}
+	return err
+}
+
+func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int) error {
 	r.SetAllowedPing(false)
-	r.SetLastVolume("0")
+	r.SetLastVolume(0)
 	r.SetErrComandDispenser(nil)
 	countErrRead := 0
 	stopDispenser := 0
 	startFluid := 20
 	buf := make([]byte, 32)
-	cmdd := "S" + strconv.Itoa(measureVolume)
+	cmdd := "S" + strconv.Itoa(measureVolume) + ";"
 	exi := false
 	fmt.Println("In measure")
 	for i := 0; i < 10; i++ {
@@ -380,7 +399,7 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 			r.SetErrComandDispenser(err)
 		} else {
 			N, err := r.openPort.Read(buf)
-			if err == nil {
+			if err == nil && N > 1 {
 				ans := string(buf[0 : N-2])
 				if ans == "SOK;" {
 					fmt.Println("Start command ", measureVolume)
@@ -392,21 +411,22 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 		}
 	}
 	if exi {
-		tick := time.Tick(210 * time.Millisecond)
+		tick := time.Tick(200 * time.Millisecond)
 		var countErr int = 0
 		for {
 			select {
 			case <-tick:
 				if startFluid > 5 {
-					relay := r.GetCommandStartRev2Board()
-					board.RunConfig(relay)
-					startFluid = 0
+					err := r.RunCommandStartRev2Board()
+					if err != nil {
+						fmt.Printf("error RunCommandStartRev2Board: %s\n", err)
+					} else {
+						startFluid = 0
+					}
 				}
 				startFluid++
 				r.SetAllowedPing(false)
 				if r.GetStopDispenser() {
-					relay := r.GetCommandStopRev2Board()
-					board.RunConfig(relay)
 					if stopDispenser > 0 {
 						_, err := r.openPort.Write([]byte("FOK;"))
 						if err != nil {
@@ -416,18 +436,30 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 						}
 						return nil
 					}
-					stopDispenser++
+					err := r.RunCommandStopRev2Board()
+					if err != nil {
+						fmt.Printf("error RunCommandStopRev2Board: %s\n", err)
+					} else {
+						stopDispenser++
+					}
 				}
 				N, err := r.openPort.Read(buf)
-				if err == nil {
+				if err == nil && N > 2 {
+					countErrRead = 0
 					ans := string(buf[0 : N-2])
-					l, _ := strconv.ParseInt(r.GetLastVolume(), 10, 64)
-					v, _ := strconv.ParseInt(ans[1:N-3], 10, 64)
-					if v-l < 1 {
+					v, err := strconv.ParseInt(ans[1:N-3], 10, 64)
+					if err != nil {
+						v = r.GetLastVolume()
+						fmt.Println(err)
+					}
+					fmt.Printf("Current volume: %d\n", v)
+					if v-r.GetLastVolume() < 1 {
 						countErr += 1
 						if countErr >= 50 {
-							relay := r.GetCommandStopRev2Board()
-							board.RunConfig(relay)
+							err := r.RunCommandStopRev2Board()
+							if err != nil {
+								fmt.Printf("error RunCommandStopRev2Board: %s\n", err)
+							}
 							_, err = r.openPort.Write([]byte("ERR;"))
 							N, err = r.openPort.Read(buf)
 							ans = string(buf[0 : N-2])
@@ -439,14 +471,16 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 						}
 					} else {
 						countErr = 0
-						r.SetLastVolume(ans[1 : N-3])
+						r.SetLastVolume(v)
 					}
-					if ans[0] == 'F' {
+					if ans[0] == 'F' || v >= int64(measureVolume) {
 						fmt.Println("Finish command ", measureVolume, " Successfully!")
-						relay := r.GetCommandStopRev2Board()
-						board.RunConfig(relay)
+						err := r.RunCommandStopRev2Board()
+						if err != nil {
+							fmt.Printf("error RunCommandStopRev2Board: %s\n", err)
+						}
 						countErr = 0
-						r.SetLastVolume(ans[1 : N-3])
+						r.SetLastVolume(v)
 						_, err = r.openPort.Write([]byte("FOK;"))
 						if err != nil {
 							r.SetErrComandDispenser(app.ErrInCommandFok)
@@ -457,16 +491,21 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 					}
 				} else {
 					countErrRead += 1
+					fmt.Println("Error read answer dispenser")
+					if countErrRead > 2 {
+						r.reconnect()
+					}
 					if countErrRead > 5 {
-						relay := r.GetCommandStopRev2Board()
-						board.RunConfig(relay)
+						err := r.RunCommandStopRev2Board()
+						if err != nil {
+							fmt.Printf("error RunCommandStopRev2Board: %s\n", err)
+						} else {
+							stopDispenser++
+						}
 						_, _ = r.openPort.Write([]byte("FOK;"))
 						r.SetErrComandDispenser(app.ErrReadAnswerDispenser)
-						fmt.Println("Error read answer")
 						fmt.Println("Error in command ", measureVolume)
 						return err
-					} else {
-						countErrRead = 0
 					}
 				}
 			}
@@ -474,8 +513,10 @@ func (r *Rev1DispencerBoard) measureVolumeMilliliters(measureVolume int, board a
 	}
 	r.SetErrComandDispenser(app.ErrDispenserNotRespond)
 	fmt.Println("Dispenser is not responding")
-	relay := r.GetCommandStopRev2Board()
-	board.RunConfig(relay)
+	err := r.RunCommandStopRev2Board()
+	if err != nil {
+		fmt.Printf("error RunCommandStopRev2Board: %s\n", err)
+	}
 	return app.ErrDispenserNotRespond
 }
 
@@ -513,10 +554,28 @@ func (r *Rev2Board) workingLoop() {
 					r.toRemove = true
 					return
 				}
+				if r.errorCount > 1 {
+					r.reconnect()
+				}
 				err = r.runCommand(cmd)
 			}
 		}
 	}
+}
+
+func (r *Rev2Board) reconnect() error {
+	r.hwMetrics.Rev2BoardReconnectCounter.Inc(strconv.Itoa(r.stationNumber))
+	r.openPort.Close()
+	time.Sleep(20 * time.Millisecond)
+	c := &serial.Config{Name: "/dev/" + r.osPath, Baud: 38400, ReadTimeout: time.Millisecond * 100}
+	s, err := serial.OpenPort(c)
+	if err == nil {
+		r.openPort = s
+		fmt.Printf("reconnect OK\n")
+	} else {
+		fmt.Printf("reconnect err: %s\n", err)
+	}
+	return err
 }
 
 func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
@@ -561,6 +620,7 @@ func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
 	fmt.Println(finalCmd)
 	_, err := r.openPort.Write([]byte(finalCmd))
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 
@@ -568,12 +628,9 @@ func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
 	N, err := r.openPort.Read(buf)
 	if err != nil {
 		fmt.Println(err)
-		if err == io.EOF {
-			fmt.Println("EOF ")
-			// return err
-		}
-
+		return err
 	}
+
 	if N < 2 {
 		return ErrWrongAnswer
 	}
@@ -713,7 +770,7 @@ func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
 	ans := string(buf[0:N])
 	fmt.Printf("answer is [%s]\n", ans)
 	if dispenserAnswer == ans {
-		sensor := NewDispencerBoard(key, s)
+		sensor := NewDispencerBoard(key, s, h.runOnRev2Board, h.hwMetrics)
 		port := NewPorts(key, s)
 		h.addDispencerBoard(key, sensor)
 		h.addPort(key, port)
@@ -726,7 +783,7 @@ func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
 	}
 
 	fmt.Printf("uid is [%s]\n", foundStrings[1])
-	board := NewRev2Board(key, s)
+	board := NewRev2Board(key, s, h.hwMetrics)
 	port := NewPorts(key, s)
 	h.addRev2Board(key, board)
 	h.addPort(key, port)
@@ -764,12 +821,21 @@ func (h *HardwareAccessLayer) workingLoop() ([]app.ControlBoard, error) {
 		h.portsMu.Lock()
 		for t {
 			t = false
-			for key := range h.ports {
-				if h.ports[key].toRemove {
-					delete(h.ports, key)
+			for key := range h.portRev2Board {
+				if h.portRev2Board[key].toRemove {
+					h.portRev2Board[key].openPort.Close()
+					delete(h.ports, h.portRev2Board[key].osPath)
+					delete(h.portRev2Board, key)
 					t = true
 					break
 				}
+			}
+		}
+		if h.dispencer != nil {
+			if h.dispencer.toRemove {
+				h.dispencer.openPort.Close()
+				delete(h.ports, h.dispencer.osPath)
+				h.dispencer = nil
 			}
 		}
 		h.portsMu.Unlock()

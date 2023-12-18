@@ -1,12 +1,10 @@
 package extapi
 
 import (
-	"fmt"
-
-	"github.com/DiaElectronics/lea-central-wash/cmd/storage/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
-	"github.com/gofrs/uuid"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
+	"github.com/OpenRbt/lea-central-wash/storageapi/restapi/op"
 	"github.com/pkg/errors"
+	uuid "github.com/satori/go.uuid"
 )
 
 // pay ...
@@ -28,8 +26,7 @@ func (svc *service) pay(params op.PayParams) op.PayResponder {
 	}
 
 	// logic method
-	postID := fmt.Sprintf("%d", stationID)
-	err = svc.app.SendPaymentRequest(postID, int64(payAmount))
+	err = svc.app.SendPaymentRequest(stationID, int64(payAmount))
 	if err != nil {
 		log.PrintErr("payment request failed:", err, "stationID", stationID, "pay amount", payAmount)
 
@@ -67,7 +64,7 @@ func (svc *service) payReceived(params op.PayReceivedParams) op.PayReceivedRespo
 
 	// logic method
 	qrOrderIDUuid := uuid.FromStringOrNil(qrOrderID)
-	if qrOrderIDUuid.IsNil() {
+	if qrOrderIDUuid == uuid.Nil {
 		log.PrintErr("set payment received failed: orderID = nil")
 		return op.NewPayReceivedBadRequest()
 	}

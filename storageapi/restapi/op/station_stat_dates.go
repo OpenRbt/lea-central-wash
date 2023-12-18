@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -15,7 +17,7 @@ import (
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi"
+	"github.com/OpenRbt/lea-central-wash/storageapi"
 )
 
 // StationStatDatesHandlerFunc turns a function with the right signature into a station stat dates handler
@@ -90,6 +92,34 @@ type StationStatDatesBody struct {
 
 	// station ID
 	StationID *int64 `json:"stationID,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationStatDatesBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// Unix time
+		// Required: true
+		EndDate *int64 `json:"endDate"`
+
+		// Unix time
+		// Required: true
+		StartDate *int64 `json:"startDate"`
+
+		// station ID
+		StationID *int64 `json:"stationID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.EndDate = props.EndDate
+	o.StartDate = props.StartDate
+	o.StationID = props.StationID
+	return nil
 }
 
 // Validate validates this station stat dates body

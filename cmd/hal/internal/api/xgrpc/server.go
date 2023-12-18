@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/app"
 
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )

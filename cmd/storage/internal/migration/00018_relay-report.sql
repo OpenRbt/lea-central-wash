@@ -33,9 +33,9 @@ CREATE TABLE reset_relay_report (
 -- +goose Down
 -- SQL in this section is executed when the migration is rolled back.
 
+DROP TABLE reset_relay_report;
 DROP TABLE relay_stat;
 DROP TABLE relay_report;
-DROP TABLE reset_relay_report;
 
 CREATE TABLE relay_report (
     id           SERIAL    PRIMARY KEY,

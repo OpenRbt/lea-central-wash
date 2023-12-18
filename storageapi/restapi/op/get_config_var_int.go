@@ -6,14 +6,16 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi"
+	"github.com/OpenRbt/lea-central-wash/storageapi"
 )
 
 // GetConfigVarIntHandlerFunc turns a function with the right signature into a get config var int handler
@@ -80,6 +82,24 @@ type GetConfigVarIntBody struct {
 
 	// name
 	Name string `json:"name,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *GetConfigVarIntBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// name
+		Name string `json:"name,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Name = props.Name
+	return nil
 }
 
 // Validate validates this get config var int body

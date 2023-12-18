@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/app"
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/requester"
-	"github.com/DiaElectronics/lea-central-wash/cmd/hal/internal/rs485/rsutil"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/rs485/requester"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/rs485/rsutil"
 )
 
 const (

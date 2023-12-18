@@ -6,14 +6,16 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi"
+	"github.com/OpenRbt/lea-central-wash/storageapi"
 )
 
 // StationStatCurrentHandlerFunc turns a function with the right signature into a station stat current handler
@@ -80,6 +82,24 @@ type StationStatCurrentBody struct {
 
 	// station ID
 	StationID *int64 `json:"stationID,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *StationStatCurrentBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// station ID
+		StationID *int64 `json:"stationID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.StationID = props.StationID
+	return nil
 }
 
 // Validate validates this station stat current body

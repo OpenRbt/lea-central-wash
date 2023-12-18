@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -15,7 +17,7 @@ import (
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi/model"
+	"github.com/OpenRbt/lea-central-wash/storageapi/model"
 )
 
 // PingHandlerFunc turns a function with the right signature into a ping handler
@@ -76,6 +78,33 @@ type PingBody struct {
 	// hash
 	// Required: true
 	Hash *model.Hash `json:"hash"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *PingBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// current balance
+		CurrentBalance int64 `json:"currentBalance,omitempty"`
+
+		// current program
+		CurrentProgram int64 `json:"currentProgram,omitempty"`
+
+		// hash
+		// Required: true
+		Hash *model.Hash `json:"hash"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.CurrentBalance = props.CurrentBalance
+	o.CurrentProgram = props.CurrentProgram
+	o.Hash = props.Hash
+	return nil
 }
 
 // Validate validates this ping body
@@ -208,12 +237,91 @@ type PingOKBody struct {
 	// Required: true
 	QrURL *string `json:"qrUrl"`
 
+	// sbp system active
+	SbpSystemActive bool `json:"sbpSystemActive,omitempty"`
+
 	// service amount
 	// Required: true
 	ServiceAmount *int64 `json:"serviceAmount"`
 
 	// session ID
 	SessionID string `json:"sessionID,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *PingOKBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// authorized session ID
+		AuthorizedSessionID string `json:"AuthorizedSessionID,omitempty"`
+
+		// button ID
+		ButtonID int64 `json:"ButtonID,omitempty"`
+
+		// bonus amount
+		BonusAmount int64 `json:"bonusAmount,omitempty"`
+
+		// bonus system active
+		BonusSystemActive bool `json:"bonusSystemActive,omitempty"`
+
+		// last discount update
+		LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
+
+		// last update
+		LastUpdate int64 `json:"lastUpdate,omitempty"`
+
+		// open station
+		// Required: true
+		OpenStation *bool `json:"openStation"`
+
+		// qr failed
+		// Required: true
+		QrFailed *bool `json:"qrFailed"`
+
+		// qr money
+		// Required: true
+		QrMoney *int64 `json:"qrMoney"`
+
+		// qr order Id
+		// Required: true
+		QrOrderID *string `json:"qrOrderId"`
+
+		// qr Url
+		// Required: true
+		QrURL *string `json:"qrUrl"`
+
+		// sbp system active
+		SbpSystemActive bool `json:"sbpSystemActive,omitempty"`
+
+		// service amount
+		// Required: true
+		ServiceAmount *int64 `json:"serviceAmount"`
+
+		// session ID
+		SessionID string `json:"sessionID,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.AuthorizedSessionID = props.AuthorizedSessionID
+	o.ButtonID = props.ButtonID
+	o.BonusAmount = props.BonusAmount
+	o.BonusSystemActive = props.BonusSystemActive
+	o.LastDiscountUpdate = props.LastDiscountUpdate
+	o.LastUpdate = props.LastUpdate
+	o.OpenStation = props.OpenStation
+	o.QrFailed = props.QrFailed
+	o.QrMoney = props.QrMoney
+	o.QrOrderID = props.QrOrderID
+	o.QrURL = props.QrURL
+	o.SbpSystemActive = props.SbpSystemActive
+	o.ServiceAmount = props.ServiceAmount
+	o.SessionID = props.SessionID
+	return nil
 }
 
 // Validate validates this ping o k body

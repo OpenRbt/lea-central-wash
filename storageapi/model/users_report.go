@@ -6,7 +6,9 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -21,6 +23,24 @@ type UsersReport struct {
 
 	// users
 	Users []*UserConfig `json:"users"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *UsersReport) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// users
+		Users []*UserConfig `json:"users"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.Users = props.Users
+	return nil
 }
 
 // Validate validates this users report

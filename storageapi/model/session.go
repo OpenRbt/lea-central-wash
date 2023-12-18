@@ -6,7 +6,9 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -22,6 +24,28 @@ type Session struct {
 
 	// q r
 	QR string `json:"QR,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *Session) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// ID
+		ID string `json:"ID,omitempty"`
+
+		// q r
+		QR string `json:"QR,omitempty"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.ID = props.ID
+	m.QR = props.QR
+	return nil
 }
 
 // Validate validates this session

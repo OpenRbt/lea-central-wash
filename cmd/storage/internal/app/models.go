@@ -210,3 +210,12 @@ type RabbitConfig struct {
 	ServerID  string
 	ServerKey string
 }
+
+type ServiceStatus struct {
+	Available        bool
+	DisabledOnServer bool
+	IsConnected      bool
+	LastErr          string
+	DateLastErr      *time.Time
+	UnpaidStations   map[int]bool
+}

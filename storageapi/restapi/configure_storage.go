@@ -9,11 +9,11 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 
-	"github.com/DiaElectronics/lea-central-wash/storageapi"
-	"github.com/DiaElectronics/lea-central-wash/storageapi/restapi/op"
+	"github.com/OpenRbt/lea-central-wash/storageapi"
+	"github.com/OpenRbt/lea-central-wash/storageapi/restapi/op"
 )
 
-//go:generate swagger generate server --target ../../storageapi --name Storage --spec ../swagger.yml --api-package op --model-package model --principal github.com/DiaElectronics/lea-central-wash/storageapi.Profile --exclude-main --strict-responders
+//go:generate swagger generate server --target ../../storageapi --name Storage --spec ../swagger.yml --api-package op --model-package model --principal github.com/OpenRbt/lea-central-wash/storageapi.Profile --exclude-main --strict-responders
 
 func configureFlags(api *op.StorageAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
