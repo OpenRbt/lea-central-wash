@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
-	"github.com/gofrs/uuid"
 	"github.com/powerman/sqlxx"
+	uuid "github.com/satori/go.uuid"
 )
 
 // orderID ...
@@ -224,7 +224,7 @@ func (r *repo) SetPaymentReceived(orderID uuid.UUID) (err error) {
 func (r *repo) GetLastPayment(postID app.StationID) (app.Payment, error) {
 	// from ram
 	p := r.PaymentsRep.GetLastPayment(int(postID))
-	if !p.OrderID.IsNil() {
+	if p.OrderID != uuid.Nil {
 		return p, nil
 	}
 

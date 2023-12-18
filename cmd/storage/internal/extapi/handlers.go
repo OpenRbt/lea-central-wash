@@ -467,8 +467,7 @@ func (svc *service) programs(params op.ProgramsParams) op.ProgramsResponder {
 
 func (svc *service) setProgram(params op.SetProgramParams) op.SetProgramResponder {
 	log.Info("setProgram", "programID", params.Args.ID, "ip", params.HTTPRequest.RemoteAddr)
-	var err error
-	err = svc.app.SetProgram(appPrograms(params.Args))
+	err := svc.app.SetProgram(appPrograms(params.Args))
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewSetProgramNoContent()

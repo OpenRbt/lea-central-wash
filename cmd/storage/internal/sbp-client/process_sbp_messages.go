@@ -8,7 +8,7 @@ import (
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 	paymentEntities "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client/entity/payment"
 	rabbit_vo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client/entity/vo"
-	"github.com/gofrs/uuid"
+	uuid "github.com/satori/go.uuid"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )

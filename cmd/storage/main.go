@@ -302,8 +302,7 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 		}
 		dbMigrations.Close()
 
-		schemaVer, _ := schemaver.New()
-		repository := dal.New(db, maintenanceDBConn, schemaVer)
+		repository := dal.New(db, maintenanceDBConn)
 		repo = repository
 		sbpRepo = repository
 	} else {

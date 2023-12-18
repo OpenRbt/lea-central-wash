@@ -5,6 +5,7 @@ import (
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 	"github.com/OpenRbt/lea-central-wash/storageapi/restapi/op"
+	uuid "github.com/satori/go.uuid"
 )
 
 func (svc *service) ping(params op.PingParams) op.PingResponder {
@@ -42,7 +43,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 	}
 
 	orderID := ""
-	if !lastPayment.OrderID.IsNil() {
+	if lastPayment.OrderID != uuid.Nil {
 		orderID = lastPayment.OrderID.String()
 	}
 	return op.NewPingOK().WithPayload(&op.PingOKBody{
