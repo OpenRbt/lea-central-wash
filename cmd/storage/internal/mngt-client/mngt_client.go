@@ -9,7 +9,6 @@ import (
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 
-	sbpvo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client/entity/vo"
 	"github.com/powerman/structlog"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -28,6 +27,7 @@ const (
 	closed       int32 = -1
 
 	maxAttempts int8 = 5
+	exchange         = "management_service"
 )
 
 type StationID app.StationID
@@ -59,8 +59,20 @@ type Service struct {
 	reconnectCount   int64
 }
 
-func NewSbpRabbitClient(cfg RabbitConfig, app app.App) (svc *Service, err error) {
+func NewMngtRabbitClient(cfg RabbitConfig, a app.App) (svc *Service, err error) {
 	//TODO: add rabbit variables extraction from repo
+	v, err := a.GetConfigString(nil, "management_server_id")
+	if err != nil || v.Value == "" {
+		err = app.ErrServiceNotConfigured
+		return nil, err
+	}
+	cfg.ServerID = string(v.Value)
+	v, err = a.GetConfigString(nil, "management_service_key")
+	if err != nil || v.Value == "" {
+		err = app.ErrServiceNotConfigured
+		return nil, err
+	}
+	cfg.ServerPassword = v.Value
 
 	connString := ""
 	if cfg.Secure {
@@ -85,7 +97,7 @@ func NewSbpRabbitClient(cfg RabbitConfig, app app.App) (svc *Service, err error)
 	}
 
 	svc = &Service{
-		app:              app,
+		app:              a,
 		log:              structlog.New(),
 		rabbitConf:       &rabbitConf,
 		connString:       connString,
@@ -256,7 +268,7 @@ func (s *Service) connect() error {
 	}
 	_, err = s.sbpClientSub.QueueDeclare(
 		s.serverID,
-		false,
+		true,
 		false,
 		false,
 		false,
@@ -268,10 +280,16 @@ func (s *Service) connect() error {
 		return err
 	}
 
+	err = s.sbpClientPub.Confirm(false)
+	if err != nil {
+		s.sbpClientPub.Close()
+		connection.Close()
+		return err
+	}
 	err = s.sbpClientSub.QueueBind(
 		s.serverID,
 		s.serverID,
-		string(sbpvo.LeaWashService),
+		exchange,
 		false,
 		nil,
 	)

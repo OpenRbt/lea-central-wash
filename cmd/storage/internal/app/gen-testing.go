@@ -10,6 +10,7 @@ import (
 
 	vo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 	gomock "github.com/golang/mock/gomock"
+	go_uuid "github.com/satori/go.uuid"
 )
 
 // MockApp is a mock of App interface.
@@ -373,6 +374,21 @@ func (mr *MockAppMockRecorder) GetConfigString(auth, name interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetConfigString", reflect.TypeOf((*MockApp)(nil).GetConfigString), auth, name)
 }
 
+// GetLastPayment mocks base method.
+func (m *MockApp) GetLastPayment(postID StationID) (Payment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetLastPayment", postID)
+	ret0, _ := ret[0].(Payment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetLastPayment indicates an expected call of GetLastPayment.
+func (mr *MockAppMockRecorder) GetLastPayment(postID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLastPayment", reflect.TypeOf((*MockApp)(nil).GetLastPayment), postID)
+}
+
 // GetLevel mocks base method.
 func (m *MockApp) GetLevel() (int64, error) {
 	m.ctrl.T.Helper()
@@ -401,6 +417,21 @@ func (m *MockApp) GetRabbitConfig() (RabbitConfig, error) {
 func (mr *MockAppMockRecorder) GetRabbitConfig() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRabbitConfig", reflect.TypeOf((*MockApp)(nil).GetRabbitConfig))
+}
+
+// GetSbpConfig mocks base method.
+func (m *MockApp) GetSbpConfig(envServerSbpID, envServerSbpPassword string) (SbpRabbitConfig, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSbpConfig", envServerSbpID, envServerSbpPassword)
+	ret0, _ := ret[0].(SbpRabbitConfig)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetSbpConfig indicates an expected call of GetSbpConfig.
+func (mr *MockAppMockRecorder) GetSbpConfig(envServerSbpID, envServerSbpPassword interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSbpConfig", reflect.TypeOf((*MockApp)(nil).GetSbpConfig), envServerSbpID, envServerSbpPassword)
 }
 
 // GetServerInfo mocks base method.
@@ -508,15 +539,29 @@ func (mr *MockAppMockRecorder) Info() *gomock.Call {
 }
 
 // InitBonusRabbitWorker mocks base method.
-func (m *MockApp) InitBonusRabbitWorker(routingKey string, publisherFunc func(interface{}, vo.Service, vo.RoutingKey, vo.MessageType) error, isConnected func() bool) {
+func (m *MockApp) InitBonusRabbitWorker(routingKey string, publisherFunc func(interface{}, vo.Service, vo.RoutingKey, vo.MessageType) error, status func() ServiceStatus) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "InitBonusRabbitWorker", routingKey, publisherFunc, isConnected)
+	m.ctrl.Call(m, "InitBonusRabbitWorker", routingKey, publisherFunc, status)
 }
 
 // InitBonusRabbitWorker indicates an expected call of InitBonusRabbitWorker.
-func (mr *MockAppMockRecorder) InitBonusRabbitWorker(routingKey, publisherFunc, isConnected interface{}) *gomock.Call {
+func (mr *MockAppMockRecorder) InitBonusRabbitWorker(routingKey, publisherFunc, status interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitBonusRabbitWorker", reflect.TypeOf((*MockApp)(nil).InitBonusRabbitWorker), routingKey, publisherFunc, isConnected)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitBonusRabbitWorker", reflect.TypeOf((*MockApp)(nil).InitBonusRabbitWorker), routingKey, publisherFunc, status)
+}
+
+// InitSbpRabbitWorker mocks base method.
+func (m *MockApp) InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InitSbpRabbitWorker", config)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InitSbpRabbitWorker indicates an expected call of InitSbpRabbitWorker.
+func (mr *MockAppMockRecorder) InitSbpRabbitWorker(config interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitSbpRabbitWorker", reflect.TypeOf((*MockApp)(nil).InitSbpRabbitWorker), config)
 }
 
 // IsEnabled mocks base method.
@@ -531,6 +576,34 @@ func (m *MockApp) IsEnabled(user *UserData) bool {
 func (mr *MockAppMockRecorder) IsEnabled(user interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsEnabled", reflect.TypeOf((*MockApp)(nil).IsEnabled), user)
+}
+
+// IsSbpAvailableForStation mocks base method.
+func (m *MockApp) IsSbpAvailableForStation(stationID StationID) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsSbpAvailableForStation", stationID)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsSbpAvailableForStation indicates an expected call of IsSbpAvailableForStation.
+func (mr *MockAppMockRecorder) IsSbpAvailableForStation(stationID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsSbpAvailableForStation", reflect.TypeOf((*MockApp)(nil).IsSbpAvailableForStation), stationID)
+}
+
+// IsSbpRabbitWorkerInit mocks base method.
+func (m *MockApp) IsSbpRabbitWorkerInit() bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsSbpRabbitWorkerInit")
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsSbpRabbitWorkerInit indicates an expected call of IsSbpRabbitWorkerInit.
+func (mr *MockAppMockRecorder) IsSbpRabbitWorkerInit() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsSbpRabbitWorkerInit", reflect.TypeOf((*MockApp)(nil).IsSbpRabbitWorkerInit))
 }
 
 // Kasse mocks base method.
@@ -806,6 +879,20 @@ func (mr *MockAppMockRecorder) SaveRelayReport(report interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveRelayReport", reflect.TypeOf((*MockApp)(nil).SaveRelayReport), report)
 }
 
+// SendPaymentRequest mocks base method.
+func (m *MockApp) SendPaymentRequest(postID StationID, amount int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendPaymentRequest", postID, amount)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendPaymentRequest indicates an expected call of SendPaymentRequest.
+func (mr *MockAppMockRecorder) SendPaymentRequest(postID, amount interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendPaymentRequest", reflect.TypeOf((*MockApp)(nil).SendPaymentRequest), postID, amount)
+}
+
 // Set mocks base method.
 func (m *MockApp) Set(station StationData) error {
 	m.ctrl.T.Helper()
@@ -928,6 +1015,62 @@ func (m *MockApp) SetNextSession(stationID StationID) error {
 func (mr *MockAppMockRecorder) SetNextSession(stationID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetNextSession", reflect.TypeOf((*MockApp)(nil).SetNextSession), stationID)
+}
+
+// SetPaymentCanceled mocks base method.
+func (m *MockApp) SetPaymentCanceled(orderID go_uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetPaymentCanceled", orderID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetPaymentCanceled indicates an expected call of SetPaymentCanceled.
+func (mr *MockAppMockRecorder) SetPaymentCanceled(orderID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetPaymentCanceled", reflect.TypeOf((*MockApp)(nil).SetPaymentCanceled), orderID)
+}
+
+// SetPaymentConfirmed mocks base method.
+func (m *MockApp) SetPaymentConfirmed(orderID go_uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetPaymentConfirmed", orderID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetPaymentConfirmed indicates an expected call of SetPaymentConfirmed.
+func (mr *MockAppMockRecorder) SetPaymentConfirmed(orderID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetPaymentConfirmed", reflect.TypeOf((*MockApp)(nil).SetPaymentConfirmed), orderID)
+}
+
+// SetPaymentReceived mocks base method.
+func (m *MockApp) SetPaymentReceived(orderID go_uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetPaymentReceived", orderID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetPaymentReceived indicates an expected call of SetPaymentReceived.
+func (mr *MockAppMockRecorder) SetPaymentReceived(orderID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetPaymentReceived", reflect.TypeOf((*MockApp)(nil).SetPaymentReceived), orderID)
+}
+
+// SetPaymentURL mocks base method.
+func (m *MockApp) SetPaymentURL(orderID go_uuid.UUID, urlPay string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetPaymentURL", orderID, urlPay)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetPaymentURL indicates an expected call of SetPaymentURL.
+func (mr *MockAppMockRecorder) SetPaymentURL(orderID, urlPay interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetPaymentURL", reflect.TypeOf((*MockApp)(nil).SetPaymentURL), orderID, urlPay)
 }
 
 // SetProgram mocks base method.
@@ -1363,6 +1506,35 @@ func (mr *MockRepoMockRecorder) CollectionReports(id, startDate, endDate interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CollectionReports", reflect.TypeOf((*MockRepo)(nil).CollectionReports), id, startDate, endDate)
 }
 
+// CollectionSetSended mocks base method.
+func (m *MockRepo) CollectionSetSended(arg0 int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CollectionSetSended", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CollectionSetSended indicates an expected call of CollectionSetSended.
+func (mr *MockRepoMockRecorder) CollectionSetSended(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CollectionSetSended", reflect.TypeOf((*MockRepo)(nil).CollectionSetSended), arg0)
+}
+
+// Collections mocks base method.
+func (m *MockRepo) Collections() ([]CollectionReport, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Collections")
+	ret0, _ := ret[0].([]CollectionReport)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Collections indicates an expected call of Collections.
+func (mr *MockRepoMockRecorder) Collections() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Collections", reflect.TypeOf((*MockRepo)(nil).Collections))
+}
+
 // CreateUser mocks base method.
 func (m *MockRepo) CreateUser(userData UserData) (UserData, error) {
 	m.ctrl.T.Helper()
@@ -1744,6 +1916,35 @@ func (m *MockRepo) MoneyReport(stationID StationID, startDate, endDate time.Time
 func (mr *MockRepoMockRecorder) MoneyReport(stationID, startDate, endDate interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MoneyReport", reflect.TypeOf((*MockRepo)(nil).MoneyReport), stationID, startDate, endDate)
+}
+
+// MoneyReportSetSended mocks base method.
+func (m *MockRepo) MoneyReportSetSended(arg0 int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MoneyReportSetSended", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// MoneyReportSetSended indicates an expected call of MoneyReportSetSended.
+func (mr *MockRepoMockRecorder) MoneyReportSetSended(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MoneyReportSetSended", reflect.TypeOf((*MockRepo)(nil).MoneyReportSetSended), arg0)
+}
+
+// MoneyReports mocks base method.
+func (m *MockRepo) MoneyReports() ([]MngtMoneyReport, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MoneyReports")
+	ret0, _ := ret[0].([]MngtMoneyReport)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MoneyReports indicates an expected call of MoneyReports.
+func (mr *MockRepoMockRecorder) MoneyReports() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MoneyReports", reflect.TypeOf((*MockRepo)(nil).MoneyReports))
 }
 
 // Programs mocks base method.

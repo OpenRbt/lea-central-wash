@@ -334,3 +334,15 @@ func (t *DB) RefreshMotorStatsDates() (err error) {
 func (t *DB) DeleteConfigString(name string) error {
 	return nil
 }
+func (t *DB) Collections() ([]app.CollectionReport, error) {
+	return nil, nil
+}
+func (t *DB) CollectionSetSended(int) error {
+	return nil
+}
+func (t *DB) MoneyReports() ([]app.MngtMoneyReport, error) {
+	return nil, nil
+}
+func (t *DB) MoneyReportSetSended(int) error {
+	return nil
+}

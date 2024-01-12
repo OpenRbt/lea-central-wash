@@ -6,7 +6,9 @@ package op
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -72,6 +74,30 @@ type PayReceivedBody struct {
 	// qr order Id
 	// Required: true
 	QrOrderID *string `json:"qrOrderId"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (o *PayReceivedBody) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// hash
+		// Required: true
+		Hash *string `json:"hash"`
+
+		// qr order Id
+		// Required: true
+		QrOrderID *string `json:"qrOrderId"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	o.Hash = props.Hash
+	o.QrOrderID = props.QrOrderID
+	return nil
 }
 
 // Validate validates this pay received body

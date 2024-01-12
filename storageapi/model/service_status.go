@@ -6,7 +6,9 @@ package model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -34,6 +36,44 @@ type ServiceStatus struct {
 
 	// unpaid stations
 	UnpaidStations []int64 `json:"unpaidStations"`
+}
+
+// UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
+func (m *ServiceStatus) UnmarshalJSON(data []byte) error {
+	var props struct {
+
+		// available
+		Available bool `json:"available,omitempty"`
+
+		// Unix time
+		DateLastErrUTC *int64 `json:"dateLastErrUTC,omitempty"`
+
+		// disabled on server
+		DisabledOnServer bool `json:"disabledOnServer,omitempty"`
+
+		// is connected
+		IsConnected bool `json:"isConnected,omitempty"`
+
+		// last err
+		LastErr string `json:"lastErr,omitempty"`
+
+		// unpaid stations
+		UnpaidStations []int64 `json:"unpaidStations"`
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&props); err != nil {
+		return err
+	}
+
+	m.Available = props.Available
+	m.DateLastErrUTC = props.DateLastErrUTC
+	m.DisabledOnServer = props.DisabledOnServer
+	m.IsConnected = props.IsConnected
+	m.LastErr = props.LastErr
+	m.UnpaidStations = props.UnpaidStations
+	return nil
 }
 
 // Validate validates this service status

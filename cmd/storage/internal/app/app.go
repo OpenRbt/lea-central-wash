@@ -59,6 +59,7 @@ var (
 	ErrServiceNotConfigured    = errors.New("service not configured")
 	ErrRabbitMessageBadPayload = errors.New("bad RabbitMessagePayloadData")
 	ErrNoRabbitWorker          = errors.New("rabbit worker not initialized")
+	ErrSendTimeout             = errors.New("send request failed: timeout")
 )
 
 var testApp = false
@@ -88,7 +89,7 @@ type (
 		LoadMoneyReport(StationID) (*MoneyReport, error)
 		RelayReportCurrent(auth *Auth, id *StationID) (StationsStat, error)
 
-		StatusReport() StatusReport
+		StatusReport(bool) StatusReport
 		SetStation(station SetStation) error
 		DelStation(id StationID) error
 		StationReportDates(id StationID, startDate, endDate time.Time) (MoneyReport, RelayReport, error)
@@ -170,11 +171,20 @@ type (
 		InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error, status func() ServiceStatus)
 
 		// sbp
-		SbpWorkerInterface
+		SendPaymentRequest(postID StationID, amount int64) error
+		// set
+		SetPaymentURL(orderID uuid.UUID, urlPay string) error
+		SetPaymentConfirmed(orderID uuid.UUID) error
+		SetPaymentReceived(orderID uuid.UUID) error
+		SetPaymentCanceled(orderID uuid.UUID) (err error)
+		// get
+		GetLastPayment(postID StationID) (Payment, error)
 		InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error
 		IsSbpRabbitWorkerInit() bool
 		IsSbpAvailableForStation(stationID StationID) bool
 		GetSbpConfig(envServerSbpID string, envServerSbpPassword string) (cfg SbpRabbitConfig, err error)
+
+		InitManagement(svc ManagementService)
 	}
 
 	// Repo is a DAL interface.
@@ -265,6 +275,10 @@ type (
 
 		RefreshMotorStatsCurrent() (err error)
 		RefreshMotorStatsDates() (err error)
+		Collections() ([]CollectionReport, error)
+		CollectionSetSended(int) error
+		MoneyReports() ([]MngtMoneyReport, error)
+		MoneyReportSetSended(int) error
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -299,6 +313,12 @@ type (
 		// Timings are settings for actual relays
 		Timings []Relay
 	}
+	ManagementService interface {
+		SendMoneyReport(MngtMoneyReport) error
+		SendCollectionReport(CollectionReport) error
+		Status() ServiceStatus
+		SendStatus(StatusReport) error
+	}
 )
 
 type app struct {
@@ -322,6 +342,7 @@ type app struct {
 	cfg                   AppConfig
 	cfgMutex              sync.Mutex
 	volumeCorrection      int
+	managementSvc         ManagementService
 
 	extServicesActive     bool
 	servicesPublisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error
@@ -407,6 +428,7 @@ type StatusReport struct {
 	Stations    []StationStatus
 	BonusStatus ServiceStatus
 	SbpStatus   ServiceStatus
+	MngtStatus  ServiceStatus
 }
 
 // StationStatus is used to display in the managment software
@@ -427,6 +449,7 @@ type SetStation struct {
 	Name         string
 	PreflightSec int
 	RelayBoard   string
+	IsActive     bool
 }
 
 // StationsVariables represents a named variable for a specific Station
