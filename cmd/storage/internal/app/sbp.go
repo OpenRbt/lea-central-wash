@@ -130,19 +130,22 @@ func (w *SbpWorker) SendPaymentRequest(postID StationID, amount int64) error {
 	if err != nil {
 		return fmt.Errorf("send pay request failed: %w", err)
 	}
-	i := 0
-	for i < 5 {
-		err = w.sbpBroker.SendPaymentRequest(dbReq)
-		if err == nil {
-			break
+	go func() {
+		i := 0
+		for i < 1 {
+			err = w.sbpBroker.SendPaymentRequest(dbReq)
+			if err == nil {
+				break
+			}
+			if err == ErrSendTimeout {
+				log.Err(err)
+				break
+			}
+			i++
+			log.Err("send payment request failed:", "error", err, "attemp", i)
+			time.Sleep(time.Duration(500*i) * time.Millisecond)
 		}
-		i++
-		log.Err("send payment request failed:", "error", err, "attemp", i)
-		time.Sleep(time.Duration(200*i) * time.Millisecond)
-	}
-	if err != nil {
-		return fmt.Errorf("send payment request failed: %w", err)
-	}
+	}()
 
 	return nil
 }

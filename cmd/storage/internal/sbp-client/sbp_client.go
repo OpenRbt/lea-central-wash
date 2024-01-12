@@ -81,7 +81,7 @@ func NewSbpRabbitClient(cfg RabbitConfig, app app.App) (svc *Service, err error)
 		Heartbeat:  0,
 		Properties: nil,
 		Locale:     "",
-		Dial:       nil,
+		Dial:       amqp.DefaultDial(3 * time.Second),
 	}
 
 	svc = &Service{
@@ -262,6 +262,13 @@ func (s *Service) connect() error {
 		false,
 		amqp.Table{},
 	)
+	if err != nil {
+		s.sbpClientPub.Close()
+		connection.Close()
+		return err
+	}
+
+	err = s.sbpClientPub.Confirm(false)
 	if err != nil {
 		s.sbpClientPub.Close()
 		connection.Close()
