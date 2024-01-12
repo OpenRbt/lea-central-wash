@@ -1,6 +1,10 @@
 package app
 
-import "time"
+import (
+	"time"
+
+	uuid "github.com/satori/go.uuid"
+)
 
 // UserData describes a user of the system (a registered one)
 type UserData struct {
@@ -52,6 +56,7 @@ type StationData struct {
 	LastUpdate          int
 	LastDiscountUpdate  int64
 	IP                  string
+	IsActive            bool
 }
 
 // MoneyReport is just to represent money in a station. All known kinds of money
@@ -67,8 +72,30 @@ type MoneyReport struct {
 	QrMoney      int
 }
 
+// MngtMoneyReport ...
+type MngtMoneyReport struct {
+	ID                  int
+	StationID           StationID
+	Banknotes           int
+	CarsTotal           int
+	Coins               int
+	Electronical        int
+	Service             int
+	Bonuses             int
+	QrMoney             int
+	Ctime               time.Time
+	ManagementMessageID uuid.UUID
+	CollectionReportID  uuid.UUID
+	LastMoneyReportID   int
+}
+
+func (m MngtMoneyReport) IsLastCollection() bool {
+	return m.ID > m.LastMoneyReportID
+}
+
 // CollectionReport is how much was collected from a station + when
 type CollectionReport struct {
+	ID           int
 	StationID    StationID
 	Banknotes    int
 	CarsTotal    int
@@ -78,6 +105,7 @@ type CollectionReport struct {
 	Bonuses      int
 	QrMoney      int
 	Ctime        time.Time
+	ManagementID uuid.UUID
 }
 
 // CollectionReportWithUser is how much was collected from a station + when with username who committed it
@@ -218,4 +246,5 @@ type ServiceStatus struct {
 	LastErr          string
 	DateLastErr      *time.Time
 	UnpaidStations   map[int]bool
+	ReconnectCount   int64
 }

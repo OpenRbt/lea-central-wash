@@ -33,6 +33,7 @@ func appSetStation(v []resStation) []app.SetStation {
 			Name:         v[i].Name,
 			PreflightSec: v[i].PreflightSec,
 			RelayBoard:   v[i].RelayBoard,
+			IsActive:     v[i].Hash != nil,
 		})
 	}
 	return res

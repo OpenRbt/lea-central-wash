@@ -84,8 +84,9 @@ func (a *app) loadStations() error {
 
 	for i := range res {
 		stations[res[i].ID] = StationData{
-			ID:   res[i].ID,
-			Name: res[i].Name,
+			ID:       res[i].ID,
+			Name:     res[i].Name,
+			IsActive: res[i].IsActive,
 		}
 		sessionsPool[res[i].ID] = make(chan string, 30)
 	}
@@ -492,7 +493,7 @@ func (a *app) RelayReportCurrent(auth *Auth, id *StationID) (StationsStat, error
 	return a.repo.RelayReportCurrent(id)
 }
 
-func (a *app) StatusReport() StatusReport {
+func (a *app) StatusReport(onlyActive bool) StatusReport {
 	report := StatusReport{
 		LCWInfo: a.repo.Info(),
 	}
@@ -515,9 +516,18 @@ func (a *app) StatusReport() StatusReport {
 		report.SbpStatus = ServiceStatus{Available: false}
 	}
 
+	if a.managementSvc != nil {
+		report.MngtStatus = a.managementSvc.Status()
+	} else {
+		report.MngtStatus = ServiceStatus{Available: false}
+	}
+
 	a.stationsMutex.RLock()
 	defer a.stationsMutex.RUnlock()
 	for _, v := range a.stations {
+		if onlyActive && !v.IsActive {
+			continue
+		}
 		var status Status
 		if v.LastPing.Add(durationStationOffline).After(time.Now()) {
 			status = StatusOnline

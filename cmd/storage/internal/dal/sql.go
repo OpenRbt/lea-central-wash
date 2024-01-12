@@ -55,6 +55,7 @@ SELECT value  FROM keypair  WHERE station_id = :station_id and key = :key
 	sqlAddStation = `
 INSERT INTO station (name)  
 VALUES 	(:name)
+RETURNING ID
 	`
 	sqlAddStationHash = `
 INSERT INTO station_hash (station_id, hash)  
@@ -66,7 +67,9 @@ SET name = :name, preflight_sec = :preflight_sec, relay_board = :relay_board
 WHERE id = :id
 	`
 	sqlGetStations = `
-SELECT id, name, preflight_sec, relay_board FROM station where deleted = false ORDER BY id
+	SELECT s.id, s.name, s.preflight_sec, s.relay_board, h.hash FROM station s
+	LEFT JOIN station_hash h on h.station_id=s.id
+	where s.deleted = false ORDER BY id
 	`
 	sqlGetStation = `
 SELECT id, name, preflight_sec, relay_board FROM station where deleted = false and id = :id ORDER BY id
@@ -794,6 +797,7 @@ type (
 		Name         string
 		PreflightSec int
 		RelayBoard   string
+		Hash         *string
 	}
 	argLastMoneyReport struct {
 		StationID app.StationID

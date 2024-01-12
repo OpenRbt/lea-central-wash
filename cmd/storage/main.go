@@ -37,6 +37,7 @@ import (
 	"github.com/powerman/pqx"
 	"github.com/powerman/structlog"
 
+	mngt "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/mngt-client"
 	sbpclient "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client"
 )
 
@@ -157,6 +158,10 @@ func main() { //nolint:gocyclo
 		fmt.Print(goose.Usage)
 	}
 	flag.Parse()
+	log.Info(cfg.goose)
+	if cfg.goose != "" {
+		startDelaySec = 0
+	}
 	log.Info("main", "delay", startDelaySec)
 	time.Sleep(time.Second * time.Duration(startDelaySec))
 
@@ -262,7 +267,12 @@ func applyMigrations(db *sqlx.DB) error {
 		return errors.New("db not connected")
 	}
 	if cfg.goose != "" {
-		return goose.Run(db.DB, cfg.gooseDir, cfg.goose)
+		err := goose.Run(db.DB, cfg.gooseDir, cfg.goose)
+		if err != nil {
+			return err
+		}
+		os.Exit(0)
+		return nil
 	}
 	err := goose.UpTo(db.DB, cfg.gooseDir, migration.CurrentVersion)
 	if err != nil {
@@ -352,6 +362,11 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 		cfg.sbp.EnvNameServerID,
 		cfg.sbp.EnvNameServerPassword,
 	)
+	go initMngtClient(mngt.RabbitConfig{
+		URL:  "dev.openwashing.com",
+		Port: "5672",
+		//Secure: true,
+	}, appl)
 
 	// server
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
@@ -391,6 +406,29 @@ func initRabbitClient(cfg rabbit.Config, appl app.App) {
 		log.Info("Serve rabbit client")
 		appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitWorker.SendMessage, rabbitWorker.Status)
 		appl.FetchSessions()
+		return
+	}
+}
+
+func initMngtClient(cfg mngt.RabbitConfig, appl app.App) {
+	for {
+		rabbitWorker, err := mngt.NewMngtRabbitClient(cfg, appl)
+		if err != nil {
+			if strings.Contains(err.Error(), "username or password not allowed") {
+				log.Err("Failed to init management client due to wrong credentials", "error", err)
+				return
+			}
+			if err == app.ErrServiceNotConfigured {
+				return
+			}
+
+			log.Err("Failed to init management client", "error", err)
+			time.Sleep(5 * time.Second)
+			continue
+		}
+
+		log.Info("Serve management client")
+		appl.InitManagement(rabbitWorker)
 		return
 	}
 }

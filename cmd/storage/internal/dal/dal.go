@@ -246,9 +246,19 @@ func (r *repo) SetStation(station app.SetStation) (err error) {
 
 func (r *repo) AddStation(name string) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err = tx.NamedExec(sqlAddStation, argAddStation{
+		var id app.StationID
+		err = tx.NamedGetContext(ctx, &id, sqlAddStation, argAddStation{
 			Name: name,
 		})
+		if err != nil {
+			return err
+		}
+		_, err := tx.NamedExec(sqlAddCollectionReport, argAddCollectionReport{
+			StationID: id,
+			UserID:    1,
+			Ctime:     time.Now().UTC(),
+		})
+
 		return err
 	})
 	return //nolint:nakedret
