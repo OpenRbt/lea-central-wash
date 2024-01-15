@@ -55,19 +55,23 @@ var (
 	ReadTimeout        = intGetEnv("STORAGE_API_READ_TIMEOUT", 2)
 	WriteTimeout       = intGetEnv("STORAGE_API_WRITE_TIMEOUT", 2)
 	StartDelaySec      = intGetEnv("STORAGE_START_DELAY", 30)
-	OpenwashingURL     = strGetEnv("OPENWASHING_URL", "https://app.openwashing.com")
+	OpenwashingURL     = strGetEnv("OPENWASHING_URL", "https://app.openrbt.com")
 
-	RabbitHost = strGetEnv("RABBIT_HOST", "app.openwashing.com")
+	RabbitHost = strGetEnv("RABBIT_HOST", "app.openrbt.com")
 	RabbitPort = strGetEnv("RABBIT_PORT", "4043")
 
 	// sbp
-	SbpRabbitHost              = strGetEnv("SBP_RABBIT_HOST", "app.openwashing.com")
+	SbpRabbitHost              = strGetEnv("SBP_RABBIT_HOST", "app.openrbt.com")
 	SbpRabbitPort              = strGetEnv("SBP_RABBIT_PORT", "4043")
 	SbpRabbitSecure            = boolGetEnv("SBP_RABBIT_SECURE", true)
 	SbpPaymentExpirationPeriod = durationGetEnv("SBP_PAYMENT_EXPIRATION_PERIOD", time.Minute*5)
 	SbpEnvNameServerID         = strGetEnv("SBP_ENV_NAME_SERVER_ID", "SBP_SERVER_ID")
 	SbpEnvNameServerPassword   = strGetEnv("SBP_ENV_NAME_SERVER_PASSWORD", "SBP_SERVER_PASSWORD")
 	//
+
+	MngtRabbitHost   = strGetEnv("MNGT_RABBIT_HOST", "dev.openrbt.com")
+	MngtRabbitPort   = strGetEnv("MNGT_RABBIT_PORT", "4043")
+	MngtRabbitSecure = boolGetEnv("MNGT_RABBIT_SECURE", true)
 )
 
 var initErr error

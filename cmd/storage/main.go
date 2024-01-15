@@ -81,6 +81,7 @@ var (
 		storage    app.AppConfig
 		hal        hal.Config
 		testBoards bool
+		mngtConfig mngt.RabbitConfig
 	}
 )
 
@@ -144,6 +145,10 @@ func init() { //nolint:gochecknoinits
 
 	// sbp
 	readSbpConfigFromFlag()
+
+	flag.StringVar(&cfg.mngtConfig.URL, "mngt.rabbitURL", def.MngtRabbitHost, "management rabbit host for service connections")
+	flag.StringVar(&cfg.mngtConfig.Port, "mngt.RabbitPort", def.MngtRabbitPort, "management rabbit port for service connections")
+	flag.BoolVar(&cfg.mngtConfig.Secure, "mngt.RabbitSecure", def.MngtRabbitSecure, "management rabbit secure for service connections")
 
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",
@@ -362,11 +367,12 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 		cfg.sbp.EnvNameServerID,
 		cfg.sbp.EnvNameServerPassword,
 	)
-	go initMngtClient(mngt.RabbitConfig{
-		URL:  "dev.openwashing.com",
-		Port: "5672",
+	go initMngtClient(cfg.mngtConfig,
+		//mngt.RabbitConfig{
+		//URL:  "dev.openwashing.com",
+		//Port: "5672",
 		//Secure: true,
-	}, appl)
+		appl)
 
 	// server
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
