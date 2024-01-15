@@ -60,21 +60,18 @@ type Service struct {
 }
 
 func NewMngtRabbitClient(cfg RabbitConfig, a app.App) (svc *Service, err error) {
-	/*	v, err := a.GetConfigString(nil, "management_server_id")
-		if err != nil || v.Value == "" {
-			err = app.ErrServiceNotConfigured
-			return nil, err
-		}
-	*/
-	cfg.ServerID = "73b32419-e11c-4185-9b09-ce636fe9f023" // string(v.Value)
-	/*
-		v, err = a.GetConfigString(nil, "management_service_key")
-		if err != nil || v.Value == "" {
-			err = app.ErrServiceNotConfigured
-			return nil, err
-		}
-	*/
-	cfg.ServerPassword = "bb20593620a532dfc3a10523be9750b8724f5186fbd3caf9bba86323d0602a3a" //v.Value
+	v, err := a.GetConfigString(nil, "management_server_id")
+	if err != nil || v.Value == "" {
+		err = app.ErrServiceNotConfigured
+		return nil, err
+	}
+	cfg.ServerID = string(v.Value)
+	v, err = a.GetConfigString(nil, "management_service_key")
+	if err != nil || v.Value == "" {
+		err = app.ErrServiceNotConfigured
+		return nil, err
+	}
+	cfg.ServerPassword = v.Value
 
 	connString := ""
 	if cfg.Secure {
