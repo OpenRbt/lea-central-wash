@@ -367,12 +367,7 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 		cfg.sbp.EnvNameServerID,
 		cfg.sbp.EnvNameServerPassword,
 	)
-	go initMngtClient(cfg.mngtConfig,
-		//mngt.RabbitConfig{
-		//URL:  "dev.openwashing.com",
-		//Port: "5672",
-		//Secure: true,
-		appl)
+	go initMngtClient(cfg.mngtConfig, appl)
 
 	// server
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
