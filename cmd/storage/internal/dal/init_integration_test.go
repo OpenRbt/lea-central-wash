@@ -31,6 +31,7 @@ func (r *repo) truncate() error {
 	_, err := r.db.Exec(`
 do $$
 DECLARE
+	seq_name text; 
     statements CURSOR FOR
         SELECT tablename FROM pg_tables
         WHERE schemaname = 'public';
@@ -38,6 +39,11 @@ BEGIN
     FOR stmt IN statements LOOP
         EXECUTE 'TRUNCATE TABLE ' || quote_ident(stmt.tablename) || ' CASCADE;';
     END LOOP;
+
+	FOR seq_name IN (SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = 'public') LOOP 
+	   EXECUTE 'SELECT setval(' || quote_literal(seq_name) || ', 1, false)'; 
+	END LOOP;
+
 END $$ LANGUAGE plpgsql;
 	`)
 	return err

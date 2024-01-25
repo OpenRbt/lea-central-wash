@@ -69,33 +69,36 @@ var (
 	ver = strings.Join(strings.Fields(strings.Join([]string{gitVersion, gitBranch, gitRevision, buildDate}, " ")), " ")
 	log = structlog.New()
 	cfg struct {
-		version    bool
-		logLevel   string
-		db         pqx.Config
-		goose      string
-		gooseDir   string
-		extapi     extapi.Config
-		kasse      svckasse.Config
-		rabbit     rabbit.Config
-		sbp        sbpConfig
-		storage    app.AppConfig
-		hal        hal.Config
-		testBoards bool
-		mngtConfig mngt.RabbitConfig
+		version     bool
+		logLevel    string
+		db          pqx.Config
+		goose       string
+		gooseDir    string
+		extapi      extapi.Config
+		kasse       svckasse.Config
+		rabbit      rabbit.Config
+		sbp         sbpConfig
+		storage     app.AppConfig
+		hal         hal.Config
+		testBoards  bool
+		mngtConfig  mngt.RabbitConfig
+		postControl app.PostControlConfig
 	}
 )
 
 // sbp
-type sbpConfig struct {
-	RabbitURL    string
-	RabbitPort   string
-	RabbitSecure bool
+type (
+	sbpConfig struct {
+		RabbitURL    string
+		RabbitPort   string
+		RabbitSecure bool
 
-	EnvNameServerID       string
-	EnvNameServerPassword string
+		EnvNameServerID       string
+		EnvNameServerPassword string
 
-	PaymentExpirationPeriod time.Duration
-}
+		PaymentExpirationPeriod time.Duration
+	}
+)
 
 // readSbpConfigFromFlag ...
 func readSbpConfigFromFlag() {
@@ -142,6 +145,10 @@ func init() { //nolint:gochecknoinits
 	flag.StringVar(&cfg.rabbit.Port, "rabbit.port", def.RabbitPort, "port for service connections")
 
 	flag.StringVar(&cfg.storage.BonusServiceURL, "storage.bonus-service-url", def.OpenwashingURL, "URL of bonus service")
+
+	flag.StringVar(&cfg.postControl.KeySSHPath, "postcontrol.KeySSHPath", def.KeySSHPath, "Path to private key ssh")
+	flag.StringVar(&cfg.postControl.StationsDirPath, "postcontrol.StationsDirPath", def.StationsDirPath, "Path to the posts firmware directory")
+	flag.StringVar(&cfg.postControl.UserSSH, "postcontrol.UserSSH", def.UserSSH, "Username for connecting via ssh")
 
 	// sbp
 	readSbpConfigFromFlag()
@@ -343,7 +350,7 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 		return
 	}
 
-	appl := app.New(repo, kasse, weather, client)
+	appl := app.New(repo, kasse, weather, client, cfg.postControl)
 
 	// bonus
 	rabbitCfg, err := appl.GetRabbitConfig()

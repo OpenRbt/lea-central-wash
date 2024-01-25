@@ -57,6 +57,8 @@ type StationData struct {
 	LastDiscountUpdate  int64
 	IP                  string
 	IsActive            bool
+	Task                *Task
+	Versions            []FirmwareVersion
 }
 
 // MoneyReport is just to represent money in a station. All known kinds of money
@@ -247,4 +249,94 @@ type ServiceStatus struct {
 	DateLastErr      *time.Time
 	UnpaidStations   map[int]bool
 	ReconnectCount   int64
+}
+
+type BuildScript struct {
+	ID        int
+	StationID StationID
+	Name      string
+	Commands  []string
+}
+
+type SetBuildScript struct {
+	StationID         StationID
+	CopyFromStationID *StationID
+	Name              string
+	Commands          []string
+}
+
+type TaskType string
+type TaskStatus string
+
+const (
+	BuildTaskType        TaskType = "build"
+	UpdateTaskType       TaskType = "update"
+	RebootTaskType       TaskType = "reboot"
+	GetVersionsTaskType  TaskType = "getVersions"
+	PullFirmwareTaskType TaskType = "pullFirmware"
+
+	QueueTaskStatus     TaskStatus = "queue"
+	StartedTaskStatus   TaskStatus = "started"
+	CompletedTaskStatus TaskStatus = "completed"
+	ErrorTaskStatus     TaskStatus = "error"
+	CanceledTaskStatus  TaskStatus = "canceled"
+)
+
+type Task struct {
+	ID        int
+	StationID StationID
+	VersionID *int
+	Type      TaskType
+	Status    TaskStatus
+	Error     *string
+	CreatedAt time.Time
+	StartedAt *time.Time
+	StoppedAt *time.Time
+}
+
+type CreateTask struct {
+	StationID StationID
+	VersionID *int
+	Type      TaskType
+}
+
+type UpdateTask struct {
+	Status    *TaskStatus
+	Error     *string
+	StartedAt *time.Time
+	StoppedAt *time.Time
+}
+
+type GetListTasksFilter struct {
+	StationID  *StationID
+	Status     *TaskStatus
+	OnlyActive bool
+}
+
+type FirmwareVersionJson struct {
+	HashLua    string    `json:"hashLua"`
+	HashEnv    string    `json:"hashEnv"`
+	HashBinar  string    `json:"hashBinar"`
+	BuiltAt    time.Time `json:"builtAt"`
+	CommitedAt time.Time `json:"commitedAt"`
+}
+
+type FirmwareVersion struct {
+	ID         int
+	HashLua    string
+	HashEnv    string
+	HashBinar  string
+	BuiltAt    time.Time
+	CommitedAt time.Time
+}
+
+func firmwareVersionFromJson(id int, jsonVersion FirmwareVersionJson) FirmwareVersion {
+	return FirmwareVersion{
+		ID:         id,
+		HashLua:    jsonVersion.HashLua,
+		HashEnv:    jsonVersion.HashEnv,
+		HashBinar:  jsonVersion.HashBinar,
+		BuiltAt:    jsonVersion.BuiltAt,
+		CommitedAt: jsonVersion.CommitedAt,
+	}
 }

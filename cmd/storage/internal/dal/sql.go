@@ -684,6 +684,139 @@ returning id
 	sqlRefreshProgramStatsCurrent = `refresh materialized view mv_current_program_stat`
 	sqlRefreshMotorStatsDates     = `refresh materialized view mv_relay_stat_dates`
 	sqlRefreshProgramStatsDates   = `refresh materialized view mv_program_stat_dates`
+
+	sqlGetListBuildScripts = `
+	SELECT
+		id,
+		station_id,
+		name,
+		commands
+    FROM build_scripts
+	ORDER BY station_id ASC
+	`
+
+	sqlGetBuildScript = `
+	SELECT
+		id,
+		station_id,
+		name,
+		commands
+    FROM build_scripts
+	WHERE id = :id
+	`
+
+	sqlGetBuildScriptByStationID = `
+	SELECT
+		id,
+		station_id,
+		name,
+		commands
+    FROM build_scripts
+	WHERE station_id = :id
+	`
+
+	sqlInsertBuildScript = `
+	INSERT INTO build_scripts (station_id, name, commands)
+	VALUES (:station_id, :name, :commands)
+	RETURNING
+		id,
+		station_id,
+		name,
+		commands
+	`
+
+	sqlUpdateBuildScript = `
+	UPDATE build_scripts
+	SET
+		station_id = :station_id, 
+		name = :name, 
+		commands = :commands
+	WHERE id = :id
+	RETURNING
+		id,
+		station_id,
+		name,
+		commands
+	`
+
+	sqlDeleteBuildScript = `
+	DELETE FROM build_scripts
+	WHERE id = :id
+	`
+
+	sqlGetTask = `
+	SELECT
+		id,
+		station_id,
+		version_id,
+		type,
+		status,
+		error,
+		created_at,
+		started_at,
+		stopped_at
+    FROM tasks
+	WHERE id = :id
+	`
+
+	sqlGetListTasks = `
+	SELECT
+		id,
+		station_id,
+		version_id,
+		type,
+		status,
+		error,
+		created_at,
+		started_at,
+		stopped_at
+    FROM tasks
+	WHERE
+		(CAST(:station_id AS INT) 		   IS NULL OR station_id = :station_id) AND
+		(CAST(:status AS TASK_STATUS_ENUM) IS NULL OR status     = :status) AND
+		(:only_active = FALSE 					   OR status IN ('queue', 'started'))
+	ORDER BY created_at
+	`
+
+	sqlInsertTask = `
+	INSERT INTO tasks (station_id, version_id, type)
+	VALUES (:station_id, :version_id, :type)
+	RETURNING
+		id,
+		station_id,
+		version_id,
+		type,
+		status,
+		error,
+		created_at,
+		started_at,
+		stopped_at
+	`
+
+	sqlUpdateTask = `
+	UPDATE tasks
+	SET
+		status = COALESCE(:status, status),
+		error = COALESCE(:error, error),
+		started_at = COALESCE(:started_at, started_at),
+		stopped_at = COALESCE(:stopped_at, stopped_at)
+	WHERE id = :id
+	RETURNING
+		id,
+		station_id,
+		version_id,
+		type,
+		status,
+		error,
+		created_at,
+		started_at,
+		stopped_at
+	`
+
+	sqlDeleteTask = `
+	DELETE FROM tasks
+	WHERE id = :id
+	`
 )
 
 type (
@@ -1176,4 +1309,81 @@ type (
 		SentAt        *time.Time
 		MessageUUID   uuid.NullUUID
 	}
+
+	resBuildScript struct {
+		ID        int
+		StationID int
+		Name      string
+		Commands  string
+	}
+
+	argInsertBuildScript struct {
+		StationID int
+		Name      string
+		Commands  string
+	}
+
+	argUpdateBuildScript struct {
+		ID        int
+		StationID int
+		Name      string
+		Commands  string
+	}
+
+	argGetBuildScript struct {
+		ID int
+	}
+
+	TaskType   string
+	TaskStatus string
+
+	resTask struct {
+		ID        int
+		StationID int
+		VersionID *int
+		Type      TaskType
+		Status    TaskStatus
+		Error     *string
+		CreatedAt time.Time
+		StartedAt *time.Time
+		StoppedAt *time.Time
+	}
+
+	argGetTask struct {
+		ID int
+	}
+
+	argGetListTasks struct {
+		StationID  *int
+		Status     *TaskStatus
+		OnlyActive bool
+	}
+
+	argInsertTask struct {
+		StationID int
+		VersionID *int
+		Type      TaskType
+	}
+
+	argUpdateTask struct {
+		ID        int
+		Status    *TaskStatus
+		Error     *string
+		StartedAt *time.Time
+		StoppedAt *time.Time
+	}
+)
+
+const (
+	BuildTaskType        TaskType = "build"
+	UpdateTaskType       TaskType = "update"
+	RebootTaskType       TaskType = "reboot"
+	GetVersionsTaskType  TaskType = "get_versions"
+	PullFirmwareTaskType TaskType = "pull_firmware"
+
+	QueueTaskStatus     TaskStatus = "queue"
+	StartedTaskStatus   TaskStatus = "started"
+	CompletedTaskStatus TaskStatus = "completed"
+	ErrorTaskStatus     TaskStatus = "error"
+	CanceledTaskStatus  TaskStatus = "canceled"
 )

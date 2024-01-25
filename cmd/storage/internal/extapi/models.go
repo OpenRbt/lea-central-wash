@@ -8,6 +8,7 @@ import (
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 	"github.com/OpenRbt/lea-central-wash/storageapi/model"
 	"github.com/OpenRbt/lea-central-wash/storageapi/restapi/op"
+	"github.com/go-openapi/strfmt"
 )
 
 func appRelays(m []*model.RelayConfig) []app.Relay {
@@ -568,4 +569,148 @@ func apiGetServerInfo(bonusServiceURL string) *model.ServerInfo {
 	return &model.ServerInfo{
 		BonusServiceURL: bonusServiceURL,
 	}
+}
+
+func appTaskStatus(taskStatus string) app.TaskStatus {
+	switch taskStatus {
+	case "queue":
+		return app.QueueTaskStatus
+	case "started":
+		return app.StartedTaskStatus
+	case "completed":
+		return app.CompletedTaskStatus
+	case "error":
+		return app.ErrorTaskStatus
+	case "canceled":
+		return app.CanceledTaskStatus
+	default:
+		panic("Unknown task status: " + taskStatus)
+	}
+}
+
+func appTaskType(taskType string) app.TaskType {
+	switch taskType {
+	case "build":
+		return app.BuildTaskType
+	case "update":
+		return app.UpdateTaskType
+	case "reboot":
+		return app.RebootTaskType
+	case "getVersions":
+		return app.GetVersionsTaskType
+	case "pullFirmware":
+		return app.PullFirmwareTaskType
+	default:
+		panic("Unknown task type: " + taskType)
+	}
+}
+
+func appNullableTaskStatus(taskStatus *string) *app.TaskStatus {
+	if taskStatus == nil {
+		return nil
+	}
+	var dalTaskStatus = appTaskStatus(*taskStatus)
+	return &dalTaskStatus
+}
+
+func apiListTasks(tasks []app.Task) []*model.Task {
+	var apiTasks []*model.Task
+	for i := 0; i < len(tasks); i++ {
+		task := apiTask(tasks[i])
+		apiTasks = append(apiTasks, task)
+	}
+	return apiTasks
+}
+
+func apiTask(task app.Task) *model.Task {
+	id := int64(task.ID)
+	stationID := int64(int(task.StationID))
+
+	var versionID *int64
+	if task.VersionID != nil {
+		v := int64(*task.VersionID)
+		versionID = &v
+	}
+
+	return &model.Task{
+		ID:        &id,
+		StationID: &stationID,
+		VersionID: versionID,
+		Type:      (*string)(&task.Type),
+		Status:    (*string)(&task.Status),
+		Error:     task.Error,
+		CreatedAt: (*strfmt.DateTime)(&task.CreatedAt),
+		StartedAt: (*strfmt.DateTime)(task.StartedAt),
+		StoppedAt: (*strfmt.DateTime)(task.StoppedAt),
+	}
+}
+
+func appCreateTask(task model.CreateTask) app.CreateTask {
+	var versionID *int
+	if task.VersionID != nil {
+		v := int(*task.VersionID)
+		versionID = &v
+	}
+
+	return app.CreateTask{
+		VersionID: versionID,
+		Type:      appTaskType(*task.Type),
+		StationID: app.StationID(*task.StationID),
+	}
+}
+
+func apiListBuildScripts(buildScripts []app.BuildScript) []*model.BuildScript {
+	var apiBuildScripts []*model.BuildScript
+	for i := 0; i < len(buildScripts); i++ {
+		buildScript := apiBuildScript(buildScripts[i])
+		apiBuildScripts = append(apiBuildScripts, buildScript)
+	}
+	return apiBuildScripts
+}
+
+func apiBuildScript(buildScript app.BuildScript) *model.BuildScript {
+	id := int64(buildScript.ID)
+	stationID := int64(int(buildScript.StationID))
+	return &model.BuildScript{
+		ID:        &id,
+		StationID: &stationID,
+		Name:      &buildScript.Name,
+		Commangs:  buildScript.Commands,
+	}
+}
+
+func appSetBuildScript(buildScript model.SetBuildScript) app.SetBuildScript {
+	var copyFromStationID *app.StationID
+	if buildScript.CopyFromStationID != nil {
+		v := app.StationID(int(*buildScript.CopyFromStationID))
+		copyFromStationID = &v
+	}
+
+	return app.SetBuildScript{
+		CopyFromStationID: copyFromStationID,
+		StationID:         app.StationID(*buildScript.StationID),
+		Name:              *buildScript.Name,
+		Commands:          buildScript.Commangs,
+	}
+}
+
+func apiFirmwareVersion(version app.FirmwareVersion) *model.FirmwareVersion {
+	id := int64(version.ID)
+	return &model.FirmwareVersion{
+		ID:         &id,
+		BuiltAt:    (*strfmt.DateTime)(&version.BuiltAt),
+		CommitedAt: (*strfmt.DateTime)(&version.CommitedAt),
+		HashBinar:  &version.HashBinar,
+		HashEnv:    &version.HashEnv,
+		HashLua:    &version.HashLua,
+	}
+}
+
+func apiListFirmwareVersions(versions []app.FirmwareVersion) []*model.FirmwareVersion {
+	var apiVersions []*model.FirmwareVersion
+	for i := 0; i < len(versions); i++ {
+		version := apiFirmwareVersion(versions[i])
+		apiVersions = append(apiVersions, version)
+	}
+	return apiVersions
 }

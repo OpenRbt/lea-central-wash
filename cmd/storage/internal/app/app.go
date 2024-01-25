@@ -42,6 +42,32 @@ const qrURL = "%s/#/?sessionID=%s"
 
 const RabbitWorkerScheduleInterval = time.Minute
 
+// Post control commands
+const (
+	openwashingLcwName = "openwashing"
+	binarName          = "firmware.exe"
+	versionName        = "versions.json"
+	runshName          = "run.sh"
+	binarOwPath        = "openwashing/software/v1-enlight/firmware.exe"
+
+	cloneRepositoryLcwCommand        = "git clone https://github.com/OpenRbt/openwashing.git ~/openwashing"
+	pullRepositoryLcwCommand         = "cd ~/openwashing && git pull"
+	firmwareTempCreate               = "rm -rf ~/firmware_temp mkdir ~/firmware_temp"
+	hashBinarLcwCommand              = "shasum %s/firmware.exe | cut -d ' ' -f 1"
+	hashLuaLcwCommand                = "shasum ~/firmware_temp/script.lua | cut -d ' ' -f 1"
+	hashEnvLcwCommand                = "find ~/firmware_temp -type f -not -name 'script.lua' -exec shasum {} \\; | shasum | cut -d ' ' -f 1"
+	commitedAtLcwCommand             = "cd ~/openwashing && git log -1 --format='%cd' --date=format:'%Y-%m-%dT%H:%M:%SZ'"
+	cpLcwCommand                     = "rm -rf %s/firmware && cp -r ~/firmware_temp %s/firmware"
+	copyFirmwareFromStationToStation = "rm -rf %s && cp -r %s %s"
+
+	cloneRepositoryOwCommand = "git clone https://github.com/OpenRbt/openwashing.git ~/openwashing && cd ~/openwashing/software/v1-enlight/3rd/lua53/src && make linux"
+	pullRepositoryOwCommand  = "cd ~/openwashing && git pull"
+	makeBinarOwCommand       = "cd ~/openwashing/software/v1-enlight && make"
+	findVersionsOwCommand    = "find ~/ -maxdepth 1 -type d -name \"wash_*\""
+	cdFirmwareCommand        = "cd %s"
+	rebootOwCommand          = "sudo shutdown -r +1"
+)
+
 // Errors.
 var (
 	ErrNotFound                 = errors.New("not found")
@@ -55,6 +81,9 @@ var (
 	ErrStationProgramMustUnique = errors.New("programID and buttonID must be unique")
 	ErrUserIsNotAuthorized      = errors.New("user is not authorized")
 	ErrSessionNotFound          = errors.New("session not found")
+	ErrWrongParameter           = errors.New("wrong parameter")
+	ErrTaskStarted              = errors.New("task started")
+	ErrStationDirectoryNotExist = errors.New("station directory does not exist")
 
 	ErrServiceNotConfigured    = errors.New("service not configured")
 	ErrRabbitMessageBadPayload = errors.New("bad RabbitMessagePayloadData")
@@ -185,6 +214,18 @@ type (
 		GetSbpConfig(envServerSbpID string, envServerSbpPassword string) (cfg SbpRabbitConfig, err error)
 
 		InitManagement(svc ManagementService)
+
+		GetPublicKey() (string, error)
+		GetVersions(stationID StationID) ([]FirmwareVersion, error)
+		GetListTasks(filter GetListTasksFilter) ([]Task, error)
+		GetTask(id int) (Task, error)
+		DeleteTask(id int) error
+		CreateTask(createTask CreateTask) (Task, error)
+		GetListBuildScripts() ([]BuildScript, error)
+		GetBuildScript(id int) (BuildScript, error)
+		SetBuildScript(setBuildScript SetBuildScript) (BuildScript, error)
+		DeleteBuildScript(id int) error
+		CopyFirmware(stationID StationID, copyToID StationID) error
 	}
 
 	// Repo is a DAL interface.
@@ -279,6 +320,18 @@ type (
 		CollectionSetSended(int) error
 		MoneyReports() ([]MngtMoneyReport, error)
 		MoneyReportSetSended(int) error
+
+		GetListBuildScripts() ([]BuildScript, error)
+		GetBuildScript(id int) (BuildScript, error)
+		GetBuildScriptByStationID(id StationID) (BuildScript, error)
+		CreateBuildScript(createBuildScript SetBuildScript) (BuildScript, error)
+		UpdateBuildScript(id int, updateBuildScript SetBuildScript) (BuildScript, error)
+		DeleteBuildScript(id int) error
+		GetListTasks(filter GetListTasksFilter) ([]Task, error)
+		GetTask(id int) (Task, error)
+		CreateTask(createTask CreateTask) (Task, error)
+		UpdateTask(id int, updateTask UpdateTask) (Task, error)
+		DeleteTask(id int) error
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -344,6 +397,8 @@ type app struct {
 	volumeCorrection      int
 	managementSvc         ManagementService
 
+	postControlConfig PostControlConfig
+
 	extServicesActive     bool
 	servicesPublisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error
 
@@ -353,14 +408,15 @@ type app struct {
 }
 
 // New creates and returns new App.
-func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareAccessLayer) App {
+func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareAccessLayer, postControlConfig PostControlConfig) App {
 	appl := &app{
-		repo:             repo,
-		stations:         make(map[StationID]StationData),
-		kasseSvc:         kasseSvc,
-		weatherSvc:       weatherSvc,
-		hardware:         hardware,
-		volumeCorrection: 1000,
+		repo:              repo,
+		stations:          make(map[StationID]StationData),
+		kasseSvc:          kasseSvc,
+		weatherSvc:        weatherSvc,
+		hardware:          hardware,
+		volumeCorrection:  1000,
+		postControlConfig: postControlConfig,
 	}
 
 	stationConfig, err := appl.repo.GetStationConfigInt(ParameterNameVolumeCoef, StationID(1))
@@ -393,6 +449,7 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 	go appl.refreshDiscounts()
 	go appl.refreshMotorStatsCurrent()
 	go appl.refreshMotorStatsDates()
+	go appl.taskScheduler()
 	return appl
 }
 
@@ -536,4 +593,10 @@ type RabbitMoneyReport struct {
 
 type ServerInfo struct {
 	BonusServiceURL string `json:"bonusServiceURL,omitempty"`
+}
+
+type PostControlConfig struct {
+	KeySSHPath      string
+	UserSSH         string
+	StationsDirPath string
 }

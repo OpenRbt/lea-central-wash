@@ -361,3 +361,133 @@ func appRabbitMoneyReport(r resRabbitMoneyReport) app.RabbitMoneyReport {
 		MessageUUID: r.MessageUUID.UUID,
 	}
 }
+
+func appListBuildScripts(buildScripts []resBuildScript) ([]app.BuildScript, error) {
+	var appBuildScripts []app.BuildScript
+
+	for i := 0; i < len(buildScripts); i++ {
+		bs, err := appBuildScript(buildScripts[i])
+		if err != nil {
+			return nil, err
+		}
+
+		appBuildScripts = append(appBuildScripts, bs)
+	}
+
+	return appBuildScripts, nil
+}
+
+func appBuildScript(buildScript resBuildScript) (app.BuildScript, error) {
+	var commands []string
+	err := json.Unmarshal([]byte(buildScript.Commands), &commands)
+	if err != nil {
+		return app.BuildScript{}, err
+	}
+
+	return app.BuildScript{
+		ID:        buildScript.ID,
+		Name:      buildScript.Name,
+		StationID: app.StationID(buildScript.StationID),
+		Commands:  commands,
+	}, nil
+}
+
+func appListTasks(tasks []resTask) []app.Task {
+	var appTasks []app.Task
+
+	for i := 0; i < len(tasks); i++ {
+		appTasks = append(appTasks, appTask(tasks[i]))
+	}
+
+	return appTasks
+}
+
+func appTask(task resTask) app.Task {
+	return app.Task{
+		ID:        task.ID,
+		StationID: app.StationID(task.StationID),
+		VersionID: task.VersionID,
+		Type:      appTaskType(task.Type),
+		Status:    appTaskStatus(task.Status),
+		Error:     task.Error,
+		CreatedAt: task.CreatedAt,
+		StartedAt: task.StartedAt,
+		StoppedAt: task.StoppedAt,
+	}
+}
+
+func appTaskType(taskType TaskType) app.TaskType {
+	switch taskType {
+	case BuildTaskType:
+		return app.BuildTaskType
+	case UpdateTaskType:
+		return app.UpdateTaskType
+	case RebootTaskType:
+		return app.RebootTaskType
+	case GetVersionsTaskType:
+		return app.GetVersionsTaskType
+	case PullFirmwareTaskType:
+		return app.PullFirmwareTaskType
+	default:
+		panic("Unknown task type: " + taskType)
+	}
+}
+
+func appTaskStatus(taskStatus TaskStatus) app.TaskStatus {
+	switch taskStatus {
+	case QueueTaskStatus:
+		return app.QueueTaskStatus
+	case StartedTaskStatus:
+		return app.StartedTaskStatus
+	case CompletedTaskStatus:
+		return app.CompletedTaskStatus
+	case ErrorTaskStatus:
+		return app.ErrorTaskStatus
+	case CanceledTaskStatus:
+		return app.CanceledTaskStatus
+	default:
+		panic("Unknown task status: " + taskStatus)
+	}
+}
+
+func dalTaskType(taskType app.TaskType) TaskType {
+	switch taskType {
+	case app.BuildTaskType:
+		return BuildTaskType
+	case app.UpdateTaskType:
+		return UpdateTaskType
+	case app.RebootTaskType:
+		return RebootTaskType
+	case app.GetVersionsTaskType:
+		return GetVersionsTaskType
+	case app.PullFirmwareTaskType:
+		return PullFirmwareTaskType
+	default:
+		panic("Unknown task type: " + taskType)
+	}
+}
+
+func dalTaskStatus(taskStatus app.TaskStatus) TaskStatus {
+	switch taskStatus {
+	case app.QueueTaskStatus:
+		return QueueTaskStatus
+	case app.StartedTaskStatus:
+		return StartedTaskStatus
+	case app.CompletedTaskStatus:
+		return CompletedTaskStatus
+	case app.ErrorTaskStatus:
+		return ErrorTaskStatus
+	case app.CanceledTaskStatus:
+		return CanceledTaskStatus
+	default:
+		panic("Unknown task status: " + taskStatus)
+	}
+}
+
+func dalNullableTaskStatus(taskStatus *app.TaskStatus) *TaskStatus {
+	if taskStatus == nil {
+		return nil
+	}
+	var dalTaskStatus = dalTaskStatus(*taskStatus)
+	return &dalTaskStatus
+}

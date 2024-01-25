@@ -1131,3 +1131,165 @@ func (svc *service) getServerInfo(params op.GetServerInfoParams) op.GetServerInf
 	info := svc.app.GetServerInfo()
 	return op.NewGetServerInfoOK().WithPayload(apiGetServerInfo(info.BonusServiceURL))
 }
+
+func (svc *service) getPublicKey(params op.GetPublicKeyParams) op.GetPublicKeyResponder {
+	key, err := svc.app.GetPublicKey()
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetPublicKeyOK().WithPayload(&model.PublicKey{PublicKey: &key})
+	default:
+		log.PrintErr(err)
+		return op.NewGetPublicKeyInternalServerError()
+	}
+}
+
+func (svc *service) getFirmwareVersions(params op.GetStationFirmwareVersionsParams, auth *app.Auth) op.GetStationFirmwareVersionsResponder {
+	versions, err := svc.app.GetVersions(app.StationID(params.ID))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetStationFirmwareVersionsOK().WithPayload(apiListFirmwareVersions(versions))
+	case app.ErrNotFound:
+		return op.NewGetStationFirmwareVersionsNotFound()
+	default:
+		log.PrintErr(err)
+		return op.NewGetStationFirmwareVersionsInternalServerError()
+	}
+}
+
+func (svc *service) getListTasks(params op.GetListTasksParams, auth *app.Auth) op.GetListTasksResponder {
+	filter := app.GetListTasksFilter{
+		Status: appNullableTaskStatus(params.Status),
+	}
+	if params.StationID != nil {
+		stationID := app.StationID(*params.StationID)
+		filter.StationID = &stationID
+	}
+
+	tasks, err := svc.app.GetListTasks(filter)
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetListTasksOK().WithPayload(apiListTasks(tasks))
+	default:
+		log.PrintErr(err)
+		return op.NewGetListTasksInternalServerError()
+	}
+}
+
+func (svc *service) getTask(params op.GetTaskParams, auth *app.Auth) op.GetTaskResponder {
+	task, err := svc.app.GetTask(int(params.ID))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetTaskOK().WithPayload(apiTask(task))
+	case app.ErrNotFound:
+		return op.NewGetTaskNotFound()
+	default:
+		log.PrintErr(err)
+		return op.NewGetTaskInternalServerError()
+	}
+}
+
+func (svc *service) deleteTask(params op.DeleteTaskParams, auth *app.Auth) op.DeleteTaskResponder {
+	err := svc.app.DeleteTask(int(params.ID))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewDeleteTaskNoContent()
+	case app.ErrNotFound:
+		return op.NewDeleteTaskNotFound()
+	case app.ErrTaskStarted:
+		return op.NewDeleteTaskBadRequest()
+	default:
+		log.PrintErr(err)
+		return op.NewDeleteTaskInternalServerError()
+	}
+}
+
+func (svc *service) createTask(params op.CreateTaskParams, auth *app.Auth) op.CreateTaskResponder {
+	task, err := svc.app.CreateTask(appCreateTask(*params.Args))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewCreateTaskOK().WithPayload(apiTask(task))
+	case app.ErrNotFound:
+		return op.NewCreateTaskNotFound()
+	case app.ErrWrongParameter:
+		return op.NewCreateTaskBadRequest()
+	default:
+		log.PrintErr(err)
+		return op.NewCreateTaskInternalServerError()
+	}
+}
+
+func (svc *service) getListBuildScripts(params op.GetListBuildScriptsParams, auth *app.Auth) op.GetListBuildScriptsResponder {
+	buildScripts, err := svc.app.GetListBuildScripts()
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetListBuildScriptsOK().WithPayload(apiListBuildScripts(buildScripts))
+	default:
+		log.PrintErr(err)
+		return op.NewGetListBuildScriptsInternalServerError()
+	}
+}
+
+func (svc *service) getBuildScript(params op.GetBuildScriptParams, auth *app.Auth) op.GetBuildScriptResponder {
+	buildScript, err := svc.app.GetBuildScript(int(params.ID))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetBuildScriptOK().WithPayload(apiBuildScript(buildScript))
+	case app.ErrNotFound:
+		return op.NewGetBuildScriptNotFound()
+	default:
+		log.PrintErr(err)
+		return op.NewGetBuildScriptInternalServerError()
+	}
+}
+
+func (svc *service) setBuildScript(params op.SetBuildScriptParams, auth *app.Auth) op.SetBuildScriptResponder {
+	buildScript, err := svc.app.SetBuildScript(appSetBuildScript(*params.Args))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewSetBuildScriptOK().WithPayload(apiBuildScript(buildScript))
+	case app.ErrNotFound:
+		return op.NewSetBuildScriptNotFound()
+	default:
+		log.PrintErr(err)
+		return op.NewSetBuildScriptInternalServerError()
+	}
+}
+
+func (svc *service) deleteBuildScript(params op.DeleteBuildScriptParams, auth *app.Auth) op.DeleteBuildScriptResponder {
+	err := svc.app.DeleteBuildScript(int(params.ID))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewDeleteBuildScriptNoContent()
+	case app.ErrNotFound:
+		return op.NewDeleteBuildScriptNotFound()
+	default:
+		log.PrintErr(err)
+		return op.NewDeleteBuildScriptInternalServerError()
+	}
+}
+
+func (svc *service) copyFirmware(params op.FirmwareVersionsCopyParams, auth *app.Auth) op.FirmwareVersionsCopyResponder {
+	err := svc.app.CopyFirmware(app.StationID(params.ID), app.StationID(params.ToID))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewFirmwareVersionsCopyNoContent()
+	case app.ErrNotFound:
+		return op.NewFirmwareVersionsCopyNotFound()
+	case app.ErrStationDirectoryNotExist:
+		return op.NewFirmwareVersionsCopyBadRequest()
+	default:
+		log.PrintErr(err)
+		return op.NewFirmwareVersionsCopyInternalServerError()
+	}
+}

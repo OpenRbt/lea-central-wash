@@ -636,6 +636,143 @@ definitions:
         type: array
         items:
           type: integer
+  
+  PublicKey:
+    type: object
+    properties:
+      publicKey: 
+        type: string
+    required:
+      - publicKey
+  
+  FirmwareVersion:
+    type: object
+    properties:
+      id:
+        type: integer
+      hashLua:
+        type: string
+      hashEnv:
+        type: string
+      hashBinar:
+        type: string
+      builtAt:
+        type: string
+        format: date-time
+      commitedAt:
+        type: string
+        format: date-time
+    required:
+      - id
+      - hashLua
+      - hashEnv
+      - hashBinar
+      - builtAt
+      - commitedAt
+  
+  Task:
+    type: object
+    properties:
+      id:
+        type: integer
+      stationID:
+        type: integer
+      versionID:
+        type: integer
+        x-nullable: true
+      type:
+        type: string
+        enum:
+          - build
+          - update
+          - reboot
+          - getVersions
+          - pullFirmware
+      status:
+        type: string
+        enum:
+          - queue
+          - started
+          - completed
+          - error
+      error:
+        type: string
+        x-nullable: true
+      createdAt:
+        type: string
+        format: date-time
+      startedAt:
+        type: string
+        format: date-time
+        x-nullable: true
+      stoppedAt:
+        type: string
+        format: date-time
+        x-nullable: true
+    required:
+      - id
+      - stationID
+      - type
+      - status
+      - createdAt
+  
+  CreateTask:
+    type: object
+    properties:
+      stationID:
+        type: integer
+      versionID:
+        type: integer
+        x-nullable: true
+      type:
+        type: string
+        enum:
+          - build
+          - update
+          - reboot
+          - getVersions
+          - pullFirmware
+    required:
+      - stationID
+      - type
+  
+  BuildScript:
+    type: object
+    properties:
+      id:
+        type: integer
+      stationID:
+        type: integer
+      name:
+        type: string
+      commangs:
+        type: array
+        items: 
+          type: string
+    required:
+      - id
+      - stationID
+      - name
+      - commangs
+  
+  SetBuildScript:
+    type: object
+    properties:
+      stationID:
+        type: integer
+      copyFromStationID:
+        type: integer
+        x-nullable: true
+      name:
+        type: string
+      commangs:
+        type: array
+        items:
+          type: string
+    required:
+      - stationID
+      - name
+      - commangs
 
 consumes:
   - application/json
@@ -2636,5 +2773,251 @@ paths:
           description: hash not found
         400:
           description: Bad Request
+        500:
+          description: Internal error
+  
+  /public-key:
+    get:
+      operationId: "getPublicKey"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/PublicKey'
+        500:
+          description: Internal error
+  
+  /stations/{id}/firmware-versions:
+    get:
+      operationId: "getStationFirmwareVersions"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/FirmwareVersion'
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+  
+  /stations/{id}/firmware-versions/copy-to/{toID}:
+    post:
+      operationId: "firmwareVersionsCopy"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+        - name: toID
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+      responses:
+        204:
+          description: OK
+        400:
+          description: Bad Request
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+
+
+  /tasks:
+    get:
+      operationId: "getListTasks"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: stationID
+          required: false
+          in: query
+          type: integer
+          minimum: 1
+          x-nullable: true
+        - name: status
+          required: false
+          in: query
+          type: string
+          x-nullable: true
+          enum:
+            - queue
+            - started
+            - completed
+            - error
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/Task'
+        401:
+          description: PIN is missing or invalid
+        500:
+          description: Internal error
+    post:
+      operationId: "createTask"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/CreateTask'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Task'
+        400:
+          description: Bad Request
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+  
+  /tasks/{id}:
+    get:
+      operationId: "getTask"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Task'
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+    delete:
+      operationId: "deleteTask"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+      responses:
+        204:
+          description: OK
+        400:
+          description: Bad Request
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+  
+  /build-scripts:
+    get:
+      operationId: "getListBuildScripts"
+      security:
+        - pinCode: [ ]
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/BuildScript'
+        401:
+          description: PIN is missing or invalid
+        500:
+          description: Internal error
+    post:
+      operationId: "setBuildScript"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/SetBuildScript'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/BuildScript'
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+  
+  /build-scripts/{id}:
+    get:
+      operationId: "getBuildScript"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/BuildScript'
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+    delete:
+      operationId: "deleteBuildScript"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+      responses:
+        204:
+          description: OK
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
         500:
           description: Internal error

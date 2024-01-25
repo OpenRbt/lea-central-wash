@@ -334,6 +334,7 @@ func (t *DB) RefreshMotorStatsDates() (err error) {
 func (t *DB) DeleteConfigString(name string) error {
 	return nil
 }
+
 func (t *DB) Collections() ([]app.CollectionReport, error) {
 	return nil, nil
 }
@@ -343,6 +344,51 @@ func (t *DB) CollectionSetSended(int) error {
 func (t *DB) MoneyReports() ([]app.MngtMoneyReport, error) {
 	return nil, nil
 }
+
 func (t *DB) MoneyReportSetSended(int) error {
+	return nil
+}
+
+func (r *DB) GetListBuildScripts() ([]app.BuildScript, error) {
+	return nil, nil
+}
+
+func (r *DB) GetBuildScript(id int) (app.BuildScript, error) {
+	return app.BuildScript{}, nil
+}
+
+func (r *DB) GetBuildScriptByStationID(app.StationID) (app.BuildScript, error) {
+	return app.BuildScript{}, nil
+}
+
+func (r *DB) CreateBuildScript(createBuildScript app.SetBuildScript) (app.BuildScript, error) {
+	return app.BuildScript{}, nil
+}
+
+func (r *DB) UpdateBuildScript(id int, updateBuildScript app.SetBuildScript) (app.BuildScript, error) {
+	return app.BuildScript{}, nil
+}
+
+func (r *DB) DeleteBuildScript(id int) error {
+	return nil
+}
+
+func (r *DB) GetTask(id int) (app.Task, error) {
+	return app.Task{}, nil
+}
+
+func (r *DB) GetListTasks(filter app.GetListTasksFilter) ([]app.Task, error) {
+	return nil, nil
+}
+
+func (r *DB) CreateTask(createTask app.CreateTask) (app.Task, error) {
+	return app.Task{}, nil
+}
+
+func (r *DB) UpdateTask(id int, updateTask app.UpdateTask) (app.Task, error) {
+	return app.Task{}, nil
+}
+
+func (r *DB) DeleteTask(id int) error {
 	return nil
 }

@@ -43,6 +43,20 @@ var (
 		CreatedAt:        mustParseTime("2023-11-20T03:01:00Z"),
 		UpdatedAt:        mustParseTime("2023-11-20T03:02:00Z"),
 	}
+
+	testBuildScript = app.SetBuildScript{
+		StationID: 1,
+		Name:      "1",
+		Commands:  []string{"1", "2", "3"},
+	}
+
+	versionID = 1
+
+	testCreateTask = app.CreateTask{
+		StationID: 1,
+		VersionID: &versionID,
+		Type:      app.GetVersionsTaskType,
+	}
 )
 
 func addTestData(t *check.C) {
@@ -50,5 +64,4 @@ func addTestData(t *check.C) {
 		err := testRepo.AddStation("Station" + strconv.Itoa(i))
 		t.Nil(err)
 	}
-
 }

@@ -166,6 +166,32 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) (Statio
 		bonusSystemActive = a.isServiceAvailableForStation(id, status)
 	}
 
+	if oldStation.Versions == nil {
+		tasks, err := a.repo.GetListTasks(GetListTasksFilter{
+			StationID:  &id,
+			OnlyActive: true,
+		})
+		if err != nil {
+			log.PrintErr("Error getting list of tasks for station %d: %s", id, err.Error())
+			return oldStation, bonusSystemActive
+		}
+
+		for _, task := range tasks {
+			if task.Type == GetVersionsTaskType {
+				return oldStation, bonusSystemActive
+			}
+		}
+
+		_, err = a.repo.CreateTask(CreateTask{
+			StationID: id,
+			Type:      GetVersionsTaskType,
+		})
+		if err != nil {
+			log.PrintErr("Error when creating a task to get versions from station %d: %s", id, err.Error())
+			return oldStation, bonusSystemActive
+		}
+	}
+
 	return oldStation, bonusSystemActive
 }
 

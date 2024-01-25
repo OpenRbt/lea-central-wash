@@ -95,6 +95,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.CreateSessionNotImplemented()
 		})
 	}
+	if api.CreateTaskHandler == nil {
+		api.CreateTaskHandler = op.CreateTaskHandlerFunc(func(params op.CreateTaskParams, principal *storageapi.Profile) op.CreateTaskResponder {
+			return op.CreateTaskNotImplemented()
+		})
+	}
 	if api.CreateUserHandler == nil {
 		api.CreateUserHandler = op.CreateUserHandlerFunc(func(params op.CreateUserParams, principal *storageapi.Profile) op.CreateUserResponder {
 			return op.CreateUserNotImplemented()
@@ -108,6 +113,16 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.DelStationHandler == nil {
 		api.DelStationHandler = op.DelStationHandlerFunc(func(params op.DelStationParams) op.DelStationResponder {
 			return op.DelStationNotImplemented()
+		})
+	}
+	if api.DeleteBuildScriptHandler == nil {
+		api.DeleteBuildScriptHandler = op.DeleteBuildScriptHandlerFunc(func(params op.DeleteBuildScriptParams, principal *storageapi.Profile) op.DeleteBuildScriptResponder {
+			return op.DeleteBuildScriptNotImplemented()
+		})
+	}
+	if api.DeleteTaskHandler == nil {
+		api.DeleteTaskHandler = op.DeleteTaskHandlerFunc(func(params op.DeleteTaskParams, principal *storageapi.Profile) op.DeleteTaskResponder {
+			return op.DeleteTaskNotImplemented()
 		})
 	}
 	if api.DeleteUserHandler == nil {
@@ -130,6 +145,16 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.EndSessionNotImplemented()
 		})
 	}
+	if api.FirmwareVersionsCopyHandler == nil {
+		api.FirmwareVersionsCopyHandler = op.FirmwareVersionsCopyHandlerFunc(func(params op.FirmwareVersionsCopyParams, principal *storageapi.Profile) op.FirmwareVersionsCopyResponder {
+			return op.FirmwareVersionsCopyNotImplemented()
+		})
+	}
+	if api.GetBuildScriptHandler == nil {
+		api.GetBuildScriptHandler = op.GetBuildScriptHandlerFunc(func(params op.GetBuildScriptParams, principal *storageapi.Profile) op.GetBuildScriptResponder {
+			return op.GetBuildScriptNotImplemented()
+		})
+	}
 	if api.GetConfigVarBoolHandler == nil {
 		api.GetConfigVarBoolHandler = op.GetConfigVarBoolHandlerFunc(func(params op.GetConfigVarBoolParams, principal *storageapi.Profile) op.GetConfigVarBoolResponder {
 			return op.GetConfigVarBoolNotImplemented()
@@ -145,9 +170,24 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.GetConfigVarStringNotImplemented()
 		})
 	}
+	if api.GetListBuildScriptsHandler == nil {
+		api.GetListBuildScriptsHandler = op.GetListBuildScriptsHandlerFunc(func(params op.GetListBuildScriptsParams, principal *storageapi.Profile) op.GetListBuildScriptsResponder {
+			return op.GetListBuildScriptsNotImplemented()
+		})
+	}
+	if api.GetListTasksHandler == nil {
+		api.GetListTasksHandler = op.GetListTasksHandlerFunc(func(params op.GetListTasksParams, principal *storageapi.Profile) op.GetListTasksResponder {
+			return op.GetListTasksNotImplemented()
+		})
+	}
 	if api.GetPingHandler == nil {
 		api.GetPingHandler = op.GetPingHandlerFunc(func(params op.GetPingParams) op.GetPingResponder {
 			return op.GetPingNotImplemented()
+		})
+	}
+	if api.GetPublicKeyHandler == nil {
+		api.GetPublicKeyHandler = op.GetPublicKeyHandlerFunc(func(params op.GetPublicKeyParams) op.GetPublicKeyResponder {
+			return op.GetPublicKeyNotImplemented()
 		})
 	}
 	if api.GetServerInfoHandler == nil {
@@ -175,6 +215,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.GetStationDiscountsNotImplemented()
 		})
 	}
+	if api.GetStationFirmwareVersionsHandler == nil {
+		api.GetStationFirmwareVersionsHandler = op.GetStationFirmwareVersionsHandlerFunc(func(params op.GetStationFirmwareVersionsParams, principal *storageapi.Profile) op.GetStationFirmwareVersionsResponder {
+			return op.GetStationFirmwareVersionsNotImplemented()
+		})
+	}
 	if api.GetStationWashConfigVarBoolHandler == nil {
 		api.GetStationWashConfigVarBoolHandler = op.GetStationWashConfigVarBoolHandlerFunc(func(params op.GetStationWashConfigVarBoolParams) op.GetStationWashConfigVarBoolResponder {
 			return op.GetStationWashConfigVarBoolNotImplemented()
@@ -188,6 +233,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.GetStationWashConfigVarStringHandler == nil {
 		api.GetStationWashConfigVarStringHandler = op.GetStationWashConfigVarStringHandlerFunc(func(params op.GetStationWashConfigVarStringParams) op.GetStationWashConfigVarStringResponder {
 			return op.GetStationWashConfigVarStringNotImplemented()
+		})
+	}
+	if api.GetTaskHandler == nil {
+		api.GetTaskHandler = op.GetTaskHandlerFunc(func(params op.GetTaskParams, principal *storageapi.Profile) op.GetTaskResponder {
+			return op.GetTaskNotImplemented()
 		})
 	}
 	if api.GetUserHandler == nil {
@@ -308,6 +358,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 	if api.SetBonusesHandler == nil {
 		api.SetBonusesHandler = op.SetBonusesHandlerFunc(func(params op.SetBonusesParams) op.SetBonusesResponder {
 			return op.SetBonusesNotImplemented()
+		})
+	}
+	if api.SetBuildScriptHandler == nil {
+		api.SetBuildScriptHandler = op.SetBuildScriptHandlerFunc(func(params op.SetBuildScriptParams, principal *storageapi.Profile) op.SetBuildScriptResponder {
+			return op.SetBuildScriptNotImplemented()
 		})
 	}
 	if api.SetCardReaderConfigHandler == nil {
