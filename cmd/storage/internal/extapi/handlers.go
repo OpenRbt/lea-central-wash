@@ -1208,6 +1208,18 @@ func (svc *service) deleteTask(params op.DeleteTaskParams, auth *app.Auth) op.De
 	}
 }
 
+func (svc *service) deleteTasks(params op.DeleteTasksParams, auth *app.Auth) op.DeleteTasksResponder {
+	err := svc.app.DeleteTasks()
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewDeleteTasksNoContent()
+	default:
+		log.PrintErr(err)
+		return op.NewDeleteTasksInternalServerError()
+	}
+}
+
 func (svc *service) createTask(params op.CreateTaskParams, auth *app.Auth) op.CreateTaskResponder {
 	task, err := svc.app.CreateTask(appCreateTask(*params.Args))
 

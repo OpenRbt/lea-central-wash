@@ -3025,6 +3025,25 @@ func init() {
             "description": "Internal error"
           }
         }
+      },
+      "delete": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "deleteTasks",
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
       }
     },
     "/tasks/{id}": {
@@ -7531,6 +7550,25 @@ func init() {
           },
           "404": {
             "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "deleteTasks",
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
           },
           "500": {
             "description": "Internal error"

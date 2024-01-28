@@ -89,6 +89,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		DeleteTaskHandler: DeleteTaskHandlerFunc(func(params DeleteTaskParams, principal *storageapi.Profile) DeleteTaskResponder {
 			return DeleteTaskNotImplemented()
 		}),
+		DeleteTasksHandler: DeleteTasksHandlerFunc(func(params DeleteTasksParams, principal *storageapi.Profile) DeleteTasksResponder {
+			return DeleteTasksNotImplemented()
+		}),
 		DeleteUserHandler: DeleteUserHandlerFunc(func(params DeleteUserParams, principal *storageapi.Profile) DeleteUserResponder {
 			return DeleteUserNotImplemented()
 		}),
@@ -388,6 +391,8 @@ type StorageAPI struct {
 	DeleteBuildScriptHandler DeleteBuildScriptHandler
 	// DeleteTaskHandler sets the operation handler for the delete task operation
 	DeleteTaskHandler DeleteTaskHandler
+	// DeleteTasksHandler sets the operation handler for the delete tasks operation
+	DeleteTasksHandler DeleteTasksHandler
 	// DeleteUserHandler sets the operation handler for the delete user operation
 	DeleteUserHandler DeleteUserHandler
 	// DispenserStopHandler sets the operation handler for the dispenser stop operation
@@ -659,6 +664,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.DeleteTaskHandler == nil {
 		unregistered = append(unregistered, "DeleteTaskHandler")
+	}
+	if o.DeleteTasksHandler == nil {
+		unregistered = append(unregistered, "DeleteTasksHandler")
 	}
 	if o.DeleteUserHandler == nil {
 		unregistered = append(unregistered, "DeleteUserHandler")
@@ -1038,6 +1046,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/tasks/{id}"] = NewDeleteTask(o.context, o.DeleteTaskHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/tasks"] = NewDeleteTasks(o.context, o.DeleteTasksHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}

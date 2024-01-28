@@ -220,6 +220,7 @@ type (
 		GetListTasks(filter GetListTasksFilter) ([]Task, error)
 		GetTask(id int) (Task, error)
 		DeleteTask(id int) error
+		DeleteTasks() error
 		CreateTask(createTask CreateTask) (Task, error)
 		GetListBuildScripts() ([]BuildScript, error)
 		GetBuildScript(id int) (BuildScript, error)

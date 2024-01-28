@@ -234,6 +234,24 @@ func (a *app) DeleteTask(id int) error {
 	return a.repo.DeleteTask(id)
 }
 
+func (a *app) DeleteTasks() error {
+	tasks, err := a.repo.GetListTasks(GetListTasksFilter{})
+	if err != nil {
+		return err
+	}
+
+	for _, v := range tasks {
+		if v.Status == ErrorTaskStatus || v.Status == CompletedTaskStatus || v.Status == CanceledTaskStatus {
+			err = a.repo.DeleteTask(v.ID)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
 func (a *app) CreateTask(createTask CreateTask) (Task, error) {
 	a.stationsMutex.RLock()
 	defer a.stationsMutex.RUnlock()
