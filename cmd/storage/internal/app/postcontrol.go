@@ -105,13 +105,11 @@ func copyFilesToLcw(client *sftp.Client, remotePath, localPath string) error {
 func copyFilesToOw(client *sftp.Client, localPath, remotePath string) error {
 	localFiles, err := os.ReadDir(localPath)
 	if err != nil {
-		log.PrintErr(fmt.Sprintf("1: %s, %s, %s", err.Error(), localPath, remotePath))
 		return err
 	}
 
 	err = client.MkdirAll(remotePath)
 	if err != nil {
-		log.PrintErr(fmt.Sprintf("2: %s, %s, %s", err.Error(), localPath, remotePath))
 		return err
 	}
 
@@ -122,27 +120,28 @@ func copyFilesToOw(client *sftp.Client, localPath, remotePath string) error {
 		if localFile.IsDir() {
 			err := copyFilesToOw(client, localFilePath, remoteFilePath)
 			if err != nil {
-				log.PrintErr(fmt.Sprintf("3: %s, %s, %s", err.Error(), localFilePath, remoteFilePath))
 				return err
 			}
 		} else {
 			srcFile, err := os.Open(localFilePath)
 			if err != nil {
-				log.PrintErr(fmt.Sprintf("4: %s, %s, %s", err.Error(), localFilePath, remoteFilePath))
 				return err
 			}
 			defer srcFile.Close()
 
 			dstFile, err := client.Create(remoteFilePath)
 			if err != nil {
-				log.PrintErr(fmt.Sprintf("5: %s, %s, %s", err.Error(), localFilePath, remoteFilePath))
 				return err
 			}
 			defer dstFile.Close()
 
 			_, err = io.Copy(dstFile, srcFile)
 			if err != nil {
-				log.PrintErr(fmt.Sprintf("6: %s, %s, %s", err.Error(), localFilePath, remoteFilePath))
+				return err
+			}
+
+			err = dstFile.Chmod(os.ModePerm)
+			if err != nil {
 				return err
 			}
 		}
