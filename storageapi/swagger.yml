@@ -736,6 +736,26 @@ definitions:
       - stationID
       - type
   
+  CreateTaskByHash:
+    type: object
+    properties:
+      hash:
+        type: string
+      versionID:
+        type: integer
+        x-nullable: true
+      type:
+        type: string
+        enum:
+          - build
+          - update
+          - reboot
+          - getVersions
+          - pullFirmware
+    required:
+      - hash
+      - type
+  
   BuildScript:
     type: object
     properties:
@@ -2907,6 +2927,27 @@ paths:
           description: OK
         401:
           description: PIN is missing or invalid
+        500:
+          description: Internal error
+  
+  /tasks/create-by-hash:
+    post:
+      operationId: "createTaskByHash"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/CreateTaskByHash'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Task'
+        400:
+          description: Bad Request
+        404:
+          description: Not found
         500:
           description: Internal error
   

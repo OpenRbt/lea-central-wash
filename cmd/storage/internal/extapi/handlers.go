@@ -1236,6 +1236,33 @@ func (svc *service) createTask(params op.CreateTaskParams, auth *app.Auth) op.Cr
 	}
 }
 
+func (svc *service) createTaskByHash(params op.CreateTaskByHashParams) op.CreateTaskByHashResponder {
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		return op.NewCreateTaskByHashNotFound()
+	}
+
+	s := int64(stationID)
+
+	task, err := svc.app.CreateTask(appCreateTask(model.CreateTask{
+		StationID: &s,
+		Type:      params.Args.Type,
+		VersionID: params.Args.VersionID,
+	}))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewCreateTaskByHashOK().WithPayload(apiTask(task))
+	case app.ErrNotFound:
+		return op.NewCreateTaskByHashNotFound()
+	case app.ErrWrongParameter:
+		return op.NewCreateTaskByHashBadRequest()
+	default:
+		log.PrintErr(err)
+		return op.NewCreateTaskByHashInternalServerError()
+	}
+}
+
 func (svc *service) getListBuildScripts(params op.GetListBuildScriptsParams, auth *app.Auth) op.GetListBuildScriptsResponder {
 	buildScripts, err := svc.app.GetListBuildScripts()
 

@@ -100,6 +100,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.CreateTaskNotImplemented()
 		})
 	}
+	if api.CreateTaskByHashHandler == nil {
+		api.CreateTaskByHashHandler = op.CreateTaskByHashHandlerFunc(func(params op.CreateTaskByHashParams) op.CreateTaskByHashResponder {
+			return op.CreateTaskByHashNotImplemented()
+		})
+	}
 	if api.CreateUserHandler == nil {
 		api.CreateUserHandler = op.CreateUserHandlerFunc(func(params op.CreateUserParams, principal *storageapi.Profile) op.CreateUserResponder {
 			return op.CreateUserNotImplemented()

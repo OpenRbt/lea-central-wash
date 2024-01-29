@@ -74,6 +74,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		CreateTaskHandler: CreateTaskHandlerFunc(func(params CreateTaskParams, principal *storageapi.Profile) CreateTaskResponder {
 			return CreateTaskNotImplemented()
 		}),
+		CreateTaskByHashHandler: CreateTaskByHashHandlerFunc(func(params CreateTaskByHashParams) CreateTaskByHashResponder {
+			return CreateTaskByHashNotImplemented()
+		}),
 		CreateUserHandler: CreateUserHandlerFunc(func(params CreateUserParams, principal *storageapi.Profile) CreateUserResponder {
 			return CreateUserNotImplemented()
 		}),
@@ -381,6 +384,8 @@ type StorageAPI struct {
 	CreateSessionHandler CreateSessionHandler
 	// CreateTaskHandler sets the operation handler for the create task operation
 	CreateTaskHandler CreateTaskHandler
+	// CreateTaskByHashHandler sets the operation handler for the create task by hash operation
+	CreateTaskByHashHandler CreateTaskByHashHandler
 	// CreateUserHandler sets the operation handler for the create user operation
 	CreateUserHandler CreateUserHandler
 	// DelAdvertisingCampaignHandler sets the operation handler for the del advertising campaign operation
@@ -649,6 +654,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.CreateTaskHandler == nil {
 		unregistered = append(unregistered, "CreateTaskHandler")
+	}
+	if o.CreateTaskByHashHandler == nil {
+		unregistered = append(unregistered, "CreateTaskByHashHandler")
 	}
 	if o.CreateUserHandler == nil {
 		unregistered = append(unregistered, "CreateUserHandler")
@@ -1026,6 +1034,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/tasks"] = NewCreateTask(o.context, o.CreateTaskHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/tasks/create-by-hash"] = NewCreateTaskByHash(o.context, o.CreateTaskByHashHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

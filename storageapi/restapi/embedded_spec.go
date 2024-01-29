@@ -3046,6 +3046,38 @@ func init() {
         }
       }
     },
+    "/tasks/create-by-hash": {
+      "post": {
+        "operationId": "createTaskByHash",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTaskByHash"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/tasks/{id}": {
       "get": {
         "security": [
@@ -3771,6 +3803,32 @@ func init() {
       "properties": {
         "stationID": {
           "type": "integer"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "build",
+            "update",
+            "reboot",
+            "getVersions",
+            "pullFirmware"
+          ]
+        },
+        "versionID": {
+          "type": "integer",
+          "x-nullable": true
+        }
+      }
+    },
+    "CreateTaskByHash": {
+      "type": "object",
+      "required": [
+        "hash",
+        "type"
+      ],
+      "properties": {
+        "hash": {
+          "type": "string"
         },
         "type": {
           "type": "string",
@@ -7576,6 +7634,38 @@ func init() {
         }
       }
     },
+    "/tasks/create-by-hash": {
+      "post": {
+        "operationId": "createTaskByHash",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTaskByHash"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/tasks/{id}": {
       "get": {
         "security": [
@@ -8314,6 +8404,32 @@ func init() {
       "properties": {
         "stationID": {
           "type": "integer"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "build",
+            "update",
+            "reboot",
+            "getVersions",
+            "pullFirmware"
+          ]
+        },
+        "versionID": {
+          "type": "integer",
+          "x-nullable": true
+        }
+      }
+    },
+    "CreateTaskByHash": {
+      "type": "object",
+      "required": [
+        "hash",
+        "type"
+      ],
+      "properties": {
+        "hash": {
+          "type": "string"
         },
         "type": {
           "type": "string",
