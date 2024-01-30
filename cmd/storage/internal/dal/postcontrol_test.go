@@ -118,12 +118,12 @@ func TestCreateTask(tt *testing.T) {
 	task, err := testRepo.CreateTask(testCreateTask)
 	t.Nil(err)
 	t.Equal(task.StationID, testCreateTask.StationID)
-	t.Equal(task.VersionID, testCreateTask.VersionID)
-	t.Equal(task.Type, task.Type)
+	t.Equal(task.Type, testCreateTask.Type)
 	t.Equal(task.Status, app.QueueTaskStatus)
-	t.Equal(task.Error, nil)
-	t.Equal(task.StartedAt, nil)
-	t.Equal(task.StoppedAt, nil)
+	t.Equal(task.VersionID, testCreateTask.VersionID)
+	t.Nil(task.Error)
+	t.Nil(task.StartedAt)
+	t.Nil(task.StoppedAt)
 }
 
 func TestGetTask(tt *testing.T) {
@@ -151,8 +151,8 @@ func TestUpdateTask(tt *testing.T) {
 
 	status := app.StartedTaskStatus
 	errMsg := "error"
-	startedAt := time.Now()
-	stoppedAt := time.Now()
+	startedAt := time.Now().Truncate(time.Millisecond)
+	stoppedAt := time.Now().Truncate(time.Millisecond)
 	updateTask := app.UpdateTask{
 		Status:    &status,
 		Error:     &errMsg,
@@ -163,7 +163,7 @@ func TestUpdateTask(tt *testing.T) {
 	task.Status = status
 	task.Error = &errMsg
 	task.StartedAt = &startedAt
-	task.StartedAt = &stoppedAt
+	task.StoppedAt = &stoppedAt
 
 	updatedTask, err := testRepo.UpdateTask(task.ID, updateTask)
 	t.Nil(err)
