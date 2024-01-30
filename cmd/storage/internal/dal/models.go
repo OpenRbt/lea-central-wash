@@ -428,6 +428,8 @@ func appTaskType(taskType TaskType) app.TaskType {
 		return app.GetVersionsTaskType
 	case PullFirmwareTaskType:
 		return app.PullFirmwareTaskType
+	case SetVersionTaskType:
+		return app.SetVersionTaskType
 	default:
 		panic("Unknown task type: " + taskType)
 	}
@@ -462,6 +464,8 @@ func dalTaskType(taskType app.TaskType) TaskType {
 		return GetVersionsTaskType
 	case app.PullFirmwareTaskType:
 		return PullFirmwareTaskType
+	case app.SetVersionTaskType:
+		return SetVersionTaskType
 	default:
 		panic("Unknown task type: " + taskType)
 	}

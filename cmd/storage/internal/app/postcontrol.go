@@ -259,8 +259,8 @@ func (a *app) CreateTask(createTask CreateTask) (Task, error) {
 		return Task{}, ErrNotFound
 	}
 
-	if createTask.VersionID != nil && createTask.Type != PullFirmwareTaskType ||
-		createTask.VersionID == nil && createTask.Type == PullFirmwareTaskType {
+	if createTask.VersionID != nil && (createTask.Type != PullFirmwareTaskType && createTask.Type != SetVersionTaskType) ||
+		createTask.VersionID == nil && (createTask.Type == PullFirmwareTaskType || createTask.Type == SetVersionTaskType) {
 		return Task{}, ErrWrongParameter
 	}
 
@@ -441,6 +441,8 @@ func (a *app) runTask(task Task) {
 		a.runGetVersions(task)
 	case PullFirmwareTaskType:
 		a.runPullFirmware(task)
+	case SetVersionTaskType:
+		a.runSetVersion(task)
 	default:
 		panic("Unknown task type: " + task.Type)
 	}
@@ -682,6 +684,27 @@ func (a *app) runGetVersions(task Task) {
 	}
 	defer sftpClient.Close()
 
+	homeOwPath, err := sftpClient.Getwd()
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error geting home path: %s", err.Error()))
+		return
+	}
+
+	currentVersion := 0
+	linkPath := path.Join(homeOwPath, currentWashName)
+	currentWashPath, err := sftpClient.ReadLink(linkPath)
+	if err != nil && !os.IsNotExist(err) {
+		a.handleTaskErr(task, fmt.Sprintf("Error geting current wash dir name: %s", err.Error()))
+		return
+	}
+	if !os.IsNotExist(err) {
+		currentVersion, err = strconv.Atoi(path.Base(currentWashPath)[5:])
+		if err != nil {
+			a.handleTaskErr(task, fmt.Sprintf("Error parsing current version: %s", err.Error()))
+			return
+		}
+	}
+
 	directories, err := getVersionsDirNames(client)
 	versions := make([]FirmwareVersion, 0)
 
@@ -712,7 +735,7 @@ func (a *app) runGetVersions(task Task) {
 			return
 		}
 
-		versions = append(versions, firmwareVersionFromJson(v, version))
+		versions = append(versions, firmwareVersionFromJson(v, v == currentVersion, version))
 	}
 
 	a.stationsMutex.Lock()
@@ -852,44 +875,9 @@ func (a *app) runUpdate(task Task) {
 		return
 	}
 
-	runsh, err := sftpClient.Open(path.Join(homeOwPath, runshName))
+	err = sftpClient.Symlink(washDir, path.Join(homeOwPath, currentWashName))
 	if err != nil {
-		a.handleTaskErr(task, fmt.Sprintf("Error opening file run.sh: %s", err.Error()))
-		return
-	}
-
-	text, err := io.ReadAll(runsh)
-	if err != nil {
-		a.handleTaskErr(task, fmt.Sprintf("Error reading file run.sh: %s", err.Error()))
-		return
-	}
-
-	err = runsh.Close()
-	if err != nil {
-		a.handleTaskErr(task, fmt.Sprintf("Error closing file run.sh: %s", err.Error()))
-		return
-	}
-
-	lines := strings.Split(string(text), "\n")
-	if len(lines) < 2 {
-		a.handleTaskErr(task, fmt.Sprintf("Error: file run.sh contains less than two lines"))
-		return
-	}
-
-	lines[1] = fmt.Sprintf(cdFirmwareCommand, washDir)
-
-	text = []byte(strings.Join(lines, "\n"))
-
-	runsh, err = sftpClient.Create(path.Join(homeOwPath, runshName))
-	if err != nil {
-		a.handleTaskErr(task, fmt.Sprintf("Error opening file run.sh: %s", err.Error()))
-		return
-	}
-	defer runsh.Close()
-
-	_, err = runsh.Write(text)
-	if err != nil {
-		a.handleTaskErr(task, fmt.Sprintf("Error writing file run.sh: %s", err.Error()))
+		a.handleTaskErr(task, fmt.Sprintf("Error creating a link to the current directory: %s", err.Error()))
 		return
 	}
 
@@ -914,6 +902,53 @@ func (a *app) runReboot(task Task) {
 	if err != nil {
 		log.PrintErr(string(res))
 		a.handleTaskErr(task, fmt.Sprintf("Error executing reboot command: %s", err.Error()))
+		return
+	}
+
+	a.compliteTask(task)
+}
+
+func (a *app) runSetVersion(task Task) {
+	task, ip, err := a.prepareTask(task)
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error preparing the task: %s", err.Error()))
+		return
+	}
+
+	client, err := sshClient(a.postControlConfig.KeySSHPath, a.postControlConfig.UserSSH, ip)
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error creating ssh client: %s", err.Error()))
+		return
+	}
+	defer client.Close()
+
+	sftpClient, err := sftp.NewClient(client)
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error creating sftp client: %s", err.Error()))
+		return
+	}
+	defer sftpClient.Close()
+
+	homeOwPath, err := sftpClient.Getwd()
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error geting home path: %s", err.Error()))
+		return
+	}
+
+	remotePath := path.Join(homeOwPath, fmt.Sprintf("wash_%d", *task.VersionID))
+	_, err = sftpClient.Stat(remotePath)
+	if err != nil && !os.IsNotExist(err) {
+		a.handleTaskErr(task, fmt.Sprintf("Error checking file existence %s: %s", remotePath, err.Error()))
+		return
+	}
+	if os.IsNotExist(err) {
+		a.handleTaskErr(task, "Error: the specified firmware version does not exist")
+		return
+	}
+
+	err = sftpClient.Symlink(remotePath, path.Join(homeOwPath, currentWashName))
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error creating a link to the current directory: %s", err.Error()))
 		return
 	}
 

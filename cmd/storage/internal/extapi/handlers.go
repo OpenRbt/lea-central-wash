@@ -1243,7 +1243,6 @@ func (svc *service) createTaskByHash(params op.CreateTaskByHashParams) op.Create
 	}
 
 	s := int64(stationID)
-
 	task, err := svc.app.CreateTask(appCreateTask(model.CreateTask{
 		StationID: &s,
 		Type:      params.Args.Type,

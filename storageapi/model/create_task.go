@@ -27,7 +27,7 @@ type CreateTask struct {
 
 	// type
 	// Required: true
-	// Enum: [build update reboot getVersions pullFirmware]
+	// Enum: [build update reboot getVersions pullFirmware setVersion]
 	Type *string `json:"type"`
 
 	// version ID
@@ -44,7 +44,7 @@ func (m *CreateTask) UnmarshalJSON(data []byte) error {
 
 		// type
 		// Required: true
-		// Enum: [build update reboot getVersions pullFirmware]
+		// Enum: [build update reboot getVersions pullFirmware setVersion]
 		Type *string `json:"type"`
 
 		// version ID
@@ -94,7 +94,7 @@ var createTaskTypeTypePropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["build","update","reboot","getVersions","pullFirmware"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["build","update","reboot","getVersions","pullFirmware","setVersion"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -118,6 +118,9 @@ const (
 
 	// CreateTaskTypePullFirmware captures enum value "pullFirmware"
 	CreateTaskTypePullFirmware string = "pullFirmware"
+
+	// CreateTaskTypeSetVersion captures enum value "setVersion"
+	CreateTaskTypeSetVersion string = "setVersion"
 )
 
 // prop value enum

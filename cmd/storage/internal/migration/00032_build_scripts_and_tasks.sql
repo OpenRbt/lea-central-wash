@@ -8,7 +8,7 @@ CREATE TABLE public.build_scripts (
 	commands    TEXT   NOT NULL
 );
 
-CREATE TYPE TASK_TYPE_ENUM AS ENUM ('build', 'update', 'reboot', 'get_versions', 'pull_firmware');
+CREATE TYPE TASK_TYPE_ENUM AS ENUM ('build', 'update', 'reboot', 'get_versions', 'pull_firmware', 'set_version');
 CREATE TYPE TASK_STATUS_ENUM AS ENUM ('queue', 'started', 'completed', 'error');
 
 CREATE TABLE public.tasks (

@@ -650,6 +650,9 @@ definitions:
     properties:
       id:
         type: integer
+      isCurrent:
+        type:
+          boolean
       hashLua:
         type: string
       hashEnv:
@@ -664,6 +667,7 @@ definitions:
         format: date-time
     required:
       - id
+      - isCurrent
       - hashLua
       - hashEnv
       - hashBinar
@@ -688,6 +692,7 @@ definitions:
           - reboot
           - getVersions
           - pullFirmware
+          - setVersion
       status:
         type: string
         enum:
@@ -732,6 +737,7 @@ definitions:
           - reboot
           - getVersions
           - pullFirmware
+          - setVersion
     required:
       - stationID
       - type
@@ -752,6 +758,7 @@ definitions:
           - reboot
           - getVersions
           - pullFirmware
+          - setVersion
     required:
       - hash
       - type

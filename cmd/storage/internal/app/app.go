@@ -47,7 +47,7 @@ const (
 	openwashingLcwName = "openwashing"
 	binarName          = "firmware.exe"
 	versionName        = "versions.json"
-	runshName          = "run.sh"
+	currentWashName    = "current_wash"
 	binarOwPath        = "openwashing/software/v1-enlight/firmware.exe"
 
 	cloneRepositoryLcwCommand        = "git clone https://github.com/OpenRbt/openwashing.git ~/openwashing"
@@ -64,7 +64,6 @@ const (
 	pullRepositoryOwCommand  = "cd ~/openwashing && git pull"
 	makeBinarOwCommand       = "cd ~/openwashing/software/v1-enlight && make"
 	findVersionsOwCommand    = "find ~/ -maxdepth 1 -type d -name \"wash_*\""
-	cdFirmwareCommand        = "cd %s"
 	rebootOwCommand          = "sudo shutdown -r +1"
 )
 

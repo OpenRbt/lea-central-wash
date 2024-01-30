@@ -600,6 +600,8 @@ func appTaskType(taskType string) app.TaskType {
 		return app.GetVersionsTaskType
 	case "pullFirmware":
 		return app.PullFirmwareTaskType
+	case "setVersion":
+		return app.SetVersionTaskType
 	default:
 		panic("Unknown task type: " + taskType)
 	}
@@ -698,6 +700,7 @@ func apiFirmwareVersion(version app.FirmwareVersion) *model.FirmwareVersion {
 	id := int64(version.ID)
 	return &model.FirmwareVersion{
 		ID:         &id,
+		IsCurrent:  &version.IsCurrent,
 		BuiltAt:    (*strfmt.DateTime)(&version.BuiltAt),
 		CommitedAt: (*strfmt.DateTime)(&version.CommitedAt),
 		HashBinar:  &version.HashBinar,

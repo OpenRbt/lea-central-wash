@@ -1380,6 +1380,7 @@ const (
 	RebootTaskType       TaskType = "reboot"
 	GetVersionsTaskType  TaskType = "get_versions"
 	PullFirmwareTaskType TaskType = "pull_firmware"
+	SetVersionTaskType   TaskType = "set_version"
 
 	QueueTaskStatus     TaskStatus = "queue"
 	StartedTaskStatus   TaskStatus = "started"

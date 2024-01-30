@@ -274,6 +274,7 @@ const (
 	RebootTaskType       TaskType = "reboot"
 	GetVersionsTaskType  TaskType = "getVersions"
 	PullFirmwareTaskType TaskType = "pullFirmware"
+	SetVersionTaskType   TaskType = "setVersion"
 
 	QueueTaskStatus     TaskStatus = "queue"
 	StartedTaskStatus   TaskStatus = "started"
@@ -323,6 +324,7 @@ type FirmwareVersionJson struct {
 
 type FirmwareVersion struct {
 	ID         int
+	IsCurrent  bool
 	HashLua    string
 	HashEnv    string
 	HashBinar  string
@@ -330,9 +332,10 @@ type FirmwareVersion struct {
 	CommitedAt time.Time
 }
 
-func firmwareVersionFromJson(id int, jsonVersion FirmwareVersionJson) FirmwareVersion {
+func firmwareVersionFromJson(id int, current bool, jsonVersion FirmwareVersionJson) FirmwareVersion {
 	return FirmwareVersion{
 		ID:         id,
+		IsCurrent:  current,
 		HashLua:    jsonVersion.HashLua,
 		HashEnv:    jsonVersion.HashEnv,
 		HashBinar:  jsonVersion.HashBinar,

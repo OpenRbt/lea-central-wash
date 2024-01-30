@@ -3811,7 +3811,8 @@ func init() {
             "update",
             "reboot",
             "getVersions",
-            "pullFirmware"
+            "pullFirmware",
+            "setVersion"
           ]
         },
         "versionID": {
@@ -3837,7 +3838,8 @@ func init() {
             "update",
             "reboot",
             "getVersions",
-            "pullFirmware"
+            "pullFirmware",
+            "setVersion"
           ]
         },
         "versionID": {
@@ -3861,6 +3863,7 @@ func init() {
       "type": "object",
       "required": [
         "id",
+        "isCurrent",
         "hashLua",
         "hashEnv",
         "hashBinar",
@@ -3887,6 +3890,9 @@ func init() {
         },
         "id": {
           "type": "integer"
+        },
+        "isCurrent": {
+          "type": "boolean"
         }
       }
     },
@@ -4563,7 +4569,8 @@ func init() {
             "update",
             "reboot",
             "getVersions",
-            "pullFirmware"
+            "pullFirmware",
+            "setVersion"
           ]
         },
         "versionID": {
@@ -8412,7 +8419,8 @@ func init() {
             "update",
             "reboot",
             "getVersions",
-            "pullFirmware"
+            "pullFirmware",
+            "setVersion"
           ]
         },
         "versionID": {
@@ -8438,7 +8446,8 @@ func init() {
             "update",
             "reboot",
             "getVersions",
-            "pullFirmware"
+            "pullFirmware",
+            "setVersion"
           ]
         },
         "versionID": {
@@ -8462,6 +8471,7 @@ func init() {
       "type": "object",
       "required": [
         "id",
+        "isCurrent",
         "hashLua",
         "hashEnv",
         "hashBinar",
@@ -8488,6 +8498,9 @@ func init() {
         },
         "id": {
           "type": "integer"
+        },
+        "isCurrent": {
+          "type": "boolean"
         }
       }
     },
@@ -9169,7 +9182,8 @@ func init() {
             "update",
             "reboot",
             "getVersions",
-            "pullFirmware"
+            "pullFirmware",
+            "setVersion"
           ]
         },
         "versionID": {

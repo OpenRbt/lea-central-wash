@@ -46,6 +46,10 @@ type FirmwareVersion struct {
 	// id
 	// Required: true
 	ID *int64 `json:"id"`
+
+	// is current
+	// Required: true
+	IsCurrent *bool `json:"isCurrent"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
@@ -77,6 +81,10 @@ func (m *FirmwareVersion) UnmarshalJSON(data []byte) error {
 		// id
 		// Required: true
 		ID *int64 `json:"id"`
+
+		// is current
+		// Required: true
+		IsCurrent *bool `json:"isCurrent"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -91,6 +99,7 @@ func (m *FirmwareVersion) UnmarshalJSON(data []byte) error {
 	m.HashEnv = props.HashEnv
 	m.HashLua = props.HashLua
 	m.ID = props.ID
+	m.IsCurrent = props.IsCurrent
 	return nil
 }
 
@@ -119,6 +128,10 @@ func (m *FirmwareVersion) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateIsCurrent(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -184,6 +197,15 @@ func (m *FirmwareVersion) validateHashLua(formats strfmt.Registry) error {
 func (m *FirmwareVersion) validateID(formats strfmt.Registry) error {
 
 	if err := validate.Required("id", "body", m.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *FirmwareVersion) validateIsCurrent(formats strfmt.Registry) error {
+
+	if err := validate.Required("isCurrent", "body", m.IsCurrent); err != nil {
 		return err
 	}
 
