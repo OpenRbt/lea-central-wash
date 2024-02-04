@@ -875,11 +875,55 @@ func (a *app) runUpdate(task Task) {
 		return
 	}
 
-	b, err := runRemoteCommand(client, fmt.Sprintf(cleateLink, washDir, path.Join(homeOwPath, currentWashName)))
-	log.Printf("Buff: %s", string(b))
+	linkPath := path.Join(homeOwPath, currentWashName)
+	_, err = runRemoteCommand(client, fmt.Sprintf(cleateLink, washDir, linkPath))
 	if err != nil {
 		a.handleTaskErr(task, fmt.Sprintf("Error creating link: %s", err.Error()))
 		return
+	}
+
+	runsh, err := sftpClient.Open(path.Join(homeOwPath, runshName))
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error opening file run.sh: %s", err.Error()))
+		return
+	}
+
+	text, err := io.ReadAll(runsh)
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error reading file run.sh: %s", err.Error()))
+		return
+	}
+
+	err = runsh.Close()
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error closing file run.sh: %s", err.Error()))
+		return
+	}
+
+	lines := strings.Split(string(text), "\n")
+	if len(lines) < 2 {
+		a.handleTaskErr(task, fmt.Sprintf("Error: file run.sh contains less than two lines"))
+		return
+	}
+
+	cdCommand := fmt.Sprintf(cdFirmwareRunshCommand, linkPath)
+	if lines[1] != cdCommand {
+
+		lines[1] = cdCommand
+		text = []byte(strings.Join(lines, "\n"))
+
+		runsh, err = sftpClient.Create(path.Join(homeOwPath, runshName))
+		if err != nil {
+			a.handleTaskErr(task, fmt.Sprintf("Error opening file run.sh: %s", err.Error()))
+			return
+		}
+		defer runsh.Close()
+
+		_, err = runsh.Write(text)
+		if err != nil {
+			a.handleTaskErr(task, fmt.Sprintf("Error writing file run.sh: %s", err.Error()))
+			return
+		}
 	}
 
 	a.compliteTask(task)
@@ -947,9 +991,9 @@ func (a *app) runSetVersion(task Task) {
 		return
 	}
 
-	err = sftpClient.Symlink(remotePath, path.Join(homeOwPath, currentWashName))
+	_, err = runRemoteCommand(client, fmt.Sprintf(cleateLink, remotePath, path.Join(homeOwPath, currentWashName)))
 	if err != nil {
-		a.handleTaskErr(task, fmt.Sprintf("Error creating a link to the current directory: %s", err.Error()))
+		a.handleTaskErr(task, fmt.Sprintf("Error creating link: %s", err.Error()))
 		return
 	}
 
