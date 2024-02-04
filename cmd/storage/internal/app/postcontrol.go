@@ -875,9 +875,10 @@ func (a *app) runUpdate(task Task) {
 		return
 	}
 
-	err = sftpClient.Symlink(washDir, path.Join(homeOwPath, currentWashName))
+	b, err := runRemoteCommand(client, fmt.Sprintf(cleateLink, washDir, path.Join(homeOwPath, currentWashName)))
+	log.Printf("Buff: %s", string(b))
 	if err != nil {
-		a.handleTaskErr(task, fmt.Sprintf("Error creating a link to the current directory: %s", err.Error()))
+		a.handleTaskErr(task, fmt.Sprintf("Error creating link: %s", err.Error()))
 		return
 	}
 

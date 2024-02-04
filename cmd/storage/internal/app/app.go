@@ -64,6 +64,7 @@ const (
 	pullRepositoryOwCommand  = "cd ~/openwashing && git pull"
 	makeBinarOwCommand       = "cd ~/openwashing/software/v1-enlight && make"
 	findVersionsOwCommand    = "find ~/ -maxdepth 1 -type d -name \"wash_*\""
+	cleateLink               = "ln -f -s -n %s %s"
 	rebootOwCommand          = "sudo shutdown -r +1"
 )
 
