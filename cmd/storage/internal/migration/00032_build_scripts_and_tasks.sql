@@ -9,7 +9,7 @@ CREATE TABLE public.build_scripts (
 );
 
 CREATE TYPE TASK_TYPE_ENUM AS ENUM ('build', 'update', 'reboot', 'get_versions', 'pull_firmware', 'set_version');
-CREATE TYPE TASK_STATUS_ENUM AS ENUM ('queue', 'started', 'completed', 'error');
+CREATE TYPE TASK_STATUS_ENUM AS ENUM ('queue', 'started', 'completed', 'error', 'canceled');
 
 CREATE TABLE public.tasks (
 	id          SERIAL 		  	 PRIMARY KEY,
