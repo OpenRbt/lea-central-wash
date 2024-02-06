@@ -225,9 +225,9 @@ type (
 		DeleteTasks() error
 		CreateTask(createTask CreateTask) (Task, error)
 		GetListBuildScripts() ([]BuildScript, error)
-		GetBuildScript(id int) (BuildScript, error)
+		GetBuildScript(id StationID) (BuildScript, error)
 		SetBuildScript(setBuildScript SetBuildScript) (BuildScript, error)
-		DeleteBuildScript(id int) error
+		DeleteBuildScript(id StationID) error
 		CopyFirmware(stationID StationID, copyToID StationID) error
 	}
 
@@ -330,6 +330,7 @@ type (
 		CreateBuildScript(createBuildScript SetBuildScript) (BuildScript, error)
 		UpdateBuildScript(id int, updateBuildScript SetBuildScript) (BuildScript, error)
 		DeleteBuildScript(id int) error
+		DeleteBuildScriptByStationID(id StationID) error
 		GetListTasks(filter GetListTasksFilter) ([]Task, error)
 		GetTask(id int) (Task, error)
 		CreateTask(createTask CreateTask) (Task, error)
@@ -501,6 +502,7 @@ type StationStatus struct {
 	CurrentProgram int
 	ProgramName    string
 	IP             string
+	Version        *FirmwareVersion
 }
 
 // SetStation is a struct to assign a name

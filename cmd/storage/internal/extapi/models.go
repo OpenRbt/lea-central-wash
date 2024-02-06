@@ -221,6 +221,7 @@ func (svc *service) apiStationStatus(v app.StationStatus) *model.StationStatus {
 		CurrentProgram:     int64(v.CurrentProgram),
 		CurrentProgramName: v.ProgramName,
 		IP:                 v.IP,
+		Version:            apiFirmwareVersion(v.Version),
 	}
 }
 
@@ -571,36 +572,36 @@ func apiGetServerInfo(bonusServiceURL string) *model.ServerInfo {
 	}
 }
 
-func appTaskStatus(taskStatus string) app.TaskStatus {
+func appTaskStatus(taskStatus model.TaskStatus) app.TaskStatus {
 	switch taskStatus {
-	case "queue":
+	case model.TaskStatusQueue:
 		return app.QueueTaskStatus
-	case "started":
+	case model.TaskStatusStarted:
 		return app.StartedTaskStatus
-	case "completed":
+	case model.TaskStatusCompleted:
 		return app.CompletedTaskStatus
-	case "error":
+	case model.TaskStatusError:
 		return app.ErrorTaskStatus
-	case "canceled":
+	case model.TaskStatusCanceled:
 		return app.CanceledTaskStatus
 	default:
 		panic("Unknown task status: " + taskStatus)
 	}
 }
 
-func appTaskType(taskType string) app.TaskType {
+func appTaskType(taskType model.TaskType) app.TaskType {
 	switch taskType {
-	case "build":
+	case model.TaskTypeBuild:
 		return app.BuildTaskType
-	case "update":
+	case model.TaskTypeUpdate:
 		return app.UpdateTaskType
-	case "reboot":
+	case model.TaskTypeReboot:
 		return app.RebootTaskType
-	case "getVersions":
+	case model.TaskTypeGetVersions:
 		return app.GetVersionsTaskType
-	case "pullFirmware":
+	case model.TaskTypePullFirmware:
 		return app.PullFirmwareTaskType
-	case "setVersion":
+	case model.TaskTypeSetVersion:
 		return app.SetVersionTaskType
 	default:
 		panic("Unknown task type: " + taskType)
@@ -611,7 +612,7 @@ func appNullableTaskStatus(taskStatus *string) *app.TaskStatus {
 	if taskStatus == nil {
 		return nil
 	}
-	var dalTaskStatus = appTaskStatus(*taskStatus)
+	var dalTaskStatus = appTaskStatus(model.TaskStatus(*taskStatus))
 	return &dalTaskStatus
 }
 
@@ -638,8 +639,8 @@ func apiTask(task app.Task) *model.Task {
 		ID:        &id,
 		StationID: &stationID,
 		VersionID: versionID,
-		Type:      (*string)(&task.Type),
-		Status:    (*string)(&task.Status),
+		Type:      (*model.TaskType)(&task.Type),
+		Status:    (*model.TaskStatus)(&task.Status),
 		Error:     task.Error,
 		CreatedAt: (*strfmt.DateTime)(&task.CreatedAt),
 		StartedAt: (*strfmt.DateTime)(task.StartedAt),
@@ -696,7 +697,10 @@ func appSetBuildScript(buildScript model.SetBuildScript) app.SetBuildScript {
 	}
 }
 
-func apiFirmwareVersion(version app.FirmwareVersion) *model.FirmwareVersion {
+func apiFirmwareVersion(version *app.FirmwareVersion) *model.FirmwareVersion {
+	if version == nil {
+		return nil
+	}
 	id := int64(version.ID)
 	return &model.FirmwareVersion{
 		ID:         &id,
@@ -712,7 +716,7 @@ func apiFirmwareVersion(version app.FirmwareVersion) *model.FirmwareVersion {
 func apiListFirmwareVersions(versions []app.FirmwareVersion) []*model.FirmwareVersion {
 	var apiVersions []*model.FirmwareVersion
 	for i := 0; i < len(versions); i++ {
-		version := apiFirmwareVersion(versions[i])
+		version := apiFirmwareVersion(&versions[i])
 		apiVersions = append(apiVersions, version)
 	}
 	return apiVersions

@@ -132,7 +132,7 @@ func (o *GetListTasksParams) bindStatus(rawData []string, hasKey bool, formats s
 // validateStatus carries on validations for parameter Status
 func (o *GetListTasksParams) validateStatus(formats strfmt.Registry) error {
 
-	if err := validate.EnumCase("status", "query", *o.Status, []interface{}{"queue", "started", "completed", "error"}, true); err != nil {
+	if err := validate.EnumCase("status", "query", *o.Status, []interface{}{"queue", "started", "completed", "error", "canceled"}, true); err != nil {
 		return err
 	}
 

@@ -373,6 +373,10 @@ func (r *DB) DeleteBuildScript(id int) error {
 	return nil
 }
 
+func (r *DB) DeleteBuildScriptByStationID(id app.StationID) error {
+	return nil
+}
+
 func (r *DB) GetTask(id int) (app.Task, error) {
 	return app.Task{}, nil
 }

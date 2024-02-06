@@ -2962,7 +2962,8 @@ func init() {
               "queue",
               "started",
               "completed",
-              "error"
+              "error",
+              "canceled"
             ],
             "type": "string",
             "x-nullable": true,
@@ -3805,15 +3806,7 @@ func init() {
           "type": "integer"
         },
         "type": {
-          "type": "string",
-          "enum": [
-            "build",
-            "update",
-            "reboot",
-            "getVersions",
-            "pullFirmware",
-            "setVersion"
-          ]
+          "$ref": "#/definitions/TaskType"
         },
         "versionID": {
           "type": "integer",
@@ -3832,15 +3825,7 @@ func init() {
           "type": "string"
         },
         "type": {
-          "type": "string",
-          "enum": [
-            "build",
-            "update",
-            "reboot",
-            "getVersions",
-            "pullFirmware",
-            "setVersion"
-          ]
+          "$ref": "#/definitions/TaskType"
         },
         "versionID": {
           "type": "integer",
@@ -4445,6 +4430,9 @@ func init() {
         },
         "status": {
           "$ref": "#/definitions/Status"
+        },
+        "version": {
+          "$ref": "#/definitions/FirmwareVersion"
         }
       }
     },
@@ -4549,13 +4537,7 @@ func init() {
           "type": "integer"
         },
         "status": {
-          "type": "string",
-          "enum": [
-            "queue",
-            "started",
-            "completed",
-            "error"
-          ]
+          "$ref": "#/definitions/TaskStatus"
         },
         "stoppedAt": {
           "type": "string",
@@ -4563,21 +4545,34 @@ func init() {
           "x-nullable": true
         },
         "type": {
-          "type": "string",
-          "enum": [
-            "build",
-            "update",
-            "reboot",
-            "getVersions",
-            "pullFirmware",
-            "setVersion"
-          ]
+          "$ref": "#/definitions/TaskType"
         },
         "versionID": {
           "type": "integer",
           "x-nullable": true
         }
       }
+    },
+    "TaskStatus": {
+      "type": "string",
+      "enum": [
+        "queue",
+        "started",
+        "completed",
+        "error",
+        "canceled"
+      ]
+    },
+    "TaskType": {
+      "type": "string",
+      "enum": [
+        "build",
+        "update",
+        "reboot",
+        "getVersions",
+        "pullFirmware",
+        "setVersion"
+      ]
     },
     "UserConfig": {
       "type": "object",
@@ -7557,7 +7552,8 @@ func init() {
               "queue",
               "started",
               "completed",
-              "error"
+              "error",
+              "canceled"
             ],
             "type": "string",
             "x-nullable": true,
@@ -8413,15 +8409,7 @@ func init() {
           "type": "integer"
         },
         "type": {
-          "type": "string",
-          "enum": [
-            "build",
-            "update",
-            "reboot",
-            "getVersions",
-            "pullFirmware",
-            "setVersion"
-          ]
+          "$ref": "#/definitions/TaskType"
         },
         "versionID": {
           "type": "integer",
@@ -8440,15 +8428,7 @@ func init() {
           "type": "string"
         },
         "type": {
-          "type": "string",
-          "enum": [
-            "build",
-            "update",
-            "reboot",
-            "getVersions",
-            "pullFirmware",
-            "setVersion"
-          ]
+          "$ref": "#/definitions/TaskType"
         },
         "versionID": {
           "type": "integer",
@@ -9058,6 +9038,9 @@ func init() {
         },
         "status": {
           "$ref": "#/definitions/Status"
+        },
+        "version": {
+          "$ref": "#/definitions/FirmwareVersion"
         }
       }
     },
@@ -9162,13 +9145,7 @@ func init() {
           "type": "integer"
         },
         "status": {
-          "type": "string",
-          "enum": [
-            "queue",
-            "started",
-            "completed",
-            "error"
-          ]
+          "$ref": "#/definitions/TaskStatus"
         },
         "stoppedAt": {
           "type": "string",
@@ -9176,21 +9153,34 @@ func init() {
           "x-nullable": true
         },
         "type": {
-          "type": "string",
-          "enum": [
-            "build",
-            "update",
-            "reboot",
-            "getVersions",
-            "pullFirmware",
-            "setVersion"
-          ]
+          "$ref": "#/definitions/TaskType"
         },
         "versionID": {
           "type": "integer",
           "x-nullable": true
         }
       }
+    },
+    "TaskStatus": {
+      "type": "string",
+      "enum": [
+        "queue",
+        "started",
+        "completed",
+        "error",
+        "canceled"
+      ]
+    },
+    "TaskType": {
+      "type": "string",
+      "enum": [
+        "build",
+        "update",
+        "reboot",
+        "getVersions",
+        "pullFirmware",
+        "setVersion"
+      ]
     },
     "UserConfig": {
       "type": "object",

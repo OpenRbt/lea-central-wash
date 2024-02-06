@@ -744,6 +744,11 @@ returning id
 	WHERE id = :id
 	`
 
+	sqlDeleteBuildScriptByStationID = `
+	DELETE FROM build_scripts
+	WHERE station_id = :id
+	`
+
 	sqlGetTask = `
 	SELECT
 		id,

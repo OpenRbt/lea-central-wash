@@ -159,8 +159,8 @@ func (a *app) GetListBuildScripts() ([]BuildScript, error) {
 	return buildScripts, nil
 }
 
-func (a *app) GetBuildScript(id int) (BuildScript, error) {
-	return a.repo.GetBuildScript(id)
+func (a *app) GetBuildScript(id StationID) (BuildScript, error) {
+	return a.repo.GetBuildScriptByStationID(id)
 }
 
 func (a *app) SetBuildScript(setBuildScript SetBuildScript) (BuildScript, error) {
@@ -198,8 +198,8 @@ func (a *app) SetBuildScript(setBuildScript SetBuildScript) (BuildScript, error)
 	return buildScript, nil
 }
 
-func (a *app) DeleteBuildScript(id int) error {
-	return a.repo.DeleteBuildScript(id)
+func (a *app) DeleteBuildScript(id StationID) error {
+	return a.repo.DeleteBuildScriptByStationID(id)
 }
 
 func (a *app) GetListTasks(filter GetListTasksFilter) ([]Task, error) {
@@ -707,6 +707,7 @@ func (a *app) runGetVersions(task Task) {
 
 	directories, err := getVersionsDirNames(client)
 	versions := make([]FirmwareVersion, 0)
+	var currentVersions *FirmwareVersion = nil
 
 	for _, dir := range directories {
 		v, err := strconv.Atoi(path.Base(dir)[5:])
@@ -735,7 +736,12 @@ func (a *app) runGetVersions(task Task) {
 			return
 		}
 
-		versions = append(versions, firmwareVersionFromJson(v, v == currentVersion, version))
+		versionFromJson := firmwareVersionFromJson(v, v == currentVersion, version)
+		versions = append(versions, versionFromJson)
+
+		if versionFromJson.IsCurrent {
+			currentVersions = &versionFromJson
+		}
 	}
 
 	a.stationsMutex.Lock()
@@ -746,6 +752,7 @@ func (a *app) runGetVersions(task Task) {
 		return
 	}
 	station.Versions = versions
+	station.CurrentVersions = currentVersions
 	a.stations[task.StationID] = station
 	a.stationsMutex.Unlock()
 

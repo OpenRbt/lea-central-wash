@@ -131,9 +131,22 @@ func (r *repo) UpdateBuildScript(id int, updateBuildScript app.SetBuildScript) (
 	return buildScript, err
 }
 
+func (r *repo) DeleteBuildScriptByStationID(id app.StationID) error {
+	return r.deleteBuildScript(int(id), true)
+}
+
 func (r *repo) DeleteBuildScript(id int) error {
+	return r.deleteBuildScript(id, false)
+}
+
+func (r *repo) deleteBuildScript(id int, byStationID bool) error {
+	sqlDelete := sqlDeleteBuildScript
+	if byStationID == true {
+		sqlDelete = sqlDeleteBuildScriptByStationID
+	}
+
 	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		res, err := tx.NamedExecContext(ctx, sqlDeleteBuildScript, argGetBuildScript{
+		res, err := tx.NamedExecContext(ctx, sqlDelete, argGetBuildScript{
 			ID: id,
 		})
 

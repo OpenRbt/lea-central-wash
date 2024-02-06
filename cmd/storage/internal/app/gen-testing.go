@@ -260,7 +260,7 @@ func (mr *MockAppMockRecorder) DelStation(id interface{}) *gomock.Call {
 }
 
 // DeleteBuildScript mocks base method.
-func (m *MockApp) DeleteBuildScript(id int) error {
+func (m *MockApp) DeleteBuildScript(id StationID) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteBuildScript", id)
 	ret0, _ := ret[0].(error)
@@ -299,6 +299,20 @@ func (m *MockApp) DeleteTask(id int) error {
 func (mr *MockAppMockRecorder) DeleteTask(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTask", reflect.TypeOf((*MockApp)(nil).DeleteTask), id)
+}
+
+// DeleteTasks mocks base method.
+func (m *MockApp) DeleteTasks() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteTasks")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteTasks indicates an expected call of DeleteTasks.
+func (mr *MockAppMockRecorder) DeleteTasks() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTasks", reflect.TypeOf((*MockApp)(nil).DeleteTasks))
 }
 
 // DeleteUser mocks base method.
@@ -387,7 +401,7 @@ func (mr *MockAppMockRecorder) Get(stationID interface{}) *gomock.Call {
 }
 
 // GetBuildScript mocks base method.
-func (m *MockApp) GetBuildScript(id int) (BuildScript, error) {
+func (m *MockApp) GetBuildScript(id StationID) (BuildScript, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetBuildScript", id)
 	ret0, _ := ret[0].(BuildScript)
@@ -1809,6 +1823,20 @@ func (m *MockRepo) DeleteBuildScript(id int) error {
 func (mr *MockRepoMockRecorder) DeleteBuildScript(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteBuildScript", reflect.TypeOf((*MockRepo)(nil).DeleteBuildScript), id)
+}
+
+// DeleteBuildScriptByStationID mocks base method.
+func (m *MockRepo) DeleteBuildScriptByStationID(id StationID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteBuildScriptByStationID", id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteBuildScriptByStationID indicates an expected call of DeleteBuildScriptByStationID.
+func (mr *MockRepoMockRecorder) DeleteBuildScriptByStationID(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteBuildScriptByStationID", reflect.TypeOf((*MockRepo)(nil).DeleteBuildScriptByStationID), id)
 }
 
 // DeleteConfigString mocks base method.

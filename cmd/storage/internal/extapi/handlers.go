@@ -1275,7 +1275,7 @@ func (svc *service) getListBuildScripts(params op.GetListBuildScriptsParams, aut
 }
 
 func (svc *service) getBuildScript(params op.GetBuildScriptParams, auth *app.Auth) op.GetBuildScriptResponder {
-	buildScript, err := svc.app.GetBuildScript(int(params.ID))
+	buildScript, err := svc.app.GetBuildScript(app.StationID(params.ID))
 
 	switch errors.Cause(err) {
 	case nil:
@@ -1303,7 +1303,7 @@ func (svc *service) setBuildScript(params op.SetBuildScriptParams, auth *app.Aut
 }
 
 func (svc *service) deleteBuildScript(params op.DeleteBuildScriptParams, auth *app.Auth) op.DeleteBuildScriptResponder {
-	err := svc.app.DeleteBuildScript(int(params.ID))
+	err := svc.app.DeleteBuildScript(app.StationID(params.ID))
 
 	switch errors.Cause(err) {
 	case nil:

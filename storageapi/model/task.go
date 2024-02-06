@@ -43,8 +43,7 @@ type Task struct {
 
 	// status
 	// Required: true
-	// Enum: [queue started completed error]
-	Status *string `json:"status"`
+	Status *TaskStatus `json:"status"`
 
 	// stopped at
 	// Format: date-time
@@ -52,8 +51,7 @@ type Task struct {
 
 	// type
 	// Required: true
-	// Enum: [build update reboot getVersions pullFirmware setVersion]
-	Type *string `json:"type"`
+	Type *TaskType `json:"type"`
 
 	// version ID
 	VersionID *int64 `json:"versionID,omitempty"`
@@ -85,8 +83,7 @@ func (m *Task) UnmarshalJSON(data []byte) error {
 
 		// status
 		// Required: true
-		// Enum: [queue started completed error]
-		Status *string `json:"status"`
+		Status *TaskStatus `json:"status"`
 
 		// stopped at
 		// Format: date-time
@@ -94,8 +91,7 @@ func (m *Task) UnmarshalJSON(data []byte) error {
 
 		// type
 		// Required: true
-		// Enum: [build update reboot getVersions pullFirmware setVersion]
-		Type *string `json:"type"`
+		Type *TaskType `json:"type"`
 
 		// version ID
 		VersionID *int64 `json:"versionID,omitempty"`
@@ -200,50 +196,25 @@ func (m *Task) validateStationID(formats strfmt.Registry) error {
 	return nil
 }
 
-var taskTypeStatusPropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["queue","started","completed","error"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		taskTypeStatusPropEnum = append(taskTypeStatusPropEnum, v)
-	}
-}
-
-const (
-
-	// TaskStatusQueue captures enum value "queue"
-	TaskStatusQueue string = "queue"
-
-	// TaskStatusStarted captures enum value "started"
-	TaskStatusStarted string = "started"
-
-	// TaskStatusCompleted captures enum value "completed"
-	TaskStatusCompleted string = "completed"
-
-	// TaskStatusError captures enum value "error"
-	TaskStatusError string = "error"
-)
-
-// prop value enum
-func (m *Task) validateStatusEnum(path, location string, value string) error {
-	if err := validate.EnumCase(path, location, value, taskTypeStatusPropEnum, true); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (m *Task) validateStatus(formats strfmt.Registry) error {
 
 	if err := validate.Required("status", "body", m.Status); err != nil {
 		return err
 	}
 
-	// value enum
-	if err := m.validateStatusEnum("status", "body", *m.Status); err != nil {
+	if err := validate.Required("status", "body", m.Status); err != nil {
 		return err
+	}
+
+	if m.Status != nil {
+		if err := m.Status.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("status")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("status")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -261,63 +232,79 @@ func (m *Task) validateStoppedAt(formats strfmt.Registry) error {
 	return nil
 }
 
-var taskTypeTypePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["build","update","reboot","getVersions","pullFirmware","setVersion"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		taskTypeTypePropEnum = append(taskTypeTypePropEnum, v)
-	}
-}
-
-const (
-
-	// TaskTypeBuild captures enum value "build"
-	TaskTypeBuild string = "build"
-
-	// TaskTypeUpdate captures enum value "update"
-	TaskTypeUpdate string = "update"
-
-	// TaskTypeReboot captures enum value "reboot"
-	TaskTypeReboot string = "reboot"
-
-	// TaskTypeGetVersions captures enum value "getVersions"
-	TaskTypeGetVersions string = "getVersions"
-
-	// TaskTypePullFirmware captures enum value "pullFirmware"
-	TaskTypePullFirmware string = "pullFirmware"
-
-	// TaskTypeSetVersion captures enum value "setVersion"
-	TaskTypeSetVersion string = "setVersion"
-)
-
-// prop value enum
-func (m *Task) validateTypeEnum(path, location string, value string) error {
-	if err := validate.EnumCase(path, location, value, taskTypeTypePropEnum, true); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (m *Task) validateType(formats strfmt.Registry) error {
 
 	if err := validate.Required("type", "body", m.Type); err != nil {
 		return err
 	}
 
-	// value enum
-	if err := m.validateTypeEnum("type", "body", *m.Type); err != nil {
+	if err := validate.Required("type", "body", m.Type); err != nil {
 		return err
+	}
+
+	if m.Type != nil {
+		if err := m.Type.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("type")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("type")
+			}
+			return err
+		}
 	}
 
 	return nil
 }
 
-// ContextValidate validates this task based on context it is used
+// ContextValidate validate this task based on the context it is used
 func (m *Task) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *Task) contextValidateStatus(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Status != nil {
+
+		if err := m.Status.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("status")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("status")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Task) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Type != nil {
+
+		if err := m.Type.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("type")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("type")
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 

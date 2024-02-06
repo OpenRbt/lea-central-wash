@@ -571,6 +571,7 @@ func (a *app) StatusReport(onlyActive bool) StatusReport {
 			CurrentProgram: v.CurrentProgram,
 			ProgramName:    programName,
 			IP:             v.IP,
+			Version:        v.CurrentVersions,
 		})
 	}
 	return report

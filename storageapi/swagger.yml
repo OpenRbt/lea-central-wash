@@ -154,6 +154,8 @@ definitions:
         type: string
       ip:
         type: string
+      version:
+        $ref: '#/definitions/FirmwareVersion'
 
   Status:
     type: string
@@ -674,6 +676,14 @@ definitions:
       - builtAt
       - commitedAt
   
+  TaskStatus:
+    type: string
+    enum: [ "queue", "started", "completed", "error", "canceled" ]
+  
+  TaskType:
+    type: string
+    enum: [ "build", "update", "reboot", "getVersions", "pullFirmware", "setVersion" ]
+
   Task:
     type: object
     properties:
@@ -685,21 +695,9 @@ definitions:
         type: integer
         x-nullable: true
       type:
-        type: string
-        enum:
-          - build
-          - update
-          - reboot
-          - getVersions
-          - pullFirmware
-          - setVersion
+        $ref: '#/definitions/TaskType'
       status:
-        type: string
-        enum:
-          - queue
-          - started
-          - completed
-          - error
+        $ref: '#/definitions/TaskStatus'
       error:
         type: string
         x-nullable: true
@@ -730,14 +728,7 @@ definitions:
         type: integer
         x-nullable: true
       type:
-        type: string
-        enum:
-          - build
-          - update
-          - reboot
-          - getVersions
-          - pullFirmware
-          - setVersion
+        $ref: '#/definitions/TaskType'
     required:
       - stationID
       - type
@@ -751,14 +742,7 @@ definitions:
         type: integer
         x-nullable: true
       type:
-        type: string
-        enum:
-          - build
-          - update
-          - reboot
-          - getVersions
-          - pullFirmware
-          - setVersion
+        $ref: '#/definitions/TaskType'
     required:
       - hash
       - type
@@ -2890,6 +2874,7 @@ paths:
             - started
             - completed
             - error
+            - canceled
       responses:
         200:
           description: OK

@@ -27,8 +27,7 @@ type CreateTask struct {
 
 	// type
 	// Required: true
-	// Enum: [build update reboot getVersions pullFirmware setVersion]
-	Type *string `json:"type"`
+	Type *TaskType `json:"type"`
 
 	// version ID
 	VersionID *int64 `json:"versionID,omitempty"`
@@ -44,8 +43,7 @@ func (m *CreateTask) UnmarshalJSON(data []byte) error {
 
 		// type
 		// Required: true
-		// Enum: [build update reboot getVersions pullFirmware setVersion]
-		Type *string `json:"type"`
+		Type *TaskType `json:"type"`
 
 		// version ID
 		VersionID *int64 `json:"versionID,omitempty"`
@@ -90,63 +88,58 @@ func (m *CreateTask) validateStationID(formats strfmt.Registry) error {
 	return nil
 }
 
-var createTaskTypeTypePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["build","update","reboot","getVersions","pullFirmware","setVersion"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		createTaskTypeTypePropEnum = append(createTaskTypeTypePropEnum, v)
-	}
-}
-
-const (
-
-	// CreateTaskTypeBuild captures enum value "build"
-	CreateTaskTypeBuild string = "build"
-
-	// CreateTaskTypeUpdate captures enum value "update"
-	CreateTaskTypeUpdate string = "update"
-
-	// CreateTaskTypeReboot captures enum value "reboot"
-	CreateTaskTypeReboot string = "reboot"
-
-	// CreateTaskTypeGetVersions captures enum value "getVersions"
-	CreateTaskTypeGetVersions string = "getVersions"
-
-	// CreateTaskTypePullFirmware captures enum value "pullFirmware"
-	CreateTaskTypePullFirmware string = "pullFirmware"
-
-	// CreateTaskTypeSetVersion captures enum value "setVersion"
-	CreateTaskTypeSetVersion string = "setVersion"
-)
-
-// prop value enum
-func (m *CreateTask) validateTypeEnum(path, location string, value string) error {
-	if err := validate.EnumCase(path, location, value, createTaskTypeTypePropEnum, true); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (m *CreateTask) validateType(formats strfmt.Registry) error {
 
 	if err := validate.Required("type", "body", m.Type); err != nil {
 		return err
 	}
 
-	// value enum
-	if err := m.validateTypeEnum("type", "body", *m.Type); err != nil {
+	if err := validate.Required("type", "body", m.Type); err != nil {
 		return err
+	}
+
+	if m.Type != nil {
+		if err := m.Type.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("type")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("type")
+			}
+			return err
+		}
 	}
 
 	return nil
 }
 
-// ContextValidate validates this create task based on context it is used
+// ContextValidate validate this create task based on the context it is used
 func (m *CreateTask) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *CreateTask) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Type != nil {
+
+		if err := m.Type.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("type")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("type")
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 

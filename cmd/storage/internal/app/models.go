@@ -59,6 +59,7 @@ type StationData struct {
 	IsActive            bool
 	Task                *Task
 	Versions            []FirmwareVersion
+	CurrentVersions     *FirmwareVersion
 }
 
 // MoneyReport is just to represent money in a station. All known kinds of money
