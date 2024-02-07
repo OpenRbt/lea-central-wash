@@ -167,16 +167,16 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) (Statio
 	}
 
 	if oldStation.Versions == nil {
-		tasks, err := a.repo.GetListTasks(GetListTasksFilter{
-			StationID:  &id,
-			OnlyActive: true,
+		tasks, err := a.repo.GetListTasks(TasksFilter{
+			StationID: &id,
+			Statuses:  []TaskStatus{QueueTaskStatus, StartedTaskStatus},
 		})
 		if err != nil {
 			log.PrintErr("Error getting list of tasks for station %d: %s", id, err.Error())
 			return oldStation, bonusSystemActive
 		}
 
-		for _, task := range tasks {
+		for _, task := range tasks.Items {
 			if task.Type == GetVersionsTaskType {
 				return oldStation, bonusSystemActive
 			}

@@ -719,6 +719,28 @@ definitions:
       - status
       - createdAt
   
+  TaskPage:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/Task"
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      totalPages:
+        type: integer
+      totalItems:
+        type: integer
+    required:
+      - items
+      - page
+      - pageSize
+      - totalPages
+      - totalItems
+  
   CreateTask:
     type: object
     properties:
@@ -2860,28 +2882,57 @@ paths:
       parameters:
         - name: stationID
           required: false
+          x-nullable: true
           in: query
           type: integer
           minimum: 1
-          x-nullable: true
-        - name: status
+        - name: statuses
           required: false
+          x-nullable: true
+          in: query
+          collectionFormat: multi
+          type: array
+          items: 
+            type: string
+            enum: [ "queue", "started", "completed", "error", "canceled" ]
+        - name: types
+          required: false
+          x-nullable: true
+          in: query
+          collectionFormat: multi
+          type: array
+          items: 
+            type: string
+            enum: [ "build", "update", "reboot", "getVersions", "pullFirmware", "setVersion" ]
+        - name: sort
+          required: false
+          x-nullable: true
           in: query
           type: string
-          x-nullable: true
+          default: createdAtDesc
           enum:
-            - queue
-            - started
-            - completed
-            - error
-            - canceled
+            - createdAtAsc
+            - createdAtDesc
+        - name: page
+          required: false
+          in: query
+          type: integer
+          x-nullable: true
+          default: 1
+          minimum: 1
+        - name: pageSize
+          required: false
+          x-nullable: true
+          in: query
+          type: integer
+          default: 10
+          maximum: 100
+          minimum: 1
       responses:
         200:
           description: OK
           schema:
-            type: array
-            items: 
-              $ref: '#/definitions/Task'
+            $ref: "#/definitions/TaskPage"
         401:
           description: PIN is missing or invalid
         500:

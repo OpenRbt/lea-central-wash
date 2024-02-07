@@ -196,7 +196,7 @@ func TestGetListTask(tt *testing.T) {
 	t.Nil(testRepo.truncate())
 	addTestData(t)
 
-	l, err := testRepo.GetListTasks(app.GetListTasksFilter{})
+	l, err := testRepo.GetListTasks(app.TasksFilter{})
 	t.Nil(err)
 	t.Equal(len(l), 0)
 
@@ -208,17 +208,17 @@ func TestGetListTask(tt *testing.T) {
 	task2, err := testRepo.CreateTask(testCreateTask)
 	t.Nil(err)
 
-	l, err = testRepo.GetListTasks(app.GetListTasksFilter{})
+	l, err = testRepo.GetListTasks(app.TasksFilter{})
 	t.Nil(err)
 	t.DeepEqual([]app.Task{task1, task2}, l)
 
 	status := app.QueueTaskStatus
-	l, err = testRepo.GetListTasks(app.GetListTasksFilter{Status: &status})
+	l, err = testRepo.GetListTasks(app.TasksFilter{Status: &status})
 	t.Nil(err)
 	t.DeepEqual([]app.Task{task1, task2}, l)
 
 	stationId := app.StationID(1)
-	l, err = testRepo.GetListTasks(app.GetListTasksFilter{StationID: &stationId})
+	l, err = testRepo.GetListTasks(app.TasksFilter{StationID: &stationId})
 	t.Nil(err)
 	t.DeepEqual([]app.Task{task1}, l)
 
@@ -226,11 +226,11 @@ func TestGetListTask(tt *testing.T) {
 	task1, err = testRepo.UpdateTask(task1.ID, app.UpdateTask{Status: &status})
 	t.Nil(err)
 
-	l, err = testRepo.GetListTasks(app.GetListTasksFilter{Status: &status})
+	l, err = testRepo.GetListTasks(app.TasksFilter{Status: &status})
 	t.Nil(err)
 	t.DeepEqual([]app.Task{task1}, l)
 
-	l, err = testRepo.GetListTasks(app.GetListTasksFilter{OnlyActive: true})
+	l, err = testRepo.GetListTasks(app.TasksFilter{OnlyActive: true})
 	t.Nil(err)
 	t.DeepEqual([]app.Task{task1}, l)
 }

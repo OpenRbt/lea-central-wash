@@ -506,7 +506,7 @@ func (mr *MockAppMockRecorder) GetListBuildScripts() *gomock.Call {
 }
 
 // GetListTasks mocks base method.
-func (m *MockApp) GetListTasks(filter GetListTasksFilter) ([]Task, error) {
+func (m *MockApp) GetListTasks(filter TasksFilter) ([]Task, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetListTasks", filter)
 	ret0, _ := ret[0].([]Task)
@@ -2001,7 +2001,7 @@ func (mr *MockRepoMockRecorder) GetListBuildScripts() *gomock.Call {
 }
 
 // GetListTasks mocks base method.
-func (m *MockRepo) GetListTasks(filter GetListTasksFilter) ([]Task, error) {
+func (m *MockRepo) GetListTasks(filter TasksFilter) ([]Task, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetListTasks", filter)
 	ret0, _ := ret[0].([]Task)

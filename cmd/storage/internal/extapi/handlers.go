@@ -1159,15 +1159,7 @@ func (svc *service) getFirmwareVersions(params op.GetStationFirmwareVersionsPara
 }
 
 func (svc *service) getListTasks(params op.GetListTasksParams, auth *app.Auth) op.GetListTasksResponder {
-	filter := app.GetListTasksFilter{
-		Status: appNullableTaskStatus(params.Status),
-	}
-	if params.StationID != nil {
-		stationID := app.StationID(*params.StationID)
-		filter.StationID = &stationID
-	}
-
-	tasks, err := svc.app.GetListTasks(filter)
+	tasks, err := svc.app.GetListTasks(appTasksFilter(params))
 
 	switch errors.Cause(err) {
 	case nil:

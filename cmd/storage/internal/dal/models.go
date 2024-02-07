@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
+	"github.com/lib/pq"
 )
 
 func appSetUsers(v []resUser) []app.UserData {
@@ -488,10 +489,48 @@ func dalTaskStatus(taskStatus app.TaskStatus) TaskStatus {
 	}
 }
 
+func dalTaskStatuses(taskStatuses []app.TaskStatus) pq.StringArray {
+	if taskStatuses == nil {
+		return nil
+	}
+	statuses := []string{}
+	for _, s := range taskStatuses {
+		statuses = append(statuses, string(dalTaskStatus(s)))
+	}
+	return statuses
+}
+
+func dalTaskTypes(taskTypes []app.TaskType) pq.StringArray {
+	if taskTypes == nil {
+		return nil
+	}
+	statuses := []string{}
+	for _, s := range taskTypes {
+		statuses = append(statuses, string(dalTaskType(s)))
+	}
+	return statuses
+}
+
 func dalNullableTaskStatus(taskStatus *app.TaskStatus) *TaskStatus {
 	if taskStatus == nil {
 		return nil
 	}
 	var dalTaskStatus = dalTaskStatus(*taskStatus)
 	return &dalTaskStatus
+}
+
+func dalTaskSort(taskStatus *app.TaskSort) *TaskSort {
+	if taskStatus == nil {
+		return nil
+	}
+	switch *taskStatus {
+	case app.CreatedAtAscTaskSort:
+		c := CreatedAtAscTaskSort
+		return &c
+	case app.CreatedAtDescTaskSort:
+		c := CreatedAtDescTaskSort
+		return &c
+	default:
+		panic("Unknown task status: " + *taskStatus)
+	}
 }

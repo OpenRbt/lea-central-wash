@@ -268,6 +268,7 @@ type SetBuildScript struct {
 
 type TaskType string
 type TaskStatus string
+type TaskSort string
 
 const (
 	BuildTaskType        TaskType = "build"
@@ -282,6 +283,9 @@ const (
 	CompletedTaskStatus TaskStatus = "completed"
 	ErrorTaskStatus     TaskStatus = "error"
 	CanceledTaskStatus  TaskStatus = "canceled"
+
+	CreatedAtAscTaskSort  TaskSort = "createdAtAsc"
+	CreatedAtDescTaskSort TaskSort = "createdAtDesc"
 )
 
 type Task struct {
@@ -309,10 +313,12 @@ type UpdateTask struct {
 	StoppedAt *time.Time
 }
 
-type GetListTasksFilter struct {
-	StationID  *StationID
-	Status     *TaskStatus
-	OnlyActive bool
+type TasksFilter struct {
+	Filter
+	StationID *StationID
+	Statuses  []TaskStatus
+	Types     []TaskType
+	Sort      *TaskSort
 }
 
 type FirmwareVersionJson struct {

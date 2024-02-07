@@ -2958,16 +2958,66 @@ func init() {
             "in": "query"
           },
           {
+            "type": "array",
+            "items": {
+              "enum": [
+                "queue",
+                "started",
+                "completed",
+                "error",
+                "canceled"
+              ],
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-nullable": true,
+            "name": "statuses",
+            "in": "query"
+          },
+          {
+            "type": "array",
+            "items": {
+              "enum": [
+                "build",
+                "update",
+                "reboot",
+                "getVersions",
+                "pullFirmware",
+                "setVersion"
+              ],
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-nullable": true,
+            "name": "types",
+            "in": "query"
+          },
+          {
             "enum": [
-              "queue",
-              "started",
-              "completed",
-              "error",
-              "canceled"
+              "createdAtAsc",
+              "createdAtDesc"
             ],
             "type": "string",
+            "default": "createdAtDesc",
             "x-nullable": true,
-            "name": "status",
+            "name": "sort",
+            "in": "query"
+          },
+          {
+            "minimum": 1,
+            "type": "integer",
+            "default": 1,
+            "x-nullable": true,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "default": 10,
+            "x-nullable": true,
+            "name": "pageSize",
             "in": "query"
           }
         ],
@@ -2975,10 +3025,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Task"
-              }
+              "$ref": "#/definitions/TaskPage"
             }
           },
           "401": {
@@ -4550,6 +4597,36 @@ func init() {
         "versionID": {
           "type": "integer",
           "x-nullable": true
+        }
+      }
+    },
+    "TaskPage": {
+      "type": "object",
+      "required": [
+        "items",
+        "page",
+        "pageSize",
+        "totalPages",
+        "totalItems"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Task"
+          }
+        },
+        "page": {
+          "type": "integer"
+        },
+        "pageSize": {
+          "type": "integer"
+        },
+        "totalItems": {
+          "type": "integer"
+        },
+        "totalPages": {
+          "type": "integer"
         }
       }
     },
@@ -7548,16 +7625,66 @@ func init() {
             "in": "query"
           },
           {
+            "type": "array",
+            "items": {
+              "enum": [
+                "queue",
+                "started",
+                "completed",
+                "error",
+                "canceled"
+              ],
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-nullable": true,
+            "name": "statuses",
+            "in": "query"
+          },
+          {
+            "type": "array",
+            "items": {
+              "enum": [
+                "build",
+                "update",
+                "reboot",
+                "getVersions",
+                "pullFirmware",
+                "setVersion"
+              ],
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-nullable": true,
+            "name": "types",
+            "in": "query"
+          },
+          {
             "enum": [
-              "queue",
-              "started",
-              "completed",
-              "error",
-              "canceled"
+              "createdAtAsc",
+              "createdAtDesc"
             ],
             "type": "string",
+            "default": "createdAtDesc",
             "x-nullable": true,
-            "name": "status",
+            "name": "sort",
+            "in": "query"
+          },
+          {
+            "minimum": 1,
+            "type": "integer",
+            "default": 1,
+            "x-nullable": true,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "default": 10,
+            "x-nullable": true,
+            "name": "pageSize",
             "in": "query"
           }
         ],
@@ -7565,10 +7692,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Task"
-              }
+              "$ref": "#/definitions/TaskPage"
             }
           },
           "401": {
@@ -9158,6 +9282,36 @@ func init() {
         "versionID": {
           "type": "integer",
           "x-nullable": true
+        }
+      }
+    },
+    "TaskPage": {
+      "type": "object",
+      "required": [
+        "items",
+        "page",
+        "pageSize",
+        "totalPages",
+        "totalItems"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Task"
+          }
+        },
+        "page": {
+          "type": "integer"
+        },
+        "pageSize": {
+          "type": "integer"
+        },
+        "totalItems": {
+          "type": "integer"
+        },
+        "totalPages": {
+          "type": "integer"
         }
       }
     },

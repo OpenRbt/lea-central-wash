@@ -3,6 +3,7 @@ package app
 import (
 	"errors"
 	"fmt"
+	"math"
 	"sync"
 	"time"
 
@@ -219,7 +220,7 @@ type (
 
 		GetPublicKey() (string, error)
 		GetVersions(stationID StationID) ([]FirmwareVersion, error)
-		GetListTasks(filter GetListTasksFilter) ([]Task, error)
+		GetListTasks(filter TasksFilter) (Page[Task], error)
 		GetTask(id int) (Task, error)
 		DeleteTask(id int) error
 		DeleteTasks() error
@@ -331,7 +332,7 @@ type (
 		UpdateBuildScript(id int, updateBuildScript SetBuildScript) (BuildScript, error)
 		DeleteBuildScript(id int) error
 		DeleteBuildScriptByStationID(id StationID) error
-		GetListTasks(filter GetListTasksFilter) ([]Task, error)
+		GetListTasks(filter TasksFilter) (Page[Task], error)
 		GetTask(id int) (Task, error)
 		CreateTask(createTask CreateTask) (Task, error)
 		UpdateTask(id int, updateTask UpdateTask) (Task, error)
@@ -604,4 +605,35 @@ type PostControlConfig struct {
 	KeySSHPath      string
 	UserSSH         string
 	StationsDirPath string
+}
+
+type Page[T any] struct {
+	Items      []T
+	Page       int
+	PageSize   int
+	TotalPages int
+	TotalItems int
+}
+
+type Filter struct {
+	Page     int
+	PageSize int
+}
+
+func NewPage[T any](items []T, filter Filter, totalItems int) Page[T] {
+	return Page[T]{
+		Items:      items,
+		TotalPages: int(math.Ceil((float64(totalItems) / float64(filter.PageSize)))),
+		Page:       filter.Page,
+		PageSize:   filter.PageSize,
+		TotalItems: totalItems,
+	}
+}
+
+func (f *Filter) Offset() int {
+	return (f.Page - 1) * f.PageSize
+}
+
+func (f *Filter) Limit() int {
+	return f.PageSize
 }

@@ -608,6 +608,19 @@ func appTaskType(taskType model.TaskType) app.TaskType {
 	}
 }
 
+func appTaskSort(taskSort string) *app.TaskSort {
+	switch taskSort {
+	case "createdAtAsc":
+		c := app.CreatedAtAscTaskSort
+		return &c
+	case "createdAtDesc":
+		c := app.CreatedAtDescTaskSort
+		return &c
+	default:
+		panic("Unknown task sort: " + taskSort)
+	}
+}
+
 func appNullableTaskStatus(taskStatus *string) *app.TaskStatus {
 	if taskStatus == nil {
 		return nil
@@ -616,13 +629,23 @@ func appNullableTaskStatus(taskStatus *string) *app.TaskStatus {
 	return &dalTaskStatus
 }
 
-func apiListTasks(tasks []app.Task) []*model.Task {
-	var apiTasks []*model.Task
-	for i := 0; i < len(tasks); i++ {
-		task := apiTask(tasks[i])
+func apiListTasks(tasks app.Page[app.Task]) *model.TaskPage {
+	apiTasks := []*model.Task{}
+	for _, t := range tasks.Items {
+		task := apiTask(t)
 		apiTasks = append(apiTasks, task)
 	}
-	return apiTasks
+	page := int64(tasks.Page)
+	pageSize := int64(tasks.PageSize)
+	totalPages := int64(tasks.TotalPages)
+	totalItems := int64(tasks.TotalItems)
+	return &model.TaskPage{
+		Items:      apiTasks,
+		Page:       &page,
+		PageSize:   &pageSize,
+		TotalPages: &totalPages,
+		TotalItems: &totalItems,
+	}
 }
 
 func apiTask(task app.Task) *model.Task {
@@ -646,6 +669,45 @@ func apiTask(task app.Task) *model.Task {
 		StartedAt: (*strfmt.DateTime)(task.StartedAt),
 		StoppedAt: (*strfmt.DateTime)(task.StoppedAt),
 	}
+}
+
+func appTaskTypes(types []string) []app.TaskType {
+	if types == nil {
+		return nil
+	}
+	appTypes := []app.TaskType{}
+	for _, t := range types {
+		appTypes = append(appTypes, appTaskType(model.TaskType(t)))
+	}
+	return appTypes
+}
+
+func appTaskStatuses(statuses []string) []app.TaskStatus {
+	if statuses == nil {
+		return nil
+	}
+	appStatuses := []app.TaskStatus{}
+	for _, t := range statuses {
+		appStatuses = append(appStatuses, appTaskStatus(model.TaskStatus(t)))
+	}
+	return appStatuses
+}
+
+func appTasksFilter(params op.GetListTasksParams) app.TasksFilter {
+	filter := app.TasksFilter{
+		Filter: app.Filter{
+			Page:     int(*params.Page),
+			PageSize: int(*params.PageSize),
+		},
+		Types:    appTaskTypes(params.Types),
+		Statuses: appTaskStatuses(params.Statuses),
+		Sort:     appTaskSort(*params.Sort),
+	}
+	if params.StationID != nil {
+		stationID := app.StationID(*params.StationID)
+		filter.StationID = &stationID
+	}
+	return filter
 }
 
 func appCreateTask(task model.CreateTask) app.CreateTask {

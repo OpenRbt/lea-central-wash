@@ -202,10 +202,10 @@ func (a *app) DeleteBuildScript(id StationID) error {
 	return a.repo.DeleteBuildScriptByStationID(id)
 }
 
-func (a *app) GetListTasks(filter GetListTasksFilter) ([]Task, error) {
+func (a *app) GetListTasks(filter TasksFilter) (Page[Task], error) {
 	tasks, err := a.repo.GetListTasks(filter)
 	if err != nil {
-		return nil, err
+		return Page[Task]{}, err
 	}
 
 	return tasks, nil
@@ -234,16 +234,26 @@ func (a *app) DeleteTask(id int) error {
 }
 
 func (a *app) DeleteTasks() error {
-	tasks, err := a.repo.GetListTasks(GetListTasksFilter{})
-	if err != nil {
-		return err
-	}
+	for {
+		tasks, err := a.repo.GetListTasks(TasksFilter{
+			Filter: Filter{
+				Page:     1,
+				PageSize: 100,
+			},
+		})
+		if err != nil {
+			return err
+		}
+		if len(tasks.Items) == 0 {
+			break
+		}
 
-	for _, v := range tasks {
-		if v.Status == ErrorTaskStatus || v.Status == CompletedTaskStatus || v.Status == CanceledTaskStatus {
-			err = a.repo.DeleteTask(v.ID)
-			if err != nil {
-				return err
+		for _, v := range tasks.Items {
+			if v.Status == ErrorTaskStatus || v.Status == CompletedTaskStatus || v.Status == CanceledTaskStatus {
+				err = a.repo.DeleteTask(v.ID)
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}
@@ -392,14 +402,20 @@ func (a *app) taskScheduler() {
 	for {
 		time.Sleep(time.Second * 5)
 
-		allTasks, err := a.repo.GetListTasks(GetListTasksFilter{
-			OnlyActive: true,
+		sort := CreatedAtAscTaskSort
+		allTasks, err := a.repo.GetListTasks(TasksFilter{
+			Filter: Filter{
+				Page:     1,
+				PageSize: 10,
+			},
+			Statuses: []TaskStatus{QueueTaskStatus, StartedTaskStatus},
+			Sort:     &sort,
 		})
 		if err != nil {
 			log.PrintErr(err)
 			continue
 		}
-		if len(allTasks) == 0 {
+		if len(allTasks.Items) == 0 {
 			continue
 		}
 
@@ -410,7 +426,7 @@ func (a *app) taskScheduler() {
 			}
 
 			stationTasks := make([]Task, 0)
-			for _, task := range allTasks {
+			for _, task := range allTasks.Items {
 				if task.StationID == station.ID {
 					stationTasks = append(stationTasks, task)
 				}
@@ -1064,10 +1080,9 @@ func (a *app) handleTaskErr(task Task, msg string) {
 		log.PrintErr(err)
 	}
 
-	status = QueueTaskStatus
-	queueTasks, err := a.repo.GetListTasks(GetListTasksFilter{
+	queueTasks, err := a.repo.GetListTasks(TasksFilter{
 		StationID: &task.StationID,
-		Status:    &status,
+		Statuses:  []TaskStatus{QueueTaskStatus},
 	})
 	if err != nil {
 		log.PrintErr(err)
@@ -1076,7 +1091,7 @@ func (a *app) handleTaskErr(task Task, msg string) {
 
 	status = CanceledTaskStatus
 	errorMsg := fmt.Sprintf("The task was canceled due to an error in the task %d", task.ID)
-	for _, queueTask := range queueTasks {
+	for _, queueTask := range queueTasks.Items {
 		_, err := a.repo.UpdateTask(queueTask.ID, UpdateTask{
 			Status:    &status,
 			StoppedAt: &stoppedAt,

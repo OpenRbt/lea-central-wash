@@ -3,6 +3,7 @@ package dal
 import (
 	"time"
 
+	"github.com/lib/pq"
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
@@ -777,10 +778,24 @@ returning id
 		stopped_at
     FROM tasks
 	WHERE
-		(CAST(:station_id AS INT) 		   IS NULL OR station_id = :station_id) AND
-		(CAST(:status AS TASK_STATUS_ENUM) IS NULL OR status     = :status) AND
-		(:only_active = FALSE 					   OR status IN ('queue', 'started'))
-	ORDER BY created_at
+		(CAST(:station_id AS INT) 		         IS NULL OR station_id = :station_id)    AND
+		(CAST(:statuses   AS TASK_STATUS_ENUM[]) IS NULL OR status     = ANY(:statuses)) AND
+		(CAST(:types      AS TASK_TYPE_ENUM[])   IS NULL OR type       = ANY(:types))
+	ORDER BY
+		CASE WHEN :sort = 'created_at_asc'  THEN created_at END ASC,
+		CASE WHEN :sort = 'created_at_desc' THEN created_at END DESC,
+		CASE WHEN CAST(:sort AS TEXT) IS NULL OR :sort not in ('created_at_asc', 'created_at_desc') THEN created_at END DESC
+	LIMIT  :limit
+	OFFSET :offset
+	`
+
+	sqlGetListTasksCount = `
+	SELECT COUNT(*)
+	FROM tasks
+	WHERE
+		(CAST(:station_id AS INT) 		         IS NULL OR station_id = :station_id)    AND
+		(CAST(:statuses   AS TASK_STATUS_ENUM[]) IS NULL OR status     = ANY(:statuses)) AND
+		(CAST(:types      AS TASK_TYPE_ENUM[])   IS NULL OR type       = ANY(:types))
 	`
 
 	sqlInsertTask = `
@@ -1341,6 +1356,7 @@ type (
 
 	TaskType   string
 	TaskStatus string
+	TaskSort   string
 
 	resTask struct {
 		ID        int
@@ -1359,9 +1375,18 @@ type (
 	}
 
 	argGetListTasks struct {
-		StationID  *int
-		Status     *TaskStatus
-		OnlyActive bool
+		StationID *int
+		Statuses  pq.StringArray
+		Types     pq.StringArray
+		Sort      *TaskSort
+		Limit     int
+		Offset    int
+	}
+
+	argGetListTasksCount struct {
+		StationID *int
+		Statuses  pq.StringArray
+		Types     pq.StringArray
 	}
 
 	argInsertTask struct {
@@ -1392,4 +1417,7 @@ const (
 	CompletedTaskStatus TaskStatus = "completed"
 	ErrorTaskStatus     TaskStatus = "error"
 	CanceledTaskStatus  TaskStatus = "canceled"
+
+	CreatedAtAscTaskSort  TaskSort = "created_at_asc"
+	CreatedAtDescTaskSort TaskSort = "created_at_desc"
 )

@@ -381,8 +381,8 @@ func (r *DB) GetTask(id int) (app.Task, error) {
 	return app.Task{}, nil
 }
 
-func (r *DB) GetListTasks(filter app.GetListTasksFilter) ([]app.Task, error) {
-	return nil, nil
+func (r *DB) GetListTasks(app.TasksFilter) (app.Page[app.Task], error) {
+	return app.Page[app.Task]{}, nil
 }
 
 func (r *DB) CreateTask(createTask app.CreateTask) (app.Task, error) {

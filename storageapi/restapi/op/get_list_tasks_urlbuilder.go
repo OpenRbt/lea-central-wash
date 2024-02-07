@@ -15,8 +15,12 @@ import (
 
 // GetListTasksURL generates an URL for the get list tasks operation
 type GetListTasksURL struct {
+	Page      *int64
+	PageSize  *int64
+	Sort      *string
 	StationID *int64
-	Status    *string
+	Statuses  []string
+	Types     []string
 
 	_basePath string
 	// avoid unkeyed usage
@@ -52,6 +56,30 @@ func (o *GetListTasksURL) Build() (*url.URL, error) {
 
 	qs := make(url.Values)
 
+	var pageQ string
+	if o.Page != nil {
+		pageQ = swag.FormatInt64(*o.Page)
+	}
+	if pageQ != "" {
+		qs.Set("page", pageQ)
+	}
+
+	var pageSizeQ string
+	if o.PageSize != nil {
+		pageSizeQ = swag.FormatInt64(*o.PageSize)
+	}
+	if pageSizeQ != "" {
+		qs.Set("pageSize", pageSizeQ)
+	}
+
+	var sortQ string
+	if o.Sort != nil {
+		sortQ = *o.Sort
+	}
+	if sortQ != "" {
+		qs.Set("sort", sortQ)
+	}
+
 	var stationIDQ string
 	if o.StationID != nil {
 		stationIDQ = swag.FormatInt64(*o.StationID)
@@ -60,12 +88,32 @@ func (o *GetListTasksURL) Build() (*url.URL, error) {
 		qs.Set("stationID", stationIDQ)
 	}
 
-	var statusQ string
-	if o.Status != nil {
-		statusQ = *o.Status
+	var statusesIR []string
+	for _, statusesI := range o.Statuses {
+		statusesIS := statusesI
+		if statusesIS != "" {
+			statusesIR = append(statusesIR, statusesIS)
+		}
 	}
-	if statusQ != "" {
-		qs.Set("status", statusQ)
+
+	statuses := swag.JoinByFormat(statusesIR, "multi")
+
+	for _, qsv := range statuses {
+		qs.Add("statuses", qsv)
+	}
+
+	var typesIR []string
+	for _, typesI := range o.Types {
+		typesIS := typesI
+		if typesIS != "" {
+			typesIR = append(typesIR, typesIS)
+		}
+	}
+
+	types := swag.JoinByFormat(typesIR, "multi")
+
+	for _, qsv := range types {
+		qs.Add("types", qsv)
 	}
 
 	_result.RawQuery = qs.Encode()

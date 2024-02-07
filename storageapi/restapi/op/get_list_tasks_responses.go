@@ -27,7 +27,7 @@ type GetListTasksOK struct {
 	/*
 	  In: Body
 	*/
-	Payload []*model.Task `json:"body,omitempty"`
+	Payload *model.TaskPage `json:"body,omitempty"`
 }
 
 // NewGetListTasksOK creates GetListTasksOK with default headers values
@@ -37,13 +37,13 @@ func NewGetListTasksOK() *GetListTasksOK {
 }
 
 // WithPayload adds the payload to the get list tasks o k response
-func (o *GetListTasksOK) WithPayload(payload []*model.Task) *GetListTasksOK {
+func (o *GetListTasksOK) WithPayload(payload *model.TaskPage) *GetListTasksOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the get list tasks o k response
-func (o *GetListTasksOK) SetPayload(payload []*model.Task) {
+func (o *GetListTasksOK) SetPayload(payload *model.TaskPage) {
 	o.Payload = payload
 }
 
@@ -51,14 +51,11 @@ func (o *GetListTasksOK) SetPayload(payload []*model.Task) {
 func (o *GetListTasksOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
-	payload := o.Payload
-	if payload == nil {
-		// return empty array
-		payload = make([]*model.Task, 0, 50)
-	}
-
-	if err := producer.Produce(rw, payload); err != nil {
-		panic(err) // let the recovery middleware deal with this
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
 	}
 }
 
