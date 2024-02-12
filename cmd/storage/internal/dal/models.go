@@ -393,14 +393,28 @@ func appBuildScript(buildScript resBuildScript) (app.BuildScript, error) {
 	}, nil
 }
 
-func appListTasks(tasks []resTask) []app.Task {
+func appListTasks(tasks []resTasks) []app.Task {
 	var appTasks []app.Task
 
 	for i := 0; i < len(tasks); i++ {
-		appTasks = append(appTasks, appTask(tasks[i]))
+		appTasks = append(appTasks, appTaskForTasks(tasks[i]))
 	}
 
 	return appTasks
+}
+
+func appTaskForTasks(task resTasks) app.Task {
+	return app.Task{
+		ID:        task.ID,
+		StationID: app.StationID(task.StationID),
+		VersionID: task.VersionID,
+		Type:      appTaskType(task.Type),
+		Status:    appTaskStatus(task.Status),
+		Error:     task.Error,
+		CreatedAt: task.CreatedAt,
+		StartedAt: task.StartedAt,
+		StoppedAt: task.StoppedAt,
+	}
 }
 
 func appTask(task resTask) app.Task {
@@ -487,6 +501,17 @@ func dalTaskStatus(taskStatus app.TaskStatus) TaskStatus {
 	default:
 		panic("Unknown task status: " + taskStatus)
 	}
+}
+
+func dalStationsId(stationsId []app.StationID) pq.Int32Array {
+	if stationsId == nil {
+		return nil
+	}
+	ids := []int32{}
+	for _, i := range stationsId {
+		ids = append(ids, int32(i))
+	}
+	return ids
 }
 
 func dalTaskStatuses(taskStatuses []app.TaskStatus) pq.StringArray {

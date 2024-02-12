@@ -15,12 +15,12 @@ import (
 
 // GetListTasksURL generates an URL for the get list tasks operation
 type GetListTasksURL struct {
-	Page      *int64
-	PageSize  *int64
-	Sort      *string
-	StationID *int64
-	Statuses  []string
-	Types     []string
+	Page       *int64
+	PageSize   *int64
+	Sort       *string
+	StationsID []int64
+	Statuses   []string
+	Types      []string
 
 	_basePath string
 	// avoid unkeyed usage
@@ -80,12 +80,18 @@ func (o *GetListTasksURL) Build() (*url.URL, error) {
 		qs.Set("sort", sortQ)
 	}
 
-	var stationIDQ string
-	if o.StationID != nil {
-		stationIDQ = swag.FormatInt64(*o.StationID)
+	var stationsIDIR []string
+	for _, stationsIDI := range o.StationsID {
+		stationsIDIS := swag.FormatInt64(stationsIDI)
+		if stationsIDIS != "" {
+			stationsIDIR = append(stationsIDIR, stationsIDIS)
+		}
 	}
-	if stationIDQ != "" {
-		qs.Set("stationID", stationIDQ)
+
+	stationsID := swag.JoinByFormat(stationsIDIR, "multi")
+
+	for _, qsv := range stationsID {
+		qs.Add("stationsID", qsv)
 	}
 
 	var statusesIR []string

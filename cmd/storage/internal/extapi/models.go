@@ -703,9 +703,12 @@ func appTasksFilter(params op.GetListTasksParams) app.TasksFilter {
 		Statuses: appTaskStatuses(params.Statuses),
 		Sort:     appTaskSort(*params.Sort),
 	}
-	if params.StationID != nil {
-		stationID := app.StationID(*params.StationID)
-		filter.StationID = &stationID
+	if params.StationsID != nil {
+		stationsId := []app.StationID{}
+		for _, v := range params.StationsID {
+			stationsId = append(stationsId, app.StationID(v))
+		}
+		filter.StationsID = stationsId
 	}
 	return filter
 }

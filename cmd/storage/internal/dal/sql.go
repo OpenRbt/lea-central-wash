@@ -775,18 +775,19 @@ returning id
 		error,
 		created_at,
 		started_at,
-		stopped_at
+		stopped_at,
+		COUNT(id) OVER() AS total_count
     FROM tasks
 	WHERE
-		(CAST(:station_id AS INT) 		         IS NULL OR station_id = :station_id)    AND
-		(CAST(:statuses   AS TASK_STATUS_ENUM[]) IS NULL OR status     = ANY(:statuses)) AND
-		(CAST(:types      AS TASK_TYPE_ENUM[])   IS NULL OR type       = ANY(:types))
+		(CAST(:stations_id AS INT[]) 		      IS NULL OR station_id = ANY(:stations_id)) AND
+		(CAST(:statuses    AS TASK_STATUS_ENUM[]) IS NULL OR status     = ANY(:statuses))    AND
+		(CAST(:types       AS TASK_TYPE_ENUM[])   IS NULL OR type       = ANY(:types))
 	ORDER BY
 		CASE WHEN :sort = 'created_at_asc'  THEN created_at END ASC,
 		CASE WHEN :sort = 'created_at_desc' THEN created_at END DESC,
 		CASE WHEN CAST(:sort AS TEXT) IS NULL OR :sort not in ('created_at_asc', 'created_at_desc') THEN created_at END DESC
-	LIMIT  :limit
-	OFFSET :offset
+	LIMIT  CASE WHEN :limit  >= 1 THEN :limit  ELSE 10 END
+	OFFSET CASE WHEN :offset >= 0 THEN :offset ELSE 0  END
 	`
 
 	sqlGetListTasksCount = `
@@ -1370,23 +1371,30 @@ type (
 		StoppedAt *time.Time
 	}
 
+	resTasks struct {
+		ID         int
+		StationID  int
+		VersionID  *int
+		Type       TaskType
+		Status     TaskStatus
+		Error      *string
+		CreatedAt  time.Time
+		StartedAt  *time.Time
+		StoppedAt  *time.Time
+		TotalCount int
+	}
+
 	argGetTask struct {
 		ID int
 	}
 
 	argGetListTasks struct {
-		StationID *int
-		Statuses  pq.StringArray
-		Types     pq.StringArray
-		Sort      *TaskSort
-		Limit     int
-		Offset    int
-	}
-
-	argGetListTasksCount struct {
-		StationID *int
-		Statuses  pq.StringArray
-		Types     pq.StringArray
+		StationsID pq.Int32Array
+		Statuses   pq.StringArray
+		Types      pq.StringArray
+		Sort       *TaskSort
+		Limit      int
+		Offset     int
 	}
 
 	argInsertTask struct {

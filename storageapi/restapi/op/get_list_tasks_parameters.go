@@ -66,10 +66,10 @@ type GetListTasksParams struct {
 	*/
 	Sort *string
 	/*
-	  Minimum: 1
 	  In: query
+	  Collection Format: multi
 	*/
-	StationID *int64
+	StationsID []int64
 	/*
 	  In: query
 	  Collection Format: multi
@@ -108,8 +108,8 @@ func (o *GetListTasksParams) BindRequest(r *http.Request, route *middleware.Matc
 		res = append(res, err)
 	}
 
-	qStationID, qhkStationID, _ := qs.GetOK("stationID")
-	if err := o.bindStationID(qStationID, qhkStationID, route.Formats); err != nil {
+	qStationsID, qhkStationsID, _ := qs.GetOK("stationsID")
+	if err := o.bindStationsID(qStationsID, qhkStationsID, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -241,39 +241,27 @@ func (o *GetListTasksParams) validateSort(formats strfmt.Registry) error {
 	return nil
 }
 
-// bindStationID binds and validates parameter StationID from query.
-func (o *GetListTasksParams) bindStationID(rawData []string, hasKey bool, formats strfmt.Registry) error {
-	var raw string
-	if len(rawData) > 0 {
-		raw = rawData[len(rawData)-1]
-	}
-
-	// Required: false
-	// AllowEmptyValue: false
-
-	if raw == "" { // empty values pass all other validations
+// bindStationsID binds and validates array parameter StationsID from query.
+//
+// Arrays are parsed according to CollectionFormat: "multi" (defaults to "csv" when empty).
+func (o *GetListTasksParams) bindStationsID(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	// CollectionFormat: multi
+	stationsIDIC := rawData
+	if len(stationsIDIC) == 0 {
 		return nil
 	}
 
-	value, err := swag.ConvertInt64(raw)
-	if err != nil {
-		return errors.InvalidType("stationID", "query", "int64", raw)
+	var stationsIDIR []int64
+	for i, stationsIDIV := range stationsIDIC {
+		stationsIDI, err := swag.ConvertInt64(stationsIDIV)
+		if err != nil {
+			return errors.InvalidType(fmt.Sprintf("%s.%v", "stationsID", i), "query", "int64", stationsIDI)
+		}
+
+		stationsIDIR = append(stationsIDIR, stationsIDI)
 	}
-	o.StationID = &value
 
-	if err := o.validateStationID(formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// validateStationID carries on validations for parameter StationID
-func (o *GetListTasksParams) validateStationID(formats strfmt.Registry) error {
-
-	if err := validate.MinimumInt("stationID", "query", *o.StationID, 1, false); err != nil {
-		return err
-	}
+	o.StationsID = stationsIDIR
 
 	return nil
 }

@@ -315,10 +315,10 @@ type UpdateTask struct {
 
 type TasksFilter struct {
 	Filter
-	StationID *StationID
-	Statuses  []TaskStatus
-	Types     []TaskType
-	Sort      *TaskSort
+	StationsID []StationID
+	Statuses   []TaskStatus
+	Types      []TaskType
+	Sort       *TaskSort
 }
 
 type FirmwareVersionJson struct {

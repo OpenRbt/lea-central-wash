@@ -234,12 +234,14 @@ func (a *app) DeleteTask(id int) error {
 }
 
 func (a *app) DeleteTasks() error {
+	page := 1
 	for {
 		tasks, err := a.repo.GetListTasks(TasksFilter{
 			Filter: Filter{
-				Page:     1,
+				Page:     page,
 				PageSize: 100,
 			},
+			Statuses: []TaskStatus{ErrorTaskStatus, CompletedTaskStatus, CanceledTaskStatus},
 		})
 		if err != nil {
 			return err
@@ -249,13 +251,16 @@ func (a *app) DeleteTasks() error {
 		}
 
 		for _, v := range tasks.Items {
-			if v.Status == ErrorTaskStatus || v.Status == CompletedTaskStatus || v.Status == CanceledTaskStatus {
-				err = a.repo.DeleteTask(v.ID)
-				if err != nil {
-					return err
-				}
+			err = a.repo.DeleteTask(v.ID)
+			if err != nil {
+				return err
 			}
 		}
+
+		if page >= tasks.TotalPages {
+			break
+		}
+		page++
 	}
 
 	return nil
@@ -404,10 +409,6 @@ func (a *app) taskScheduler() {
 
 		sort := CreatedAtAscTaskSort
 		allTasks, err := a.repo.GetListTasks(TasksFilter{
-			Filter: Filter{
-				Page:     1,
-				PageSize: 10,
-			},
 			Statuses: []TaskStatus{QueueTaskStatus, StartedTaskStatus},
 			Sort:     &sort,
 		})
@@ -425,17 +426,24 @@ func (a *app) taskScheduler() {
 				continue
 			}
 
-			stationTasks := make([]Task, 0)
-			for _, task := range allTasks.Items {
-				if task.StationID == station.ID {
-					stationTasks = append(stationTasks, task)
-				}
+			stationTask, err := a.repo.GetListTasks(TasksFilter{
+				Filter: Filter{
+					Page:     1,
+					PageSize: 1,
+				},
+				StationsID: []StationID{station.ID},
+				Statuses:   []TaskStatus{QueueTaskStatus, StartedTaskStatus},
+				Sort:       &sort,
+			})
+			if err != nil {
+				log.PrintErr(err)
+				continue
 			}
-			if len(stationTasks) == 0 {
+			if len(stationTask.Items) == 0 {
 				continue
 			}
 
-			task := stationTasks[0]
+			task := stationTask.Items[0]
 			station.Task = &task
 			a.stations[i] = station
 
@@ -726,7 +734,19 @@ func (a *app) runGetVersions(task Task) {
 	var currentVersions *FirmwareVersion = nil
 
 	for _, dir := range directories {
-		v, err := strconv.Atoi(path.Base(dir)[5:])
+		dirName := path.Base(dir)
+		if dirName == baseWashName {
+			versionFromJson := FirmwareVersion{
+				IsCurrent: currentVersion == 0,
+			}
+			versions = append(versions, versionFromJson)
+			if versionFromJson.IsCurrent {
+				currentVersions = &versionFromJson
+			}
+			continue
+		}
+
+		v, err := strconv.Atoi(dirName[5:])
 		if err != nil {
 			a.handleTaskErr(task, fmt.Sprintf("Error parsing version: %s", err.Error()))
 			return
@@ -874,7 +894,11 @@ func (a *app) runUpdate(task Task) {
 
 	newVersion := 0
 	for _, dir := range versionDirs {
-		v, err := strconv.Atoi(path.Base(dir)[5:])
+		dirName := path.Base(dir)
+		if dirName == baseWashName {
+			continue
+		}
+		v, err := strconv.Atoi(dirName[5:])
 		if err != nil {
 			a.handleTaskErr(task, fmt.Sprintf("Error parsing version: %s", err.Error()))
 			return
@@ -1080,26 +1104,38 @@ func (a *app) handleTaskErr(task Task, msg string) {
 		log.PrintErr(err)
 	}
 
-	queueTasks, err := a.repo.GetListTasks(TasksFilter{
-		StationID: &task.StationID,
-		Statuses:  []TaskStatus{QueueTaskStatus},
-	})
-	if err != nil {
-		log.PrintErr(err)
-		return
-	}
-
-	status = CanceledTaskStatus
-	errorMsg := fmt.Sprintf("The task was canceled due to an error in the task %d", task.ID)
-	for _, queueTask := range queueTasks.Items {
-		_, err := a.repo.UpdateTask(queueTask.ID, UpdateTask{
-			Status:    &status,
-			StoppedAt: &stoppedAt,
-			Error:     &errorMsg,
+	page := 1
+	for {
+		queueTasks, err := a.repo.GetListTasks(TasksFilter{
+			Filter: Filter{
+				Page:     page,
+				PageSize: 100,
+			},
+			StationsID: []StationID{task.StationID},
+			Statuses:   []TaskStatus{QueueTaskStatus},
 		})
 		if err != nil {
 			log.PrintErr(err)
+			return
 		}
+
+		status = CanceledTaskStatus
+		errorMsg := fmt.Sprintf("The task was canceled due to an error in the task %d", task.ID)
+		for _, queueTask := range queueTasks.Items {
+			_, err := a.repo.UpdateTask(queueTask.ID, UpdateTask{
+				Status:    &status,
+				StoppedAt: &stoppedAt,
+				Error:     &errorMsg,
+			})
+			if err != nil {
+				log.PrintErr(err)
+			}
+		}
+
+		if page >= queueTasks.TotalPages {
+			break
+		}
+		page++
 	}
 
 	a.stationsMutex.Lock()

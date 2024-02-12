@@ -49,6 +49,7 @@ const (
 	binarName          = "firmware.exe"
 	versionName        = "versions.json"
 	currentWashName    = "current_wash"
+	baseWashName       = "wash"
 	runshName          = "run.sh"
 	binarOwPath        = "openwashing/software/v1-enlight/firmware.exe"
 
@@ -65,7 +66,7 @@ const (
 	cloneRepositoryOwCommand = "git clone https://github.com/OpenRbt/openwashing.git ~/openwashing && cd ~/openwashing/software/v1-enlight/3rd/lua53/src && make linux"
 	pullRepositoryOwCommand  = "cd ~/openwashing && git pull"
 	makeBinarOwCommand       = "cd ~/openwashing/software/v1-enlight && make"
-	findVersionsOwCommand    = "find ~/ -maxdepth 1 -type d -name \"wash_*\""
+	findVersionsOwCommand    = "find ~/ -maxdepth 1 -type d -name \"wash_*\" -o -name \"wash\""
 	cleateLink               = "ln -f -s -n %s %s"
 	rebootOwCommand          = "sudo shutdown -r +1"
 	cdFirmwareRunshCommand   = "cd %s"
@@ -621,6 +622,12 @@ type Filter struct {
 }
 
 func NewPage[T any](items []T, filter Filter, totalItems int) Page[T] {
+	if filter.PageSize <= 0 {
+		filter.PageSize = 10
+	}
+	if filter.Page <= 0 {
+		filter.Page = 1
+	}
 	return Page[T]{
 		Items:      items,
 		TotalPages: int(math.Ceil((float64(totalItems) / float64(filter.PageSize)))),
@@ -631,9 +638,20 @@ func NewPage[T any](items []T, filter Filter, totalItems int) Page[T] {
 }
 
 func (f *Filter) Offset() int {
-	return (f.Page - 1) * f.PageSize
+	page := f.Page
+	pageSize := f.PageSize
+	if f.PageSize <= 0 {
+		pageSize = 10
+	}
+	if f.Page <= 0 {
+		page = 1
+	}
+	return (page - 1) * pageSize
 }
 
 func (f *Filter) Limit() int {
+	if f.PageSize <= 0 {
+		return 10
+	}
 	return f.PageSize
 }

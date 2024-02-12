@@ -2952,9 +2952,13 @@ func init() {
         "parameters": [
           {
             "minimum": 1,
-            "type": "integer",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "collectionFormat": "multi",
             "x-nullable": true,
-            "name": "stationID",
+            "name": "stationsID",
             "in": "query"
           },
           {
@@ -7619,9 +7623,13 @@ func init() {
         "parameters": [
           {
             "minimum": 1,
-            "type": "integer",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "collectionFormat": "multi",
             "x-nullable": true,
-            "name": "stationID",
+            "name": "stationsID",
             "in": "query"
           },
           {

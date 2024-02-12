@@ -2880,11 +2880,14 @@ paths:
       security:
         - pinCode: [ ]
       parameters:
-        - name: stationID
+        - name: stationsID
           required: false
           x-nullable: true
           in: query
-          type: integer
+          collectionFormat: multi
+          type: array
+          items: 
+            type: integer
           minimum: 1
         - name: statuses
           required: false

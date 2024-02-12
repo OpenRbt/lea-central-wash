@@ -193,31 +193,24 @@ func (r *repo) GetTask(id int) (app.Task, error) {
 }
 
 func (r *repo) GetListTasks(filter app.TasksFilter) (app.Page[app.Task], error) {
-	var count int
+	count := 0
 	var tasks []app.Task
 
 	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		err := tx.NamedGetContext(ctx, &count, sqlGetListTasksCount, argGetListTasksCount{
-			StationID: (*int)(filter.StationID),
-			Statuses:  dalTaskStatuses(filter.Statuses),
-			Types:     dalTaskTypes(filter.Types),
+		var res []resTasks
+		err := tx.NamedSelectContext(ctx, &res, sqlGetListTasks, argGetListTasks{
+			StationsID: dalStationsId(filter.StationsID),
+			Statuses:   dalTaskStatuses(filter.Statuses),
+			Types:      dalTaskTypes(filter.Types),
+			Sort:       dalTaskSort(filter.Sort),
+			Limit:      filter.Limit(),
+			Offset:     filter.Offset(),
 		})
 		if err != nil {
 			return err
 		}
-
-		var res []resTask
-		err = tx.NamedSelectContext(ctx, &res, sqlGetListTasks, argGetListTasks{
-			StationID: (*int)(filter.StationID),
-			Statuses:  dalTaskStatuses(filter.Statuses),
-			Types:     dalTaskTypes(filter.Types),
-			Sort:      dalTaskSort(filter.Sort),
-			Limit:     filter.Limit(),
-			Offset:    filter.Offset(),
-		})
-
-		if err != nil {
-			return err
+		if len(res) > 0 {
+			count = res[0].TotalCount
 		}
 
 		tasks = appListTasks(res)
