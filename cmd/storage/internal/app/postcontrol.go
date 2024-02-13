@@ -722,10 +722,18 @@ func (a *app) runGetVersions(task Task) {
 		return
 	}
 	if !os.IsNotExist(err) {
-		currentVersion, err = strconv.Atoi(path.Base(currentWashPath)[5:])
-		if err != nil {
-			a.handleTaskErr(task, fmt.Sprintf("Error parsing current version: %s", err.Error()))
-			return
+		linkName := path.Base(currentWashPath)
+		if linkName != baseWashName {
+			if len(linkName) < 5 {
+				a.handleTaskErr(task, fmt.Sprintf("Error: %s has a length less than 5, so a version cannot be derived from it", linkName))
+				return
+			}
+
+			currentVersion, err = strconv.Atoi(linkName[5:])
+			if err != nil {
+				a.handleTaskErr(task, fmt.Sprintf("Error parsing current version: %s", err.Error()))
+				return
+			}
 		}
 	}
 
@@ -744,6 +752,11 @@ func (a *app) runGetVersions(task Task) {
 				currentVersions = &versionFromJson
 			}
 			continue
+		}
+
+		if len(dirName) < 5 {
+			a.handleTaskErr(task, fmt.Sprintf("Error: %s has a length less than 5, so a version cannot be derived from it", dirName))
+			return
 		}
 
 		v, err := strconv.Atoi(dirName[5:])
@@ -828,6 +841,10 @@ func (a *app) runPullFirmware(task Task) {
 	}
 
 	remotePath := path.Join(homeOwPath, fmt.Sprintf("wash_%d", *task.VersionID))
+	if *task.VersionID == 0 {
+		remotePath = path.Join(homeOwPath, baseWashName)
+	}
+
 	_, err = sftpClient.Stat(remotePath)
 	if err != nil && !os.IsNotExist(err) {
 		a.handleTaskErr(task, fmt.Sprintf("Error checking file existence %s: %s", remotePath, err.Error()))
@@ -898,6 +915,12 @@ func (a *app) runUpdate(task Task) {
 		if dirName == baseWashName {
 			continue
 		}
+
+		if len(dirName) < 5 {
+			a.handleTaskErr(task, fmt.Sprintf("Error: %s has a length less than 5, so a version cannot be derived from it", dirName))
+			return
+		}
+
 		v, err := strconv.Atoi(dirName[5:])
 		if err != nil {
 			a.handleTaskErr(task, fmt.Sprintf("Error parsing version: %s", err.Error()))
@@ -1007,6 +1030,11 @@ func (a *app) runSetVersion(task Task) {
 		return
 	}
 
+	if task.VersionID == nil {
+		a.handleTaskErr(task, "Error: firmware version not specified")
+		return
+	}
+
 	client, err := sshClient(a.postControlConfig.KeySSHPath, a.postControlConfig.UserSSH, ip)
 	if err != nil {
 		a.handleTaskErr(task, fmt.Sprintf("Error creating ssh client: %s", err.Error()))
@@ -1028,6 +1056,10 @@ func (a *app) runSetVersion(task Task) {
 	}
 
 	remotePath := path.Join(homeOwPath, fmt.Sprintf("wash_%d", *task.VersionID))
+	if *task.VersionID == 0 {
+		remotePath = path.Join(homeOwPath, baseWashName)
+	}
+
 	_, err = sftpClient.Stat(remotePath)
 	if err != nil && !os.IsNotExist(err) {
 		a.handleTaskErr(task, fmt.Sprintf("Error checking file existence %s: %s", remotePath, err.Error()))
