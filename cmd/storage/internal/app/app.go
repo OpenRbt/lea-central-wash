@@ -45,13 +45,15 @@ const RabbitWorkerScheduleInterval = time.Minute
 
 // Post control commands
 const (
-	openwashingLcwName = "openwashing"
-	binarName          = "firmware.exe"
-	versionName        = "versions.json"
-	currentWashName    = "current_wash"
-	baseWashName       = "wash"
-	runshName          = "run.sh"
-	binarOwPath        = "openwashing/software/v1-enlight/firmware.exe"
+	openwashingLcwName     = "openwashing"
+	binarName              = "firmware.exe"
+	paymentWorldName       = "uic_payment_app"
+	paymentWorldConfigName = "config.ini"
+	versionName            = "versions.json"
+	currentWashName        = "current_wash"
+	baseWashName           = "wash"
+	runshName              = "run.sh"
+	binarOwPath            = "openwashing/software/v1-enlight/firmware.exe"
 
 	cloneRepositoryLcwCommand        = "git clone https://github.com/OpenRbt/openwashing.git ~/openwashing"
 	pullRepositoryLcwCommand         = "cd ~/openwashing && git pull"

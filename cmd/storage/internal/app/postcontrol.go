@@ -40,7 +40,6 @@ func (a *app) GetVersions(stationID StationID) ([]FirmwareVersion, error) {
 	defer a.stationsMutex.RUnlock()
 	station, ok := a.stations[stationID]
 	if !ok || station.LastPing.Add(durationStationOffline).Before(time.Now()) || station.Versions == nil {
-
 		return nil, ErrNotFound
 	}
 
@@ -80,6 +79,10 @@ func copyFilesToLcw(client *sftp.Client, remotePath, localPath string) error {
 				return err
 			}
 		} else {
+			if remoteFile.Name() == paymentWorldName || remoteFile.Name() == paymentWorldConfigName {
+				continue
+			}
+
 			srcFile, err := client.Open(remoteFilePath)
 			if err != nil {
 				return err
@@ -611,7 +614,7 @@ func (a *app) runBuild(task Task) {
 		return
 	}
 	if len(hashBinar) == 0 {
-		a.handleTaskErr(task, fmt.Sprintf("Error calculating binary file hash: hash is null"))
+		a.handleTaskErr(task, "Error calculating binary file hash: hash is null")
 		return
 	}
 	hashBinar = hashBinar[:len(hashBinar)-1]
@@ -622,7 +625,7 @@ func (a *app) runBuild(task Task) {
 		return
 	}
 	if len(hashLua) == 0 {
-		a.handleTaskErr(task, fmt.Sprintf("Error calculating lua script file hash: hash is null"))
+		a.handleTaskErr(task, "Error calculating lua script file hash: hash is null")
 		return
 	}
 	hashLua = hashLua[:len(hashLua)-1]
@@ -633,7 +636,7 @@ func (a *app) runBuild(task Task) {
 		return
 	}
 	if len(hashEnv) == 0 {
-		a.handleTaskErr(task, fmt.Sprintf("Error calculating env hash: hash is null"))
+		a.handleTaskErr(task, "Error calculating env hash: hash is null")
 		return
 	}
 	hashEnv = hashEnv[:len(hashEnv)-1]
@@ -644,7 +647,7 @@ func (a *app) runBuild(task Task) {
 		return
 	}
 	if len(commitedAt) == 0 {
-		a.handleTaskErr(task, fmt.Sprintf("Error calculating commited date: date is null"))
+		a.handleTaskErr(task, "Error calculating commited date: date is null")
 		return
 	}
 	commitedAtDate, err := time.Parse("2006-01-02T15:04:05Z", string(commitedAt[:len(commitedAt)-1]))
@@ -738,6 +741,11 @@ func (a *app) runGetVersions(task Task) {
 	}
 
 	directories, err := getVersionsDirNames(client)
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error geting versions: %s", err.Error()))
+		return
+	}
+
 	versions := make([]FirmwareVersion, 0)
 	var currentVersions *FirmwareVersion = nil
 
@@ -771,6 +779,7 @@ func (a *app) runGetVersions(task Task) {
 			a.handleTaskErr(task, fmt.Sprintf("Error opening file %s: %s", versionFilePath, err.Error()))
 			return
 		}
+		defer file.Close()
 
 		text, err := io.ReadAll(file)
 		if err != nil {
@@ -797,7 +806,7 @@ func (a *app) runGetVersions(task Task) {
 	station, ok := a.stations[task.StationID]
 	if !ok {
 		a.stationsMutex.RUnlock()
-		a.handleTaskErr(task, fmt.Sprintf("Error: station not found"))
+		a.handleTaskErr(task, "Error: station not found")
 		return
 	}
 	station.Versions = versions
@@ -866,6 +875,73 @@ func (a *app) runPullFirmware(task Task) {
 	if err != nil {
 		a.handleTaskErr(task, fmt.Sprintf("Error copying remote files: %s", err.Error()))
 		return
+	}
+
+	pwPath := path.Join(a.postControlConfig.StationsDirPath, paymentWorldName)
+	pwcPath := path.Join(a.postControlConfig.StationsDirPath, paymentWorldConfigName)
+
+	_, errPw := os.Stat(pwPath)
+	if errPw != nil && !os.IsNotExist(errPw) {
+		a.handleTaskErr(task, fmt.Sprintf("Error checking file existence %s: %s", pwPath, errPw.Error()))
+		return
+	}
+
+	_, errPwc := os.Stat(pwcPath)
+	if errPwc != nil && !os.IsNotExist(errPwc) {
+		a.handleTaskErr(task, fmt.Sprintf("Error checking file existence %s: %s", pwcPath, errPwc.Error()))
+		return
+	}
+
+	log.Printf("Банк1: %s, %s", errPw, errPwc)
+
+	if os.IsNotExist(errPw) || os.IsNotExist(errPwc) {
+		pwRemotePath := path.Join(remotePath, paymentWorldName)
+		pwcRemotePath := path.Join(remotePath, paymentWorldConfigName)
+
+		pwRemoteFile, errPw := sftpClient.Open(pwRemotePath)
+		if errPw != nil && !os.IsNotExist(errPw) {
+			a.handleTaskErr(task, fmt.Sprintf("Error opening file %s: %s", pwRemotePath, errPw.Error()))
+			return
+		}
+
+		pwcRemoteFile, errPwc := sftpClient.Open(pwcRemotePath)
+		if errPwc != nil && !os.IsNotExist(errPwc) {
+			a.handleTaskErr(task, fmt.Sprintf("Error opening file %s: %s", pwcRemotePath, errPwc.Error()))
+			return
+		}
+
+		log.Printf("Банк2: %s, %s", errPw, errPwc)
+
+		if errPw == nil && errPwc == nil {
+			defer pwRemoteFile.Close()
+			defer pwcRemoteFile.Close()
+
+			pwFile, err := os.Create(pwPath)
+			if err != nil {
+				a.handleTaskErr(task, fmt.Sprintf("Error creating file %s: %s", pwPath, err.Error()))
+				return
+			}
+			defer pwFile.Close()
+
+			_, err = io.Copy(pwFile, pwRemoteFile)
+			if err != nil {
+				a.handleTaskErr(task, fmt.Sprintf("Error coping file %s to %s: %s", pwRemotePath, pwPath, err.Error()))
+				return
+			}
+
+			pwcFile, err := os.Create(pwcPath)
+			if err != nil {
+				a.handleTaskErr(task, fmt.Sprintf("Error creating file %s: %s", pwcPath, err.Error()))
+				return
+			}
+			defer pwcFile.Close()
+
+			_, err = io.Copy(pwcFile, pwcRemoteFile)
+			if err != nil {
+				a.handleTaskErr(task, fmt.Sprintf("Error coping file %s to %s: %s", pwcRemotePath, pwcPath, err.Error()))
+				return
+			}
+		}
 	}
 
 	a.compliteTask(task)
@@ -945,6 +1021,50 @@ func (a *app) runUpdate(task Task) {
 		return
 	}
 
+	pwPath := path.Join(a.postControlConfig.StationsDirPath, paymentWorldName)
+	pwFile, err := os.Open(pwPath)
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error opening file %s: %s", pwPath, err.Error()))
+		return
+	}
+	defer pwFile.Close()
+
+	pwRemotePath := path.Join(washDir, paymentWorldName)
+	pwRemoteFile, err := sftpClient.Create(pwRemotePath)
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error creating file %s: %s", pwRemotePath, err.Error()))
+		return
+	}
+	defer pwRemoteFile.Close()
+
+	_, err = io.Copy(pwRemoteFile, pwFile)
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error coping file %s to %s: %s", pwRemotePath, pwPath, err.Error()))
+		return
+	}
+
+	pwcPath := path.Join(a.postControlConfig.StationsDirPath, paymentWorldConfigName)
+	pwcFile, err := os.Open(pwcPath)
+	if err != nil && !os.IsNotExist(err) {
+		a.handleTaskErr(task, fmt.Sprintf("Error opening file %s: %s", pwcPath, err.Error()))
+		return
+	}
+	defer pwcFile.Close()
+
+	pwcRemotePath := path.Join(washDir, paymentWorldConfigName)
+	pwcRemoteFile, err := sftpClient.Create(pwcRemotePath)
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error creating file %s: %s", pwcRemotePath, err.Error()))
+		return
+	}
+	defer pwcRemoteFile.Close()
+
+	_, err = io.Copy(pwcRemoteFile, pwcFile)
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error coping file %s to %s: %s", pwcRemotePath, pwcPath, err.Error()))
+		return
+	}
+
 	linkPath := path.Join(homeOwPath, currentWashName)
 	_, err = runRemoteCommand(client, fmt.Sprintf(cleateLink, washDir, linkPath))
 	if err != nil {
@@ -972,7 +1092,7 @@ func (a *app) runUpdate(task Task) {
 
 	lines := strings.Split(string(text), "\n")
 	if len(lines) < 2 {
-		a.handleTaskErr(task, fmt.Sprintf("Error: file run.sh contains less than two lines"))
+		a.handleTaskErr(task, "Error: file run.sh contains less than two lines")
 		return
 	}
 
