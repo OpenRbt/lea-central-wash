@@ -932,6 +932,27 @@ func (a *app) runPullFirmware(task Task) {
 		return
 	}
 
+	if *task.VersionID == 0 {
+		versionsFile, err := os.Create(path.Join(stationPath, versionName))
+		if err != nil {
+			a.handleTaskErr(task, fmt.Sprintf("Error creating file %s: %s", versionName, err.Error()))
+			return
+		}
+		defer versionsFile.Close()
+
+		bytes, err := json.MarshalIndent(FirmwareVersionJson{}, "", "\t")
+		if err != nil {
+			a.handleTaskErr(task, fmt.Sprintf("Error marshaling firmware version: %s", err.Error()))
+			return
+		}
+
+		_, err = versionsFile.Write(bytes)
+		if err != nil {
+			a.handleTaskErr(task, fmt.Sprintf("Error writing file %s: %s", versionName, err.Error()))
+			return
+		}
+	}
+
 	pwPath := path.Join(a.postControlConfig.StationsDirPath, paymentWorldName)
 	pwcPath := path.Join(a.postControlConfig.StationsDirPath, paymentWorldConfigName)
 
