@@ -166,7 +166,6 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) (Statio
 		bonusSystemActive = a.isServiceAvailableForStation(id, status)
 	}
 
-	//
 	if oldStation.Versions == nil || oldStation.LastPing.Add(durationStationOffline).Before(time.Now()) {
 		tasks, err := a.repo.GetListTasks(TasksFilter{
 			StationsID: []StationID{id},

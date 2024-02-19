@@ -1318,8 +1318,24 @@ func (svc *service) copyFirmware(params op.FirmwareVersionsCopyParams, auth *app
 		return op.NewFirmwareVersionsCopyNotFound()
 	case app.ErrStationDirectoryNotExist:
 		return op.NewFirmwareVersionsCopyBadRequest()
+	case app.ErrTaskStarted:
+		return op.NewFirmwareVersionsCopyBadRequest()
 	default:
 		log.PrintErr(err)
 		return op.NewFirmwareVersionsCopyInternalServerError()
+	}
+}
+
+func (svc *service) getVersionBuffered(params op.GetStationFirmwareVersionBufferedParams, auth *app.Auth) op.GetStationFirmwareVersionBufferedResponder {
+	v, err := svc.app.GetVersionBuffered(app.StationID(params.ID))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetStationFirmwareVersionBufferedOK().WithPayload(apiFirmwareVersion(&v))
+	case app.ErrNotFound:
+		return op.NewGetStationFirmwareVersionBufferedNotFound()
+	default:
+		log.PrintErr(err)
+		return op.NewGetStationFirmwareVersionBufferedInternalServerError()
 	}
 }

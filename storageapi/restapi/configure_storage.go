@@ -225,6 +225,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.GetStationDiscountsNotImplemented()
 		})
 	}
+	if api.GetStationFirmwareVersionBufferedHandler == nil {
+		api.GetStationFirmwareVersionBufferedHandler = op.GetStationFirmwareVersionBufferedHandlerFunc(func(params op.GetStationFirmwareVersionBufferedParams, principal *storageapi.Profile) op.GetStationFirmwareVersionBufferedResponder {
+			return op.GetStationFirmwareVersionBufferedNotImplemented()
+		})
+	}
 	if api.GetStationFirmwareVersionsHandler == nil {
 		api.GetStationFirmwareVersionsHandler = op.GetStationFirmwareVersionsHandlerFunc(func(params op.GetStationFirmwareVersionsParams, principal *storageapi.Profile) op.GetStationFirmwareVersionsResponder {
 			return op.GetStationFirmwareVersionsNotImplemented()

@@ -13,6 +13,7 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -44,6 +45,33 @@ func (a *app) GetVersions(stationID StationID) ([]FirmwareVersion, error) {
 	}
 
 	return station.Versions, nil
+}
+
+func (a *app) GetVersionBuffered(stationID StationID) (FirmwareVersion, error) {
+	_, err := a.repo.Station(stationID)
+	if err != nil {
+		return FirmwareVersion{}, err
+	}
+
+	file, err := os.Open(path.Join(a.postControlConfig.StationsDirPath, fmt.Sprint(stationID), versionName))
+	if err != nil && !os.IsNotExist(err) {
+		return FirmwareVersion{}, err
+	} else if os.IsNotExist(err) {
+		return FirmwareVersion{}, ErrNotFound
+	}
+
+	fileBytes, err := io.ReadAll(file)
+	if err != nil {
+		return FirmwareVersion{}, err
+	}
+
+	var version FirmwareVersionJson
+	err = json.Unmarshal(fileBytes, &version)
+	if err != nil {
+		return FirmwareVersion{}, err
+	}
+
+	return firmwareVersionFromJson(0, false, version), nil
 }
 
 func getVersionsDirNames(client *ssh.Client) ([]string, error) {
@@ -79,7 +107,9 @@ func copyFilesToLcw(client *sftp.Client, remotePath, localPath string) error {
 				return err
 			}
 		} else {
-			if remoteFile.Name() == paymentWorldName || remoteFile.Name() == paymentWorldConfigName {
+			if remoteFile.Name() == paymentWorldName ||
+				remoteFile.Name() == paymentWorldConfigName ||
+				filepath.Ext(remoteFile.Name()) == ".txt" {
 				continue
 			}
 
@@ -291,6 +321,10 @@ func (a *app) CreateTask(createTask CreateTask) (Task, error) {
 }
 
 func (a *app) CopyFirmware(stationID StationID, copyToID StationID) error {
+	if stationID == copyToID {
+		return nil
+	}
+
 	_, err := a.repo.Station(stationID)
 	if err != nil {
 		return err
@@ -299,6 +333,23 @@ func (a *app) CopyFirmware(stationID StationID, copyToID StationID) error {
 	_, err = a.repo.Station(copyToID)
 	if err != nil {
 		return err
+	}
+
+	task, err := a.repo.GetListTasks(TasksFilter{
+		Filter: Filter{
+			Page:     1,
+			PageSize: 1,
+		},
+		StationsID: []StationID{stationID, copyToID},
+		Types:      []TaskType{BuildTaskType, PullFirmwareTaskType},
+		Statuses:   []TaskStatus{StartedTaskStatus},
+	})
+	if err != nil {
+		return err
+	}
+
+	if len(task.Items) > 0 {
+		return ErrTaskStarted
 	}
 
 	stationPath := path.Join(a.postControlConfig.StationsDirPath, stationID.String())
@@ -746,7 +797,7 @@ func (a *app) runGetVersions(task Task) {
 		return
 	}
 
-	versions := make([]FirmwareVersion, 0)
+	versions := make([]FirmwareVersion, 0, len(directories))
 	var currentVersions *FirmwareVersion = nil
 
 	for _, dir := range directories {
@@ -801,6 +852,10 @@ func (a *app) runGetVersions(task Task) {
 			currentVersions = &versionFromJson
 		}
 	}
+
+	sort.Slice(versions, func(i, j int) bool {
+		return versions[i].ID > versions[j].ID
+	})
 
 	a.stationsMutex.Lock()
 	station, ok := a.stations[task.StationID]

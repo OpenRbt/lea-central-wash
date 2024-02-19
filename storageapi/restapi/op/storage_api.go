@@ -149,6 +149,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		GetStationDiscountsHandler: GetStationDiscountsHandlerFunc(func(params GetStationDiscountsParams) GetStationDiscountsResponder {
 			return GetStationDiscountsNotImplemented()
 		}),
+		GetStationFirmwareVersionBufferedHandler: GetStationFirmwareVersionBufferedHandlerFunc(func(params GetStationFirmwareVersionBufferedParams, principal *storageapi.Profile) GetStationFirmwareVersionBufferedResponder {
+			return GetStationFirmwareVersionBufferedNotImplemented()
+		}),
 		GetStationFirmwareVersionsHandler: GetStationFirmwareVersionsHandlerFunc(func(params GetStationFirmwareVersionsParams, principal *storageapi.Profile) GetStationFirmwareVersionsResponder {
 			return GetStationFirmwareVersionsNotImplemented()
 		}),
@@ -434,6 +437,8 @@ type StorageAPI struct {
 	GetStationConfigVarStringHandler GetStationConfigVarStringHandler
 	// GetStationDiscountsHandler sets the operation handler for the get station discounts operation
 	GetStationDiscountsHandler GetStationDiscountsHandler
+	// GetStationFirmwareVersionBufferedHandler sets the operation handler for the get station firmware version buffered operation
+	GetStationFirmwareVersionBufferedHandler GetStationFirmwareVersionBufferedHandler
 	// GetStationFirmwareVersionsHandler sets the operation handler for the get station firmware versions operation
 	GetStationFirmwareVersionsHandler GetStationFirmwareVersionsHandler
 	// GetStationWashConfigVarBoolHandler sets the operation handler for the get station wash config var bool operation
@@ -729,6 +734,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.GetStationDiscountsHandler == nil {
 		unregistered = append(unregistered, "GetStationDiscountsHandler")
+	}
+	if o.GetStationFirmwareVersionBufferedHandler == nil {
+		unregistered = append(unregistered, "GetStationFirmwareVersionBufferedHandler")
 	}
 	if o.GetStationFirmwareVersionsHandler == nil {
 		unregistered = append(unregistered, "GetStationFirmwareVersionsHandler")
@@ -1134,6 +1142,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/get-station-discounts"] = NewGetStationDiscounts(o.context, o.GetStationDiscountsHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/stations/{id}/firmware-versions/buffered"] = NewGetStationFirmwareVersionBuffered(o.context, o.GetStationFirmwareVersionBufferedHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

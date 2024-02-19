@@ -233,6 +233,7 @@ type (
 		SetBuildScript(setBuildScript SetBuildScript) (BuildScript, error)
 		DeleteBuildScript(id StationID) error
 		CopyFirmware(stationID StationID, copyToID StationID) error
+		GetVersionBuffered(stationID StationID) (FirmwareVersion, error)
 	}
 
 	// Repo is a DAL interface.

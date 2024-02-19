@@ -2816,6 +2816,42 @@ func init() {
         }
       }
     },
+    "/stations/{id}/firmware-versions/buffered": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getStationFirmwareVersionBuffered",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/FirmwareVersion"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/stations/{id}/firmware-versions/copy-to/{toID}": {
       "post": {
         "security": [
@@ -7473,6 +7509,42 @@ func init() {
               "items": {
                 "$ref": "#/definitions/FirmwareVersion"
               }
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/stations/{id}/firmware-versions/buffered": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getStationFirmwareVersionBuffered",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/FirmwareVersion"
             }
           },
           "401": {

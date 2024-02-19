@@ -2845,6 +2845,29 @@ paths:
         500:
           description: Internal error
   
+  /stations/{id}/firmware-versions/buffered:
+    get:
+      operationId: "getStationFirmwareVersionBuffered"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/FirmwareVersion'
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+  
   /stations/{id}/firmware-versions/copy-to/{toID}:
     post:
       operationId: "firmwareVersionsCopy"
@@ -2872,7 +2895,6 @@ paths:
           description: Not found
         500:
           description: Internal error
-
 
   /tasks:
     get:
