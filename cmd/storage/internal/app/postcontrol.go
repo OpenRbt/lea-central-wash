@@ -98,8 +98,9 @@ func copyFilesToLcw(client *sftp.Client, remotePath, localPath string) error {
 	}
 
 	for _, remoteFile := range remoteFiles {
-		remoteFilePath := filepath.Join(remotePath, remoteFile.Name())
-		localFilePath := filepath.Join(localPath, remoteFile.Name())
+		remoteName := remoteFile.Name()
+		remoteFilePath := filepath.Join(remotePath, remoteName)
+		localFilePath := filepath.Join(localPath, remoteName)
 
 		if remoteFile.IsDir() {
 			err := copyFilesToLcw(client, remoteFilePath, localFilePath)
@@ -107,9 +108,11 @@ func copyFilesToLcw(client *sftp.Client, remotePath, localPath string) error {
 				return err
 			}
 		} else {
-			if remoteFile.Name() == paymentWorldName ||
-				remoteFile.Name() == paymentWorldConfigName ||
-				filepath.Ext(remoteFile.Name()) == ".txt" {
+			if remoteName == paymentWorldName ||
+				remoteName == paymentWorldConfigName ||
+				remoteName == preparePiName ||
+				remoteName == updateSystemName ||
+				filepath.Ext(remoteName) == ".txt" {
 				continue
 			}
 

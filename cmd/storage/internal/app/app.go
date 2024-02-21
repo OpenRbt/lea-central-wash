@@ -49,6 +49,8 @@ const (
 	binarName              = "firmware.exe"
 	paymentWorldName       = "uic_payment_app"
 	paymentWorldConfigName = "config.ini"
+	preparePiName          = "prepare_pi.sh"
+	updateSystemName       = "update_system.sh"
 	versionName            = "versions.json"
 	currentWashName        = "current_wash"
 	baseWashName           = "wash"
