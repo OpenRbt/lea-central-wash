@@ -817,14 +817,12 @@ func (a *app) runGetVersions(task Task) {
 		}
 
 		if len(dirName) < 5 {
-			a.handleTaskErr(task, fmt.Sprintf("Error: %s has a length less than 5, so a version cannot be derived from it", dirName))
-			return
+			continue
 		}
 
 		v, err := strconv.Atoi(dirName[5:])
 		if err != nil {
-			a.handleTaskErr(task, fmt.Sprintf("Error parsing version: %s", err.Error()))
-			return
+			continue
 		}
 
 		versionFilePath := path.Join(dir, versionName)
@@ -1072,14 +1070,12 @@ func (a *app) runUpdate(task Task) {
 		}
 
 		if len(dirName) < 5 {
-			a.handleTaskErr(task, fmt.Sprintf("Error: %s has a length less than 5, so a version cannot be derived from it", dirName))
-			return
+			continue
 		}
 
 		v, err := strconv.Atoi(dirName[5:])
 		if err != nil {
-			a.handleTaskErr(task, fmt.Sprintf("Error parsing version: %s", err.Error()))
-			return
+			continue
 		}
 		if v > newVersion {
 			newVersion = v
