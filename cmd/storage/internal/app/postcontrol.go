@@ -501,6 +501,10 @@ func (a *app) taskScheduler() {
 			}
 
 			task := stationTask.Items[0]
+			if task.Type == RebootTaskType && station.CurrentBalance > 0 {
+				continue
+			}
+
 			station.Task = &task
 			a.stations[i] = station
 
@@ -1208,9 +1212,8 @@ func (a *app) runReboot(task Task) {
 	}
 	defer client.Close()
 
-	res, err := runRemoteCommand(client, rebootOwCommand)
+	_, err = runRemoteCommand(client, rebootOwCommand)
 	if err != nil {
-		log.PrintErr(string(res))
 		a.handleTaskErr(task, fmt.Sprintf("Error executing reboot command: %s", err.Error()))
 		return
 	}
