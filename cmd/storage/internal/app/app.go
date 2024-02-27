@@ -72,7 +72,7 @@ const (
 	makeBinarOwCommand       = "cd ~/openwashing/software/v1-enlight && make"
 	findVersionsOwCommand    = "find ~/ -maxdepth 1 -type d -name \"wash_*\" -o -name \"wash\""
 	cleateLink               = "ln -f -s -n %s %s"
-	rebootOwCommand          = "sudo shutdown -r"
+	rebootOwCommand          = "sudo shutdown -r +0"
 	cdFirmwareRunshCommand   = "cd %s"
 )
 
