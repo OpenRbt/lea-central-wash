@@ -224,7 +224,6 @@ func (w *SbpWorker) SendPaymentRequest(postID StationID, amount int64) error {
 			time.Sleep(time.Duration(500*i) * time.Millisecond)
 		}
 	}()
-
 	return nil
 }
 

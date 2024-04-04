@@ -73,6 +73,10 @@ var (
 	MngtRabbitHost   = strGetEnv("MNGT_RABBIT_HOST", "dev.openrbt.com")
 	MngtRabbitPort   = strGetEnv("MNGT_RABBIT_PORT", "4043")
 	MngtRabbitSecure = boolGetEnv("MNGT_RABBIT_SECURE", true)
+
+	KaspiRabbitHost   = strGetEnv("KASPI_RABBIT_HOST", "app.openrbt.com")
+	KaspiRabbitPort   = strGetEnv("KASPI_RABBIT_PORT", "4043")
+	KaspiRabbitSecure = boolGetEnv("KASPI_RABBIT_SECURE", true)
 )
 
 var initErr error

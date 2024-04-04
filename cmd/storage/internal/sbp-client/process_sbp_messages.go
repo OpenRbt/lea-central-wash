@@ -183,7 +183,7 @@ func (s *Service) sendMessage(msg interface{}, messageType rabbit_vo.MessageType
 	case <-time.After(time.Second * 10):
 		return app.ErrSendTimeout
 	case <-dConfirmation.Done():
-		fmt.Println("producer: delivered deferred confirm to handler")
+		fmt.Println("sbp: delivered deferred confirm to handler")
 		break
 	}
 	return err

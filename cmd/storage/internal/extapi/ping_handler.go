@@ -56,6 +56,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		SessionID:           station.CurrentSessionID,
 		BonusSystemActive:   bonusActive,
 		AuthorizedSessionID: station.AuthorizedSessionID,
+		KaspiAmount:         &station.KaspiMoney,
 		// sbp
 		QrMoney:         &lastPayment.Amount,
 		QrOrderID:       &orderID,

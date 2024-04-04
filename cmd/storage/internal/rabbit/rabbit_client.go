@@ -239,11 +239,6 @@ func (s *Service) connect() error {
 		return err
 	}
 	s.notifyClosePub = s.bonusSvcPub.NotifyClose(make(chan *amqp.Error, 1))
-	if err != nil {
-		s.bonusSvcPub.Close()
-		c.Close()
-		return err
-	}
 
 	s.bonusSvcSub, err = c.Channel()
 	if err != nil {

@@ -140,6 +140,7 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) (Statio
 	oldStation := station
 	station.LastPing = time.Now()
 	station.ServiceMoney = 0
+	station.KaspiMoney = 0
 	station.BonusMoney = 0
 	station.OpenStation = false
 	station.CurrentBalance = balance
@@ -278,6 +279,24 @@ func (a *app) AddServiceAmount(id StationID, money int) error {
 	}
 
 	data.ServiceMoney = data.ServiceMoney + money
+	err = a.Set(data)
+	if err != nil {
+		log.Info("Can't set service money - station is unknown")
+		return ErrNotFound
+	}
+	return nil
+}
+
+// AddKaspiAmount changes service money in map to the specified value
+// Returns ErrNotFound, if id is not valid, else nil
+func (a *app) AddKaspiAmount(id StationID, money int64) error {
+	data, err := a.Get(id)
+	if err != nil && data.ID < 1 {
+		log.Info("Can't set service money - station is unknown")
+		return ErrNotFound
+	}
+
+	data.KaspiMoney = data.KaspiMoney + money
 	err = a.Set(data)
 	if err != nil {
 		log.Info("Can't set service money - station is unknown")

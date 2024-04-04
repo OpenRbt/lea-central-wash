@@ -57,6 +57,7 @@ type StationData struct {
 	LastDiscountUpdate  int64
 	IP                  string
 	IsActive            bool
+	KaspiMoney          int64
 }
 
 // MoneyReport is just to represent money in a station. All known kinds of money
