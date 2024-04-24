@@ -60,6 +60,8 @@ var (
 	ErrRabbitMessageBadPayload = errors.New("bad RabbitMessagePayloadData")
 	ErrNoRabbitWorker          = errors.New("rabbit worker not initialized")
 	ErrSendTimeout             = errors.New("send request failed: timeout")
+
+	ErrWrongPaymentStatus = errors.New("wrong payment status")
 )
 
 var testApp = false
@@ -174,7 +176,7 @@ type (
 		SendPaymentRequest(postID StationID, amount int64) error
 		// set
 		SetPaymentURL(orderID uuid.UUID, urlPay string) error
-		SetPaymentConfirmed(orderID uuid.UUID) error
+		ReceiveNotification(orderID uuid.UUID, status PaymentStatus) error
 		SetPaymentReceived(orderID uuid.UUID) error
 		SetPaymentCanceled(orderID uuid.UUID) (err error)
 		// get

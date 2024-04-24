@@ -70,7 +70,7 @@ func NewClient(cfg Config, app app.App) (svc *Service, err error) {
 		Vhost:      "/",
 		ChannelMax: 0,
 		FrameSize:  0,
-		Heartbeat:  0,
+		Heartbeat:  10 * time.Second,
 		Properties: nil,
 		Locale:     "",
 		Dial:       nil,

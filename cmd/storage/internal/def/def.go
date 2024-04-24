@@ -61,12 +61,13 @@ var (
 	RabbitPort = strGetEnv("RABBIT_PORT", "4043")
 
 	// sbp
-	SbpRabbitHost              = strGetEnv("SBP_RABBIT_HOST", "app.openrbt.com")
-	SbpRabbitPort              = strGetEnv("SBP_RABBIT_PORT", "4043")
-	SbpRabbitSecure            = boolGetEnv("SBP_RABBIT_SECURE", true)
-	SbpPaymentExpirationPeriod = durationGetEnv("SBP_PAYMENT_EXPIRATION_PERIOD", time.Minute*5)
-	SbpEnvNameServerID         = strGetEnv("SBP_ENV_NAME_SERVER_ID", "SBP_SERVER_ID")
-	SbpEnvNameServerPassword   = strGetEnv("SBP_ENV_NAME_SERVER_PASSWORD", "SBP_SERVER_PASSWORD")
+	SbpRabbitHost                    = strGetEnv("SBP_RABBIT_HOST", "app.openrbt.com")
+	SbpRabbitPort                    = strGetEnv("SBP_RABBIT_PORT", "4043")
+	SbpRabbitSecure                  = boolGetEnv("SBP_RABBIT_SECURE", true)
+	SbpPaymentExpirationPeriod       = durationGetEnv("SBP_PAYMENT_EXPIRATION_PERIOD", time.Minute*5)
+	SbpPaymentConfirmationPingPeriod = durationGetEnv("SBP_PAYMENT_CONFIRMATION_PING_PERIOD", time.Hour*24)
+	SbpEnvNameServerID               = strGetEnv("SBP_ENV_NAME_SERVER_ID", "SBP_SERVER_ID")
+	SbpEnvNameServerPassword         = strGetEnv("SBP_ENV_NAME_SERVER_PASSWORD", "SBP_SERVER_PASSWORD")
 	//
 
 	MngtRabbitHost   = strGetEnv("MNGT_RABBIT_HOST", "dev.openrbt.com")

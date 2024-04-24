@@ -86,16 +86,19 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 				return err
 			}
 
-			if strings.ToLower(msg.Status) == "confirmed" {
-				err = s.app.SetPaymentConfirmed(uuid.FromStringOrNil(msg.OrderID))
+			status, err := toPaymentStatus(strings.ToLower(msg.Status))
+			if err != nil {
+				return err
+			}
+
+			err = s.app.ReceiveNotification(uuid.FromStringOrNil(msg.OrderID), status)
+			if err != nil {
+				s.log.PrintErr("SetPaymentConfirmed error", "err", err.Error())
+				err = d.Nack(false, false)
 				if err != nil {
-					s.log.PrintErr("SetPaymentConfirmed error", "err", err.Error())
-					err = d.Nack(false, false)
-					if err != nil {
-						return err
-					}
 					return err
 				}
+				return err
 			}
 
 			err = d.Ack(false)
@@ -127,8 +130,16 @@ func (s *Service) SendPaymentRequest(payRequest app.Payment) (err error) {
 }
 
 // CancelPayment ...
-func (s *Service) CancelPayment(payСancellationRequest app.Payment) (err error) {
-	err = s.sendMessage(toPayСancellationRequest(payСancellationRequest), rabbit_vo.MessageTypePaymentCancellationRequest)
+func (s *Service) CancelPayment(payСancellationRequest app.Payment, errMsg string) (err error) {
+	err = s.sendMessage(toPayСancellationRequest(payСancellationRequest, errMsg), rabbit_vo.MessageTypePaymentCancellationRequest)
+	if err != nil {
+		s.setLastErr(err.Error())
+	}
+	return err
+}
+
+func (s *Service) ConfirmPayment(payConfirmRequest app.Payment) error {
+	err := s.sendMessage(toPayConfirmationRequest(payConfirmRequest), rabbit_vo.PaymentConfirmationRequestMessageType)
 	if err != nil {
 		s.setLastErr(err.Error())
 	}
@@ -137,11 +148,15 @@ func (s *Service) CancelPayment(payСancellationRequest app.Payment) (err error)
 
 // sendMessage ...
 func (s *Service) sendMessage(msg interface{}, messageType rabbit_vo.MessageType) (err error) {
-	jsonMsg, ok := msg.([]byte)
-	if !ok {
-		jsonMsg, err = json.Marshal(msg)
-		if err != nil {
-			return
+	var jsonMsg []byte
+	if msg != nil {
+		var ok bool
+		jsonMsg, ok = msg.([]byte)
+		if !ok {
+			jsonMsg, err = json.Marshal(msg)
+			if err != nil {
+				return
+			}
 		}
 	}
 
@@ -150,9 +165,9 @@ func (s *Service) sendMessage(msg interface{}, messageType rabbit_vo.MessageType
 	message.Type = string(messageType)
 	message.UserId = s.serverID
 	message.DeliveryMode = amqp.Persistent
-
 	exchangeName := string(rabbit_vo.SbpClientService)
 	routingKeyString := string(rabbit_vo.RoutingKeySbpClient)
+
 	dConfirmation, err := s.sbpClientPub.PublishWithDeferredConfirmWithContext(
 		context.Background(),
 		exchangeName,
@@ -180,13 +195,31 @@ func toPayRequest(payment app.Payment) paymentEntities.PayRequest {
 		PostID:  payment.PostID.String(),
 		OrderID: payment.OrderID.String(),
 		Amount:  payment.Amount,
+		Version: 1,
 	}
 }
 
-func toPayСancellationRequest(payment app.Payment) paymentEntities.PayСancellationRequest {
+func toPayСancellationRequest(payment app.Payment, err string) paymentEntities.PayСancellationRequest {
 	return paymentEntities.PayСancellationRequest{
 		WashID:  payment.ServerID.String(),
 		PostID:  payment.PostID.String(),
 		OrderID: payment.OrderID.String(),
+		Error:   err,
+	}
+}
+
+func toPayConfirmationRequest(payment app.Payment) paymentEntities.PaymentConfirmationRequest {
+	return paymentEntities.PaymentConfirmationRequest{
+		OrderID: payment.OrderID.String(),
+	}
+}
+
+func toPaymentStatus(status string) (app.PaymentStatus, error) {
+	s := app.PaymentStatus(status)
+	switch s {
+	case app.PaymentStatusAuthorized, app.PaymentStatusCanceled, app.PaymentStatusConfirmed, app.PaymentStatusRefunded, app.PaymentStatusRejected, app.PaymentStatusReversed:
+		return s, nil
+	default:
+		return app.PaymentStatus(""), app.ErrWrongPaymentStatus
 	}
 }
