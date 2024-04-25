@@ -94,7 +94,8 @@ type sbpConfig struct {
 	EnvNameServerID       string
 	EnvNameServerPassword string
 
-	PaymentExpirationPeriod time.Duration
+	PaymentExpirationPeriod       time.Duration
+	PaymentConfirmationPingPeriod time.Duration
 }
 
 // readSbpConfigFromFlag ...
@@ -107,6 +108,7 @@ func readSbpConfigFromFlag() {
 	flag.StringVar(&cfg.sbp.EnvNameServerPassword, "sbp.EnvNameServerPassword", def.SbpEnvNameServerPassword, "sbp env name for server_password")
 
 	flag.DurationVar(&cfg.sbp.PaymentExpirationPeriod, "sbp.PaymentExpirationPeriod", def.SbpPaymentExpirationPeriod, "sbp payment expiration period")
+	flag.DurationVar(&cfg.sbp.PaymentConfirmationPingPeriod, "sbp.SbpPaymentConfirmationPingPeriod", def.SbpPaymentConfirmationPingPeriod, "sbp payment confirmation ping period")
 }
 
 // init provides common initialization for both app and tests.
@@ -364,6 +366,7 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 		appl,
 		sbpRepo,
 		cfg.sbp.PaymentExpirationPeriod,
+		cfg.sbp.PaymentConfirmationPingPeriod,
 		cfg.sbp.EnvNameServerID,
 		cfg.sbp.EnvNameServerPassword,
 	)
@@ -391,11 +394,18 @@ func waitUntilSysTimeIsCorrect() {
 }
 
 func initRabbitClient(cfg rabbit.Config, appl app.App) {
+	errLoginCount := 0
 	for {
 		rabbitWorker, err := rabbit.NewClient(cfg, appl)
 		if err != nil {
 			if strings.Contains(err.Error(), "username or password not allowed") {
 				log.Err("Failed to init rabbit client due to wrong credentials", "error", err)
+				errLoginCount += 1
+			}
+			if err == app.ErrServiceNotConfigured {
+				return
+			}
+			if errLoginCount > 10 {
 				return
 			}
 
@@ -412,14 +422,18 @@ func initRabbitClient(cfg rabbit.Config, appl app.App) {
 }
 
 func initMngtClient(cfg mngt.RabbitConfig, appl app.App) {
+	errLoginCount := 0
 	for {
 		rabbitWorker, err := mngt.NewMngtRabbitClient(cfg, appl)
 		if err != nil {
 			if strings.Contains(err.Error(), "username or password not allowed") {
 				log.Err("Failed to init management client due to wrong credentials", "error", err)
-				return
+				errLoginCount += 1
 			}
 			if err == app.ErrServiceNotConfigured {
+				return
+			}
+			if errLoginCount > 10 {
 				return
 			}
 
@@ -442,6 +456,7 @@ func initSbpClient(
 	appl app.App,
 	rep app.SbpRepInterface,
 	sbpPaymentExpirationPeriod time.Duration,
+	sbpPaymentConfirmationPingPeriod time.Duration,
 	envServerSbpID string,
 	envServerSbpPassword string,
 ) {
@@ -452,6 +467,7 @@ func initSbpClient(
 	if sbpConfig.ServerID == "" || sbpConfig.ServerPassword == "" {
 		return
 	}
+	errLoginCount := 0
 	go func() {
 		for {
 			// rabbit client
@@ -467,6 +483,12 @@ func initSbpClient(
 			if err != nil {
 				if strings.Contains(err.Error(), "username or password not allowed") {
 					log.Err("Failed to init sbp client due to wrong credentials", "error", err)
+					errLoginCount += 1
+				}
+				if err == app.ErrServiceNotConfigured {
+					return
+				}
+				if errLoginCount > 10 {
 					return
 				}
 
@@ -478,11 +500,12 @@ func initSbpClient(
 			// rabbit worker
 			//isConnectedFunc := sbpRabbitWorker.IsConnected
 			sbpWorkerConfig := app.SbpRabbitWorkerConfig{
-				ServerID:                     sbpConfig.ServerID,
-				ServerPassword:               sbpConfig.ServerPassword,
-				SbpBroker:                    sbpRabbitClient,
-				SbpRep:                       rep,
-				NotificationExpirationPeriod: sbpPaymentExpirationPeriod,
+				ServerID:                      sbpConfig.ServerID,
+				ServerPassword:                sbpConfig.ServerPassword,
+				SbpBroker:                     sbpRabbitClient,
+				SbpRep:                        rep,
+				NotificationExpirationPeriod:  sbpPaymentExpirationPeriod,
+				PaymentConfirmationPingPeriod: sbpPaymentConfirmationPingPeriod,
 			}
 
 			err = appl.InitSbpRabbitWorker(sbpWorkerConfig)

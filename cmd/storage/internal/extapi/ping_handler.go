@@ -37,7 +37,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 			lastPayment = app.Payment{}
 		}
 
-		if !lastPayment.Confirmed {
+		if !lastPayment.Authorized {
 			lastPayment.Amount = 0
 		}
 	}

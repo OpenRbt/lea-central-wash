@@ -9,6 +9,5 @@ const (
 	MessageTypePaymentNotification MessageType = "sbp_client_service/payment_notification"
 
 	MessageTypePaymentCancellationRequest MessageType = "sbp_client_service/payment_cancellation_request"
-
-	MessageTypePaymentError MessageType = "sbp_client_service/payment_error"
+	PaymentConfirmationRequestMessageType MessageType = "sbp_client_service/payment_confirmation_request"
 )
