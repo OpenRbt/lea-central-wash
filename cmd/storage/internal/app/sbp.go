@@ -10,10 +10,14 @@ import (
 
 // SbpWorker ...
 type SbpWorker struct {
-	serverID                     string
-	sbpRep                       SbpRepInterface
-	sbpBroker                    SbpBrokerInterface
-	notificationExpirationPeriod time.Duration
+	serverID                      string
+	sbpRep                        SbpRepInterface
+	sbpBroker                     SbpBrokerInterface
+	notificationExpirationPeriod  time.Duration
+	paymentConfirmationPingPeriod time.Duration
+
+	sendConfirmRequestChan  chan struct{}
+	sendConfirmRequestTiker *time.Ticker
 }
 
 // SbpRabbitConfig ...
@@ -28,7 +32,7 @@ type SbpWorkerInterface interface {
 	SendPaymentRequest(postID StationID, amount int64) error
 	// set
 	SetPaymentURL(orderID uuid.UUID, urlPay string) error
-	SetPaymentConfirmed(orderID uuid.UUID) error
+	ReceiveNotification(orderID uuid.UUID, status PaymentStatus) error
 	SetPaymentReceived(orderID uuid.UUID) error
 	SetPaymentCanceled(orderID uuid.UUID) (err error)
 	// get
@@ -38,7 +42,8 @@ type SbpWorkerInterface interface {
 // SbpBrokerInterface ...
 type SbpBrokerInterface interface {
 	SendPaymentRequest(Payment) error
-	CancelPayment(Payment) error
+	CancelPayment(Payment Payment, errMsg string) error
+	ConfirmPayment(Payment) error
 	Status() ServiceStatus
 }
 
@@ -47,13 +52,16 @@ type SbpRepInterface interface {
 	SavePayment(req Payment) error
 
 	SetPaymentURL(orderID uuid.UUID, urlPay string) error
-	SetPaymentConfirmed(orderID uuid.UUID) (err error)
+	SetPaymentAuthorized(orderID uuid.UUID) (err error)
 	SetPaymentReceived(orderID uuid.UUID) (err error)
 	SetPaymentCanceled(orderID uuid.UUID) (err error)
 
+	UpdatePayment(orderID uuid.UUID, update PaymentUpdate) (err error)
 	GetLastPayment(postID StationID) (Payment, error)
 	GetPaymentByOrderID(orderID uuid.UUID) (Payment, error)
 	GetActualPayments() ([]Payment, error)
+	GetPaymentsForConfirmAgain() ([]Payment, error)
+	GetPaymentsForConfirm() ([]Payment, error)
 }
 
 var _ = SbpWorkerInterface(&SbpWorker{})
@@ -66,11 +74,36 @@ type Payment struct {
 	UrlPay           string
 	Amount           int64
 	Canceled         bool
-	Confirmed        bool
+	Authorized       bool
 	OpenwashReceived bool
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
+	Confirmed        bool
+	LastConfirmedAt  *time.Time
+	SentConfirmed    bool
 }
+
+type PaymentUpdate struct {
+	URLPay           *string
+	Canceled         *bool
+	Confirmed        *bool
+	OpenWashReceived *bool
+	Authorized       *bool
+	LastConfirmedAt  *time.Time
+	UpdatedAt        *time.Time
+	SentConfirmed    *bool
+}
+
+type PaymentStatus string
+
+const (
+	PaymentStatusAuthorized PaymentStatus = "authorized"
+	PaymentStatusConfirmed  PaymentStatus = "confirmed"
+	PaymentStatusCanceled   PaymentStatus = "canceled"
+	PaymentStatusRejected   PaymentStatus = "rejected"
+	PaymentStatusReversed   PaymentStatus = "reversed"
+	PaymentStatusRefunded   PaymentStatus = "refunded"
+)
 
 // Repeat ...
 func Repeat(f func(), duration time.Duration) {
@@ -82,25 +115,69 @@ func Repeat(f func(), duration time.Duration) {
 	}
 }
 
-// CancelExpiratedNotOpenwashReceivedPayments ...
 func (w *SbpWorker) CancelExpiratedNotOpenwashReceivedPayments() {
 	// get last payments
 	reqs, err := w.sbpRep.GetActualPayments()
 	if err != nil {
-		err = fmt.Errorf("process messages failed: %w", err)
-		log.Err(err)
+		log.Err(fmt.Errorf("process messages failed: %w", err))
 	}
 
-	for i := 0; i < len(reqs); i++ {
-		// expiration check
-		period := time.Since(reqs[i].UpdatedAt.UTC()).Abs()
-		if period >= w.notificationExpirationPeriod && !reqs[i].UpdatedAt.IsZero() {
-			err := w.paymentCancel(reqs[i].ServerID, reqs[i].PostID, reqs[i].OrderID)
+	for _, req := range reqs {
+		period := time.Since(req.UpdatedAt.UTC()).Abs()
+		if period >= w.notificationExpirationPeriod && !req.UpdatedAt.IsZero() {
+			err := w.paymentCancel(req.ServerID, req.PostID, req.OrderID)
 			if err != nil {
-				err = fmt.Errorf("process messages orderID = %s failed: %w", reqs[i].OrderID, err)
-				if log.Err(err) != nil {
-					fmt.Println(err)
-				}
+				log.Err(fmt.Errorf("process messages orderID = %s failed: %w", req.OrderID, err))
+			}
+		}
+	}
+
+	reqs, err = w.sbpRep.GetPaymentsForConfirmAgain()
+	if err != nil {
+		log.Err(fmt.Errorf("process messages failed: %w", err))
+	}
+
+	for _, req := range reqs {
+		if req.LastConfirmedAt == nil || time.Since((*req.LastConfirmedAt).UTC()) >= w.paymentConfirmationPingPeriod {
+			err := w.sbpBroker.ConfirmPayment(Payment{OrderID: req.OrderID})
+			if err != nil {
+				log.Err(fmt.Errorf("process messages orderID = %s failed: %w", req.OrderID, err))
+			}
+
+			lastConfirmedAt := time.Now().UTC()
+			err = w.sbpRep.UpdatePayment(req.OrderID, PaymentUpdate{LastConfirmedAt: &lastConfirmedAt})
+			if err != nil {
+				log.Err(fmt.Errorf("process messages orderID = %s failed: %w", req.OrderID, err))
+			}
+		}
+	}
+}
+
+func (w *SbpWorker) confirmPayment() {
+	for {
+		select {
+		case <-w.sendConfirmRequestChan:
+		case <-w.sendConfirmRequestTiker.C:
+		}
+
+		reqs, err := w.sbpRep.GetPaymentsForConfirm()
+		if err != nil {
+			log.Err(fmt.Errorf("process messages failed: %w", err))
+		}
+
+		for _, payment := range reqs {
+			err := w.sbpBroker.ConfirmPayment(Payment{OrderID: payment.OrderID})
+			if err != nil {
+				log.Err(fmt.Errorf("send payment confirmation in rabbir failed: %w", err))
+				continue
+			}
+
+			lastConfirmedAt := time.Now().UTC()
+			sentConfirm := true
+			err = w.sbpRep.UpdatePayment(payment.OrderID, PaymentUpdate{LastConfirmedAt: &lastConfirmedAt, SentConfirmed: &sentConfirm})
+			if err != nil {
+				log.Err(fmt.Errorf("process messages orderID = %s failed: %w", payment.OrderID, err))
+				continue
 			}
 		}
 	}
@@ -114,6 +191,7 @@ func (w *SbpWorker) SendPaymentRequest(postID StationID, amount int64) error {
 
 	orderID := uuid.NewV4()
 
+	t := time.Now()
 	dbReq := Payment{
 		ServerID:         uuid.FromStringOrNil(w.serverID),
 		PostID:           postID,
@@ -123,8 +201,8 @@ func (w *SbpWorker) SendPaymentRequest(postID StationID, amount int64) error {
 		Canceled:         false,
 		Confirmed:        false,
 		OpenwashReceived: false,
-		CreatedAt:        time.Now(),
-		UpdatedAt:        time.Now(),
+		CreatedAt:        t,
+		UpdatedAt:        t,
 	}
 	err := w.sbpRep.SavePayment(dbReq)
 	if err != nil {
@@ -158,6 +236,7 @@ func (w *SbpWorker) SetPaymentURL(orderID uuid.UUID, urlPay string) error {
 	if urlPay == "" {
 		return errors.New("SetPaymentURL: urlPay is empty")
 	}
+
 	err := w.sbpRep.SetPaymentURL(orderID, urlPay)
 	if err != nil {
 		return fmt.Errorf("set payment url failed: %w", err)
@@ -180,13 +259,32 @@ func (w *SbpWorker) SetPaymentCanceled(orderID uuid.UUID) error {
 }
 
 // SetPaymentConfirmed ...
-func (w *SbpWorker) SetPaymentConfirmed(orderID uuid.UUID) error {
+func (w *SbpWorker) ReceiveNotification(orderID uuid.UUID, status PaymentStatus) error {
 	if orderID == uuid.Nil {
 		return errors.New("SetPaymentConfirmed: orderID = nil")
 	}
-	err := w.sbpRep.SetPaymentConfirmed(orderID)
+	_, err := w.sbpRep.GetPaymentByOrderID(orderID)
 	if err != nil {
 		return fmt.Errorf("set payment confirmed failed: %w", err)
+	}
+
+	switch status {
+	case PaymentStatusAuthorized:
+		err := w.sbpRep.SetPaymentAuthorized(orderID)
+		if err != nil {
+			return fmt.Errorf("set payment confirmed failed: %w", err)
+		}
+	case PaymentStatusConfirmed:
+		confirmed := true
+		err = w.sbpRep.UpdatePayment(orderID, PaymentUpdate{Confirmed: &confirmed})
+		if err != nil {
+			return fmt.Errorf("set payment confirmed failed: %w", err)
+		}
+	case PaymentStatusCanceled, PaymentStatusRejected, PaymentStatusReversed, PaymentStatusRefunded:
+		err = w.sbpRep.SetPaymentCanceled(orderID)
+		if err != nil {
+			return fmt.Errorf("set payment canceled failed: %w", err)
+		}
 	}
 
 	return nil
@@ -204,7 +302,7 @@ func (w *SbpWorker) SetPaymentReceived(orderID uuid.UUID) error {
 	}
 
 	// check is it confirmed
-	if !payment.Confirmed {
+	if !payment.Authorized {
 		return errors.New("set payment received failed: payment is not confirmed")
 	}
 
@@ -213,6 +311,8 @@ func (w *SbpWorker) SetPaymentReceived(orderID uuid.UUID) error {
 	if err != nil {
 		return fmt.Errorf("set payment received failed: %w", err)
 	}
+
+	w.sendConfirmRequestChan <- struct{}{}
 
 	return nil
 }
@@ -238,7 +338,7 @@ func (w *SbpWorker) paymentCancel(serverID uuid.UUID, postID StationID, orderID 
 		ServerID: serverID,
 		PostID:   postID,
 		OrderID:  orderID,
-	})
+	}, "time out")
 	if err != nil {
 		return fmt.Errorf("cancel orderID = %s failed: %w", orderID, err)
 	}

@@ -7,11 +7,12 @@ import (
 
 // SbpRabbitWorkerConfig ...
 type SbpRabbitWorkerConfig struct {
-	ServerID                     string
-	ServerPassword               string
-	SbpRep                       SbpRepInterface
-	SbpBroker                    SbpBrokerInterface
-	NotificationExpirationPeriod time.Duration
+	ServerID                      string
+	ServerPassword                string
+	SbpRep                        SbpRepInterface
+	SbpBroker                     SbpBrokerInterface
+	NotificationExpirationPeriod  time.Duration
+	PaymentConfirmationPingPeriod time.Duration
 }
 
 // GetSbpConfig ...
@@ -54,16 +55,20 @@ func (a *app) InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error {
 	}
 
 	a.SbpWorker = &SbpWorker{
-		serverID:                     config.ServerID,
-		sbpRep:                       config.SbpRep,
-		sbpBroker:                    config.SbpBroker,
-		notificationExpirationPeriod: config.NotificationExpirationPeriod,
+		serverID:                      config.ServerID,
+		sbpRep:                        config.SbpRep,
+		sbpBroker:                     config.SbpBroker,
+		notificationExpirationPeriod:  config.NotificationExpirationPeriod,
+		paymentConfirmationPingPeriod: config.PaymentConfirmationPingPeriod,
+		sendConfirmRequestChan:        make(chan struct{}, 50),
+		sendConfirmRequestTiker:       time.NewTicker(time.Second * 5),
 	}
 
 	// Cancel Expirated Not OpenwashReceived Payments
 	a.SbpWorker.CancelExpiratedNotOpenwashReceivedPayments()
 	// repeat
 	go Repeat(a.SbpWorker.CancelExpiratedNotOpenwashReceivedPayments, time.Minute)
+	go a.confirmPayment()
 
 	return nil
 }

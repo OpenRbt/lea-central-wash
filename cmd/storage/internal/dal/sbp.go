@@ -2,6 +2,7 @@ package dal
 
 import (
 	"database/sql"
+	"fmt"
 	"sync"
 	"time"
 
@@ -9,9 +10,6 @@ import (
 	"github.com/powerman/sqlxx"
 	uuid "github.com/satori/go.uuid"
 )
-
-// orderID ...
-type orderID uuid.UUID
 
 // PaymentsRep ...
 type PaymentsRep struct {
@@ -49,7 +47,22 @@ type dalSbpPayment struct {
 	Confirmed        sql.NullBool   `db:"confirmed"`
 	OpenWashReceived sql.NullBool   `db:"openwash_received"`
 	CreatedAt        time.Time      `db:"created_at"`
-	UpdatedAt        sql.NullTime   `db:"updated_at"`
+	UpdatedAt        time.Time      `db:"updated_at"`
+	Authorized       bool           `db:"authorized"`
+	LastConfirmedAt  *time.Time     `db:"last_confirmed_at"`
+	SentConfirmed    bool           `db:"sent_confirmed"`
+}
+
+type dalSbpPaymentUpdate struct {
+	OrderID          uuid.UUID  `db:"order_id"`
+	URLPay           *string    `db:"url_pay"`
+	Canceled         *bool      `db:"canceled"`
+	Confirmed        *bool      `db:"confirmed"`
+	OpenWashReceived *bool      `db:"openwash_received"`
+	Authorized       *bool      `db:"authorized"`
+	LastConfirmedAt  *time.Time `db:"last_confirmed_at"`
+	SentConfirmed    *bool      `db:"sent_confirmed"`
+	UpdatedAt        time.Time  `db:"updated_at"`
 }
 
 // convertPaymentToDal ...
@@ -75,11 +88,11 @@ func convertPaymentToDal(payment app.Payment) dalSbpPayment {
 			Bool:  payment.OpenwashReceived,
 			Valid: true,
 		},
-		CreatedAt: payment.CreatedAt,
-		UpdatedAt: sql.NullTime{
-			Time:  payment.UpdatedAt,
-			Valid: true,
-		},
+		CreatedAt:       payment.CreatedAt,
+		UpdatedAt:       payment.UpdatedAt,
+		Authorized:      payment.Authorized,
+		LastConfirmedAt: payment.LastConfirmedAt,
+		SentConfirmed:   payment.SentConfirmed,
 	}
 }
 
@@ -95,7 +108,10 @@ func convertPaymentToApp(payment dalSbpPayment) app.Payment {
 		Confirmed:        payment.Confirmed.Bool,
 		OpenwashReceived: payment.OpenWashReceived.Bool,
 		CreatedAt:        payment.CreatedAt.UTC(),
-		UpdatedAt:        payment.UpdatedAt.Time.UTC(),
+		UpdatedAt:        payment.UpdatedAt.UTC(),
+		Authorized:       payment.Authorized,
+		LastConfirmedAt:  payment.LastConfirmedAt,
+		SentConfirmed:    payment.SentConfirmed,
 	}
 }
 
@@ -104,7 +120,7 @@ var _ = app.SbpRepInterface(&repo{})
 
 // SavePayment ...
 func (r *repo) SavePayment(req app.Payment) error {
-
+	fmt.Printf("---SavePayment order id: %s\n", req.OrderID.String())
 	// db
 	dbReq := func(tx *sqlxx.Tx) error {
 		arg := convertPaymentToDal(req)
@@ -124,9 +140,38 @@ func (r *repo) SavePayment(req app.Payment) error {
 	return nil
 }
 
+func (r *repo) UpdatePayment(orderID uuid.UUID, update app.PaymentUpdate) error {
+	postID := int(0)
+	dbReq := func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &postID, updatePayment, dalSbpPaymentUpdate{
+			OrderID:          orderID,
+			URLPay:           update.URLPay,
+			Canceled:         update.Canceled,
+			Confirmed:        update.Confirmed,
+			OpenWashReceived: update.OpenWashReceived,
+			Authorized:       update.Authorized,
+			LastConfirmedAt:  update.LastConfirmedAt,
+			SentConfirmed:    update.SentConfirmed,
+			UpdatedAt:        time.Now(),
+		})
+
+		if err == sql.ErrNoRows {
+			return app.ErrNotFound
+		}
+		return err
+	}
+	err := r.tx(ctx, nil, dbReq)
+	if err != nil {
+		return err
+	}
+
+	r.PaymentsRep.SetLastPayment(postID, nil)
+
+	return nil
+}
+
 // SetPaymentURL ...
 func (r *repo) SetPaymentURL(orderID uuid.UUID, urlPay string) error {
-	// db
 	postID := int(0)
 	dbReq := func(tx *sqlxx.Tx) error {
 		err := tx.NamedGetContext(ctx, &postID, setPaymentURL, map[string]interface{}{
@@ -173,12 +218,12 @@ func (r *repo) SetPaymentCanceled(orderID uuid.UUID) (err error) {
 	return nil
 }
 
-// SetPaymentConfirmed ...
-func (r *repo) SetPaymentConfirmed(orderID uuid.UUID) (err error) {
+// SetPaymentAuthorized ...
+func (r *repo) SetPaymentAuthorized(orderID uuid.UUID) (err error) {
 	// db
 	postID := int(0)
 	dbReq := func(tx *sqlxx.Tx) error {
-		err := tx.NamedGetContext(ctx, &postID, setPaymentConfirmed, map[string]interface{}{
+		err := tx.NamedGetContext(ctx, &postID, setPaymentAuthorized, map[string]interface{}{
 			"order_id":   orderID,
 			"updated_at": time.Now().UTC(),
 		})
@@ -264,6 +309,48 @@ func (r *repo) GetActualPayments() ([]app.Payment, error) {
 		case err == sql.ErrNoRows:
 			return app.ErrNotFound
 		case err != nil:
+			return err
+		}
+
+		for _, p := range res {
+			resp = append(resp, convertPaymentToApp(p))
+		}
+		return nil
+	}
+	err := r.tx(ctx, nil, dbReq)
+	if err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (r *repo) GetPaymentsForConfirm() ([]app.Payment, error) {
+	resp := []app.Payment{}
+	dbReq := func(tx *sqlxx.Tx) error {
+		var res []dalSbpPayment
+		err := tx.SelectContext(ctx, &res, getPaymentsForConfirm)
+		if err != nil {
+			return err
+		}
+
+		for _, p := range res {
+			resp = append(resp, convertPaymentToApp(p))
+		}
+		return nil
+	}
+	err := r.tx(ctx, nil, dbReq)
+	if err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (r *repo) GetPaymentsForConfirmAgain() ([]app.Payment, error) {
+	resp := []app.Payment{}
+	dbReq := func(tx *sqlxx.Tx) error {
+		var res []dalSbpPayment
+		err := tx.SelectContext(ctx, &res, getPaymentsForConfirmAgain)
+		if err != nil {
 			return err
 		}
 

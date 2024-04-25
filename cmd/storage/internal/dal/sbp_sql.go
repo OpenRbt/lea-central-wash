@@ -1,23 +1,35 @@
 package dal
 
 const (
-	// save
 	savePayment = `
 	INSERT INTO public.sbp_payments 
-	(server_id, post_id, order_id, url_pay, amount, canceled, confirmed, openwash_received, created_at, updated_at)
-	VALUES (:server_id, :post_id, :order_id, :url_pay, :amount, :canceled, :confirmed, :openwash_received, :created_at, :updated_at)
+	(server_id, post_id, order_id, url_pay, amount, canceled, authorized, openwash_received, created_at, updated_at, confirmed, last_confirmed_at, sent_confirmed)
+	VALUES (:server_id, :post_id, :order_id, :url_pay, :amount, :canceled, :authorized, :openwash_received, :created_at, :updated_at, :confirmed, :last_confirmed_at, :sent_confirmed)
 	RETURNING id;
 	`
-	// set
+	updatePayment = `
+	UPDATE public.sbp_payments
+	SET
+		url_pay = COALESCE(:url_pay, url_pay),
+		canceled = COALESCE(:canceled, canceled),
+		authorized = COALESCE(:authorized, authorized),
+		openwash_received = COALESCE(:openwash_received, openwash_received),
+		confirmed = COALESCE(:confirmed, confirmed),
+		sent_confirmed = COALESCE(:sent_confirmed, sent_confirmed),
+		last_confirmed_at = COALESCE(:last_confirmed_at, last_confirmed_at),
+		updated_at = :updated_at
+	WHERE order_id = :order_id
+	RETURNING post_id;
+	`
 	setPaymentURL = `
 	UPDATE public.sbp_payments
 	SET url_pay = :url_pay, updated_at = :updated_at
 	WHERE order_id = :order_id
 	RETURNING post_id;
 	`
-	setPaymentConfirmed = `
+	setPaymentAuthorized = `
 	UPDATE public.sbp_payments
-	SET confirmed = true, updated_at = :updated_at
+	SET authorized = true, updated_at = :updated_at
 	WHERE order_id = :order_id
 	RETURNING post_id;
 	`
@@ -33,7 +45,6 @@ const (
 	WHERE order_id = :order_id
 	RETURNING post_id;
 	`
-	// get
 	getLastPayment = `
 	SELECT *
 	FROM public.sbp_payments
@@ -51,6 +62,23 @@ const (
 	FROM public.sbp_payments
 	WHERE canceled != true
     AND openwash_received != true
+	ORDER BY post_id, created_at DESC
+	`
+	getPaymentsForConfirm = `
+	SELECT *
+	FROM public.sbp_payments
+	WHERE NOT canceled
+    AND openwash_received
+	AND NOT confirmed
+	ORDER BY post_id, created_at DESC
+	`
+	getPaymentsForConfirmAgain = `
+	SELECT *
+	FROM public.sbp_payments
+	WHERE NOT canceled
+    AND openwash_received
+	AND NOT confirmed
+	AND sent_confirmed
 	ORDER BY post_id, created_at DESC
 	`
 )

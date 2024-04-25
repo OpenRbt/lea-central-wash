@@ -78,10 +78,10 @@ func NewSbpRabbitClient(cfg RabbitConfig, app app.App) (svc *Service, err error)
 		Vhost:      "/",
 		ChannelMax: 0,
 		FrameSize:  0,
-		Heartbeat:  0,
+		Heartbeat:  10 * time.Second,
 		Properties: nil,
 		Locale:     "",
-		Dial:       amqp.DefaultDial(3 * time.Second),
+		Dial:       nil,
 	}
 
 	svc = &Service{
@@ -104,6 +104,7 @@ func NewSbpRabbitClient(cfg RabbitConfig, app app.App) (svc *Service, err error)
 	}
 
 	go svc.recon()
+
 	return
 }
 
@@ -241,11 +242,6 @@ func (s *Service) connect() error {
 		return err
 	}
 	s.notifyClosePub = s.sbpClientPub.NotifyClose(make(chan *amqp.Error, 1))
-	if err != nil {
-		s.sbpClientPub.Close()
-		connection.Close()
-		return err
-	}
 
 	// sub
 	s.sbpClientSub, err = connection.Channel()
