@@ -361,3 +361,18 @@ func appRabbitMoneyReport(r resRabbitMoneyReport) app.RabbitMoneyReport {
 		MessageUUID: r.MessageUUID.UUID,
 	}
 }
+
+func appStations(v []rowStation) []app.Station {
+	var res []app.Station
+	for i := range v {
+		res = append(res, app.Station{
+			ID:           v[i].ID,
+			Name:         v[i].Name,
+			PreflightSec: v[i].PreflightSec,
+			RelayBoard:   v[i].RelayBoard,
+			Deleted:      v[i].Deleted,
+			Version:      v[i].Version,
+		})
+	}
+	return res
+}

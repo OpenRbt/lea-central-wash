@@ -63,7 +63,7 @@ VALUES 	(:station_id, :hash)
 	`
 	sqlUpdStation = `
 UPDATE station
-SET name = :name, preflight_sec = :preflight_sec, relay_board = :relay_board
+SET name = :name, preflight_sec = :preflight_sec, relay_board = :relay_board, version = version + 1, management_sended = false
 WHERE id = :id
 	`
 	sqlGetStations = `
@@ -165,7 +165,7 @@ WHERE hash = :hash or station_id = :station_id
 	`
 	sqlDelStation = `
 UPDATE station
-SET deleted = true, hash = null
+SET deleted = true, version = version + 1, management_sended = false
 WHERE id = :id
 	`
 	sqlAddMoneyReport = `
