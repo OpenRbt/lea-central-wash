@@ -186,7 +186,9 @@ type (
 		IsSbpAvailableForStation(stationID StationID) bool
 		GetSbpConfig(envServerSbpID string, envServerSbpPassword string) (cfg SbpRabbitConfig, err error)
 
-		InitManagement(svc ManagementService)
+		InitManagement(ManagementService)
+		InitKaspi(KaspiService)
+		KaspiCommand(Command)
 	}
 
 	// Repo is a DAL interface.
@@ -321,6 +323,10 @@ type (
 		Status() ServiceStatus
 		SendStatus(StatusReport) error
 	}
+	KaspiService interface {
+		Status() ServiceStatus
+		SendAnswer(KaspiAnswer) error
+	}
 )
 
 type app struct {
@@ -345,6 +351,7 @@ type app struct {
 	cfgMutex              sync.Mutex
 	volumeCorrection      int
 	managementSvc         ManagementService
+	kaspiSvc              KaspiService
 
 	extServicesActive     bool
 	servicesPublisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error

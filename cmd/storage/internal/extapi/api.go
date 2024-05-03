@@ -30,7 +30,6 @@ type Config struct {
 type repo interface {
 	LoadHash() ([]app.StationID, []string, error)
 	SetHash(id app.StationID, hash string) error
-	CheckDB() (ok bool, err error)
 }
 
 type service struct {
@@ -50,13 +49,6 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 		repo:       repo,
 		authAccess: authAccess,
 	}
-	ok, err := svc.repo.CheckDB()
-	if err != nil || !ok {
-		log.Warn("api check db failed", "ok", ok, "err", err)
-		time.Sleep(10 * time.Second)
-		panic(1)
-	}
-	log.Info("api db checked")
 	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to load embedded swagger spec")

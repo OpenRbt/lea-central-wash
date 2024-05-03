@@ -1642,11 +1642,14 @@ paths:
               - serviceAmount
               - openStation
               - qrMoney
+              - kaspiAmount
               - qrUrl
               - qrOrderId
               - qrFailed
             properties:
               serviceAmount:
+                type: integer
+              kaspiAmount:
                 type: integer
               sessionID:
                 type: string

@@ -211,6 +211,10 @@ type PingOKBody struct {
 	// bonus system active
 	BonusSystemActive bool `json:"bonusSystemActive,omitempty"`
 
+	// kaspi amount
+	// Required: true
+	KaspiAmount *int64 `json:"kaspiAmount"`
+
 	// last discount update
 	LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
 
@@ -264,6 +268,10 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 		// bonus system active
 		BonusSystemActive bool `json:"bonusSystemActive,omitempty"`
 
+		// kaspi amount
+		// Required: true
+		KaspiAmount *int64 `json:"kaspiAmount"`
+
 		// last discount update
 		LastDiscountUpdate int64 `json:"lastDiscountUpdate,omitempty"`
 
@@ -311,6 +319,7 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 	o.ButtonID = props.ButtonID
 	o.BonusAmount = props.BonusAmount
 	o.BonusSystemActive = props.BonusSystemActive
+	o.KaspiAmount = props.KaspiAmount
 	o.LastDiscountUpdate = props.LastDiscountUpdate
 	o.LastUpdate = props.LastUpdate
 	o.OpenStation = props.OpenStation
@@ -327,6 +336,10 @@ func (o *PingOKBody) UnmarshalJSON(data []byte) error {
 // Validate validates this ping o k body
 func (o *PingOKBody) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := o.validateKaspiAmount(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := o.validateOpenStation(formats); err != nil {
 		res = append(res, err)
@@ -355,6 +368,15 @@ func (o *PingOKBody) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (o *PingOKBody) validateKaspiAmount(formats strfmt.Registry) error {
+
+	if err := validate.Required("pingOK"+"."+"kaspiAmount", "body", o.KaspiAmount); err != nil {
+		return err
+	}
+
 	return nil
 }
 

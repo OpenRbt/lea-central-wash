@@ -1306,6 +1306,7 @@ func init() {
                 "serviceAmount",
                 "openStation",
                 "qrMoney",
+                "kaspiAmount",
                 "qrUrl",
                 "qrOrderId",
                 "qrFailed"
@@ -1322,6 +1323,9 @@ func init() {
                 },
                 "bonusSystemActive": {
                   "type": "boolean"
+                },
+                "kaspiAmount": {
+                  "type": "integer"
                 },
                 "lastDiscountUpdate": {
                   "type": "integer"
@@ -5269,6 +5273,7 @@ func init() {
                 "serviceAmount",
                 "openStation",
                 "qrMoney",
+                "kaspiAmount",
                 "qrUrl",
                 "qrOrderId",
                 "qrFailed"
@@ -5285,6 +5290,9 @@ func init() {
                 },
                 "bonusSystemActive": {
                   "type": "boolean"
+                },
+                "kaspiAmount": {
+                  "type": "integer"
                 },
                 "lastDiscountUpdate": {
                   "type": "integer"

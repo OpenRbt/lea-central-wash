@@ -37,6 +37,7 @@ import (
 	"github.com/powerman/pqx"
 	"github.com/powerman/structlog"
 
+	kaspi "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/kaspi-client"
 	mngt "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/mngt-client"
 	sbpclient "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client"
 )
@@ -69,19 +70,20 @@ var (
 	ver = strings.Join(strings.Fields(strings.Join([]string{gitVersion, gitBranch, gitRevision, buildDate}, " ")), " ")
 	log = structlog.New()
 	cfg struct {
-		version    bool
-		logLevel   string
-		db         pqx.Config
-		goose      string
-		gooseDir   string
-		extapi     extapi.Config
-		kasse      svckasse.Config
-		rabbit     rabbit.Config
-		sbp        sbpConfig
-		storage    app.AppConfig
-		hal        hal.Config
-		testBoards bool
-		mngtConfig mngt.RabbitConfig
+		version     bool
+		logLevel    string
+		db          pqx.Config
+		goose       string
+		gooseDir    string
+		extapi      extapi.Config
+		kasse       svckasse.Config
+		rabbit      rabbit.Config
+		sbp         sbpConfig
+		storage     app.AppConfig
+		hal         hal.Config
+		testBoards  bool
+		mngtConfig  mngt.RabbitConfig
+		kaspiConfig kaspi.RabbitConfig
 	}
 )
 
@@ -151,6 +153,10 @@ func init() { //nolint:gochecknoinits
 	flag.StringVar(&cfg.mngtConfig.URL, "mngt.rabbitURL", def.MngtRabbitHost, "management rabbit host for service connections")
 	flag.StringVar(&cfg.mngtConfig.Port, "mngt.RabbitPort", def.MngtRabbitPort, "management rabbit port for service connections")
 	flag.BoolVar(&cfg.mngtConfig.Secure, "mngt.RabbitSecure", def.MngtRabbitSecure, "management rabbit secure for service connections")
+
+	flag.StringVar(&cfg.kaspiConfig.URL, "kaspi.rabbitURL", def.KaspiRabbitHost, "kaspi rabbit host for service connections")
+	flag.StringVar(&cfg.kaspiConfig.Port, "kaspi.RabbitPort", def.KaspiRabbitPort, "kaspi rabbit port for service connections")
+	flag.BoolVar(&cfg.kaspiConfig.Secure, "kaspi.RabbitSecure", def.KaspiRabbitSecure, "kaspi rabbit secure for service connections")
 
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",
@@ -371,6 +377,7 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 		cfg.sbp.EnvNameServerPassword,
 	)
 	go initMngtClient(cfg.mngtConfig, appl)
+	go initKaspiClient(cfg.kaspiConfig, appl)
 
 	// server
 	extsrv, err := extapi.NewServer(appl, cfg.extapi, repo, auth.NewAuthCheck(log, appl))
@@ -444,6 +451,34 @@ func initMngtClient(cfg mngt.RabbitConfig, appl app.App) {
 
 		log.Info("Serve management client")
 		appl.InitManagement(rabbitWorker)
+		return
+	}
+}
+
+func initKaspiClient(cfg kaspi.RabbitConfig, appl app.App) {
+	errLoginCount := 0
+	for {
+		rabbitWorker, err := kaspi.NewKaspiRabbitClient(cfg, appl)
+		if err != nil {
+			if strings.Contains(err.Error(), "username or password not allowed") {
+				log.Err("Failed to init kaspi client due to wrong credentials", "error", err)
+				errLoginCount += 1
+			}
+			if err == app.ErrServiceNotConfigured {
+				return
+			}
+
+			if errLoginCount > 10 {
+				return
+			}
+
+			log.Err("Failed to init kaspi client", "error", err)
+			time.Sleep(5 * time.Second)
+			continue
+		}
+
+		log.Info("Serve kaspi client")
+		appl.InitKaspi(rabbitWorker)
 		return
 	}
 }

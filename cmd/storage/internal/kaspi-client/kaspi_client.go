@@ -27,7 +27,7 @@ const (
 	closed       int32 = -1
 
 	maxAttempts int8 = 5
-	exchange         = "management_service"
+	exchange         = "kaspi_service"
 )
 
 type StationID app.StationID
@@ -59,14 +59,14 @@ type Service struct {
 	reconnectCount   int64
 }
 
-func NewMngtRabbitClient(cfg RabbitConfig, a app.App) (svc *Service, err error) {
-	v, err := a.GetConfigString(nil, "management_server_id")
+func NewKaspiRabbitClient(cfg RabbitConfig, a app.App) (svc *Service, err error) {
+	v, err := a.GetConfigString(nil, "kaspi_server_id")
 	if err != nil || v.Value == "" {
 		err = app.ErrServiceNotConfigured
 		return nil, err
 	}
 	cfg.ServerID = string(v.Value)
-	v, err = a.GetConfigString(nil, "management_service_key")
+	v, err = a.GetConfigString(nil, "kaspi_service_key")
 	if err != nil || v.Value == "" {
 		err = app.ErrServiceNotConfigured
 		return nil, err
@@ -89,9 +89,9 @@ func NewMngtRabbitClient(cfg RabbitConfig, a app.App) (svc *Service, err error) 
 		Vhost:      "/",
 		ChannelMax: 0,
 		FrameSize:  0,
-		Heartbeat:  10 * time.Second,
 		Properties: nil,
 		Locale:     "",
+		Heartbeat:  10 * time.Second,
 		Dial:       nil,
 	}
 
@@ -310,7 +310,7 @@ func (s *Service) connect() error {
 	}
 	s.notifyCloseSub = s.sbpClientSub.NotifyClose(make(chan *amqp.Error, 1))
 
-	go s.handlerGoroutine(s.sbpClientSub, delivery, s.ProcessSbpMessage)
+	go s.handlerGoroutine(s.sbpClientSub, delivery, s.ProcessMessage)
 
 	atomic.StoreInt32(&s.isConnected, connected)
 	s.log.Info("connected!")
