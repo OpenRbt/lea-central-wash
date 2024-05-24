@@ -19,7 +19,7 @@ import (
 	"github.com/tarm/serial"
 )
 
-const uidAnswerRegex = "UID\\s([0-9A-F]*);"
+const uidAnswerRegex = "UID\\s([0-9A-F@]*);"
 
 const dispenserAnswer = "YF-S201;"
 
@@ -181,7 +181,7 @@ func (r *Rev1DispencerBoard) RunCommandStopRev2Board() error {
 	return r.runOnRev2Board(1, relay)
 }
 
-// CollectAvailableSerialPorts reads /dev directory and find all ttyUSB* devices
+// CollectAvailableSerialPorts reads /dev directory and find all ttyUSB* and ttyACM* devices
 func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 	h.uidAnswer, _ = regexp.Compile(uidAnswerRegex)
 	files, err := ioutil.ReadDir("/dev")
@@ -190,7 +190,7 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 	}
 
 	for _, f := range files {
-		if strings.HasPrefix(f.Name(), "ttyUSB") {
+		if strings.HasPrefix(f.Name(), "ttyUSB") || strings.HasPrefix(f.Name(), "ttyACM") {
 			_, portExists := h.portByKey(f.Name())
 			if !portExists {
 				fmt.Printf("trying to check as RS485 %s \n", f.Name())
