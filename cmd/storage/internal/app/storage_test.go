@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -185,11 +186,11 @@ func TestAddAdvertisingCampaign(tt *testing.T) {
 	a, finish, mocks := testNew(t)
 	defer finish()
 
-	mocks.mockRepo.EXPECT().AddAdvertisingCampaign(gomock.Any()).Return(nil)
+	mocks.mockRepo.EXPECT().AddAdvertisingCampaign(gomock.Any(), gomock.Any()).Return(AdvertisingCampaign{}, nil)
 
-	err := a.AddAdvertisingCampaign(nil, AdvertisingCampaign{})
-
+	campaign, err := a.AddAdvertisingCampaign(context.Background(), nil, AdvertisingCampaign{})
 	t.Nil(err)
+	t.DeepEqual(campaign, AdvertisingCampaign{})
 }
 func TestEditAdvertisingCampaign(tt *testing.T) {
 	t := check.T(tt)

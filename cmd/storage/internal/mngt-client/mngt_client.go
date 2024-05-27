@@ -42,14 +42,14 @@ type Service struct {
 	notifyClosePub chan *amqp.Error
 	notifyCloseSub chan *amqp.Error
 
-	isConnected  int32
-	attempts     int8
-	serverID     string
-	log          *structlog.Logger
-	sbpClientPub *amqp.Channel
-	sbpClientSub *amqp.Channel
-	rabbitConf   *amqp.Config
-	connString   string
+	isConnected   int32
+	attempts      int8
+	serverID      string
+	log           *structlog.Logger
+	mngtClientPub *amqp.Channel
+	mngtClientSub *amqp.Channel
+	rabbitConf    *amqp.Config
+	connString    string
 
 	statusMu         sync.Mutex
 	disabledOnServer bool
@@ -162,11 +162,11 @@ func (s *Service) Close() error {
 	atomic.StoreInt32(&s.isConnected, closed)
 	close(s.done)
 
-	if s.sbpClientPub != nil && !s.sbpClientPub.IsClosed() {
-		s.log.ErrIfFail(s.sbpClientPub.Close)
+	if s.mngtClientPub != nil && !s.mngtClientPub.IsClosed() {
+		s.log.ErrIfFail(s.mngtClientPub.Close)
 	}
-	if s.sbpClientSub != nil && !s.sbpClientSub.IsClosed() {
-		s.log.ErrIfFail(s.sbpClientSub.Close)
+	if s.mngtClientSub != nil && !s.mngtClientSub.IsClosed() {
+		s.log.ErrIfFail(s.mngtClientSub.Close)
 	}
 
 	if s.conn != nil && !s.conn.IsClosed() {
@@ -187,8 +187,8 @@ func (s *Service) recon() {
 				return
 			}
 
-			s.log.ErrIfFail(s.sbpClientSub.Close)
-			s.log.ErrIfFail(s.sbpClientPub.Close)
+			s.log.ErrIfFail(s.mngtClientSub.Close)
+			s.log.ErrIfFail(s.mngtClientPub.Close)
 			s.log.ErrIfFail(s.conn.Close)
 
 			if err := s.connect(); err != nil {
@@ -246,21 +246,21 @@ func (s *Service) connect() error {
 	s.notifyClose = connection.NotifyClose(make(chan *amqp.Error, 1))
 
 	// pub
-	s.sbpClientPub, err = connection.Channel()
+	s.mngtClientPub, err = connection.Channel()
 	if err != nil {
 		connection.Close()
 		return err
 	}
-	s.notifyClosePub = s.sbpClientPub.NotifyClose(make(chan *amqp.Error, 1))
+	s.notifyClosePub = s.mngtClientPub.NotifyClose(make(chan *amqp.Error, 1))
 
 	// sub
-	s.sbpClientSub, err = connection.Channel()
+	s.mngtClientSub, err = connection.Channel()
 	if err != nil {
-		s.sbpClientPub.Close()
+		s.mngtClientPub.Close()
 		connection.Close()
 		return err
 	}
-	_, err = s.sbpClientSub.QueueDeclare(
+	_, err = s.mngtClientSub.QueueDeclare(
 		s.serverID,
 		true,
 		false,
@@ -269,18 +269,18 @@ func (s *Service) connect() error {
 		amqp.Table{},
 	)
 	if err != nil {
-		s.sbpClientPub.Close()
+		s.mngtClientPub.Close()
 		connection.Close()
 		return err
 	}
 
-	err = s.sbpClientPub.Confirm(false)
+	err = s.mngtClientPub.Confirm(false)
 	if err != nil {
-		s.sbpClientPub.Close()
+		s.mngtClientPub.Close()
 		connection.Close()
 		return err
 	}
-	err = s.sbpClientSub.QueueBind(
+	err = s.mngtClientSub.QueueBind(
 		s.serverID,
 		s.serverID,
 		exchange,
@@ -288,12 +288,12 @@ func (s *Service) connect() error {
 		nil,
 	)
 	if err != nil {
-		s.sbpClientPub.Close()
+		s.mngtClientPub.Close()
 		connection.Close()
 		return err
 	}
 
-	delivery, err := s.sbpClientSub.Consume(
+	delivery, err := s.mngtClientSub.Consume(
 		s.serverID,
 		"",
 		false,
@@ -303,14 +303,14 @@ func (s *Service) connect() error {
 		amqp.Table{},
 	)
 	if err != nil {
-		s.sbpClientSub.Close()
-		s.sbpClientPub.Close()
+		s.mngtClientSub.Close()
+		s.mngtClientPub.Close()
 		connection.Close()
 		return err
 	}
-	s.notifyCloseSub = s.sbpClientSub.NotifyClose(make(chan *amqp.Error, 1))
+	s.notifyCloseSub = s.mngtClientSub.NotifyClose(make(chan *amqp.Error, 1))
 
-	go s.handlerGoroutine(s.sbpClientSub, delivery, s.ProcessSbpMessage)
+	go s.handlerGoroutine(s.mngtClientSub, delivery, s.ProcessMngtMessage)
 
 	atomic.StoreInt32(&s.isConnected, connected)
 	s.log.Info("connected!")

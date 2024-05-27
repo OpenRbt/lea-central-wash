@@ -70,19 +70,24 @@ func appStationsVariables(v []resStationsVariables) []app.StationsVariables {
 	return res
 }
 
-func appPrograms(p []resPrograms) (res []app.Program) {
-	for i := range p {
-		res = append(res, app.Program{
-			ID:                         p[i].ID,
-			Name:                       p[i].Name,
-			Price:                      p[i].Price,
-			PreflightEnabled:           p[i].PreflightEnabled,
-			MotorSpeedPercent:          p[i].MotorSpeedPercent,
-			PreflightMotorSpeedPercent: p[i].PreflightMotorSpeedPercent,
-			IsFinishingProgram:         p[i].IsFinishingProgram,
-			Relays:                     appProgramRelays(p[i].Relays),
-			PreflightRelays:            appProgramRelays(p[i].PreflightRelays),
-		})
+func appProgram(p resProgram) app.Program {
+	return app.Program{
+		ID:                         p.ID,
+		Name:                       p.Name,
+		Price:                      p.Price,
+		PreflightEnabled:           p.PreflightEnabled,
+		MotorSpeedPercent:          p.MotorSpeedPercent,
+		PreflightMotorSpeedPercent: p.PreflightMotorSpeedPercent,
+		IsFinishingProgram:         p.IsFinishingProgram,
+		Relays:                     appProgramRelays(p.Relays),
+		PreflightRelays:            appProgramRelays(p.PreflightRelays),
+		Version:                    p.Version,
+	}
+}
+
+func appPrograms(programs []resProgram) (res []app.Program) {
+	for _, program := range programs {
+		res = append(res, appProgram(program))
 	}
 	return res
 }
@@ -205,15 +210,19 @@ func appStationsStat(res []resRelayReport, relay []resRelayStats) app.StationsSt
 	return report
 }
 
-func dalAdvertisingCampaign(a app.AdvertisingCampaign) argAdvertisingCampaign {
-	bytes, err := json.Marshal(a.DiscountPrograms)
+func dalDiscountPrograms(programs []app.DiscountProgram) string {
+	bytes, err := json.Marshal(programs)
 	if err != nil {
 		panic(err)
 	}
 
+	return string(bytes)
+}
+
+func dalAdvertisingCampaign(a app.AdvertisingCampaign) argAdvertisingCampaign {
 	return argAdvertisingCampaign{
 		DefaultDiscount:  a.DefaultDiscount,
-		DiscountPrograms: string(bytes),
+		DiscountPrograms: dalDiscountPrograms(a.DiscountPrograms),
 		EndDate:          a.EndDate,
 		EndMinute:        a.EndMinute,
 		ID:               a.ID,
@@ -225,19 +234,24 @@ func dalAdvertisingCampaign(a app.AdvertisingCampaign) argAdvertisingCampaign {
 	}
 }
 
-func appAdvertisingCampaign(a resAdvertisingCampaign) *app.AdvertisingCampaign {
-	discountPrograms := []app.DiscountProgram{}
-	err := json.Unmarshal([]byte(a.DiscountPrograms), &discountPrograms)
+func appDiscountPrograms(programs string) []app.DiscountProgram {
+	var discountPrograms []app.DiscountProgram
+	err := json.Unmarshal([]byte(programs), &discountPrograms)
 	if err != nil {
 		panic(err)
 	}
+
+	return discountPrograms
+}
+
+func appAdvertisingCampaign(a resAdvertisingCampaign) *app.AdvertisingCampaign {
 	weekday := []string{}
 	if a.Weekday != "" {
 		weekday = strings.Split(a.Weekday, ",")
 	}
 	return &app.AdvertisingCampaign{
 		DefaultDiscount:  a.DefaultDiscount,
-		DiscountPrograms: discountPrograms,
+		DiscountPrograms: appDiscountPrograms(a.DiscountPrograms),
 		EndDate:          a.EndDate,
 		EndMinute:        a.EndMinute,
 		ID:               a.ID,
@@ -246,6 +260,8 @@ func appAdvertisingCampaign(a resAdvertisingCampaign) *app.AdvertisingCampaign {
 		Weekday:          weekday,
 		Enabled:          a.Enabled,
 		Name:             a.Name,
+		Version:          a.Version,
+		Deleted:          a.Deleted,
 	}
 }
 
