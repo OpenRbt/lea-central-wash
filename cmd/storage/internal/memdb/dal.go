@@ -1,6 +1,7 @@
 package memdb
 
 import (
+	"context"
 	"sync"
 	"time"
 
@@ -237,8 +238,8 @@ func (t *DB) ResetStationStat(stationID app.StationID) error {
 	return nil
 }
 
-func (t *DB) AddAdvertisingCampaign(a app.AdvertisingCampaign) error {
-	return nil
+func (t *DB) AddAdvertisingCampaign(ctx context.Context, a app.AdvertisingCampaign) (app.AdvertisingCampaign, error) {
+	return app.AdvertisingCampaign{}, nil
 }
 
 func (t *DB) EditAdvertisingCampaign(a app.AdvertisingCampaign) error {
@@ -344,5 +345,23 @@ func (t *DB) MoneyReports() ([]app.MngtMoneyReport, error) {
 	return nil, nil
 }
 func (t *DB) MoneyReportSetSended(int) error {
+	return nil
+}
+func (t *DB) SetProgramFromManagement(ctx context.Context, program app.ManagementProgram) (app.Program, error) {
+	return app.Program{}, nil
+}
+func (t *DB) NotSendedPrograms(ctx context.Context) ([]app.Program, error) {
+	return nil, nil
+}
+func (t *DB) MarkProgramSended(ctx context.Context, id int64) error {
+	return nil
+}
+func (t *DB) UpdateAdvertisingCampaignFromManagement(ctx context.Context, campaign app.ManagementAdvertisingCampaign) (app.AdvertisingCampaign, error) {
+	return app.AdvertisingCampaign{}, nil
+}
+func (t *DB) NotSendedAdvertisingCampaigns(ctx context.Context) ([]app.AdvertisingCampaign, error) {
+	return nil, nil
+}
+func (t *DB) MarkAdvertisingCampaignSended(ctx context.Context, id int64) error {
 	return nil
 }

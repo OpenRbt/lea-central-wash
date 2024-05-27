@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"time"
 )
 
@@ -33,26 +34,33 @@ func (a *app) GetManagementConfig() (cfg ManagementRabbitConfig, err error) {
 	return
 }
 
-func (a *app) InitManagement(svc ManagementService) {
-	a.managementSvc = svc
+func (a *app) InitManagement(mngtWorker ManagementRabbitWorker) {
+	a.mngtSvc = management{
+		syncChannel:            make(chan struct{}, 1),
+		ManagementRabbitWorker: mngtWorker,
+	}
+
+	a.syncLeaSettings()
+
 	go a.syncData()
 	go a.sendStatus()
+	go a.startManagementSync()
 }
 
 func (a *app) IsManagementInit() bool {
-	return a.managementSvc != nil
+	return a.mngtSvc.ManagementRabbitWorker != nil
 }
 
 func (a *app) IsMngtAvailableForStation(stationID StationID) bool {
 	if a.SbpWorker == nil {
 		return false
 	}
-	status := a.managementSvc.Status()
+	status := a.mngtSvc.Status()
 	return a.isServiceAvailableForStation(stationID, status)
 }
 
 func (a *app) syncData() {
-	if a.managementSvc == nil {
+	if a.mngtSvc.ManagementRabbitWorker == nil {
 		panic("managementSvc == nil")
 	}
 	for {
@@ -66,7 +74,7 @@ func (a *app) syncData() {
 				break
 			}
 			for i := range c {
-				err := a.managementSvc.SendCollectionReport(c[i])
+				err := a.mngtSvc.SendCollectionReport(c[i])
 				if err != nil {
 					log.Err("send collection", "err", err)
 					break
@@ -89,7 +97,7 @@ func (a *app) syncData() {
 				break
 			}
 			for i := range c {
-				err := a.managementSvc.SendMoneyReport(c[i])
+				err := a.mngtSvc.SendMoneyReport(c[i])
 				if err != nil {
 					log.Err("send moneyReport", "err", err)
 					break
@@ -106,15 +114,74 @@ func (a *app) syncData() {
 }
 
 func (a *app) sendStatus() {
-	if a.managementSvc == nil {
+	if a.mngtSvc.ManagementRabbitWorker == nil {
 		panic("managementSvc == nil")
 	}
 	for {
 		r := a.StatusReport(true)
-		err := a.managementSvc.SendStatus(r)
+		err := a.mngtSvc.SendStatus(r)
 		if err != nil {
 			log.Err("sendStatus", "err", err)
 		}
 		time.Sleep(time.Second * 30)
+	}
+}
+
+func (a *app) startManagementSync() {
+	if a.mngtSvc.ManagementRabbitWorker == nil {
+		panic("managementRabbitWorker == nil")
+	}
+
+	for range a.mngtSvc.syncChannel {
+		a.syncLeaSettings()
+	}
+}
+
+func (a *app) syncLeaSettings() {
+	a.syncUnsentPrograms()
+	a.syncUnsentAdvertisingCampaigns()
+}
+
+func (a *app) syncUnsentPrograms() {
+	programs, err := a.NotSendedPrograms(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent programs", "err", err)
+		return
+	}
+
+	for _, program := range programs {
+		err := a.mngtSvc.SendProgram(program)
+		if err != nil {
+			log.Err("unable to send program to management", "err", err)
+			continue
+		}
+
+		err = a.MarkProgramSended(context.TODO(), program.ID)
+		if err != nil {
+			log.Err("unable to mark program as sended", "err", err)
+			continue
+		}
+	}
+}
+
+func (a *app) syncUnsentAdvertisingCampaigns() {
+	campaigns, err := a.repo.NotSendedAdvertisingCampaigns(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent advertising campaigns", "err", err)
+		return
+	}
+
+	for _, campaign := range campaigns {
+		err := a.mngtSvc.SendAdvertisingCampaign(campaign)
+		if err != nil {
+			log.Err("unable to send advertising campaign to management", "err", err)
+			continue
+		}
+
+		err = a.MarkAdvertisingCampaignSended(context.TODO(), campaign.ID)
+		if err != nil {
+			log.Err("unable to mark advertising campaign as sended", "err", err)
+			continue
+		}
 	}
 }

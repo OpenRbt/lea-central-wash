@@ -630,7 +630,7 @@ func (r *repo) CheckDB() (ok bool, err error) {
 
 func (r *repo) Programs(id *int64) (programs []app.Program, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res []resPrograms
+		var res []resProgram
 		err = tx.NamedSelectContext(ctx, &res, sqlPrograms, argPrograms{
 			ID: id,
 		})
@@ -829,12 +829,17 @@ func (r *repo) LastUpdateConfig() (id int, err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) AddAdvertisingCampaign(a app.AdvertisingCampaign) (err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlAddAdvertisingCampaign, dalAdvertisingCampaign(a))
-		return err
+func (r *repo) AddAdvertisingCampaign(ctx context.Context, a app.AdvertisingCampaign) (app.AdvertisingCampaign, error) {
+	var resAdvert resAdvertisingCampaign
+
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		return tx.NamedGetContext(ctx, &resAdvert, sqlAddAdvertisingCampaign, dalAdvertisingCampaign(a))
 	})
-	return //nolint:nakedret
+	if err != nil {
+		return app.AdvertisingCampaign{}, err
+	}
+
+	return *appAdvertisingCampaign(resAdvert), nil
 }
 
 func (r *repo) EditAdvertisingCampaign(a app.AdvertisingCampaign) (err error) {

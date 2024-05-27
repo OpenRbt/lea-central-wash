@@ -262,4 +262,5 @@ require (
 	github.com/tarm/serial v0.0.0-20180830185346-98f6abe2eb07
 	go.mongodb.org/mongo-driver v1.11.6 // indirect
 	golang.org/x/tools v0.9.3 // indirect
+	gotest.tools/v3 v3.5.1
 )

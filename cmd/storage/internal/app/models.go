@@ -168,16 +168,18 @@ type DiscountProgram struct {
 }
 
 type AdvertisingCampaign struct {
+	ID               int64
+	Name             string
 	DefaultDiscount  int64
 	DiscountPrograms []DiscountProgram
-	EndDate          time.Time
-	EndMinute        int64
-	ID               int64
 	StartDate        time.Time
+	EndDate          time.Time
 	StartMinute      int64
+	EndMinute        int64
 	Weekday          []string
 	Enabled          bool
-	Name             string
+	Deleted          bool
+	Version          int
 }
 
 type ProgramsDiscount struct {

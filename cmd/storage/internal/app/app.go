@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"sync"
@@ -60,6 +61,7 @@ var (
 	ErrRabbitMessageBadPayload = errors.New("bad RabbitMessagePayloadData")
 	ErrNoRabbitWorker          = errors.New("rabbit worker not initialized")
 	ErrSendTimeout             = errors.New("send request failed: timeout")
+	ErrNotConfirmed            = errors.New("send request failed: not confirmed")
 
 	ErrWrongPaymentStatus = errors.New("wrong payment status")
 )
@@ -103,6 +105,10 @@ type (
 
 		Programs(id *int64) ([]Program, error)
 		SetProgram(Program) error
+		SetProgramFromManagement(ctx context.Context, program ManagementProgram) (Program, error)
+		NotSendedPrograms(ctx context.Context) ([]Program, error)
+		MarkProgramSended(ctx context.Context, id int64) error
+
 		StationProgram(StationID) ([]StationProgram, error)
 		SetStationProgram(StationID, []StationProgram) error
 		StationConfig(StationID) (StationConfig, error)
@@ -131,11 +137,16 @@ type (
 		Station(StationID) (SetStation, error)
 		RelayReportDates(auth *Auth, stationID *StationID, startDate, endDate time.Time) (StationsStat, error)
 		ResetStationStat(auth *Auth, stationID StationID) error
-		AddAdvertisingCampaign(*Auth, AdvertisingCampaign) error
+
+		AddAdvertisingCampaign(context.Context, *Auth, AdvertisingCampaign) (AdvertisingCampaign, error)
 		EditAdvertisingCampaign(auth *Auth, a AdvertisingCampaign) error
 		DelAdvertisingCampaign(auth *Auth, id int64) (err error)
 		AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaign, error)
 		AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
+		CreateAdvertisingCampaignFromManagement(ctx context.Context, advert AdvertisingCampaign) (AdvertisingCampaign, error)
+		UpdateAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error)
+		NotSendedAdvertisingCampaigns(ctx context.Context) ([]AdvertisingCampaign, error)
+		MarkAdvertisingCampaignSended(ctx context.Context, id int64) error
 
 		GetStationDiscount(id StationID) (*StationDiscount, error)
 
@@ -186,7 +197,7 @@ type (
 		IsSbpAvailableForStation(stationID StationID) bool
 		GetSbpConfig(envServerSbpID string, envServerSbpPassword string) (cfg SbpRabbitConfig, err error)
 
-		InitManagement(ManagementService)
+		InitManagement(ManagementRabbitWorker)
 		InitKaspi(KaspiService)
 		KaspiCommand(Command)
 	}
@@ -228,6 +239,10 @@ type (
 
 		Programs(id *int64) ([]Program, error)
 		SetProgram(Program) error
+		SetProgramFromManagement(ctx context.Context, program ManagementProgram) (Program, error)
+		NotSendedPrograms(ctx context.Context) ([]Program, error)
+		MarkProgramSended(ctx context.Context, id int64) error
+
 		StationProgram(StationID) ([]StationProgram, error)
 		SetStationProgram(StationID, []StationProgram) error
 		StationConfig(StationID) (StationConfig, error)
@@ -242,11 +257,14 @@ type (
 		RelayReportDates(stationID *StationID, startDate, endDate time.Time) (StationsStat, error)
 		ResetStationStat(stationID StationID) error
 
-		AddAdvertisingCampaign(AdvertisingCampaign) error
+		AddAdvertisingCampaign(context.Context, AdvertisingCampaign) (AdvertisingCampaign, error)
 		EditAdvertisingCampaign(AdvertisingCampaign) error
 		DelAdvertisingCampaign(id int64) error
 		AdvertisingCampaignByID(id int64) (*AdvertisingCampaign, error)
 		AdvertisingCampaign(startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
+		UpdateAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error)
+		NotSendedAdvertisingCampaigns(ctx context.Context) ([]AdvertisingCampaign, error)
+		MarkAdvertisingCampaignSended(ctx context.Context, id int64) error
 
 		GetCurrentAdvertisingCampaigns(time.Time) ([]AdvertisingCampaign, error)
 
@@ -317,11 +335,17 @@ type (
 		// Timings are settings for actual relays
 		Timings []Relay
 	}
-	ManagementService interface {
+	ManagementRabbitWorker interface {
 		SendMoneyReport(MngtMoneyReport) error
 		SendCollectionReport(CollectionReport) error
 		Status() ServiceStatus
 		SendStatus(StatusReport) error
+		SendProgram(Program) error
+		SendAdvertisingCampaign(AdvertisingCampaign) error
+	}
+	management struct {
+		syncChannel chan struct{}
+		ManagementRabbitWorker
 	}
 	KaspiService interface {
 		Status() ServiceStatus
@@ -350,7 +374,7 @@ type app struct {
 	cfg                   AppConfig
 	cfgMutex              sync.Mutex
 	volumeCorrection      int
-	managementSvc         ManagementService
+	mngtSvc               management
 	kaspiSvc              KaspiService
 
 	extServicesActive     bool
@@ -493,6 +517,7 @@ type Program struct {
 	IsFinishingProgram         bool
 	Relays                     []Relay
 	PreflightRelays            []Relay
+	Version                    int
 }
 
 type StationProgram struct {
@@ -545,4 +570,16 @@ type RabbitMoneyReport struct {
 
 type ServerInfo struct {
 	BonusServiceURL string `json:"bonusServiceURL,omitempty"`
+}
+
+type RabbitMessageType string
+
+func (m RabbitMessageType) String() string {
+	return string(m)
+}
+
+type RabbitRoutingKey string
+
+func (r RabbitRoutingKey) String() string {
+	return string(r)
 }

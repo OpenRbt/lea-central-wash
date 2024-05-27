@@ -974,7 +974,7 @@ func (svc *service) resetStationStat(params op.ResetStationStatParams, auth *app
 }
 
 func (svc *service) addAdvertisingCampaign(params op.AddAdvertisingCampaignParams, auth *app.Auth) op.AddAdvertisingCampaignResponder {
-	err := svc.app.AddAdvertisingCampaign(auth, appAdvertisingCampaign(params.Args))
+	_, err := svc.app.AddAdvertisingCampaign(params.HTTPRequest.Context(), auth, appAdvertisingCampaign(params.Args))
 
 	switch errors.Cause(err) {
 	case nil:

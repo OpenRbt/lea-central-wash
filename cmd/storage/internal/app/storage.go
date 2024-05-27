@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"reflect"
@@ -535,8 +536,8 @@ func (a *app) StatusReport(onlyActive bool) StatusReport {
 		report.SbpStatus = ServiceStatus{Available: false}
 	}
 
-	if a.managementSvc != nil {
-		report.MngtStatus = a.managementSvc.Status()
+	if a.mngtSvc.ManagementRabbitWorker != nil {
+		report.MngtStatus = a.mngtSvc.Status()
 	} else {
 		report.MngtStatus = ServiceStatus{Available: false}
 	}
@@ -655,6 +656,8 @@ func (a *app) SetProgram(program Program) error {
 	a.programs[program.ID] = program
 	a.programsMutex.Unlock()
 	err = a.updateConfig("SetProgram")
+
+	a.sendManagementSyncSignal()
 	return err
 }
 func (a *app) StationProgram(id StationID) ([]StationProgram, error) {
@@ -731,14 +734,33 @@ func (a *app) ResetStationStat(auth *Auth, stationID StationID) error {
 	return a.repo.ResetStationStat(stationID)
 }
 
-func (a *app) AddAdvertisingCampaign(auth *Auth, res AdvertisingCampaign) error {
-	return a.repo.AddAdvertisingCampaign(res)
+func (a *app) AddAdvertisingCampaign(ctx context.Context, auth *Auth, res AdvertisingCampaign) (AdvertisingCampaign, error) {
+	campaign, err := a.repo.AddAdvertisingCampaign(ctx, res)
+	if err != nil {
+		return AdvertisingCampaign{}, err
+	}
+
+	a.sendManagementSyncSignal()
+	return campaign, nil
 }
+
 func (a *app) EditAdvertisingCampaign(auth *Auth, res AdvertisingCampaign) error {
-	return a.repo.EditAdvertisingCampaign(res)
+	err := a.repo.EditAdvertisingCampaign(res)
+	if err != nil {
+		return err
+	}
+
+	a.sendManagementSyncSignal()
+	return nil
 }
 func (a *app) DelAdvertisingCampaign(auth *Auth, id int64) error {
-	return a.repo.DelAdvertisingCampaign(id)
+	err := a.repo.DelAdvertisingCampaign(id)
+	if err != nil {
+		return err
+	}
+
+	a.sendManagementSyncSignal()
+	return nil
 }
 func (a *app) AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaign, error) {
 	return a.repo.AdvertisingCampaignByID(id)
