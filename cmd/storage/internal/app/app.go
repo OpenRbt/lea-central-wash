@@ -186,7 +186,7 @@ type (
 		AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaign, error)
 		AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
 		CreateAdvertisingCampaignFromManagement(ctx context.Context, advert AdvertisingCampaign) (AdvertisingCampaign, error)
-		UpdateAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error)
+		UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error)
 		NotSendedAdvertisingCampaigns(ctx context.Context) ([]AdvertisingCampaign, error)
 		MarkAdvertisingCampaignSended(ctx context.Context, id int64) error
 
@@ -319,7 +319,7 @@ type (
 		DelAdvertisingCampaign(id int64) error
 		AdvertisingCampaignByID(id int64) (*AdvertisingCampaign, error)
 		AdvertisingCampaign(startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
-		UpdateAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error)
+		UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error)
 		NotSendedAdvertisingCampaigns(ctx context.Context) ([]AdvertisingCampaign, error)
 		MarkAdvertisingCampaignSended(ctx context.Context, id int64) error
 

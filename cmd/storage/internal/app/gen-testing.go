@@ -981,6 +981,18 @@ func (mr *MockAppMockRecorder) Ping(id, balance, program, stationIP interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Ping", reflect.TypeOf((*MockApp)(nil).Ping), id, balance, program, stationIP)
 }
 
+// PingServices mocks base method.
+func (m *MockApp) PingServices() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "PingServices")
+}
+
+// PingServices indicates an expected call of PingServices.
+func (mr *MockAppMockRecorder) PingServices() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PingServices", reflect.TypeOf((*MockApp)(nil).PingServices))
+}
+
 // PressButton mocks base method.
 func (m *MockApp) PressButton(id StationID, buttonID int64) error {
 	m.ctrl.T.Helper()
@@ -1594,21 +1606,6 @@ func (mr *MockAppMockRecorder) StatusReport(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StatusReport", reflect.TypeOf((*MockApp)(nil).StatusReport), arg0)
 }
 
-// UpdateAdvertisingCampaignFromManagement mocks base method.
-func (m *MockApp) UpdateAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateAdvertisingCampaignFromManagement", ctx, advert)
-	ret0, _ := ret[0].(AdvertisingCampaign)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UpdateAdvertisingCampaignFromManagement indicates an expected call of UpdateAdvertisingCampaignFromManagement.
-func (mr *MockAppMockRecorder) UpdateAdvertisingCampaignFromManagement(ctx, advert interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAdvertisingCampaignFromManagement", reflect.TypeOf((*MockApp)(nil).UpdateAdvertisingCampaignFromManagement), ctx, advert)
-}
-
 // UpdateUser mocks base method.
 func (m *MockApp) UpdateUser(userData UpdateUserData, auth *Auth) (int, error) {
 	m.ctrl.T.Helper()
@@ -1637,6 +1634,21 @@ func (m *MockApp) UpdateUserPassword(userData UpdatePasswordData, auth *Auth) (i
 func (mr *MockAppMockRecorder) UpdateUserPassword(userData, auth interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserPassword", reflect.TypeOf((*MockApp)(nil).UpdateUserPassword), userData, auth)
+}
+
+// UpsertAdvertisingCampaignFromManagement mocks base method.
+func (m *MockApp) UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpsertAdvertisingCampaignFromManagement", ctx, advert)
+	ret0, _ := ret[0].(AdvertisingCampaign)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpsertAdvertisingCampaignFromManagement indicates an expected call of UpsertAdvertisingCampaignFromManagement.
+func (mr *MockAppMockRecorder) UpsertAdvertisingCampaignFromManagement(ctx, advert interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertAdvertisingCampaignFromManagement", reflect.TypeOf((*MockApp)(nil).UpsertAdvertisingCampaignFromManagement), ctx, advert)
 }
 
 // User mocks base method.
@@ -2943,21 +2955,6 @@ func (mr *MockRepoMockRecorder) StationsVariables() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StationsVariables", reflect.TypeOf((*MockRepo)(nil).StationsVariables))
 }
 
-// UpdateAdvertisingCampaignFromManagement mocks base method.
-func (m *MockRepo) UpdateAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateAdvertisingCampaignFromManagement", ctx, advert)
-	ret0, _ := ret[0].(AdvertisingCampaign)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UpdateAdvertisingCampaignFromManagement indicates an expected call of UpdateAdvertisingCampaignFromManagement.
-func (mr *MockRepoMockRecorder) UpdateAdvertisingCampaignFromManagement(ctx, advert interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAdvertisingCampaignFromManagement", reflect.TypeOf((*MockRepo)(nil).UpdateAdvertisingCampaignFromManagement), ctx, advert)
-}
-
 // UpdateBuildScript mocks base method.
 func (m *MockRepo) UpdateBuildScript(id int, updateBuildScript SetBuildScript) (BuildScript, error) {
 	m.ctrl.T.Helper()
@@ -3016,6 +3013,21 @@ func (m *MockRepo) UpdateUserPassword(userData UpdatePasswordData) (UserData, er
 func (mr *MockRepoMockRecorder) UpdateUserPassword(userData interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserPassword", reflect.TypeOf((*MockRepo)(nil).UpdateUserPassword), userData)
+}
+
+// UpsertAdvertisingCampaignFromManagement mocks base method.
+func (m *MockRepo) UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpsertAdvertisingCampaignFromManagement", ctx, advert)
+	ret0, _ := ret[0].(AdvertisingCampaign)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpsertAdvertisingCampaignFromManagement indicates an expected call of UpsertAdvertisingCampaignFromManagement.
+func (mr *MockRepoMockRecorder) UpsertAdvertisingCampaignFromManagement(ctx, advert interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertAdvertisingCampaignFromManagement", reflect.TypeOf((*MockRepo)(nil).UpsertAdvertisingCampaignFromManagement), ctx, advert)
 }
 
 // User mocks base method.
@@ -3412,6 +3424,20 @@ func NewMockKaspiService(ctrl *gomock.Controller) *MockKaspiService {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockKaspiService) EXPECT() *MockKaspiServiceMockRecorder {
 	return m.recorder
+}
+
+// Ping mocks base method.
+func (m *MockKaspiService) Ping(serverID string, status []StationPingStatus) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Ping", serverID, status)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Ping indicates an expected call of Ping.
+func (mr *MockKaspiServiceMockRecorder) Ping(serverID, status interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Ping", reflect.TypeOf((*MockKaspiService)(nil).Ping), serverID, status)
 }
 
 // SendAnswer mocks base method.

@@ -52,6 +52,6 @@ const (
 
 	LcwProgramSettingMessageType              app.RabbitMessageType = "lcw/program/set"
 	LeaAdvertisingCampaignCreationMessageType app.RabbitMessageType = "lcw/advertising_campaign/create"
-	LeaAdvertisingCampaignUpdateMessageType   app.RabbitMessageType = "lcw/advertising_campaign/update"
+	LeaAdvertisingCampaignUpsertMessageType   app.RabbitMessageType = "lcw/advertising_campaign/upsert"
 	LeaAdvertisingCampaignDeletionMessageType app.RabbitMessageType = "lcw/advertising_campaign/delete"
 )

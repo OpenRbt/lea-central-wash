@@ -358,7 +358,7 @@ func (t *DB) NotSendedPrograms(ctx context.Context) ([]app.Program, error) {
 func (t *DB) MarkProgramSended(ctx context.Context, id int64) error {
 	return nil
 }
-func (t *DB) UpdateAdvertisingCampaignFromManagement(ctx context.Context, campaign app.ManagementAdvertisingCampaign) (app.AdvertisingCampaign, error) {
+func (t *DB) UpsertAdvertisingCampaignFromManagement(ctx context.Context, campaign app.ManagementAdvertisingCampaign) (app.AdvertisingCampaign, error) {
 	return app.AdvertisingCampaign{}, nil
 }
 func (t *DB) NotSendedAdvertisingCampaigns(ctx context.Context) ([]app.AdvertisingCampaign, error) {

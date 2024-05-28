@@ -124,19 +124,6 @@ func TestNotSendedPrograms(t *testing.T) {
 func TestUpdateAdvertisingCampaignFromManagement(t *testing.T) {
 	assert.NilError(t, testRepo.truncate())
 
-	addedCampaign, err := testRepo.AddAdvertisingCampaign(ctx, app.AdvertisingCampaign{
-		Name:             "test",
-		DefaultDiscount:  10,
-		DiscountPrograms: []app.DiscountProgram{{Discount: 1, ProgramID: 1}, {Discount: 2, ProgramID: 2}},
-		StartDate:        time.Date(2024, 5, 20, 0, 0, 0, 0, time.UTC),
-		EndDate:          time.Date(2024, 5, 25, 0, 0, 0, 0, time.UTC),
-		StartMinute:      0,
-		EndMinute:        60,
-		Weekday:          []string{"monday", "tuesday"},
-		Enabled:          true,
-	})
-	assert.NilError(t, err)
-
 	tests := []struct {
 		name          string
 		campaign      app.ManagementAdvertisingCampaign
@@ -146,52 +133,96 @@ func TestUpdateAdvertisingCampaignFromManagement(t *testing.T) {
 		{
 			name: "successfully update",
 			campaign: app.ManagementAdvertisingCampaign{
-				ID:               addedCampaign.ID,
-				Name:             "new",
-				DefaultDiscount:  5,
-				DiscountPrograms: []app.DiscountProgram{{Discount: 3, ProgramID: 3}},
-				StartDate:        time.Date(2024, 6, 20, 0, 0, 0, 0, time.UTC),
-				EndDate:          time.Date(2024, 6, 25, 0, 0, 0, 0, time.UTC),
-				StartMinute:      10,
-				EndMinute:        50,
-				Weekday:          []string{"wednesday"},
-				Enabled:          false,
-				Version:          3,
+				ID:               1,
+				Name:             "test",
+				DefaultDiscount:  10,
+				DiscountPrograms: []app.DiscountProgram{{Discount: 1, ProgramID: 1}, {Discount: 2, ProgramID: 2}},
+				StartDate:        time.Date(2024, 5, 20, 0, 0, 0, 0, time.UTC),
+				EndDate:          time.Date(2024, 5, 25, 0, 0, 0, 0, time.UTC),
+				StartMinute:      0,
+				EndMinute:        60,
+				Weekday:          []string{"monday", "tuesday"},
+				Enabled:          true,
+				Version:          1,
 			},
 			addedCampaign: app.AdvertisingCampaign{
-				ID:               addedCampaign.ID,
-				Name:             "new",
-				DefaultDiscount:  5,
-				DiscountPrograms: []app.DiscountProgram{{Discount: 3, ProgramID: 3}},
-				StartDate:        time.Date(2024, 6, 20, 0, 0, 0, 0, time.UTC),
-				EndDate:          time.Date(2024, 6, 25, 0, 0, 0, 0, time.UTC),
-				StartMinute:      10,
-				EndMinute:        50,
-				Weekday:          []string{"wednesday"},
-				Enabled:          false,
+				ID:               1,
+				Name:             "test",
+				DefaultDiscount:  10,
+				DiscountPrograms: []app.DiscountProgram{{Discount: 1, ProgramID: 1}, {Discount: 2, ProgramID: 2}},
+				StartDate:        time.Date(2024, 5, 20, 0, 0, 0, 0, time.UTC),
+				EndDate:          time.Date(2024, 5, 25, 0, 0, 0, 0, time.UTC),
+				StartMinute:      0,
+				EndMinute:        60,
+				Weekday:          []string{"monday", "tuesday"},
+				Enabled:          true,
 				Version:          1,
 			},
 		},
 		{
 			name: "force update",
 			campaign: app.ManagementAdvertisingCampaign{
-				ID:      addedCampaign.ID,
-				Name:    "force",
-				Version: 3,
-				Force:   true,
+				ID:               1,
+				Name:             "new",
+				DefaultDiscount:  5,
+				DiscountPrograms: []app.DiscountProgram{{Discount: 3, ProgramID: 3}},
+				StartDate:        time.Date(2024, 6, 20, 0, 0, 0, 0, time.UTC),
+				EndDate:          time.Date(2024, 6, 25, 0, 0, 0, 0, time.UTC),
+				StartMinute:      10,
+				EndMinute:        50,
+				Weekday:          []string{"wednesday"},
+				Enabled:          false,
+				Version:          0,
+				Force:            true,
 			},
 			addedCampaign: app.AdvertisingCampaign{
-				ID:      addedCampaign.ID,
-				Name:    "force",
-				Weekday: []string{},
-				Version: 3,
+				ID:               1,
+				Name:             "new",
+				DefaultDiscount:  5,
+				DiscountPrograms: []app.DiscountProgram{{Discount: 3, ProgramID: 3}},
+				StartDate:        time.Date(2024, 6, 20, 0, 0, 0, 0, time.UTC),
+				EndDate:          time.Date(2024, 6, 25, 0, 0, 0, 0, time.UTC),
+				StartMinute:      10,
+				EndMinute:        50,
+				Weekday:          []string{"wednesday"},
+				Enabled:          false,
+				Version:          0,
+			},
+		},
+		{
+			name: "update and up version",
+			campaign: app.ManagementAdvertisingCampaign{
+				ID:               1,
+				Name:             "updated",
+				DefaultDiscount:  10,
+				DiscountPrograms: []app.DiscountProgram{{Discount: 1, ProgramID: 1}, {Discount: 2, ProgramID: 2}},
+				StartDate:        time.Date(2024, 3, 10, 0, 0, 0, 0, time.UTC),
+				EndDate:          time.Date(2024, 3, 15, 0, 0, 0, 0, time.UTC),
+				StartMinute:      20,
+				EndMinute:        30,
+				Weekday:          []string{"wednesday", "friday"},
+				Enabled:          true,
+				Version:          0,
+			},
+			addedCampaign: app.AdvertisingCampaign{
+				ID:               1,
+				Name:             "updated",
+				DefaultDiscount:  10,
+				DiscountPrograms: []app.DiscountProgram{{Discount: 1, ProgramID: 1}, {Discount: 2, ProgramID: 2}},
+				StartDate:        time.Date(2024, 3, 10, 0, 0, 0, 0, time.UTC),
+				EndDate:          time.Date(2024, 3, 15, 0, 0, 0, 0, time.UTC),
+				StartMinute:      20,
+				EndMinute:        30,
+				Weekday:          []string{"wednesday", "friday"},
+				Enabled:          true,
+				Version:          1,
 			},
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			campaign, err := testRepo.UpdateAdvertisingCampaignFromManagement(ctx, tc.campaign)
+			campaign, err := testRepo.UpsertAdvertisingCampaignFromManagement(ctx, tc.campaign)
 			assert.ErrorIs(t, err, tc.expectedError)
 			assert.DeepEqual(t, campaign, tc.addedCampaign)
 		})

@@ -138,7 +138,7 @@ func AdvertisingCampaignToApp(campaign AdvertisingCampaign) app.AdvertisingCampa
 	return res
 }
 
-func UpdateAdvertisingCampaignToApp(campaign AdvertisingCampaign) app.ManagementAdvertisingCampaign {
+func UpsertAdvertisingCampaignToApp(campaign AdvertisingCampaign) app.ManagementAdvertisingCampaign {
 	res := app.ManagementAdvertisingCampaign{
 		ID:              campaign.ID,
 		Name:            campaign.Name,

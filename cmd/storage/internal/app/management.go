@@ -64,13 +64,8 @@ func (app *app) CreateAdvertisingCampaignFromManagement(ctx context.Context, adv
 	return app.repo.AddAdvertisingCampaign(ctx, advert)
 }
 
-func (app *app) UpdateAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error) {
-	_, err := app.repo.AdvertisingCampaignByID(advert.ID)
-	if err != nil {
-		return AdvertisingCampaign{}, err
-	}
-
-	return app.repo.UpdateAdvertisingCampaignFromManagement(ctx, advert)
+func (app *app) UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error) {
+	return app.repo.UpsertAdvertisingCampaignFromManagement(ctx, advert)
 }
 
 func (app *app) NotSendedAdvertisingCampaigns(ctx context.Context) ([]AdvertisingCampaign, error) {
