@@ -103,10 +103,10 @@ func (r *repo) MarkProgramSended(ctx context.Context, id int64) error {
 	})
 }
 
-func (r *repo) UpdateAdvertisingCampaignFromManagement(ctx context.Context, advert app.ManagementAdvertisingCampaign) (app.AdvertisingCampaign, error) {
+func (r *repo) UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert app.ManagementAdvertisingCampaign) (app.AdvertisingCampaign, error) {
 	var resAdvert resAdvertisingCampaign
 	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		err := tx.NamedGetContext(ctx, &resAdvert, sqlUpdateAdvertisingCampaignFromManagement, argManagementAdvertisingCampaign{
+		err := tx.NamedGetContext(ctx, &resAdvert, sqlUpsertAdvertisingCampaignFromManagement, argManagementAdvertisingCampaign{
 			ID:               advert.ID,
 			DefaultDiscount:  advert.DefaultDiscount,
 			DiscountPrograms: dalDiscountPrograms(advert.DiscountPrograms),

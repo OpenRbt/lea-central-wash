@@ -26,8 +26,8 @@ func (s *Service) ProcessMngtMessage(d amqp.Delivery) error {
 	case mngt_entity.LeaAdvertisingCampaignCreationMessageType:
 		return s.handleLeaAdvertisingCampaignCreation(ctx, d)
 
-	case mngt_entity.LeaAdvertisingCampaignUpdateMessageType:
-		return s.handleLeaAdvertisingCampaignUpdate(ctx, d)
+	case mngt_entity.LeaAdvertisingCampaignUpsertMessageType:
+		return s.handleLeaAdvertisingCampaignUpsert(ctx, d)
 
 	case mngt_entity.LeaAdvertisingCampaignDeletionMessageType:
 		return s.handleLeaAdvertisingCampaignDeletion(d)
@@ -125,7 +125,7 @@ func (s *Service) handleLeaAdvertisingCampaignCreation(ctx context.Context, d am
 	return nil
 }
 
-func (s *Service) handleLeaAdvertisingCampaignUpdate(ctx context.Context, d amqp.Delivery) error {
+func (s *Service) handleLeaAdvertisingCampaignUpsert(ctx context.Context, d amqp.Delivery) error {
 	var campaign mngt_entity.AdvertisingCampaign
 	if err := json.Unmarshal(d.Body, &campaign); err != nil {
 		s.log.Err("Failed to unmarshal message:", err)
@@ -135,10 +135,10 @@ func (s *Service) handleLeaAdvertisingCampaignUpdate(ctx context.Context, d amqp
 		return err
 	}
 
-	updatedCampaign, err := s.app.UpdateAdvertisingCampaignFromManagement(ctx, mngt_entity.UpdateAdvertisingCampaignToApp(campaign))
-	rpcResponse := mngt_entity.RPCResponse{Data: updatedCampaign}
+	upsertCampaign, err := s.app.UpsertAdvertisingCampaignFromManagement(ctx, mngt_entity.UpsertAdvertisingCampaignToApp(campaign))
+	rpcResponse := mngt_entity.RPCResponse{Data: upsertCampaign}
 	if err != nil {
-		s.log.Err("Failed to update advertising campaign from management", "err", err)
+		s.log.Err("Failed to upsert advertising campaign from management", "err", err)
 		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
 	}
 
@@ -151,7 +151,7 @@ func (s *Service) handleLeaAdvertisingCampaignUpdate(ctx context.Context, d amqp
 		return err
 	}
 
-	err = s.app.MarkAdvertisingCampaignSended(ctx, updatedCampaign.ID)
+	err = s.app.MarkAdvertisingCampaignSended(ctx, upsertCampaign.ID)
 	if err != nil {
 		s.setLastErr(err.Error())
 		if nackErr := d.Nack(false, false); nackErr != nil {
@@ -338,7 +338,7 @@ func (s *Service) sendMessageByCorrelationID(msg interface{}, replyTo string, co
 	}
 
 	select {
-	case <-time.After(10 * time.Second):
+	case <-time.After(5 * time.Second):
 		return app.ErrSendTimeout
 	case <-dConfirmation.Done():
 		if !dConfirmation.Acked() {

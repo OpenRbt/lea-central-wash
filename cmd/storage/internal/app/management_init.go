@@ -2,6 +2,8 @@ package app
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"time"
 )
 
@@ -59,6 +61,36 @@ func (a *app) IsMngtAvailableForStation(stationID StationID) bool {
 	return a.isServiceAvailableForStation(stationID, status)
 }
 
+func (a *app) handleCollectionReportSync(report CollectionReport) error {
+	if err := a.mngtSvc.SendCollectionReport(report); err != nil {
+		if errors.Is(err, ErrNotConfirmed) {
+			return nil
+		}
+		return fmt.Errorf("send collection report: %w", err)
+	}
+
+	if err := a.repo.CollectionSetSended(report.ID); err != nil {
+		return fmt.Errorf("set collection report as sent: %w", err)
+	}
+
+	return nil
+}
+
+func (a *app) handleMoneyReportSync(report MngtMoneyReport) error {
+	if err := a.mngtSvc.SendMoneyReport(report); err != nil {
+		if errors.Is(err, ErrNotConfirmed) {
+			return nil
+		}
+		return fmt.Errorf("send money report: %w", err)
+	}
+
+	if err := a.repo.MoneyReportSetSended(report.ID); err != nil {
+		return fmt.Errorf("set money report as sent: %w", err)
+	}
+
+	return nil
+}
+
 func (a *app) syncData() {
 	if a.mngtSvc.ManagementRabbitWorker == nil {
 		panic("managementSvc == nil")
@@ -73,15 +105,9 @@ func (a *app) syncData() {
 			if len(c) == 0 {
 				break
 			}
-			for i := range c {
-				err := a.mngtSvc.SendCollectionReport(c[i])
-				if err != nil {
-					log.Err("send collection", "err", err)
-					break
-				}
-				err = a.repo.CollectionSetSended(c[i].ID)
-				if err != nil {
-					log.Err("collection set sended", "err", err)
+			for _, report := range c {
+				if err := a.handleCollectionReportSync(report); err != nil {
+					log.Err("handle collectionReport", "err", err)
 					break
 				}
 			}
@@ -96,15 +122,9 @@ func (a *app) syncData() {
 			if len(c) == 0 {
 				break
 			}
-			for i := range c {
-				err := a.mngtSvc.SendMoneyReport(c[i])
-				if err != nil {
-					log.Err("send moneyReport", "err", err)
-					break
-				}
-				err = a.repo.MoneyReportSetSended(c[i].ID)
-				if err != nil {
-					log.Err("moneyReport set sended", "err", err)
+			for _, report := range c {
+				if err := a.handleMoneyReportSync(report); err != nil {
+					log.Err("handle moneyReport", "err", err)
 					break
 				}
 			}

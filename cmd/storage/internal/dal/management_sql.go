@@ -44,8 +44,32 @@ const (
 		FROM advertising_campaign 
 		WHERE NOT management_sended
 	`
-	sqlUpdateAdvertisingCampaignFromManagement = `
-		UPDATE advertising_campaign SET
+	sqlUpsertAdvertisingCampaignFromManagement = `
+		INSERT INTO advertising_campaign (
+			id,
+			default_discount,
+			discount_programs,
+			end_date,
+			end_minute,
+			start_date,
+			start_minute,
+			weekday,
+			enabled,
+			name,
+			version
+		) VALUES (
+			:id,
+			:default_discount,
+			:discount_programs,
+			:end_date,
+			:end_minute,
+			:start_date,
+			:start_minute,
+			:weekday,
+			:enabled,
+			:name,
+			:version
+		) ON CONFLICT (id) DO UPDATE SET
 			default_discount  = :default_discount,
 			discount_programs = :discount_programs,
 			end_date 		  = :end_date,
@@ -55,10 +79,8 @@ const (
 			weekday 		  = :weekday,
 			enabled 		  = :enabled,
 			name 			  = :name,
-			version 		  = CASE WHEN :force THEN :version ELSE version + 1 END,
+			version 		  = CASE WHEN :force THEN :version ELSE advertising_campaign.version + 1 END,
 			management_sended = false
-		WHERE id = :id 
-		  AND NOT deleted
 		RETURNING *
 	`
 	sqlMarkAdvertisingCampaignSended = `
@@ -106,9 +128,7 @@ const (
 			:is_finishing_program,
 			:version,
 			true
-		)
-		ON CONFLICT (id) DO
-		UPDATE SET 
+		) ON CONFLICT (id) DO UPDATE SET 
 			price = EXCLUDED.price,
 			name = EXCLUDED.name,
 			preflight_enabled = EXCLUDED.preflight_enabled,
