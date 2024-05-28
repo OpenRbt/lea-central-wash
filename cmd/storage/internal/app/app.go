@@ -200,6 +200,8 @@ type (
 		InitManagement(ManagementRabbitWorker)
 		InitKaspi(KaspiService)
 		KaspiCommand(Command)
+
+		PingServices()
 	}
 
 	// Repo is a DAL interface.
@@ -350,6 +352,7 @@ type (
 	KaspiService interface {
 		Status() ServiceStatus
 		SendAnswer(KaspiAnswer) error
+		Ping(serverID string, status []StationPingStatus) error
 	}
 )
 
@@ -474,6 +477,11 @@ type StationStatus struct {
 	CurrentProgram int
 	ProgramName    string
 	IP             string
+}
+
+type StationPingStatus struct {
+	ID       StationID
+	IsOnline bool
 }
 
 // SetStation is a struct to assign a name

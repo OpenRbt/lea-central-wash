@@ -6,4 +6,5 @@ const (
 	WashAdminRoutingKey             RoutingKey = "wash_admin"
 	WashAdminServesEventsRoutingKey RoutingKey = "wash_admin_servers"
 	WashBonusRoutingKey             RoutingKey = "wash_bonus"
+	BonusPingRoutingKey             RoutingKey = "bonus_ping"
 )

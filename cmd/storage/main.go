@@ -352,6 +352,7 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 	}
 
 	appl := app.New(repo, kasse, weather, client)
+	go appl.PingServices()
 
 	// bonus
 	rabbitCfg, err := appl.GetRabbitConfig()

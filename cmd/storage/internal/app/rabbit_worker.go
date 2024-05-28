@@ -16,6 +16,7 @@ type BonusRabbitWorker struct {
 	messageMutex    sync.RWMutex
 	lastMessageTime int64
 
+	// TODO: isolate the app from the rabbit package
 	publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error
 	status        func() ServiceStatus
 }

@@ -72,8 +72,6 @@ func (s *Service) ProcessBonusMessage(d amqp.Delivery) error { // Обработ
 		}
 
 		d.Ack(false)
-	case rabbit_vo.PingMessageType:
-		d.Ack(false)
 
 	default:
 		d.Nack(false, false)

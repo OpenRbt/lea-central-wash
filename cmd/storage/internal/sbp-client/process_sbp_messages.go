@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/ping"
 	paymentEntities "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client/entity/payment"
 	rabbit_vo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client/entity/vo"
 	uuid "github.com/satori/go.uuid"
@@ -122,7 +123,7 @@ func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 
 // SendPaymentRequest ...
 func (s *Service) SendPaymentRequest(payRequest app.Payment) (err error) {
-	err = s.sendMessage(toPayRequest(payRequest), rabbit_vo.MessageTypePaymentRequest)
+	err = s.sendMessage(toPayRequest(payRequest), rabbit_vo.MessageTypePaymentRequest, rabbit_vo.RoutingKeySbpClient)
 	if err != nil {
 		s.setLastErr(err.Error())
 	}
@@ -131,7 +132,7 @@ func (s *Service) SendPaymentRequest(payRequest app.Payment) (err error) {
 
 // CancelPayment ...
 func (s *Service) CancelPayment(payСancellationRequest app.Payment, errMsg string) (err error) {
-	err = s.sendMessage(toPayСancellationRequest(payСancellationRequest, errMsg), rabbit_vo.MessageTypePaymentCancellationRequest)
+	err = s.sendMessage(toPayСancellationRequest(payСancellationRequest, errMsg), rabbit_vo.MessageTypePaymentCancellationRequest, rabbit_vo.RoutingKeySbpClient)
 	if err != nil {
 		s.setLastErr(err.Error())
 	}
@@ -139,15 +140,24 @@ func (s *Service) CancelPayment(payСancellationRequest app.Payment, errMsg stri
 }
 
 func (s *Service) ConfirmPayment(payConfirmRequest app.Payment) error {
-	err := s.sendMessage(toPayConfirmationRequest(payConfirmRequest), rabbit_vo.PaymentConfirmationRequestMessageType)
+	err := s.sendMessage(toPayConfirmationRequest(payConfirmRequest), rabbit_vo.PaymentConfirmationRequestMessageType, rabbit_vo.RoutingKeySbpClient)
 	if err != nil {
 		s.setLastErr(err.Error())
 	}
 	return err
 }
 
+func (s *Service) Ping(serverID string, status []app.StationPingStatus) error {
+	p := ping.BonusPing{
+		WashID:   serverID,
+		Stations: stationPingStatusToRabbit(status),
+	}
+
+	return s.sendMessage(p, rabbit_vo.SBPPingMessageType, rabbit_vo.RoutingKeySbpPing)
+}
+
 // sendMessage ...
-func (s *Service) sendMessage(msg interface{}, messageType rabbit_vo.MessageType) (err error) {
+func (s *Service) sendMessage(msg interface{}, messageType rabbit_vo.MessageType, routingKey rabbit_vo.RoutingKey) (err error) {
 	var jsonMsg []byte
 	if msg != nil {
 		var ok bool
@@ -166,7 +176,7 @@ func (s *Service) sendMessage(msg interface{}, messageType rabbit_vo.MessageType
 	message.UserId = s.serverID
 	message.DeliveryMode = amqp.Persistent
 	exchangeName := string(rabbit_vo.SbpClientService)
-	routingKeyString := string(rabbit_vo.RoutingKeySbpClient)
+	routingKeyString := string(routingKey)
 
 	dConfirmation, err := s.sbpClientPub.PublishWithDeferredConfirmWithContext(
 		context.Background(),
@@ -222,4 +232,15 @@ func toPaymentStatus(status string) (app.PaymentStatus, error) {
 	default:
 		return app.PaymentStatus(""), app.ErrWrongPaymentStatus
 	}
+}
+
+func stationPingStatusToRabbit(status []app.StationPingStatus) []ping.StationStatus {
+	l := []ping.StationStatus{}
+	for _, v := range status {
+		l = append(l, ping.StationStatus{
+			ID:       int(v.ID),
+			IsOnline: v.IsOnline,
+		})
+	}
+	return l
 }

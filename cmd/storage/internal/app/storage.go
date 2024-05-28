@@ -10,6 +10,7 @@ import (
 
 	uuid "github.com/satori/go.uuid"
 
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/ping"
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/session"
 	rabbitVo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 
@@ -557,7 +558,7 @@ func (a *app) StatusReport(onlyActive bool) StatusReport {
 		a.programsMutex.RLock()
 		programName := a.programs[int64(v.CurrentProgram)].Name
 		a.programsMutex.RUnlock()
-		report.Stations = append(report.Stations, StationStatus{
+		report.Stations = append(report.Stations, StationStatus{ //
 			ID:             v.ID,
 			Name:           v.Name,
 			Status:         status,
@@ -1031,6 +1032,7 @@ func (a *app) SetExternalServicesActive(active bool) {
 func (a *app) GetRabbitConfig() (cfg RabbitConfig, err error) {
 	serverID, err := a.repo.GetConfigString("server_id")
 	if err != nil {
+		log.Info("%s", err.Error())
 		err = ErrServiceNotConfigured
 
 		return cfg, err
@@ -1038,6 +1040,7 @@ func (a *app) GetRabbitConfig() (cfg RabbitConfig, err error) {
 
 	serverKey, err := a.repo.GetConfigString("server_key")
 	if err != nil {
+		log.Info("%s", err.Error())
 		err = ErrServiceNotConfigured
 
 		return cfg, err
@@ -1275,4 +1278,108 @@ func (a *app) GetServerInfo() ServerInfo {
 func (a *app) isServiceAvailableForStation(station StationID, status ServiceStatus) bool {
 	v, ok := status.UnpaidStations[int(station)]
 	return status.Available && status.IsConnected && (!ok || !v) && !status.DisabledOnServer
+}
+
+func (a *app) PingServices() {
+	var bonusServerID string
+	var sbpServerID string
+	var kaspiServerID string
+
+	bonusConfig, err := a.repo.GetConfigString("server_id")
+	if err == nil {
+		bonusServerID = bonusConfig.Value
+	}
+
+	sbpConfig, err := a.repo.GetConfigString("sbp_server_id")
+	if err == nil {
+		sbpServerID = sbpConfig.Value
+	}
+
+	kaspiConfig, err := a.repo.GetConfigString("kaspi_server_id")
+	if err == nil {
+		kaspiServerID = kaspiConfig.Value
+	}
+
+	for {
+		currentState := []StationPingStatus{}
+
+		a.stationsMutex.RLock()
+
+		for _, v := range a.stations {
+			if !v.IsActive {
+				continue
+			}
+			isOnline := false
+			if v.LastPing.Add(durationStationOffline).After(time.Now()) {
+				isOnline = true
+			}
+
+			currentState = append(currentState, StationPingStatus{
+				ID:       v.ID,
+				IsOnline: isOnline,
+			})
+		}
+
+		a.stationsMutex.RUnlock()
+
+		err := a.pingBonus(bonusServerID, currentState)
+		if err != nil {
+			log.Err(fmt.Sprintf("Bonus service ping error: %s", err.Error()))
+			continue
+		}
+
+		err = a.pingSBP(sbpServerID, currentState)
+		if err != nil {
+			log.Err(fmt.Sprintf("SBP service ping error %s", err.Error()))
+			continue
+		}
+
+		err = a.pingKaspi(kaspiServerID, currentState)
+		if err != nil {
+			log.Err(fmt.Sprintf("SBP service ping error %s", err.Error()))
+			continue
+		}
+
+		time.Sleep(time.Second * 15)
+	}
+}
+
+func (a *app) pingBonus(serverID string, status []StationPingStatus) error {
+	if a.bonusSystemRabbitWorker == nil {
+		return nil
+	}
+
+	p := ping.BonusPing{
+		WashID:   serverID,
+		Stations: stationPingStatusToRabbit(status),
+	}
+
+	return a.bonusSystemRabbitWorker.publisherFunc(p, rabbitVo.WashBonusService, rabbitVo.BonusPingRoutingKey, rabbitVo.BonusPingMessageType)
+}
+
+func (a *app) pingSBP(serverID string, status []StationPingStatus) error {
+	if a.SbpWorker == nil {
+		return nil
+	}
+
+	return a.SbpWorker.Ping(serverID, status)
+}
+
+func (a *app) pingKaspi(serverID string, status []StationPingStatus) error {
+	if !a.IsKaspiInit() {
+		return nil
+	}
+
+	return a.kaspiSvc.Ping(serverID, status)
+}
+
+func stationPingStatusToRabbit(status []StationPingStatus) []ping.StationStatus {
+	l := []ping.StationStatus{}
+	for _, v := range status {
+		l = append(l, ping.StationStatus{
+			ID:       int(v.ID),
+			IsOnline: v.IsOnline,
+		})
+	}
+	return l
 }
