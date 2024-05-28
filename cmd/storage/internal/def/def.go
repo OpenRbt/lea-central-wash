@@ -70,7 +70,7 @@ var (
 	SbpEnvNameServerPassword         = strGetEnv("SBP_ENV_NAME_SERVER_PASSWORD", "SBP_SERVER_PASSWORD")
 	//
 
-	MngtRabbitHost   = strGetEnv("MNGT_RABBIT_HOST", "dev.openrbt.com")
+	MngtRabbitHost   = strGetEnv("MNGT_RABBIT_HOST", "app.openrbt.com")
 	MngtRabbitPort   = strGetEnv("MNGT_RABBIT_PORT", "4043")
 	MngtRabbitSecure = boolGetEnv("MNGT_RABBIT_SECURE", true)
 
