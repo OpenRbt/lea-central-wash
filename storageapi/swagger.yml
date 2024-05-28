@@ -154,6 +154,8 @@ definitions:
         type: string
       ip:
         type: string
+      version:
+        $ref: '#/definitions/FirmwareVersion'
 
   Status:
     type: string
@@ -636,6 +638,177 @@ definitions:
         type: array
         items:
           type: integer
+  
+  PublicKey:
+    type: object
+    properties:
+      publicKey: 
+        type: string
+    required:
+      - publicKey
+  
+  FirmwareVersion:
+    type: object
+    properties:
+      id:
+        type: integer
+      isCurrent:
+        type:
+          boolean
+      hashLua:
+        type: string
+      hashEnv:
+        type: string
+      hashBinar:
+        type: string
+      builtAt:
+        type: string
+        format: date-time
+      commitedAt:
+        type: string
+        format: date-time
+    required:
+      - id
+      - isCurrent
+      - hashLua
+      - hashEnv
+      - hashBinar
+      - builtAt
+      - commitedAt
+  
+  TaskStatus:
+    type: string
+    enum: [ "queue", "started", "completed", "error", "canceled" ]
+  
+  TaskType:
+    type: string
+    enum: [ "build", "update", "reboot", "getVersions", "pullFirmware", "setVersion" ]
+
+  Task:
+    type: object
+    properties:
+      id:
+        type: integer
+      stationID:
+        type: integer
+      versionID:
+        type: integer
+        x-nullable: true
+      type:
+        $ref: '#/definitions/TaskType'
+      status:
+        $ref: '#/definitions/TaskStatus'
+      retryCount:
+        type: integer
+      error:
+        type: string
+        x-nullable: true
+      createdAt:
+        type: string
+        format: date-time
+      startedAt:
+        type: string
+        format: date-time
+        x-nullable: true
+      stoppedAt:
+        type: string
+        format: date-time
+        x-nullable: true
+    required:
+      - id
+      - stationID
+      - type
+      - status
+      - retryCount
+      - createdAt
+  
+  TaskPage:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/Task"
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      totalPages:
+        type: integer
+      totalItems:
+        type: integer
+    required:
+      - items
+      - page
+      - pageSize
+      - totalPages
+      - totalItems
+  
+  CreateTask:
+    type: object
+    properties:
+      stationID:
+        type: integer
+      versionID:
+        type: integer
+        x-nullable: true
+      type:
+        $ref: '#/definitions/TaskType'
+    required:
+      - stationID
+      - type
+  
+  CreateTaskByHash:
+    type: object
+    properties:
+      hash:
+        type: string
+      versionID:
+        type: integer
+        x-nullable: true
+      type:
+        $ref: '#/definitions/TaskType'
+    required:
+      - hash
+      - type
+  
+  BuildScript:
+    type: object
+    properties:
+      id:
+        type: integer
+      stationID:
+        type: integer
+      name:
+        type: string
+      commangs:
+        type: array
+        items: 
+          type: string
+    required:
+      - id
+      - stationID
+      - name
+      - commangs
+  
+  SetBuildScript:
+    type: object
+    properties:
+      stationID:
+        type: integer
+      copyFromStationID:
+        type: integer
+        x-nullable: true
+      name:
+        type: string
+      commangs:
+        type: array
+        items:
+          type: string
+    required:
+      - stationID
+      - name
+      - commangs
 
 consumes:
   - application/json
@@ -2639,5 +2812,339 @@ paths:
           description: hash not found
         400:
           description: Bad Request
+        500:
+          description: Internal error
+  
+  /public-key:
+    get:
+      operationId: "getPublicKey"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/PublicKey'
+        500:
+          description: Internal error
+  
+  /stations/{id}/firmware-versions:
+    get:
+      operationId: "getStationFirmwareVersions"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/FirmwareVersion'
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+  
+  /stations/{id}/firmware-versions/buffered:
+    get:
+      operationId: "getStationFirmwareVersionBuffered"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/FirmwareVersion'
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+  
+  /stations/{id}/firmware-versions/copy-to/{toID}:
+    post:
+      operationId: "firmwareVersionsCopy"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+        - name: toID
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+      responses:
+        204:
+          description: OK
+        400:
+          description: Bad Request
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+
+  /tasks:
+    get:
+      operationId: "getListTasks"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: stationsID
+          required: false
+          x-nullable: true
+          in: query
+          collectionFormat: multi
+          type: array
+          items: 
+            type: integer
+          minimum: 1
+        - name: statuses
+          required: false
+          x-nullable: true
+          in: query
+          collectionFormat: multi
+          type: array
+          items: 
+            type: string
+            enum: [ "queue", "started", "completed", "error", "canceled" ]
+        - name: types
+          required: false
+          x-nullable: true
+          in: query
+          collectionFormat: multi
+          type: array
+          items: 
+            type: string
+            enum: [ "build", "update", "reboot", "getVersions", "pullFirmware", "setVersion" ]
+        - name: sort
+          required: false
+          x-nullable: true
+          in: query
+          type: string
+          default: createdAtDesc
+          enum:
+            - createdAtAsc
+            - createdAtDesc
+        - name: page
+          required: false
+          in: query
+          type: integer
+          x-nullable: true
+          default: 1
+          minimum: 1
+        - name: pageSize
+          required: false
+          x-nullable: true
+          in: query
+          type: integer
+          default: 10
+          maximum: 100
+          minimum: 1
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/TaskPage"
+        401:
+          description: PIN is missing or invalid
+        500:
+          description: Internal error
+    post:
+      operationId: "createTask"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/CreateTask'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Task'
+        400:
+          description: Bad Request
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+    
+    delete:
+      operationId: "deleteTasks"
+      security:
+        - pinCode: [ ]
+      responses:
+        204:
+          description: OK
+        401:
+          description: PIN is missing or invalid
+        500:
+          description: Internal error
+  
+  /tasks/create-by-hash:
+    post:
+      operationId: "createTaskByHash"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/CreateTaskByHash'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Task'
+        400:
+          description: Bad Request
+        404:
+          description: Not found
+        500:
+          description: Internal error
+  
+  /tasks/{id}:
+    get:
+      operationId: "getTask"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Task'
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+    delete:
+      operationId: "deleteTask"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+      responses:
+        204:
+          description: OK
+        400:
+          description: Bad Request
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+  
+  /build-scripts:
+    get:
+      operationId: "getListBuildScripts"
+      security:
+        - pinCode: [ ]
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/BuildScript'
+        401:
+          description: PIN is missing or invalid
+        500:
+          description: Internal error
+    post:
+      operationId: "setBuildScript"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/SetBuildScript'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/BuildScript'
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+  
+  /build-scripts/{id}:
+    get:
+      operationId: "getBuildScript"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/BuildScript'
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+    delete:
+      operationId: "deleteBuildScript"
+      security:
+        - pinCode: [ ]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          type: integer
+          minimum: 1
+      responses:
+        204:
+          description: OK
+        401:
+          description: PIN is missing or invalid
+        404:
+          description: Not found
         500:
           description: Internal error

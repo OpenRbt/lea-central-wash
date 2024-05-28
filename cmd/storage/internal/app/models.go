@@ -58,6 +58,9 @@ type StationData struct {
 	IP                  string
 	IsActive            bool
 	KaspiMoney          int64
+	Task                *Task
+	Versions            []FirmwareVersion
+	CurrentVersions     *FirmwareVersion
 }
 
 // MoneyReport is just to represent money in a station. All known kinds of money
@@ -250,4 +253,105 @@ type ServiceStatus struct {
 	DateLastErr      *time.Time
 	UnpaidStations   map[int]bool
 	ReconnectCount   int64
+}
+
+type BuildScript struct {
+	ID        int
+	StationID StationID
+	Name      string
+	Commands  []string
+}
+
+type SetBuildScript struct {
+	StationID         StationID
+	CopyFromStationID *StationID
+	Name              string
+	Commands          []string
+}
+
+type TaskType string
+type TaskStatus string
+type TaskSort string
+
+const (
+	BuildTaskType        TaskType = "build"
+	UpdateTaskType       TaskType = "update"
+	RebootTaskType       TaskType = "reboot"
+	GetVersionsTaskType  TaskType = "getVersions"
+	PullFirmwareTaskType TaskType = "pullFirmware"
+	SetVersionTaskType   TaskType = "setVersion"
+
+	QueueTaskStatus     TaskStatus = "queue"
+	StartedTaskStatus   TaskStatus = "started"
+	CompletedTaskStatus TaskStatus = "completed"
+	ErrorTaskStatus     TaskStatus = "error"
+	CanceledTaskStatus  TaskStatus = "canceled"
+
+	CreatedAtAscTaskSort  TaskSort = "createdAtAsc"
+	CreatedAtDescTaskSort TaskSort = "createdAtDesc"
+)
+
+type Task struct {
+	ID         int
+	StationID  StationID
+	VersionID  *int
+	Type       TaskType
+	Status     TaskStatus
+	RetryCount int
+	Error      *string
+	CreatedAt  time.Time
+	StartedAt  *time.Time
+	StoppedAt  *time.Time
+}
+
+type CreateTask struct {
+	StationID StationID
+	VersionID *int
+	Type      TaskType
+}
+
+type UpdateTask struct {
+	Status     *TaskStatus
+	Error      *string
+	RetryCount *int
+	StartedAt  *time.Time
+	StoppedAt  *time.Time
+}
+
+type TasksFilter struct {
+	Filter
+	StationsID []StationID
+	Statuses   []TaskStatus
+	Types      []TaskType
+	Sort       *TaskSort
+}
+
+type FirmwareVersionJson struct {
+	HashLua    string    `json:"hashLua"`
+	HashEnv    string    `json:"hashEnv"`
+	HashBinar  string    `json:"hashBinar"`
+	BuiltAt    time.Time `json:"builtAt"`
+	CommitedAt time.Time `json:"commitedAt"`
+}
+
+type FirmwareVersion struct {
+	ID         int
+	IsCurrent  bool
+	HashLua    string
+	HashEnv    string
+	HashBinar  string
+	BuiltAt    time.Time
+	CommitedAt time.Time
+}
+
+func firmwareVersionFromJson(id int, current bool, jsonVersion FirmwareVersionJson) FirmwareVersion {
+	return FirmwareVersion{
+		ID:         id,
+		IsCurrent:  current,
+		HashLua:    jsonVersion.HashLua,
+		HashEnv:    jsonVersion.HashEnv,
+		HashBinar:  jsonVersion.HashBinar,
+		BuiltAt:    jsonVersion.BuiltAt,
+		CommitedAt: jsonVersion.CommitedAt,
+	}
 }

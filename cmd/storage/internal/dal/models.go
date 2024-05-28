@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
+	"github.com/lib/pq"
 )
 
 func appSetUsers(v []resUser) []app.UserData {
@@ -375,5 +376,204 @@ func appRabbitMoneyReport(r resRabbitMoneyReport) app.RabbitMoneyReport {
 		IsSent:      r.Sent,
 		SentAt:      r.SentAt,
 		MessageUUID: r.MessageUUID.UUID,
+	}
+}
+
+func appListBuildScripts(buildScripts []resBuildScript) ([]app.BuildScript, error) {
+	var appBuildScripts []app.BuildScript
+
+	for i := 0; i < len(buildScripts); i++ {
+		bs, err := appBuildScript(buildScripts[i])
+		if err != nil {
+			return nil, err
+		}
+
+		appBuildScripts = append(appBuildScripts, bs)
+	}
+
+	return appBuildScripts, nil
+}
+
+func appBuildScript(buildScript resBuildScript) (app.BuildScript, error) {
+	var commands []string
+	err := json.Unmarshal([]byte(buildScript.Commands), &commands)
+	if err != nil {
+		return app.BuildScript{}, err
+	}
+
+	return app.BuildScript{
+		ID:        buildScript.ID,
+		Name:      buildScript.Name,
+		StationID: app.StationID(buildScript.StationID),
+		Commands:  commands,
+	}, nil
+}
+
+func appListTasks(tasks []resTasks) []app.Task {
+	var appTasks []app.Task
+
+	for i := 0; i < len(tasks); i++ {
+		appTasks = append(appTasks, appTaskForTasks(tasks[i]))
+	}
+
+	return appTasks
+}
+
+func appTaskForTasks(task resTasks) app.Task {
+	return app.Task{
+		ID:        task.ID,
+		StationID: app.StationID(task.StationID),
+		VersionID: task.VersionID,
+		Type:      appTaskType(task.Type),
+		Status:    appTaskStatus(task.Status),
+		RetryCount: task.RetryCount,
+		Error:     task.Error,
+		CreatedAt: task.CreatedAt,
+		StartedAt: task.StartedAt,
+		StoppedAt: task.StoppedAt,
+	}
+}
+
+func appTask(task resTask) app.Task {
+	return app.Task{
+		ID:        task.ID,
+		StationID: app.StationID(task.StationID),
+		VersionID: task.VersionID,
+		Type:      appTaskType(task.Type),
+		Status:    appTaskStatus(task.Status),
+		RetryCount: task.RetryCount,
+		Error:     task.Error,
+		CreatedAt: task.CreatedAt,
+		StartedAt: task.StartedAt,
+		StoppedAt: task.StoppedAt,
+	}
+}
+
+func appTaskType(taskType TaskType) app.TaskType {
+	switch taskType {
+	case BuildTaskType:
+		return app.BuildTaskType
+	case UpdateTaskType:
+		return app.UpdateTaskType
+	case RebootTaskType:
+		return app.RebootTaskType
+	case GetVersionsTaskType:
+		return app.GetVersionsTaskType
+	case PullFirmwareTaskType:
+		return app.PullFirmwareTaskType
+	case SetVersionTaskType:
+		return app.SetVersionTaskType
+	default:
+		panic("Unknown task type: " + taskType)
+	}
+}
+
+func appTaskStatus(taskStatus TaskStatus) app.TaskStatus {
+	switch taskStatus {
+	case QueueTaskStatus:
+		return app.QueueTaskStatus
+	case StartedTaskStatus:
+		return app.StartedTaskStatus
+	case CompletedTaskStatus:
+		return app.CompletedTaskStatus
+	case ErrorTaskStatus:
+		return app.ErrorTaskStatus
+	case CanceledTaskStatus:
+		return app.CanceledTaskStatus
+	default:
+		panic("Unknown task status: " + taskStatus)
+	}
+}
+
+func dalTaskType(taskType app.TaskType) TaskType {
+	switch taskType {
+	case app.BuildTaskType:
+		return BuildTaskType
+	case app.UpdateTaskType:
+		return UpdateTaskType
+	case app.RebootTaskType:
+		return RebootTaskType
+	case app.GetVersionsTaskType:
+		return GetVersionsTaskType
+	case app.PullFirmwareTaskType:
+		return PullFirmwareTaskType
+	case app.SetVersionTaskType:
+		return SetVersionTaskType
+	default:
+		panic("Unknown task type: " + taskType)
+	}
+}
+
+func dalTaskStatus(taskStatus app.TaskStatus) TaskStatus {
+	switch taskStatus {
+	case app.QueueTaskStatus:
+		return QueueTaskStatus
+	case app.StartedTaskStatus:
+		return StartedTaskStatus
+	case app.CompletedTaskStatus:
+		return CompletedTaskStatus
+	case app.ErrorTaskStatus:
+		return ErrorTaskStatus
+	case app.CanceledTaskStatus:
+		return CanceledTaskStatus
+	default:
+		panic("Unknown task status: " + taskStatus)
+	}
+}
+
+func dalStationsId(stationsId []app.StationID) pq.Int32Array {
+	if stationsId == nil {
+		return nil
+	}
+	ids := []int32{}
+	for _, i := range stationsId {
+		ids = append(ids, int32(i))
+	}
+	return ids
+}
+
+func dalTaskStatuses(taskStatuses []app.TaskStatus) pq.StringArray {
+	if taskStatuses == nil {
+		return nil
+	}
+	statuses := []string{}
+	for _, s := range taskStatuses {
+		statuses = append(statuses, string(dalTaskStatus(s)))
+	}
+	return statuses
+}
+
+func dalTaskTypes(taskTypes []app.TaskType) pq.StringArray {
+	if taskTypes == nil {
+		return nil
+	}
+	statuses := []string{}
+	for _, s := range taskTypes {
+		statuses = append(statuses, string(dalTaskType(s)))
+	}
+	return statuses
+}
+
+func dalNullableTaskStatus(taskStatus *app.TaskStatus) *TaskStatus {
+	if taskStatus == nil {
+		return nil
+	}
+	var dalTaskStatus = dalTaskStatus(*taskStatus)
+	return &dalTaskStatus
+}
+
+func dalTaskSort(taskStatus *app.TaskSort) *TaskSort {
+	if taskStatus == nil {
+		return nil
+	}
+	switch *taskStatus {
+	case app.CreatedAtAscTaskSort:
+		c := CreatedAtAscTaskSort
+		return &c
+	case app.CreatedAtDescTaskSort:
+		c := CreatedAtDescTaskSort
+		return &c
+	default:
+		panic("Unknown task status: " + *taskStatus)
 	}
 }

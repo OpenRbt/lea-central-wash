@@ -3,6 +3,7 @@ package dal
 import (
 	"time"
 
+	"github.com/lib/pq"
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
@@ -694,6 +695,164 @@ returning id
 	sqlRefreshProgramStatsCurrent = `refresh materialized view mv_current_program_stat`
 	sqlRefreshMotorStatsDates     = `refresh materialized view mv_relay_stat_dates`
 	sqlRefreshProgramStatsDates   = `refresh materialized view mv_program_stat_dates`
+
+	sqlGetListBuildScripts = `
+	SELECT
+		id,
+		station_id,
+		name,
+		commands
+    FROM build_scripts
+	ORDER BY station_id ASC
+	`
+
+	sqlGetBuildScript = `
+	SELECT
+		id,
+		station_id,
+		name,
+		commands
+    FROM build_scripts
+	WHERE id = :id
+	`
+
+	sqlGetBuildScriptByStationID = `
+	SELECT
+		id,
+		station_id,
+		name,
+		commands
+    FROM build_scripts
+	WHERE station_id = :id
+	`
+
+	sqlInsertBuildScript = `
+	INSERT INTO build_scripts (station_id, name, commands)
+	VALUES (:station_id, :name, :commands)
+	RETURNING
+		id,
+		station_id,
+		name,
+		commands
+	`
+
+	sqlUpdateBuildScript = `
+	UPDATE build_scripts
+	SET
+		station_id = :station_id, 
+		name = :name, 
+		commands = :commands
+	WHERE id = :id
+	RETURNING
+		id,
+		station_id,
+		name,
+		commands
+	`
+
+	sqlDeleteBuildScript = `
+	DELETE FROM build_scripts
+	WHERE id = :id
+	`
+
+	sqlDeleteBuildScriptByStationID = `
+	DELETE FROM build_scripts
+	WHERE station_id = :id
+	`
+
+	sqlGetTask = `
+	SELECT
+		id,
+		station_id,
+		version_id,
+		type,
+		status,
+		retry_count,
+		error,
+		created_at,
+		started_at,
+		stopped_at
+    FROM tasks
+	WHERE id = :id
+	`
+
+	sqlGetListTasks = `
+	SELECT
+		id,
+		station_id,
+		version_id,
+		type,
+		status,
+		retry_count,
+		error,
+		created_at,
+		started_at,
+		stopped_at,
+		COUNT(id) OVER() AS total_count
+    FROM tasks
+	WHERE
+		(CAST(:stations_id AS INT[]) 		      IS NULL OR station_id = ANY(:stations_id)) AND
+		(CAST(:statuses    AS TASK_STATUS_ENUM[]) IS NULL OR status     = ANY(:statuses))    AND
+		(CAST(:types       AS TASK_TYPE_ENUM[])   IS NULL OR type       = ANY(:types))
+	ORDER BY
+		CASE WHEN :sort = 'created_at_asc'  THEN created_at END ASC,
+		CASE WHEN :sort = 'created_at_desc' THEN created_at END DESC,
+		CASE WHEN CAST(:sort AS TEXT) IS NULL OR :sort not in ('created_at_asc', 'created_at_desc') THEN created_at END DESC
+	LIMIT  CASE WHEN :limit  >= 1 THEN :limit  ELSE 10 END
+	OFFSET CASE WHEN :offset >= 0 THEN :offset ELSE 0  END
+	`
+
+	sqlGetListTasksCount = `
+	SELECT COUNT(*)
+	FROM tasks
+	WHERE
+		(CAST(:station_id AS INT) 		         IS NULL OR station_id = :station_id)    AND
+		(CAST(:statuses   AS TASK_STATUS_ENUM[]) IS NULL OR status     = ANY(:statuses)) AND
+		(CAST(:types      AS TASK_TYPE_ENUM[])   IS NULL OR type       = ANY(:types))
+	`
+
+	sqlInsertTask = `
+	INSERT INTO tasks (station_id, version_id, type)
+	VALUES (:station_id, :version_id, :type)
+	RETURNING
+		id,
+		station_id,
+		version_id,
+		type,
+		status,
+		retry_count,
+		error,
+		created_at,
+		started_at,
+		stopped_at
+	`
+
+	sqlUpdateTask = `
+	UPDATE tasks
+	SET
+		status = COALESCE(:status, status),
+		retry_count = COALESCE(:retry_count, retry_count),
+		error = COALESCE(:error, error),
+		started_at = COALESCE(:started_at, started_at),
+		stopped_at = COALESCE(:stopped_at, stopped_at)
+	WHERE id = :id
+	RETURNING
+		id,
+		station_id,
+		version_id,
+		type,
+		status,
+		retry_count,
+		error,
+		created_at,
+		started_at,
+		stopped_at
+	`
+
+	sqlDeleteTask = `
+	DELETE FROM tasks
+	WHERE id = :id
+	`
 )
 
 type (
@@ -1193,4 +1352,105 @@ type (
 		SentAt        *time.Time
 		MessageUUID   uuid.NullUUID
 	}
+
+	resBuildScript struct {
+		ID        int
+		StationID int
+		Name      string
+		Commands  string
+	}
+
+	argInsertBuildScript struct {
+		StationID int
+		Name      string
+		Commands  string
+	}
+
+	argUpdateBuildScript struct {
+		ID        int
+		StationID int
+		Name      string
+		Commands  string
+	}
+
+	argGetBuildScript struct {
+		ID int
+	}
+
+	TaskType   string
+	TaskStatus string
+	TaskSort   string
+
+	resTask struct {
+		ID         int
+		StationID  int
+		VersionID  *int
+		Type       TaskType
+		Status     TaskStatus
+		RetryCount int
+		Error      *string
+		CreatedAt  time.Time
+		StartedAt  *time.Time
+		StoppedAt  *time.Time
+	}
+
+	resTasks struct {
+		ID         int
+		StationID  int
+		VersionID  *int
+		Type       TaskType
+		Status     TaskStatus
+		RetryCount int
+		Error      *string
+		CreatedAt  time.Time
+		StartedAt  *time.Time
+		StoppedAt  *time.Time
+		TotalCount int
+	}
+
+	argGetTask struct {
+		ID int
+	}
+
+	argGetListTasks struct {
+		StationsID pq.Int32Array
+		Statuses   pq.StringArray
+		Types      pq.StringArray
+		Sort       *TaskSort
+		Limit      int
+		Offset     int
+	}
+
+	argInsertTask struct {
+		StationID int
+		VersionID *int
+		Type      TaskType
+	}
+
+	argUpdateTask struct {
+		ID         int
+		Status     *TaskStatus
+		RetryCount *int
+		Error      *string
+		StartedAt  *time.Time
+		StoppedAt  *time.Time
+	}
+)
+
+const (
+	BuildTaskType        TaskType = "build"
+	UpdateTaskType       TaskType = "update"
+	RebootTaskType       TaskType = "reboot"
+	GetVersionsTaskType  TaskType = "get_versions"
+	PullFirmwareTaskType TaskType = "pull_firmware"
+	SetVersionTaskType   TaskType = "set_version"
+
+	QueueTaskStatus     TaskStatus = "queue"
+	StartedTaskStatus   TaskStatus = "started"
+	CompletedTaskStatus TaskStatus = "completed"
+	ErrorTaskStatus     TaskStatus = "error"
+	CanceledTaskStatus  TaskStatus = "canceled"
+
+	CreatedAtAscTaskSort  TaskSort = "created_at_asc"
+	CreatedAtDescTaskSort TaskSort = "created_at_desc"
 )

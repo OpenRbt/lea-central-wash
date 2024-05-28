@@ -84,21 +84,24 @@ var (
 		testBoards  bool
 		mngtConfig  mngt.RabbitConfig
 		kaspiConfig kaspi.RabbitConfig
+		postControl app.PostControlConfig
 	}
 )
 
 // sbp
-type sbpConfig struct {
-	RabbitURL    string
-	RabbitPort   string
-	RabbitSecure bool
+type (
+	sbpConfig struct {
+		RabbitURL    string
+		RabbitPort   string
+		RabbitSecure bool
 
-	EnvNameServerID       string
-	EnvNameServerPassword string
+		EnvNameServerID       string
+		EnvNameServerPassword string
 
-	PaymentExpirationPeriod       time.Duration
-	PaymentConfirmationPingPeriod time.Duration
-}
+		PaymentExpirationPeriod       time.Duration
+		PaymentConfirmationPingPeriod time.Duration
+	}
+)
 
 // readSbpConfigFromFlag ...
 func readSbpConfigFromFlag() {
@@ -146,6 +149,10 @@ func init() { //nolint:gochecknoinits
 	flag.StringVar(&cfg.rabbit.Port, "rabbit.port", def.RabbitPort, "port for service connections")
 
 	flag.StringVar(&cfg.storage.BonusServiceURL, "storage.bonus-service-url", def.OpenwashingURL, "URL of bonus service")
+
+	flag.StringVar(&cfg.postControl.KeySSHPath, "postcontrol.keySSHPath", def.KeySSHPath, "Path to private key ssh")
+	flag.StringVar(&cfg.postControl.StationsDirPath, "postcontrol.stationsDirPath", def.StationsDirPath, "Path to the posts firmware directory")
+	flag.StringVar(&cfg.postControl.UserSSH, "postcontrol.userSSH", def.UserSSH, "Username for connecting via ssh")
 
 	// sbp
 	readSbpConfigFromFlag()
@@ -351,7 +358,7 @@ func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
 		return
 	}
 
-	appl := app.New(repo, kasse, weather, client)
+	appl := app.New(repo, kasse, weather, client, cfg.postControl)
 	go appl.PingServices()
 
 	// bonus
