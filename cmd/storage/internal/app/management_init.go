@@ -123,7 +123,7 @@ func (a *app) sendStatus() {
 		if err != nil {
 			log.Err("sendStatus", "err", err)
 		}
-		time.Sleep(time.Second * 30)
+		time.Sleep(time.Second * 15)
 	}
 }
 
