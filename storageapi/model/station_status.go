@@ -46,6 +46,9 @@ type StationStatus struct {
 
 	// status
 	Status Status `json:"status,omitempty"`
+
+	// version
+	Version *FirmwareVersion `json:"version,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
@@ -78,6 +81,9 @@ func (m *StationStatus) UnmarshalJSON(data []byte) error {
 
 		// status
 		Status Status `json:"status,omitempty"`
+
+		// version
+		Version *FirmwareVersion `json:"version,omitempty"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -95,6 +101,7 @@ func (m *StationStatus) UnmarshalJSON(data []byte) error {
 	m.IP = props.IP
 	m.Name = props.Name
 	m.Status = props.Status
+	m.Version = props.Version
 	return nil
 }
 
@@ -107,6 +114,10 @@ func (m *StationStatus) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateVersion(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -150,6 +161,25 @@ func (m *StationStatus) validateStatus(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *StationStatus) validateVersion(formats strfmt.Registry) error {
+	if swag.IsZero(m.Version) { // not required
+		return nil
+	}
+
+	if m.Version != nil {
+		if err := m.Version.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("version")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("version")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this station status based on the context it is used
 func (m *StationStatus) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -159,6 +189,10 @@ func (m *StationStatus) ContextValidate(ctx context.Context, formats strfmt.Regi
 	}
 
 	if err := m.contextValidateStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateVersion(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -199,6 +233,27 @@ func (m *StationStatus) contextValidateStatus(ctx context.Context, formats strfm
 			return ce.ValidateName("status")
 		}
 		return err
+	}
+
+	return nil
+}
+
+func (m *StationStatus) contextValidateVersion(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Version != nil {
+
+		if swag.IsZero(m.Version) { // not required
+			return nil
+		}
+
+		if err := m.Version.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("version")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("version")
+			}
+			return err
+		}
 	}
 
 	return nil

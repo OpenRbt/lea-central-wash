@@ -33,3 +33,5 @@ lazarusGUI/lib/
 
 # certificates
 certificates/
+ssh/
+stations/

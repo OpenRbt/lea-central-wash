@@ -8,6 +8,7 @@ import (
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 	"github.com/OpenRbt/lea-central-wash/storageapi/model"
 	"github.com/OpenRbt/lea-central-wash/storageapi/restapi/op"
+	"github.com/go-openapi/strfmt"
 )
 
 func appRelays(m []*model.RelayConfig) []app.Relay {
@@ -220,6 +221,7 @@ func (svc *service) apiStationStatus(v app.StationStatus) *model.StationStatus {
 		CurrentProgram:     int64(v.CurrentProgram),
 		CurrentProgramName: v.ProgramName,
 		IP:                 v.IP,
+		Version:            apiFirmwareVersion(v.Version),
 	}
 }
 
@@ -568,4 +570,221 @@ func apiGetServerInfo(bonusServiceURL string) *model.ServerInfo {
 	return &model.ServerInfo{
 		BonusServiceURL: bonusServiceURL,
 	}
+}
+
+func appTaskStatus(taskStatus model.TaskStatus) app.TaskStatus {
+	switch taskStatus {
+	case model.TaskStatusQueue:
+		return app.QueueTaskStatus
+	case model.TaskStatusStarted:
+		return app.StartedTaskStatus
+	case model.TaskStatusCompleted:
+		return app.CompletedTaskStatus
+	case model.TaskStatusError:
+		return app.ErrorTaskStatus
+	case model.TaskStatusCanceled:
+		return app.CanceledTaskStatus
+	default:
+		panic("Unknown task status: " + taskStatus)
+	}
+}
+
+func appTaskType(taskType model.TaskType) app.TaskType {
+	switch taskType {
+	case model.TaskTypeBuild:
+		return app.BuildTaskType
+	case model.TaskTypeUpdate:
+		return app.UpdateTaskType
+	case model.TaskTypeReboot:
+		return app.RebootTaskType
+	case model.TaskTypeGetVersions:
+		return app.GetVersionsTaskType
+	case model.TaskTypePullFirmware:
+		return app.PullFirmwareTaskType
+	case model.TaskTypeSetVersion:
+		return app.SetVersionTaskType
+	default:
+		panic("Unknown task type: " + taskType)
+	}
+}
+
+func appTaskSort(taskSort string) *app.TaskSort {
+	switch taskSort {
+	case "createdAtAsc":
+		c := app.CreatedAtAscTaskSort
+		return &c
+	case "createdAtDesc":
+		c := app.CreatedAtDescTaskSort
+		return &c
+	default:
+		panic("Unknown task sort: " + taskSort)
+	}
+}
+
+func appNullableTaskStatus(taskStatus *string) *app.TaskStatus {
+	if taskStatus == nil {
+		return nil
+	}
+	var dalTaskStatus = appTaskStatus(model.TaskStatus(*taskStatus))
+	return &dalTaskStatus
+}
+
+func apiListTasks(tasks app.TaskPage) *model.TaskPage {
+	apiTasks := []*model.Task{}
+	for _, t := range tasks.Items {
+		task := apiTask(t)
+		apiTasks = append(apiTasks, task)
+	}
+	page := int64(tasks.Page)
+	pageSize := int64(tasks.PageSize)
+	totalPages := int64(tasks.TotalPages)
+	totalItems := int64(tasks.TotalItems)
+	return &model.TaskPage{
+		Items:      apiTasks,
+		Page:       &page,
+		PageSize:   &pageSize,
+		TotalPages: &totalPages,
+		TotalItems: &totalItems,
+	}
+}
+
+func apiTask(task app.Task) *model.Task {
+	id := int64(task.ID)
+	stationID := int64(int(task.StationID))
+	retryCount := int64(int(task.RetryCount))
+
+	var versionID *int64
+	if task.VersionID != nil {
+		v := int64(*task.VersionID)
+		versionID = &v
+	}
+
+	return &model.Task{
+		ID:         &id,
+		StationID:  &stationID,
+		VersionID:  versionID,
+		Type:       (*model.TaskType)(&task.Type),
+		Status:     (*model.TaskStatus)(&task.Status),
+		RetryCount: &retryCount,
+		Error:      task.Error,
+		CreatedAt:  (*strfmt.DateTime)(&task.CreatedAt),
+		StartedAt:  (*strfmt.DateTime)(task.StartedAt),
+		StoppedAt:  (*strfmt.DateTime)(task.StoppedAt),
+	}
+}
+
+func appTaskTypes(types []string) []app.TaskType {
+	if types == nil {
+		return nil
+	}
+	appTypes := []app.TaskType{}
+	for _, t := range types {
+		appTypes = append(appTypes, appTaskType(model.TaskType(t)))
+	}
+	return appTypes
+}
+
+func appTaskStatuses(statuses []string) []app.TaskStatus {
+	if statuses == nil {
+		return nil
+	}
+	appStatuses := []app.TaskStatus{}
+	for _, t := range statuses {
+		appStatuses = append(appStatuses, appTaskStatus(model.TaskStatus(t)))
+	}
+	return appStatuses
+}
+
+func appTasksFilter(params op.GetListTasksParams) app.TasksFilter {
+	filter := app.TasksFilter{
+		Filter: app.Filter{
+			Page:     int(*params.Page),
+			PageSize: int(*params.PageSize),
+		},
+		Types:    appTaskTypes(params.Types),
+		Statuses: appTaskStatuses(params.Statuses),
+		Sort:     appTaskSort(*params.Sort),
+	}
+	if params.StationsID != nil {
+		stationsId := []app.StationID{}
+		for _, v := range params.StationsID {
+			stationsId = append(stationsId, app.StationID(v))
+		}
+		filter.StationsID = stationsId
+	}
+	return filter
+}
+
+func appCreateTask(task model.CreateTask) app.CreateTask {
+	var versionID *int
+	if task.VersionID != nil {
+		v := int(*task.VersionID)
+		versionID = &v
+	}
+
+	return app.CreateTask{
+		VersionID: versionID,
+		Type:      appTaskType(*task.Type),
+		StationID: app.StationID(*task.StationID),
+	}
+}
+
+func apiListBuildScripts(buildScripts []app.BuildScript) []*model.BuildScript {
+	var apiBuildScripts []*model.BuildScript
+	for i := 0; i < len(buildScripts); i++ {
+		buildScript := apiBuildScript(buildScripts[i])
+		apiBuildScripts = append(apiBuildScripts, buildScript)
+	}
+	return apiBuildScripts
+}
+
+func apiBuildScript(buildScript app.BuildScript) *model.BuildScript {
+	id := int64(buildScript.ID)
+	stationID := int64(int(buildScript.StationID))
+	return &model.BuildScript{
+		ID:        &id,
+		StationID: &stationID,
+		Name:      &buildScript.Name,
+		Commangs:  buildScript.Commands,
+	}
+}
+
+func appSetBuildScript(buildScript model.SetBuildScript) app.SetBuildScript {
+	var copyFromStationID *app.StationID
+	if buildScript.CopyFromStationID != nil {
+		v := app.StationID(int(*buildScript.CopyFromStationID))
+		copyFromStationID = &v
+	}
+
+	return app.SetBuildScript{
+		CopyFromStationID: copyFromStationID,
+		StationID:         app.StationID(*buildScript.StationID),
+		Name:              *buildScript.Name,
+		Commands:          buildScript.Commangs,
+	}
+}
+
+func apiFirmwareVersion(version *app.FirmwareVersion) *model.FirmwareVersion {
+	if version == nil {
+		return nil
+	}
+	id := int64(version.ID)
+	return &model.FirmwareVersion{
+		ID:         &id,
+		IsCurrent:  &version.IsCurrent,
+		BuiltAt:    (*strfmt.DateTime)(&version.BuiltAt),
+		CommitedAt: (*strfmt.DateTime)(&version.CommitedAt),
+		HashBinar:  &version.HashBinar,
+		HashEnv:    &version.HashEnv,
+		HashLua:    &version.HashLua,
+	}
+}
+
+func apiListFirmwareVersions(versions []app.FirmwareVersion) []*model.FirmwareVersion {
+	var apiVersions []*model.FirmwareVersion
+	for i := 0; i < len(versions); i++ {
+		version := apiFirmwareVersion(&versions[i])
+		apiVersions = append(apiVersions, version)
+	}
+	return apiVersions
 }

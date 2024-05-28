@@ -41,6 +41,8 @@ services:
       STORAGE_DB_PASS: adm-pass-test
       STORAGE_KASSE_ENDPOINT: https://online-kasse:8443
       STORAGE_HAL_ENDPOINT: hal:8099
+      STORAGE_KEY_SSH_PATH: /app/ssh/id_rsa
+      STORAGE_STATIONS_DIR_PATH: /app/stations
     cap_add:
       - ALL
     depends_on:
@@ -51,6 +53,8 @@ services:
     volumes:
       - "/dev:/dev:ro"
       - "/run/udev:/run/udev:ro"
+      - "./stations:/app/stations"
+      - "./ssh:/app/ssh"
     group_add:
       - dialout
   online-kasse:

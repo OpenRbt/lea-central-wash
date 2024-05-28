@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"math"
 	"sync"
 	"time"
 
@@ -43,6 +44,44 @@ const qrURL = "%s/#/?sessionID=%s"
 
 const RabbitWorkerScheduleInterval = time.Minute
 
+// Post control commands
+const (
+	openwashingName        = "openwashing"
+	binarName              = "firmware.exe"
+	paymentWorldName       = "uic_payment_app"
+	paymentWorldConfigName = "config.ini"
+	preparePiName          = "prepare_pi.sh"
+	updateSystemName       = "update_system.sh"
+	versionName            = "versions.json"
+	currentWashName        = "current_wash"
+	baseWashName           = "wash"
+	runshName              = "run.sh"
+	scriptLuaName          = "script.lua"
+	mainJsonName           = "main.json"
+	firmwareName           = "firmware"
+	binarOwPath            = "openwashing/software/v1-enlight/firmware.exe"
+	samplesPath            = "software/v1-enlight/samples"
+	samplesName            = "samples"
+
+	getFullPathLcwCommand     = "readlink -f %s"
+	cdToTempLcwCommand        = "cd %s && %s"
+	cloneRepositoryLcwCommand = "git clone https://github.com/OpenRbt/openwashing.git %s"
+	pullRepositoryLcwCommand  = "cd %s && git pull"
+	createLcwCommand          = "rm -rf %s && mkdir -p %s"
+	hashLcwCommand            = "shasum %s | cut -d ' ' -f 1"
+	hashEnvLcwCommand         = "find %s -type f -not -name 'script.lua' -exec shasum {} \\; | awk '{print $1}' | shasum | cut -d ' ' -f 1"
+	commitedAtLcwCommand      = "cd %s && git log -1 --format='%%cd' --date=format:'%%Y-%%m-%%dT%%H:%%M:%%SZ'"
+	cpLcwCommand              = "rm -rf %s && cp -r %s %s"
+
+	cloneRepositoryOwCommand = "git clone https://github.com/OpenRbt/openwashing.git ~/openwashing && cd ~/openwashing/software/v1-enlight/3rd/lua53/src && make linux"
+	pullRepositoryOwCommand  = "cd ~/openwashing && git pull"
+	makeBinarOwCommand       = "cd ~/openwashing/software/v1-enlight && make"
+	findVersionsOwCommand    = "find ~/ -maxdepth 1 -type d -name \"wash_*\" -o -name \"wash\""
+	cleateLink               = "ln -f -s -n %s %s"
+	rebootOwCommand          = "sudo shutdown -r +0"
+	cdFirmwareRunshCommand   = "cd %s"
+)
+
 // Errors.
 var (
 	ErrNotFound                 = errors.New("not found")
@@ -56,6 +95,9 @@ var (
 	ErrStationProgramMustUnique = errors.New("programID and buttonID must be unique")
 	ErrUserIsNotAuthorized      = errors.New("user is not authorized")
 	ErrSessionNotFound          = errors.New("session not found")
+	ErrWrongParameter           = errors.New("wrong parameter")
+	ErrTaskStarted              = errors.New("task started")
+	ErrStationDirectoryNotExist = errors.New("station directory does not exist")
 
 	ErrServiceNotConfigured    = errors.New("service not configured")
 	ErrRabbitMessageBadPayload = errors.New("bad RabbitMessagePayloadData")
@@ -202,6 +244,19 @@ type (
 		KaspiCommand(Command)
 
 		PingServices()
+		GetPublicKey() (string, error)
+		GetVersions(stationID StationID) ([]FirmwareVersion, error)
+		GetListTasks(filter TasksFilter) (TaskPage, error)
+		GetTask(id int) (Task, error)
+		DeleteTask(id int) error
+		DeleteTasks() error
+		CreateTask(createTask CreateTask) (Task, error)
+		GetListBuildScripts() ([]BuildScript, error)
+		GetBuildScript(id StationID) (BuildScript, error)
+		SetBuildScript(setBuildScript SetBuildScript) (BuildScript, error)
+		DeleteBuildScript(id StationID) error
+		CopyFirmware(stationID StationID, copyToID StationID) error
+		GetVersionBuffered(stationID StationID) (FirmwareVersion, error)
 	}
 
 	// Repo is a DAL interface.
@@ -303,6 +358,19 @@ type (
 		CollectionSetSended(int) error
 		MoneyReports() ([]MngtMoneyReport, error)
 		MoneyReportSetSended(int) error
+
+		GetListBuildScripts() ([]BuildScript, error)
+		GetBuildScript(id int) (BuildScript, error)
+		GetBuildScriptByStationID(id StationID) (BuildScript, error)
+		CreateBuildScript(createBuildScript SetBuildScript) (BuildScript, error)
+		UpdateBuildScript(id int, updateBuildScript SetBuildScript) (BuildScript, error)
+		DeleteBuildScript(id int) error
+		DeleteBuildScriptByStationID(id StationID) error
+		GetListTasks(filter TasksFilter) (TaskPage, error)
+		GetTask(id int) (Task, error)
+		CreateTask(createTask CreateTask) (Task, error)
+		UpdateTask(id int, updateTask UpdateTask) (Task, error)
+		DeleteTask(id int) error
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -380,6 +448,8 @@ type app struct {
 	mngtSvc               management
 	kaspiSvc              KaspiService
 
+	postControlConfig PostControlConfig
+
 	extServicesActive     bool
 	servicesPublisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error
 
@@ -389,14 +459,15 @@ type app struct {
 }
 
 // New creates and returns new App.
-func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareAccessLayer) App {
+func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareAccessLayer, postControlConfig PostControlConfig) App {
 	appl := &app{
-		repo:             repo,
-		stations:         make(map[StationID]StationData),
-		kasseSvc:         kasseSvc,
-		weatherSvc:       weatherSvc,
-		hardware:         hardware,
-		volumeCorrection: 1000,
+		repo:              repo,
+		stations:          make(map[StationID]StationData),
+		kasseSvc:          kasseSvc,
+		weatherSvc:        weatherSvc,
+		hardware:          hardware,
+		volumeCorrection:  1000,
+		postControlConfig: postControlConfig,
 	}
 
 	stationConfig, err := appl.repo.GetStationConfigInt(ParameterNameVolumeCoef, StationID(1))
@@ -429,6 +500,7 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 	go appl.refreshDiscounts()
 	go appl.refreshMotorStatsCurrent()
 	go appl.refreshMotorStatsDates()
+	go appl.taskScheduler()
 	return appl
 }
 
@@ -477,6 +549,7 @@ type StationStatus struct {
 	CurrentProgram int
 	ProgramName    string
 	IP             string
+	Version        *FirmwareVersion
 }
 
 type StationPingStatus struct {
@@ -590,4 +663,58 @@ type RabbitRoutingKey string
 
 func (r RabbitRoutingKey) String() string {
 	return string(r)
+}
+
+type PostControlConfig struct {
+	KeySSHPath      string
+	UserSSH         string
+	StationsDirPath string
+}
+
+type TaskPage struct {
+	Items      []Task
+	Page       int
+	PageSize   int
+	TotalPages int
+	TotalItems int
+}
+
+type Filter struct {
+	Page     int
+	PageSize int
+}
+
+func NewPage(items []Task, filter Filter, totalItems int) TaskPage {
+	if filter.PageSize <= 0 {
+		filter.PageSize = 10
+	}
+	if filter.Page <= 0 {
+		filter.Page = 1
+	}
+	return TaskPage{
+		Items:      items,
+		TotalPages: int(math.Ceil((float64(totalItems) / float64(filter.PageSize)))),
+		Page:       filter.Page,
+		PageSize:   filter.PageSize,
+		TotalItems: totalItems,
+	}
+}
+
+func (f *Filter) Offset() int {
+	page := f.Page
+	pageSize := f.PageSize
+	if f.PageSize <= 0 {
+		pageSize = 10
+	}
+	if f.Page <= 0 {
+		page = 1
+	}
+	return (page - 1) * pageSize
+}
+
+func (f *Filter) Limit() int {
+	if f.PageSize <= 0 {
+		return 10
+	}
+	return f.PageSize
 }

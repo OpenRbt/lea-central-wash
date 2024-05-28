@@ -169,6 +169,30 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) (Statio
 		bonusSystemActive = a.isServiceAvailableForStation(id, status)
 	}
 
+	if oldStation.Versions == nil || oldStation.LastPing.Add(durationStationOffline).Before(time.Now()) {
+		tasks, err := a.repo.GetListTasks(TasksFilter{
+			StationsID: []StationID{id},
+			Types:      []TaskType{GetVersionsTaskType},
+			Statuses:   []TaskStatus{QueueTaskStatus, StartedTaskStatus},
+		})
+		if err != nil {
+			log.PrintErr("Error getting list of tasks for station %d: %s", id, err.Error())
+			return oldStation, bonusSystemActive
+		}
+		if len(tasks.Items) > 0 {
+			return oldStation, bonusSystemActive
+		}
+
+		_, err = a.repo.CreateTask(CreateTask{
+			StationID: id,
+			Type:      GetVersionsTaskType,
+		})
+		if err != nil {
+			log.PrintErr("Error when creating a task to get versions from station %d: %s", id, err.Error())
+			return oldStation, bonusSystemActive
+		}
+	}
+
 	return oldStation, bonusSystemActive
 }
 
@@ -566,6 +590,7 @@ func (a *app) StatusReport(onlyActive bool) StatusReport {
 			CurrentProgram: v.CurrentProgram,
 			ProgramName:    programName,
 			IP:             v.IP,
+			Version:        v.CurrentVersions,
 		})
 	}
 	return report

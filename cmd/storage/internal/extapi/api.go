@@ -161,6 +161,21 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.SetBonusesHandler = op.SetBonusesHandlerFunc(svc.setBonuses)
 	api.GetServerInfoHandler = op.GetServerInfoHandlerFunc(svc.getServerInfo)
 
+	api.GetPublicKeyHandler = op.GetPublicKeyHandlerFunc(svc.getPublicKey)
+	api.GetStationFirmwareVersionsHandler = op.GetStationFirmwareVersionsHandlerFunc(svc.getFirmwareVersions)
+	api.GetTaskHandler = op.GetTaskHandlerFunc(svc.getTask)
+	api.GetListTasksHandler = op.GetListTasksHandlerFunc(svc.getListTasks)
+	api.CreateTaskHandler = op.CreateTaskHandlerFunc(svc.createTask)
+	api.CreateTaskByHashHandler = op.CreateTaskByHashHandlerFunc(svc.createTaskByHash)
+	api.DeleteTaskHandler = op.DeleteTaskHandlerFunc(svc.deleteTask)
+	api.DeleteTasksHandler = op.DeleteTasksHandlerFunc(svc.deleteTasks)
+	api.DeleteBuildScriptHandler = op.DeleteBuildScriptHandlerFunc(svc.deleteBuildScript)
+	api.GetBuildScriptHandler = op.GetBuildScriptHandlerFunc(svc.getBuildScript)
+	api.GetListBuildScriptsHandler = op.GetListBuildScriptsHandlerFunc(svc.getListBuildScripts)
+	api.SetBuildScriptHandler = op.SetBuildScriptHandlerFunc(svc.setBuildScript)
+	api.FirmwareVersionsCopyHandler = op.FirmwareVersionsCopyHandlerFunc(svc.copyFirmware)
+	api.GetStationFirmwareVersionBufferedHandler = op.GetStationFirmwareVersionBufferedHandlerFunc(svc.getVersionBuffered)
+
 	// sbp
 	api.PayHandler = op.PayHandlerFunc(svc.pay)
 	api.PayReceivedHandler = op.PayReceivedHandlerFunc(svc.payReceived)

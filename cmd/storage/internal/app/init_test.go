@@ -70,7 +70,7 @@ func testNew(t *check.C) (*app, func(), *mocks) {
 	}, nil)
 	m.mockRepo.EXPECT().SetConfigIntIfNotExists(gomock.Any()).Return(nil).AnyTimes()
 
-	appl := New(m.mockRepo, m.mockKasse, m.mockWeather, m.mockHal).(*app)
+	appl := New(m.mockRepo, m.mockKasse, m.mockWeather, m.mockHal, PostControlConfig{}).(*app)
 
 	return appl, ctrl.Finish, m
 }
