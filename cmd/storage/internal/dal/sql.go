@@ -853,6 +853,17 @@ returning id
 	DELETE FROM tasks
 	WHERE id = :id
 	`
+
+	sqlInsertOpenwashingLog = `
+	INSERT INTO openwashing_logs (station_id, text, type, created_at)
+	VALUES (:station_id, :text, :type, :created_at)
+	RETURNING
+		id,
+		station_id,
+		text,
+		type,
+		created_at
+	`
 )
 
 type (
@@ -1434,6 +1445,21 @@ type (
 		Error      *string
 		StartedAt  *time.Time
 		StoppedAt  *time.Time
+	}
+
+	argInsertOpenwashingLog struct {
+		StationID int
+		Text      string
+		Type      *string
+		CreatedAt time.Time
+	}
+
+	respOpenwashingLog struct {
+		ID        int64
+		StationID int
+		Text      string
+		Type      *string
+		CreatedAt time.Time
 	}
 )
 

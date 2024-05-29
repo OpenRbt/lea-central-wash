@@ -103,6 +103,32 @@ func (r *repo) MarkProgramSended(ctx context.Context, id int64) error {
 	})
 }
 
+func (r *repo) NotSendedOpenwashingLogs(ctx context.Context) ([]app.OpenwashingLog, error) {
+	var respOpenwashingLog []respOpenwashingLog
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		return tx.SelectContext(ctx, &respOpenwashingLog, sqlNotSendedOpenwashingLogs)
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return appOpenwashingLogs(respOpenwashingLog), nil
+}
+
+func (r *repo) MarkOpenwashingLogSended(ctx context.Context, id int64) error {
+	return r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExecContext(ctx, sqlMarkOpenwashingLogSended, argID[int64]{
+			ID: id,
+		})
+
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
+		}
+
+		return err
+	})
+}
+
 func (r *repo) UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert app.ManagementAdvertisingCampaign) (app.AdvertisingCampaign, error) {
 	var resAdvert resAdvertisingCampaign
 	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {

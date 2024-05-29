@@ -103,6 +103,22 @@ const (
 		FROM program 
 		WHERE NOT management_sended
 	`
+	sqlNotSendedOpenwashingLogs = `
+		SELECT 
+			id,
+			station_id,
+			text,
+			type,
+			created_at
+		FROM openwashing_logs 
+		WHERE NOT management_sended
+		ORDER BY created_at
+	`
+	sqlMarkOpenwashingLogSended = `
+		UPDATE openwashing_logs
+		SET management_sended = true
+		WHERE id = :id
+	`
 	sqlSetProgramFromManagement = `
 		INSERT INTO program (
 			id,

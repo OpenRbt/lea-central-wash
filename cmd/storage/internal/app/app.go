@@ -257,6 +257,8 @@ type (
 		DeleteBuildScript(id StationID) error
 		CopyFirmware(stationID StationID, copyToID StationID) error
 		GetVersionBuffered(stationID StationID) (FirmwareVersion, error)
+
+		AddOpenwashingLog(log OpenwashingLogCreate) (OpenwashingLog, error)
 	}
 
 	// Repo is a DAL interface.
@@ -371,6 +373,10 @@ type (
 		CreateTask(createTask CreateTask) (Task, error)
 		UpdateTask(id int, updateTask UpdateTask) (Task, error)
 		DeleteTask(id int) error
+
+		CreateOpenwashingLog(model OpenwashingLogCreate) (OpenwashingLog, error)
+		NotSendedOpenwashingLogs(ctx context.Context) ([]OpenwashingLog, error)
+		MarkOpenwashingLogSended(ctx context.Context, id int64) error
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -411,6 +417,7 @@ type (
 		Status() ServiceStatus
 		SendStatus(StatusReport) error
 		SendProgram(Program) error
+		SendOpenwashingLog(OpenwashingLog) error
 		SendAdvertisingCampaign(AdvertisingCampaign) error
 	}
 	management struct {

@@ -175,6 +175,7 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.SetBuildScriptHandler = op.SetBuildScriptHandlerFunc(svc.setBuildScript)
 	api.FirmwareVersionsCopyHandler = op.FirmwareVersionsCopyHandlerFunc(svc.copyFirmware)
 	api.GetStationFirmwareVersionBufferedHandler = op.GetStationFirmwareVersionBufferedHandlerFunc(svc.getVersionBuffered)
+	api.AddLogHandler = op.AddLogHandlerFunc(svc.addLog)
 
 	// sbp
 	api.PayHandler = op.PayHandlerFunc(svc.pay)

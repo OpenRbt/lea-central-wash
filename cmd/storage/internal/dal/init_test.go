@@ -84,6 +84,12 @@ var (
 		Commands:  []string{"1", "2", "3"},
 	}
 
+	testCreateOpenwashingLog = app.OpenwashingLogCreate{
+		StationID: 1,
+		Text:      "text",
+		Type:      nil,
+	}
+
 	versionID = 1
 
 	testCreateTask = app.CreateTask{

@@ -53,6 +53,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		AddAdvertisingCampaignHandler: AddAdvertisingCampaignHandlerFunc(func(params AddAdvertisingCampaignParams, principal *storageapi.Profile) AddAdvertisingCampaignResponder {
 			return AddAdvertisingCampaignNotImplemented()
 		}),
+		AddLogHandler: AddLogHandlerFunc(func(params AddLogParams) AddLogResponder {
+			return AddLogNotImplemented()
+		}),
 		AddServiceAmountHandler: AddServiceAmountHandlerFunc(func(params AddServiceAmountParams) AddServiceAmountResponder {
 			return AddServiceAmountNotImplemented()
 		}),
@@ -373,6 +376,8 @@ type StorageAPI struct {
 	VolumeDispenserHandler VolumeDispenserHandler
 	// AddAdvertisingCampaignHandler sets the operation handler for the add advertising campaign operation
 	AddAdvertisingCampaignHandler AddAdvertisingCampaignHandler
+	// AddLogHandler sets the operation handler for the add log operation
+	AddLogHandler AddLogHandler
 	// AddServiceAmountHandler sets the operation handler for the add service amount operation
 	AddServiceAmountHandler AddServiceAmountHandler
 	// AdvertisingCampaignHandler sets the operation handler for the advertising campaign operation
@@ -638,6 +643,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.AddAdvertisingCampaignHandler == nil {
 		unregistered = append(unregistered, "AddAdvertisingCampaignHandler")
+	}
+	if o.AddLogHandler == nil {
+		unregistered = append(unregistered, "AddLogHandler")
 	}
 	if o.AddServiceAmountHandler == nil {
 		unregistered = append(unregistered, "AddServiceAmountHandler")
@@ -1014,6 +1022,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/add-advertising-campaign"] = NewAddAdvertisingCampaign(o.context, o.AddAdvertisingCampaignHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/add-log"] = NewAddLog(o.context, o.AddLogHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

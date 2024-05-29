@@ -42,6 +42,10 @@ type (
 )
 
 func (app *app) sendManagementSyncSignal() {
+	if !app.IsManagementInit() {
+		return
+	}
+
 	select {
 	case app.mngtSvc.syncChannel <- struct{}{}:
 	default:
@@ -58,6 +62,14 @@ func (app *app) NotSendedPrograms(ctx context.Context) ([]Program, error) {
 
 func (app *app) MarkProgramSended(ctx context.Context, id int64) error {
 	return app.repo.MarkProgramSended(ctx, id)
+}
+
+func (app *app) NotSendedOpenwashingLogs(ctx context.Context) ([]OpenwashingLog, error) {
+	return app.repo.NotSendedOpenwashingLogs(ctx)
+}
+
+func (app *app) MarkOpenwashingLogSended(ctx context.Context, id int64) error {
+	return app.repo.MarkOpenwashingLogSended(ctx, id)
 }
 
 func (app *app) CreateAdvertisingCampaignFromManagement(ctx context.Context, advert AdvertisingCampaign) (AdvertisingCampaign, error) {

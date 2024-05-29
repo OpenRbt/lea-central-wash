@@ -1339,3 +1339,20 @@ func (svc *service) getVersionBuffered(params op.GetStationFirmwareVersionBuffer
 		return op.NewGetStationFirmwareVersionBufferedInternalServerError()
 	}
 }
+
+func (svc *service) addLog(params op.AddLogParams) op.AddLogResponder {
+	stationID, err := svc.getID(string(*params.Args.Hash))
+	if err != nil {
+		return op.NewAddLogNotFound()
+	}
+
+	_, err = svc.app.AddOpenwashingLog(openwashingLogCreateToApp(stationID, *params.Args))
+
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewAddLogNoContent()
+	default:
+		log.PrintErr(err)
+		return op.NewAddLogInternalServerError()
+	}
+}

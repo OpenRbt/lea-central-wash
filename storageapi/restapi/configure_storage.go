@@ -65,6 +65,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.AddAdvertisingCampaignNotImplemented()
 		})
 	}
+	if api.AddLogHandler == nil {
+		api.AddLogHandler = op.AddLogHandlerFunc(func(params op.AddLogParams) op.AddLogResponder {
+			return op.AddLogNotImplemented()
+		})
+	}
 	if api.AddServiceAmountHandler == nil {
 		api.AddServiceAmountHandler = op.AddServiceAmountHandlerFunc(func(params op.AddServiceAmountParams) op.AddServiceAmountResponder {
 			return op.AddServiceAmountNotImplemented()

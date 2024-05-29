@@ -1408,3 +1408,13 @@ func stationPingStatusToRabbit(status []StationPingStatus) []ping.StationStatus 
 	}
 	return l
 }
+
+func (a *app) AddOpenwashingLog(log OpenwashingLogCreate) (OpenwashingLog, error) {
+	newLog, err := a.repo.CreateOpenwashingLog(log)
+	if err != nil {
+		return OpenwashingLog{}, err
+	}
+
+	a.sendManagementSyncSignal()
+	return newLog, nil
+}

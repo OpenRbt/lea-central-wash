@@ -788,3 +788,11 @@ func apiListFirmwareVersions(versions []app.FirmwareVersion) []*model.FirmwareVe
 	}
 	return apiVersions
 }
+
+func openwashingLogCreateToApp(stationID app.StationID, log model.Log) app.OpenwashingLogCreate {
+	return app.OpenwashingLogCreate{
+		StationID: stationID,
+		Text:      *log.Text,
+		Type:      log.Type,
+	}
+}

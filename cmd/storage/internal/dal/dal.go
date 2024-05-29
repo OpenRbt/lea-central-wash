@@ -1271,3 +1271,30 @@ func (r *repo) RefreshMotorStatsDates() (err error) {
 
 	return
 }
+
+func (r *repo) CreateOpenwashingLog(model app.OpenwashingLogCreate) (app.OpenwashingLog, error) {
+	var log app.OpenwashingLog
+
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res respOpenwashingLog
+		err := tx.NamedGetContext(ctx, &res, sqlInsertOpenwashingLog, argInsertOpenwashingLog{
+			StationID: int(model.StationID),
+			Text:      model.Text,
+			Type:      model.Type,
+			CreatedAt: time.Now().UTC(),
+		})
+		if err != nil {
+			return err
+		}
+
+		log = appOpenwashingLog(res)
+
+		return nil
+	})
+
+	if err != nil {
+		return app.OpenwashingLog{}, err
+	}
+
+	return log, err
+}
