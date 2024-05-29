@@ -160,6 +160,7 @@ func (a *app) startManagementSync() {
 func (a *app) syncLeaSettings() {
 	a.syncUnsentPrograms()
 	a.syncUnsentAdvertisingCampaigns()
+	a.syncUnsentOpenwashingLogs()
 }
 
 func (a *app) syncUnsentPrograms() {
@@ -179,6 +180,28 @@ func (a *app) syncUnsentPrograms() {
 		err = a.MarkProgramSended(context.TODO(), program.ID)
 		if err != nil {
 			log.Err("unable to mark program as sended", "err", err)
+			continue
+		}
+	}
+}
+
+func (a *app) syncUnsentOpenwashingLogs() {
+	logs, err := a.NotSendedOpenwashingLogs(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent logs", "err", err)
+		return
+	}
+
+	for _, l := range logs {
+		err := a.mngtSvc.SendOpenwashingLog(l)
+		if err != nil {
+			log.Err("unable to send program to management", "err", err)
+			continue
+		}
+
+		err = a.MarkOpenwashingLogSended(context.TODO(), l.ID)
+		if err != nil {
+			log.Err("unable to mark log as sended", "err", err)
 			continue
 		}
 	}

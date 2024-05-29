@@ -93,6 +93,24 @@ func ProgramToRabbit(program app.Program) Program {
 	return res
 }
 
+type OpenwashingLog struct {
+	ID        int64     `json:"id"`
+	StationID int       `json:"stationId"`
+	Text      string    `json:"text"`
+	Type      *string   `json:"type,omitempty"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+func OpenwashingLogToRabbit(log app.OpenwashingLog) OpenwashingLog {
+	return OpenwashingLog{
+		ID:        log.ID,
+		StationID: int(log.StationID),
+		Text:      log.Text,
+		Type:      log.Type,
+		CreatedAt: log.CreatedAt,
+	}
+}
+
 type DiscountProgram struct {
 	Discount  int64 `json:"discount"`
 	ProgramID int64 `json:"programId"`

@@ -415,3 +415,15 @@ func (r *DB) UpdateTask(id int, updateTask app.UpdateTask) (app.Task, error) {
 func (r *DB) DeleteTask(id int) error {
 	return nil
 }
+
+func (r *DB) CreateOpenwashingLog(model app.OpenwashingLogCreate) (app.OpenwashingLog, error) {
+	return app.OpenwashingLog{}, nil
+}
+
+func (r *DB) NotSendedOpenwashingLogs(ctx context.Context) ([]app.OpenwashingLog, error) {
+	return nil, nil
+}
+
+func (r *DB) MarkOpenwashingLogSended(ctx context.Context, id int64) error {
+	return nil
+}

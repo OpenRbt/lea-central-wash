@@ -251,6 +251,14 @@ func (s *Service) SendProgram(program app.Program) error {
 	return err
 }
 
+func (s *Service) SendOpenwashingLog(log app.OpenwashingLog) error {
+	err := s.sendMessage(mngt_entity.OpenwashingLogToRabbit(log), mngt_entity.ManagementOpenwashingLogMessageType)
+	if err != nil {
+		s.setLastErr(err.Error())
+	}
+	return err
+}
+
 func (s *Service) SendAdvertisingCampaign(campaign app.AdvertisingCampaign) error {
 	err := s.sendMessage(mngt_entity.AdvertisingCampaignToRabbit(campaign), mngt_entity.ManagementAdvertisingCampaignMessageType)
 	if err != nil {

@@ -3,8 +3,8 @@ package app
 import (
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/powerman/check"
+	gomock "go.uber.org/mock/gomock"
 )
 
 var (

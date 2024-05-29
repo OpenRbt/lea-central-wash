@@ -409,6 +409,24 @@ func appBuildScript(buildScript resBuildScript) (app.BuildScript, error) {
 	}, nil
 }
 
+func appOpenwashingLog(model respOpenwashingLog) app.OpenwashingLog {
+	return app.OpenwashingLog{
+		ID:        model.ID,
+		Text:      model.Text,
+		StationID: app.StationID(model.StationID),
+		Type:      model.Type,
+		CreatedAt: model.CreatedAt,
+	}
+}
+
+func appOpenwashingLogs(models []respOpenwashingLog) []app.OpenwashingLog {
+	res := []app.OpenwashingLog{}
+	for _, model := range models {
+		res = append(res, appOpenwashingLog(model))
+	}
+	return res
+}
+
 func appListTasks(tasks []resTasks) []app.Task {
 	var appTasks []app.Task
 
@@ -421,31 +439,31 @@ func appListTasks(tasks []resTasks) []app.Task {
 
 func appTaskForTasks(task resTasks) app.Task {
 	return app.Task{
-		ID:        task.ID,
-		StationID: app.StationID(task.StationID),
-		VersionID: task.VersionID,
-		Type:      appTaskType(task.Type),
-		Status:    appTaskStatus(task.Status),
+		ID:         task.ID,
+		StationID:  app.StationID(task.StationID),
+		VersionID:  task.VersionID,
+		Type:       appTaskType(task.Type),
+		Status:     appTaskStatus(task.Status),
 		RetryCount: task.RetryCount,
-		Error:     task.Error,
-		CreatedAt: task.CreatedAt,
-		StartedAt: task.StartedAt,
-		StoppedAt: task.StoppedAt,
+		Error:      task.Error,
+		CreatedAt:  task.CreatedAt,
+		StartedAt:  task.StartedAt,
+		StoppedAt:  task.StoppedAt,
 	}
 }
 
 func appTask(task resTask) app.Task {
 	return app.Task{
-		ID:        task.ID,
-		StationID: app.StationID(task.StationID),
-		VersionID: task.VersionID,
-		Type:      appTaskType(task.Type),
-		Status:    appTaskStatus(task.Status),
+		ID:         task.ID,
+		StationID:  app.StationID(task.StationID),
+		VersionID:  task.VersionID,
+		Type:       appTaskType(task.Type),
+		Status:     appTaskStatus(task.Status),
 		RetryCount: task.RetryCount,
-		Error:     task.Error,
-		CreatedAt: task.CreatedAt,
-		StartedAt: task.StartedAt,
-		StoppedAt: task.StoppedAt,
+		Error:      task.Error,
+		CreatedAt:  task.CreatedAt,
+		StartedAt:  task.StartedAt,
+		StoppedAt:  task.StoppedAt,
 	}
 }
 

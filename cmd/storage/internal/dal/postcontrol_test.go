@@ -6,6 +6,7 @@ import (
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 	"github.com/powerman/check"
+	"gotest.tools/v3/assert"
 )
 
 func TestCreateBuildScript(tt *testing.T) {
@@ -275,4 +276,47 @@ func TestGetListTask(tt *testing.T) {
 		listTasks[i] = task
 	}
 	t.DeepEqual(listTasks, l.Items)
+}
+
+func TestCreateOpenwashingLog(tt *testing.T) {
+	t := check.T(tt)
+	t.Nil(testRepo.truncate())
+	addTestData(t)
+
+	log, err := testRepo.CreateOpenwashingLog(testCreateOpenwashingLog)
+	t.Nil(err)
+	t.Equal(log.StationID, testCreateOpenwashingLog.StationID)
+	t.Equal(log.Text, testCreateOpenwashingLog.Text)
+	t.DeepEqual(log.Type, testCreateOpenwashingLog.Type)
+
+	testLog := testCreateOpenwashingLog
+	typeLog := "type"
+	testLog.Type = &typeLog
+
+	log, err = testRepo.CreateOpenwashingLog(testLog)
+	t.Nil(err)
+	t.Equal(log.StationID, testLog.StationID)
+	t.Equal(log.Text, testLog.Text)
+	t.DeepEqual(log.Type, testLog.Type)
+}
+
+func TestNotSendedOpenwashingLogs(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+	tt := check.T(t)
+	addTestData(tt)
+
+	log1, err := testRepo.CreateOpenwashingLog(testCreateOpenwashingLog)
+	assert.NilError(t, err)
+	log2, err := testRepo.CreateOpenwashingLog(testCreateOpenwashingLog)
+	assert.NilError(t, err)
+	log3, err := testRepo.CreateOpenwashingLog(testCreateOpenwashingLog)
+	assert.NilError(t, err)
+
+	err = testRepo.MarkOpenwashingLogSended(ctx, log3.ID)
+	assert.NilError(t, err)
+
+	notSended, err := testRepo.NotSendedOpenwashingLogs(ctx)
+	assert.NilError(t, err)
+
+	assert.DeepEqual(t, notSended, []app.OpenwashingLog{log1, log2})
 }

@@ -250,12 +250,12 @@ func (r *repo) UpdateTask(id int, updateTask app.UpdateTask) (app.Task, error) {
 	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res resTask
 		err := tx.NamedGetContext(ctx, &res, sqlUpdateTask, argUpdateTask{
-			ID:        id,
-			Error:     updateTask.Error,
+			ID:         id,
+			Error:      updateTask.Error,
 			RetryCount: updateTask.RetryCount,
-			StartedAt: updateTask.StartedAt,
-			StoppedAt: updateTask.StoppedAt,
-			Status:    dalNullableTaskStatus(updateTask.Status),
+			StartedAt:  updateTask.StartedAt,
+			StoppedAt:  updateTask.StoppedAt,
+			Status:     dalNullableTaskStatus(updateTask.Status),
 		})
 
 		if err != nil {

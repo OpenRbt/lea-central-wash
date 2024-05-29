@@ -68,6 +68,32 @@ func init() {
         }
       }
     },
+    "/add-log": {
+      "post": {
+        "operationId": "addLog",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Log"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/add-service-amount": {
       "post": {
         "operationId": "addServiceAmount",
@@ -4042,6 +4068,25 @@ func init() {
       "minLength": 1,
       "x-nullable": true
     },
+    "Log": {
+      "type": "object",
+      "required": [
+        "text",
+        "hash"
+      ],
+      "properties": {
+        "hash": {
+          "$ref": "#/definitions/Hash"
+        },
+        "text": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "x-nullable": true
+        }
+      }
+    },
     "Login": {
       "type": "string",
       "minLength": 4
@@ -4795,6 +4840,32 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/add-log": {
+      "post": {
+        "operationId": "addLog",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Log"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -8769,6 +8840,25 @@ func init() {
       "type": "string",
       "minLength": 1,
       "x-nullable": true
+    },
+    "Log": {
+      "type": "object",
+      "required": [
+        "text",
+        "hash"
+      ],
+      "properties": {
+        "hash": {
+          "$ref": "#/definitions/Hash"
+        },
+        "text": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "x-nullable": true
+        }
+      }
     },
     "Login": {
       "type": "string",

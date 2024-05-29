@@ -438,6 +438,20 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/UserConfig'
+  
+  Log:
+    type: object
+    properties:
+      hash:
+        $ref: '#/definitions/Hash'
+      text:
+        type: string
+      type:
+        type: string
+        x-nullable: true
+    required:
+      - text
+      - hash
 
   Program:
     type: object
@@ -3144,6 +3158,23 @@ paths:
           description: OK
         401:
           description: PIN is missing or invalid
+        404:
+          description: Not found
+        500:
+          description: Internal error
+
+  /add-log:
+    post:
+      operationId: "addLog"
+      parameters:
+        - name: args
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Log'
+      responses:
+        204:
+          description: OK
         404:
           description: Not found
         500:

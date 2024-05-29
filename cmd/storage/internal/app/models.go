@@ -269,6 +269,20 @@ type SetBuildScript struct {
 	Commands          []string
 }
 
+type OpenwashingLog struct {
+	ID        int64
+	StationID StationID
+	Text      string
+	Type      *string
+	CreatedAt time.Time
+}
+
+type OpenwashingLogCreate struct {
+	StationID StationID
+	Text      string
+	Type      *string
+}
+
 type TaskType string
 type TaskStatus string
 type TaskSort string
