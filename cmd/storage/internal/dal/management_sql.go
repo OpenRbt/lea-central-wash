@@ -109,6 +109,7 @@ const (
 			station_id,
 			text,
 			type,
+			level,
 			created_at
 		FROM openwashing_logs 
 		WHERE NOT management_sended

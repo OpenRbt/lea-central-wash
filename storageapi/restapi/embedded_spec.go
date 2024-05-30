@@ -4078,6 +4078,16 @@ func init() {
         "hash": {
           "$ref": "#/definitions/Hash"
         },
+        "level": {
+          "type": "string",
+          "default": "info",
+          "enum": [
+            "debug",
+            "info",
+            "warning",
+            "error"
+          ]
+        },
         "text": {
           "type": "string"
         },
@@ -8850,6 +8860,16 @@ func init() {
       "properties": {
         "hash": {
           "$ref": "#/definitions/Hash"
+        },
+        "level": {
+          "type": "string",
+          "default": "info",
+          "enum": [
+            "debug",
+            "info",
+            "warning",
+            "error"
+          ]
         },
         "text": {
           "type": "string"

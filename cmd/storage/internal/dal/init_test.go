@@ -88,6 +88,7 @@ var (
 		StationID: 1,
 		Text:      "text",
 		Type:      nil,
+		Level:     app.InfoLogLevel,
 	}
 
 	versionID = 1

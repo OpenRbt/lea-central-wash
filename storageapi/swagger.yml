@@ -449,6 +449,10 @@ definitions:
       type:
         type: string
         x-nullable: true
+      level:
+        type: string
+        enum: ["debug", "info", "warning", "error"]
+        default: "info"
     required:
       - text
       - hash
