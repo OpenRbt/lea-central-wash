@@ -1281,6 +1281,7 @@ func (r *repo) CreateOpenwashingLog(model app.OpenwashingLogCreate) (app.Openwas
 			StationID: int(model.StationID),
 			Text:      model.Text,
 			Type:      model.Type,
+			Level:     dalLogLevel(model.Level),
 			CreatedAt: time.Now().UTC(),
 		})
 		if err != nil {

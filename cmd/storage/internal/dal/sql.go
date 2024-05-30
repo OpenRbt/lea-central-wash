@@ -855,13 +855,14 @@ returning id
 	`
 
 	sqlInsertOpenwashingLog = `
-	INSERT INTO openwashing_logs (station_id, text, type, created_at)
-	VALUES (:station_id, :text, :type, :created_at)
+	INSERT INTO openwashing_logs (station_id, text, type, level, created_at)
+	VALUES (:station_id, :text, :type, :level, :created_at)
 	RETURNING
 		id,
 		station_id,
 		text,
 		type,
+		level,
 		created_at
 	`
 )
@@ -1391,6 +1392,7 @@ type (
 	TaskType   string
 	TaskStatus string
 	TaskSort   string
+	LogLevel   string
 
 	resTask struct {
 		ID         int
@@ -1451,6 +1453,7 @@ type (
 		StationID int
 		Text      string
 		Type      *string
+		Level     LogLevel
 		CreatedAt time.Time
 	}
 
@@ -1459,6 +1462,7 @@ type (
 		StationID int
 		Text      string
 		Type      *string
+		Level     LogLevel
 		CreatedAt time.Time
 	}
 )
@@ -1479,4 +1483,9 @@ const (
 
 	CreatedAtAscTaskSort  TaskSort = "created_at_asc"
 	CreatedAtDescTaskSort TaskSort = "created_at_desc"
+
+	DebugLogLevel   LogLevel = "debug"
+	InfoLogLevel    LogLevel = "info"
+	WarningLogLevel LogLevel = "warning"
+	ErrorLogLevel   LogLevel = "error"
 )

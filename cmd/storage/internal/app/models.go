@@ -274,6 +274,7 @@ type OpenwashingLog struct {
 	StationID StationID
 	Text      string
 	Type      *string
+	Level     LogLevel
 	CreatedAt time.Time
 }
 
@@ -281,13 +282,20 @@ type OpenwashingLogCreate struct {
 	StationID StationID
 	Text      string
 	Type      *string
+	Level     LogLevel
 }
 
+type LogLevel string
 type TaskType string
 type TaskStatus string
 type TaskSort string
 
 const (
+	DebugLogLevel   LogLevel = "debug"
+	InfoLogLevel    LogLevel = "info"
+	WarningLogLevel LogLevel = "warning"
+	ErrorLogLevel   LogLevel = "error"
+
 	BuildTaskType        TaskType = "build"
 	UpdateTaskType       TaskType = "update"
 	RebootTaskType       TaskType = "reboot"

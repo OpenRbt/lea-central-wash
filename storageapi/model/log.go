@@ -25,6 +25,10 @@ type Log struct {
 	// Required: true
 	Hash *Hash `json:"hash"`
 
+	// level
+	// Enum: [debug info warning error]
+	Level *string `json:"level,omitempty"`
+
 	// text
 	// Required: true
 	Text *string `json:"text"`
@@ -41,6 +45,10 @@ func (m *Log) UnmarshalJSON(data []byte) error {
 		// Required: true
 		Hash *Hash `json:"hash"`
 
+		// level
+		// Enum: [debug info warning error]
+		Level *string `json:"level,omitempty"`
+
 		// text
 		// Required: true
 		Text *string `json:"text"`
@@ -56,6 +64,7 @@ func (m *Log) UnmarshalJSON(data []byte) error {
 	}
 
 	m.Hash = props.Hash
+	m.Level = props.Level
 	m.Text = props.Text
 	m.Type = props.Type
 	return nil
@@ -66,6 +75,10 @@ func (m *Log) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateHash(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateLevel(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -98,6 +111,54 @@ func (m *Log) validateHash(formats strfmt.Registry) error {
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+var logTypeLevelPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["debug","info","warning","error"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		logTypeLevelPropEnum = append(logTypeLevelPropEnum, v)
+	}
+}
+
+const (
+
+	// LogLevelDebug captures enum value "debug"
+	LogLevelDebug string = "debug"
+
+	// LogLevelInfo captures enum value "info"
+	LogLevelInfo string = "info"
+
+	// LogLevelWarning captures enum value "warning"
+	LogLevelWarning string = "warning"
+
+	// LogLevelError captures enum value "error"
+	LogLevelError string = "error"
+)
+
+// prop value enum
+func (m *Log) validateLevelEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, logTypeLevelPropEnum, true); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *Log) validateLevel(formats strfmt.Registry) error {
+	if swag.IsZero(m.Level) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateLevelEnum("level", "body", *m.Level); err != nil {
+		return err
 	}
 
 	return nil

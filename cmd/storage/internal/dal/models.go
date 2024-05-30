@@ -415,6 +415,7 @@ func appOpenwashingLog(model respOpenwashingLog) app.OpenwashingLog {
 		Text:      model.Text,
 		StationID: app.StationID(model.StationID),
 		Type:      model.Type,
+		Level:     appLogLevel(model.Level),
 		CreatedAt: model.CreatedAt,
 	}
 }
@@ -500,6 +501,36 @@ func appTaskStatus(taskStatus TaskStatus) app.TaskStatus {
 		return app.CanceledTaskStatus
 	default:
 		panic("Unknown task status: " + taskStatus)
+	}
+}
+
+func appLogLevel(level LogLevel) app.LogLevel {
+	switch level {
+	case DebugLogLevel:
+		return app.DebugLogLevel
+	case InfoLogLevel:
+		return app.InfoLogLevel
+	case WarningLogLevel:
+		return app.WarningLogLevel
+	case ErrorLogLevel:
+		return app.ErrorLogLevel
+	default:
+		panic("Unknown log level: " + level)
+	}
+}
+
+func dalLogLevel(level app.LogLevel) LogLevel {
+	switch level {
+	case app.DebugLogLevel:
+		return DebugLogLevel
+	case app.InfoLogLevel:
+		return InfoLogLevel
+	case app.WarningLogLevel:
+		return WarningLogLevel
+	case app.ErrorLogLevel:
+		return ErrorLogLevel
+	default:
+		panic("Unknown log level: " + level)
 	}
 }
 

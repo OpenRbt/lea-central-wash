@@ -98,6 +98,7 @@ type OpenwashingLog struct {
 	StationID int       `json:"stationId"`
 	Text      string    `json:"text"`
 	Type      *string   `json:"type,omitempty"`
+	Level     string    `json:"level"`
 	CreatedAt time.Time `json:"createdAt"`
 }
 
@@ -107,6 +108,7 @@ func OpenwashingLogToRabbit(log app.OpenwashingLog) OpenwashingLog {
 		StationID: int(log.StationID),
 		Text:      log.Text,
 		Type:      log.Type,
+		Level:     string(log.Level),
 		CreatedAt: log.CreatedAt,
 	}
 }

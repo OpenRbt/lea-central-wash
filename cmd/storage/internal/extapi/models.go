@@ -790,9 +790,29 @@ func apiListFirmwareVersions(versions []app.FirmwareVersion) []*model.FirmwareVe
 }
 
 func openwashingLogCreateToApp(stationID app.StationID, log model.Log) app.OpenwashingLogCreate {
+	logLevel := model.LogLevelInfo
+	if log.Level != nil {
+		logLevel = *log.Level
+	}
 	return app.OpenwashingLogCreate{
 		StationID: stationID,
 		Text:      *log.Text,
 		Type:      log.Type,
+		Level:     logLevelToApp(logLevel),
+	}
+}
+
+func logLevelToApp(level string) app.LogLevel {
+	switch level {
+	case model.LogLevelDebug:
+		return app.DebugLogLevel
+	case model.LogLevelInfo:
+		return app.InfoLogLevel
+	case model.LogLevelWarning:
+		return app.WarningLogLevel
+	case model.LogLevelError:
+		return app.ErrorLogLevel
+	default:
+		panic("Unknown log level: " + level)
 	}
 }
