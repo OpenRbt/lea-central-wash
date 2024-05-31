@@ -207,3 +207,61 @@ func AdvertisingCampaignToRabbit(campaign app.AdvertisingCampaign) AdvertisingCa
 
 	return res
 }
+
+type ConfigString struct {
+	Name        string `json:"name"`
+	Value       string `json:"value"`
+	Description string `json:"description"`
+	Note        string `json:"note"`
+	Deleted     bool   `json:"deleted"`
+	Version     int    `json:"version"`
+}
+
+type ConfigInt struct {
+	Name        string `json:"name"`
+	Value       int64  `json:"value"`
+	Description string `json:"description"`
+	Note        string `json:"note"`
+	Deleted     bool   `json:"deleted"`
+	Version     int    `json:"version"`
+}
+
+type ConfigBool struct {
+	Name        string `json:"name"`
+	Value       bool   `json:"value"`
+	Description string `json:"description"`
+	Note        string `json:"note"`
+	Deleted     bool   `json:"deleted"`
+	Version     int    `json:"version"`
+}
+
+func ConfigStringToRabbit(config app.ConfigString) ConfigString {
+	return ConfigString{
+		Name:        config.Name,
+		Value:       config.Value,
+		Description: config.Description,
+		Note:        config.Note,
+		Deleted:     config.Deleted,
+		Version:     config.Version,
+	}
+}
+
+func ConfigIntToRabbit(config app.ConfigInt) ConfigInt {
+	return ConfigInt{
+		Name:        config.Name,
+		Value:       config.Value,
+		Description: config.Description,
+		Note:        config.Note,
+		Version:     config.Version,
+	}
+}
+
+func ConfigBoolToRabbit(config app.ConfigBool) ConfigBool {
+	return ConfigBool{
+		Name:        config.Name,
+		Value:       config.Value,
+		Description: config.Description,
+		Note:        config.Note,
+		Version:     config.Version,
+	}
+}

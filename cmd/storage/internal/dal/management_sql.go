@@ -121,6 +121,52 @@ const (
 		SET management_sended = true
 		WHERE id = :id
 	`
+	sqlNotSendedConfigStrings = `
+		SELECT 
+			name,
+			value,
+			description,
+			note,
+			deleted,
+			version
+		FROM config_vars_string
+		WHERE NOT management_sended
+	`
+	sqlMarkConfigStringSended = `
+		UPDATE config_vars_string
+		SET management_sended = true
+		WHERE name = UPPER(:id)
+	`
+	sqlNotSendedConfigInts = `
+		SELECT 
+			name,
+			value,
+			description,
+			note,
+			version
+		FROM config_vars_int
+		WHERE NOT management_sended
+	`
+	sqlMarkConfigIntSended = `
+		UPDATE config_vars_int
+		SET management_sended = true
+		WHERE name = UPPER(:id)
+	`
+	sqlNotSendedConfigBools = `
+	SELECT 
+		name,
+		value,
+		description,
+		note,
+		version
+	FROM config_vars_bool
+	WHERE NOT management_sended
+`
+	sqlMarkConfigBoolSended = `
+	UPDATE config_vars_bool
+	SET management_sended = true
+	WHERE name = UPPER(:id)
+`
 	sqlSetProgramFromManagement = `
 		INSERT INTO program (
 			id,

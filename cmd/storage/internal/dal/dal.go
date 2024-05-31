@@ -364,7 +364,6 @@ func (r *repo) SaveMoneyReport(report app.MoneyReport) (err error) {
 func (r *repo) ResetStationStat(stationID app.StationID) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res []resRelayReport
-		report := app.StationsStat{}
 		err := tx.NamedSelectContext(ctx, &res, sqlCurentStationReport, argStationReport{
 			StationID: &stationID,
 		})
@@ -378,7 +377,7 @@ func (r *repo) ResetStationStat(stationID app.StationID) (err error) {
 		if err != nil {
 			return err
 		}
-		report = appStationsStat(res, relay)
+		report := appStationsStat(res, relay)
 		stat := report[stationID]
 		bytes, err := json.Marshal(stat)
 		if err != nil {
@@ -909,7 +908,7 @@ func (r *repo) GetCurrentAdvertisingCampaigns(curTime time.Time) (a []app.Advert
 	return //nolint:nakedret
 }
 
-func (r *repo) GetConfigInt(name string) (cfg *app.ConfigInt, err error) {
+func (r *repo) GetConfigInt(name string) (cfg app.ConfigInt, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		res := resGetConfigInt{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetConfigInt, argGetConfig{
@@ -926,7 +925,7 @@ func (r *repo) GetConfigInt(name string) (cfg *app.ConfigInt, err error) {
 	})
 	return
 }
-func (r *repo) GetConfigBool(name string) (cfg *app.ConfigBool, err error) {
+func (r *repo) GetConfigBool(name string) (cfg app.ConfigBool, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		res := resGetConfigBool{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetConfigBool, argGetConfig{
@@ -943,7 +942,7 @@ func (r *repo) GetConfigBool(name string) (cfg *app.ConfigBool, err error) {
 	})
 	return
 }
-func (r *repo) GetConfigString(name string) (cfg *app.ConfigString, err error) {
+func (r *repo) GetConfigString(name string) (cfg app.ConfigString, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		res := resGetConfigString{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetConfigString, argGetConfig{
@@ -989,7 +988,7 @@ func (r *repo) SetConfigIntIfNotExists(config app.ConfigInt) (err error) {
 
 func (r *repo) SetConfigBool(config app.ConfigBool) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlSetConfigInt, argSetConfigBool{
+		_, err := tx.NamedExec(sqlSetConfigBool, argSetConfigBool{
 			Name:        config.Name,
 			Value:       config.Value,
 			Description: config.Description,

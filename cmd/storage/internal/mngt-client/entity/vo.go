@@ -55,6 +55,9 @@ const (
 	ManagementProgramMessageType             app.RabbitMessageType = "management/program"
 	ManagementAdvertisingCampaignMessageType app.RabbitMessageType = "management/advertising_campaign"
 	ManagementOpenwashingLogMessageType      app.RabbitMessageType = "management/openwashing_log"
+	ManagementConfigStringMessageType        app.RabbitMessageType = "management/config_string"
+	ManagementConfigIntMessageType           app.RabbitMessageType = "management/config_int"
+	ManagementConfigBoolMessageType          app.RabbitMessageType = "management/config_bool"
 
 	LcwProgramSettingMessageType              app.RabbitMessageType = "lcw/program/set"
 	LeaAdvertisingCampaignCreationMessageType app.RabbitMessageType = "lcw/advertising_campaign/create"

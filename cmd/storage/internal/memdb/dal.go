@@ -258,14 +258,14 @@ func (t *DB) AdvertisingCampaign(startDate, endDate *time.Time) ([]app.Advertisi
 func (t *DB) GetCurrentAdvertisingCampaigns(time.Time) ([]app.AdvertisingCampaign, error) {
 	return nil, nil
 }
-func (t *DB) GetConfigInt(name string) (*app.ConfigInt, error) {
-	return nil, nil
+func (t *DB) GetConfigInt(name string) (app.ConfigInt, error) {
+	return app.ConfigInt{}, nil
 }
-func (t *DB) GetConfigBool(name string) (*app.ConfigBool, error) {
-	return nil, nil
+func (t *DB) GetConfigBool(name string) (app.ConfigBool, error) {
+	return app.ConfigBool{}, nil
 }
-func (t *DB) GetConfigString(name string) (*app.ConfigString, error) {
-	return nil, nil
+func (t *DB) GetConfigString(name string) (app.ConfigString, error) {
+	return app.ConfigString{}, nil
 }
 
 func (t *DB) SetConfigInt(config app.ConfigInt) error {
@@ -425,5 +425,29 @@ func (r *DB) NotSendedOpenwashingLogs(ctx context.Context) ([]app.OpenwashingLog
 }
 
 func (r *DB) MarkOpenwashingLogSended(ctx context.Context, id int64) error {
+	return nil
+}
+
+func (r *DB) NotSendedConfigInts(ctx context.Context) ([]app.ConfigInt, error) {
+	return nil, nil
+}
+
+func (r *DB) MarkConfigIntSended(ctx context.Context, name string) error {
+	return nil
+}
+
+func (r *DB) NotSendedConfigBools(ctx context.Context) ([]app.ConfigBool, error) {
+	return nil, nil
+}
+
+func (r *DB) MarkConfigBoolSended(ctx context.Context, name string) error {
+	return nil
+}
+
+func (r *DB) NotSendedConfigStrings(ctx context.Context) ([]app.ConfigString, error) {
+	return nil, nil
+}
+
+func (r *DB) MarkConfigStringSended(ctx context.Context, name string) error {
 	return nil
 }

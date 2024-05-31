@@ -257,3 +257,113 @@ func TestNotSendedAdvertisingCampaigns(t *testing.T) {
 		return i.ID > j.ID
 	}))
 }
+
+func TestNotSendedConfigInts(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+
+	configs := []app.ConfigInt{
+		{Name: "NAME1", Value: 1, Description: "description1", Note: "note1"},
+		{Name: "NAME2", Value: 2, Description: "description2", Note: "note2"},
+		{Name: "NAME3", Value: 3, Description: "description3", Note: "note3"},
+	}
+
+	for _, config := range configs {
+		err := testRepo.SetConfigInt(config)
+		assert.NilError(t, err)
+	}
+
+	err := testRepo.MarkConfigIntSended(ctx, configs[2].Name)
+	assert.NilError(t, err)
+
+	notSendedConfigs, err := testRepo.NotSendedConfigInts(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedConfigs, configs[:2])
+
+	err = testRepo.SetConfigInt(configs[2])
+	assert.NilError(t, err)
+
+	cTemp := configs[2]
+	cTemp.Version++
+	configs[2] = cTemp
+
+	notSendedConfigs, err = testRepo.NotSendedConfigInts(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedConfigs, configs)
+}
+
+func TestNotSendedConfigBools(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+
+	configs := []app.ConfigBool{
+		{Name: "NAME1", Value: true, Description: "description1", Note: "note1"},
+		{Name: "NAME2", Value: false, Description: "description2", Note: "note2"},
+		{Name: "NAME3", Value: true, Description: "description3", Note: "note3"},
+	}
+
+	for _, config := range configs {
+		err := testRepo.SetConfigBool(config)
+		assert.NilError(t, err)
+	}
+
+	err := testRepo.MarkConfigBoolSended(ctx, configs[2].Name)
+	assert.NilError(t, err)
+
+	notSendedConfigs, err := testRepo.NotSendedConfigBools(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedConfigs, configs[:2])
+
+	err = testRepo.SetConfigBool(configs[2])
+	assert.NilError(t, err)
+
+	cTemp := configs[2]
+	cTemp.Version++
+	configs[2] = cTemp
+
+	notSendedConfigs, err = testRepo.NotSendedConfigBools(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedConfigs, configs)
+}
+
+func TestNotSendedConfigStrings(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+
+	configs := []app.ConfigString{
+		{Name: "NAME1", Value: "value1", Description: "description1", Note: "note1"},
+		{Name: "NAME2", Value: "value2", Description: "description2", Note: "note2"},
+		{Name: "NAME3", Value: "value3", Description: "description3", Note: "note3"},
+	}
+
+	for _, config := range configs {
+		err := testRepo.SetConfigString(config)
+		assert.NilError(t, err)
+	}
+
+	err := testRepo.MarkConfigStringSended(ctx, configs[2].Name)
+	assert.NilError(t, err)
+
+	notSendedConfigs, err := testRepo.NotSendedConfigStrings(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedConfigs, configs[:2])
+
+	err = testRepo.SetConfigString(configs[2])
+	assert.NilError(t, err)
+
+	cTemp := configs[2]
+	cTemp.Version++
+	configs[2] = cTemp
+
+	notSendedConfigs, err = testRepo.NotSendedConfigStrings(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedConfigs, configs)
+
+	err = testRepo.DeleteConfigString(configs[2].Name)
+	assert.NilError(t, err)
+
+	cTemp.Version++
+	cTemp.Deleted = true
+	configs[2] = cTemp
+
+	notSendedConfigs, err = testRepo.NotSendedConfigStrings(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedConfigs, configs)
+}
