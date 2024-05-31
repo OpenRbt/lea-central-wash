@@ -161,6 +161,7 @@ func (a *app) syncLeaSettings() {
 	a.syncUnsentPrograms()
 	a.syncUnsentAdvertisingCampaigns()
 	a.syncUnsentOpenwashingLogs()
+	a.syncUnsentConfigs()
 }
 
 func (a *app) syncUnsentPrograms() {
@@ -224,6 +225,65 @@ func (a *app) syncUnsentAdvertisingCampaigns() {
 		err = a.MarkAdvertisingCampaignSended(context.TODO(), campaign.ID)
 		if err != nil {
 			log.Err("unable to mark advertising campaign as sended", "err", err)
+			continue
+		}
+	}
+}
+
+func (a *app) syncUnsentConfigs() {
+	configStrings, err := a.repo.NotSendedConfigStrings(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent config strings", "err", err)
+		return
+	}
+	for _, config := range configStrings {
+		err := a.mngtSvc.SendConfigString(config)
+		if err != nil {
+			log.Err("unable to send config string to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkConfigStringSended(context.TODO(), config.Name)
+		if err != nil {
+			log.Err("unable to mark config string as sended", "err", err)
+			continue
+		}
+	}
+
+	configInts, err := a.repo.NotSendedConfigInts(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent config ints", "err", err)
+		return
+	}
+	for _, config := range configInts {
+		err := a.mngtSvc.SendConfigInt(config)
+		if err != nil {
+			log.Err("unable to send config int to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkConfigIntSended(context.TODO(), config.Name)
+		if err != nil {
+			log.Err("unable to mark config int as sended", "err", err)
+			continue
+		}
+	}
+
+	configBools, err := a.repo.NotSendedConfigBools(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent config bools", "err", err)
+		return
+	}
+	for _, config := range configBools {
+		err := a.mngtSvc.SendConfigBool(config)
+		if err != nil {
+			log.Err("unable to send config bool to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkConfigIntSended(context.TODO(), config.Name)
+		if err != nil {
+			log.Err("unable to mark config bool as sended", "err", err)
 			continue
 		}
 	}

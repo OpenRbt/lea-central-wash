@@ -546,7 +546,7 @@ order by b.button_id
 	WHERE name = UPPER(:name)
 	`
 	sqlGetConfigString = `
-	SELECT name, value, description, note
+	SELECT name, value, description, note, deleted, version
 	FROM config_vars_string
 	WHERE name = UPPER(:name)
 	`
@@ -559,7 +559,9 @@ order by b.button_id
 		UPDATE 
 			SET value = :value,
 			description = :description,
-			note = :note
+			note = :note,
+			version = config_vars_int.version + 1, 
+			management_sended = false
 	`
 	sqlSetConfigIntIfNotExists = `
 	INSERT INTO config_vars_int (name, value, description, note)
@@ -575,7 +577,9 @@ order by b.button_id
 		UPDATE 
 			SET value = :value,
 			description = :description,
-			note = :note
+			note = :note,
+			version = config_vars_bool.version + 1, 
+			management_sended = false
 	`
 	sqlSetConfigString = `
 	INSERT INTO config_vars_string (name, value, description, note)
@@ -585,11 +589,12 @@ order by b.button_id
 		UPDATE 
 			SET value = :value,
 			description = :description,
-			note = :note
+			note = :note,
+			version = config_vars_string.version + 1, 
+			management_sended = false
 	`
-
 	sqlDeleteConfigString = `
-		DELETE FROM config_vars_string WHERE name = UPPER(:name)
+	UPDATE config_vars_string SET deleted = true, management_sended = false, version = version + 1 WHERE name = UPPER(:name)
 	`
 
 	sqlGetStationConfigInt = `
@@ -801,16 +806,6 @@ returning id
 	LIMIT  CASE WHEN :limit  >= 1 THEN :limit  ELSE 10 END
 	OFFSET CASE WHEN :offset >= 0 THEN :offset ELSE 0  END
 	`
-
-	sqlGetListTasksCount = `
-	SELECT COUNT(*)
-	FROM tasks
-	WHERE
-		(CAST(:station_id AS INT) 		         IS NULL OR station_id = :station_id)    AND
-		(CAST(:statuses   AS TASK_STATUS_ENUM[]) IS NULL OR status     = ANY(:statuses)) AND
-		(CAST(:types      AS TASK_TYPE_ENUM[])   IS NULL OR type       = ANY(:types))
-	`
-
 	sqlInsertTask = `
 	INSERT INTO tasks (station_id, version_id, type)
 	VALUES (:station_id, :version_id, :type)
@@ -1281,18 +1276,22 @@ type (
 		Value       int64
 		Description string
 		Note        string
+		Version     int
 	}
 	resGetConfigBool struct {
 		Name        string
 		Value       bool
 		Description string
 		Note        string
+		Version     int
 	}
 	resGetConfigString struct {
 		Name        string
 		Value       string
 		Description string
 		Note        string
+		Deleted     bool
+		Version     int
 	}
 
 	argSetStationConfigInt struct {

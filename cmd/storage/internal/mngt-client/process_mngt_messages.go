@@ -267,6 +267,30 @@ func (s *Service) SendAdvertisingCampaign(campaign app.AdvertisingCampaign) erro
 	return err
 }
 
+func (s *Service) SendConfigString(config app.ConfigString) error {
+	err := s.sendMessage(mngt_entity.ConfigStringToRabbit(config), mngt_entity.ManagementConfigStringMessageType)
+	if err != nil {
+		s.setLastErr(err.Error())
+	}
+	return err
+}
+
+func (s *Service) SendConfigInt(config app.ConfigInt) error {
+	err := s.sendMessage(mngt_entity.ConfigIntToRabbit(config), mngt_entity.ManagementConfigIntMessageType)
+	if err != nil {
+		s.setLastErr(err.Error())
+	}
+	return err
+}
+
+func (s *Service) SendConfigBool(config app.ConfigBool) error {
+	err := s.sendMessage(mngt_entity.ConfigBoolToRabbit(config), mngt_entity.ManagementConfigBoolMessageType)
+	if err != nil {
+		s.setLastErr(err.Error())
+	}
+	return err
+}
+
 func (s *Service) sendMessage(msg interface{}, messageType app.RabbitMessageType) (err error) {
 	jsonMsg, ok := msg.([]byte)
 	if !ok {

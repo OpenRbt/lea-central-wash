@@ -134,6 +134,84 @@ func (r *repo) MarkOpenwashingLogSended(ctx context.Context, id int64) error {
 	})
 }
 
+func (r *repo) NotSendedConfigStrings(ctx context.Context) ([]app.ConfigString, error) {
+	var respConfigStrings []resGetConfigString
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		return tx.SelectContext(ctx, &respConfigStrings, sqlNotSendedConfigStrings)
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return appConfigStrings(respConfigStrings), nil
+}
+
+func (r *repo) MarkConfigStringSended(ctx context.Context, name string) error {
+	return r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExecContext(ctx, sqlMarkConfigStringSended, argID[string]{
+			ID: name,
+		})
+
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
+		}
+
+		return err
+	})
+}
+
+func (r *repo) NotSendedConfigInts(ctx context.Context) ([]app.ConfigInt, error) {
+	var respConfigInts []resGetConfigInt
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		return tx.SelectContext(ctx, &respConfigInts, sqlNotSendedConfigInts)
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return appConfigInts(respConfigInts), nil
+}
+
+func (r *repo) MarkConfigIntSended(ctx context.Context, name string) error {
+	return r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExecContext(ctx, sqlMarkConfigIntSended, argID[string]{
+			ID: name,
+		})
+
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
+		}
+
+		return err
+	})
+}
+
+func (r *repo) NotSendedConfigBools(ctx context.Context) ([]app.ConfigBool, error) {
+	var respConfigBools []resGetConfigBool
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		return tx.SelectContext(ctx, &respConfigBools, sqlNotSendedConfigBools)
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return appConfigBools(respConfigBools), nil
+}
+
+func (r *repo) MarkConfigBoolSended(ctx context.Context, name string) error {
+	return r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExecContext(ctx, sqlMarkConfigBoolSended, argID[string]{
+			ID: name,
+		})
+
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
+		}
+
+		return err
+	})
+}
+
 func (r *repo) UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert app.ManagementAdvertisingCampaign) (app.AdvertisingCampaign, error) {
 	var resAdvert resAdvertisingCampaign
 	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {

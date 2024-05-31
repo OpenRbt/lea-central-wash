@@ -274,31 +274,59 @@ func appAdvertisingCampaigns(a []resAdvertisingCampaign) []app.AdvertisingCampai
 	return res
 }
 
-func appConfigInt(a resGetConfigInt) *app.ConfigInt {
-	return &app.ConfigInt{
+func appConfigInt(a resGetConfigInt) app.ConfigInt {
+	return app.ConfigInt{
 		Name:        a.Name,
 		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
+		Version:     a.Version,
 	}
 }
 
-func appConfigBool(a resGetConfigBool) *app.ConfigBool {
-	return &app.ConfigBool{
+func appConfigBool(a resGetConfigBool) app.ConfigBool {
+	return app.ConfigBool{
 		Name:        a.Name,
 		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
+		Version:     a.Version,
 	}
 }
 
-func appConfigString(a resGetConfigString) *app.ConfigString {
-	return &app.ConfigString{
+func appConfigString(a resGetConfigString) app.ConfigString {
+	return app.ConfigString{
 		Name:        a.Name,
 		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
+		Deleted:     a.Deleted,
+		Version:     a.Version,
 	}
+}
+
+func appConfigStrings(a []resGetConfigString) []app.ConfigString {
+	l := []app.ConfigString{}
+	for _, v := range a {
+		l = append(l, appConfigString(v))
+	}
+	return l
+}
+
+func appConfigInts(a []resGetConfigInt) []app.ConfigInt {
+	l := []app.ConfigInt{}
+	for _, v := range a {
+		l = append(l, appConfigInt(v))
+	}
+	return l
+}
+
+func appConfigBools(a []resGetConfigBool) []app.ConfigBool {
+	l := []app.ConfigBool{}
+	for _, v := range a {
+		l = append(l, appConfigBool(v))
+	}
+	return l
 }
 
 func appStationConfigInt(a resGetStationConfigInt) *app.StationConfigInt {

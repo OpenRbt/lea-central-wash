@@ -42,7 +42,7 @@ func (r *repo) getBuildScript(id int, byStationID bool) (app.BuildScript, error)
 	var buildScript app.BuildScript
 
 	sqlGet := sqlGetBuildScript
-	if byStationID == true {
+	if byStationID {
 		sqlGet = sqlGetBuildScriptByStationID
 	}
 
@@ -141,7 +141,7 @@ func (r *repo) DeleteBuildScript(id int) error {
 
 func (r *repo) deleteBuildScript(id int, byStationID bool) error {
 	sqlDelete := sqlDeleteBuildScript
-	if byStationID == true {
+	if byStationID {
 		sqlDelete = sqlDeleteBuildScriptByStationID
 	}
 
@@ -266,9 +266,6 @@ func (r *repo) UpdateTask(id int, updateTask app.UpdateTask) (app.Task, error) {
 		}
 
 		task = appTask(res)
-		if err != nil {
-			return err
-		}
 
 		return nil
 	})

@@ -15,7 +15,7 @@ import (
 	time "time"
 
 	vo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
-	go_uuid "github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -453,10 +453,10 @@ func (mr *MockAppMockRecorder) GetBuildScript(id any) *gomock.Call {
 }
 
 // GetConfigBool mocks base method.
-func (m *MockApp) GetConfigBool(auth *Auth, name string) (*ConfigBool, error) {
+func (m *MockApp) GetConfigBool(auth *Auth, name string) (ConfigBool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetConfigBool", auth, name)
-	ret0, _ := ret[0].(*ConfigBool)
+	ret0, _ := ret[0].(ConfigBool)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -468,10 +468,10 @@ func (mr *MockAppMockRecorder) GetConfigBool(auth, name any) *gomock.Call {
 }
 
 // GetConfigInt mocks base method.
-func (m *MockApp) GetConfigInt(auth *Auth, name string) (*ConfigInt, error) {
+func (m *MockApp) GetConfigInt(auth *Auth, name string) (ConfigInt, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetConfigInt", auth, name)
-	ret0, _ := ret[0].(*ConfigInt)
+	ret0, _ := ret[0].(ConfigInt)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -483,10 +483,10 @@ func (mr *MockAppMockRecorder) GetConfigInt(auth, name any) *gomock.Call {
 }
 
 // GetConfigString mocks base method.
-func (m *MockApp) GetConfigString(auth *Auth, name string) (*ConfigString, error) {
+func (m *MockApp) GetConfigString(auth *Auth, name string) (ConfigString, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetConfigString", auth, name)
-	ret0, _ := ret[0].(*ConfigString)
+	ret0, _ := ret[0].(ConfigString)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -1043,7 +1043,7 @@ func (mr *MockAppMockRecorder) Programs(id any) *gomock.Call {
 }
 
 // ReceiveNotification mocks base method.
-func (m *MockApp) ReceiveNotification(orderID go_uuid.UUID, status PaymentStatus) error {
+func (m *MockApp) ReceiveNotification(orderID uuid.UUID, status PaymentStatus) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ReceiveNotification", orderID, status)
 	ret0, _ := ret[0].(error)
@@ -1366,7 +1366,7 @@ func (mr *MockAppMockRecorder) SetNextSession(stationID any) *gomock.Call {
 }
 
 // SetPaymentCanceled mocks base method.
-func (m *MockApp) SetPaymentCanceled(orderID go_uuid.UUID) error {
+func (m *MockApp) SetPaymentCanceled(orderID uuid.UUID) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetPaymentCanceled", orderID)
 	ret0, _ := ret[0].(error)
@@ -1380,7 +1380,7 @@ func (mr *MockAppMockRecorder) SetPaymentCanceled(orderID any) *gomock.Call {
 }
 
 // SetPaymentReceived mocks base method.
-func (m *MockApp) SetPaymentReceived(orderID go_uuid.UUID) error {
+func (m *MockApp) SetPaymentReceived(orderID uuid.UUID) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetPaymentReceived", orderID)
 	ret0, _ := ret[0].(error)
@@ -1394,7 +1394,7 @@ func (mr *MockAppMockRecorder) SetPaymentReceived(orderID any) *gomock.Call {
 }
 
 // SetPaymentURL mocks base method.
-func (m *MockApp) SetPaymentURL(orderID go_uuid.UUID, urlPay string) error {
+func (m *MockApp) SetPaymentURL(orderID uuid.UUID, urlPay string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetPaymentURL", orderID, urlPay)
 	ret0, _ := ret[0].(error)
@@ -2118,10 +2118,10 @@ func (mr *MockRepoMockRecorder) GetBuildScriptByStationID(id any) *gomock.Call {
 }
 
 // GetConfigBool mocks base method.
-func (m *MockRepo) GetConfigBool(name string) (*ConfigBool, error) {
+func (m *MockRepo) GetConfigBool(name string) (ConfigBool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetConfigBool", name)
-	ret0, _ := ret[0].(*ConfigBool)
+	ret0, _ := ret[0].(ConfigBool)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -2133,10 +2133,10 @@ func (mr *MockRepoMockRecorder) GetConfigBool(name any) *gomock.Call {
 }
 
 // GetConfigInt mocks base method.
-func (m *MockRepo) GetConfigInt(name string) (*ConfigInt, error) {
+func (m *MockRepo) GetConfigInt(name string) (ConfigInt, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetConfigInt", name)
-	ret0, _ := ret[0].(*ConfigInt)
+	ret0, _ := ret[0].(ConfigInt)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -2148,10 +2148,10 @@ func (mr *MockRepoMockRecorder) GetConfigInt(name any) *gomock.Call {
 }
 
 // GetConfigString mocks base method.
-func (m *MockRepo) GetConfigString(name string) (*ConfigString, error) {
+func (m *MockRepo) GetConfigString(name string) (ConfigString, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetConfigString", name)
-	ret0, _ := ret[0].(*ConfigString)
+	ret0, _ := ret[0].(ConfigString)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -2416,6 +2416,48 @@ func (mr *MockRepoMockRecorder) MarkAdvertisingCampaignSended(ctx, id any) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkAdvertisingCampaignSended", reflect.TypeOf((*MockRepo)(nil).MarkAdvertisingCampaignSended), ctx, id)
 }
 
+// MarkConfigBoolSended mocks base method.
+func (m *MockRepo) MarkConfigBoolSended(ctx context.Context, name string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MarkConfigBoolSended", ctx, name)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// MarkConfigBoolSended indicates an expected call of MarkConfigBoolSended.
+func (mr *MockRepoMockRecorder) MarkConfigBoolSended(ctx, name any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkConfigBoolSended", reflect.TypeOf((*MockRepo)(nil).MarkConfigBoolSended), ctx, name)
+}
+
+// MarkConfigIntSended mocks base method.
+func (m *MockRepo) MarkConfigIntSended(ctx context.Context, name string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MarkConfigIntSended", ctx, name)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// MarkConfigIntSended indicates an expected call of MarkConfigIntSended.
+func (mr *MockRepoMockRecorder) MarkConfigIntSended(ctx, name any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkConfigIntSended", reflect.TypeOf((*MockRepo)(nil).MarkConfigIntSended), ctx, name)
+}
+
+// MarkConfigStringSended mocks base method.
+func (m *MockRepo) MarkConfigStringSended(ctx context.Context, name string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MarkConfigStringSended", ctx, name)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// MarkConfigStringSended indicates an expected call of MarkConfigStringSended.
+func (mr *MockRepoMockRecorder) MarkConfigStringSended(ctx, name any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkConfigStringSended", reflect.TypeOf((*MockRepo)(nil).MarkConfigStringSended), ctx, name)
+}
+
 // MarkOpenwashingLogSended mocks base method.
 func (m *MockRepo) MarkOpenwashingLogSended(ctx context.Context, id int64) error {
 	m.ctrl.T.Helper()
@@ -2529,6 +2571,51 @@ func (m *MockRepo) NotSendedAdvertisingCampaigns(ctx context.Context) ([]Adverti
 func (mr *MockRepoMockRecorder) NotSendedAdvertisingCampaigns(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotSendedAdvertisingCampaigns", reflect.TypeOf((*MockRepo)(nil).NotSendedAdvertisingCampaigns), ctx)
+}
+
+// NotSendedConfigBools mocks base method.
+func (m *MockRepo) NotSendedConfigBools(ctx context.Context) ([]ConfigBool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NotSendedConfigBools", ctx)
+	ret0, _ := ret[0].([]ConfigBool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// NotSendedConfigBools indicates an expected call of NotSendedConfigBools.
+func (mr *MockRepoMockRecorder) NotSendedConfigBools(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotSendedConfigBools", reflect.TypeOf((*MockRepo)(nil).NotSendedConfigBools), ctx)
+}
+
+// NotSendedConfigInts mocks base method.
+func (m *MockRepo) NotSendedConfigInts(ctx context.Context) ([]ConfigInt, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NotSendedConfigInts", ctx)
+	ret0, _ := ret[0].([]ConfigInt)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// NotSendedConfigInts indicates an expected call of NotSendedConfigInts.
+func (mr *MockRepoMockRecorder) NotSendedConfigInts(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotSendedConfigInts", reflect.TypeOf((*MockRepo)(nil).NotSendedConfigInts), ctx)
+}
+
+// NotSendedConfigStrings mocks base method.
+func (m *MockRepo) NotSendedConfigStrings(ctx context.Context) ([]ConfigString, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NotSendedConfigStrings", ctx)
+	ret0, _ := ret[0].([]ConfigString)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// NotSendedConfigStrings indicates an expected call of NotSendedConfigStrings.
+func (mr *MockRepoMockRecorder) NotSendedConfigStrings(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotSendedConfigStrings", reflect.TypeOf((*MockRepo)(nil).NotSendedConfigStrings), ctx)
 }
 
 // NotSendedOpenwashingLogs mocks base method.
@@ -3409,6 +3496,48 @@ func (m *MockManagementRabbitWorker) SendCollectionReport(arg0 CollectionReport)
 func (mr *MockManagementRabbitWorkerMockRecorder) SendCollectionReport(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendCollectionReport", reflect.TypeOf((*MockManagementRabbitWorker)(nil).SendCollectionReport), arg0)
+}
+
+// SendConfigBool mocks base method.
+func (m *MockManagementRabbitWorker) SendConfigBool(arg0 ConfigBool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendConfigBool", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendConfigBool indicates an expected call of SendConfigBool.
+func (mr *MockManagementRabbitWorkerMockRecorder) SendConfigBool(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendConfigBool", reflect.TypeOf((*MockManagementRabbitWorker)(nil).SendConfigBool), arg0)
+}
+
+// SendConfigInt mocks base method.
+func (m *MockManagementRabbitWorker) SendConfigInt(arg0 ConfigInt) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendConfigInt", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendConfigInt indicates an expected call of SendConfigInt.
+func (mr *MockManagementRabbitWorkerMockRecorder) SendConfigInt(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendConfigInt", reflect.TypeOf((*MockManagementRabbitWorker)(nil).SendConfigInt), arg0)
+}
+
+// SendConfigString mocks base method.
+func (m *MockManagementRabbitWorker) SendConfigString(arg0 ConfigString) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendConfigString", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendConfigString indicates an expected call of SendConfigString.
+func (mr *MockManagementRabbitWorkerMockRecorder) SendConfigString(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendConfigString", reflect.TypeOf((*MockManagementRabbitWorker)(nil).SendConfigString), arg0)
 }
 
 // SendMoneyReport mocks base method.

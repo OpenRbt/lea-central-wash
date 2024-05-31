@@ -193,9 +193,9 @@ type (
 
 		GetStationDiscount(id StationID) (*StationDiscount, error)
 
-		GetConfigInt(auth *Auth, name string) (*ConfigInt, error)
-		GetConfigBool(auth *Auth, name string) (*ConfigBool, error)
-		GetConfigString(auth *Auth, name string) (*ConfigString, error)
+		GetConfigInt(auth *Auth, name string) (ConfigInt, error)
+		GetConfigBool(auth *Auth, name string) (ConfigBool, error)
+		GetConfigString(auth *Auth, name string) (ConfigString, error)
 
 		SetConfigInt(auth *Auth, config ConfigInt) error
 		SetConfigBool(auth *Auth, config ConfigBool) error
@@ -325,12 +325,18 @@ type (
 		UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error)
 		NotSendedAdvertisingCampaigns(ctx context.Context) ([]AdvertisingCampaign, error)
 		MarkAdvertisingCampaignSended(ctx context.Context, id int64) error
+		NotSendedConfigStrings(ctx context.Context) ([]ConfigString, error)
+		MarkConfigStringSended(ctx context.Context, name string) error
+		NotSendedConfigInts(ctx context.Context) ([]ConfigInt, error)
+		MarkConfigIntSended(ctx context.Context, name string) error
+		NotSendedConfigBools(ctx context.Context) ([]ConfigBool, error)
+		MarkConfigBoolSended(ctx context.Context, name string) error
 
 		GetCurrentAdvertisingCampaigns(time.Time) ([]AdvertisingCampaign, error)
 
-		GetConfigInt(name string) (*ConfigInt, error)
-		GetConfigBool(name string) (*ConfigBool, error)
-		GetConfigString(name string) (*ConfigString, error)
+		GetConfigInt(name string) (ConfigInt, error)
+		GetConfigBool(name string) (ConfigBool, error)
+		GetConfigString(name string) (ConfigString, error)
 
 		SetConfigInt(config ConfigInt) error
 		SetConfigBool(config ConfigBool) error
@@ -420,6 +426,9 @@ type (
 		SendProgram(Program) error
 		SendOpenwashingLog(OpenwashingLog) error
 		SendAdvertisingCampaign(AdvertisingCampaign) error
+		SendConfigString(ConfigString) error
+		SendConfigInt(ConfigInt) error
+		SendConfigBool(ConfigBool) error
 	}
 	management struct {
 		syncChannel chan struct{}

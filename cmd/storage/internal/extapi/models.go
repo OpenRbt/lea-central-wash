@@ -469,7 +469,7 @@ func appConfigString(a *model.ConfigVarString) app.ConfigString {
 	}
 }
 
-func apiConfigBool(a *app.ConfigBool) *model.ConfigVarBool {
+func apiConfigBool(a app.ConfigBool) *model.ConfigVarBool {
 	return &model.ConfigVarBool{
 		Name:        a.Name,
 		Value:       a.Value,
@@ -478,7 +478,7 @@ func apiConfigBool(a *app.ConfigBool) *model.ConfigVarBool {
 	}
 }
 
-func apiConfigInt(a *app.ConfigInt) *model.ConfigVarInt {
+func apiConfigInt(a app.ConfigInt) *model.ConfigVarInt {
 	return &model.ConfigVarInt{
 		Name:        a.Name,
 		Value:       a.Value,
@@ -487,7 +487,7 @@ func apiConfigInt(a *app.ConfigInt) *model.ConfigVarInt {
 	}
 }
 
-func apiConfigString(a *app.ConfigString) *model.ConfigVarString {
+func apiConfigString(a app.ConfigString) *model.ConfigVarString {
 	return &model.ConfigVarString{
 		Name:        a.Name,
 		Value:       a.Value,

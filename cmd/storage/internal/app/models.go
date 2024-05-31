@@ -204,18 +204,22 @@ type ConfigInt struct {
 	Value       int64
 	Description string
 	Note        string
+	Version     int
 }
 type ConfigBool struct {
 	Name        string
 	Value       bool
 	Description string
 	Note        string
+	Version     int
 }
 type ConfigString struct {
 	Name        string
 	Value       string
 	Description string
 	Note        string
+	Deleted     bool
+	Version     int
 }
 
 type StationConfigInt struct {
