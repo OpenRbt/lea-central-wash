@@ -19,7 +19,7 @@ func TestSetProgramFromManagement(t *testing.T) {
 		expectedError  error
 	}{
 		{
-			name: "successful set",
+			name: "successful insert",
 			program: app.ManagementProgram{
 				ID:                         1,
 				Price:                      10,
@@ -30,7 +30,7 @@ func TestSetProgramFromManagement(t *testing.T) {
 				Relays:                     []app.Relay{{ID: 1, TimeOn: 1, TimeOff: 2}, {ID: 2, TimeOn: 3, TimeOff: 4}},
 				PreflightRelays:            []app.Relay{{ID: 1, TimeOn: 1, TimeOff: 2}, {ID: 2, TimeOn: 3, TimeOff: 4}},
 				IsFinishingProgram:         true,
-				Version:                    0,
+				Version:                    1,
 			},
 			createdProgram: app.Program{
 				ID:                         1,
@@ -42,48 +42,58 @@ func TestSetProgramFromManagement(t *testing.T) {
 				Relays:                     []app.Relay{{ID: 1, TimeOn: 1, TimeOff: 2}, {ID: 2, TimeOn: 3, TimeOff: 4}},
 				PreflightRelays:            []app.Relay{{ID: 1, TimeOn: 1, TimeOff: 2}, {ID: 2, TimeOn: 3, TimeOff: 4}},
 				IsFinishingProgram:         true,
-				Version:                    0,
-			},
-		},
-		{
-			name: "should update program",
-			program: app.ManagementProgram{
-				ID:                         1,
-				Price:                      20,
-				Name:                       "New",
-				PreflightEnabled:           false,
-				MotorSpeedPercent:          40,
-				PreflightMotorSpeedPercent: 40,
-				Relays:                     []app.Relay{{ID: 1, TimeOn: 1, TimeOff: 2}},
-				PreflightRelays:            []app.Relay{{ID: 2, TimeOn: 3, TimeOff: 4}},
-				IsFinishingProgram:         false,
-			},
-			createdProgram: app.Program{
-				ID:                         1,
-				Price:                      20,
-				Name:                       "New",
-				PreflightEnabled:           false,
-				MotorSpeedPercent:          40,
-				PreflightMotorSpeedPercent: 40,
-				Relays:                     []app.Relay{{ID: 1, TimeOn: 1, TimeOff: 2}},
-				PreflightRelays:            []app.Relay{{ID: 2, TimeOn: 3, TimeOff: 4}},
-				IsFinishingProgram:         false,
 				Version:                    1,
 			},
 		},
 		{
-			name: "should update program with the same version and lower",
+			name: "should update program with higher version",
+			program: app.ManagementProgram{
+				ID:                         1,
+				Price:                      20,
+				Name:                       "New",
+				PreflightEnabled:           false,
+				MotorSpeedPercent:          40,
+				PreflightMotorSpeedPercent: 40,
+				Relays:                     []app.Relay{{ID: 1, TimeOn: 1, TimeOff: 2}},
+				PreflightRelays:            []app.Relay{{ID: 2, TimeOn: 3, TimeOff: 4}},
+				IsFinishingProgram:         false,
+				Version:                    3,
+			},
+			createdProgram: app.Program{
+				ID:                         1,
+				Price:                      20,
+				Name:                       "New",
+				PreflightEnabled:           false,
+				MotorSpeedPercent:          40,
+				PreflightMotorSpeedPercent: 40,
+				Relays:                     []app.Relay{{ID: 1, TimeOn: 1, TimeOff: 2}},
+				PreflightRelays:            []app.Relay{{ID: 2, TimeOn: 3, TimeOff: 4}},
+				IsFinishingProgram:         false,
+				Version:                    3,
+			},
+		},
+		{
+			name: "should forcefully update program with the same or lower version",
 			program: app.ManagementProgram{
 				ID:      1,
 				Name:    "Test",
-				Version: 0,
+				Version: 2,
 				Force:   true,
 			},
 			createdProgram: app.Program{
 				ID:      1,
 				Name:    "Test",
+				Version: 2,
+			},
+		},
+		{
+			name: "error when trying to update with the same or lower version",
+			program: app.ManagementProgram{
+				ID:      1,
+				Name:    "Test",
 				Version: 0,
 			},
+			expectedError: app.ErrSameOrLowerVersion,
 		},
 	}
 
@@ -121,7 +131,7 @@ func TestNotSendedPrograms(t *testing.T) {
 	}))
 }
 
-func TestUpdateAdvertisingCampaignFromManagement(t *testing.T) {
+func TestUpsertAdvertisingCampaignFromManagement(t *testing.T) {
 	assert.NilError(t, testRepo.truncate())
 
 	tests := []struct {
@@ -131,7 +141,7 @@ func TestUpdateAdvertisingCampaignFromManagement(t *testing.T) {
 		expectedError error
 	}{
 		{
-			name: "successfully update",
+			name: "successfully insert",
 			campaign: app.ManagementAdvertisingCampaign{
 				ID:               1,
 				Name:             "test",
@@ -157,66 +167,60 @@ func TestUpdateAdvertisingCampaignFromManagement(t *testing.T) {
 				Weekday:          []string{"monday", "tuesday"},
 				Enabled:          true,
 				Version:          1,
+			},
+		},
+		{
+			name: "should update campaign with higher version",
+			campaign: app.ManagementAdvertisingCampaign{
+				ID:               1,
+				Name:             "new",
+				DefaultDiscount:  5,
+				DiscountPrograms: []app.DiscountProgram{{Discount: 3, ProgramID: 3}},
+				StartDate:        time.Date(2024, 6, 20, 0, 0, 0, 0, time.UTC),
+				EndDate:          time.Date(2024, 6, 25, 0, 0, 0, 0, time.UTC),
+				StartMinute:      10,
+				EndMinute:        50,
+				Weekday:          []string{"wednesday"},
+				Enabled:          false,
+				Version:          3,
+			},
+			addedCampaign: app.AdvertisingCampaign{
+				ID:               1,
+				Name:             "new",
+				DefaultDiscount:  5,
+				DiscountPrograms: []app.DiscountProgram{{Discount: 3, ProgramID: 3}},
+				StartDate:        time.Date(2024, 6, 20, 0, 0, 0, 0, time.UTC),
+				EndDate:          time.Date(2024, 6, 25, 0, 0, 0, 0, time.UTC),
+				StartMinute:      10,
+				EndMinute:        50,
+				Weekday:          []string{"wednesday"},
+				Enabled:          false,
+				Version:          3,
 			},
 		},
 		{
 			name: "force update",
 			campaign: app.ManagementAdvertisingCampaign{
-				ID:               1,
-				Name:             "new",
-				DefaultDiscount:  5,
-				DiscountPrograms: []app.DiscountProgram{{Discount: 3, ProgramID: 3}},
-				StartDate:        time.Date(2024, 6, 20, 0, 0, 0, 0, time.UTC),
-				EndDate:          time.Date(2024, 6, 25, 0, 0, 0, 0, time.UTC),
-				StartMinute:      10,
-				EndMinute:        50,
-				Weekday:          []string{"wednesday"},
-				Enabled:          false,
-				Version:          0,
-				Force:            true,
+				ID:      1,
+				Name:    "force",
+				Version: 1,
+				Force:   true,
 			},
 			addedCampaign: app.AdvertisingCampaign{
-				ID:               1,
-				Name:             "new",
-				DefaultDiscount:  5,
-				DiscountPrograms: []app.DiscountProgram{{Discount: 3, ProgramID: 3}},
-				StartDate:        time.Date(2024, 6, 20, 0, 0, 0, 0, time.UTC),
-				EndDate:          time.Date(2024, 6, 25, 0, 0, 0, 0, time.UTC),
-				StartMinute:      10,
-				EndMinute:        50,
-				Weekday:          []string{"wednesday"},
-				Enabled:          false,
-				Version:          0,
+				ID:      1,
+				Weekday: []string{},
+				Name:    "force",
+				Version: 1,
 			},
 		},
 		{
-			name: "update and up version",
+			name: "error when trying to update with the same or lower version",
 			campaign: app.ManagementAdvertisingCampaign{
-				ID:               1,
-				Name:             "updated",
-				DefaultDiscount:  10,
-				DiscountPrograms: []app.DiscountProgram{{Discount: 1, ProgramID: 1}, {Discount: 2, ProgramID: 2}},
-				StartDate:        time.Date(2024, 3, 10, 0, 0, 0, 0, time.UTC),
-				EndDate:          time.Date(2024, 3, 15, 0, 0, 0, 0, time.UTC),
-				StartMinute:      20,
-				EndMinute:        30,
-				Weekday:          []string{"wednesday", "friday"},
-				Enabled:          true,
-				Version:          0,
+				ID:      1,
+				Name:    "lower",
+				Version: 0,
 			},
-			addedCampaign: app.AdvertisingCampaign{
-				ID:               1,
-				Name:             "updated",
-				DefaultDiscount:  10,
-				DiscountPrograms: []app.DiscountProgram{{Discount: 1, ProgramID: 1}, {Discount: 2, ProgramID: 2}},
-				StartDate:        time.Date(2024, 3, 10, 0, 0, 0, 0, time.UTC),
-				EndDate:          time.Date(2024, 3, 15, 0, 0, 0, 0, time.UTC),
-				StartMinute:      20,
-				EndMinute:        30,
-				Weekday:          []string{"wednesday", "friday"},
-				Enabled:          true,
-				Version:          1,
-			},
+			expectedError: app.ErrSameOrLowerVersion,
 		},
 	}
 

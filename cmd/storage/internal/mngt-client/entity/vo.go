@@ -28,6 +28,11 @@ func ErrorToRPCError(err error) *RPCError {
 			Code:    404,
 			Message: err.Error(),
 		}
+	case errors.Is(err, app.ErrSameOrLowerVersion):
+		return &RPCError{
+			Code:    1000,
+			Message: err.Error(),
+		}
 	default:
 		return &RPCError{
 			Code:    500,

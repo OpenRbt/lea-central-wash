@@ -106,6 +106,7 @@ var (
 	ErrNotConfirmed            = errors.New("send request failed: not confirmed")
 
 	ErrWrongPaymentStatus = errors.New("wrong payment status")
+	ErrSameOrLowerVersion = errors.New("entity has the same or lower version")
 )
 
 var testApp = false

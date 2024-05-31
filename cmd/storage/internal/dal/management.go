@@ -55,7 +55,7 @@ func (r *repo) MoneyReportSetSended(id int) (err error) {
 func (r *repo) SetProgramFromManagement(ctx context.Context, program app.ManagementProgram) (app.Program, error) {
 	var rowProgram resProgram
 	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		return tx.NamedGetContext(ctx, &rowProgram, sqlSetProgramFromManagement, argManagementProgram{
+		err := tx.NamedGetContext(ctx, &rowProgram, sqlSetProgramFromManagement, argManagementProgram{
 			ID:                         program.ID,
 			Price:                      program.Price,
 			Name:                       program.Name,
@@ -68,6 +68,11 @@ func (r *repo) SetProgramFromManagement(ctx context.Context, program app.Managem
 			Version:                    program.Version,
 			Force:                      program.Force,
 		})
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrSameOrLowerVersion
+		}
+
+		return err
 	})
 	if err != nil {
 		return app.Program{}, err
@@ -147,7 +152,7 @@ func (r *repo) UpsertAdvertisingCampaignFromManagement(ctx context.Context, adve
 			Force:            advert.Force,
 		})
 		if errors.Is(err, sql.ErrNoRows) {
-			err = app.ErrNotFound
+			err = app.ErrSameOrLowerVersion
 		}
 
 		return err
