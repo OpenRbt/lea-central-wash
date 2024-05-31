@@ -138,7 +138,7 @@ func (s *Service) handleLeaAdvertisingCampaignUpsert(ctx context.Context, d amqp
 	upsertCampaign, err := s.app.UpsertAdvertisingCampaignFromManagement(ctx, mngt_entity.UpsertAdvertisingCampaignToApp(campaign))
 	rpcResponse := mngt_entity.RPCResponse{Data: upsertCampaign}
 	if err != nil {
-		s.log.Err("Failed to upsert advertising campaign from management", "err", err)
+		s.setLastErr(err.Error())
 		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
 	}
 

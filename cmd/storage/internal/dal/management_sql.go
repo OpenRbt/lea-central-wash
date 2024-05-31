@@ -70,17 +70,18 @@ const (
 			:name,
 			:version
 		) ON CONFLICT (id) DO UPDATE SET
-			default_discount  = :default_discount,
-			discount_programs = :discount_programs,
-			end_date 		  = :end_date,
-			end_minute 		  = :end_minute,
-			start_date 		  = :start_date,
-			start_minute 	  = :start_minute,
-			weekday 		  = :weekday,
-			enabled 		  = :enabled,
-			name 			  = :name,
-			version 		  = CASE WHEN :force THEN :version ELSE advertising_campaign.version + 1 END,
+			default_discount  = EXCLUDED.default_discount,
+			discount_programs = EXCLUDED.discount_programs,
+			end_date 		  = EXCLUDED.end_date,
+			end_minute 		  = EXCLUDED.end_minute,
+			start_date 		  = EXCLUDED.start_date,
+			start_minute 	  = EXCLUDED.start_minute,
+			weekday 		  = EXCLUDED.weekday,
+			enabled 		  = EXCLUDED.enabled,
+			name 			  = EXCLUDED.name,
+			version 		  = EXCLUDED.version,
 			management_sended = false
+		WHERE :force OR advertising_campaign.version < EXCLUDED.version
 		RETURNING *
 	`
 	sqlMarkAdvertisingCampaignSended = `
@@ -146,16 +147,17 @@ const (
 			:version,
 			true
 		) ON CONFLICT (id) DO UPDATE SET 
-			price = EXCLUDED.price,
-			name = EXCLUDED.name,
-			preflight_enabled = EXCLUDED.preflight_enabled,
-			relays = EXCLUDED.relays,
-			preflight_relays = EXCLUDED.preflight_relays,
-			motor_speed_percent = EXCLUDED.motor_speed_percent,
+			price 			    		  = EXCLUDED.price,
+			name  			    		  = EXCLUDED.name,
+			preflight_enabled   		  = EXCLUDED.preflight_enabled,
+			relays              		  = EXCLUDED.relays,
+			preflight_relays    		  = EXCLUDED.preflight_relays,
+			motor_speed_percent 		  = EXCLUDED.motor_speed_percent,
 			preflight_motor_speed_percent = EXCLUDED.preflight_motor_speed_percent,
-			is_finishing_program = EXCLUDED.is_finishing_program,
-			version = CASE WHEN :force THEN EXCLUDED.version ELSE program.version + 1 END,
-			management_sended = true
+			is_finishing_program  		  = EXCLUDED.is_finishing_program,
+			version 		  	  		  = EXCLUDED.version,
+			management_sended 	  		  = false
+		WHERE :force OR program.version < EXCLUDED.version
 		RETURNING *
 	`
 	sqlMarkProgramSended = `
