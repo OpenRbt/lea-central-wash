@@ -281,23 +281,23 @@ func (t *DB) SetConfigIntIfNotExists(config app.ConfigInt) error {
 	return nil
 }
 
-func (t *DB) GetStationConfigInt(name string, stationID app.StationID) (*app.StationConfigInt, error) {
-	return nil, nil
+func (t *DB) GetStationConfigInt(name string, stationID app.StationID) (app.StationConfigVar[int64], error) {
+	return app.StationConfigVar[int64]{}, nil
 }
-func (t *DB) GetStationConfigBool(name string, stationID app.StationID) (*app.StationConfigBool, error) {
-	return nil, nil
+func (t *DB) GetStationConfigBool(name string, stationID app.StationID) (app.StationConfigVar[bool], error) {
+	return app.StationConfigVar[bool]{}, nil
 }
-func (t *DB) GetStationConfigString(name string, stationID app.StationID) (*app.StationConfigString, error) {
-	return nil, nil
+func (t *DB) GetStationConfigString(name string, stationID app.StationID) (app.StationConfigVar[string], error) {
+	return app.StationConfigVar[string]{}, nil
 }
 
-func (t *DB) SetStationConfigInt(config app.StationConfigInt) error {
+func (t *DB) SetStationConfigInt(config app.StationConfigVar[int64]) error {
 	return nil
 }
-func (t *DB) SetStationConfigBool(config app.StationConfigBool) error {
+func (t *DB) SetStationConfigBool(config app.StationConfigVar[bool]) error {
 	return nil
 }
-func (t *DB) SetStationConfigString(config app.StationConfigString) error {
+func (t *DB) SetStationConfigString(config app.StationConfigVar[string]) error {
 	return nil
 }
 
@@ -451,3 +451,28 @@ func (r *DB) NotSendedConfigStrings(ctx context.Context) ([]app.ConfigString, er
 func (r *DB) MarkConfigStringSended(ctx context.Context, name string) error {
 	return nil
 }
+
+func (r *DB) NotSendedStationConfigStrings(ctx context.Context) ([]app.StationConfigVar[string], error) {
+	return nil, nil
+}
+
+func (r *DB) MarkStationConfigStringSended(ctx context.Context, name string, stationID app.StationID) error {
+	return nil
+}
+
+func (r *DB) NotSendedStationConfigBools(ctx context.Context) ([]app.StationConfigVar[bool], error) {
+	return nil, nil
+}
+
+func (r *DB) MarkStationConfigBoolSended(ctx context.Context, name string, stationID app.StationID) error {
+	return nil
+}
+
+func (r *DB) NotSendedStationConfigInts(ctx context.Context) ([]app.StationConfigVar[int64], error) {
+	return nil, nil
+}
+
+func (r *DB) MarkStationConfigIntSended(ctx context.Context, name string, stationID app.StationID) error {
+	return nil
+}
+

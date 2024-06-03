@@ -281,9 +281,66 @@ func (a *app) syncUnsentConfigs() {
 			continue
 		}
 
-		err = a.repo.MarkConfigIntSended(context.TODO(), config.Name)
+		err = a.repo.MarkConfigBoolSended(context.TODO(), config.Name)
 		if err != nil {
 			log.Err("unable to mark config bool as sended", "err", err)
+			continue
+		}
+	}
+
+	stationConfigStrings, err := a.repo.NotSendedStationConfigStrings(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent station config strings", "err", err)
+		return
+	}
+	for _, config := range stationConfigStrings {
+		err := a.mngtSvc.SendStationConfigString(config)
+		if err != nil {
+			log.Err("unable to send station config string to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkStationConfigStringSended(context.TODO(), config.Name, config.StationID)
+		if err != nil {
+			log.Err("unable to mark station config string as sended", "err", err)
+			continue
+		}
+	}
+
+	stationConfigBools, err := a.repo.NotSendedStationConfigBools(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent station config bools", "err", err)
+		return
+	}
+	for _, config := range stationConfigBools {
+		err := a.mngtSvc.SendStationConfigBool(config)
+		if err != nil {
+			log.Err("unable to send station config bool to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkStationConfigBoolSended(context.TODO(), config.Name, config.StationID)
+		if err != nil {
+			log.Err("unable to mark station config bool as sended", "err", err)
+			continue
+		}
+	}
+
+	stationConfigInts, err := a.repo.NotSendedStationConfigInts(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent station config ints", "err", err)
+		return
+	}
+	for _, config := range stationConfigInts {
+		err := a.mngtSvc.SendStationConfigInt(config)
+		if err != nil {
+			log.Err("unable to send station config int to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkStationConfigIntSended(context.TODO(), config.Name, config.StationID)
+		if err != nil {
+			log.Err("unable to mark station config int as sended", "err", err)
 			continue
 		}
 	}

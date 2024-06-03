@@ -329,8 +329,19 @@ func appConfigBools(a []resGetConfigBool) []app.ConfigBool {
 	return l
 }
 
-func appStationConfigInt(a resGetStationConfigInt) *app.StationConfigInt {
-	return &app.StationConfigInt{
+func appStationConfigVar[T comparable](a resGetStationConfigVar[T]) app.StationConfigVar[T] {
+	return app.StationConfigVar[T]{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+		StationID:   a.StationID,
+		Version:     a.Version,
+	}
+}
+
+func dalStationConfigVar[T comparable](a app.StationConfigVar[T]) argSetStationConfigVar[T] {
+	return argSetStationConfigVar[T]{
 		Name:        a.Name,
 		Value:       a.Value,
 		Description: a.Description,
@@ -339,24 +350,12 @@ func appStationConfigInt(a resGetStationConfigInt) *app.StationConfigInt {
 	}
 }
 
-func appStationConfigBool(a resGetStationConfigBool) *app.StationConfigBool {
-	return &app.StationConfigBool{
-		Name:        a.Name,
-		Value:       a.Value,
-		Description: a.Description,
-		Note:        a.Note,
-		StationID:   a.StationID,
+func appConfigVars[T comparable](a []resGetStationConfigVar[T]) []app.StationConfigVar[T] {
+	l := []app.StationConfigVar[T]{}
+	for _, v := range a {
+		l = append(l, appStationConfigVar(v))
 	}
-}
-
-func appStationConfigString(a resGetStationConfigString) *app.StationConfigString {
-	return &app.StationConfigString{
-		Name:        a.Name,
-		Value:       a.Value,
-		Description: a.Description,
-		Note:        a.Note,
-		StationID:   a.StationID,
-	}
+	return l
 }
 
 func appRabbitMessages(a []resRabbitMessage) []app.RabbitMessage {

@@ -291,6 +291,30 @@ func (s *Service) SendConfigBool(config app.ConfigBool) error {
 	return err
 }
 
+func (s *Service) SendStationConfigBool(config app.StationConfigVar[bool]) error {
+	err := s.sendMessage(mngt_entity.StationConfigBoolToRabbit(config), mngt_entity.ManagementStationConfigBoolMessageType)
+	if err != nil {
+		s.setLastErr(err.Error())
+	}
+	return err
+}
+
+func (s *Service) SendStationConfigInt(config app.StationConfigVar[int64]) error {
+	err := s.sendMessage(mngt_entity.StationConfigIntToRabbit(config), mngt_entity.ManagementStationConfigIntMessageType)
+	if err != nil {
+		s.setLastErr(err.Error())
+	}
+	return err
+}
+
+func (s *Service) SendStationConfigString(config app.StationConfigVar[string]) error {
+	err := s.sendMessage(mngt_entity.StationConfigStringToRabbit(config), mngt_entity.ManagementStationConfigStringMessageType)
+	if err != nil {
+		s.setLastErr(err.Error())
+	}
+	return err
+}
+
 func (s *Service) sendMessage(msg interface{}, messageType app.RabbitMessageType) (err error) {
 	jsonMsg, ok := msg.([]byte)
 	if !ok {

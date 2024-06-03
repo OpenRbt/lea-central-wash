@@ -617,10 +617,10 @@ func (mr *MockAppMockRecorder) GetServerInfo() *gomock.Call {
 }
 
 // GetStationConfigBool mocks base method.
-func (m *MockApp) GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error) {
+func (m *MockApp) GetStationConfigBool(name string, stationID StationID) (StationConfigVar[bool], error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStationConfigBool", name, stationID)
-	ret0, _ := ret[0].(*StationConfigBool)
+	ret0, _ := ret[0].(StationConfigVar[bool])
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -632,10 +632,10 @@ func (mr *MockAppMockRecorder) GetStationConfigBool(name, stationID any) *gomock
 }
 
 // GetStationConfigInt mocks base method.
-func (m *MockApp) GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error) {
+func (m *MockApp) GetStationConfigInt(name string, stationID StationID) (StationConfigVar[int64], error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStationConfigInt", name, stationID)
-	ret0, _ := ret[0].(*StationConfigInt)
+	ret0, _ := ret[0].(StationConfigVar[int64])
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -647,10 +647,10 @@ func (mr *MockAppMockRecorder) GetStationConfigInt(name, stationID any) *gomock.
 }
 
 // GetStationConfigString mocks base method.
-func (m *MockApp) GetStationConfigString(name string, stationID StationID) (*StationConfigString, error) {
+func (m *MockApp) GetStationConfigString(name string, stationID StationID) (StationConfigVar[string], error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStationConfigString", name, stationID)
-	ret0, _ := ret[0].(*StationConfigString)
+	ret0, _ := ret[0].(StationConfigVar[string])
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -1451,7 +1451,7 @@ func (mr *MockAppMockRecorder) SetStation(station any) *gomock.Call {
 }
 
 // SetStationConfigBool mocks base method.
-func (m *MockApp) SetStationConfigBool(auth *Auth, config StationConfigBool) error {
+func (m *MockApp) SetStationConfigBool(auth *Auth, config StationConfigVar[bool]) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetStationConfigBool", auth, config)
 	ret0, _ := ret[0].(error)
@@ -1465,7 +1465,7 @@ func (mr *MockAppMockRecorder) SetStationConfigBool(auth, config any) *gomock.Ca
 }
 
 // SetStationConfigInt mocks base method.
-func (m *MockApp) SetStationConfigInt(auth *Auth, config StationConfigInt) error {
+func (m *MockApp) SetStationConfigInt(auth *Auth, config StationConfigVar[int64]) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetStationConfigInt", auth, config)
 	ret0, _ := ret[0].(error)
@@ -1479,7 +1479,7 @@ func (mr *MockAppMockRecorder) SetStationConfigInt(auth, config any) *gomock.Cal
 }
 
 // SetStationConfigString mocks base method.
-func (m *MockApp) SetStationConfigString(auth *Auth, config StationConfigString) error {
+func (m *MockApp) SetStationConfigString(auth *Auth, config StationConfigVar[string]) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetStationConfigString", auth, config)
 	ret0, _ := ret[0].(error)
@@ -2208,10 +2208,10 @@ func (mr *MockRepoMockRecorder) GetListTasks(filter any) *gomock.Call {
 }
 
 // GetStationConfigBool mocks base method.
-func (m *MockRepo) GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error) {
+func (m *MockRepo) GetStationConfigBool(name string, stationID StationID) (StationConfigVar[bool], error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStationConfigBool", name, stationID)
-	ret0, _ := ret[0].(*StationConfigBool)
+	ret0, _ := ret[0].(StationConfigVar[bool])
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -2223,10 +2223,10 @@ func (mr *MockRepoMockRecorder) GetStationConfigBool(name, stationID any) *gomoc
 }
 
 // GetStationConfigInt mocks base method.
-func (m *MockRepo) GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error) {
+func (m *MockRepo) GetStationConfigInt(name string, stationID StationID) (StationConfigVar[int64], error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStationConfigInt", name, stationID)
-	ret0, _ := ret[0].(*StationConfigInt)
+	ret0, _ := ret[0].(StationConfigVar[int64])
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -2238,10 +2238,10 @@ func (mr *MockRepoMockRecorder) GetStationConfigInt(name, stationID any) *gomock
 }
 
 // GetStationConfigString mocks base method.
-func (m *MockRepo) GetStationConfigString(name string, stationID StationID) (*StationConfigString, error) {
+func (m *MockRepo) GetStationConfigString(name string, stationID StationID) (StationConfigVar[string], error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStationConfigString", name, stationID)
-	ret0, _ := ret[0].(*StationConfigString)
+	ret0, _ := ret[0].(StationConfigVar[string])
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -2514,6 +2514,48 @@ func (mr *MockRepoMockRecorder) MarkRabbitMoneyReportAsSent(id any) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkRabbitMoneyReportAsSent", reflect.TypeOf((*MockRepo)(nil).MarkRabbitMoneyReportAsSent), id)
 }
 
+// MarkStationConfigBoolSended mocks base method.
+func (m *MockRepo) MarkStationConfigBoolSended(ctx context.Context, name string, stationID StationID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MarkStationConfigBoolSended", ctx, name, stationID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// MarkStationConfigBoolSended indicates an expected call of MarkStationConfigBoolSended.
+func (mr *MockRepoMockRecorder) MarkStationConfigBoolSended(ctx, name, stationID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkStationConfigBoolSended", reflect.TypeOf((*MockRepo)(nil).MarkStationConfigBoolSended), ctx, name, stationID)
+}
+
+// MarkStationConfigIntSended mocks base method.
+func (m *MockRepo) MarkStationConfigIntSended(ctx context.Context, name string, stationID StationID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MarkStationConfigIntSended", ctx, name, stationID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// MarkStationConfigIntSended indicates an expected call of MarkStationConfigIntSended.
+func (mr *MockRepoMockRecorder) MarkStationConfigIntSended(ctx, name, stationID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkStationConfigIntSended", reflect.TypeOf((*MockRepo)(nil).MarkStationConfigIntSended), ctx, name, stationID)
+}
+
+// MarkStationConfigStringSended mocks base method.
+func (m *MockRepo) MarkStationConfigStringSended(ctx context.Context, name string, stationID StationID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MarkStationConfigStringSended", ctx, name, stationID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// MarkStationConfigStringSended indicates an expected call of MarkStationConfigStringSended.
+func (mr *MockRepoMockRecorder) MarkStationConfigStringSended(ctx, name, stationID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkStationConfigStringSended", reflect.TypeOf((*MockRepo)(nil).MarkStationConfigStringSended), ctx, name, stationID)
+}
+
 // MoneyReport mocks base method.
 func (m *MockRepo) MoneyReport(stationID StationID, startDate, endDate time.Time) (MoneyReport, error) {
 	m.ctrl.T.Helper()
@@ -2646,6 +2688,51 @@ func (m *MockRepo) NotSendedPrograms(ctx context.Context) ([]Program, error) {
 func (mr *MockRepoMockRecorder) NotSendedPrograms(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotSendedPrograms", reflect.TypeOf((*MockRepo)(nil).NotSendedPrograms), ctx)
+}
+
+// NotSendedStationConfigBools mocks base method.
+func (m *MockRepo) NotSendedStationConfigBools(ctx context.Context) ([]StationConfigVar[bool], error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NotSendedStationConfigBools", ctx)
+	ret0, _ := ret[0].([]StationConfigVar[bool])
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// NotSendedStationConfigBools indicates an expected call of NotSendedStationConfigBools.
+func (mr *MockRepoMockRecorder) NotSendedStationConfigBools(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotSendedStationConfigBools", reflect.TypeOf((*MockRepo)(nil).NotSendedStationConfigBools), ctx)
+}
+
+// NotSendedStationConfigInts mocks base method.
+func (m *MockRepo) NotSendedStationConfigInts(ctx context.Context) ([]StationConfigVar[int64], error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NotSendedStationConfigInts", ctx)
+	ret0, _ := ret[0].([]StationConfigVar[int64])
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// NotSendedStationConfigInts indicates an expected call of NotSendedStationConfigInts.
+func (mr *MockRepoMockRecorder) NotSendedStationConfigInts(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotSendedStationConfigInts", reflect.TypeOf((*MockRepo)(nil).NotSendedStationConfigInts), ctx)
+}
+
+// NotSendedStationConfigStrings mocks base method.
+func (m *MockRepo) NotSendedStationConfigStrings(ctx context.Context) ([]StationConfigVar[string], error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NotSendedStationConfigStrings", ctx)
+	ret0, _ := ret[0].([]StationConfigVar[string])
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// NotSendedStationConfigStrings indicates an expected call of NotSendedStationConfigStrings.
+func (mr *MockRepoMockRecorder) NotSendedStationConfigStrings(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotSendedStationConfigStrings", reflect.TypeOf((*MockRepo)(nil).NotSendedStationConfigStrings), ctx)
 }
 
 // Programs mocks base method.
@@ -2976,7 +3063,7 @@ func (mr *MockRepoMockRecorder) SetStation(station any) *gomock.Call {
 }
 
 // SetStationConfigBool mocks base method.
-func (m *MockRepo) SetStationConfigBool(config StationConfigBool) error {
+func (m *MockRepo) SetStationConfigBool(config StationConfigVar[bool]) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetStationConfigBool", config)
 	ret0, _ := ret[0].(error)
@@ -2990,7 +3077,7 @@ func (mr *MockRepoMockRecorder) SetStationConfigBool(config any) *gomock.Call {
 }
 
 // SetStationConfigInt mocks base method.
-func (m *MockRepo) SetStationConfigInt(config StationConfigInt) error {
+func (m *MockRepo) SetStationConfigInt(config StationConfigVar[int64]) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetStationConfigInt", config)
 	ret0, _ := ret[0].(error)
@@ -3004,7 +3091,7 @@ func (mr *MockRepoMockRecorder) SetStationConfigInt(config any) *gomock.Call {
 }
 
 // SetStationConfigString mocks base method.
-func (m *MockRepo) SetStationConfigString(config StationConfigString) error {
+func (m *MockRepo) SetStationConfigString(config StationConfigVar[string]) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetStationConfigString", config)
 	ret0, _ := ret[0].(error)

@@ -212,6 +212,87 @@ func (r *repo) MarkConfigBoolSended(ctx context.Context, name string) error {
 	})
 }
 
+func (r *repo) NotSendedStationConfigStrings(ctx context.Context) ([]app.StationConfigVar[string], error) {
+	var respConfigStrings []resGetStationConfigVar[string]
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		return tx.SelectContext(ctx, &respConfigStrings, sqlNotSendedStationConfigStrings)
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return appConfigVars(respConfigStrings), nil
+}
+
+func (r *repo) MarkStationConfigStringSended(ctx context.Context, name string, stationID app.StationID) error {
+	return r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExecContext(ctx, sqlMarkStationConfigStringSended, argGetStationConfig{
+			Name:      name,
+			StationID: stationID,
+		})
+
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
+		}
+
+		return err
+	})
+}
+
+func (r *repo) NotSendedStationConfigBools(ctx context.Context) ([]app.StationConfigVar[bool], error) {
+	var respConfigBools []resGetStationConfigVar[bool]
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		return tx.SelectContext(ctx, &respConfigBools, sqlNotSendedStationConfigBools)
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return appConfigVars(respConfigBools), nil
+}
+
+func (r *repo) MarkStationConfigBoolSended(ctx context.Context, name string, stationID app.StationID) error {
+	return r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExecContext(ctx, sqlMarkStationConfigBoolSended, argGetStationConfig{
+			Name:      name,
+			StationID: stationID,
+		})
+
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
+		}
+
+		return err
+	})
+}
+
+func (r *repo) NotSendedStationConfigInts(ctx context.Context) ([]app.StationConfigVar[int64], error) {
+	var respConfigInts []resGetStationConfigVar[int64]
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		return tx.SelectContext(ctx, &respConfigInts, sqlNotSendedStationConfigInts)
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return appConfigVars(respConfigInts), nil
+}
+
+func (r *repo) MarkStationConfigIntSended(ctx context.Context, name string, stationID app.StationID) error {
+	return r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExecContext(ctx, sqlMarkStationConfigIntSended, argGetStationConfig{
+			Name:      name,
+			StationID: stationID,
+		})
+
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
+		}
+
+		return err
+	})
+}
+
 func (r *repo) UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert app.ManagementAdvertisingCampaign) (app.AdvertisingCampaign, error) {
 	var resAdvert resAdvertisingCampaign
 	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {

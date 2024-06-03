@@ -6,6 +6,7 @@ import (
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/powerman/check"
 	"gotest.tools/v3/assert"
 )
 
@@ -364,6 +365,111 @@ func TestNotSendedConfigStrings(t *testing.T) {
 	configs[2] = cTemp
 
 	notSendedConfigs, err = testRepo.NotSendedConfigStrings(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedConfigs, configs)
+}
+
+func TestNotSendedStationConfigBools(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+	tt := check.T(t)
+	addTestData(tt)
+
+	configs := []app.StationConfigVar[bool]{
+		{Name: "NAME1", Value: true, Description: "description1", Note: "note1", StationID: 1},
+		{Name: "NAME2", Value: false, Description: "description2", Note: "note2", StationID: 1},
+		{Name: "NAME3", Value: true, Description: "description3", Note: "note3", StationID: 1},
+	}
+
+	for _, config := range configs {
+		err := testRepo.SetStationConfigBool(config)
+		assert.NilError(t, err)
+	}
+
+	err := testRepo.MarkStationConfigBoolSended(ctx, configs[2].Name, configs[2].StationID)
+	assert.NilError(t, err)
+
+	notSendedConfigs, err := testRepo.NotSendedStationConfigBools(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedConfigs, configs[:2])
+
+	err = testRepo.SetStationConfigBool(configs[2])
+	assert.NilError(t, err)
+
+	cTemp := configs[2]
+	cTemp.Version++
+	configs[2] = cTemp
+
+	notSendedConfigs, err = testRepo.NotSendedStationConfigBools(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedConfigs, configs)
+}
+
+func TestNotSendedStationConfigInts(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+	tt := check.T(t)
+	addTestData(tt)
+
+	configs := []app.StationConfigVar[int64]{
+		{Name: "NAME1", Value: 1, Description: "description1", Note: "note1", StationID: 1},
+		{Name: "NAME2", Value: 2, Description: "description2", Note: "note2", StationID: 1},
+		{Name: "NAME3", Value: 3, Description: "description3", Note: "note3", StationID: 1},
+	}
+
+	for _, config := range configs {
+		err := testRepo.SetStationConfigInt(config)
+		assert.NilError(t, err)
+	}
+
+	err := testRepo.MarkStationConfigIntSended(ctx, configs[2].Name, configs[2].StationID)
+	assert.NilError(t, err)
+
+	notSendedConfigs, err := testRepo.NotSendedStationConfigInts(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedConfigs, configs[:2])
+
+	err = testRepo.SetStationConfigInt(configs[2])
+	assert.NilError(t, err)
+
+	cTemp := configs[2]
+	cTemp.Version++
+	configs[2] = cTemp
+
+	notSendedConfigs, err = testRepo.NotSendedStationConfigInts(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedConfigs, configs)
+}
+
+func TestNotSendedStationConfigStrings(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+	tt := check.T(t)
+	addTestData(tt)
+
+	configs := []app.StationConfigVar[string]{
+		{Name: "NAME1", Value: "value1", Description: "description1", Note: "note1", StationID: 1},
+		{Name: "NAME2", Value: "value2", Description: "description2", Note: "note2", StationID: 1},
+		{Name: "NAME3", Value: "value3", Description: "description3", Note: "note3", StationID: 1},
+	}
+
+	for _, config := range configs {
+		err := testRepo.SetStationConfigString(config)
+		assert.NilError(t, err)
+	}
+
+	err := testRepo.MarkStationConfigStringSended(ctx, configs[2].Name, configs[2].StationID)
+	assert.NilError(t, err)
+
+	notSendedConfigs, err := testRepo.NotSendedStationConfigStrings(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedConfigs, configs[:2])
+
+	err = testRepo.SetStationConfigString(configs[2])
+	assert.NilError(t, err)
+
+	cTemp := configs[2]
+	cTemp.Version++
+	configs[2] = cTemp
+
+	notSendedConfigs, err = testRepo.NotSendedStationConfigStrings(ctx)
 	assert.NilError(t, err)
 	assert.DeepEqual(t, notSendedConfigs, configs)
 }
