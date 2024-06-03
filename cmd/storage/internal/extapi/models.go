@@ -496,8 +496,8 @@ func apiConfigString(a app.ConfigString) *model.ConfigVarString {
 	}
 }
 
-func appStationConfigInt(a *model.StationConfigVarInt) app.StationConfigInt {
-	return app.StationConfigInt{
+func appStationConfigInt(a *model.StationConfigVarInt) app.StationConfigVar[int64] {
+	return app.StationConfigVar[int64]{
 		Name:        *a.Name,
 		Value:       *a.Value,
 		Description: a.Description,
@@ -506,8 +506,8 @@ func appStationConfigInt(a *model.StationConfigVarInt) app.StationConfigInt {
 	}
 }
 
-func appStationConfigBool(a *model.StationConfigVarBool) app.StationConfigBool {
-	return app.StationConfigBool{
+func appStationConfigBool(a *model.StationConfigVarBool) app.StationConfigVar[bool] {
+	return app.StationConfigVar[bool]{
 		Name:        *a.Name,
 		Value:       *a.Value,
 		Description: a.Description,
@@ -516,8 +516,8 @@ func appStationConfigBool(a *model.StationConfigVarBool) app.StationConfigBool {
 	}
 }
 
-func appStationConfigString(a *model.StationConfigVarString) app.StationConfigString {
-	return app.StationConfigString{
+func appStationConfigString(a *model.StationConfigVarString) app.StationConfigVar[string] {
+	return app.StationConfigVar[string]{
 		Name:        *a.Name,
 		Value:       *a.Value,
 		Description: a.Description,
@@ -526,7 +526,7 @@ func appStationConfigString(a *model.StationConfigVarString) app.StationConfigSt
 	}
 }
 
-func apiStationConfigBool(a *app.StationConfigBool) *model.StationConfigVarBool {
+func apiStationConfigBool(a app.StationConfigVar[bool]) *model.StationConfigVarBool {
 	stID := int64(a.StationID)
 	return &model.StationConfigVarBool{
 		Name:        &a.Name,
@@ -537,7 +537,7 @@ func apiStationConfigBool(a *app.StationConfigBool) *model.StationConfigVarBool 
 	}
 }
 
-func apiStationConfigInt(a *app.StationConfigInt) *model.StationConfigVarInt {
+func apiStationConfigInt(a app.StationConfigVar[int64]) *model.StationConfigVarInt {
 	stID := int64(a.StationID)
 	return &model.StationConfigVarInt{
 		Name:        &a.Name,
@@ -548,7 +548,7 @@ func apiStationConfigInt(a *app.StationConfigInt) *model.StationConfigVarInt {
 	}
 }
 
-func apiStationConfigString(a *app.StationConfigString) *model.StationConfigVarString {
+func apiStationConfigString(a app.StationConfigVar[string]) *model.StationConfigVarString {
 	stID := int64(a.StationID)
 	return &model.StationConfigVarString{
 		Name:        &a.Name,

@@ -72,33 +72,33 @@ func (a *app) DeleteConfigString(auth *Auth, name string) error {
 	return a.signalAfterUpdateConfig(a.repo.DeleteConfigString(name))
 }
 
-func (a *app) GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error) {
+func (a *app) GetStationConfigInt(name string, stationID StationID) (StationConfigVar[int64], error) {
 	return a.repo.GetStationConfigInt(name, stationID)
 }
 
-func (a *app) GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error) {
+func (a *app) GetStationConfigBool(name string, stationID StationID) (StationConfigVar[bool], error) {
 	return a.repo.GetStationConfigBool(name, stationID)
 }
 
-func (a *app) GetStationConfigString(name string, stationID StationID) (*StationConfigString, error) {
+func (a *app) GetStationConfigString(name string, stationID StationID) (StationConfigVar[string], error) {
 	return a.repo.GetStationConfigString(name, stationID)
 }
 
-func (a *app) SetStationConfigInt(auth *Auth, config StationConfigInt) error {
+func (a *app) SetStationConfigInt(auth *Auth, config StationConfigVar[int64]) error {
 	if config.Name == ParameterNameVolumeCoef {
 		a.stationsMutex.Lock()
 		a.volumeCorrection = int(config.Value)
 		a.stationsMutex.Unlock()
 	}
-	return a.repo.SetStationConfigInt(config)
+	return a.signalAfterUpdateConfig(a.repo.SetStationConfigInt(config))
 }
 
-func (a *app) SetStationConfigBool(auth *Auth, config StationConfigBool) error {
-	return a.repo.SetStationConfigBool(config)
+func (a *app) SetStationConfigBool(auth *Auth, config StationConfigVar[bool]) error {
+	return a.signalAfterUpdateConfig(a.repo.SetStationConfigBool(config))
 }
 
-func (a *app) SetStationConfigString(auth *Auth, config StationConfigString) error {
-	return a.repo.SetStationConfigString(config)
+func (a *app) SetStationConfigString(auth *Auth, config StationConfigVar[string]) error {
+	return a.signalAfterUpdateConfig(a.repo.SetStationConfigString(config))
 }
 
 func (a *app) signalAfterUpdateConfig(err error) error {

@@ -222,7 +222,6 @@ type ConfigInt struct {
 	Value       int64  `json:"value"`
 	Description string `json:"description"`
 	Note        string `json:"note"`
-	Deleted     bool   `json:"deleted"`
 	Version     int    `json:"version"`
 }
 
@@ -231,7 +230,33 @@ type ConfigBool struct {
 	Value       bool   `json:"value"`
 	Description string `json:"description"`
 	Note        string `json:"note"`
-	Deleted     bool   `json:"deleted"`
+	Version     int    `json:"version"`
+}
+
+type StationConfigString struct {
+	Name        string `json:"name"`
+	StationID   int    `json:"stationId"`
+	Value       string `json:"value"`
+	Description string `json:"description"`
+	Note        string `json:"note"`
+	Version     int    `json:"version"`
+}
+
+type StationConfigInt struct {
+	Name        string `json:"name"`
+	StationID   int    `json:"stationId"`
+	Value       int64  `json:"value"`
+	Description string `json:"description"`
+	Note        string `json:"note"`
+	Version     int    `json:"version"`
+}
+
+type StationConfigBool struct {
+	Name        string `json:"name"`
+	StationID   int    `json:"stationId"`
+	Value       bool   `json:"value"`
+	Description string `json:"description"`
+	Note        string `json:"note"`
 	Version     int    `json:"version"`
 }
 
@@ -259,6 +284,39 @@ func ConfigIntToRabbit(config app.ConfigInt) ConfigInt {
 func ConfigBoolToRabbit(config app.ConfigBool) ConfigBool {
 	return ConfigBool{
 		Name:        config.Name,
+		Value:       config.Value,
+		Description: config.Description,
+		Note:        config.Note,
+		Version:     config.Version,
+	}
+}
+
+func StationConfigStringToRabbit(config app.StationConfigVar[string]) StationConfigString {
+	return StationConfigString{
+		Name:        config.Name,
+		StationID:   int(config.StationID),
+		Value:       config.Value,
+		Description: config.Description,
+		Note:        config.Note,
+		Version:     config.Version,
+	}
+}
+
+func StationConfigIntToRabbit(config app.StationConfigVar[int64]) StationConfigInt {
+	return StationConfigInt{
+		Name:        config.Name,
+		StationID:   int(config.StationID),
+		Value:       config.Value,
+		Description: config.Description,
+		Note:        config.Note,
+		Version:     config.Version,
+	}
+}
+
+func StationConfigBoolToRabbit(config app.StationConfigVar[bool]) StationConfigBool {
+	return StationConfigBool{
+		Name:        config.Name,
+		StationID:   int(config.StationID),
 		Value:       config.Value,
 		Description: config.Description,
 		Note:        config.Note,

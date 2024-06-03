@@ -161,12 +161,60 @@ const (
 		version
 	FROM config_vars_bool
 	WHERE NOT management_sended
-`
+	`
 	sqlMarkConfigBoolSended = `
 	UPDATE config_vars_bool
 	SET management_sended = true
 	WHERE name = UPPER(:id)
-`
+	`
+	sqlNotSendedStationConfigBools = `
+	SELECT 
+		name,
+		station_id,
+		value,
+		description,
+		note,
+		version
+	FROM station_config_vars_bool
+	WHERE NOT management_sended
+	`
+	sqlMarkStationConfigBoolSended = `
+	UPDATE station_config_vars_bool
+	SET management_sended = true
+	WHERE name = UPPER(:name) and station_id = :station_id
+	`
+	sqlNotSendedStationConfigStrings = `
+	SELECT 
+		name,
+		station_id,
+		value,
+		description,
+		note,
+		version
+	FROM station_config_vars_string
+	WHERE NOT management_sended
+	`
+	sqlMarkStationConfigStringSended = `
+	UPDATE station_config_vars_string
+	SET management_sended = true
+	WHERE name = UPPER(:name) and station_id = :station_id
+	`
+	sqlNotSendedStationConfigInts = `
+	SELECT 
+		name,
+		station_id,
+		value,
+		description,
+		note,
+		version
+	FROM station_config_vars_int
+	WHERE NOT management_sended
+	`
+	sqlMarkStationConfigIntSended = `
+	UPDATE station_config_vars_int
+	SET management_sended = true
+	WHERE name = UPPER(:name) and station_id = :station_id
+	`
 	sqlSetProgramFromManagement = `
 		INSERT INTO program (
 			id,

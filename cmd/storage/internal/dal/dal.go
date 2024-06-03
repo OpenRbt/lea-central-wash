@@ -45,6 +45,8 @@ type repo struct {
 	PaymentsRep
 }
 
+var _ = app.Repo(&repo{})
+
 // New creates and returns new Repo.
 func New(db *sqlx.DB, maintenanceDB *sqlx.DB) *repo {
 	return &repo{
@@ -1019,9 +1021,9 @@ func (r *repo) DeleteConfigString(name string) error {
 	return err
 }
 
-func (r *repo) GetStationConfigInt(name string, stationID app.StationID) (cfg *app.StationConfigInt, err error) {
+func (r *repo) GetStationConfigInt(name string, stationID app.StationID) (cfg app.StationConfigVar[int64], err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		res := resGetStationConfigInt{}
+		res := resGetStationConfigVar[int64]{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetStationConfigInt, argGetStationConfig{
 			Name:      name,
 			StationID: stationID,
@@ -1032,14 +1034,14 @@ func (r *repo) GetStationConfigInt(name string, stationID app.StationID) (cfg *a
 			}
 			return err
 		}
-		cfg = appStationConfigInt(res)
+		cfg = appStationConfigVar(res)
 		return nil
 	})
 	return
 }
-func (r *repo) GetStationConfigBool(name string, stationID app.StationID) (cfg *app.StationConfigBool, err error) {
+func (r *repo) GetStationConfigBool(name string, stationID app.StationID) (cfg app.StationConfigVar[bool], err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		res := resGetStationConfigBool{}
+		res := resGetStationConfigVar[bool]{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetStationConfigBool, argGetStationConfig{
 			Name:      name,
 			StationID: stationID,
@@ -1050,14 +1052,14 @@ func (r *repo) GetStationConfigBool(name string, stationID app.StationID) (cfg *
 			}
 			return err
 		}
-		cfg = appStationConfigBool(res)
+		cfg = appStationConfigVar(res)
 		return nil
 	})
 	return
 }
-func (r *repo) GetStationConfigString(name string, stationID app.StationID) (cfg *app.StationConfigString, err error) {
+func (r *repo) GetStationConfigString(name string, stationID app.StationID) (cfg app.StationConfigVar[string], err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		res := resGetStationConfigString{}
+		res := resGetStationConfigVar[string]{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetStationConfigString, argGetStationConfig{
 			Name:      name,
 			StationID: stationID,
@@ -1068,21 +1070,15 @@ func (r *repo) GetStationConfigString(name string, stationID app.StationID) (cfg
 			}
 			return err
 		}
-		cfg = appStationConfigString(res)
+		cfg = appStationConfigVar(res)
 		return nil
 	})
 	return
 }
 
-func (r *repo) SetStationConfigInt(config app.StationConfigInt) (err error) {
+func (r *repo) SetStationConfigInt(config app.StationConfigVar[int64]) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlSetStationConfigInt, argSetStationConfigInt{
-			Name:        config.Name,
-			Value:       config.Value,
-			Description: config.Description,
-			Note:        config.Note,
-			StationID:   config.StationID,
-		})
+		_, err := tx.NamedExec(sqlSetStationConfigInt, dalStationConfigVar(config))
 		if pqErrConflictIn(err, constraintStationIntStationID) {
 			return app.ErrNotFound
 		}
@@ -1091,15 +1087,9 @@ func (r *repo) SetStationConfigInt(config app.StationConfigInt) (err error) {
 	return
 }
 
-func (r *repo) SetStationConfigBool(config app.StationConfigBool) (err error) {
+func (r *repo) SetStationConfigBool(config app.StationConfigVar[bool]) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlSetStationConfigBool, argSetStationConfigBool{
-			Name:        config.Name,
-			Value:       config.Value,
-			Description: config.Description,
-			Note:        config.Note,
-			StationID:   config.StationID,
-		})
+		_, err := tx.NamedExec(sqlSetStationConfigBool, dalStationConfigVar(config))
 		if pqErrConflictIn(err, constraintStationBoolStationID) {
 			return app.ErrNotFound
 		}
@@ -1107,15 +1097,10 @@ func (r *repo) SetStationConfigBool(config app.StationConfigBool) (err error) {
 	})
 	return
 }
-func (r *repo) SetStationConfigString(config app.StationConfigString) (err error) {
+
+func (r *repo) SetStationConfigString(config app.StationConfigVar[string]) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlSetStationConfigString, argSetStationConfigString{
-			Name:        config.Name,
-			Value:       config.Value,
-			Description: config.Description,
-			Note:        config.Note,
-			StationID:   config.StationID,
-		})
+		_, err := tx.NamedExec(sqlSetStationConfigString, dalStationConfigVar(config))
 		if pqErrConflictIn(err, constraintStationStringStationID) {
 			return app.ErrNotFound
 		}

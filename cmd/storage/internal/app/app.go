@@ -203,13 +203,13 @@ type (
 
 		DeleteConfigString(auth *Auth, name string) error
 
-		GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error)
-		GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error)
-		GetStationConfigString(name string, stationID StationID) (*StationConfigString, error)
+		GetStationConfigInt(name string, stationID StationID) (StationConfigVar[int64], error)
+		GetStationConfigBool(name string, stationID StationID) (StationConfigVar[bool], error)
+		GetStationConfigString(name string, stationID StationID) (StationConfigVar[string], error)
 
-		SetStationConfigInt(auth *Auth, config StationConfigInt) error
-		SetStationConfigBool(auth *Auth, config StationConfigBool) error
-		SetStationConfigString(auth *Auth, config StationConfigString) error
+		SetStationConfigInt(auth *Auth, config StationConfigVar[int64]) error
+		SetStationConfigBool(auth *Auth, config StationConfigVar[bool]) error
+		SetStationConfigString(auth *Auth, config StationConfigVar[string]) error
 
 		CreateSession(url string, stationID StationID) (string, string, error)
 		EndSession(stationID StationID, sessionID BonusSessionID) error
@@ -331,6 +331,12 @@ type (
 		MarkConfigIntSended(ctx context.Context, name string) error
 		NotSendedConfigBools(ctx context.Context) ([]ConfigBool, error)
 		MarkConfigBoolSended(ctx context.Context, name string) error
+		NotSendedStationConfigStrings(ctx context.Context) ([]StationConfigVar[string], error)
+		MarkStationConfigStringSended(ctx context.Context, name string, stationID StationID) error
+		NotSendedStationConfigBools(ctx context.Context) ([]StationConfigVar[bool], error)
+		MarkStationConfigBoolSended(ctx context.Context, name string, stationID StationID) error
+		NotSendedStationConfigInts(ctx context.Context) ([]StationConfigVar[int64], error)
+		MarkStationConfigIntSended(ctx context.Context, name string, stationID StationID) error
 
 		GetCurrentAdvertisingCampaigns(time.Time) ([]AdvertisingCampaign, error)
 
@@ -344,13 +350,13 @@ type (
 
 		DeleteConfigString(name string) error
 
-		GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error)
-		GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error)
-		GetStationConfigString(name string, stationID StationID) (*StationConfigString, error)
+		GetStationConfigInt(name string, stationID StationID) (StationConfigVar[int64], error)
+		GetStationConfigBool(name string, stationID StationID) (StationConfigVar[bool], error)
+		GetStationConfigString(name string, stationID StationID) (StationConfigVar[string], error)
 
-		SetStationConfigInt(config StationConfigInt) error
-		SetStationConfigBool(config StationConfigBool) error
-		SetStationConfigString(config StationConfigString) error
+		SetStationConfigInt(config StationConfigVar[int64]) error
+		SetStationConfigBool(config StationConfigVar[bool]) error
+		SetStationConfigString(config StationConfigVar[string]) error
 
 		SetConfigIntIfNotExists(ConfigInt) error
 
@@ -429,6 +435,9 @@ type (
 		SendConfigString(ConfigString) error
 		SendConfigInt(ConfigInt) error
 		SendConfigBool(ConfigBool) error
+		SendStationConfigBool(StationConfigVar[bool]) error
+		SendStationConfigString(StationConfigVar[string]) error
+		SendStationConfigInt(StationConfigVar[int64]) error
 	}
 	management struct {
 		syncChannel chan struct{}

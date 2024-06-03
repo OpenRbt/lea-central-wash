@@ -598,17 +598,17 @@ order by b.button_id
 	`
 
 	sqlGetStationConfigInt = `
-	SELECT name, value, description, note, station_id
+	SELECT name, value, description, note, station_id, version
 	FROM station_config_vars_int
 	WHERE name = UPPER(:name) and station_id = :station_id
 	`
 	sqlGetStationConfigBool = `
-	SELECT name, value, description, note, station_id
+	SELECT name, value, description, note, station_id, version
 	FROM station_config_vars_bool
 	WHERE name = UPPER(:name) and station_id = :station_id
 	`
 	sqlGetStationConfigString = `
-	SELECT name, value, description, note, station_id
+	SELECT name, value, description, note, station_id, version
 	FROM station_config_vars_string
 	WHERE name = UPPER(:name) and station_id = :station_id
 	`
@@ -621,7 +621,9 @@ order by b.button_id
 		UPDATE 
 			SET value = :value,
 			description = :description,
-			note = :note
+			note = :note,
+			version = station_config_vars_int.version + 1, 
+			management_sended = false
 	`
 	sqlSetStationConfigBool = `
 	INSERT INTO station_config_vars_bool (name, value, description, note, station_id)
@@ -631,7 +633,9 @@ order by b.button_id
 		UPDATE 
 			SET value = :value,
 			description = :description,
-			note = :note
+			note = :note,
+			version = station_config_vars_bool.version + 1, 
+			management_sended = false
 	`
 	sqlSetStationConfigString = `
 	INSERT INTO station_config_vars_string (name, value, description, note, station_id)
@@ -641,7 +645,9 @@ order by b.button_id
 		UPDATE 
 			SET value = :value,
 			description = :description,
-			note = :note
+			note = :note,
+			version = station_config_vars_string.version + 1, 
+			management_sended = false
 	`
 
 	sqlGetUnsendedRabbitMessages = `
@@ -1294,47 +1300,20 @@ type (
 		Version     int
 	}
 
-	argSetStationConfigInt struct {
+	argSetStationConfigVar[T comparable] struct {
 		Name        string
-		Value       int64
+		Value       T
 		Description string
 		Note        string
 		StationID   app.StationID
 	}
-	argSetStationConfigBool struct {
+	resGetStationConfigVar[T comparable] struct {
 		Name        string
-		Value       bool
+		Value       T
 		Description string
 		Note        string
 		StationID   app.StationID
-	}
-	argSetStationConfigString struct {
-		Name        string
-		Value       string
-		Description string
-		Note        string
-		StationID   app.StationID
-	}
-	resGetStationConfigInt struct {
-		Name        string
-		Value       int64
-		Description string
-		Note        string
-		StationID   app.StationID
-	}
-	resGetStationConfigBool struct {
-		Name        string
-		Value       bool
-		Description string
-		Note        string
-		StationID   app.StationID
-	}
-	resGetStationConfigString struct {
-		Name        string
-		Value       string
-		Description string
-		Note        string
-		StationID   app.StationID
+		Version     int
 	}
 
 	resRabbitMessage struct {

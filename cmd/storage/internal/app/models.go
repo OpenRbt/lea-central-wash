@@ -222,26 +222,13 @@ type ConfigString struct {
 	Version     int
 }
 
-type StationConfigInt struct {
+type StationConfigVar[T comparable] struct {
 	Name        string
-	Value       int64
+	Value       T
 	Description string
 	Note        string
 	StationID   StationID
-}
-type StationConfigBool struct {
-	Name        string
-	Value       bool
-	Description string
-	Note        string
-	StationID   StationID
-}
-type StationConfigString struct {
-	Name        string
-	Value       string
-	Description string
-	Note        string
-	StationID   StationID
+	Version     int
 }
 
 type RabbitConfig struct {
