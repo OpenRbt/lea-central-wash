@@ -1,6 +1,7 @@
 package dal
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/lib/pq"
@@ -20,6 +21,32 @@ const (
 	constraintStationBoolStationID   = "station_config_vars_bool_station_id_fkey"
 	constraintStationStringStationID = "station_config_vars_string_station_id_fkey"
 )
+
+type Query string
+
+func (q Query) String() string {
+	return string(q)
+}
+
+func (q Query) WithPagination(pagination app.Pagination) Query {
+	if pagination.Limit() != 0 {
+		return Query(fmt.Sprintf("%s OFFSET %d LIMIT %d", q, pagination.Offset(), pagination.Limit()))
+	}
+
+	return q
+}
+
+func (q Query) OrderBy(order string) Query {
+	if order != "" {
+		return Query(fmt.Sprintf("%s ORDER BY %s", q, order))
+	}
+
+	return q
+}
+
+func (q Query) Count() Query {
+	return Query(fmt.Sprintf("SELECT COUNT(*) FROM (%s) AS count_query", q))
+}
 
 const (
 	sqlCheckDB = `
@@ -320,7 +347,7 @@ ORDER BY station_id,relay_id
 		GROUP BY relay_id	
 	`
 
-	sqlPrograms = `
+	sqlPrograms Query = `
 		SELECT
 			id,
 			price,
@@ -331,10 +358,10 @@ ORDER BY station_id,relay_id
 			motor_speed_percent,
 			preflight_motor_speed_percent,
 			is_finishing_program,
-			version
+			version,
+			COUNT(*) OVER() AS total_count
 		FROM program
 		WHERE id = :id OR CAST(:id AS integer) IS NULL
-		ORDER BY id ASC
 	`
 
 	sqlSetProgram = `
@@ -369,6 +396,7 @@ ORDER BY station_id,relay_id
 			is_finishing_program = EXCLUDED.is_finishing_program,
 			version = program.version + 1, 
 			management_sended = false
+		RETURNING *
 	`
 
 	sqlStationProgramAdd = `
@@ -475,6 +503,7 @@ order by b.button_id
 			version = version + 1,
 			management_sended = false
 		WHERE id = :id AND NOT deleted
+		RETURNING *
 	`
 
 	sqlDelAdvertisingCampaign = `
@@ -499,7 +528,7 @@ order by b.button_id
 		WHERE id = :id AND NOT deleted
 	`
 
-	sqlAdvertisingCampaign = `
+	sqlAdvertisingCampaign Query = `
 		SELECT 
 			id,
 			default_discount,
@@ -510,7 +539,8 @@ order by b.button_id
 			start_minute,
 			weekday,
 			enabled,
-			name
+			name,
+			COUNT(*) OVER() AS total_count
 		FROM advertising_campaign
 		WHERE (COALESCE(:start_date, end_date) <= end_date)
 		  AND (COALESCE(:end_date, start_date) >= start_date)
@@ -787,7 +817,7 @@ returning id
 	WHERE id = :id
 	`
 
-	sqlGetListTasks = `
+	sqlGetListTasks Query = `
 	SELECT
 		id,
 		station_id,
@@ -809,8 +839,6 @@ returning id
 		CASE WHEN :sort = 'created_at_asc'  THEN created_at END ASC,
 		CASE WHEN :sort = 'created_at_desc' THEN created_at END DESC,
 		CASE WHEN CAST(:sort AS TEXT) IS NULL OR :sort not in ('created_at_asc', 'created_at_desc') THEN created_at END DESC
-	LIMIT  CASE WHEN :limit  >= 1 THEN :limit  ELSE 10 END
-	OFFSET CASE WHEN :offset >= 0 THEN :offset ELSE 0  END
 	`
 	sqlInsertTask = `
 	INSERT INTO tasks (station_id, version_id, type)
@@ -1095,6 +1123,7 @@ type (
 		IsFinishingProgram         bool
 		Version                    int
 		ManagementSended           bool
+		TotalCount                 int64
 	}
 
 	argStationProgram struct {
@@ -1213,6 +1242,7 @@ type (
 		Deleted          bool
 		Version          int
 		ManagementSended bool
+		TotalCount       int64
 	}
 	argDelAdvertisingCampaign struct {
 		ID int64
@@ -1383,20 +1413,7 @@ type (
 		CreatedAt  time.Time
 		StartedAt  *time.Time
 		StoppedAt  *time.Time
-	}
-
-	resTasks struct {
-		ID         int
-		StationID  int
-		VersionID  *int
-		Type       TaskType
-		Status     TaskStatus
-		RetryCount int
-		Error      *string
-		CreatedAt  time.Time
-		StartedAt  *time.Time
-		StoppedAt  *time.Time
-		TotalCount int
+		TotalCount int64
 	}
 
 	argGetTask struct {
@@ -1408,8 +1425,8 @@ type (
 		Statuses   pq.StringArray
 		Types      pq.StringArray
 		Sort       *TaskSort
-		Limit      int
-		Offset     int
+		Limit      int64
+		Offset     int64
 	}
 
 	argInsertTask struct {

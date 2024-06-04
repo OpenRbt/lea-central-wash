@@ -179,11 +179,11 @@ func (t *DB) CheckDB() (bool, error) {
 	return true, nil
 }
 
-func (t *DB) Programs(id *int64) ([]app.Program, error) {
-	return nil, nil
+func (t *DB) GetPrograms(ctx context.Context, filter app.ProgramFilter) ([]app.Program, int64, error) {
+	return nil, 0, nil
 }
-func (t *DB) SetProgram(app.Program) error {
-	return nil
+func (t *DB) SetProgram(ctx context.Context, program app.Program) (app.Program, error) {
+	return app.Program{}, nil
 }
 func (t *DB) StationProgram(app.StationID) ([]app.StationProgram, error) {
 	return nil, nil
@@ -242,17 +242,20 @@ func (t *DB) AddAdvertisingCampaign(ctx context.Context, a app.AdvertisingCampai
 	return app.AdvertisingCampaign{}, nil
 }
 
-func (t *DB) EditAdvertisingCampaign(a app.AdvertisingCampaign) error {
+func (t *DB) EditAdvertisingCampaign(ctx context.Context, a app.AdvertisingCampaign) (app.AdvertisingCampaign, error) {
+	return app.AdvertisingCampaign{}, nil
+}
+
+func (t *DB) DeleteAdvertisingCampaign(ctx context.Context, id int64) error {
 	return nil
 }
-func (t *DB) DelAdvertisingCampaign(id int64) error {
-	return nil
+
+func (t *DB) GetAdvertisingCampaignByID(ctx context.Context, id int64) (app.AdvertisingCampaign, error) {
+	return app.AdvertisingCampaign{}, nil
 }
-func (t *DB) AdvertisingCampaignByID(id int64) (*app.AdvertisingCampaign, error) {
-	return nil, nil
-}
-func (t *DB) AdvertisingCampaign(startDate, endDate *time.Time) ([]app.AdvertisingCampaign, error) {
-	return nil, nil
+
+func (t *DB) GetAdvertisingCampaigns(ctx context.Context, filter app.AdvertisingCampaignFilter) ([]app.AdvertisingCampaign, int64, error) {
+	return nil, 0, nil
 }
 
 func (t *DB) GetCurrentAdvertisingCampaigns(time.Time) ([]app.AdvertisingCampaign, error) {
@@ -400,8 +403,8 @@ func (r *DB) GetTask(id int) (app.Task, error) {
 	return app.Task{}, nil
 }
 
-func (r *DB) GetListTasks(app.TasksFilter) (app.TaskPage, error) {
-	return app.TaskPage{}, nil
+func (r *DB) GetListTasks(app.TaskFilter) ([]app.Task, int64, error) {
+	return nil, 0, nil
 }
 
 func (r *DB) CreateTask(createTask app.CreateTask) (app.Task, error) {
@@ -475,4 +478,3 @@ func (r *DB) NotSendedStationConfigInts(ctx context.Context) ([]app.StationConfi
 func (r *DB) MarkStationConfigIntSended(ctx context.Context, name string, stationID app.StationID) error {
 	return nil
 }
-

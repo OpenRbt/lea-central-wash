@@ -52,8 +52,17 @@ func (app *app) sendManagementSyncSignal() {
 	}
 }
 
-func (app *app) SetProgramFromManagement(ctx context.Context, program ManagementProgram) (Program, error) {
-	return app.repo.SetProgramFromManagement(ctx, program)
+func (app *app) GetProgramsForManagement(ctx context.Context, filter ProgramFilter) (Page[Program], error) {
+	programs, total, err := app.repo.GetPrograms(ctx, filter)
+	if err != nil {
+		return Page[Program]{}, err
+	}
+
+	return NewPage(programs, filter.Pagination, total), nil
+}
+
+func (app *app) SetProgramFromManagement(ctx context.Context, program Program) (Program, error) {
+	return app.repo.SetProgram(ctx, program)
 }
 
 func (app *app) NotSendedPrograms(ctx context.Context) ([]Program, error) {
@@ -72,8 +81,39 @@ func (app *app) MarkOpenwashingLogSended(ctx context.Context, id int64) error {
 	return app.repo.MarkOpenwashingLogSended(ctx, id)
 }
 
-func (app *app) CreateAdvertisingCampaignFromManagement(ctx context.Context, advert AdvertisingCampaign) (AdvertisingCampaign, error) {
-	return app.repo.AddAdvertisingCampaign(ctx, advert)
+func (app *app) GetAdvertisingCampaignByIDForManagement(ctx context.Context, id int64) (AdvertisingCampaign, error) {
+	return app.repo.GetAdvertisingCampaignByID(ctx, id)
+}
+
+func (app *app) GetAdvertisingCampaignsForManagement(ctx context.Context, filter AdvertisingCampaignFilter) (Page[AdvertisingCampaign], error) {
+	campaigns, total, err := app.repo.GetAdvertisingCampaigns(ctx, filter)
+	if err != nil {
+		return Page[AdvertisingCampaign]{}, err
+	}
+
+	return NewPage(campaigns, filter.Pagination, total), nil
+}
+
+func (app *app) AddAdvertisingCampaignFromManagement(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error) {
+	return app.repo.AddAdvertisingCampaign(ctx, campaign)
+}
+
+func (app *app) EditAdvertisingCampaignFromManagement(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error) {
+	_, err := app.repo.GetAdvertisingCampaignByID(ctx, campaign.ID)
+	if err != nil {
+		return AdvertisingCampaign{}, err
+	}
+
+	return app.repo.EditAdvertisingCampaign(ctx, campaign)
+}
+
+func (app *app) DeleteAdvertisingCampaignFromManagement(ctx context.Context, id int64) error {
+	_, err := app.repo.GetAdvertisingCampaignByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	return app.repo.DeleteAdvertisingCampaign(ctx, id)
 }
 
 func (app *app) UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error) {

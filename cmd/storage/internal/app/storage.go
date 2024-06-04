@@ -170,7 +170,7 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) (Statio
 	}
 
 	if oldStation.Versions == nil || oldStation.LastPing.Add(durationStationOffline).Before(time.Now()) {
-		tasks, err := a.repo.GetListTasks(TasksFilter{
+		tasks, _, err := a.repo.GetListTasks(TaskFilter{
 			StationsID: []StationID{id},
 			Types:      []TaskType{GetVersionsTaskType},
 			Statuses:   []TaskStatus{QueueTaskStatus, StartedTaskStatus},
@@ -179,7 +179,7 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) (Statio
 			log.PrintErr("Error getting list of tasks for station %d: %s", id, err.Error())
 			return oldStation, bonusSystemActive
 		}
-		if len(tasks.Items) > 0 {
+		if len(tasks) > 0 {
 			return oldStation, bonusSystemActive
 		}
 
@@ -671,10 +671,11 @@ func (a *app) StationsVariables() ([]StationsVariables, error) {
 }
 
 func (a *app) Programs(id *int64) ([]Program, error) {
-	return a.repo.Programs(id)
+	programs, _, err := a.repo.GetPrograms(context.TODO(), ProgramFilter{ID: id})
+	return programs, err
 }
 func (a *app) SetProgram(program Program) error {
-	err := a.repo.SetProgram(program)
+	_, err := a.repo.SetProgram(context.TODO(), program)
 	if err != nil {
 		return err
 	}
@@ -738,7 +739,7 @@ func (a *app) updateConfig(note string) error {
 }
 
 func (a *app) loadPrograms() error {
-	programs, err := a.repo.Programs(nil)
+	programs, _, err := a.repo.GetPrograms(context.TODO(), ProgramFilter{})
 	if err != nil {
 		return err
 	}
@@ -771,7 +772,7 @@ func (a *app) AddAdvertisingCampaign(ctx context.Context, auth *Auth, res Advert
 }
 
 func (a *app) EditAdvertisingCampaign(auth *Auth, res AdvertisingCampaign) error {
-	err := a.repo.EditAdvertisingCampaign(res)
+	_, err := a.repo.EditAdvertisingCampaign(context.TODO(), res)
 	if err != nil {
 		return err
 	}
@@ -779,8 +780,9 @@ func (a *app) EditAdvertisingCampaign(auth *Auth, res AdvertisingCampaign) error
 	a.sendManagementSyncSignal()
 	return nil
 }
+
 func (a *app) DelAdvertisingCampaign(auth *Auth, id int64) error {
-	err := a.repo.DelAdvertisingCampaign(id)
+	err := a.repo.DeleteAdvertisingCampaign(context.TODO(), id)
 	if err != nil {
 		return err
 	}
@@ -788,11 +790,18 @@ func (a *app) DelAdvertisingCampaign(auth *Auth, id int64) error {
 	a.sendManagementSyncSignal()
 	return nil
 }
-func (a *app) AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaign, error) {
-	return a.repo.AdvertisingCampaignByID(id)
+
+func (a *app) AdvertisingCampaignByID(auth *Auth, id int64) (AdvertisingCampaign, error) {
+	return a.repo.GetAdvertisingCampaignByID(context.TODO(), id)
 }
+
 func (a *app) AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error) {
-	return a.repo.AdvertisingCampaign(startDate, endDate)
+	campaigns, _, err := a.repo.GetAdvertisingCampaigns(context.TODO(), AdvertisingCampaignFilter{
+		StartDate: startDate,
+		EndDate:   endDate,
+	})
+
+	return campaigns, err
 }
 
 func (a *app) currentAdvertisingCampaigns(localTime time.Time) ([]AdvertisingCampaign, error) {

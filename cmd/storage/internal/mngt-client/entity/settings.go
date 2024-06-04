@@ -30,8 +30,20 @@ type Relay struct {
 	TimeOff int `json:"timeOff"`
 }
 
-func ProgramToApp(program Program) app.ManagementProgram {
-	res := app.ManagementProgram{
+type ProgramFilter struct {
+	ID *int64 `json:"id"`
+	Pagination
+}
+
+func ProgramFilterToApp(filter ProgramFilter) app.ProgramFilter {
+	return app.ProgramFilter{
+		ID:         filter.ID,
+		Pagination: app.Pagination(filter.Pagination),
+	}
+}
+
+func ProgramToApp(program Program) app.Program {
+	res := app.Program{
 		ID:                         program.ID,
 		Price:                      program.Price,
 		Name:                       program.Name,
@@ -40,7 +52,6 @@ func ProgramToApp(program Program) app.ManagementProgram {
 		PreflightMotorSpeedPercent: program.PreflightMotorSpeedPercent,
 		IsFinishingProgram:         program.IsFinishingProgram,
 		Version:                    program.Version,
-		Force:                      program.Force,
 	}
 
 	for _, relay := range program.Relays {
@@ -132,6 +143,20 @@ type AdvertisingCampaign struct {
 	Version          int               `json:"version"`
 	Deleted          bool              `json:"deleted"`
 	Force            bool              `json:"force"`
+}
+
+type AdvertisingCampaignFilter struct {
+	StartDate *time.Time `json:"startDate"`
+	EndDate   *time.Time `json:"endDate"`
+	Pagination
+}
+
+func AdvertisingCampaignFilterToApp(filter AdvertisingCampaignFilter) app.AdvertisingCampaignFilter {
+	return app.AdvertisingCampaignFilter{
+		StartDate:  filter.StartDate,
+		EndDate:    filter.EndDate,
+		Pagination: app.Pagination(filter.Pagination),
+	}
 }
 
 func AdvertisingCampaignToApp(campaign AdvertisingCampaign) app.AdvertisingCampaign {

@@ -320,7 +320,7 @@ func (r *repo) UpsertAdvertisingCampaignFromManagement(ctx context.Context, adve
 		return app.AdvertisingCampaign{}, err
 	}
 
-	return *appAdvertisingCampaign(resAdvert), nil
+	return appAdvertisingCampaign(resAdvert), nil
 }
 
 func (r *repo) NotSendedAdvertisingCampaigns(ctx context.Context) ([]app.AdvertisingCampaign, error) {

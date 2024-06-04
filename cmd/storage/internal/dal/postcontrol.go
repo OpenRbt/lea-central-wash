@@ -192,33 +192,29 @@ func (r *repo) GetTask(id int) (app.Task, error) {
 	return task, err
 }
 
-func (r *repo) GetListTasks(filter app.TasksFilter) (app.TaskPage, error) {
-	count := 0
-	var tasks []app.Task
+func (r *repo) GetListTasks(filter app.TaskFilter) ([]app.Task, int64, error) {
+	var count int64
+	var resTasks []resTask
 
 	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res []resTasks
-		err := tx.NamedSelectContext(ctx, &res, sqlGetListTasks, argGetListTasks{
-			StationsID: dalStationsId(filter.StationsID),
-			Statuses:   dalTaskStatuses(filter.Statuses),
-			Types:      dalTaskTypes(filter.Types),
-			Sort:       dalTaskSort(filter.Sort),
-			Limit:      filter.Limit(),
-			Offset:     filter.Offset(),
-		})
+		err := tx.NamedSelectContext(ctx, &resTasks, sqlGetListTasks.WithPagination(filter.Pagination).String(), dalTaskFilter(filter))
 		if err != nil {
 			return err
 		}
-		if len(res) > 0 {
-			count = res[0].TotalCount
-		}
 
-		tasks = appListTasks(res)
+		if len(resTasks) > 0 {
+			count = resTasks[0].TotalCount
+		} else if filter.Offset() > 0 {
+			return tx.NamedGetContext(ctx, &count, sqlGetListTasks.Count().String(), dalTaskFilter(filter))
+		}
 
 		return nil
 	})
+	if err != nil {
+		return nil, 0, err
+	}
 
-	return app.NewPage(tasks, filter.Filter, count), err
+	return appTasks(resTasks), count, nil
 }
 
 func (r *repo) CreateTask(createTask app.CreateTask) (app.Task, error) {

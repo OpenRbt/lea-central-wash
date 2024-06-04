@@ -185,6 +185,11 @@ type AdvertisingCampaign struct {
 	Version          int
 }
 
+type AdvertisingCampaignFilter struct {
+	StartDate, EndDate *time.Time
+	Pagination
+}
+
 type ProgramsDiscount struct {
 	DefaultDiscount int64
 	Discounts       map[int64]int64
@@ -331,8 +336,8 @@ type UpdateTask struct {
 	StoppedAt  *time.Time
 }
 
-type TasksFilter struct {
-	Filter
+type TaskFilter struct {
+	Pagination
 	StationsID []StationID
 	Statuses   []TaskStatus
 	Types      []TaskType
@@ -367,4 +372,9 @@ func firmwareVersionFromJson(id int, current bool, jsonVersion FirmwareVersionJs
 		BuiltAt:    jsonVersion.BuiltAt,
 		CommitedAt: jsonVersion.CommitedAt,
 	}
+}
+
+type ProgramFilter struct {
+	ID *int64
+	Pagination
 }

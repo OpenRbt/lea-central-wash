@@ -10,6 +10,44 @@ import (
 	"gotest.tools/v3/assert"
 )
 
+func TestGetPrograms(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+	addedPrograms := addPrograms(t)
+
+	tests := []struct {
+		name          string
+		programs      []app.Program
+		filter        app.ProgramFilter
+		total         int64
+		expectedError error
+	}{
+		{
+			name:     "successfully get all",
+			programs: addedPrograms,
+			total:    3,
+		},
+		{
+			name: "filter by id",
+			filter: app.ProgramFilter{
+				ID: &addedPrograms[0].ID,
+			},
+			programs: addedPrograms[0:1],
+			total:    1,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			programs, total, err := testRepo.GetPrograms(ctx, tc.filter)
+			assert.ErrorIs(t, err, tc.expectedError)
+			assert.Equal(t, total, tc.total)
+			assert.DeepEqual(t, programs, tc.programs, cmpopts.SortSlices(func(i, j app.Program) bool {
+				return i.ID < j.ID
+			}))
+		})
+	}
+}
+
 func TestAddAdvertisingCampaign(t *testing.T) {
 	assert.NilError(t, testRepo.truncate())
 
@@ -27,7 +65,7 @@ func TestEditAdvertisingCampaign(t *testing.T) {
 	assert.NilError(t, err)
 
 	t.Run("successfully edit", func(t *testing.T) {
-		editedCampaign := app.AdvertisingCampaign{
+		campaign := app.AdvertisingCampaign{
 			ID:               addedCampaign.ID,
 			Name:             "new",
 			DefaultDiscount:  5,
@@ -41,29 +79,27 @@ func TestEditAdvertisingCampaign(t *testing.T) {
 			Version:          1,
 		}
 
-		err := testRepo.EditAdvertisingCampaign(editedCampaign)
-		assert.NilError(t, err)
+		editedCampaign, err := testRepo.EditAdvertisingCampaign(ctx, campaign)
 
-		campaign, err := testRepo.AdvertisingCampaignByID(editedCampaign.ID)
 		assert.NilError(t, err)
-		assert.DeepEqual(t, *campaign, editedCampaign)
+		assert.DeepEqual(t, editedCampaign, campaign)
 	})
 }
 
-func TestDelAdvertisingCampaign(t *testing.T) {
+func TestDeleteAdvertisingCampaign(t *testing.T) {
 	assert.NilError(t, testRepo.truncate())
 
 	addedCampaign, err := testRepo.AddAdvertisingCampaign(ctx, testCampaign1)
 	assert.NilError(t, err)
 
-	err = testRepo.DelAdvertisingCampaign(addedCampaign.ID)
+	err = testRepo.DeleteAdvertisingCampaign(ctx, addedCampaign.ID)
 	assert.NilError(t, err)
 
-	_, err = testRepo.AdvertisingCampaignByID(addedCampaign.ID)
+	_, err = testRepo.GetAdvertisingCampaignByID(ctx, addedCampaign.ID)
 	assert.ErrorIs(t, err, app.ErrNotFound)
 }
 
-func TestAdvertisingCampaignByID(t *testing.T) {
+func TestGetAdvertisingCampaignByID(t *testing.T) {
 	assert.NilError(t, testRepo.truncate())
 
 	addedCampaign, err := testRepo.AddAdvertisingCampaign(ctx, testCampaign1)
@@ -93,69 +129,63 @@ func TestAdvertisingCampaignByID(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			campaign, err := testRepo.AdvertisingCampaignByID(tc.id)
+			campaign, err := testRepo.GetAdvertisingCampaignByID(ctx, tc.id)
 			assert.ErrorIs(t, err, tc.expectedError)
 			if err == nil {
-				assert.DeepEqual(t, *campaign, tc.campaign)
+				assert.DeepEqual(t, campaign, tc.campaign)
 			}
 		})
 	}
 }
 
-func TestAdvertisingCampaign(t *testing.T) {
+func TestGetAdvertisingCampaigns(t *testing.T) {
 	assert.NilError(t, testRepo.truncate())
 	addedCampaigns := addCampaigns(t)
 
 	tests := []struct {
-		name      string
-		campaigns []app.AdvertisingCampaign
-		filter    struct {
-			startDate *time.Time
-			endDate   *time.Time
-		}
+		name          string
+		campaigns     []app.AdvertisingCampaign
+		filter        app.AdvertisingCampaignFilter
+		total         int64
 		expectedError error
 	}{
 		{
 			name:      "successfully get all",
 			campaigns: addedCampaigns,
+			total:     3,
 		},
 		{
 			name: "filter start date",
-			filter: struct {
-				startDate *time.Time
-				endDate   *time.Time
-			}{
-				startDate: swag.Time(time.Date(2024, 7, 20, 0, 0, 0, 0, time.UTC)),
+			filter: app.AdvertisingCampaignFilter{
+				StartDate: swag.Time(time.Date(2024, 7, 20, 0, 0, 0, 0, time.UTC)),
 			},
 			campaigns: addedCampaigns[1:3],
+			total:     2,
 		},
 		{
 			name: "filter end date",
-			filter: struct {
-				startDate *time.Time
-				endDate   *time.Time
-			}{
-				endDate: swag.Time(time.Date(2024, 5, 20, 0, 0, 0, 0, time.UTC)),
+			filter: app.AdvertisingCampaignFilter{
+				EndDate: swag.Time(time.Date(2024, 5, 20, 0, 0, 0, 0, time.UTC)),
 			},
 			campaigns: addedCampaigns[:2],
+			total:     2,
 		},
 		{
 			name: "filter start and end dates",
-			filter: struct {
-				startDate *time.Time
-				endDate   *time.Time
-			}{
-				startDate: swag.Time(time.Date(2024, 5, 20, 0, 0, 0, 0, time.UTC)),
-				endDate:   swag.Time(time.Date(2024, 7, 20, 0, 0, 0, 0, time.UTC)),
+			filter: app.AdvertisingCampaignFilter{
+				StartDate: swag.Time(time.Date(2024, 5, 20, 0, 0, 0, 0, time.UTC)),
+				EndDate:   swag.Time(time.Date(2024, 7, 20, 0, 0, 0, 0, time.UTC)),
 			},
 			campaigns: addedCampaigns[:2],
+			total:     2,
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			campaigns, err := testRepo.AdvertisingCampaign(tc.filter.startDate, tc.filter.endDate)
+			campaigns, total, err := testRepo.GetAdvertisingCampaigns(ctx, tc.filter)
 			assert.ErrorIs(t, err, tc.expectedError)
+			assert.Equal(t, total, tc.total)
 			assert.DeepEqual(t, campaigns, tc.campaigns, cmpopts.SortSlices(func(i, j app.AdvertisingCampaign) bool {
 				return i.ID < j.ID
 			}))

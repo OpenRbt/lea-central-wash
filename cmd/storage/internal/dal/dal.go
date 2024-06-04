@@ -629,27 +629,38 @@ func (r *repo) CheckDB() (ok bool, err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) Programs(id *int64) (programs []app.Program, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res []resProgram
-		err = tx.NamedSelectContext(ctx, &res, sqlPrograms, argPrograms{
-			ID: id,
-		})
+func (r *repo) GetPrograms(ctx context.Context, filter app.ProgramFilter) ([]app.Program, int64, error) {
+	var resPrograms []resProgram
+	var count int64
 
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedSelectContext(ctx, &resPrograms, sqlPrograms.
+			OrderBy("id").
+			WithPagination(filter.Pagination).String(),
+			argPrograms{ID: filter.ID})
 		if err != nil {
 			return err
 		}
 
-		programs = appPrograms(res)
+		if len(resPrograms) > 0 {
+			count = resPrograms[0].TotalCount
+		} else if filter.Offset() > 0 {
+			return tx.NamedGetContext(ctx, &count, sqlPrograms.Count().String(), argPrograms{ID: filter.ID})
+		}
 
 		return nil
 	})
-	return
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return appPrograms(resPrograms), count, nil
 }
 
-func (r *repo) SetProgram(program app.Program) (err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err = tx.NamedExec(sqlSetProgram, argSetProgram{
+func (r *repo) SetProgram(ctx context.Context, program app.Program) (app.Program, error) {
+	var resProgram resProgram
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		return tx.NamedGetContext(ctx, &resProgram, sqlSetProgram, argSetProgram{
 			ID:                         program.ID,
 			Name:                       program.Name,
 			Price:                      program.Price,
@@ -660,10 +671,12 @@ func (r *repo) SetProgram(program app.Program) (err error) {
 			Relays:                     dalProgramRelays(program.Relays),
 			PreflightRelays:            dalProgramRelays(program.PreflightRelays),
 		})
-		return err
 	})
+	if err != nil {
+		return app.Program{}, err
+	}
 
-	return
+	return appProgram(resProgram), nil
 }
 
 func (r *repo) StationProgram(id app.StationID) (button []app.StationProgram, err error) {
@@ -840,59 +853,81 @@ func (r *repo) AddAdvertisingCampaign(ctx context.Context, a app.AdvertisingCamp
 		return app.AdvertisingCampaign{}, err
 	}
 
-	return *appAdvertisingCampaign(resAdvert), nil
+	return appAdvertisingCampaign(resAdvert), nil
 }
 
-func (r *repo) EditAdvertisingCampaign(a app.AdvertisingCampaign) (err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlEditAdvertisingCampaign, dalAdvertisingCampaign(a))
-		return err
-	})
-	return //nolint:nakedret
-}
+func (r *repo) EditAdvertisingCampaign(ctx context.Context, a app.AdvertisingCampaign) (app.AdvertisingCampaign, error) {
+	var resAdvert resAdvertisingCampaign
 
-func (r *repo) DelAdvertisingCampaign(id int64) (err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlDelAdvertisingCampaign, argDelAdvertisingCampaign{
-			ID: id,
-		})
-		return err
-	})
-	return //nolint:nakedret
-}
-
-func (r *repo) AdvertisingCampaignByID(id int64) (a *app.AdvertisingCampaign, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		res := resAdvertisingCampaign{}
-		err := tx.NamedGetContext(ctx, &res, sqlAdvertisingCampaignByID, argAdvertisingCampaignByID{
-			ID: id,
-		})
-		if err == sql.ErrNoRows {
-			return app.ErrNotFound
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &resAdvert, sqlEditAdvertisingCampaign, dalAdvertisingCampaign(a))
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
 		}
+
+		return err
+	})
+	if err != nil {
+		return app.AdvertisingCampaign{}, err
+	}
+
+	return appAdvertisingCampaign(resAdvert), nil
+}
+
+func (r *repo) DeleteAdvertisingCampaign(ctx context.Context, id int64) error {
+	return r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExecContext(ctx, sqlDelAdvertisingCampaign, argID[int64]{ID: id})
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
+		}
+
+		return err
+	})
+}
+
+func (r *repo) GetAdvertisingCampaignByID(ctx context.Context, id int64) (app.AdvertisingCampaign, error) {
+	var resAdvert resAdvertisingCampaign
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &resAdvert, sqlAdvertisingCampaignByID, argID[int64]{ID: id})
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
+		}
+
+		return err
+	})
+	if err != nil {
+		return app.AdvertisingCampaign{}, err
+	}
+
+	return appAdvertisingCampaign(resAdvert), nil
+}
+
+func (r *repo) GetAdvertisingCampaigns(ctx context.Context, filter app.AdvertisingCampaignFilter) ([]app.AdvertisingCampaign, int64, error) {
+	var resAdverts []resAdvertisingCampaign
+	var count int64
+
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedSelectContext(ctx, &resAdverts, sqlAdvertisingCampaign.
+			OrderBy("id").
+			WithPagination(filter.Pagination).String(),
+			dalAdvertisingCampaignFilter(filter))
 		if err != nil {
 			return err
 		}
-		a = appAdvertisingCampaign(res)
-		return nil
-	})
-	return //nolint:nakedret
-}
 
-func (r *repo) AdvertisingCampaign(startDate, endDate *time.Time) (a []app.AdvertisingCampaign, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		res := []resAdvertisingCampaign{}
-		err := tx.NamedSelectContext(ctx, &res, sqlAdvertisingCampaign, argAdvertisingCampaignGet{
-			StartDate: startDate,
-			EndDate:   endDate,
-		})
-		if err != nil {
-			return err
+		if len(resAdverts) > 0 {
+			count = resAdverts[0].TotalCount
+		} else if filter.Offset() > 0 {
+			return tx.NamedGetContext(ctx, &count, sqlAdvertisingCampaign.Count().String(), dalAdvertisingCampaignFilter(filter))
 		}
-		a = appAdvertisingCampaigns(res)
+
 		return nil
 	})
-	return //nolint:nakedret
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return appAdvertisingCampaigns(resAdverts), count, nil
 }
 
 func (r *repo) GetCurrentAdvertisingCampaigns(curTime time.Time) (a []app.AdvertisingCampaign, err error) {

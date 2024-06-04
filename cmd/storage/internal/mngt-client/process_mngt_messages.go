@@ -20,17 +20,26 @@ func (s *Service) ProcessMngtMessage(d amqp.Delivery) error {
 	defer cancel()
 
 	switch app.RabbitMessageType(d.Type) {
+	case mngt_entity.LcwProgramSettingsGetMessageType:
+		return s.handleLeaProgramsGetting(ctx, d)
+
 	case mngt_entity.LcwProgramSettingMessageType:
 		return s.handleLeaProgramSetting(ctx, d)
 
-	case mngt_entity.LeaAdvertisingCampaignCreationMessageType:
+	case mngt_entity.LcwAdvertisingCampaignsGetByIDMessageType:
+		return s.handleLeaAdvertisingCampaignGettingByID(ctx, d)
+
+	case mngt_entity.LcwAdvertisingCampaignsGetMessageType:
+		return s.handleLeaAdvertisingCampaignsGetting(ctx, d)
+
+	case mngt_entity.LcwAdvertisingCampaignCreationMessageType:
 		return s.handleLeaAdvertisingCampaignCreation(ctx, d)
 
-	case mngt_entity.LeaAdvertisingCampaignUpsertMessageType:
-		return s.handleLeaAdvertisingCampaignUpsert(ctx, d)
+	case mngt_entity.LcwAdvertisingCampaignUpdateMessageType:
+		return s.handleLeaAdvertisingCampaignUpdate(ctx, d)
 
-	case mngt_entity.LeaAdvertisingCampaignDeletionMessageType:
-		return s.handleLeaAdvertisingCampaignDeletion(d)
+	case mngt_entity.LcwAdvertisingCampaignDeletionMessageType:
+		return s.handleLeaAdvertisingCampaignDeletion(ctx, d)
 
 	default:
 		s.log.Warn("Unknown message type:", d.Type)
@@ -39,6 +48,39 @@ func (s *Service) ProcessMngtMessage(d amqp.Delivery) error {
 		}
 		return nil
 	}
+}
+
+func (s *Service) handleLeaProgramsGetting(ctx context.Context, d amqp.Delivery) error {
+	var filter mngt_entity.ProgramFilter
+	if err := json.Unmarshal(d.Body, &filter); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	programs, err := s.app.GetProgramsForManagement(ctx, mngt_entity.ProgramFilterToApp(filter))
+	rpcResponse := mngt_entity.RPCResponse{Data: programs}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	err = s.sendMessageByCorrelationID(rpcResponse, d.ReplyTo, d.CorrelationId)
+	if err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	if err = d.Ack(false); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *Service) handleLeaProgramSetting(ctx context.Context, d amqp.Delivery) error {
@@ -83,6 +125,72 @@ func (s *Service) handleLeaProgramSetting(ctx context.Context, d amqp.Delivery) 
 	return nil
 }
 
+func (s *Service) handleLeaAdvertisingCampaignGettingByID(ctx context.Context, d amqp.Delivery) error {
+	var args mngt_entity.ArgID[int64]
+	if err := json.Unmarshal(d.Body, &args); err != nil {
+		s.log.Err("Failed to unmarshal message:", err)
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	campaign, err := s.app.GetAdvertisingCampaignByIDForManagement(ctx, args.ID)
+	rpcResponse := mngt_entity.RPCResponse{Data: campaign}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	err = s.sendMessageByCorrelationID(rpcResponse, d.ReplyTo, d.CorrelationId)
+	if err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	if err = d.Ack(false); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Service) handleLeaAdvertisingCampaignsGetting(ctx context.Context, d amqp.Delivery) error {
+	var filter mngt_entity.AdvertisingCampaignFilter
+	if err := json.Unmarshal(d.Body, &filter); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	campaigns, err := s.app.GetAdvertisingCampaignsForManagement(ctx, mngt_entity.AdvertisingCampaignFilterToApp(filter))
+	rpcResponse := mngt_entity.RPCResponse{Data: campaigns}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	err = s.sendMessageByCorrelationID(rpcResponse, d.ReplyTo, d.CorrelationId)
+	if err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	if err = d.Ack(false); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (s *Service) handleLeaAdvertisingCampaignCreation(ctx context.Context, d amqp.Delivery) error {
 	var campaign mngt_entity.AdvertisingCampaign
 	if err := json.Unmarshal(d.Body, &campaign); err != nil {
@@ -93,7 +201,7 @@ func (s *Service) handleLeaAdvertisingCampaignCreation(ctx context.Context, d am
 		return err
 	}
 
-	createdCampaign, err := s.app.CreateAdvertisingCampaignFromManagement(ctx, mngt_entity.AdvertisingCampaignToApp(campaign))
+	createdCampaign, err := s.app.AddAdvertisingCampaignFromManagement(ctx, mngt_entity.AdvertisingCampaignToApp(campaign))
 	rpcResponse := mngt_entity.RPCResponse{Data: createdCampaign}
 	if err != nil {
 		s.setLastErr(err.Error())
@@ -125,7 +233,7 @@ func (s *Service) handleLeaAdvertisingCampaignCreation(ctx context.Context, d am
 	return nil
 }
 
-func (s *Service) handleLeaAdvertisingCampaignUpsert(ctx context.Context, d amqp.Delivery) error {
+func (s *Service) handleLeaAdvertisingCampaignUpdate(ctx context.Context, d amqp.Delivery) error {
 	var campaign mngt_entity.AdvertisingCampaign
 	if err := json.Unmarshal(d.Body, &campaign); err != nil {
 		s.log.Err("Failed to unmarshal message:", err)
@@ -135,8 +243,8 @@ func (s *Service) handleLeaAdvertisingCampaignUpsert(ctx context.Context, d amqp
 		return err
 	}
 
-	upsertCampaign, err := s.app.UpsertAdvertisingCampaignFromManagement(ctx, mngt_entity.UpsertAdvertisingCampaignToApp(campaign))
-	rpcResponse := mngt_entity.RPCResponse{Data: upsertCampaign}
+	updatedCampaign, err := s.app.EditAdvertisingCampaignFromManagement(ctx, mngt_entity.AdvertisingCampaignToApp(campaign))
+	rpcResponse := mngt_entity.RPCResponse{Data: updatedCampaign}
 	if err != nil {
 		s.setLastErr(err.Error())
 		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
@@ -151,7 +259,7 @@ func (s *Service) handleLeaAdvertisingCampaignUpsert(ctx context.Context, d amqp
 		return err
 	}
 
-	err = s.app.MarkAdvertisingCampaignSended(ctx, upsertCampaign.ID)
+	err = s.app.MarkAdvertisingCampaignSended(ctx, updatedCampaign.ID)
 	if err != nil {
 		s.setLastErr(err.Error())
 		if nackErr := d.Nack(false, false); nackErr != nil {
@@ -167,7 +275,7 @@ func (s *Service) handleLeaAdvertisingCampaignUpsert(ctx context.Context, d amqp
 	return nil
 }
 
-func (s *Service) handleLeaAdvertisingCampaignDeletion(d amqp.Delivery) error {
+func (s *Service) handleLeaAdvertisingCampaignDeletion(ctx context.Context, d amqp.Delivery) error {
 	var args mngt_entity.ArgID[int64]
 	if err := json.Unmarshal(d.Body, &args); err != nil {
 		s.log.Err("Failed to unmarshal message:", err)
@@ -177,7 +285,23 @@ func (s *Service) handleLeaAdvertisingCampaignDeletion(d amqp.Delivery) error {
 		return err
 	}
 
-	err := s.app.DelAdvertisingCampaign(nil, args.ID)
+	err := s.app.DeleteAdvertisingCampaignFromManagement(ctx, args.ID)
+	var rpcResponse mngt_entity.RPCResponse
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	err = s.sendMessageByCorrelationID(rpcResponse, d.ReplyTo, d.CorrelationId)
+	if err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	err = s.app.MarkAdvertisingCampaignSended(ctx, args.ID)
 	if err != nil {
 		s.setLastErr(err.Error())
 		if nackErr := d.Nack(false, false); nackErr != nil {
