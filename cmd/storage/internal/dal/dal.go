@@ -874,15 +874,21 @@ func (r *repo) EditAdvertisingCampaign(ctx context.Context, a app.AdvertisingCam
 	return appAdvertisingCampaign(resAdvert), nil
 }
 
-func (r *repo) DeleteAdvertisingCampaign(ctx context.Context, id int64) error {
-	return r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExecContext(ctx, sqlDelAdvertisingCampaign, argID[int64]{ID: id})
+func (r *repo) DeleteAdvertisingCampaign(ctx context.Context, id int64) (app.AdvertisingCampaign, error) {
+	var resAdvert resAdvertisingCampaign
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &resAdvert, sqlDelAdvertisingCampaign, argID[int64]{ID: id})
 		if errors.Is(err, sql.ErrNoRows) {
 			err = app.ErrNotFound
 		}
 
 		return err
 	})
+	if err != nil {
+		return app.AdvertisingCampaign{}, err
+	}
+
+	return appAdvertisingCampaign(resAdvert), nil
 }
 
 func (r *repo) GetAdvertisingCampaignByID(ctx context.Context, id int64) (app.AdvertisingCampaign, error) {

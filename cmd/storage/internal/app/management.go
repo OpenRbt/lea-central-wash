@@ -107,10 +107,10 @@ func (app *app) EditAdvertisingCampaignFromManagement(ctx context.Context, campa
 	return app.repo.EditAdvertisingCampaign(ctx, campaign)
 }
 
-func (app *app) DeleteAdvertisingCampaignFromManagement(ctx context.Context, id int64) error {
+func (app *app) DeleteAdvertisingCampaignFromManagement(ctx context.Context, id int64) (AdvertisingCampaign, error) {
 	_, err := app.repo.GetAdvertisingCampaignByID(ctx, id)
 	if err != nil {
-		return err
+		return AdvertisingCampaign{}, err
 	}
 
 	return app.repo.DeleteAdvertisingCampaign(ctx, id)

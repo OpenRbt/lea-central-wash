@@ -92,8 +92,10 @@ func TestDeleteAdvertisingCampaign(t *testing.T) {
 	addedCampaign, err := testRepo.AddAdvertisingCampaign(ctx, testCampaign1)
 	assert.NilError(t, err)
 
-	err = testRepo.DeleteAdvertisingCampaign(ctx, addedCampaign.ID)
+	campaign, err := testRepo.DeleteAdvertisingCampaign(ctx, addedCampaign.ID)
 	assert.NilError(t, err)
+	assert.Equal(t, campaign.Version, addedCampaign.Version+1)
+	assert.Assert(t, campaign.Deleted)
 
 	_, err = testRepo.GetAdvertisingCampaignByID(ctx, addedCampaign.ID)
 	assert.ErrorIs(t, err, app.ErrNotFound)

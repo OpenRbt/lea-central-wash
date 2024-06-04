@@ -191,7 +191,7 @@ type (
 		GetAdvertisingCampaignByIDForManagement(ctx context.Context, id int64) (AdvertisingCampaign, error)
 		AddAdvertisingCampaignFromManagement(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error)
 		EditAdvertisingCampaignFromManagement(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error)
-		DeleteAdvertisingCampaignFromManagement(ctx context.Context, id int64) error
+		DeleteAdvertisingCampaignFromManagement(ctx context.Context, id int64) (AdvertisingCampaign, error)
 
 		UpsertAdvertisingCampaignFromManagement(ctx context.Context, campaign ManagementAdvertisingCampaign) (AdvertisingCampaign, error)
 		NotSendedAdvertisingCampaigns(ctx context.Context) ([]AdvertisingCampaign, error)
@@ -325,7 +325,7 @@ type (
 
 		AddAdvertisingCampaign(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error)
 		EditAdvertisingCampaign(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error)
-		DeleteAdvertisingCampaign(ctx context.Context, id int64) error
+		DeleteAdvertisingCampaign(ctx context.Context, id int64) (AdvertisingCampaign, error)
 		GetAdvertisingCampaignByID(ctx context.Context, id int64) (AdvertisingCampaign, error)
 		GetAdvertisingCampaigns(ctx context.Context, filter AdvertisingCampaignFilter) ([]AdvertisingCampaign, int64, error)
 

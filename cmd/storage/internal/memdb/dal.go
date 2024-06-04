@@ -246,8 +246,8 @@ func (t *DB) EditAdvertisingCampaign(ctx context.Context, a app.AdvertisingCampa
 	return app.AdvertisingCampaign{}, nil
 }
 
-func (t *DB) DeleteAdvertisingCampaign(ctx context.Context, id int64) error {
-	return nil
+func (t *DB) DeleteAdvertisingCampaign(ctx context.Context, id int64) (app.AdvertisingCampaign, error) {
+	return app.AdvertisingCampaign{}, nil
 }
 
 func (t *DB) GetAdvertisingCampaignByID(ctx context.Context, id int64) (app.AdvertisingCampaign, error) {

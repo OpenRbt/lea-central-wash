@@ -297,11 +297,12 @@ func (mr *MockAppMockRecorder) DelStation(id any) *gomock.Call {
 }
 
 // DeleteAdvertisingCampaignFromManagement mocks base method.
-func (m *MockApp) DeleteAdvertisingCampaignFromManagement(ctx context.Context, id int64) error {
+func (m *MockApp) DeleteAdvertisingCampaignFromManagement(ctx context.Context, id int64) (AdvertisingCampaign, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAdvertisingCampaignFromManagement", ctx, id)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(AdvertisingCampaign)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // DeleteAdvertisingCampaignFromManagement indicates an expected call of DeleteAdvertisingCampaignFromManagement.
@@ -1496,7 +1497,7 @@ func (mr *MockAppMockRecorder) SetProgram(arg0 any) *gomock.Call {
 }
 
 // SetProgramFromManagement mocks base method.
-func (m *MockApp) SetProgramFromManagement(ctx context.Context, program ManagementProgram) (Program, error) {
+func (m *MockApp) SetProgramFromManagement(ctx context.Context, program Program) (Program, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetProgramFromManagement", ctx, program)
 	ret0, _ := ret[0].(Program)
@@ -2034,11 +2035,12 @@ func (mr *MockRepoMockRecorder) DelStation(arg0 any) *gomock.Call {
 }
 
 // DeleteAdvertisingCampaign mocks base method.
-func (m *MockRepo) DeleteAdvertisingCampaign(ctx context.Context, id int64) error {
+func (m *MockRepo) DeleteAdvertisingCampaign(ctx context.Context, id int64) (AdvertisingCampaign, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAdvertisingCampaign", ctx, id)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(AdvertisingCampaign)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // DeleteAdvertisingCampaign indicates an expected call of DeleteAdvertisingCampaign.

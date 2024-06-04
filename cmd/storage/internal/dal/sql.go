@@ -509,6 +509,7 @@ order by b.button_id
 	sqlDelAdvertisingCampaign = `
 		UPDATE advertising_campaign SET deleted = true, version = version + 1, management_sended = false
 		WHERE id = :id AND NOT deleted
+		RETURNING *
 	`
 
 	sqlAdvertisingCampaignByID = `
