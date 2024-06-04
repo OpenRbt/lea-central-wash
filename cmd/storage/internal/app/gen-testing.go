@@ -57,6 +57,21 @@ func (mr *MockAppMockRecorder) AddAdvertisingCampaign(arg0, arg1, arg2 any) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddAdvertisingCampaign", reflect.TypeOf((*MockApp)(nil).AddAdvertisingCampaign), arg0, arg1, arg2)
 }
 
+// AddAdvertisingCampaignFromManagement mocks base method.
+func (m *MockApp) AddAdvertisingCampaignFromManagement(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddAdvertisingCampaignFromManagement", ctx, campaign)
+	ret0, _ := ret[0].(AdvertisingCampaign)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddAdvertisingCampaignFromManagement indicates an expected call of AddAdvertisingCampaignFromManagement.
+func (mr *MockAppMockRecorder) AddAdvertisingCampaignFromManagement(ctx, campaign any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddAdvertisingCampaignFromManagement", reflect.TypeOf((*MockApp)(nil).AddAdvertisingCampaignFromManagement), ctx, campaign)
+}
+
 // AddOpenwashingLog mocks base method.
 func (m *MockApp) AddOpenwashingLog(log OpenwashingLogCreate) (OpenwashingLog, error) {
 	m.ctrl.T.Helper()
@@ -121,10 +136,10 @@ func (mr *MockAppMockRecorder) AdvertisingCampaign(auth, startDate, endDate any)
 }
 
 // AdvertisingCampaignByID mocks base method.
-func (m *MockApp) AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaign, error) {
+func (m *MockApp) AdvertisingCampaignByID(auth *Auth, id int64) (AdvertisingCampaign, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AdvertisingCampaignByID", auth, id)
-	ret0, _ := ret[0].(*AdvertisingCampaign)
+	ret0, _ := ret[0].(AdvertisingCampaign)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -207,21 +222,6 @@ func (mr *MockAppMockRecorder) CopyFirmware(stationID, copyToID any) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyFirmware", reflect.TypeOf((*MockApp)(nil).CopyFirmware), stationID, copyToID)
 }
 
-// CreateAdvertisingCampaignFromManagement mocks base method.
-func (m *MockApp) CreateAdvertisingCampaignFromManagement(ctx context.Context, advert AdvertisingCampaign) (AdvertisingCampaign, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateAdvertisingCampaignFromManagement", ctx, advert)
-	ret0, _ := ret[0].(AdvertisingCampaign)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// CreateAdvertisingCampaignFromManagement indicates an expected call of CreateAdvertisingCampaignFromManagement.
-func (mr *MockAppMockRecorder) CreateAdvertisingCampaignFromManagement(ctx, advert any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAdvertisingCampaignFromManagement", reflect.TypeOf((*MockApp)(nil).CreateAdvertisingCampaignFromManagement), ctx, advert)
-}
-
 // CreateSession mocks base method.
 func (m *MockApp) CreateSession(url string, stationID StationID) (string, string, error) {
 	m.ctrl.T.Helper()
@@ -294,6 +294,20 @@ func (m *MockApp) DelStation(id StationID) error {
 func (mr *MockAppMockRecorder) DelStation(id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DelStation", reflect.TypeOf((*MockApp)(nil).DelStation), id)
+}
+
+// DeleteAdvertisingCampaignFromManagement mocks base method.
+func (m *MockApp) DeleteAdvertisingCampaignFromManagement(ctx context.Context, id int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteAdvertisingCampaignFromManagement", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteAdvertisingCampaignFromManagement indicates an expected call of DeleteAdvertisingCampaignFromManagement.
+func (mr *MockAppMockRecorder) DeleteAdvertisingCampaignFromManagement(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAdvertisingCampaignFromManagement", reflect.TypeOf((*MockApp)(nil).DeleteAdvertisingCampaignFromManagement), ctx, id)
 }
 
 // DeleteBuildScript mocks base method.
@@ -394,6 +408,21 @@ func (mr *MockAppMockRecorder) EditAdvertisingCampaign(auth, a any) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditAdvertisingCampaign", reflect.TypeOf((*MockApp)(nil).EditAdvertisingCampaign), auth, a)
 }
 
+// EditAdvertisingCampaignFromManagement mocks base method.
+func (m *MockApp) EditAdvertisingCampaignFromManagement(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EditAdvertisingCampaignFromManagement", ctx, campaign)
+	ret0, _ := ret[0].(AdvertisingCampaign)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// EditAdvertisingCampaignFromManagement indicates an expected call of EditAdvertisingCampaignFromManagement.
+func (mr *MockAppMockRecorder) EditAdvertisingCampaignFromManagement(ctx, campaign any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditAdvertisingCampaignFromManagement", reflect.TypeOf((*MockApp)(nil).EditAdvertisingCampaignFromManagement), ctx, campaign)
+}
+
 // EndSession mocks base method.
 func (m *MockApp) EndSession(stationID StationID, sessionID BonusSessionID) error {
 	m.ctrl.T.Helper()
@@ -435,6 +464,36 @@ func (m *MockApp) Get(stationID StationID) (StationData, error) {
 func (mr *MockAppMockRecorder) Get(stationID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockApp)(nil).Get), stationID)
+}
+
+// GetAdvertisingCampaignByIDForManagement mocks base method.
+func (m *MockApp) GetAdvertisingCampaignByIDForManagement(ctx context.Context, id int64) (AdvertisingCampaign, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAdvertisingCampaignByIDForManagement", ctx, id)
+	ret0, _ := ret[0].(AdvertisingCampaign)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAdvertisingCampaignByIDForManagement indicates an expected call of GetAdvertisingCampaignByIDForManagement.
+func (mr *MockAppMockRecorder) GetAdvertisingCampaignByIDForManagement(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAdvertisingCampaignByIDForManagement", reflect.TypeOf((*MockApp)(nil).GetAdvertisingCampaignByIDForManagement), ctx, id)
+}
+
+// GetAdvertisingCampaignsForManagement mocks base method.
+func (m *MockApp) GetAdvertisingCampaignsForManagement(ctx context.Context, filter AdvertisingCampaignFilter) (Page[AdvertisingCampaign], error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAdvertisingCampaignsForManagement", ctx, filter)
+	ret0, _ := ret[0].(Page[AdvertisingCampaign])
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAdvertisingCampaignsForManagement indicates an expected call of GetAdvertisingCampaignsForManagement.
+func (mr *MockAppMockRecorder) GetAdvertisingCampaignsForManagement(ctx, filter any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAdvertisingCampaignsForManagement", reflect.TypeOf((*MockApp)(nil).GetAdvertisingCampaignsForManagement), ctx, filter)
 }
 
 // GetBuildScript mocks base method.
@@ -543,10 +602,10 @@ func (mr *MockAppMockRecorder) GetListBuildScripts() *gomock.Call {
 }
 
 // GetListTasks mocks base method.
-func (m *MockApp) GetListTasks(filter TasksFilter) (TaskPage, error) {
+func (m *MockApp) GetListTasks(filter TaskFilter) (Page[Task], error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetListTasks", filter)
-	ret0, _ := ret[0].(TaskPage)
+	ret0, _ := ret[0].(Page[Task])
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -555,6 +614,21 @@ func (m *MockApp) GetListTasks(filter TasksFilter) (TaskPage, error) {
 func (mr *MockAppMockRecorder) GetListTasks(filter any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetListTasks", reflect.TypeOf((*MockApp)(nil).GetListTasks), filter)
+}
+
+// GetProgramsForManagement mocks base method.
+func (m *MockApp) GetProgramsForManagement(ctx context.Context, filter ProgramFilter) (Page[Program], error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetProgramsForManagement", ctx, filter)
+	ret0, _ := ret[0].(Page[Program])
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetProgramsForManagement indicates an expected call of GetProgramsForManagement.
+func (mr *MockAppMockRecorder) GetProgramsForManagement(ctx, filter any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProgramsForManagement", reflect.TypeOf((*MockApp)(nil).GetProgramsForManagement), ctx, filter)
 }
 
 // GetPublicKey mocks base method.
@@ -1657,18 +1731,18 @@ func (mr *MockAppMockRecorder) UpdateUserPassword(userData, auth any) *gomock.Ca
 }
 
 // UpsertAdvertisingCampaignFromManagement mocks base method.
-func (m *MockApp) UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error) {
+func (m *MockApp) UpsertAdvertisingCampaignFromManagement(ctx context.Context, campaign ManagementAdvertisingCampaign) (AdvertisingCampaign, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpsertAdvertisingCampaignFromManagement", ctx, advert)
+	ret := m.ctrl.Call(m, "UpsertAdvertisingCampaignFromManagement", ctx, campaign)
 	ret0, _ := ret[0].(AdvertisingCampaign)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // UpsertAdvertisingCampaignFromManagement indicates an expected call of UpsertAdvertisingCampaignFromManagement.
-func (mr *MockAppMockRecorder) UpsertAdvertisingCampaignFromManagement(ctx, advert any) *gomock.Call {
+func (mr *MockAppMockRecorder) UpsertAdvertisingCampaignFromManagement(ctx, campaign any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertAdvertisingCampaignFromManagement", reflect.TypeOf((*MockApp)(nil).UpsertAdvertisingCampaignFromManagement), ctx, advert)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertAdvertisingCampaignFromManagement", reflect.TypeOf((*MockApp)(nil).UpsertAdvertisingCampaignFromManagement), ctx, campaign)
 }
 
 // User mocks base method.
@@ -1725,18 +1799,18 @@ func (m *MockRepo) EXPECT() *MockRepoMockRecorder {
 }
 
 // AddAdvertisingCampaign mocks base method.
-func (m *MockRepo) AddAdvertisingCampaign(arg0 context.Context, arg1 AdvertisingCampaign) (AdvertisingCampaign, error) {
+func (m *MockRepo) AddAdvertisingCampaign(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddAdvertisingCampaign", arg0, arg1)
+	ret := m.ctrl.Call(m, "AddAdvertisingCampaign", ctx, campaign)
 	ret0, _ := ret[0].(AdvertisingCampaign)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // AddAdvertisingCampaign indicates an expected call of AddAdvertisingCampaign.
-func (mr *MockRepoMockRecorder) AddAdvertisingCampaign(arg0, arg1 any) *gomock.Call {
+func (mr *MockRepoMockRecorder) AddAdvertisingCampaign(ctx, campaign any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddAdvertisingCampaign", reflect.TypeOf((*MockRepo)(nil).AddAdvertisingCampaign), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddAdvertisingCampaign", reflect.TypeOf((*MockRepo)(nil).AddAdvertisingCampaign), ctx, campaign)
 }
 
 // AddOpenStationLog mocks base method.
@@ -1794,36 +1868,6 @@ func (m *MockRepo) AddUpdateConfig(note string) (int, error) {
 func (mr *MockRepoMockRecorder) AddUpdateConfig(note any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddUpdateConfig", reflect.TypeOf((*MockRepo)(nil).AddUpdateConfig), note)
-}
-
-// AdvertisingCampaign mocks base method.
-func (m *MockRepo) AdvertisingCampaign(startDate, endDate *time.Time) ([]AdvertisingCampaign, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AdvertisingCampaign", startDate, endDate)
-	ret0, _ := ret[0].([]AdvertisingCampaign)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// AdvertisingCampaign indicates an expected call of AdvertisingCampaign.
-func (mr *MockRepoMockRecorder) AdvertisingCampaign(startDate, endDate any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AdvertisingCampaign", reflect.TypeOf((*MockRepo)(nil).AdvertisingCampaign), startDate, endDate)
-}
-
-// AdvertisingCampaignByID mocks base method.
-func (m *MockRepo) AdvertisingCampaignByID(id int64) (*AdvertisingCampaign, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AdvertisingCampaignByID", id)
-	ret0, _ := ret[0].(*AdvertisingCampaign)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// AdvertisingCampaignByID indicates an expected call of AdvertisingCampaignByID.
-func (mr *MockRepoMockRecorder) AdvertisingCampaignByID(id any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AdvertisingCampaignByID", reflect.TypeOf((*MockRepo)(nil).AdvertisingCampaignByID), id)
 }
 
 // CardReaderConfig mocks base method.
@@ -1975,20 +2019,6 @@ func (mr *MockRepoMockRecorder) CurrentMoney(arg0 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CurrentMoney", reflect.TypeOf((*MockRepo)(nil).CurrentMoney), arg0)
 }
 
-// DelAdvertisingCampaign mocks base method.
-func (m *MockRepo) DelAdvertisingCampaign(id int64) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DelAdvertisingCampaign", id)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DelAdvertisingCampaign indicates an expected call of DelAdvertisingCampaign.
-func (mr *MockRepoMockRecorder) DelAdvertisingCampaign(id any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DelAdvertisingCampaign", reflect.TypeOf((*MockRepo)(nil).DelAdvertisingCampaign), id)
-}
-
 // DelStation mocks base method.
 func (m *MockRepo) DelStation(arg0 StationID) error {
 	m.ctrl.T.Helper()
@@ -2001,6 +2031,20 @@ func (m *MockRepo) DelStation(arg0 StationID) error {
 func (mr *MockRepoMockRecorder) DelStation(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DelStation", reflect.TypeOf((*MockRepo)(nil).DelStation), arg0)
+}
+
+// DeleteAdvertisingCampaign mocks base method.
+func (m *MockRepo) DeleteAdvertisingCampaign(ctx context.Context, id int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteAdvertisingCampaign", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteAdvertisingCampaign indicates an expected call of DeleteAdvertisingCampaign.
+func (mr *MockRepoMockRecorder) DeleteAdvertisingCampaign(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAdvertisingCampaign", reflect.TypeOf((*MockRepo)(nil).DeleteAdvertisingCampaign), ctx, id)
 }
 
 // DeleteBuildScript mocks base method.
@@ -2074,17 +2118,49 @@ func (mr *MockRepoMockRecorder) DeleteUser(login any) *gomock.Call {
 }
 
 // EditAdvertisingCampaign mocks base method.
-func (m *MockRepo) EditAdvertisingCampaign(arg0 AdvertisingCampaign) error {
+func (m *MockRepo) EditAdvertisingCampaign(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "EditAdvertisingCampaign", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "EditAdvertisingCampaign", ctx, campaign)
+	ret0, _ := ret[0].(AdvertisingCampaign)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // EditAdvertisingCampaign indicates an expected call of EditAdvertisingCampaign.
-func (mr *MockRepoMockRecorder) EditAdvertisingCampaign(arg0 any) *gomock.Call {
+func (mr *MockRepoMockRecorder) EditAdvertisingCampaign(ctx, campaign any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditAdvertisingCampaign", reflect.TypeOf((*MockRepo)(nil).EditAdvertisingCampaign), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditAdvertisingCampaign", reflect.TypeOf((*MockRepo)(nil).EditAdvertisingCampaign), ctx, campaign)
+}
+
+// GetAdvertisingCampaignByID mocks base method.
+func (m *MockRepo) GetAdvertisingCampaignByID(ctx context.Context, id int64) (AdvertisingCampaign, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAdvertisingCampaignByID", ctx, id)
+	ret0, _ := ret[0].(AdvertisingCampaign)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAdvertisingCampaignByID indicates an expected call of GetAdvertisingCampaignByID.
+func (mr *MockRepoMockRecorder) GetAdvertisingCampaignByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAdvertisingCampaignByID", reflect.TypeOf((*MockRepo)(nil).GetAdvertisingCampaignByID), ctx, id)
+}
+
+// GetAdvertisingCampaigns mocks base method.
+func (m *MockRepo) GetAdvertisingCampaigns(ctx context.Context, filter AdvertisingCampaignFilter) ([]AdvertisingCampaign, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAdvertisingCampaigns", ctx, filter)
+	ret0, _ := ret[0].([]AdvertisingCampaign)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetAdvertisingCampaigns indicates an expected call of GetAdvertisingCampaigns.
+func (mr *MockRepoMockRecorder) GetAdvertisingCampaigns(ctx, filter any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAdvertisingCampaigns", reflect.TypeOf((*MockRepo)(nil).GetAdvertisingCampaigns), ctx, filter)
 }
 
 // GetBuildScript mocks base method.
@@ -2193,18 +2269,35 @@ func (mr *MockRepoMockRecorder) GetListBuildScripts() *gomock.Call {
 }
 
 // GetListTasks mocks base method.
-func (m *MockRepo) GetListTasks(filter TasksFilter) (TaskPage, error) {
+func (m *MockRepo) GetListTasks(filter TaskFilter) ([]Task, int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetListTasks", filter)
-	ret0, _ := ret[0].(TaskPage)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].([]Task)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // GetListTasks indicates an expected call of GetListTasks.
 func (mr *MockRepoMockRecorder) GetListTasks(filter any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetListTasks", reflect.TypeOf((*MockRepo)(nil).GetListTasks), filter)
+}
+
+// GetPrograms mocks base method.
+func (m *MockRepo) GetPrograms(ctx context.Context, filter ProgramFilter) ([]Program, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetPrograms", ctx, filter)
+	ret0, _ := ret[0].([]Program)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetPrograms indicates an expected call of GetPrograms.
+func (mr *MockRepoMockRecorder) GetPrograms(ctx, filter any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPrograms", reflect.TypeOf((*MockRepo)(nil).GetPrograms), ctx, filter)
 }
 
 // GetStationConfigBool mocks base method.
@@ -2735,21 +2828,6 @@ func (mr *MockRepoMockRecorder) NotSendedStationConfigStrings(ctx any) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotSendedStationConfigStrings", reflect.TypeOf((*MockRepo)(nil).NotSendedStationConfigStrings), ctx)
 }
 
-// Programs mocks base method.
-func (m *MockRepo) Programs(id *int64) ([]Program, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Programs", id)
-	ret0, _ := ret[0].([]Program)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Programs indicates an expected call of Programs.
-func (mr *MockRepoMockRecorder) Programs(id any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Programs", reflect.TypeOf((*MockRepo)(nil).Programs), id)
-}
-
 // RefreshMotorStatsCurrent mocks base method.
 func (m *MockRepo) RefreshMotorStatsCurrent() error {
 	m.ctrl.T.Helper()
@@ -3020,17 +3098,18 @@ func (mr *MockRepoMockRecorder) SetKasse(kasse any) *gomock.Call {
 }
 
 // SetProgram mocks base method.
-func (m *MockRepo) SetProgram(arg0 Program) error {
+func (m *MockRepo) SetProgram(ctx context.Context, program Program) (Program, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SetProgram", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "SetProgram", ctx, program)
+	ret0, _ := ret[0].(Program)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // SetProgram indicates an expected call of SetProgram.
-func (mr *MockRepoMockRecorder) SetProgram(arg0 any) *gomock.Call {
+func (mr *MockRepoMockRecorder) SetProgram(ctx, program any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetProgram", reflect.TypeOf((*MockRepo)(nil).SetProgram), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetProgram", reflect.TypeOf((*MockRepo)(nil).SetProgram), ctx, program)
 }
 
 // SetProgramFromManagement mocks base method.
@@ -3667,6 +3746,48 @@ func (m *MockManagementRabbitWorker) SendProgram(arg0 Program) error {
 func (mr *MockManagementRabbitWorkerMockRecorder) SendProgram(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendProgram", reflect.TypeOf((*MockManagementRabbitWorker)(nil).SendProgram), arg0)
+}
+
+// SendStationConfigBool mocks base method.
+func (m *MockManagementRabbitWorker) SendStationConfigBool(arg0 StationConfigVar[bool]) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendStationConfigBool", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendStationConfigBool indicates an expected call of SendStationConfigBool.
+func (mr *MockManagementRabbitWorkerMockRecorder) SendStationConfigBool(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendStationConfigBool", reflect.TypeOf((*MockManagementRabbitWorker)(nil).SendStationConfigBool), arg0)
+}
+
+// SendStationConfigInt mocks base method.
+func (m *MockManagementRabbitWorker) SendStationConfigInt(arg0 StationConfigVar[int64]) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendStationConfigInt", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendStationConfigInt indicates an expected call of SendStationConfigInt.
+func (mr *MockManagementRabbitWorkerMockRecorder) SendStationConfigInt(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendStationConfigInt", reflect.TypeOf((*MockManagementRabbitWorker)(nil).SendStationConfigInt), arg0)
+}
+
+// SendStationConfigString mocks base method.
+func (m *MockManagementRabbitWorker) SendStationConfigString(arg0 StationConfigVar[string]) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendStationConfigString", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendStationConfigString indicates an expected call of SendStationConfigString.
+func (mr *MockManagementRabbitWorkerMockRecorder) SendStationConfigString(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendStationConfigString", reflect.TypeOf((*MockManagementRabbitWorker)(nil).SendStationConfigString), arg0)
 }
 
 // SendStatus mocks base method.

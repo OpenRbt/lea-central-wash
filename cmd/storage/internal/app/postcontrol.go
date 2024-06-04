@@ -239,13 +239,13 @@ func (a *app) DeleteBuildScript(id StationID) error {
 	return a.repo.DeleteBuildScriptByStationID(id)
 }
 
-func (a *app) GetListTasks(filter TasksFilter) (TaskPage, error) {
-	tasks, err := a.repo.GetListTasks(filter)
+func (a *app) GetListTasks(filter TaskFilter) (Page[Task], error) {
+	tasks, total, err := a.repo.GetListTasks(filter)
 	if err != nil {
-		return TaskPage{}, err
+		return Page[Task]{}, err
 	}
 
-	return tasks, nil
+	return NewPage(tasks, filter.Pagination, total), nil
 }
 
 func (a *app) GetTask(id int) (Task, error) {
@@ -271,10 +271,10 @@ func (a *app) DeleteTask(id int) error {
 }
 
 func (a *app) DeleteTasks() error {
-	page := 1
+	page := int64(1)
 	for {
-		tasks, err := a.repo.GetListTasks(TasksFilter{
-			Filter: Filter{
+		tasks, _, err := a.repo.GetListTasks(TaskFilter{
+			Pagination: Pagination{
 				Page:     page,
 				PageSize: 100,
 			},
@@ -283,20 +283,18 @@ func (a *app) DeleteTasks() error {
 		if err != nil {
 			return err
 		}
-		if len(tasks.Items) == 0 {
+
+		if len(tasks) == 0 {
 			break
 		}
 
-		for _, v := range tasks.Items {
+		for _, v := range tasks {
 			err = a.repo.DeleteTask(v.ID)
 			if err != nil {
 				return err
 			}
 		}
 
-		if page >= tasks.TotalPages {
-			break
-		}
 		page++
 	}
 
@@ -339,8 +337,8 @@ func (a *app) CopyFirmware(stationID StationID, copyToID StationID) error {
 		return err
 	}
 
-	task, err := a.repo.GetListTasks(TasksFilter{
-		Filter: Filter{
+	task, _, err := a.repo.GetListTasks(TaskFilter{
+		Pagination: Pagination{
 			Page:     1,
 			PageSize: 1,
 		},
@@ -352,7 +350,7 @@ func (a *app) CopyFirmware(stationID StationID, copyToID StationID) error {
 		return err
 	}
 
-	if len(task.Items) > 0 {
+	if len(task) > 0 {
 		return ErrTaskStarted
 	}
 
@@ -521,7 +519,7 @@ func (a *app) taskScheduler() {
 		time.Sleep(time.Second * 5)
 
 		sort := CreatedAtAscTaskSort
-		allTasks, err := a.repo.GetListTasks(TasksFilter{
+		allTasks, _, err := a.repo.GetListTasks(TaskFilter{
 			Statuses: []TaskStatus{QueueTaskStatus, StartedTaskStatus},
 			Sort:     &sort,
 		})
@@ -529,7 +527,7 @@ func (a *app) taskScheduler() {
 			log.PrintErr(err)
 			continue
 		}
-		if len(allTasks.Items) == 0 {
+		if len(allTasks) == 0 {
 			continue
 		}
 
@@ -539,8 +537,8 @@ func (a *app) taskScheduler() {
 				continue
 			}
 
-			stationTask, err := a.repo.GetListTasks(TasksFilter{
-				Filter: Filter{
+			stationTask, _, err := a.repo.GetListTasks(TaskFilter{
+				Pagination: Pagination{
 					Page:     1,
 					PageSize: 1,
 				},
@@ -552,11 +550,11 @@ func (a *app) taskScheduler() {
 				log.PrintErr(err)
 				continue
 			}
-			if len(stationTask.Items) == 0 {
+			if len(stationTask) == 0 {
 				continue
 			}
 
-			task := stationTask.Items[0]
+			task := stationTask[0]
 			if task.Type == RebootTaskType && station.CurrentBalance > 0 {
 				continue
 			}
@@ -1492,10 +1490,10 @@ func (a *app) handleTaskErr(task Task, msg string) {
 		log.PrintErr(err)
 	}
 
-	page := 1
+	page := int64(1)
 	for {
-		queueTasks, err := a.repo.GetListTasks(TasksFilter{
-			Filter: Filter{
+		queueTasks, _, err := a.repo.GetListTasks(TaskFilter{
+			Pagination: Pagination{
 				Page:     page,
 				PageSize: 100,
 			},
@@ -1507,9 +1505,13 @@ func (a *app) handleTaskErr(task Task, msg string) {
 			return
 		}
 
+		if len(queueTasks) == 0 {
+			break
+		}
+
 		status = CanceledTaskStatus
 		errorMsg := fmt.Sprintf("The task was canceled due to an error in the task %d", task.ID)
-		for _, queueTask := range queueTasks.Items {
+		for _, queueTask := range queueTasks {
 			_, err := a.repo.UpdateTask(queueTask.ID, UpdateTask{
 				Status:    &status,
 				StoppedAt: &stoppedAt,
@@ -1520,9 +1522,6 @@ func (a *app) handleTaskErr(task Task, msg string) {
 			}
 		}
 
-		if page >= queueTasks.TotalPages {
-			break
-		}
 		page++
 	}
 

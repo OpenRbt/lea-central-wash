@@ -117,7 +117,7 @@ func TestNotSendedPrograms(t *testing.T) {
 	}
 
 	for _, program := range programs {
-		err := testRepo.SetProgram(program)
+		_, err := testRepo.SetProgram(ctx, program)
 		assert.NilError(t, err)
 	}
 

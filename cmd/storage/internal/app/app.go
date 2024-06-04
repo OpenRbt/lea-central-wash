@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"math"
 	"sync"
 	"time"
 
@@ -147,8 +146,9 @@ type (
 		SaveCollectionReport(auth *Auth, id StationID) error
 
 		Programs(id *int64) ([]Program, error)
+		GetProgramsForManagement(ctx context.Context, filter ProgramFilter) (Page[Program], error)
 		SetProgram(Program) error
-		SetProgramFromManagement(ctx context.Context, program ManagementProgram) (Program, error)
+		SetProgramFromManagement(ctx context.Context, program Program) (Program, error)
 		NotSendedPrograms(ctx context.Context) ([]Program, error)
 		MarkProgramSended(ctx context.Context, id int64) error
 
@@ -184,10 +184,16 @@ type (
 		AddAdvertisingCampaign(context.Context, *Auth, AdvertisingCampaign) (AdvertisingCampaign, error)
 		EditAdvertisingCampaign(auth *Auth, a AdvertisingCampaign) error
 		DelAdvertisingCampaign(auth *Auth, id int64) (err error)
-		AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaign, error)
+		AdvertisingCampaignByID(auth *Auth, id int64) (AdvertisingCampaign, error)
 		AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
-		CreateAdvertisingCampaignFromManagement(ctx context.Context, advert AdvertisingCampaign) (AdvertisingCampaign, error)
-		UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error)
+
+		GetAdvertisingCampaignsForManagement(ctx context.Context, filter AdvertisingCampaignFilter) (Page[AdvertisingCampaign], error)
+		GetAdvertisingCampaignByIDForManagement(ctx context.Context, id int64) (AdvertisingCampaign, error)
+		AddAdvertisingCampaignFromManagement(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error)
+		EditAdvertisingCampaignFromManagement(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error)
+		DeleteAdvertisingCampaignFromManagement(ctx context.Context, id int64) error
+
+		UpsertAdvertisingCampaignFromManagement(ctx context.Context, campaign ManagementAdvertisingCampaign) (AdvertisingCampaign, error)
 		NotSendedAdvertisingCampaigns(ctx context.Context) ([]AdvertisingCampaign, error)
 		MarkAdvertisingCampaignSended(ctx context.Context, id int64) error
 
@@ -247,7 +253,7 @@ type (
 		PingServices()
 		GetPublicKey() (string, error)
 		GetVersions(stationID StationID) ([]FirmwareVersion, error)
-		GetListTasks(filter TasksFilter) (TaskPage, error)
+		GetListTasks(filter TaskFilter) (Page[Task], error)
 		GetTask(id int) (Task, error)
 		DeleteTask(id int) error
 		DeleteTasks() error
@@ -297,8 +303,8 @@ type (
 		SetHash(StationID, string) error
 		CheckDB() (ok bool, err error)
 
-		Programs(id *int64) ([]Program, error)
-		SetProgram(Program) error
+		GetPrograms(ctx context.Context, filter ProgramFilter) ([]Program, int64, error)
+		SetProgram(ctx context.Context, program Program) (Program, error)
 		SetProgramFromManagement(ctx context.Context, program ManagementProgram) (Program, error)
 		NotSendedPrograms(ctx context.Context) ([]Program, error)
 		MarkProgramSended(ctx context.Context, id int64) error
@@ -317,14 +323,16 @@ type (
 		RelayReportDates(stationID *StationID, startDate, endDate time.Time) (StationsStat, error)
 		ResetStationStat(stationID StationID) error
 
-		AddAdvertisingCampaign(context.Context, AdvertisingCampaign) (AdvertisingCampaign, error)
-		EditAdvertisingCampaign(AdvertisingCampaign) error
-		DelAdvertisingCampaign(id int64) error
-		AdvertisingCampaignByID(id int64) (*AdvertisingCampaign, error)
-		AdvertisingCampaign(startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
+		AddAdvertisingCampaign(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error)
+		EditAdvertisingCampaign(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error)
+		DeleteAdvertisingCampaign(ctx context.Context, id int64) error
+		GetAdvertisingCampaignByID(ctx context.Context, id int64) (AdvertisingCampaign, error)
+		GetAdvertisingCampaigns(ctx context.Context, filter AdvertisingCampaignFilter) ([]AdvertisingCampaign, int64, error)
+
 		UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error)
 		NotSendedAdvertisingCampaigns(ctx context.Context) ([]AdvertisingCampaign, error)
 		MarkAdvertisingCampaignSended(ctx context.Context, id int64) error
+
 		NotSendedConfigStrings(ctx context.Context) ([]ConfigString, error)
 		MarkConfigStringSended(ctx context.Context, name string) error
 		NotSendedConfigInts(ctx context.Context) ([]ConfigInt, error)
@@ -381,7 +389,7 @@ type (
 		UpdateBuildScript(id int, updateBuildScript SetBuildScript) (BuildScript, error)
 		DeleteBuildScript(id int) error
 		DeleteBuildScriptByStationID(id StationID) error
-		GetListTasks(filter TasksFilter) (TaskPage, error)
+		GetListTasks(filter TaskFilter) ([]Task, int64, error)
 		GetTask(id int) (Task, error)
 		CreateTask(createTask CreateTask) (Task, error)
 		UpdateTask(id int, updateTask UpdateTask) (Task, error)
@@ -697,50 +705,53 @@ type PostControlConfig struct {
 	StationsDirPath string
 }
 
-type TaskPage struct {
-	Items      []Task
-	Page       int
-	PageSize   int
-	TotalPages int
-	TotalItems int
+type Page[T any] struct {
+	Items      []T
+	Page       int64
+	PageSize   int64
+	TotalPages int64
+	TotalCount int64
 }
 
-type Filter struct {
-	Page     int
-	PageSize int
+type Pagination struct {
+	Page     int64
+	PageSize int64
 }
 
-func NewPage(items []Task, filter Filter, totalItems int) TaskPage {
-	if filter.PageSize <= 0 {
-		filter.PageSize = 10
+func NewPage[T any](items []T, filter Pagination, totalItems int64) Page[T] {
+	var totalPages int64
+	if totalItems > 0 {
+		totalPages = (totalItems-1)/filter.PageSize + 1
 	}
-	if filter.Page <= 0 {
-		filter.Page = 1
-	}
-	return TaskPage{
+
+	return Page[T]{
 		Items:      items,
-		TotalPages: int(math.Ceil((float64(totalItems) / float64(filter.PageSize)))),
+		TotalPages: totalPages,
 		Page:       filter.Page,
 		PageSize:   filter.PageSize,
-		TotalItems: totalItems,
+		TotalCount: totalItems,
 	}
 }
 
-func (f *Filter) Offset() int {
+func (f *Pagination) Offset() int64 {
 	page := f.Page
 	pageSize := f.PageSize
-	if f.PageSize <= 0 {
-		pageSize = 10
+
+	if f.PageSize < 0 {
+		pageSize = 0
 	}
-	if f.Page <= 0 {
+
+	if f.Page < 1 {
 		page = 1
 	}
+
 	return (page - 1) * pageSize
 }
 
-func (f *Filter) Limit() int {
-	if f.PageSize <= 0 {
-		return 10
+func (f *Pagination) Limit() int64 {
+	if f.PageSize < 0 {
+		return 0
 	}
+
 	return f.PageSize
 }

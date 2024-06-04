@@ -201,9 +201,9 @@ func TestGetListTask(tt *testing.T) {
 	t.Nil(testRepo.truncate())
 	addTestData(t)
 
-	l, err := testRepo.GetListTasks(app.TasksFilter{})
+	l, _, err := testRepo.GetListTasks(app.TaskFilter{})
 	t.Nil(err)
-	t.Equal(len(l.Items), 0)
+	t.Equal(len(l), 0)
 
 	createTask := testCreateTask
 	task1, err := testRepo.CreateTask(createTask)
@@ -213,69 +213,69 @@ func TestGetListTask(tt *testing.T) {
 	task2, err := testRepo.CreateTask(createTask)
 	t.Nil(err)
 
-	l, err = testRepo.GetListTasks(app.TasksFilter{})
+	l, _, err = testRepo.GetListTasks(app.TaskFilter{})
 	t.Nil(err)
 	listTasks := []app.Task{task2, task1}
-	t.Equal(len(l.Items), len(listTasks))
-	for i, v := range l.Items {
+	t.Equal(len(l), len(listTasks))
+	for i, v := range l {
 		task := listTasks[i]
 		task.CreatedAt = v.CreatedAt
 		task.StartedAt = v.StartedAt
 		task.StoppedAt = v.StoppedAt
 		listTasks[i] = task
 	}
-	t.DeepEqual(listTasks, l.Items)
+	t.DeepEqual(listTasks, l)
 
-	l, err = testRepo.GetListTasks(app.TasksFilter{Statuses: []app.TaskStatus{app.QueueTaskStatus}})
+	l, _, err = testRepo.GetListTasks(app.TaskFilter{Statuses: []app.TaskStatus{app.QueueTaskStatus}})
 	t.Nil(err)
 	listTasks = []app.Task{task2, task1}
-	t.Equal(len(l.Items), len(listTasks))
-	for i, v := range l.Items {
+	t.Equal(len(l), len(listTasks))
+	for i, v := range l {
 		task := listTasks[i]
 		task.CreatedAt = v.CreatedAt
 		task.StartedAt = v.StartedAt
 		task.StoppedAt = v.StoppedAt
 		listTasks[i] = task
 	}
-	t.DeepEqual(listTasks, l.Items)
+	t.DeepEqual(listTasks, l)
 
-	l, err = testRepo.GetListTasks(app.TasksFilter{Statuses: []app.TaskStatus{app.CanceledTaskStatus}})
+	l, _, err = testRepo.GetListTasks(app.TaskFilter{Statuses: []app.TaskStatus{app.CanceledTaskStatus}})
 	t.Nil(err)
-	t.Equal(len(l.Items), 0)
+	t.Equal(len(l), 0)
 
-	l, err = testRepo.GetListTasks(app.TasksFilter{StationsID: []app.StationID{app.StationID(3)}})
+	l, _, err = testRepo.GetListTasks(app.TaskFilter{StationsID: []app.StationID{app.StationID(3)}})
 	t.Nil(err)
-	t.Equal(len(l.Items), 0)
+	t.Equal(len(l), 0)
 
-	l, err = testRepo.GetListTasks(app.TasksFilter{StationsID: []app.StationID{task1.StationID}})
+	l, _, err = testRepo.GetListTasks(app.TaskFilter{StationsID: []app.StationID{task1.StationID}})
 	t.Nil(err)
 	listTasks = []app.Task{task1}
-	t.Equal(len(l.Items), len(listTasks))
-	for i, v := range l.Items {
+	t.Equal(len(l), len(listTasks))
+	for i, v := range l {
 		task := listTasks[i]
 		task.CreatedAt = v.CreatedAt
 		task.StartedAt = v.StartedAt
 		task.StoppedAt = v.StoppedAt
 		listTasks[i] = task
 	}
-	t.DeepEqual(listTasks, l.Items)
+	t.DeepEqual(listTasks, l)
 
 	status := app.StartedTaskStatus
 	task1, err = testRepo.UpdateTask(task1.ID, app.UpdateTask{Status: &status})
 	t.Nil(err)
 
-	l, err = testRepo.GetListTasks(app.TasksFilter{Statuses: []app.TaskStatus{status}})
+	l, _, err = testRepo.GetListTasks(app.TaskFilter{Statuses: []app.TaskStatus{status}})
 	t.Nil(err)
 	listTasks = []app.Task{task1}
-	t.Equal(len(l.Items), len(listTasks))
-	for i, v := range l.Items {
+	t.Equal(len(l), len(listTasks))
+	for i, v := range l {
 		task := listTasks[i]
 		task.CreatedAt = v.CreatedAt
 		task.StartedAt = v.StartedAt
 		task.StoppedAt = v.StoppedAt
 		listTasks[i] = task
 	}
-	t.DeepEqual(listTasks, l.Items)
+	t.DeepEqual(listTasks, l)
 }
 
 func TestCreateOpenwashingLog(tt *testing.T) {

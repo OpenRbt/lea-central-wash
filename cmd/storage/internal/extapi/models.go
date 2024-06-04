@@ -629,22 +629,18 @@ func appNullableTaskStatus(taskStatus *string) *app.TaskStatus {
 	return &dalTaskStatus
 }
 
-func apiListTasks(tasks app.TaskPage) *model.TaskPage {
+func apiListTasks(tasks app.Page[app.Task]) *model.TaskPage {
 	apiTasks := []*model.Task{}
 	for _, t := range tasks.Items {
 		task := apiTask(t)
 		apiTasks = append(apiTasks, task)
 	}
-	page := int64(tasks.Page)
-	pageSize := int64(tasks.PageSize)
-	totalPages := int64(tasks.TotalPages)
-	totalItems := int64(tasks.TotalItems)
 	return &model.TaskPage{
 		Items:      apiTasks,
-		Page:       &page,
-		PageSize:   &pageSize,
-		TotalPages: &totalPages,
-		TotalItems: &totalItems,
+		Page:       &tasks.Page,
+		PageSize:   &tasks.PageSize,
+		TotalPages: &tasks.TotalPages,
+		TotalItems: &tasks.TotalCount,
 	}
 }
 
@@ -695,15 +691,19 @@ func appTaskStatuses(statuses []string) []app.TaskStatus {
 	return appStatuses
 }
 
-func appTasksFilter(params op.GetListTasksParams) app.TasksFilter {
-	filter := app.TasksFilter{
-		Filter: app.Filter{
-			Page:     int(*params.Page),
-			PageSize: int(*params.PageSize),
-		},
-		Types:    appTaskTypes(params.Types),
-		Statuses: appTaskStatuses(params.Statuses),
-		Sort:     appTaskSort(*params.Sort),
+func appPagination(page, pageSize int64) app.Pagination {
+	return app.Pagination{
+		Page:     page,
+		PageSize: pageSize,
+	}
+}
+
+func appTasksFilter(params op.GetListTasksParams) app.TaskFilter {
+	filter := app.TaskFilter{
+		Pagination: appPagination(*params.Page, *params.PageSize),
+		Types:      appTaskTypes(params.Types),
+		Statuses:   appTaskStatuses(params.Statuses),
+		Sort:       appTaskSort(*params.Sort),
 	}
 	if params.StationsID != nil {
 		stationsId := []app.StationID{}

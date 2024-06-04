@@ -44,6 +44,39 @@ var (
 		CreatedAt:        mustParseTime("2023-11-20T03:01:00Z"),
 		UpdatedAt:        mustParseTime("2023-11-20T03:02:00Z"),
 	}
+
+	testProgram1 = app.Program{
+		ID:                         1,
+		Price:                      100,
+		Name:                       "test",
+		PreflightEnabled:           true,
+		MotorSpeedPercent:          50,
+		PreflightMotorSpeedPercent: 40,
+		IsFinishingProgram:         true,
+		Relays:                     []app.Relay{{ID: 1, TimeOff: 2, TimeOn: 3}, {ID: 4, TimeOff: 5, TimeOn: 6}},
+		PreflightRelays:            []app.Relay{{ID: 7, TimeOff: 8, TimeOn: 9}, {ID: 10, TimeOff: 11, TimeOn: 12}},
+	}
+	testProgram2 = app.Program{
+		ID:                         2,
+		Price:                      50,
+		Name:                       "tes2",
+		PreflightEnabled:           false,
+		MotorSpeedPercent:          10,
+		PreflightMotorSpeedPercent: 0,
+		IsFinishingProgram:         false,
+		Relays:                     []app.Relay{{ID: 1, TimeOff: 2, TimeOn: 3}},
+	}
+	testProgram3 = app.Program{
+		ID:                         3,
+		Price:                      0,
+		Name:                       "test3",
+		PreflightEnabled:           false,
+		MotorSpeedPercent:          5,
+		PreflightMotorSpeedPercent: 10,
+		IsFinishingProgram:         true,
+		PreflightRelays:            []app.Relay{{ID: 7, TimeOff: 8, TimeOn: 9}, {ID: 10, TimeOff: 11, TimeOn: 12}},
+	}
+
 	testCampaign1 = app.AdvertisingCampaign{
 		Name:             "test",
 		DefaultDiscount:  10,
@@ -105,6 +138,17 @@ func addTestData(t *check.C) {
 		err := testRepo.AddStation("Station" + strconv.Itoa(i))
 		t.Nil(err)
 	}
+}
+
+func addPrograms(t *testing.T) []app.Program {
+	program1, err := testRepo.SetProgram(ctx, testProgram1)
+	assert.NilError(t, err)
+	program2, err := testRepo.SetProgram(ctx, testProgram2)
+	assert.NilError(t, err)
+	program3, err := testRepo.SetProgram(ctx, testProgram3)
+	assert.NilError(t, err)
+
+	return []app.Program{program1, program2, program3}
 }
 
 func addCampaigns(t *testing.T) []app.AdvertisingCampaign {

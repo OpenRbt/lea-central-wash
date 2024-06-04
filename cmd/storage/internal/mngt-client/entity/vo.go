@@ -41,6 +41,18 @@ func ErrorToRPCError(err error) *RPCError {
 	}
 }
 
+type Pagination struct {
+	Page     int64 `json:"page"`
+	PageSize int64 `json:"pageSize"`
+}
+
+func PaginationToApp(pagination Pagination) app.Pagination {
+	return app.Pagination{
+		Page:     pagination.Page,
+		PageSize: pagination.PageSize,
+	}
+}
+
 const (
 	WashAdminRoutingKey             app.RabbitRoutingKey = "wash_admin"
 	WashAdminServesEventsRoutingKey app.RabbitRoutingKey = "wash_admin_servers"
@@ -62,8 +74,12 @@ const (
 	ManagementStationConfigIntMessageType    app.RabbitMessageType = "management/station_config_int"
 	ManagementStationConfigBoolMessageType   app.RabbitMessageType = "management/station_config_bool"
 
-	LcwProgramSettingMessageType              app.RabbitMessageType = "lcw/program/set"
-	LeaAdvertisingCampaignCreationMessageType app.RabbitMessageType = "lcw/advertising_campaign/create"
-	LeaAdvertisingCampaignUpsertMessageType   app.RabbitMessageType = "lcw/advertising_campaign/upsert"
-	LeaAdvertisingCampaignDeletionMessageType app.RabbitMessageType = "lcw/advertising_campaign/delete"
+	LcwProgramSettingMessageType     app.RabbitMessageType = "lcw/program/set"
+	LcwProgramSettingsGetMessageType app.RabbitMessageType = "lcw/program/get"
+
+	LcwAdvertisingCampaignsGetMessageType     app.RabbitMessageType = "lcw/advertising_campaign/get"
+	LcwAdvertisingCampaignsGetByIDMessageType app.RabbitMessageType = "lcw/advertising_campaign/get_by_id"
+	LcwAdvertisingCampaignCreationMessageType app.RabbitMessageType = "lcw/advertising_campaign/create"
+	LcwAdvertisingCampaignUpdateMessageType   app.RabbitMessageType = "lcw/advertising_campaign/update"
+	LcwAdvertisingCampaignDeletionMessageType app.RabbitMessageType = "lcw/advertising_campaign/delete"
 )

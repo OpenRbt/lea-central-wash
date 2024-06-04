@@ -211,6 +211,13 @@ func appStationsStat(res []resRelayReport, relay []resRelayStats) app.StationsSt
 	return report
 }
 
+func dalAdvertisingCampaignFilter(filter app.AdvertisingCampaignFilter) argAdvertisingCampaignGet {
+	return argAdvertisingCampaignGet{
+		StartDate: filter.StartDate,
+		EndDate:   filter.EndDate,
+	}
+}
+
 func dalDiscountPrograms(programs []app.DiscountProgram) string {
 	bytes, err := json.Marshal(programs)
 	if err != nil {
@@ -245,12 +252,13 @@ func appDiscountPrograms(programs string) []app.DiscountProgram {
 	return discountPrograms
 }
 
-func appAdvertisingCampaign(a resAdvertisingCampaign) *app.AdvertisingCampaign {
+func appAdvertisingCampaign(a resAdvertisingCampaign) app.AdvertisingCampaign {
 	weekday := []string{}
 	if a.Weekday != "" {
 		weekday = strings.Split(a.Weekday, ",")
 	}
-	return &app.AdvertisingCampaign{
+
+	return app.AdvertisingCampaign{
 		DefaultDiscount:  a.DefaultDiscount,
 		DiscountPrograms: appDiscountPrograms(a.DiscountPrograms),
 		EndDate:          a.EndDate,
@@ -269,7 +277,7 @@ func appAdvertisingCampaign(a resAdvertisingCampaign) *app.AdvertisingCampaign {
 func appAdvertisingCampaigns(a []resAdvertisingCampaign) []app.AdvertisingCampaign {
 	res := []app.AdvertisingCampaign{}
 	for i := range a {
-		res = append(res, *appAdvertisingCampaign(a[i]))
+		res = append(res, appAdvertisingCampaign(a[i]))
 	}
 	return res
 }
@@ -455,28 +463,23 @@ func appOpenwashingLogs(models []respOpenwashingLog) []app.OpenwashingLog {
 	return res
 }
 
-func appListTasks(tasks []resTasks) []app.Task {
+func appTasks(tasks []resTask) []app.Task {
 	var appTasks []app.Task
-
 	for i := 0; i < len(tasks); i++ {
-		appTasks = append(appTasks, appTaskForTasks(tasks[i]))
+		appTasks = append(appTasks, appTask(tasks[i]))
 	}
 
 	return appTasks
 }
 
-func appTaskForTasks(task resTasks) app.Task {
-	return app.Task{
-		ID:         task.ID,
-		StationID:  app.StationID(task.StationID),
-		VersionID:  task.VersionID,
-		Type:       appTaskType(task.Type),
-		Status:     appTaskStatus(task.Status),
-		RetryCount: task.RetryCount,
-		Error:      task.Error,
-		CreatedAt:  task.CreatedAt,
-		StartedAt:  task.StartedAt,
-		StoppedAt:  task.StoppedAt,
+func dalTaskFilter(filter app.TaskFilter) argGetListTasks {
+	return argGetListTasks{
+		StationsID: dalStationsId(filter.StationsID),
+		Statuses:   dalTaskStatuses(filter.Statuses),
+		Types:      dalTaskTypes(filter.Types),
+		Sort:       dalTaskSort(filter.Sort),
+		Limit:      filter.Limit(),
+		Offset:     filter.Offset(),
 	}
 }
 

@@ -1025,7 +1025,7 @@ func (svc *service) advertisingCampaignByID(params op.AdvertisingCampaignByIDPar
 
 	switch errors.Cause(err) {
 	case nil:
-		return op.NewAdvertisingCampaignByIDOK().WithPayload(apiAdvertisingCampaign(*res))
+		return op.NewAdvertisingCampaignByIDOK().WithPayload(apiAdvertisingCampaign(res))
 	case app.ErrNotFound:
 		return op.NewAdvertisingCampaignByIDNotFound()
 	default:
