@@ -285,8 +285,8 @@ func (s *Service) handleLeaAdvertisingCampaignDeletion(ctx context.Context, d am
 		return err
 	}
 
-	err := s.app.DeleteAdvertisingCampaignFromManagement(ctx, args.ID)
-	var rpcResponse mngt_entity.RPCResponse
+	campaign, err := s.app.DeleteAdvertisingCampaignFromManagement(ctx, args.ID)
+	rpcResponse := mngt_entity.RPCResponse{Data: campaign}
 	if err != nil {
 		s.setLastErr(err.Error())
 		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)

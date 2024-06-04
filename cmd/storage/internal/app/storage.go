@@ -782,7 +782,7 @@ func (a *app) EditAdvertisingCampaign(auth *Auth, res AdvertisingCampaign) error
 }
 
 func (a *app) DelAdvertisingCampaign(auth *Auth, id int64) error {
-	err := a.repo.DeleteAdvertisingCampaign(context.TODO(), id)
+	_, err := a.repo.DeleteAdvertisingCampaign(context.TODO(), id)
 	if err != nil {
 		return err
 	}
