@@ -1,8 +1,10 @@
 package dal
 
 import (
+	"fmt"
 	"time"
 
+	"github.com/lib/pq"
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
@@ -19,6 +21,32 @@ const (
 	constraintStationBoolStationID   = "station_config_vars_bool_station_id_fkey"
 	constraintStationStringStationID = "station_config_vars_string_station_id_fkey"
 )
+
+type Query string
+
+func (q Query) String() string {
+	return string(q)
+}
+
+func (q Query) WithPagination(pagination app.Pagination) Query {
+	if pagination.Limit() != 0 {
+		return Query(fmt.Sprintf("%s OFFSET %d LIMIT %d", q, pagination.Offset(), pagination.Limit()))
+	}
+
+	return q
+}
+
+func (q Query) OrderBy(order string) Query {
+	if order != "" {
+		return Query(fmt.Sprintf("%s ORDER BY %s", q, order))
+	}
+
+	return q
+}
+
+func (q Query) Count() Query {
+	return Query(fmt.Sprintf("SELECT COUNT(*) FROM (%s) AS count_query", q))
+}
 
 const (
 	sqlCheckDB = `
@@ -319,55 +347,56 @@ ORDER BY station_id,relay_id
 		GROUP BY relay_id	
 	`
 
-	sqlPrograms = `
-	SELECT
-	id,
-	price,
-	name,
-	preflight_enabled,
-	relays,
-	preflight_relays,
-	motor_speed_percent,
-	preflight_motor_speed_percent,
-	is_finishing_program
-    FROM program
-	WHERE ((id = :id) or (CAST(:id as integer) is null)) 
-	ORDER BY id ASC
+	sqlPrograms Query = `
+		SELECT
+			id,
+			price,
+			name,
+			preflight_enabled,
+			relays,
+			preflight_relays,
+			motor_speed_percent,
+			preflight_motor_speed_percent,
+			is_finishing_program,
+			version,
+			COUNT(*) OVER() AS total_count
+		FROM program
+		WHERE id = :id OR CAST(:id AS integer) IS NULL
 	`
 
 	sqlSetProgram = `
-	INSERT INTO program (
-		id,
-		price,
-		name,
-		preflight_enabled,
-		relays,
-		preflight_relays,
-		motor_speed_percent,
-		preflight_motor_speed_percent,
-		is_finishing_program
-		)
-	VALUES (
-		:id,
-		:price,
-		:name,
-		:preflight_enabled,
-		:relays,
-		:preflight_relays,
-		:motor_speed_percent,
-		:preflight_motor_speed_percent,
-		:is_finishing_program
-		) ON CONFLICT (id) DO
-	UPDATE
-	SET
-	price = :price,
-	name = :name,
-	preflight_enabled = :preflight_enabled,
-	relays = :relays,
-	preflight_relays = :preflight_relays,
-	motor_speed_percent = :motor_speed_percent,
-	preflight_motor_speed_percent = :preflight_motor_speed_percent,
-	is_finishing_program = :is_finishing_program
+		INSERT INTO program (
+			id,
+			price,
+			name,
+			preflight_enabled,
+			relays,
+			preflight_relays,
+			motor_speed_percent,
+			preflight_motor_speed_percent,
+			is_finishing_program
+		) VALUES (
+			:id,
+			:price,
+			:name,
+			:preflight_enabled,
+			:relays,
+			:preflight_relays,
+			:motor_speed_percent,
+			:preflight_motor_speed_percent,
+			:is_finishing_program
+		) ON CONFLICT (id) DO UPDATE SET
+			price = EXCLUDED.price,
+			name = EXCLUDED.name,
+			preflight_enabled = EXCLUDED.preflight_enabled,
+			relays = EXCLUDED.relays,
+			preflight_relays = EXCLUDED.preflight_relays,
+			motor_speed_percent = EXCLUDED.motor_speed_percent,
+			preflight_motor_speed_percent = EXCLUDED.preflight_motor_speed_percent,
+			is_finishing_program = EXCLUDED.is_finishing_program,
+			version = program.version + 1, 
+			management_sended = false
+		RETURNING *
 	`
 
 	sqlStationProgramAdd = `
@@ -437,91 +466,104 @@ order by b.button_id
 	SELECT max(id) as id from update_config
 	`
 	sqlAddAdvertisingCampaign = `
-	INSERT INTO advertising_campaign (
-		default_discount,
-		discount_programs,
-		end_date,
-		end_minute,
-		start_date,
-		start_minute,
-		weekday,
-		enabled,
-		name
-	) VALUES (
-		:default_discount,
-		:discount_programs,
-		:end_date,
-		:end_minute,
-		:start_date,
-		:start_minute,
-		:weekday,
-		:enabled,
-		:name
-	)
+		INSERT INTO advertising_campaign (
+			default_discount,
+			discount_programs,
+			end_date,
+			end_minute,
+			start_date,
+			start_minute,
+			weekday,
+			enabled,
+			name
+		) VALUES (
+			:default_discount,
+			:discount_programs,
+			:end_date,
+			:end_minute,
+			:start_date,
+			:start_minute,
+			:weekday,
+			:enabled,
+			:name
+		) RETURNING *
 	`
+
 	sqlEditAdvertisingCampaign = `
-	UPDATE advertising_campaign SET
-		default_discount = :default_discount,
-		discount_programs = :discount_programs,
-		end_date = :end_date,
-		end_minute = :end_minute,
-		start_date = :start_date,
-		start_minute = :start_minute,
-		weekday = :weekday,
-		enabled = :enabled,
-		name = :name
-	WHERE id = :id
-		`
+		UPDATE advertising_campaign SET
+			default_discount = :default_discount,
+			discount_programs = :discount_programs,
+			end_date = :end_date,
+			end_minute = :end_minute,
+			start_date = :start_date,
+			start_minute = :start_minute,
+			weekday = :weekday,
+			enabled = :enabled,
+			name = :name,
+			version = version + 1,
+			management_sended = false
+		WHERE id = :id AND NOT deleted
+		RETURNING *
+	`
+
 	sqlDelAdvertisingCampaign = `
-		DELETE FROM advertising_campaign
-		WHERE id = :id
-			`
+		UPDATE advertising_campaign SET deleted = true, version = version + 1, management_sended = false
+		WHERE id = :id AND NOT deleted
+		RETURNING *
+	`
 
 	sqlAdvertisingCampaignByID = `
-	SELECT 
-		id,
-		default_discount,
-		discount_programs,
-		end_date,
-		end_minute,
-		start_date,
-		start_minute,
-		weekday,
-		enabled,
-		name
-	FROM advertising_campaign
-	WHERE id = :id
-`
-	sqlAdvertisingCampaign = `
-SELECT 
-	id,
-	default_discount,
-	discount_programs,
-	end_date,
-	end_minute,
-	start_date,
-	start_minute,
-	weekday,
-	enabled,
-	name
-FROM advertising_campaign
-WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:end_date >= start_date or CAST(:start_date AS TIMESTAMP) is null)
-`
+		SELECT 
+			id,
+			default_discount,
+			discount_programs,
+			end_date,
+			end_minute,
+			start_date,
+			start_minute,
+			weekday,
+			enabled,
+			name,
+			version
+		FROM advertising_campaign
+		WHERE id = :id AND NOT deleted
+	`
+
+	sqlAdvertisingCampaign Query = `
+		SELECT 
+			id,
+			default_discount,
+			discount_programs,
+			end_date,
+			end_minute,
+			start_date,
+			start_minute,
+			weekday,
+			enabled,
+			name,
+			COUNT(*) OVER() AS total_count
+		FROM advertising_campaign
+		WHERE (COALESCE(:start_date, end_date) <= end_date)
+		  AND (COALESCE(:end_date, start_date) >= start_date)
+		  AND NOT deleted
+	`
+
 	sqlCurrentAdvertisingCampaign = `
-	SELECT
-	id,
-	default_discount,
-	discount_programs,
-	end_date,
-	end_minute,
-	start_date,
-	start_minute,
-	weekday,
-	enabled,
-	name
-	FROM advertising_campaign
-	WHERE enabled AND 
-	start_date <= :current_date and end_date >= :current_date
+		SELECT
+			id,
+			default_discount,
+			discount_programs,
+			end_date,
+			end_minute,
+			start_date,
+			start_minute,
+			weekday,
+			enabled,
+			name
+		FROM advertising_campaign
+		WHERE enabled  
+			AND :current_date BETWEEN start_date AND end_date
+			AND NOT deleted
 	`
 
 	sqlGetConfigInt = `
@@ -535,7 +577,7 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 	WHERE name = UPPER(:name)
 	`
 	sqlGetConfigString = `
-	SELECT name, value, description, note
+	SELECT name, value, description, note, deleted, version
 	FROM config_vars_string
 	WHERE name = UPPER(:name)
 	`
@@ -548,7 +590,9 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 		UPDATE 
 			SET value = :value,
 			description = :description,
-			note = :note
+			note = :note,
+			version = config_vars_int.version + 1, 
+			management_sended = false
 	`
 	sqlSetConfigIntIfNotExists = `
 	INSERT INTO config_vars_int (name, value, description, note)
@@ -564,7 +608,9 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 		UPDATE 
 			SET value = :value,
 			description = :description,
-			note = :note
+			note = :note,
+			version = config_vars_bool.version + 1, 
+			management_sended = false
 	`
 	sqlSetConfigString = `
 	INSERT INTO config_vars_string (name, value, description, note)
@@ -574,25 +620,26 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 		UPDATE 
 			SET value = :value,
 			description = :description,
-			note = :note
+			note = :note,
+			version = config_vars_string.version + 1, 
+			management_sended = false
 	`
-
 	sqlDeleteConfigString = `
-		DELETE FROM config_vars_string WHERE name = UPPER(:name)
+	UPDATE config_vars_string SET deleted = true, management_sended = false, version = version + 1 WHERE name = UPPER(:name)
 	`
 
 	sqlGetStationConfigInt = `
-	SELECT name, value, description, note, station_id
+	SELECT name, value, description, note, station_id, version
 	FROM station_config_vars_int
 	WHERE name = UPPER(:name) and station_id = :station_id
 	`
 	sqlGetStationConfigBool = `
-	SELECT name, value, description, note, station_id
+	SELECT name, value, description, note, station_id, version
 	FROM station_config_vars_bool
 	WHERE name = UPPER(:name) and station_id = :station_id
 	`
 	sqlGetStationConfigString = `
-	SELECT name, value, description, note, station_id
+	SELECT name, value, description, note, station_id, version
 	FROM station_config_vars_string
 	WHERE name = UPPER(:name) and station_id = :station_id
 	`
@@ -605,7 +652,9 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 		UPDATE 
 			SET value = :value,
 			description = :description,
-			note = :note
+			note = :note,
+			version = station_config_vars_int.version + 1, 
+			management_sended = false
 	`
 	sqlSetStationConfigBool = `
 	INSERT INTO station_config_vars_bool (name, value, description, note, station_id)
@@ -615,7 +664,9 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 		UPDATE 
 			SET value = :value,
 			description = :description,
-			note = :note
+			note = :note,
+			version = station_config_vars_bool.version + 1, 
+			management_sended = false
 	`
 	sqlSetStationConfigString = `
 	INSERT INTO station_config_vars_string (name, value, description, note, station_id)
@@ -625,7 +676,9 @@ WHERE (:start_date <= end_date or CAST(:start_date AS TIMESTAMP) is null) AND (:
 		UPDATE 
 			SET value = :value,
 			description = :description,
-			note = :note
+			note = :note,
+			version = station_config_vars_string.version + 1, 
+			management_sended = false
 	`
 
 	sqlGetUnsendedRabbitMessages = `
@@ -684,6 +737,164 @@ returning id
 	sqlRefreshProgramStatsCurrent = `refresh materialized view mv_current_program_stat`
 	sqlRefreshMotorStatsDates     = `refresh materialized view mv_relay_stat_dates`
 	sqlRefreshProgramStatsDates   = `refresh materialized view mv_program_stat_dates`
+
+	sqlGetListBuildScripts = `
+	SELECT
+		id,
+		station_id,
+		name,
+		commands
+    FROM build_scripts
+	ORDER BY station_id ASC
+	`
+
+	sqlGetBuildScript = `
+	SELECT
+		id,
+		station_id,
+		name,
+		commands
+    FROM build_scripts
+	WHERE id = :id
+	`
+
+	sqlGetBuildScriptByStationID = `
+	SELECT
+		id,
+		station_id,
+		name,
+		commands
+    FROM build_scripts
+	WHERE station_id = :id
+	`
+
+	sqlInsertBuildScript = `
+	INSERT INTO build_scripts (station_id, name, commands)
+	VALUES (:station_id, :name, :commands)
+	RETURNING
+		id,
+		station_id,
+		name,
+		commands
+	`
+
+	sqlUpdateBuildScript = `
+	UPDATE build_scripts
+	SET
+		station_id = :station_id, 
+		name = :name, 
+		commands = :commands
+	WHERE id = :id
+	RETURNING
+		id,
+		station_id,
+		name,
+		commands
+	`
+
+	sqlDeleteBuildScript = `
+	DELETE FROM build_scripts
+	WHERE id = :id
+	`
+
+	sqlDeleteBuildScriptByStationID = `
+	DELETE FROM build_scripts
+	WHERE station_id = :id
+	`
+
+	sqlGetTask = `
+	SELECT
+		id,
+		station_id,
+		version_id,
+		type,
+		status,
+		retry_count,
+		error,
+		created_at,
+		started_at,
+		stopped_at
+    FROM tasks
+	WHERE id = :id
+	`
+
+	sqlGetListTasks Query = `
+	SELECT
+		id,
+		station_id,
+		version_id,
+		type,
+		status,
+		retry_count,
+		error,
+		created_at,
+		started_at,
+		stopped_at,
+		COUNT(id) OVER() AS total_count
+    FROM tasks
+	WHERE
+		(CAST(:stations_id AS INT[]) 		      IS NULL OR station_id = ANY(:stations_id)) AND
+		(CAST(:statuses    AS TASK_STATUS_ENUM[]) IS NULL OR status     = ANY(:statuses))    AND
+		(CAST(:types       AS TASK_TYPE_ENUM[])   IS NULL OR type       = ANY(:types))
+	ORDER BY
+		CASE WHEN :sort = 'created_at_asc'  THEN created_at END ASC,
+		CASE WHEN :sort = 'created_at_desc' THEN created_at END DESC,
+		CASE WHEN CAST(:sort AS TEXT) IS NULL OR :sort not in ('created_at_asc', 'created_at_desc') THEN created_at END DESC
+	`
+	sqlInsertTask = `
+	INSERT INTO tasks (station_id, version_id, type)
+	VALUES (:station_id, :version_id, :type)
+	RETURNING
+		id,
+		station_id,
+		version_id,
+		type,
+		status,
+		retry_count,
+		error,
+		created_at,
+		started_at,
+		stopped_at
+	`
+
+	sqlUpdateTask = `
+	UPDATE tasks
+	SET
+		status = COALESCE(:status, status),
+		retry_count = COALESCE(:retry_count, retry_count),
+		error = COALESCE(:error, error),
+		started_at = COALESCE(:started_at, started_at),
+		stopped_at = COALESCE(:stopped_at, stopped_at)
+	WHERE id = :id
+	RETURNING
+		id,
+		station_id,
+		version_id,
+		type,
+		status,
+		retry_count,
+		error,
+		created_at,
+		started_at,
+		stopped_at
+	`
+
+	sqlDeleteTask = `
+	DELETE FROM tasks
+	WHERE id = :id
+	`
+
+	sqlInsertOpenwashingLog = `
+	INSERT INTO openwashing_logs (station_id, text, type, level, created_at)
+	VALUES (:station_id, :text, :type, :level, :created_at)
+	RETURNING
+		id,
+		station_id,
+		text,
+		type,
+		level,
+		created_at
+	`
 )
 
 type (
@@ -900,16 +1111,20 @@ type (
 		ID *int64
 	}
 
-	resPrograms struct {
+	resProgram struct {
 		ID                         int64
 		Price                      int
 		Name                       string
+		Note                       string
 		PreflightEnabled           bool
 		Relays                     string
 		PreflightRelays            string
 		MotorSpeedPercent          int64
 		PreflightMotorSpeedPercent int64
 		IsFinishingProgram         bool
+		Version                    int
+		ManagementSended           bool
+		TotalCount                 int64
 	}
 
 	argStationProgram struct {
@@ -1014,16 +1229,21 @@ type (
 		Name             string
 	}
 	resAdvertisingCampaign struct {
+		ID               int64
 		DefaultDiscount  int64
 		DiscountPrograms string
 		EndDate          time.Time
 		EndMinute        int64
-		ID               int64
 		StartDate        time.Time
 		StartMinute      int64
 		Weekday          string
 		Enabled          bool
 		Name             string
+		Ctime            time.Time
+		Deleted          bool
+		Version          int
+		ManagementSended bool
+		TotalCount       int64
 	}
 	argDelAdvertisingCampaign struct {
 		ID int64
@@ -1093,61 +1313,38 @@ type (
 		Value       int64
 		Description string
 		Note        string
+		Version     int
 	}
 	resGetConfigBool struct {
 		Name        string
 		Value       bool
 		Description string
 		Note        string
+		Version     int
 	}
 	resGetConfigString struct {
 		Name        string
 		Value       string
 		Description string
 		Note        string
+		Deleted     bool
+		Version     int
 	}
 
-	argSetStationConfigInt struct {
+	argSetStationConfigVar[T comparable] struct {
 		Name        string
-		Value       int64
+		Value       T
 		Description string
 		Note        string
 		StationID   app.StationID
 	}
-	argSetStationConfigBool struct {
+	resGetStationConfigVar[T comparable] struct {
 		Name        string
-		Value       bool
+		Value       T
 		Description string
 		Note        string
 		StationID   app.StationID
-	}
-	argSetStationConfigString struct {
-		Name        string
-		Value       string
-		Description string
-		Note        string
-		StationID   app.StationID
-	}
-	resGetStationConfigInt struct {
-		Name        string
-		Value       int64
-		Description string
-		Note        string
-		StationID   app.StationID
-	}
-	resGetStationConfigBool struct {
-		Name        string
-		Value       bool
-		Description string
-		Note        string
-		StationID   app.StationID
-	}
-	resGetStationConfigString struct {
-		Name        string
-		Value       string
-		Description string
-		Note        string
-		StationID   app.StationID
+		Version     int
 	}
 
 	resRabbitMessage struct {
@@ -1176,4 +1373,115 @@ type (
 		SentAt        *time.Time
 		MessageUUID   uuid.NullUUID
 	}
+
+	resBuildScript struct {
+		ID        int
+		StationID int
+		Name      string
+		Commands  string
+	}
+
+	argInsertBuildScript struct {
+		StationID int
+		Name      string
+		Commands  string
+	}
+
+	argUpdateBuildScript struct {
+		ID        int
+		StationID int
+		Name      string
+		Commands  string
+	}
+
+	argGetBuildScript struct {
+		ID int
+	}
+
+	TaskType   string
+	TaskStatus string
+	TaskSort   string
+	LogLevel   string
+
+	resTask struct {
+		ID         int
+		StationID  int
+		VersionID  *int
+		Type       TaskType
+		Status     TaskStatus
+		RetryCount int
+		Error      *string
+		CreatedAt  time.Time
+		StartedAt  *time.Time
+		StoppedAt  *time.Time
+		TotalCount int64
+	}
+
+	argGetTask struct {
+		ID int
+	}
+
+	argGetListTasks struct {
+		StationsID pq.Int32Array
+		Statuses   pq.StringArray
+		Types      pq.StringArray
+		Sort       *TaskSort
+		Limit      int64
+		Offset     int64
+	}
+
+	argInsertTask struct {
+		StationID int
+		VersionID *int
+		Type      TaskType
+	}
+
+	argUpdateTask struct {
+		ID         int
+		Status     *TaskStatus
+		RetryCount *int
+		Error      *string
+		StartedAt  *time.Time
+		StoppedAt  *time.Time
+	}
+
+	argInsertOpenwashingLog struct {
+		StationID int
+		Text      string
+		Type      *string
+		Level     LogLevel
+		CreatedAt time.Time
+	}
+
+	respOpenwashingLog struct {
+		ID        int64
+		StationID int
+		Text      string
+		Type      *string
+		Level     LogLevel
+		CreatedAt time.Time
+	}
+)
+
+const (
+	BuildTaskType        TaskType = "build"
+	UpdateTaskType       TaskType = "update"
+	RebootTaskType       TaskType = "reboot"
+	GetVersionsTaskType  TaskType = "get_versions"
+	PullFirmwareTaskType TaskType = "pull_firmware"
+	SetVersionTaskType   TaskType = "set_version"
+
+	QueueTaskStatus     TaskStatus = "queue"
+	StartedTaskStatus   TaskStatus = "started"
+	CompletedTaskStatus TaskStatus = "completed"
+	ErrorTaskStatus     TaskStatus = "error"
+	CanceledTaskStatus  TaskStatus = "canceled"
+
+	CreatedAtAscTaskSort  TaskSort = "created_at_asc"
+	CreatedAtDescTaskSort TaskSort = "created_at_desc"
+
+	DebugLogLevel   LogLevel = "debug"
+	InfoLogLevel    LogLevel = "info"
+	WarningLogLevel LogLevel = "warning"
+	ErrorLogLevel   LogLevel = "error"
 )

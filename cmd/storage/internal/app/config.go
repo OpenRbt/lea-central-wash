@@ -23,7 +23,7 @@ func (a *app) loadConfig() error {
 		return err
 	}
 	cfg := AppConfig{
-		TimeZone:        *timezone,
+		TimeZone:        timezone,
 		BonusServiceURL: def.OpenwashingURL,
 	}
 	a.cfgMutex.Lock()
@@ -44,59 +44,67 @@ func (a *app) setDefaultConfig() error {
 	return err
 }
 
-func (a *app) GetConfigInt(auth *Auth, name string) (*ConfigInt, error) {
+func (a *app) GetConfigInt(auth *Auth, name string) (ConfigInt, error) {
 	return a.repo.GetConfigInt(name)
 }
 
-func (a *app) GetConfigBool(auth *Auth, name string) (*ConfigBool, error) {
+func (a *app) GetConfigBool(auth *Auth, name string) (ConfigBool, error) {
 	return a.repo.GetConfigBool(name)
 }
 
-func (a *app) GetConfigString(auth *Auth, name string) (*ConfigString, error) {
+func (a *app) GetConfigString(auth *Auth, name string) (ConfigString, error) {
 	return a.repo.GetConfigString(name)
 }
 
 func (a *app) SetConfigInt(auth *Auth, config ConfigInt) error {
-	return a.repo.SetConfigInt(config)
+	return a.signalAfterUpdateConfig(a.repo.SetConfigInt(config))
 }
 
 func (a *app) SetConfigBool(auth *Auth, config ConfigBool) error {
-	return a.repo.SetConfigBool(config)
+	return a.signalAfterUpdateConfig(a.repo.SetConfigBool(config))
 }
 
 func (a *app) SetConfigString(auth *Auth, config ConfigString) error {
-	return a.repo.SetConfigString(config)
+	return a.signalAfterUpdateConfig(a.repo.SetConfigString(config))
 }
 
 func (a *app) DeleteConfigString(auth *Auth, name string) error {
-	return a.repo.DeleteConfigString(name)
+	return a.signalAfterUpdateConfig(a.repo.DeleteConfigString(name))
 }
 
-func (a *app) GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error) {
+func (a *app) GetStationConfigInt(name string, stationID StationID) (StationConfigVar[int64], error) {
 	return a.repo.GetStationConfigInt(name, stationID)
 }
 
-func (a *app) GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error) {
+func (a *app) GetStationConfigBool(name string, stationID StationID) (StationConfigVar[bool], error) {
 	return a.repo.GetStationConfigBool(name, stationID)
 }
 
-func (a *app) GetStationConfigString(name string, stationID StationID) (*StationConfigString, error) {
+func (a *app) GetStationConfigString(name string, stationID StationID) (StationConfigVar[string], error) {
 	return a.repo.GetStationConfigString(name, stationID)
 }
 
-func (a *app) SetStationConfigInt(auth *Auth, config StationConfigInt) error {
+func (a *app) SetStationConfigInt(auth *Auth, config StationConfigVar[int64]) error {
 	if config.Name == ParameterNameVolumeCoef {
 		a.stationsMutex.Lock()
 		a.volumeCorrection = int(config.Value)
 		a.stationsMutex.Unlock()
 	}
-	return a.repo.SetStationConfigInt(config)
+	return a.signalAfterUpdateConfig(a.repo.SetStationConfigInt(config))
 }
 
-func (a *app) SetStationConfigBool(auth *Auth, config StationConfigBool) error {
-	return a.repo.SetStationConfigBool(config)
+func (a *app) SetStationConfigBool(auth *Auth, config StationConfigVar[bool]) error {
+	return a.signalAfterUpdateConfig(a.repo.SetStationConfigBool(config))
 }
 
-func (a *app) SetStationConfigString(auth *Auth, config StationConfigString) error {
-	return a.repo.SetStationConfigString(config)
+func (a *app) SetStationConfigString(auth *Auth, config StationConfigVar[string]) error {
+	return a.signalAfterUpdateConfig(a.repo.SetStationConfigString(config))
+}
+
+func (a *app) signalAfterUpdateConfig(err error) error {
+	if err != nil {
+		return err
+	}
+	a.sendManagementSyncSignal()
+	return nil
 }

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/ping"
 	uuid "github.com/satori/go.uuid"
 	"github.com/shopspring/decimal"
 
@@ -49,10 +50,15 @@ type leaAnswer struct {
 }
 
 type Message string
+type RoutingKey string
 
 const (
-	msgCommand    Message = "kaspi_client_service/command"
-	commandAnswer Message = "kaspi_client_service/command_answer"
+	msgCommand           Message = "kaspi_client_service/command"
+	commandAnswer        Message = "kaspi_client_service/command_answer"
+	kaspiPingMessageType Message = "kaspi_client_service/ping"
+
+	RoutingKeyKaspiPing   RoutingKey = "kaspi_ping"
+	RoutingKeyKaspiClient RoutingKey = "kaspi_service_client"
 )
 
 func statusFromApp(v app.LeaStatus) leaStatus {
@@ -139,14 +145,23 @@ func (s *Service) SendAnswer(v app.KaspiAnswer) (err error) {
 		MessageID: v.MessageID,
 		Info:      v.Info,
 		Status:    statusFromApp(v.Status),
-	}, commandAnswer)
+	}, commandAnswer, RoutingKeyKaspiClient)
 	if err != nil {
 		s.setLastErr(err.Error())
 	}
 	return err
 }
 
-func (s *Service) sendMessage(msg interface{}, messageType Message) (err error) {
+func (s *Service) Ping(serverID string, status []app.StationPingStatus) error {
+	p := ping.BonusPing{
+		WashID:   serverID,
+		Stations: stationPingStatusToRabbit(status),
+	}
+
+	return s.sendMessage(p, kaspiPingMessageType, RoutingKeyKaspiPing)
+}
+
+func (s *Service) sendMessage(msg interface{}, messageType Message, routingKey RoutingKey) (err error) {
 	jsonMsg, ok := msg.([]byte)
 	if !ok {
 		jsonMsg, err = json.Marshal(msg)
@@ -162,8 +177,11 @@ func (s *Service) sendMessage(msg interface{}, messageType Message) (err error) 
 	message.DeliveryMode = amqp.Persistent
 
 	exchangeName := exchange
-	routingKeyString := "kaspi_service_client"
-	message.Expiration = "4000"
+	routingKeyString := string(routingKey)
+
+	if messageType == commandAnswer {
+		message.Expiration = "4000"
+	}
 
 	dConfirmation, err := s.sbpClientPub.PublishWithDeferredConfirmWithContext(
 		context.Background(),
@@ -191,4 +209,15 @@ func (s *Service) sendMessage(msg interface{}, messageType Message) (err error) 
 		break
 	}
 	return err
+}
+
+func stationPingStatusToRabbit(status []app.StationPingStatus) []ping.StationStatus {
+	l := []ping.StationStatus{}
+	for _, v := range status {
+		l = append(l, ping.StationStatus{
+			ID:       int(v.ID),
+			IsOnline: v.IsOnline,
+		})
+	}
+	return l
 }

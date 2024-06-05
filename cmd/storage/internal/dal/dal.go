@@ -45,6 +45,8 @@ type repo struct {
 	PaymentsRep
 }
 
+var _ = app.Repo(&repo{})
+
 // New creates and returns new Repo.
 func New(db *sqlx.DB, maintenanceDB *sqlx.DB) *repo {
 	return &repo{
@@ -364,7 +366,6 @@ func (r *repo) SaveMoneyReport(report app.MoneyReport) (err error) {
 func (r *repo) ResetStationStat(stationID app.StationID) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		var res []resRelayReport
-		report := app.StationsStat{}
 		err := tx.NamedSelectContext(ctx, &res, sqlCurentStationReport, argStationReport{
 			StationID: &stationID,
 		})
@@ -378,7 +379,7 @@ func (r *repo) ResetStationStat(stationID app.StationID) (err error) {
 		if err != nil {
 			return err
 		}
-		report = appStationsStat(res, relay)
+		report := appStationsStat(res, relay)
 		stat := report[stationID]
 		bytes, err := json.Marshal(stat)
 		if err != nil {
@@ -628,27 +629,38 @@ func (r *repo) CheckDB() (ok bool, err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) Programs(id *int64) (programs []app.Program, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res []resPrograms
-		err = tx.NamedSelectContext(ctx, &res, sqlPrograms, argPrograms{
-			ID: id,
-		})
+func (r *repo) GetPrograms(ctx context.Context, filter app.ProgramFilter) ([]app.Program, int64, error) {
+	var resPrograms []resProgram
+	var count int64
 
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedSelectContext(ctx, &resPrograms, sqlPrograms.
+			OrderBy("id").
+			WithPagination(filter.Pagination).String(),
+			argPrograms{ID: filter.ID})
 		if err != nil {
 			return err
 		}
 
-		programs = appPrograms(res)
+		if len(resPrograms) > 0 {
+			count = resPrograms[0].TotalCount
+		} else if filter.Offset() > 0 {
+			return tx.NamedGetContext(ctx, &count, sqlPrograms.Count().String(), argPrograms{ID: filter.ID})
+		}
 
 		return nil
 	})
-	return
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return appPrograms(resPrograms), count, nil
 }
 
-func (r *repo) SetProgram(program app.Program) (err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err = tx.NamedExec(sqlSetProgram, argSetProgram{
+func (r *repo) SetProgram(ctx context.Context, program app.Program) (app.Program, error) {
+	var resProgram resProgram
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		return tx.NamedGetContext(ctx, &resProgram, sqlSetProgram, argSetProgram{
 			ID:                         program.ID,
 			Name:                       program.Name,
 			Price:                      program.Price,
@@ -659,10 +671,12 @@ func (r *repo) SetProgram(program app.Program) (err error) {
 			Relays:                     dalProgramRelays(program.Relays),
 			PreflightRelays:            dalProgramRelays(program.PreflightRelays),
 		})
-		return err
 	})
+	if err != nil {
+		return app.Program{}, err
+	}
 
-	return
+	return appProgram(resProgram), nil
 }
 
 func (r *repo) StationProgram(id app.StationID) (button []app.StationProgram, err error) {
@@ -829,64 +843,97 @@ func (r *repo) LastUpdateConfig() (id int, err error) {
 	return //nolint:nakedret
 }
 
-func (r *repo) AddAdvertisingCampaign(a app.AdvertisingCampaign) (err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlAddAdvertisingCampaign, dalAdvertisingCampaign(a))
-		return err
+func (r *repo) AddAdvertisingCampaign(ctx context.Context, a app.AdvertisingCampaign) (app.AdvertisingCampaign, error) {
+	var resAdvert resAdvertisingCampaign
+
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		return tx.NamedGetContext(ctx, &resAdvert, sqlAddAdvertisingCampaign, dalAdvertisingCampaign(a))
 	})
-	return //nolint:nakedret
+	if err != nil {
+		return app.AdvertisingCampaign{}, err
+	}
+
+	return appAdvertisingCampaign(resAdvert), nil
 }
 
-func (r *repo) EditAdvertisingCampaign(a app.AdvertisingCampaign) (err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlEditAdvertisingCampaign, dalAdvertisingCampaign(a))
-		return err
-	})
-	return //nolint:nakedret
-}
+func (r *repo) EditAdvertisingCampaign(ctx context.Context, a app.AdvertisingCampaign) (app.AdvertisingCampaign, error) {
+	var resAdvert resAdvertisingCampaign
 
-func (r *repo) DelAdvertisingCampaign(id int64) (err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlDelAdvertisingCampaign, argDelAdvertisingCampaign{
-			ID: id,
-		})
-		return err
-	})
-	return //nolint:nakedret
-}
-
-func (r *repo) AdvertisingCampaignByID(id int64) (a *app.AdvertisingCampaign, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		res := resAdvertisingCampaign{}
-		err := tx.NamedGetContext(ctx, &res, sqlAdvertisingCampaignByID, argAdvertisingCampaignByID{
-			ID: id,
-		})
-		if err == sql.ErrNoRows {
-			return app.ErrNotFound
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &resAdvert, sqlEditAdvertisingCampaign, dalAdvertisingCampaign(a))
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
 		}
+
+		return err
+	})
+	if err != nil {
+		return app.AdvertisingCampaign{}, err
+	}
+
+	return appAdvertisingCampaign(resAdvert), nil
+}
+
+func (r *repo) DeleteAdvertisingCampaign(ctx context.Context, id int64) (app.AdvertisingCampaign, error) {
+	var resAdvert resAdvertisingCampaign
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &resAdvert, sqlDelAdvertisingCampaign, argID[int64]{ID: id})
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
+		}
+
+		return err
+	})
+	if err != nil {
+		return app.AdvertisingCampaign{}, err
+	}
+
+	return appAdvertisingCampaign(resAdvert), nil
+}
+
+func (r *repo) GetAdvertisingCampaignByID(ctx context.Context, id int64) (app.AdvertisingCampaign, error) {
+	var resAdvert resAdvertisingCampaign
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &resAdvert, sqlAdvertisingCampaignByID, argID[int64]{ID: id})
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
+		}
+
+		return err
+	})
+	if err != nil {
+		return app.AdvertisingCampaign{}, err
+	}
+
+	return appAdvertisingCampaign(resAdvert), nil
+}
+
+func (r *repo) GetAdvertisingCampaigns(ctx context.Context, filter app.AdvertisingCampaignFilter) ([]app.AdvertisingCampaign, int64, error) {
+	var resAdverts []resAdvertisingCampaign
+	var count int64
+
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedSelectContext(ctx, &resAdverts, sqlAdvertisingCampaign.
+			OrderBy("id").
+			WithPagination(filter.Pagination).String(),
+			dalAdvertisingCampaignFilter(filter))
 		if err != nil {
 			return err
 		}
-		a = appAdvertisingCampaign(res)
-		return nil
-	})
-	return //nolint:nakedret
-}
 
-func (r *repo) AdvertisingCampaign(startDate, endDate *time.Time) (a []app.AdvertisingCampaign, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		res := []resAdvertisingCampaign{}
-		err := tx.NamedSelectContext(ctx, &res, sqlAdvertisingCampaign, argAdvertisingCampaignGet{
-			StartDate: startDate,
-			EndDate:   endDate,
-		})
-		if err != nil {
-			return err
+		if len(resAdverts) > 0 {
+			count = resAdverts[0].TotalCount
+		} else if filter.Offset() > 0 {
+			return tx.NamedGetContext(ctx, &count, sqlAdvertisingCampaign.Count().String(), dalAdvertisingCampaignFilter(filter))
 		}
-		a = appAdvertisingCampaigns(res)
+
 		return nil
 	})
-	return //nolint:nakedret
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return appAdvertisingCampaigns(resAdverts), count, nil
 }
 
 func (r *repo) GetCurrentAdvertisingCampaigns(curTime time.Time) (a []app.AdvertisingCampaign, err error) {
@@ -904,7 +951,7 @@ func (r *repo) GetCurrentAdvertisingCampaigns(curTime time.Time) (a []app.Advert
 	return //nolint:nakedret
 }
 
-func (r *repo) GetConfigInt(name string) (cfg *app.ConfigInt, err error) {
+func (r *repo) GetConfigInt(name string) (cfg app.ConfigInt, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		res := resGetConfigInt{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetConfigInt, argGetConfig{
@@ -921,7 +968,7 @@ func (r *repo) GetConfigInt(name string) (cfg *app.ConfigInt, err error) {
 	})
 	return
 }
-func (r *repo) GetConfigBool(name string) (cfg *app.ConfigBool, err error) {
+func (r *repo) GetConfigBool(name string) (cfg app.ConfigBool, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		res := resGetConfigBool{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetConfigBool, argGetConfig{
@@ -938,7 +985,7 @@ func (r *repo) GetConfigBool(name string) (cfg *app.ConfigBool, err error) {
 	})
 	return
 }
-func (r *repo) GetConfigString(name string) (cfg *app.ConfigString, err error) {
+func (r *repo) GetConfigString(name string) (cfg app.ConfigString, err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		res := resGetConfigString{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetConfigString, argGetConfig{
@@ -984,7 +1031,7 @@ func (r *repo) SetConfigIntIfNotExists(config app.ConfigInt) (err error) {
 
 func (r *repo) SetConfigBool(config app.ConfigBool) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlSetConfigInt, argSetConfigBool{
+		_, err := tx.NamedExec(sqlSetConfigBool, argSetConfigBool{
 			Name:        config.Name,
 			Value:       config.Value,
 			Description: config.Description,
@@ -1015,9 +1062,9 @@ func (r *repo) DeleteConfigString(name string) error {
 	return err
 }
 
-func (r *repo) GetStationConfigInt(name string, stationID app.StationID) (cfg *app.StationConfigInt, err error) {
+func (r *repo) GetStationConfigInt(name string, stationID app.StationID) (cfg app.StationConfigVar[int64], err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		res := resGetStationConfigInt{}
+		res := resGetStationConfigVar[int64]{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetStationConfigInt, argGetStationConfig{
 			Name:      name,
 			StationID: stationID,
@@ -1028,14 +1075,14 @@ func (r *repo) GetStationConfigInt(name string, stationID app.StationID) (cfg *a
 			}
 			return err
 		}
-		cfg = appStationConfigInt(res)
+		cfg = appStationConfigVar(res)
 		return nil
 	})
 	return
 }
-func (r *repo) GetStationConfigBool(name string, stationID app.StationID) (cfg *app.StationConfigBool, err error) {
+func (r *repo) GetStationConfigBool(name string, stationID app.StationID) (cfg app.StationConfigVar[bool], err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		res := resGetStationConfigBool{}
+		res := resGetStationConfigVar[bool]{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetStationConfigBool, argGetStationConfig{
 			Name:      name,
 			StationID: stationID,
@@ -1046,14 +1093,14 @@ func (r *repo) GetStationConfigBool(name string, stationID app.StationID) (cfg *
 			}
 			return err
 		}
-		cfg = appStationConfigBool(res)
+		cfg = appStationConfigVar(res)
 		return nil
 	})
 	return
 }
-func (r *repo) GetStationConfigString(name string, stationID app.StationID) (cfg *app.StationConfigString, err error) {
+func (r *repo) GetStationConfigString(name string, stationID app.StationID) (cfg app.StationConfigVar[string], err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		res := resGetStationConfigString{}
+		res := resGetStationConfigVar[string]{}
 		err := tx.NamedGetContext(ctx, &res, sqlGetStationConfigString, argGetStationConfig{
 			Name:      name,
 			StationID: stationID,
@@ -1064,21 +1111,15 @@ func (r *repo) GetStationConfigString(name string, stationID app.StationID) (cfg
 			}
 			return err
 		}
-		cfg = appStationConfigString(res)
+		cfg = appStationConfigVar(res)
 		return nil
 	})
 	return
 }
 
-func (r *repo) SetStationConfigInt(config app.StationConfigInt) (err error) {
+func (r *repo) SetStationConfigInt(config app.StationConfigVar[int64]) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlSetStationConfigInt, argSetStationConfigInt{
-			Name:        config.Name,
-			Value:       config.Value,
-			Description: config.Description,
-			Note:        config.Note,
-			StationID:   config.StationID,
-		})
+		_, err := tx.NamedExec(sqlSetStationConfigInt, dalStationConfigVar(config))
 		if pqErrConflictIn(err, constraintStationIntStationID) {
 			return app.ErrNotFound
 		}
@@ -1087,15 +1128,9 @@ func (r *repo) SetStationConfigInt(config app.StationConfigInt) (err error) {
 	return
 }
 
-func (r *repo) SetStationConfigBool(config app.StationConfigBool) (err error) {
+func (r *repo) SetStationConfigBool(config app.StationConfigVar[bool]) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlSetStationConfigBool, argSetStationConfigBool{
-			Name:        config.Name,
-			Value:       config.Value,
-			Description: config.Description,
-			Note:        config.Note,
-			StationID:   config.StationID,
-		})
+		_, err := tx.NamedExec(sqlSetStationConfigBool, dalStationConfigVar(config))
 		if pqErrConflictIn(err, constraintStationBoolStationID) {
 			return app.ErrNotFound
 		}
@@ -1103,15 +1138,10 @@ func (r *repo) SetStationConfigBool(config app.StationConfigBool) (err error) {
 	})
 	return
 }
-func (r *repo) SetStationConfigString(config app.StationConfigString) (err error) {
+
+func (r *repo) SetStationConfigString(config app.StationConfigVar[string]) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlSetStationConfigString, argSetStationConfigString{
-			Name:        config.Name,
-			Value:       config.Value,
-			Description: config.Description,
-			Note:        config.Note,
-			StationID:   config.StationID,
-		})
+		_, err := tx.NamedExec(sqlSetStationConfigString, dalStationConfigVar(config))
 		if pqErrConflictIn(err, constraintStationStringStationID) {
 			return app.ErrNotFound
 		}
@@ -1265,4 +1295,32 @@ func (r *repo) RefreshMotorStatsDates() (err error) {
 	})
 
 	return
+}
+
+func (r *repo) CreateOpenwashingLog(model app.OpenwashingLogCreate) (app.OpenwashingLog, error) {
+	var log app.OpenwashingLog
+
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res respOpenwashingLog
+		err := tx.NamedGetContext(ctx, &res, sqlInsertOpenwashingLog, argInsertOpenwashingLog{
+			StationID: int(model.StationID),
+			Text:      model.Text,
+			Type:      model.Type,
+			Level:     dalLogLevel(model.Level),
+			CreatedAt: time.Now().UTC(),
+		})
+		if err != nil {
+			return err
+		}
+
+		log = appOpenwashingLog(res)
+
+		return nil
+	})
+
+	if err != nil {
+		return app.OpenwashingLog{}, err
+	}
+
+	return log, err
 }

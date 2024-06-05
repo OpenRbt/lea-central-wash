@@ -53,6 +53,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		AddAdvertisingCampaignHandler: AddAdvertisingCampaignHandlerFunc(func(params AddAdvertisingCampaignParams, principal *storageapi.Profile) AddAdvertisingCampaignResponder {
 			return AddAdvertisingCampaignNotImplemented()
 		}),
+		AddLogHandler: AddLogHandlerFunc(func(params AddLogParams) AddLogResponder {
+			return AddLogNotImplemented()
+		}),
 		AddServiceAmountHandler: AddServiceAmountHandlerFunc(func(params AddServiceAmountParams) AddServiceAmountResponder {
 			return AddServiceAmountNotImplemented()
 		}),
@@ -71,6 +74,12 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		CreateSessionHandler: CreateSessionHandlerFunc(func(params CreateSessionParams) CreateSessionResponder {
 			return CreateSessionNotImplemented()
 		}),
+		CreateTaskHandler: CreateTaskHandlerFunc(func(params CreateTaskParams, principal *storageapi.Profile) CreateTaskResponder {
+			return CreateTaskNotImplemented()
+		}),
+		CreateTaskByHashHandler: CreateTaskByHashHandlerFunc(func(params CreateTaskByHashParams) CreateTaskByHashResponder {
+			return CreateTaskByHashNotImplemented()
+		}),
 		CreateUserHandler: CreateUserHandlerFunc(func(params CreateUserParams, principal *storageapi.Profile) CreateUserResponder {
 			return CreateUserNotImplemented()
 		}),
@@ -79,6 +88,15 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		DelStationHandler: DelStationHandlerFunc(func(params DelStationParams) DelStationResponder {
 			return DelStationNotImplemented()
+		}),
+		DeleteBuildScriptHandler: DeleteBuildScriptHandlerFunc(func(params DeleteBuildScriptParams, principal *storageapi.Profile) DeleteBuildScriptResponder {
+			return DeleteBuildScriptNotImplemented()
+		}),
+		DeleteTaskHandler: DeleteTaskHandlerFunc(func(params DeleteTaskParams, principal *storageapi.Profile) DeleteTaskResponder {
+			return DeleteTaskNotImplemented()
+		}),
+		DeleteTasksHandler: DeleteTasksHandlerFunc(func(params DeleteTasksParams, principal *storageapi.Profile) DeleteTasksResponder {
+			return DeleteTasksNotImplemented()
 		}),
 		DeleteUserHandler: DeleteUserHandlerFunc(func(params DeleteUserParams, principal *storageapi.Profile) DeleteUserResponder {
 			return DeleteUserNotImplemented()
@@ -92,6 +110,12 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		EndSessionHandler: EndSessionHandlerFunc(func(params EndSessionParams) EndSessionResponder {
 			return EndSessionNotImplemented()
 		}),
+		FirmwareVersionsCopyHandler: FirmwareVersionsCopyHandlerFunc(func(params FirmwareVersionsCopyParams, principal *storageapi.Profile) FirmwareVersionsCopyResponder {
+			return FirmwareVersionsCopyNotImplemented()
+		}),
+		GetBuildScriptHandler: GetBuildScriptHandlerFunc(func(params GetBuildScriptParams, principal *storageapi.Profile) GetBuildScriptResponder {
+			return GetBuildScriptNotImplemented()
+		}),
 		GetConfigVarBoolHandler: GetConfigVarBoolHandlerFunc(func(params GetConfigVarBoolParams, principal *storageapi.Profile) GetConfigVarBoolResponder {
 			return GetConfigVarBoolNotImplemented()
 		}),
@@ -101,8 +125,17 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		GetConfigVarStringHandler: GetConfigVarStringHandlerFunc(func(params GetConfigVarStringParams, principal *storageapi.Profile) GetConfigVarStringResponder {
 			return GetConfigVarStringNotImplemented()
 		}),
+		GetListBuildScriptsHandler: GetListBuildScriptsHandlerFunc(func(params GetListBuildScriptsParams, principal *storageapi.Profile) GetListBuildScriptsResponder {
+			return GetListBuildScriptsNotImplemented()
+		}),
+		GetListTasksHandler: GetListTasksHandlerFunc(func(params GetListTasksParams, principal *storageapi.Profile) GetListTasksResponder {
+			return GetListTasksNotImplemented()
+		}),
 		GetPingHandler: GetPingHandlerFunc(func(params GetPingParams) GetPingResponder {
 			return GetPingNotImplemented()
+		}),
+		GetPublicKeyHandler: GetPublicKeyHandlerFunc(func(params GetPublicKeyParams) GetPublicKeyResponder {
+			return GetPublicKeyNotImplemented()
 		}),
 		GetServerInfoHandler: GetServerInfoHandlerFunc(func(params GetServerInfoParams) GetServerInfoResponder {
 			return GetServerInfoNotImplemented()
@@ -119,6 +152,12 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		GetStationDiscountsHandler: GetStationDiscountsHandlerFunc(func(params GetStationDiscountsParams) GetStationDiscountsResponder {
 			return GetStationDiscountsNotImplemented()
 		}),
+		GetStationFirmwareVersionBufferedHandler: GetStationFirmwareVersionBufferedHandlerFunc(func(params GetStationFirmwareVersionBufferedParams, principal *storageapi.Profile) GetStationFirmwareVersionBufferedResponder {
+			return GetStationFirmwareVersionBufferedNotImplemented()
+		}),
+		GetStationFirmwareVersionsHandler: GetStationFirmwareVersionsHandlerFunc(func(params GetStationFirmwareVersionsParams, principal *storageapi.Profile) GetStationFirmwareVersionsResponder {
+			return GetStationFirmwareVersionsNotImplemented()
+		}),
 		GetStationWashConfigVarBoolHandler: GetStationWashConfigVarBoolHandlerFunc(func(params GetStationWashConfigVarBoolParams) GetStationWashConfigVarBoolResponder {
 			return GetStationWashConfigVarBoolNotImplemented()
 		}),
@@ -127,6 +166,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		GetStationWashConfigVarStringHandler: GetStationWashConfigVarStringHandlerFunc(func(params GetStationWashConfigVarStringParams) GetStationWashConfigVarStringResponder {
 			return GetStationWashConfigVarStringNotImplemented()
+		}),
+		GetTaskHandler: GetTaskHandlerFunc(func(params GetTaskParams, principal *storageapi.Profile) GetTaskResponder {
+			return GetTaskNotImplemented()
 		}),
 		GetUserHandler: GetUserHandlerFunc(func(params GetUserParams, principal *storageapi.Profile) GetUserResponder {
 			return GetUserNotImplemented()
@@ -199,6 +241,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		}),
 		SetBonusesHandler: SetBonusesHandlerFunc(func(params SetBonusesParams) SetBonusesResponder {
 			return SetBonusesNotImplemented()
+		}),
+		SetBuildScriptHandler: SetBuildScriptHandlerFunc(func(params SetBuildScriptParams, principal *storageapi.Profile) SetBuildScriptResponder {
+			return SetBuildScriptNotImplemented()
 		}),
 		SetCardReaderConfigHandler: SetCardReaderConfigHandlerFunc(func(params SetCardReaderConfigParams) SetCardReaderConfigResponder {
 			return SetCardReaderConfigNotImplemented()
@@ -331,6 +376,8 @@ type StorageAPI struct {
 	VolumeDispenserHandler VolumeDispenserHandler
 	// AddAdvertisingCampaignHandler sets the operation handler for the add advertising campaign operation
 	AddAdvertisingCampaignHandler AddAdvertisingCampaignHandler
+	// AddLogHandler sets the operation handler for the add log operation
+	AddLogHandler AddLogHandler
 	// AddServiceAmountHandler sets the operation handler for the add service amount operation
 	AddServiceAmountHandler AddServiceAmountHandler
 	// AdvertisingCampaignHandler sets the operation handler for the advertising campaign operation
@@ -343,12 +390,22 @@ type StorageAPI struct {
 	CardReaderConfigByHashHandler CardReaderConfigByHashHandler
 	// CreateSessionHandler sets the operation handler for the create session operation
 	CreateSessionHandler CreateSessionHandler
+	// CreateTaskHandler sets the operation handler for the create task operation
+	CreateTaskHandler CreateTaskHandler
+	// CreateTaskByHashHandler sets the operation handler for the create task by hash operation
+	CreateTaskByHashHandler CreateTaskByHashHandler
 	// CreateUserHandler sets the operation handler for the create user operation
 	CreateUserHandler CreateUserHandler
 	// DelAdvertisingCampaignHandler sets the operation handler for the del advertising campaign operation
 	DelAdvertisingCampaignHandler DelAdvertisingCampaignHandler
 	// DelStationHandler sets the operation handler for the del station operation
 	DelStationHandler DelStationHandler
+	// DeleteBuildScriptHandler sets the operation handler for the delete build script operation
+	DeleteBuildScriptHandler DeleteBuildScriptHandler
+	// DeleteTaskHandler sets the operation handler for the delete task operation
+	DeleteTaskHandler DeleteTaskHandler
+	// DeleteTasksHandler sets the operation handler for the delete tasks operation
+	DeleteTasksHandler DeleteTasksHandler
 	// DeleteUserHandler sets the operation handler for the delete user operation
 	DeleteUserHandler DeleteUserHandler
 	// DispenserStopHandler sets the operation handler for the dispenser stop operation
@@ -357,14 +414,24 @@ type StorageAPI struct {
 	EditAdvertisingCampaignHandler EditAdvertisingCampaignHandler
 	// EndSessionHandler sets the operation handler for the end session operation
 	EndSessionHandler EndSessionHandler
+	// FirmwareVersionsCopyHandler sets the operation handler for the firmware versions copy operation
+	FirmwareVersionsCopyHandler FirmwareVersionsCopyHandler
+	// GetBuildScriptHandler sets the operation handler for the get build script operation
+	GetBuildScriptHandler GetBuildScriptHandler
 	// GetConfigVarBoolHandler sets the operation handler for the get config var bool operation
 	GetConfigVarBoolHandler GetConfigVarBoolHandler
 	// GetConfigVarIntHandler sets the operation handler for the get config var int operation
 	GetConfigVarIntHandler GetConfigVarIntHandler
 	// GetConfigVarStringHandler sets the operation handler for the get config var string operation
 	GetConfigVarStringHandler GetConfigVarStringHandler
+	// GetListBuildScriptsHandler sets the operation handler for the get list build scripts operation
+	GetListBuildScriptsHandler GetListBuildScriptsHandler
+	// GetListTasksHandler sets the operation handler for the get list tasks operation
+	GetListTasksHandler GetListTasksHandler
 	// GetPingHandler sets the operation handler for the get ping operation
 	GetPingHandler GetPingHandler
+	// GetPublicKeyHandler sets the operation handler for the get public key operation
+	GetPublicKeyHandler GetPublicKeyHandler
 	// GetServerInfoHandler sets the operation handler for the get server info operation
 	GetServerInfoHandler GetServerInfoHandler
 	// GetStationConfigVarBoolHandler sets the operation handler for the get station config var bool operation
@@ -375,12 +442,18 @@ type StorageAPI struct {
 	GetStationConfigVarStringHandler GetStationConfigVarStringHandler
 	// GetStationDiscountsHandler sets the operation handler for the get station discounts operation
 	GetStationDiscountsHandler GetStationDiscountsHandler
+	// GetStationFirmwareVersionBufferedHandler sets the operation handler for the get station firmware version buffered operation
+	GetStationFirmwareVersionBufferedHandler GetStationFirmwareVersionBufferedHandler
+	// GetStationFirmwareVersionsHandler sets the operation handler for the get station firmware versions operation
+	GetStationFirmwareVersionsHandler GetStationFirmwareVersionsHandler
 	// GetStationWashConfigVarBoolHandler sets the operation handler for the get station wash config var bool operation
 	GetStationWashConfigVarBoolHandler GetStationWashConfigVarBoolHandler
 	// GetStationWashConfigVarIntHandler sets the operation handler for the get station wash config var int operation
 	GetStationWashConfigVarIntHandler GetStationWashConfigVarIntHandler
 	// GetStationWashConfigVarStringHandler sets the operation handler for the get station wash config var string operation
 	GetStationWashConfigVarStringHandler GetStationWashConfigVarStringHandler
+	// GetTaskHandler sets the operation handler for the get task operation
+	GetTaskHandler GetTaskHandler
 	// GetUserHandler sets the operation handler for the get user operation
 	GetUserHandler GetUserHandler
 	// GetUsersHandler sets the operation handler for the get users operation
@@ -429,6 +502,8 @@ type StorageAPI struct {
 	SaveRelayHandler SaveRelayHandler
 	// SetBonusesHandler sets the operation handler for the set bonuses operation
 	SetBonusesHandler SetBonusesHandler
+	// SetBuildScriptHandler sets the operation handler for the set build script operation
+	SetBuildScriptHandler SetBuildScriptHandler
 	// SetCardReaderConfigHandler sets the operation handler for the set card reader config operation
 	SetCardReaderConfigHandler SetCardReaderConfigHandler
 	// SetConfigVarBoolHandler sets the operation handler for the set config var bool operation
@@ -569,6 +644,9 @@ func (o *StorageAPI) Validate() error {
 	if o.AddAdvertisingCampaignHandler == nil {
 		unregistered = append(unregistered, "AddAdvertisingCampaignHandler")
 	}
+	if o.AddLogHandler == nil {
+		unregistered = append(unregistered, "AddLogHandler")
+	}
 	if o.AddServiceAmountHandler == nil {
 		unregistered = append(unregistered, "AddServiceAmountHandler")
 	}
@@ -587,6 +665,12 @@ func (o *StorageAPI) Validate() error {
 	if o.CreateSessionHandler == nil {
 		unregistered = append(unregistered, "CreateSessionHandler")
 	}
+	if o.CreateTaskHandler == nil {
+		unregistered = append(unregistered, "CreateTaskHandler")
+	}
+	if o.CreateTaskByHashHandler == nil {
+		unregistered = append(unregistered, "CreateTaskByHashHandler")
+	}
 	if o.CreateUserHandler == nil {
 		unregistered = append(unregistered, "CreateUserHandler")
 	}
@@ -595,6 +679,15 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.DelStationHandler == nil {
 		unregistered = append(unregistered, "DelStationHandler")
+	}
+	if o.DeleteBuildScriptHandler == nil {
+		unregistered = append(unregistered, "DeleteBuildScriptHandler")
+	}
+	if o.DeleteTaskHandler == nil {
+		unregistered = append(unregistered, "DeleteTaskHandler")
+	}
+	if o.DeleteTasksHandler == nil {
+		unregistered = append(unregistered, "DeleteTasksHandler")
 	}
 	if o.DeleteUserHandler == nil {
 		unregistered = append(unregistered, "DeleteUserHandler")
@@ -608,6 +701,12 @@ func (o *StorageAPI) Validate() error {
 	if o.EndSessionHandler == nil {
 		unregistered = append(unregistered, "EndSessionHandler")
 	}
+	if o.FirmwareVersionsCopyHandler == nil {
+		unregistered = append(unregistered, "FirmwareVersionsCopyHandler")
+	}
+	if o.GetBuildScriptHandler == nil {
+		unregistered = append(unregistered, "GetBuildScriptHandler")
+	}
 	if o.GetConfigVarBoolHandler == nil {
 		unregistered = append(unregistered, "GetConfigVarBoolHandler")
 	}
@@ -617,8 +716,17 @@ func (o *StorageAPI) Validate() error {
 	if o.GetConfigVarStringHandler == nil {
 		unregistered = append(unregistered, "GetConfigVarStringHandler")
 	}
+	if o.GetListBuildScriptsHandler == nil {
+		unregistered = append(unregistered, "GetListBuildScriptsHandler")
+	}
+	if o.GetListTasksHandler == nil {
+		unregistered = append(unregistered, "GetListTasksHandler")
+	}
 	if o.GetPingHandler == nil {
 		unregistered = append(unregistered, "GetPingHandler")
+	}
+	if o.GetPublicKeyHandler == nil {
+		unregistered = append(unregistered, "GetPublicKeyHandler")
 	}
 	if o.GetServerInfoHandler == nil {
 		unregistered = append(unregistered, "GetServerInfoHandler")
@@ -635,6 +743,12 @@ func (o *StorageAPI) Validate() error {
 	if o.GetStationDiscountsHandler == nil {
 		unregistered = append(unregistered, "GetStationDiscountsHandler")
 	}
+	if o.GetStationFirmwareVersionBufferedHandler == nil {
+		unregistered = append(unregistered, "GetStationFirmwareVersionBufferedHandler")
+	}
+	if o.GetStationFirmwareVersionsHandler == nil {
+		unregistered = append(unregistered, "GetStationFirmwareVersionsHandler")
+	}
 	if o.GetStationWashConfigVarBoolHandler == nil {
 		unregistered = append(unregistered, "GetStationWashConfigVarBoolHandler")
 	}
@@ -643,6 +757,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.GetStationWashConfigVarStringHandler == nil {
 		unregistered = append(unregistered, "GetStationWashConfigVarStringHandler")
+	}
+	if o.GetTaskHandler == nil {
+		unregistered = append(unregistered, "GetTaskHandler")
 	}
 	if o.GetUserHandler == nil {
 		unregistered = append(unregistered, "GetUserHandler")
@@ -715,6 +832,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.SetBonusesHandler == nil {
 		unregistered = append(unregistered, "SetBonusesHandler")
+	}
+	if o.SetBuildScriptHandler == nil {
+		unregistered = append(unregistered, "SetBuildScriptHandler")
 	}
 	if o.SetCardReaderConfigHandler == nil {
 		unregistered = append(unregistered, "SetCardReaderConfigHandler")
@@ -905,6 +1025,10 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/add-log"] = NewAddLog(o.context, o.AddLogHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/add-service-amount"] = NewAddServiceAmount(o.context, o.AddServiceAmountHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -929,6 +1053,14 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/tasks"] = NewCreateTask(o.context, o.CreateTaskHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/tasks/create-by-hash"] = NewCreateTaskByHash(o.context, o.CreateTaskByHashHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/user"] = NewCreateUser(o.context, o.CreateUserHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -938,6 +1070,18 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/del-station"] = NewDelStation(o.context, o.DelStationHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/build-scripts/{id}"] = NewDeleteBuildScript(o.context, o.DeleteBuildScriptHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/tasks/{id}"] = NewDeleteTask(o.context, o.DeleteTaskHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/tasks"] = NewDeleteTasks(o.context, o.DeleteTasksHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
@@ -957,6 +1101,14 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/stations/{id}/firmware-versions/copy-to/{toID}"] = NewFirmwareVersionsCopy(o.context, o.FirmwareVersionsCopyHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/build-scripts/{id}"] = NewGetBuildScript(o.context, o.GetBuildScriptHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/get-config-var-bool"] = NewGetConfigVarBool(o.context, o.GetConfigVarBoolHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -969,7 +1121,19 @@ func (o *StorageAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
+	o.handlers["GET"]["/build-scripts"] = NewGetListBuildScripts(o.context, o.GetListBuildScriptsHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/tasks"] = NewGetListTasks(o.context, o.GetListTasksHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
 	o.handlers["GET"]["/ping"] = NewGetPing(o.context, o.GetPingHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/public-key"] = NewGetPublicKey(o.context, o.GetPublicKeyHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -990,6 +1154,14 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/get-station-discounts"] = NewGetStationDiscounts(o.context, o.GetStationDiscountsHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/stations/{id}/firmware-versions/buffered"] = NewGetStationFirmwareVersionBuffered(o.context, o.GetStationFirmwareVersionBufferedHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/stations/{id}/firmware-versions"] = NewGetStationFirmwareVersions(o.context, o.GetStationFirmwareVersionsHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
@@ -1002,6 +1174,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/get-wash-config-var-string"] = NewGetStationWashConfigVarString(o.context, o.GetStationWashConfigVarStringHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/tasks/{id}"] = NewGetTask(o.context, o.GetTaskHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -1098,6 +1274,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/set-bonuses"] = NewSetBonuses(o.context, o.SetBonusesHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/build-scripts"] = NewSetBuildScript(o.context, o.SetBuildScriptHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
+	"github.com/lib/pq"
 )
 
 func appSetUsers(v []resUser) []app.UserData {
@@ -70,19 +71,24 @@ func appStationsVariables(v []resStationsVariables) []app.StationsVariables {
 	return res
 }
 
-func appPrograms(p []resPrograms) (res []app.Program) {
-	for i := range p {
-		res = append(res, app.Program{
-			ID:                         p[i].ID,
-			Name:                       p[i].Name,
-			Price:                      p[i].Price,
-			PreflightEnabled:           p[i].PreflightEnabled,
-			MotorSpeedPercent:          p[i].MotorSpeedPercent,
-			PreflightMotorSpeedPercent: p[i].PreflightMotorSpeedPercent,
-			IsFinishingProgram:         p[i].IsFinishingProgram,
-			Relays:                     appProgramRelays(p[i].Relays),
-			PreflightRelays:            appProgramRelays(p[i].PreflightRelays),
-		})
+func appProgram(p resProgram) app.Program {
+	return app.Program{
+		ID:                         p.ID,
+		Name:                       p.Name,
+		Price:                      p.Price,
+		PreflightEnabled:           p.PreflightEnabled,
+		MotorSpeedPercent:          p.MotorSpeedPercent,
+		PreflightMotorSpeedPercent: p.PreflightMotorSpeedPercent,
+		IsFinishingProgram:         p.IsFinishingProgram,
+		Relays:                     appProgramRelays(p.Relays),
+		PreflightRelays:            appProgramRelays(p.PreflightRelays),
+		Version:                    p.Version,
+	}
+}
+
+func appPrograms(programs []resProgram) (res []app.Program) {
+	for _, program := range programs {
+		res = append(res, appProgram(program))
 	}
 	return res
 }
@@ -205,15 +211,26 @@ func appStationsStat(res []resRelayReport, relay []resRelayStats) app.StationsSt
 	return report
 }
 
-func dalAdvertisingCampaign(a app.AdvertisingCampaign) argAdvertisingCampaign {
-	bytes, err := json.Marshal(a.DiscountPrograms)
+func dalAdvertisingCampaignFilter(filter app.AdvertisingCampaignFilter) argAdvertisingCampaignGet {
+	return argAdvertisingCampaignGet{
+		StartDate: filter.StartDate,
+		EndDate:   filter.EndDate,
+	}
+}
+
+func dalDiscountPrograms(programs []app.DiscountProgram) string {
+	bytes, err := json.Marshal(programs)
 	if err != nil {
 		panic(err)
 	}
 
+	return string(bytes)
+}
+
+func dalAdvertisingCampaign(a app.AdvertisingCampaign) argAdvertisingCampaign {
 	return argAdvertisingCampaign{
 		DefaultDiscount:  a.DefaultDiscount,
-		DiscountPrograms: string(bytes),
+		DiscountPrograms: dalDiscountPrograms(a.DiscountPrograms),
 		EndDate:          a.EndDate,
 		EndMinute:        a.EndMinute,
 		ID:               a.ID,
@@ -225,19 +242,25 @@ func dalAdvertisingCampaign(a app.AdvertisingCampaign) argAdvertisingCampaign {
 	}
 }
 
-func appAdvertisingCampaign(a resAdvertisingCampaign) *app.AdvertisingCampaign {
-	discountPrograms := []app.DiscountProgram{}
-	err := json.Unmarshal([]byte(a.DiscountPrograms), &discountPrograms)
+func appDiscountPrograms(programs string) []app.DiscountProgram {
+	var discountPrograms []app.DiscountProgram
+	err := json.Unmarshal([]byte(programs), &discountPrograms)
 	if err != nil {
 		panic(err)
 	}
+
+	return discountPrograms
+}
+
+func appAdvertisingCampaign(a resAdvertisingCampaign) app.AdvertisingCampaign {
 	weekday := []string{}
 	if a.Weekday != "" {
 		weekday = strings.Split(a.Weekday, ",")
 	}
-	return &app.AdvertisingCampaign{
+
+	return app.AdvertisingCampaign{
 		DefaultDiscount:  a.DefaultDiscount,
-		DiscountPrograms: discountPrograms,
+		DiscountPrograms: appDiscountPrograms(a.DiscountPrograms),
 		EndDate:          a.EndDate,
 		EndMinute:        a.EndMinute,
 		ID:               a.ID,
@@ -246,46 +269,87 @@ func appAdvertisingCampaign(a resAdvertisingCampaign) *app.AdvertisingCampaign {
 		Weekday:          weekday,
 		Enabled:          a.Enabled,
 		Name:             a.Name,
+		Version:          a.Version,
+		Deleted:          a.Deleted,
 	}
 }
 
 func appAdvertisingCampaigns(a []resAdvertisingCampaign) []app.AdvertisingCampaign {
 	res := []app.AdvertisingCampaign{}
 	for i := range a {
-		res = append(res, *appAdvertisingCampaign(a[i]))
+		res = append(res, appAdvertisingCampaign(a[i]))
 	}
 	return res
 }
 
-func appConfigInt(a resGetConfigInt) *app.ConfigInt {
-	return &app.ConfigInt{
+func appConfigInt(a resGetConfigInt) app.ConfigInt {
+	return app.ConfigInt{
 		Name:        a.Name,
 		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
+		Version:     a.Version,
 	}
 }
 
-func appConfigBool(a resGetConfigBool) *app.ConfigBool {
-	return &app.ConfigBool{
+func appConfigBool(a resGetConfigBool) app.ConfigBool {
+	return app.ConfigBool{
 		Name:        a.Name,
 		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
+		Version:     a.Version,
 	}
 }
 
-func appConfigString(a resGetConfigString) *app.ConfigString {
-	return &app.ConfigString{
+func appConfigString(a resGetConfigString) app.ConfigString {
+	return app.ConfigString{
 		Name:        a.Name,
 		Value:       a.Value,
 		Description: a.Description,
 		Note:        a.Note,
+		Deleted:     a.Deleted,
+		Version:     a.Version,
 	}
 }
 
-func appStationConfigInt(a resGetStationConfigInt) *app.StationConfigInt {
-	return &app.StationConfigInt{
+func appConfigStrings(a []resGetConfigString) []app.ConfigString {
+	l := []app.ConfigString{}
+	for _, v := range a {
+		l = append(l, appConfigString(v))
+	}
+	return l
+}
+
+func appConfigInts(a []resGetConfigInt) []app.ConfigInt {
+	l := []app.ConfigInt{}
+	for _, v := range a {
+		l = append(l, appConfigInt(v))
+	}
+	return l
+}
+
+func appConfigBools(a []resGetConfigBool) []app.ConfigBool {
+	l := []app.ConfigBool{}
+	for _, v := range a {
+		l = append(l, appConfigBool(v))
+	}
+	return l
+}
+
+func appStationConfigVar[T comparable](a resGetStationConfigVar[T]) app.StationConfigVar[T] {
+	return app.StationConfigVar[T]{
+		Name:        a.Name,
+		Value:       a.Value,
+		Description: a.Description,
+		Note:        a.Note,
+		StationID:   a.StationID,
+		Version:     a.Version,
+	}
+}
+
+func dalStationConfigVar[T comparable](a app.StationConfigVar[T]) argSetStationConfigVar[T] {
+	return argSetStationConfigVar[T]{
 		Name:        a.Name,
 		Value:       a.Value,
 		Description: a.Description,
@@ -294,24 +358,12 @@ func appStationConfigInt(a resGetStationConfigInt) *app.StationConfigInt {
 	}
 }
 
-func appStationConfigBool(a resGetStationConfigBool) *app.StationConfigBool {
-	return &app.StationConfigBool{
-		Name:        a.Name,
-		Value:       a.Value,
-		Description: a.Description,
-		Note:        a.Note,
-		StationID:   a.StationID,
+func appConfigVars[T comparable](a []resGetStationConfigVar[T]) []app.StationConfigVar[T] {
+	l := []app.StationConfigVar[T]{}
+	for _, v := range a {
+		l = append(l, appStationConfigVar(v))
 	}
-}
-
-func appStationConfigString(a resGetStationConfigString) *app.StationConfigString {
-	return &app.StationConfigString{
-		Name:        a.Name,
-		Value:       a.Value,
-		Description: a.Description,
-		Note:        a.Note,
-		StationID:   a.StationID,
-	}
+	return l
 }
 
 func appRabbitMessages(a []resRabbitMessage) []app.RabbitMessage {
@@ -359,5 +411,248 @@ func appRabbitMoneyReport(r resRabbitMoneyReport) app.RabbitMoneyReport {
 		IsSent:      r.Sent,
 		SentAt:      r.SentAt,
 		MessageUUID: r.MessageUUID.UUID,
+	}
+}
+
+func appListBuildScripts(buildScripts []resBuildScript) ([]app.BuildScript, error) {
+	var appBuildScripts []app.BuildScript
+
+	for i := 0; i < len(buildScripts); i++ {
+		bs, err := appBuildScript(buildScripts[i])
+		if err != nil {
+			return nil, err
+		}
+
+		appBuildScripts = append(appBuildScripts, bs)
+	}
+
+	return appBuildScripts, nil
+}
+
+func appBuildScript(buildScript resBuildScript) (app.BuildScript, error) {
+	var commands []string
+	err := json.Unmarshal([]byte(buildScript.Commands), &commands)
+	if err != nil {
+		return app.BuildScript{}, err
+	}
+
+	return app.BuildScript{
+		ID:        buildScript.ID,
+		Name:      buildScript.Name,
+		StationID: app.StationID(buildScript.StationID),
+		Commands:  commands,
+	}, nil
+}
+
+func appOpenwashingLog(model respOpenwashingLog) app.OpenwashingLog {
+	return app.OpenwashingLog{
+		ID:        model.ID,
+		Text:      model.Text,
+		StationID: app.StationID(model.StationID),
+		Type:      model.Type,
+		Level:     appLogLevel(model.Level),
+		CreatedAt: model.CreatedAt,
+	}
+}
+
+func appOpenwashingLogs(models []respOpenwashingLog) []app.OpenwashingLog {
+	res := []app.OpenwashingLog{}
+	for _, model := range models {
+		res = append(res, appOpenwashingLog(model))
+	}
+	return res
+}
+
+func appTasks(tasks []resTask) []app.Task {
+	var appTasks []app.Task
+	for i := 0; i < len(tasks); i++ {
+		appTasks = append(appTasks, appTask(tasks[i]))
+	}
+
+	return appTasks
+}
+
+func dalTaskFilter(filter app.TaskFilter) argGetListTasks {
+	return argGetListTasks{
+		StationsID: dalStationsId(filter.StationsID),
+		Statuses:   dalTaskStatuses(filter.Statuses),
+		Types:      dalTaskTypes(filter.Types),
+		Sort:       dalTaskSort(filter.Sort),
+		Limit:      filter.Limit(),
+		Offset:     filter.Offset(),
+	}
+}
+
+func appTask(task resTask) app.Task {
+	return app.Task{
+		ID:         task.ID,
+		StationID:  app.StationID(task.StationID),
+		VersionID:  task.VersionID,
+		Type:       appTaskType(task.Type),
+		Status:     appTaskStatus(task.Status),
+		RetryCount: task.RetryCount,
+		Error:      task.Error,
+		CreatedAt:  task.CreatedAt,
+		StartedAt:  task.StartedAt,
+		StoppedAt:  task.StoppedAt,
+	}
+}
+
+func appTaskType(taskType TaskType) app.TaskType {
+	switch taskType {
+	case BuildTaskType:
+		return app.BuildTaskType
+	case UpdateTaskType:
+		return app.UpdateTaskType
+	case RebootTaskType:
+		return app.RebootTaskType
+	case GetVersionsTaskType:
+		return app.GetVersionsTaskType
+	case PullFirmwareTaskType:
+		return app.PullFirmwareTaskType
+	case SetVersionTaskType:
+		return app.SetVersionTaskType
+	default:
+		panic("Unknown task type: " + taskType)
+	}
+}
+
+func appTaskStatus(taskStatus TaskStatus) app.TaskStatus {
+	switch taskStatus {
+	case QueueTaskStatus:
+		return app.QueueTaskStatus
+	case StartedTaskStatus:
+		return app.StartedTaskStatus
+	case CompletedTaskStatus:
+		return app.CompletedTaskStatus
+	case ErrorTaskStatus:
+		return app.ErrorTaskStatus
+	case CanceledTaskStatus:
+		return app.CanceledTaskStatus
+	default:
+		panic("Unknown task status: " + taskStatus)
+	}
+}
+
+func appLogLevel(level LogLevel) app.LogLevel {
+	switch level {
+	case DebugLogLevel:
+		return app.DebugLogLevel
+	case InfoLogLevel:
+		return app.InfoLogLevel
+	case WarningLogLevel:
+		return app.WarningLogLevel
+	case ErrorLogLevel:
+		return app.ErrorLogLevel
+	default:
+		panic("Unknown log level: " + level)
+	}
+}
+
+func dalLogLevel(level app.LogLevel) LogLevel {
+	switch level {
+	case app.DebugLogLevel:
+		return DebugLogLevel
+	case app.InfoLogLevel:
+		return InfoLogLevel
+	case app.WarningLogLevel:
+		return WarningLogLevel
+	case app.ErrorLogLevel:
+		return ErrorLogLevel
+	default:
+		panic("Unknown log level: " + level)
+	}
+}
+
+func dalTaskType(taskType app.TaskType) TaskType {
+	switch taskType {
+	case app.BuildTaskType:
+		return BuildTaskType
+	case app.UpdateTaskType:
+		return UpdateTaskType
+	case app.RebootTaskType:
+		return RebootTaskType
+	case app.GetVersionsTaskType:
+		return GetVersionsTaskType
+	case app.PullFirmwareTaskType:
+		return PullFirmwareTaskType
+	case app.SetVersionTaskType:
+		return SetVersionTaskType
+	default:
+		panic("Unknown task type: " + taskType)
+	}
+}
+
+func dalTaskStatus(taskStatus app.TaskStatus) TaskStatus {
+	switch taskStatus {
+	case app.QueueTaskStatus:
+		return QueueTaskStatus
+	case app.StartedTaskStatus:
+		return StartedTaskStatus
+	case app.CompletedTaskStatus:
+		return CompletedTaskStatus
+	case app.ErrorTaskStatus:
+		return ErrorTaskStatus
+	case app.CanceledTaskStatus:
+		return CanceledTaskStatus
+	default:
+		panic("Unknown task status: " + taskStatus)
+	}
+}
+
+func dalStationsId(stationsId []app.StationID) pq.Int32Array {
+	if stationsId == nil {
+		return nil
+	}
+	ids := []int32{}
+	for _, i := range stationsId {
+		ids = append(ids, int32(i))
+	}
+	return ids
+}
+
+func dalTaskStatuses(taskStatuses []app.TaskStatus) pq.StringArray {
+	if taskStatuses == nil {
+		return nil
+	}
+	statuses := []string{}
+	for _, s := range taskStatuses {
+		statuses = append(statuses, string(dalTaskStatus(s)))
+	}
+	return statuses
+}
+
+func dalTaskTypes(taskTypes []app.TaskType) pq.StringArray {
+	if taskTypes == nil {
+		return nil
+	}
+	statuses := []string{}
+	for _, s := range taskTypes {
+		statuses = append(statuses, string(dalTaskType(s)))
+	}
+	return statuses
+}
+
+func dalNullableTaskStatus(taskStatus *app.TaskStatus) *TaskStatus {
+	if taskStatus == nil {
+		return nil
+	}
+	var dalTaskStatus = dalTaskStatus(*taskStatus)
+	return &dalTaskStatus
+}
+
+func dalTaskSort(taskStatus *app.TaskSort) *TaskSort {
+	if taskStatus == nil {
+		return nil
+	}
+	switch *taskStatus {
+	case app.CreatedAtAscTaskSort:
+		c := CreatedAtAscTaskSort
+		return &c
+	case app.CreatedAtDescTaskSort:
+		c := CreatedAtDescTaskSort
+		return &c
+	default:
+		panic("Unknown task status: " + *taskStatus)
 	}
 }

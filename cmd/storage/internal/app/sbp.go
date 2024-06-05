@@ -45,6 +45,7 @@ type SbpBrokerInterface interface {
 	CancelPayment(Payment Payment, errMsg string) error
 	ConfirmPayment(Payment) error
 	Status() ServiceStatus
+	Ping(serverID string, status []StationPingStatus) error
 }
 
 // SbpRepInterface ...
@@ -349,4 +350,8 @@ func (w *SbpWorker) paymentCancel(serverID uuid.UUID, postID StationID, orderID 
 	}
 
 	return nil
+}
+
+func (w *SbpWorker) Ping(serverID string, status []StationPingStatus) error {
+	return w.sbpBroker.Ping(serverID, status)
 }

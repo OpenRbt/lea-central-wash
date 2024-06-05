@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"sync"
@@ -42,6 +43,44 @@ const qrURL = "%s/#/?sessionID=%s"
 
 const RabbitWorkerScheduleInterval = time.Minute
 
+// Post control commands
+const (
+	openwashingName        = "openwashing"
+	binarName              = "firmware.exe"
+	paymentWorldName       = "uic_payment_app"
+	paymentWorldConfigName = "config.ini"
+	preparePiName          = "prepare_pi.sh"
+	updateSystemName       = "update_system.sh"
+	versionName            = "versions.json"
+	currentWashName        = "current_wash"
+	baseWashName           = "wash"
+	runshName              = "run.sh"
+	scriptLuaName          = "script.lua"
+	mainJsonName           = "main.json"
+	firmwareName           = "firmware"
+	binarOwPath            = "openwashing/software/v1-enlight/firmware.exe"
+	samplesPath            = "software/v1-enlight/samples"
+	samplesName            = "samples"
+
+	getFullPathLcwCommand     = "readlink -f %s"
+	cdToTempLcwCommand        = "cd %s && %s"
+	cloneRepositoryLcwCommand = "git clone https://github.com/OpenRbt/openwashing.git %s"
+	pullRepositoryLcwCommand  = "cd %s && git pull"
+	createLcwCommand          = "rm -rf %s && mkdir -p %s"
+	hashLcwCommand            = "shasum %s | cut -d ' ' -f 1"
+	hashEnvLcwCommand         = "find %s -type f -not -name 'script.lua' -exec shasum {} \\; | awk '{print $1}' | shasum | cut -d ' ' -f 1"
+	commitedAtLcwCommand      = "cd %s && git log -1 --format='%%cd' --date=format:'%%Y-%%m-%%dT%%H:%%M:%%SZ'"
+	cpLcwCommand              = "rm -rf %s && cp -r %s %s"
+
+	cloneRepositoryOwCommand = "git clone https://github.com/OpenRbt/openwashing.git ~/openwashing && cd ~/openwashing/software/v1-enlight/3rd/lua53/src && make linux"
+	pullRepositoryOwCommand  = "cd ~/openwashing && git pull"
+	makeBinarOwCommand       = "cd ~/openwashing/software/v1-enlight && make"
+	findVersionsOwCommand    = "find ~/ -maxdepth 1 -type d -name \"wash_*\" -o -name \"wash\""
+	cleateLink               = "ln -f -s -n %s %s"
+	rebootOwCommand          = "sudo shutdown -r +0"
+	cdFirmwareRunshCommand   = "cd %s"
+)
+
 // Errors.
 var (
 	ErrNotFound                 = errors.New("not found")
@@ -55,13 +94,18 @@ var (
 	ErrStationProgramMustUnique = errors.New("programID and buttonID must be unique")
 	ErrUserIsNotAuthorized      = errors.New("user is not authorized")
 	ErrSessionNotFound          = errors.New("session not found")
+	ErrWrongParameter           = errors.New("wrong parameter")
+	ErrTaskStarted              = errors.New("task started")
+	ErrStationDirectoryNotExist = errors.New("station directory does not exist")
 
 	ErrServiceNotConfigured    = errors.New("service not configured")
 	ErrRabbitMessageBadPayload = errors.New("bad RabbitMessagePayloadData")
 	ErrNoRabbitWorker          = errors.New("rabbit worker not initialized")
 	ErrSendTimeout             = errors.New("send request failed: timeout")
+	ErrNotConfirmed            = errors.New("send request failed: not confirmed")
 
 	ErrWrongPaymentStatus = errors.New("wrong payment status")
+	ErrSameOrLowerVersion = errors.New("entity has the same or lower version")
 )
 
 var testApp = false
@@ -102,7 +146,12 @@ type (
 		SaveCollectionReport(auth *Auth, id StationID) error
 
 		Programs(id *int64) ([]Program, error)
+		GetProgramsForManagement(ctx context.Context, filter ProgramFilter) (Page[Program], error)
 		SetProgram(Program) error
+		SetProgramFromManagement(ctx context.Context, program Program) (Program, error)
+		NotSendedPrograms(ctx context.Context) ([]Program, error)
+		MarkProgramSended(ctx context.Context, id int64) error
+
 		StationProgram(StationID) ([]StationProgram, error)
 		SetStationProgram(StationID, []StationProgram) error
 		StationConfig(StationID) (StationConfig, error)
@@ -131,17 +180,28 @@ type (
 		Station(StationID) (SetStation, error)
 		RelayReportDates(auth *Auth, stationID *StationID, startDate, endDate time.Time) (StationsStat, error)
 		ResetStationStat(auth *Auth, stationID StationID) error
-		AddAdvertisingCampaign(*Auth, AdvertisingCampaign) error
+
+		AddAdvertisingCampaign(context.Context, *Auth, AdvertisingCampaign) (AdvertisingCampaign, error)
 		EditAdvertisingCampaign(auth *Auth, a AdvertisingCampaign) error
 		DelAdvertisingCampaign(auth *Auth, id int64) (err error)
-		AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaign, error)
+		AdvertisingCampaignByID(auth *Auth, id int64) (AdvertisingCampaign, error)
 		AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
+
+		GetAdvertisingCampaignsForManagement(ctx context.Context, filter AdvertisingCampaignFilter) (Page[AdvertisingCampaign], error)
+		GetAdvertisingCampaignByIDForManagement(ctx context.Context, id int64) (AdvertisingCampaign, error)
+		AddAdvertisingCampaignFromManagement(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error)
+		EditAdvertisingCampaignFromManagement(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error)
+		DeleteAdvertisingCampaignFromManagement(ctx context.Context, id int64) (AdvertisingCampaign, error)
+
+		UpsertAdvertisingCampaignFromManagement(ctx context.Context, campaign ManagementAdvertisingCampaign) (AdvertisingCampaign, error)
+		NotSendedAdvertisingCampaigns(ctx context.Context) ([]AdvertisingCampaign, error)
+		MarkAdvertisingCampaignSended(ctx context.Context, id int64) error
 
 		GetStationDiscount(id StationID) (*StationDiscount, error)
 
-		GetConfigInt(auth *Auth, name string) (*ConfigInt, error)
-		GetConfigBool(auth *Auth, name string) (*ConfigBool, error)
-		GetConfigString(auth *Auth, name string) (*ConfigString, error)
+		GetConfigInt(auth *Auth, name string) (ConfigInt, error)
+		GetConfigBool(auth *Auth, name string) (ConfigBool, error)
+		GetConfigString(auth *Auth, name string) (ConfigString, error)
 
 		SetConfigInt(auth *Auth, config ConfigInt) error
 		SetConfigBool(auth *Auth, config ConfigBool) error
@@ -149,13 +209,13 @@ type (
 
 		DeleteConfigString(auth *Auth, name string) error
 
-		GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error)
-		GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error)
-		GetStationConfigString(name string, stationID StationID) (*StationConfigString, error)
+		GetStationConfigInt(name string, stationID StationID) (StationConfigVar[int64], error)
+		GetStationConfigBool(name string, stationID StationID) (StationConfigVar[bool], error)
+		GetStationConfigString(name string, stationID StationID) (StationConfigVar[string], error)
 
-		SetStationConfigInt(auth *Auth, config StationConfigInt) error
-		SetStationConfigBool(auth *Auth, config StationConfigBool) error
-		SetStationConfigString(auth *Auth, config StationConfigString) error
+		SetStationConfigInt(auth *Auth, config StationConfigVar[int64]) error
+		SetStationConfigBool(auth *Auth, config StationConfigVar[bool]) error
+		SetStationConfigString(auth *Auth, config StationConfigVar[string]) error
 
 		CreateSession(url string, stationID StationID) (string, string, error)
 		EndSession(stationID StationID, sessionID BonusSessionID) error
@@ -186,9 +246,26 @@ type (
 		IsSbpAvailableForStation(stationID StationID) bool
 		GetSbpConfig(envServerSbpID string, envServerSbpPassword string) (cfg SbpRabbitConfig, err error)
 
-		InitManagement(ManagementService)
+		InitManagement(ManagementRabbitWorker)
 		InitKaspi(KaspiService)
 		KaspiCommand(Command)
+
+		PingServices()
+		GetPublicKey() (string, error)
+		GetVersions(stationID StationID) ([]FirmwareVersion, error)
+		GetListTasks(filter TaskFilter) (Page[Task], error)
+		GetTask(id int) (Task, error)
+		DeleteTask(id int) error
+		DeleteTasks() error
+		CreateTask(createTask CreateTask) (Task, error)
+		GetListBuildScripts() ([]BuildScript, error)
+		GetBuildScript(id StationID) (BuildScript, error)
+		SetBuildScript(setBuildScript SetBuildScript) (BuildScript, error)
+		DeleteBuildScript(id StationID) error
+		CopyFirmware(stationID StationID, copyToID StationID) error
+		GetVersionBuffered(stationID StationID) (FirmwareVersion, error)
+
+		AddOpenwashingLog(log OpenwashingLogCreate) (OpenwashingLog, error)
 	}
 
 	// Repo is a DAL interface.
@@ -226,8 +303,12 @@ type (
 		SetHash(StationID, string) error
 		CheckDB() (ok bool, err error)
 
-		Programs(id *int64) ([]Program, error)
-		SetProgram(Program) error
+		GetPrograms(ctx context.Context, filter ProgramFilter) ([]Program, int64, error)
+		SetProgram(ctx context.Context, program Program) (Program, error)
+		SetProgramFromManagement(ctx context.Context, program ManagementProgram) (Program, error)
+		NotSendedPrograms(ctx context.Context) ([]Program, error)
+		MarkProgramSended(ctx context.Context, id int64) error
+
 		StationProgram(StationID) ([]StationProgram, error)
 		SetStationProgram(StationID, []StationProgram) error
 		StationConfig(StationID) (StationConfig, error)
@@ -242,17 +323,34 @@ type (
 		RelayReportDates(stationID *StationID, startDate, endDate time.Time) (StationsStat, error)
 		ResetStationStat(stationID StationID) error
 
-		AddAdvertisingCampaign(AdvertisingCampaign) error
-		EditAdvertisingCampaign(AdvertisingCampaign) error
-		DelAdvertisingCampaign(id int64) error
-		AdvertisingCampaignByID(id int64) (*AdvertisingCampaign, error)
-		AdvertisingCampaign(startDate, endDate *time.Time) ([]AdvertisingCampaign, error)
+		AddAdvertisingCampaign(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error)
+		EditAdvertisingCampaign(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error)
+		DeleteAdvertisingCampaign(ctx context.Context, id int64) (AdvertisingCampaign, error)
+		GetAdvertisingCampaignByID(ctx context.Context, id int64) (AdvertisingCampaign, error)
+		GetAdvertisingCampaigns(ctx context.Context, filter AdvertisingCampaignFilter) ([]AdvertisingCampaign, int64, error)
+
+		UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert ManagementAdvertisingCampaign) (AdvertisingCampaign, error)
+		NotSendedAdvertisingCampaigns(ctx context.Context) ([]AdvertisingCampaign, error)
+		MarkAdvertisingCampaignSended(ctx context.Context, id int64) error
+
+		NotSendedConfigStrings(ctx context.Context) ([]ConfigString, error)
+		MarkConfigStringSended(ctx context.Context, name string) error
+		NotSendedConfigInts(ctx context.Context) ([]ConfigInt, error)
+		MarkConfigIntSended(ctx context.Context, name string) error
+		NotSendedConfigBools(ctx context.Context) ([]ConfigBool, error)
+		MarkConfigBoolSended(ctx context.Context, name string) error
+		NotSendedStationConfigStrings(ctx context.Context) ([]StationConfigVar[string], error)
+		MarkStationConfigStringSended(ctx context.Context, name string, stationID StationID) error
+		NotSendedStationConfigBools(ctx context.Context) ([]StationConfigVar[bool], error)
+		MarkStationConfigBoolSended(ctx context.Context, name string, stationID StationID) error
+		NotSendedStationConfigInts(ctx context.Context) ([]StationConfigVar[int64], error)
+		MarkStationConfigIntSended(ctx context.Context, name string, stationID StationID) error
 
 		GetCurrentAdvertisingCampaigns(time.Time) ([]AdvertisingCampaign, error)
 
-		GetConfigInt(name string) (*ConfigInt, error)
-		GetConfigBool(name string) (*ConfigBool, error)
-		GetConfigString(name string) (*ConfigString, error)
+		GetConfigInt(name string) (ConfigInt, error)
+		GetConfigBool(name string) (ConfigBool, error)
+		GetConfigString(name string) (ConfigString, error)
 
 		SetConfigInt(config ConfigInt) error
 		SetConfigBool(config ConfigBool) error
@@ -260,13 +358,13 @@ type (
 
 		DeleteConfigString(name string) error
 
-		GetStationConfigInt(name string, stationID StationID) (*StationConfigInt, error)
-		GetStationConfigBool(name string, stationID StationID) (*StationConfigBool, error)
-		GetStationConfigString(name string, stationID StationID) (*StationConfigString, error)
+		GetStationConfigInt(name string, stationID StationID) (StationConfigVar[int64], error)
+		GetStationConfigBool(name string, stationID StationID) (StationConfigVar[bool], error)
+		GetStationConfigString(name string, stationID StationID) (StationConfigVar[string], error)
 
-		SetStationConfigInt(config StationConfigInt) error
-		SetStationConfigBool(config StationConfigBool) error
-		SetStationConfigString(config StationConfigString) error
+		SetStationConfigInt(config StationConfigVar[int64]) error
+		SetStationConfigBool(config StationConfigVar[bool]) error
+		SetStationConfigString(config StationConfigVar[string]) error
 
 		SetConfigIntIfNotExists(ConfigInt) error
 
@@ -283,6 +381,23 @@ type (
 		CollectionSetSended(int) error
 		MoneyReports() ([]MngtMoneyReport, error)
 		MoneyReportSetSended(int) error
+
+		GetListBuildScripts() ([]BuildScript, error)
+		GetBuildScript(id int) (BuildScript, error)
+		GetBuildScriptByStationID(id StationID) (BuildScript, error)
+		CreateBuildScript(createBuildScript SetBuildScript) (BuildScript, error)
+		UpdateBuildScript(id int, updateBuildScript SetBuildScript) (BuildScript, error)
+		DeleteBuildScript(id int) error
+		DeleteBuildScriptByStationID(id StationID) error
+		GetListTasks(filter TaskFilter) ([]Task, int64, error)
+		GetTask(id int) (Task, error)
+		CreateTask(createTask CreateTask) (Task, error)
+		UpdateTask(id int, updateTask UpdateTask) (Task, error)
+		DeleteTask(id int) error
+
+		CreateOpenwashingLog(model OpenwashingLogCreate) (OpenwashingLog, error)
+		NotSendedOpenwashingLogs(ctx context.Context) ([]OpenwashingLog, error)
+		MarkOpenwashingLogSended(ctx context.Context, id int64) error
 	}
 	// KasseSvc is an interface for kasse service.
 	KasseSvc interface {
@@ -317,15 +432,29 @@ type (
 		// Timings are settings for actual relays
 		Timings []Relay
 	}
-	ManagementService interface {
+	ManagementRabbitWorker interface {
 		SendMoneyReport(MngtMoneyReport) error
 		SendCollectionReport(CollectionReport) error
 		Status() ServiceStatus
 		SendStatus(StatusReport) error
+		SendProgram(Program) error
+		SendOpenwashingLog(OpenwashingLog) error
+		SendAdvertisingCampaign(AdvertisingCampaign) error
+		SendConfigString(ConfigString) error
+		SendConfigInt(ConfigInt) error
+		SendConfigBool(ConfigBool) error
+		SendStationConfigBool(StationConfigVar[bool]) error
+		SendStationConfigString(StationConfigVar[string]) error
+		SendStationConfigInt(StationConfigVar[int64]) error
+	}
+	management struct {
+		syncChannel chan struct{}
+		ManagementRabbitWorker
 	}
 	KaspiService interface {
 		Status() ServiceStatus
 		SendAnswer(KaspiAnswer) error
+		Ping(serverID string, status []StationPingStatus) error
 	}
 )
 
@@ -350,8 +479,10 @@ type app struct {
 	cfg                   AppConfig
 	cfgMutex              sync.Mutex
 	volumeCorrection      int
-	managementSvc         ManagementService
+	mngtSvc               management
 	kaspiSvc              KaspiService
+
+	postControlConfig PostControlConfig
 
 	extServicesActive     bool
 	servicesPublisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error
@@ -362,14 +493,15 @@ type app struct {
 }
 
 // New creates and returns new App.
-func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareAccessLayer) App {
+func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareAccessLayer, postControlConfig PostControlConfig) App {
 	appl := &app{
-		repo:             repo,
-		stations:         make(map[StationID]StationData),
-		kasseSvc:         kasseSvc,
-		weatherSvc:       weatherSvc,
-		hardware:         hardware,
-		volumeCorrection: 1000,
+		repo:              repo,
+		stations:          make(map[StationID]StationData),
+		kasseSvc:          kasseSvc,
+		weatherSvc:        weatherSvc,
+		hardware:          hardware,
+		volumeCorrection:  1000,
+		postControlConfig: postControlConfig,
 	}
 
 	stationConfig, err := appl.repo.GetStationConfigInt(ParameterNameVolumeCoef, StationID(1))
@@ -402,6 +534,7 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 	go appl.refreshDiscounts()
 	go appl.refreshMotorStatsCurrent()
 	go appl.refreshMotorStatsDates()
+	go appl.taskScheduler()
 	return appl
 }
 
@@ -450,6 +583,12 @@ type StationStatus struct {
 	CurrentProgram int
 	ProgramName    string
 	IP             string
+	Version        *FirmwareVersion
+}
+
+type StationPingStatus struct {
+	ID       StationID
+	IsOnline bool
 }
 
 // SetStation is a struct to assign a name
@@ -493,6 +632,7 @@ type Program struct {
 	IsFinishingProgram         bool
 	Relays                     []Relay
 	PreflightRelays            []Relay
+	Version                    int
 }
 
 type StationProgram struct {
@@ -545,4 +685,73 @@ type RabbitMoneyReport struct {
 
 type ServerInfo struct {
 	BonusServiceURL string `json:"bonusServiceURL,omitempty"`
+}
+
+type RabbitMessageType string
+
+func (m RabbitMessageType) String() string {
+	return string(m)
+}
+
+type RabbitRoutingKey string
+
+func (r RabbitRoutingKey) String() string {
+	return string(r)
+}
+
+type PostControlConfig struct {
+	KeySSHPath      string
+	UserSSH         string
+	StationsDirPath string
+}
+
+type Page[T any] struct {
+	Items      []T
+	Page       int64
+	PageSize   int64
+	TotalPages int64
+	TotalCount int64
+}
+
+type Pagination struct {
+	Page     int64
+	PageSize int64
+}
+
+func NewPage[T any](items []T, filter Pagination, totalItems int64) Page[T] {
+	var totalPages int64
+	if totalItems > 0 {
+		totalPages = (totalItems-1)/filter.PageSize + 1
+	}
+
+	return Page[T]{
+		Items:      items,
+		TotalPages: totalPages,
+		Page:       filter.Page,
+		PageSize:   filter.PageSize,
+		TotalCount: totalItems,
+	}
+}
+
+func (f *Pagination) Offset() int64 {
+	page := f.Page
+	pageSize := f.PageSize
+
+	if f.PageSize < 0 {
+		pageSize = 0
+	}
+
+	if f.Page < 1 {
+		page = 1
+	}
+
+	return (page - 1) * pageSize
+}
+
+func (f *Pagination) Limit() int64 {
+	if f.PageSize < 0 {
+		return 0
+	}
+
+	return f.PageSize
 }

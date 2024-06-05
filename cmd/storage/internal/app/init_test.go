@@ -3,8 +3,8 @@ package app
 import (
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/powerman/check"
+	gomock "go.uber.org/mock/gomock"
 )
 
 var (
@@ -62,15 +62,15 @@ func testNew(t *check.C) (*app, func(), *mocks) {
 
 	m.mockRepo.EXPECT().Stations().Return(nil, nil).AnyTimes()
 	m.mockRepo.EXPECT().LastUpdateConfig().Return(2, nil).AnyTimes()
-	m.mockRepo.EXPECT().Programs(gomock.Any()).Return(nil, nil).AnyTimes()
+	m.mockRepo.EXPECT().GetPrograms(gomock.Any(), gomock.Any()).Return(nil, int64(0), nil).AnyTimes()
 	m.mockRepo.EXPECT().AddStation(gomock.Any()).Return(nil).AnyTimes()
-	m.mockRepo.EXPECT().GetStationConfigInt(ParameterNameVolumeCoef, StationID(1)).Return(&StationConfigInt{Value: 1000}, nil).AnyTimes()
-	m.mockRepo.EXPECT().GetConfigInt(parameterNameTimeZone).Return(&ConfigInt{
+	m.mockRepo.EXPECT().GetStationConfigInt(ParameterNameVolumeCoef, StationID(1)).Return(StationConfigVar[int64]{Value: 1000}, nil).AnyTimes()
+	m.mockRepo.EXPECT().GetConfigInt(parameterNameTimeZone).Return(ConfigInt{
 		Value: 420,
 	}, nil)
 	m.mockRepo.EXPECT().SetConfigIntIfNotExists(gomock.Any()).Return(nil).AnyTimes()
 
-	appl := New(m.mockRepo, m.mockKasse, m.mockWeather, m.mockHal).(*app)
+	appl := New(m.mockRepo, m.mockKasse, m.mockWeather, m.mockHal, PostControlConfig{}).(*app)
 
 	return appl, ctrl.Finish, m
 }

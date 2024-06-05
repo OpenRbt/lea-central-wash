@@ -68,6 +68,32 @@ func init() {
         }
       }
     },
+    "/add-log": {
+      "post": {
+        "operationId": "addLog",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Log"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/add-service-amount": {
       "post": {
         "operationId": "addServiceAmount",
@@ -197,6 +223,135 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/build-scripts": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getListBuildScripts",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/BuildScript"
+              }
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setBuildScript",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetBuildScript"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/BuildScript"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/build-scripts/{id}": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getBuildScript",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/BuildScript"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "deleteBuildScript",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -1442,6 +1597,22 @@ func init() {
         }
       }
     },
+    "/public-key": {
+      "get": {
+        "operationId": "getPublicKey",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/PublicKey"
+            }
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/reset-station-stat": {
       "post": {
         "security": [
@@ -2636,6 +2807,124 @@ func init() {
         }
       }
     },
+    "/stations/{id}/firmware-versions": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getStationFirmwareVersions",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/FirmwareVersion"
+              }
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/stations/{id}/firmware-versions/buffered": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getStationFirmwareVersionBuffered",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/FirmwareVersion"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/stations/{id}/firmware-versions/copy-to/{toID}": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "firmwareVersionsCopy",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "toID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/status": {
       "get": {
         "operationId": "status",
@@ -2714,6 +3003,265 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getListTasks",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "collectionFormat": "multi",
+            "x-nullable": true,
+            "name": "stationsID",
+            "in": "query"
+          },
+          {
+            "type": "array",
+            "items": {
+              "enum": [
+                "queue",
+                "started",
+                "completed",
+                "error",
+                "canceled"
+              ],
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-nullable": true,
+            "name": "statuses",
+            "in": "query"
+          },
+          {
+            "type": "array",
+            "items": {
+              "enum": [
+                "build",
+                "update",
+                "reboot",
+                "getVersions",
+                "pullFirmware",
+                "setVersion"
+              ],
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-nullable": true,
+            "name": "types",
+            "in": "query"
+          },
+          {
+            "enum": [
+              "createdAtAsc",
+              "createdAtDesc"
+            ],
+            "type": "string",
+            "default": "createdAtDesc",
+            "x-nullable": true,
+            "name": "sort",
+            "in": "query"
+          },
+          {
+            "minimum": 1,
+            "type": "integer",
+            "default": 1,
+            "x-nullable": true,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "default": 10,
+            "x-nullable": true,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/TaskPage"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "createTask",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTask"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "deleteTasks",
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/tasks/create-by-hash": {
+      "post": {
+        "operationId": "createTaskByHash",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTaskByHash"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getTask",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "deleteTask",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -3184,6 +3732,32 @@ func init() {
         "$ref": "#/definitions/AdvertisingCampaign"
       }
     },
+    "BuildScript": {
+      "type": "object",
+      "required": [
+        "id",
+        "stationID",
+        "name",
+        "commangs"
+      ],
+      "properties": {
+        "commangs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "integer"
+        }
+      }
+    },
     "ButtonDiscount": {
       "type": "object",
       "properties": {
@@ -3338,6 +3912,44 @@ func init() {
         }
       }
     },
+    "CreateTask": {
+      "type": "object",
+      "required": [
+        "stationID",
+        "type"
+      ],
+      "properties": {
+        "stationID": {
+          "type": "integer"
+        },
+        "type": {
+          "$ref": "#/definitions/TaskType"
+        },
+        "versionID": {
+          "type": "integer",
+          "x-nullable": true
+        }
+      }
+    },
+    "CreateTaskByHash": {
+      "type": "object",
+      "required": [
+        "hash",
+        "type"
+      ],
+      "properties": {
+        "hash": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/TaskType"
+        },
+        "versionID": {
+          "type": "integer",
+          "x-nullable": true
+        }
+      }
+    },
     "DiscountProgram": {
       "type": "object",
       "properties": {
@@ -3346,6 +3958,43 @@ func init() {
         },
         "programID": {
           "type": "integer"
+        }
+      }
+    },
+    "FirmwareVersion": {
+      "type": "object",
+      "required": [
+        "id",
+        "isCurrent",
+        "hashLua",
+        "hashEnv",
+        "hashBinar",
+        "builtAt",
+        "commitedAt"
+      ],
+      "properties": {
+        "builtAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commitedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "hashBinar": {
+          "type": "string"
+        },
+        "hashEnv": {
+          "type": "string"
+        },
+        "hashLua": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "isCurrent": {
+          "type": "boolean"
         }
       }
     },
@@ -3418,6 +4067,35 @@ func init() {
       "type": "string",
       "minLength": 1,
       "x-nullable": true
+    },
+    "Log": {
+      "type": "object",
+      "required": [
+        "text",
+        "hash"
+      ],
+      "properties": {
+        "hash": {
+          "$ref": "#/definitions/Hash"
+        },
+        "level": {
+          "type": "string",
+          "default": "info",
+          "enum": [
+            "debug",
+            "info",
+            "warning",
+            "error"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "x-nullable": true
+        }
+      }
     },
     "Login": {
       "type": "string",
@@ -3555,6 +4233,17 @@ func init() {
         }
       }
     },
+    "PublicKey": {
+      "type": "object",
+      "required": [
+        "publicKey"
+      ],
+      "properties": {
+        "publicKey": {
+          "type": "string"
+        }
+      }
+    },
     "RelayBoard": {
       "type": "string",
       "enum": [
@@ -3654,6 +4343,32 @@ func init() {
         },
         "QR": {
           "type": "string"
+        }
+      }
+    },
+    "SetBuildScript": {
+      "type": "object",
+      "required": [
+        "stationID",
+        "name",
+        "commangs"
+      ],
+      "properties": {
+        "commangs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "copyFromStationID": {
+          "type": "integer",
+          "x-nullable": true
+        },
+        "name": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "integer"
         }
       }
     },
@@ -3861,6 +4576,9 @@ func init() {
         },
         "status": {
           "$ref": "#/definitions/Status"
+        },
+        "version": {
+          "$ref": "#/definitions/FirmwareVersion"
         }
       }
     },
@@ -3934,6 +4652,107 @@ func init() {
           }
         }
       }
+    },
+    "Task": {
+      "type": "object",
+      "required": [
+        "id",
+        "stationID",
+        "type",
+        "status",
+        "retryCount",
+        "createdAt"
+      ],
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "error": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "id": {
+          "type": "integer"
+        },
+        "retryCount": {
+          "type": "integer"
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "stationID": {
+          "type": "integer"
+        },
+        "status": {
+          "$ref": "#/definitions/TaskStatus"
+        },
+        "stoppedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "type": {
+          "$ref": "#/definitions/TaskType"
+        },
+        "versionID": {
+          "type": "integer",
+          "x-nullable": true
+        }
+      }
+    },
+    "TaskPage": {
+      "type": "object",
+      "required": [
+        "items",
+        "page",
+        "pageSize",
+        "totalPages",
+        "totalItems"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Task"
+          }
+        },
+        "page": {
+          "type": "integer"
+        },
+        "pageSize": {
+          "type": "integer"
+        },
+        "totalItems": {
+          "type": "integer"
+        },
+        "totalPages": {
+          "type": "integer"
+        }
+      }
+    },
+    "TaskStatus": {
+      "type": "string",
+      "enum": [
+        "queue",
+        "started",
+        "completed",
+        "error",
+        "canceled"
+      ]
+    },
+    "TaskType": {
+      "type": "string",
+      "enum": [
+        "build",
+        "update",
+        "reboot",
+        "getVersions",
+        "pullFirmware",
+        "setVersion"
+      ]
     },
     "UserConfig": {
       "type": "object",
@@ -4031,6 +4850,32 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/add-log": {
+      "post": {
+        "operationId": "addLog",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Log"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -4164,6 +5009,135 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/build-scripts": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getListBuildScripts",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/BuildScript"
+              }
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "setBuildScript",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetBuildScript"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/BuildScript"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/build-scripts/{id}": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getBuildScript",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/BuildScript"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "deleteBuildScript",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -5409,6 +6383,22 @@ func init() {
         }
       }
     },
+    "/public-key": {
+      "get": {
+        "operationId": "getPublicKey",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/PublicKey"
+            }
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/reset-station-stat": {
       "post": {
         "security": [
@@ -6587,6 +7577,124 @@ func init() {
         }
       }
     },
+    "/stations/{id}/firmware-versions": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getStationFirmwareVersions",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/FirmwareVersion"
+              }
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/stations/{id}/firmware-versions/buffered": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getStationFirmwareVersionBuffered",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/FirmwareVersion"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/stations/{id}/firmware-versions/copy-to/{toID}": {
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "firmwareVersionsCopy",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "toID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/status": {
       "get": {
         "operationId": "status",
@@ -6665,6 +7773,265 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getListTasks",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "collectionFormat": "multi",
+            "x-nullable": true,
+            "name": "stationsID",
+            "in": "query"
+          },
+          {
+            "type": "array",
+            "items": {
+              "enum": [
+                "queue",
+                "started",
+                "completed",
+                "error",
+                "canceled"
+              ],
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-nullable": true,
+            "name": "statuses",
+            "in": "query"
+          },
+          {
+            "type": "array",
+            "items": {
+              "enum": [
+                "build",
+                "update",
+                "reboot",
+                "getVersions",
+                "pullFirmware",
+                "setVersion"
+              ],
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-nullable": true,
+            "name": "types",
+            "in": "query"
+          },
+          {
+            "enum": [
+              "createdAtAsc",
+              "createdAtDesc"
+            ],
+            "type": "string",
+            "default": "createdAtDesc",
+            "x-nullable": true,
+            "name": "sort",
+            "in": "query"
+          },
+          {
+            "minimum": 1,
+            "type": "integer",
+            "default": 1,
+            "x-nullable": true,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "default": 10,
+            "x-nullable": true,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/TaskPage"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "createTask",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTask"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "deleteTasks",
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/tasks/create-by-hash": {
+      "post": {
+        "operationId": "createTaskByHash",
+        "parameters": [
+          {
+            "name": "args",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTaskByHash"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "getTask",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "pinCode": []
+          }
+        ],
+        "operationId": "deleteTask",
+        "parameters": [
+          {
+            "minimum": 1,
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "PIN is missing or invalid"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -7137,6 +8504,32 @@ func init() {
         "$ref": "#/definitions/AdvertisingCampaign"
       }
     },
+    "BuildScript": {
+      "type": "object",
+      "required": [
+        "id",
+        "stationID",
+        "name",
+        "commangs"
+      ],
+      "properties": {
+        "commangs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "integer"
+        }
+      }
+    },
     "ButtonDiscount": {
       "type": "object",
       "properties": {
@@ -7302,6 +8695,44 @@ func init() {
         }
       }
     },
+    "CreateTask": {
+      "type": "object",
+      "required": [
+        "stationID",
+        "type"
+      ],
+      "properties": {
+        "stationID": {
+          "type": "integer"
+        },
+        "type": {
+          "$ref": "#/definitions/TaskType"
+        },
+        "versionID": {
+          "type": "integer",
+          "x-nullable": true
+        }
+      }
+    },
+    "CreateTaskByHash": {
+      "type": "object",
+      "required": [
+        "hash",
+        "type"
+      ],
+      "properties": {
+        "hash": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/TaskType"
+        },
+        "versionID": {
+          "type": "integer",
+          "x-nullable": true
+        }
+      }
+    },
     "DiscountProgram": {
       "type": "object",
       "properties": {
@@ -7310,6 +8741,43 @@ func init() {
         },
         "programID": {
           "type": "integer"
+        }
+      }
+    },
+    "FirmwareVersion": {
+      "type": "object",
+      "required": [
+        "id",
+        "isCurrent",
+        "hashLua",
+        "hashEnv",
+        "hashBinar",
+        "builtAt",
+        "commitedAt"
+      ],
+      "properties": {
+        "builtAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commitedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "hashBinar": {
+          "type": "string"
+        },
+        "hashEnv": {
+          "type": "string"
+        },
+        "hashLua": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "isCurrent": {
+          "type": "boolean"
         }
       }
     },
@@ -7382,6 +8850,35 @@ func init() {
       "type": "string",
       "minLength": 1,
       "x-nullable": true
+    },
+    "Log": {
+      "type": "object",
+      "required": [
+        "text",
+        "hash"
+      ],
+      "properties": {
+        "hash": {
+          "$ref": "#/definitions/Hash"
+        },
+        "level": {
+          "type": "string",
+          "default": "info",
+          "enum": [
+            "debug",
+            "info",
+            "warning",
+            "error"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "x-nullable": true
+        }
+      }
     },
     "Login": {
       "type": "string",
@@ -7521,6 +9018,17 @@ func init() {
         }
       }
     },
+    "PublicKey": {
+      "type": "object",
+      "required": [
+        "publicKey"
+      ],
+      "properties": {
+        "publicKey": {
+          "type": "string"
+        }
+      }
+    },
     "RelayBoard": {
       "type": "string",
       "enum": [
@@ -7620,6 +9128,32 @@ func init() {
         },
         "QR": {
           "type": "string"
+        }
+      }
+    },
+    "SetBuildScript": {
+      "type": "object",
+      "required": [
+        "stationID",
+        "name",
+        "commangs"
+      ],
+      "properties": {
+        "commangs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "copyFromStationID": {
+          "type": "integer",
+          "x-nullable": true
+        },
+        "name": {
+          "type": "string"
+        },
+        "stationID": {
+          "type": "integer"
         }
       }
     },
@@ -7830,6 +9364,9 @@ func init() {
         },
         "status": {
           "$ref": "#/definitions/Status"
+        },
+        "version": {
+          "$ref": "#/definitions/FirmwareVersion"
         }
       }
     },
@@ -7903,6 +9440,107 @@ func init() {
           }
         }
       }
+    },
+    "Task": {
+      "type": "object",
+      "required": [
+        "id",
+        "stationID",
+        "type",
+        "status",
+        "retryCount",
+        "createdAt"
+      ],
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "error": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "id": {
+          "type": "integer"
+        },
+        "retryCount": {
+          "type": "integer"
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "stationID": {
+          "type": "integer"
+        },
+        "status": {
+          "$ref": "#/definitions/TaskStatus"
+        },
+        "stoppedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "type": {
+          "$ref": "#/definitions/TaskType"
+        },
+        "versionID": {
+          "type": "integer",
+          "x-nullable": true
+        }
+      }
+    },
+    "TaskPage": {
+      "type": "object",
+      "required": [
+        "items",
+        "page",
+        "pageSize",
+        "totalPages",
+        "totalItems"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Task"
+          }
+        },
+        "page": {
+          "type": "integer"
+        },
+        "pageSize": {
+          "type": "integer"
+        },
+        "totalItems": {
+          "type": "integer"
+        },
+        "totalPages": {
+          "type": "integer"
+        }
+      }
+    },
+    "TaskStatus": {
+      "type": "string",
+      "enum": [
+        "queue",
+        "started",
+        "completed",
+        "error",
+        "canceled"
+      ]
+    },
+    "TaskType": {
+      "type": "string",
+      "enum": [
+        "build",
+        "update",
+        "reboot",
+        "getVersions",
+        "pullFirmware",
+        "setVersion"
+      ]
     },
     "UserConfig": {
       "type": "object",

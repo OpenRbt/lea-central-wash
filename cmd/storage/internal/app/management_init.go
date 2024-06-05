@@ -1,6 +1,9 @@
 package app
 
 import (
+	"context"
+	"errors"
+	"fmt"
 	"time"
 )
 
@@ -33,26 +36,63 @@ func (a *app) GetManagementConfig() (cfg ManagementRabbitConfig, err error) {
 	return
 }
 
-func (a *app) InitManagement(svc ManagementService) {
-	a.managementSvc = svc
+func (a *app) InitManagement(mngtWorker ManagementRabbitWorker) {
+	a.mngtSvc = management{
+		syncChannel:            make(chan struct{}, 1),
+		ManagementRabbitWorker: mngtWorker,
+	}
+
+	a.syncLeaSettings()
+
 	go a.syncData()
 	go a.sendStatus()
+	go a.startManagementSync()
 }
 
 func (a *app) IsManagementInit() bool {
-	return a.managementSvc != nil
+	return a.mngtSvc.ManagementRabbitWorker != nil
 }
 
 func (a *app) IsMngtAvailableForStation(stationID StationID) bool {
 	if a.SbpWorker == nil {
 		return false
 	}
-	status := a.managementSvc.Status()
+	status := a.mngtSvc.Status()
 	return a.isServiceAvailableForStation(stationID, status)
 }
 
+func (a *app) handleCollectionReportSync(report CollectionReport) error {
+	if err := a.mngtSvc.SendCollectionReport(report); err != nil {
+		if errors.Is(err, ErrNotConfirmed) {
+			return nil
+		}
+		return fmt.Errorf("send collection report: %w", err)
+	}
+
+	if err := a.repo.CollectionSetSended(report.ID); err != nil {
+		return fmt.Errorf("set collection report as sent: %w", err)
+	}
+
+	return nil
+}
+
+func (a *app) handleMoneyReportSync(report MngtMoneyReport) error {
+	if err := a.mngtSvc.SendMoneyReport(report); err != nil {
+		if errors.Is(err, ErrNotConfirmed) {
+			return nil
+		}
+		return fmt.Errorf("send money report: %w", err)
+	}
+
+	if err := a.repo.MoneyReportSetSended(report.ID); err != nil {
+		return fmt.Errorf("set money report as sent: %w", err)
+	}
+
+	return nil
+}
+
 func (a *app) syncData() {
-	if a.managementSvc == nil {
+	if a.mngtSvc.ManagementRabbitWorker == nil {
 		panic("managementSvc == nil")
 	}
 	for {
@@ -65,15 +105,9 @@ func (a *app) syncData() {
 			if len(c) == 0 {
 				break
 			}
-			for i := range c {
-				err := a.managementSvc.SendCollectionReport(c[i])
-				if err != nil {
-					log.Err("send collection", "err", err)
-					break
-				}
-				err = a.repo.CollectionSetSended(c[i].ID)
-				if err != nil {
-					log.Err("collection set sended", "err", err)
+			for _, report := range c {
+				if err := a.handleCollectionReportSync(report); err != nil {
+					log.Err("handle collectionReport", "err", err)
 					break
 				}
 			}
@@ -88,15 +122,9 @@ func (a *app) syncData() {
 			if len(c) == 0 {
 				break
 			}
-			for i := range c {
-				err := a.managementSvc.SendMoneyReport(c[i])
-				if err != nil {
-					log.Err("send moneyReport", "err", err)
-					break
-				}
-				err = a.repo.MoneyReportSetSended(c[i].ID)
-				if err != nil {
-					log.Err("moneyReport set sended", "err", err)
+			for _, report := range c {
+				if err := a.handleMoneyReportSync(report); err != nil {
+					log.Err("handle moneyReport", "err", err)
 					break
 				}
 			}
@@ -106,15 +134,214 @@ func (a *app) syncData() {
 }
 
 func (a *app) sendStatus() {
-	if a.managementSvc == nil {
+	if a.mngtSvc.ManagementRabbitWorker == nil {
 		panic("managementSvc == nil")
 	}
 	for {
 		r := a.StatusReport(true)
-		err := a.managementSvc.SendStatus(r)
+		err := a.mngtSvc.SendStatus(r)
 		if err != nil {
 			log.Err("sendStatus", "err", err)
 		}
-		time.Sleep(time.Second * 30)
+		time.Sleep(time.Second * 15)
+	}
+}
+
+func (a *app) startManagementSync() {
+	if a.mngtSvc.ManagementRabbitWorker == nil {
+		panic("managementRabbitWorker == nil")
+	}
+
+	for range a.mngtSvc.syncChannel {
+		a.syncLeaSettings()
+	}
+}
+
+func (a *app) syncLeaSettings() {
+	a.syncUnsentPrograms()
+	a.syncUnsentAdvertisingCampaigns()
+	a.syncUnsentOpenwashingLogs()
+	a.syncUnsentConfigs()
+}
+
+func (a *app) syncUnsentPrograms() {
+	programs, err := a.NotSendedPrograms(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent programs", "err", err)
+		return
+	}
+
+	for _, program := range programs {
+		err := a.mngtSvc.SendProgram(program)
+		if err != nil {
+			log.Err("unable to send program to management", "err", err)
+			continue
+		}
+
+		err = a.MarkProgramSended(context.TODO(), program.ID)
+		if err != nil {
+			log.Err("unable to mark program as sended", "err", err)
+			continue
+		}
+	}
+}
+
+func (a *app) syncUnsentOpenwashingLogs() {
+	logs, err := a.NotSendedOpenwashingLogs(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent logs", "err", err)
+		return
+	}
+
+	for _, l := range logs {
+		err := a.mngtSvc.SendOpenwashingLog(l)
+		if err != nil {
+			log.Err("unable to send program to management", "err", err)
+			continue
+		}
+
+		err = a.MarkOpenwashingLogSended(context.TODO(), l.ID)
+		if err != nil {
+			log.Err("unable to mark log as sended", "err", err)
+			continue
+		}
+	}
+}
+
+func (a *app) syncUnsentAdvertisingCampaigns() {
+	campaigns, err := a.repo.NotSendedAdvertisingCampaigns(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent advertising campaigns", "err", err)
+		return
+	}
+
+	for _, campaign := range campaigns {
+		err := a.mngtSvc.SendAdvertisingCampaign(campaign)
+		if err != nil {
+			log.Err("unable to send advertising campaign to management", "err", err)
+			continue
+		}
+
+		err = a.MarkAdvertisingCampaignSended(context.TODO(), campaign.ID)
+		if err != nil {
+			log.Err("unable to mark advertising campaign as sended", "err", err)
+			continue
+		}
+	}
+}
+
+func (a *app) syncUnsentConfigs() {
+	configStrings, err := a.repo.NotSendedConfigStrings(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent config strings", "err", err)
+		return
+	}
+	for _, config := range configStrings {
+		err := a.mngtSvc.SendConfigString(config)
+		if err != nil {
+			log.Err("unable to send config string to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkConfigStringSended(context.TODO(), config.Name)
+		if err != nil {
+			log.Err("unable to mark config string as sended", "err", err)
+			continue
+		}
+	}
+
+	configInts, err := a.repo.NotSendedConfigInts(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent config ints", "err", err)
+		return
+	}
+	for _, config := range configInts {
+		err := a.mngtSvc.SendConfigInt(config)
+		if err != nil {
+			log.Err("unable to send config int to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkConfigIntSended(context.TODO(), config.Name)
+		if err != nil {
+			log.Err("unable to mark config int as sended", "err", err)
+			continue
+		}
+	}
+
+	configBools, err := a.repo.NotSendedConfigBools(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent config bools", "err", err)
+		return
+	}
+	for _, config := range configBools {
+		err := a.mngtSvc.SendConfigBool(config)
+		if err != nil {
+			log.Err("unable to send config bool to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkConfigBoolSended(context.TODO(), config.Name)
+		if err != nil {
+			log.Err("unable to mark config bool as sended", "err", err)
+			continue
+		}
+	}
+
+	stationConfigStrings, err := a.repo.NotSendedStationConfigStrings(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent station config strings", "err", err)
+		return
+	}
+	for _, config := range stationConfigStrings {
+		err := a.mngtSvc.SendStationConfigString(config)
+		if err != nil {
+			log.Err("unable to send station config string to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkStationConfigStringSended(context.TODO(), config.Name, config.StationID)
+		if err != nil {
+			log.Err("unable to mark station config string as sended", "err", err)
+			continue
+		}
+	}
+
+	stationConfigBools, err := a.repo.NotSendedStationConfigBools(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent station config bools", "err", err)
+		return
+	}
+	for _, config := range stationConfigBools {
+		err := a.mngtSvc.SendStationConfigBool(config)
+		if err != nil {
+			log.Err("unable to send station config bool to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkStationConfigBoolSended(context.TODO(), config.Name, config.StationID)
+		if err != nil {
+			log.Err("unable to mark station config bool as sended", "err", err)
+			continue
+		}
+	}
+
+	stationConfigInts, err := a.repo.NotSendedStationConfigInts(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent station config ints", "err", err)
+		return
+	}
+	for _, config := range stationConfigInts {
+		err := a.mngtSvc.SendStationConfigInt(config)
+		if err != nil {
+			log.Err("unable to send station config int to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkStationConfigIntSended(context.TODO(), config.Name, config.StationID)
+		if err != nil {
+			log.Err("unable to mark station config int as sended", "err", err)
+			continue
+		}
 	}
 }

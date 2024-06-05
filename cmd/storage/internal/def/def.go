@@ -68,15 +68,19 @@ var (
 	SbpPaymentConfirmationPingPeriod = durationGetEnv("SBP_PAYMENT_CONFIRMATION_PING_PERIOD", time.Hour*24)
 	SbpEnvNameServerID               = strGetEnv("SBP_ENV_NAME_SERVER_ID", "SBP_SERVER_ID")
 	SbpEnvNameServerPassword         = strGetEnv("SBP_ENV_NAME_SERVER_PASSWORD", "SBP_SERVER_PASSWORD")
-	//
 
-	MngtRabbitHost   = strGetEnv("MNGT_RABBIT_HOST", "dev.openrbt.com")
+	MngtRabbitHost   = strGetEnv("MNGT_RABBIT_HOST", "app.openrbt.com")
 	MngtRabbitPort   = strGetEnv("MNGT_RABBIT_PORT", "4043")
 	MngtRabbitSecure = boolGetEnv("MNGT_RABBIT_SECURE", true)
 
 	KaspiRabbitHost   = strGetEnv("KASPI_RABBIT_HOST", "app.openrbt.com")
 	KaspiRabbitPort   = strGetEnv("KASPI_RABBIT_PORT", "4043")
 	KaspiRabbitSecure = boolGetEnv("KASPI_RABBIT_SECURE", true)
+	
+	//postcontrol
+	KeySSHPath      = strGetEnv("STORAGE_KEY_SSH_PATH", "./ssh/id_rsa")
+	UserSSH         = strGetEnv("STORAGE_USER_SSH", "pi")
+	StationsDirPath = strGetEnv("STORAGE_STATIONS_DIR_PATH", "./stations")
 )
 
 var initErr error

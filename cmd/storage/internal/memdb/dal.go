@@ -1,6 +1,7 @@
 package memdb
 
 import (
+	"context"
 	"sync"
 	"time"
 
@@ -178,11 +179,11 @@ func (t *DB) CheckDB() (bool, error) {
 	return true, nil
 }
 
-func (t *DB) Programs(id *int64) ([]app.Program, error) {
-	return nil, nil
+func (t *DB) GetPrograms(ctx context.Context, filter app.ProgramFilter) ([]app.Program, int64, error) {
+	return nil, 0, nil
 }
-func (t *DB) SetProgram(app.Program) error {
-	return nil
+func (t *DB) SetProgram(ctx context.Context, program app.Program) (app.Program, error) {
+	return app.Program{}, nil
 }
 func (t *DB) StationProgram(app.StationID) ([]app.StationProgram, error) {
 	return nil, nil
@@ -237,34 +238,37 @@ func (t *DB) ResetStationStat(stationID app.StationID) error {
 	return nil
 }
 
-func (t *DB) AddAdvertisingCampaign(a app.AdvertisingCampaign) error {
-	return nil
+func (t *DB) AddAdvertisingCampaign(ctx context.Context, a app.AdvertisingCampaign) (app.AdvertisingCampaign, error) {
+	return app.AdvertisingCampaign{}, nil
 }
 
-func (t *DB) EditAdvertisingCampaign(a app.AdvertisingCampaign) error {
-	return nil
+func (t *DB) EditAdvertisingCampaign(ctx context.Context, a app.AdvertisingCampaign) (app.AdvertisingCampaign, error) {
+	return app.AdvertisingCampaign{}, nil
 }
-func (t *DB) DelAdvertisingCampaign(id int64) error {
-	return nil
+
+func (t *DB) DeleteAdvertisingCampaign(ctx context.Context, id int64) (app.AdvertisingCampaign, error) {
+	return app.AdvertisingCampaign{}, nil
 }
-func (t *DB) AdvertisingCampaignByID(id int64) (*app.AdvertisingCampaign, error) {
-	return nil, nil
+
+func (t *DB) GetAdvertisingCampaignByID(ctx context.Context, id int64) (app.AdvertisingCampaign, error) {
+	return app.AdvertisingCampaign{}, nil
 }
-func (t *DB) AdvertisingCampaign(startDate, endDate *time.Time) ([]app.AdvertisingCampaign, error) {
-	return nil, nil
+
+func (t *DB) GetAdvertisingCampaigns(ctx context.Context, filter app.AdvertisingCampaignFilter) ([]app.AdvertisingCampaign, int64, error) {
+	return nil, 0, nil
 }
 
 func (t *DB) GetCurrentAdvertisingCampaigns(time.Time) ([]app.AdvertisingCampaign, error) {
 	return nil, nil
 }
-func (t *DB) GetConfigInt(name string) (*app.ConfigInt, error) {
-	return nil, nil
+func (t *DB) GetConfigInt(name string) (app.ConfigInt, error) {
+	return app.ConfigInt{}, nil
 }
-func (t *DB) GetConfigBool(name string) (*app.ConfigBool, error) {
-	return nil, nil
+func (t *DB) GetConfigBool(name string) (app.ConfigBool, error) {
+	return app.ConfigBool{}, nil
 }
-func (t *DB) GetConfigString(name string) (*app.ConfigString, error) {
-	return nil, nil
+func (t *DB) GetConfigString(name string) (app.ConfigString, error) {
+	return app.ConfigString{}, nil
 }
 
 func (t *DB) SetConfigInt(config app.ConfigInt) error {
@@ -280,23 +284,23 @@ func (t *DB) SetConfigIntIfNotExists(config app.ConfigInt) error {
 	return nil
 }
 
-func (t *DB) GetStationConfigInt(name string, stationID app.StationID) (*app.StationConfigInt, error) {
-	return nil, nil
+func (t *DB) GetStationConfigInt(name string, stationID app.StationID) (app.StationConfigVar[int64], error) {
+	return app.StationConfigVar[int64]{}, nil
 }
-func (t *DB) GetStationConfigBool(name string, stationID app.StationID) (*app.StationConfigBool, error) {
-	return nil, nil
+func (t *DB) GetStationConfigBool(name string, stationID app.StationID) (app.StationConfigVar[bool], error) {
+	return app.StationConfigVar[bool]{}, nil
 }
-func (t *DB) GetStationConfigString(name string, stationID app.StationID) (*app.StationConfigString, error) {
-	return nil, nil
+func (t *DB) GetStationConfigString(name string, stationID app.StationID) (app.StationConfigVar[string], error) {
+	return app.StationConfigVar[string]{}, nil
 }
 
-func (t *DB) SetStationConfigInt(config app.StationConfigInt) error {
+func (t *DB) SetStationConfigInt(config app.StationConfigVar[int64]) error {
 	return nil
 }
-func (t *DB) SetStationConfigBool(config app.StationConfigBool) error {
+func (t *DB) SetStationConfigBool(config app.StationConfigVar[bool]) error {
 	return nil
 }
-func (t *DB) SetStationConfigString(config app.StationConfigString) error {
+func (t *DB) SetStationConfigString(config app.StationConfigVar[string]) error {
 	return nil
 }
 
@@ -334,6 +338,7 @@ func (t *DB) RefreshMotorStatsDates() (err error) {
 func (t *DB) DeleteConfigString(name string) error {
 	return nil
 }
+
 func (t *DB) Collections() ([]app.CollectionReport, error) {
 	return nil, nil
 }
@@ -343,6 +348,133 @@ func (t *DB) CollectionSetSended(int) error {
 func (t *DB) MoneyReports() ([]app.MngtMoneyReport, error) {
 	return nil, nil
 }
+
 func (t *DB) MoneyReportSetSended(int) error {
+	return nil
+}
+func (t *DB) SetProgramFromManagement(ctx context.Context, program app.ManagementProgram) (app.Program, error) {
+	return app.Program{}, nil
+}
+func (t *DB) NotSendedPrograms(ctx context.Context) ([]app.Program, error) {
+	return nil, nil
+}
+func (t *DB) MarkProgramSended(ctx context.Context, id int64) error {
+	return nil
+}
+func (t *DB) UpsertAdvertisingCampaignFromManagement(ctx context.Context, campaign app.ManagementAdvertisingCampaign) (app.AdvertisingCampaign, error) {
+	return app.AdvertisingCampaign{}, nil
+}
+func (t *DB) NotSendedAdvertisingCampaigns(ctx context.Context) ([]app.AdvertisingCampaign, error) {
+	return nil, nil
+}
+func (t *DB) MarkAdvertisingCampaignSended(ctx context.Context, id int64) error {
+	return nil
+}
+
+func (r *DB) GetListBuildScripts() ([]app.BuildScript, error) {
+	return nil, nil
+}
+
+func (r *DB) GetBuildScript(id int) (app.BuildScript, error) {
+	return app.BuildScript{}, nil
+}
+
+func (r *DB) GetBuildScriptByStationID(app.StationID) (app.BuildScript, error) {
+	return app.BuildScript{}, nil
+}
+
+func (r *DB) CreateBuildScript(createBuildScript app.SetBuildScript) (app.BuildScript, error) {
+	return app.BuildScript{}, nil
+}
+
+func (r *DB) UpdateBuildScript(id int, updateBuildScript app.SetBuildScript) (app.BuildScript, error) {
+	return app.BuildScript{}, nil
+}
+
+func (r *DB) DeleteBuildScript(id int) error {
+	return nil
+}
+
+func (r *DB) DeleteBuildScriptByStationID(id app.StationID) error {
+	return nil
+}
+
+func (r *DB) GetTask(id int) (app.Task, error) {
+	return app.Task{}, nil
+}
+
+func (r *DB) GetListTasks(app.TaskFilter) ([]app.Task, int64, error) {
+	return nil, 0, nil
+}
+
+func (r *DB) CreateTask(createTask app.CreateTask) (app.Task, error) {
+	return app.Task{}, nil
+}
+
+func (r *DB) UpdateTask(id int, updateTask app.UpdateTask) (app.Task, error) {
+	return app.Task{}, nil
+}
+
+func (r *DB) DeleteTask(id int) error {
+	return nil
+}
+
+func (r *DB) CreateOpenwashingLog(model app.OpenwashingLogCreate) (app.OpenwashingLog, error) {
+	return app.OpenwashingLog{}, nil
+}
+
+func (r *DB) NotSendedOpenwashingLogs(ctx context.Context) ([]app.OpenwashingLog, error) {
+	return nil, nil
+}
+
+func (r *DB) MarkOpenwashingLogSended(ctx context.Context, id int64) error {
+	return nil
+}
+
+func (r *DB) NotSendedConfigInts(ctx context.Context) ([]app.ConfigInt, error) {
+	return nil, nil
+}
+
+func (r *DB) MarkConfigIntSended(ctx context.Context, name string) error {
+	return nil
+}
+
+func (r *DB) NotSendedConfigBools(ctx context.Context) ([]app.ConfigBool, error) {
+	return nil, nil
+}
+
+func (r *DB) MarkConfigBoolSended(ctx context.Context, name string) error {
+	return nil
+}
+
+func (r *DB) NotSendedConfigStrings(ctx context.Context) ([]app.ConfigString, error) {
+	return nil, nil
+}
+
+func (r *DB) MarkConfigStringSended(ctx context.Context, name string) error {
+	return nil
+}
+
+func (r *DB) NotSendedStationConfigStrings(ctx context.Context) ([]app.StationConfigVar[string], error) {
+	return nil, nil
+}
+
+func (r *DB) MarkStationConfigStringSended(ctx context.Context, name string, stationID app.StationID) error {
+	return nil
+}
+
+func (r *DB) NotSendedStationConfigBools(ctx context.Context) ([]app.StationConfigVar[bool], error) {
+	return nil, nil
+}
+
+func (r *DB) MarkStationConfigBoolSended(ctx context.Context, name string, stationID app.StationID) error {
+	return nil
+}
+
+func (r *DB) NotSendedStationConfigInts(ctx context.Context) ([]app.StationConfigVar[int64], error) {
+	return nil, nil
+}
+
+func (r *DB) MarkStationConfigIntSended(ctx context.Context, name string, stationID app.StationID) error {
 	return nil
 }

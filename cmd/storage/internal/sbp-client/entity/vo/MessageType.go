@@ -10,4 +10,6 @@ const (
 
 	MessageTypePaymentCancellationRequest MessageType = "sbp_client_service/payment_cancellation_request"
 	PaymentConfirmationRequestMessageType MessageType = "sbp_client_service/payment_confirmation_request"
+
+	SBPPingMessageType MessageType = "sbp_client_service/ping"
 )

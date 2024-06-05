@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"reflect"
@@ -9,6 +10,7 @@ import (
 
 	uuid "github.com/satori/go.uuid"
 
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/ping"
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/session"
 	rabbitVo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
 
@@ -165,6 +167,30 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) (Statio
 	if a.bonusSystemRabbitWorker != nil {
 		status := a.bonusSystemRabbitWorker.Status()
 		bonusSystemActive = a.isServiceAvailableForStation(id, status)
+	}
+
+	if oldStation.Versions == nil || oldStation.LastPing.Add(durationStationOffline).Before(time.Now()) {
+		tasks, _, err := a.repo.GetListTasks(TaskFilter{
+			StationsID: []StationID{id},
+			Types:      []TaskType{GetVersionsTaskType},
+			Statuses:   []TaskStatus{QueueTaskStatus, StartedTaskStatus},
+		})
+		if err != nil {
+			log.PrintErr("Error getting list of tasks for station %d: %s", id, err.Error())
+			return oldStation, bonusSystemActive
+		}
+		if len(tasks) > 0 {
+			return oldStation, bonusSystemActive
+		}
+
+		_, err = a.repo.CreateTask(CreateTask{
+			StationID: id,
+			Type:      GetVersionsTaskType,
+		})
+		if err != nil {
+			log.PrintErr("Error when creating a task to get versions from station %d: %s", id, err.Error())
+			return oldStation, bonusSystemActive
+		}
 	}
 
 	return oldStation, bonusSystemActive
@@ -535,8 +561,8 @@ func (a *app) StatusReport(onlyActive bool) StatusReport {
 		report.SbpStatus = ServiceStatus{Available: false}
 	}
 
-	if a.managementSvc != nil {
-		report.MngtStatus = a.managementSvc.Status()
+	if a.mngtSvc.ManagementRabbitWorker != nil {
+		report.MngtStatus = a.mngtSvc.Status()
 	} else {
 		report.MngtStatus = ServiceStatus{Available: false}
 	}
@@ -556,7 +582,7 @@ func (a *app) StatusReport(onlyActive bool) StatusReport {
 		a.programsMutex.RLock()
 		programName := a.programs[int64(v.CurrentProgram)].Name
 		a.programsMutex.RUnlock()
-		report.Stations = append(report.Stations, StationStatus{
+		report.Stations = append(report.Stations, StationStatus{ //
 			ID:             v.ID,
 			Name:           v.Name,
 			Status:         status,
@@ -564,6 +590,7 @@ func (a *app) StatusReport(onlyActive bool) StatusReport {
 			CurrentProgram: v.CurrentProgram,
 			ProgramName:    programName,
 			IP:             v.IP,
+			Version:        v.CurrentVersions,
 		})
 	}
 	return report
@@ -644,10 +671,11 @@ func (a *app) StationsVariables() ([]StationsVariables, error) {
 }
 
 func (a *app) Programs(id *int64) ([]Program, error) {
-	return a.repo.Programs(id)
+	programs, _, err := a.repo.GetPrograms(context.TODO(), ProgramFilter{ID: id})
+	return programs, err
 }
 func (a *app) SetProgram(program Program) error {
-	err := a.repo.SetProgram(program)
+	_, err := a.repo.SetProgram(context.TODO(), program)
 	if err != nil {
 		return err
 	}
@@ -655,6 +683,8 @@ func (a *app) SetProgram(program Program) error {
 	a.programs[program.ID] = program
 	a.programsMutex.Unlock()
 	err = a.updateConfig("SetProgram")
+
+	a.sendManagementSyncSignal()
 	return err
 }
 func (a *app) StationProgram(id StationID) ([]StationProgram, error) {
@@ -709,7 +739,7 @@ func (a *app) updateConfig(note string) error {
 }
 
 func (a *app) loadPrograms() error {
-	programs, err := a.repo.Programs(nil)
+	programs, _, err := a.repo.GetPrograms(context.TODO(), ProgramFilter{})
 	if err != nil {
 		return err
 	}
@@ -731,20 +761,47 @@ func (a *app) ResetStationStat(auth *Auth, stationID StationID) error {
 	return a.repo.ResetStationStat(stationID)
 }
 
-func (a *app) AddAdvertisingCampaign(auth *Auth, res AdvertisingCampaign) error {
-	return a.repo.AddAdvertisingCampaign(res)
+func (a *app) AddAdvertisingCampaign(ctx context.Context, auth *Auth, res AdvertisingCampaign) (AdvertisingCampaign, error) {
+	campaign, err := a.repo.AddAdvertisingCampaign(ctx, res)
+	if err != nil {
+		return AdvertisingCampaign{}, err
+	}
+
+	a.sendManagementSyncSignal()
+	return campaign, nil
 }
+
 func (a *app) EditAdvertisingCampaign(auth *Auth, res AdvertisingCampaign) error {
-	return a.repo.EditAdvertisingCampaign(res)
+	_, err := a.repo.EditAdvertisingCampaign(context.TODO(), res)
+	if err != nil {
+		return err
+	}
+
+	a.sendManagementSyncSignal()
+	return nil
 }
+
 func (a *app) DelAdvertisingCampaign(auth *Auth, id int64) error {
-	return a.repo.DelAdvertisingCampaign(id)
+	_, err := a.repo.DeleteAdvertisingCampaign(context.TODO(), id)
+	if err != nil {
+		return err
+	}
+
+	a.sendManagementSyncSignal()
+	return nil
 }
-func (a *app) AdvertisingCampaignByID(auth *Auth, id int64) (*AdvertisingCampaign, error) {
-	return a.repo.AdvertisingCampaignByID(id)
+
+func (a *app) AdvertisingCampaignByID(auth *Auth, id int64) (AdvertisingCampaign, error) {
+	return a.repo.GetAdvertisingCampaignByID(context.TODO(), id)
 }
+
 func (a *app) AdvertisingCampaign(auth *Auth, startDate, endDate *time.Time) ([]AdvertisingCampaign, error) {
-	return a.repo.AdvertisingCampaign(startDate, endDate)
+	campaigns, _, err := a.repo.GetAdvertisingCampaigns(context.TODO(), AdvertisingCampaignFilter{
+		StartDate: startDate,
+		EndDate:   endDate,
+	})
+
+	return campaigns, err
 }
 
 func (a *app) currentAdvertisingCampaigns(localTime time.Time) ([]AdvertisingCampaign, error) {
@@ -1009,6 +1066,7 @@ func (a *app) SetExternalServicesActive(active bool) {
 func (a *app) GetRabbitConfig() (cfg RabbitConfig, err error) {
 	serverID, err := a.repo.GetConfigString("server_id")
 	if err != nil {
+		log.Info("%s", err.Error())
 		err = ErrServiceNotConfigured
 
 		return cfg, err
@@ -1016,6 +1074,7 @@ func (a *app) GetRabbitConfig() (cfg RabbitConfig, err error) {
 
 	serverKey, err := a.repo.GetConfigString("server_key")
 	if err != nil {
+		log.Info("%s", err.Error())
 		err = ErrServiceNotConfigured
 
 		return cfg, err
@@ -1253,4 +1312,118 @@ func (a *app) GetServerInfo() ServerInfo {
 func (a *app) isServiceAvailableForStation(station StationID, status ServiceStatus) bool {
 	v, ok := status.UnpaidStations[int(station)]
 	return status.Available && status.IsConnected && (!ok || !v) && !status.DisabledOnServer
+}
+
+func (a *app) PingServices() {
+	var bonusServerID string
+	var sbpServerID string
+	var kaspiServerID string
+
+	bonusConfig, err := a.repo.GetConfigString("server_id")
+	if err == nil {
+		bonusServerID = bonusConfig.Value
+	}
+
+	sbpConfig, err := a.repo.GetConfigString("sbp_server_id")
+	if err == nil {
+		sbpServerID = sbpConfig.Value
+	}
+
+	kaspiConfig, err := a.repo.GetConfigString("kaspi_server_id")
+	if err == nil {
+		kaspiServerID = kaspiConfig.Value
+	}
+
+	for {
+		currentState := []StationPingStatus{}
+
+		a.stationsMutex.RLock()
+
+		for _, v := range a.stations {
+			if !v.IsActive {
+				continue
+			}
+			isOnline := false
+			if v.LastPing.Add(durationStationOffline).After(time.Now()) {
+				isOnline = true
+			}
+
+			currentState = append(currentState, StationPingStatus{
+				ID:       v.ID,
+				IsOnline: isOnline,
+			})
+		}
+
+		a.stationsMutex.RUnlock()
+
+		err := a.pingBonus(bonusServerID, currentState)
+		if err != nil {
+			log.Err(fmt.Sprintf("Bonus service ping error: %s", err.Error()))
+			continue
+		}
+
+		err = a.pingSBP(sbpServerID, currentState)
+		if err != nil {
+			log.Err(fmt.Sprintf("SBP service ping error %s", err.Error()))
+			continue
+		}
+
+		err = a.pingKaspi(kaspiServerID, currentState)
+		if err != nil {
+			log.Err(fmt.Sprintf("SBP service ping error %s", err.Error()))
+			continue
+		}
+
+		time.Sleep(time.Second * 15)
+	}
+}
+
+func (a *app) pingBonus(serverID string, status []StationPingStatus) error {
+	if a.bonusSystemRabbitWorker == nil {
+		return nil
+	}
+
+	p := ping.BonusPing{
+		WashID:   serverID,
+		Stations: stationPingStatusToRabbit(status),
+	}
+
+	return a.bonusSystemRabbitWorker.publisherFunc(p, rabbitVo.WashBonusService, rabbitVo.BonusPingRoutingKey, rabbitVo.BonusPingMessageType)
+}
+
+func (a *app) pingSBP(serverID string, status []StationPingStatus) error {
+	if a.SbpWorker == nil {
+		return nil
+	}
+
+	return a.SbpWorker.Ping(serverID, status)
+}
+
+func (a *app) pingKaspi(serverID string, status []StationPingStatus) error {
+	if !a.IsKaspiInit() {
+		return nil
+	}
+
+	return a.kaspiSvc.Ping(serverID, status)
+}
+
+func stationPingStatusToRabbit(status []StationPingStatus) []ping.StationStatus {
+	l := []ping.StationStatus{}
+	for _, v := range status {
+		l = append(l, ping.StationStatus{
+			ID:       int(v.ID),
+			IsOnline: v.IsOnline,
+		})
+	}
+	return l
+}
+
+func (a *app) AddOpenwashingLog(log OpenwashingLogCreate) (OpenwashingLog, error) {
+	newLog, err := a.repo.CreateOpenwashingLog(log)
+	if err != nil {
+		return OpenwashingLog{}, err
+	}
+
+	a.sendManagementSyncSignal()
+	return newLog, nil
 }
