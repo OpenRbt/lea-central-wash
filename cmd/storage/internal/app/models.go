@@ -6,9 +6,26 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-// UserData describes a user of the system (a registered one)
-type UserData struct {
+type User struct {
 	ID         int
+	Login      string
+	Password   string
+	FirstName  string
+	MiddleName string
+	LastName   string
+	IsAdmin    bool
+	IsEngineer bool
+	IsOperator bool
+	Deleted    bool
+	Version    int
+}
+
+func (user *User) IsEnabled() bool {
+	return user.IsAdmin || user.IsEngineer || user.IsOperator
+}
+
+// UserData describes a user of the system (a registered one)
+type UserCreation struct {
 	Login      string
 	Password   string
 	FirstName  *string
@@ -20,19 +37,18 @@ type UserData struct {
 }
 
 // UpdateUserData describes which data fields can be updated
-type UpdateUserData struct {
-	Login      string
-	FirstName  *string
-	MiddleName *string
-	LastName   *string
-	IsAdmin    *bool
-	IsEngineer *bool
-	IsOperator *bool
+type UserUpdate struct {
+	FirstName   *string
+	MiddleName  *string
+	LastName    *string
+	NewPassword *string
+	IsAdmin     *bool
+	IsEngineer  *bool
+	IsOperator  *bool
 }
 
 // UpdatePasswordData is a structure used in "change pass" procedure
 type UpdatePasswordData struct {
-	Login       string
 	OldPassword string
 	NewPassword string
 }
@@ -377,4 +393,9 @@ func firmwareVersionFromJson(id int, current bool, jsonVersion FirmwareVersionJs
 type ProgramFilter struct {
 	ID *int64
 	Pagination
+}
+
+type UserFilter struct {
+	Pagination
+	IsAdmin *bool
 }

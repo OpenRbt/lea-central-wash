@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"time"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
@@ -34,21 +35,21 @@ func NewAuthCheck(log *structlog.Logger, appInstance app.App) Check {
 
 // CheckAuth function for check token
 func (a *check) CheckAuth(token string) (*app.Auth, error) { //nolint:gocyclo
-	user, err := a.app.User(token)
+	user, err := a.app.User(context.Background(), token)
 	if err != nil {
 		return nil, oapierrors.Unauthenticated("invalid credentials")
 	}
-	if !a.app.IsEnabled(user) {
+	if !user.IsEnabled() {
 		return nil, oapierrors.Unauthenticated("invalid credentials")
 	}
 	return &app.Auth{
 		ID:         user.ID,
 		Login:      user.Login,
-		FirstName:  *user.FirstName,
-		MiddleName: *user.MiddleName,
-		LastName:   *user.LastName,
-		IsAdmin:    *user.IsAdmin,
-		IsOperator: *user.IsOperator,
-		IsEngineer: *user.IsEngineer,
+		FirstName:  user.FirstName,
+		MiddleName: user.MiddleName,
+		LastName:   user.LastName,
+		IsAdmin:    user.IsAdmin,
+		IsOperator: user.IsOperator,
+		IsEngineer: user.IsEngineer,
 	}, nil
 }

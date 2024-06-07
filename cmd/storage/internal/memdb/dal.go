@@ -19,6 +19,8 @@ type DB struct {
 	mutex   sync.Mutex
 }
 
+var _ = app.Repo(&DB{})
+
 // New DB
 func New() *DB {
 	return &DB{keypair: []keypair{}}
@@ -97,28 +99,28 @@ func (t *DB) Stations() (stations []app.SetStation, err error) {
 	return nil, nil
 }
 
-func (t *DB) User(login string) (user app.UserData, err error) {
-	return app.UserData{}, nil
+func (t *DB) User(login string) (user app.User, err error) {
+	return app.User{}, nil
 }
 
-func (t *DB) Users() (users []app.UserData, err error) {
-	return nil, nil
+func (t *DB) Users(ctx context.Context, filter app.UserFilter) (users []app.User, count int64, err error) {
+	return nil, 0, nil
 }
 
-func (t *DB) CreateUser(userData app.UserData) (newUser app.UserData, err error) {
-	return app.UserData{}, nil
+func (t *DB) CreateUser(userData app.UserCreation) (newUser app.User, err error) {
+	return app.User{}, nil
 }
 
-func (t *DB) UpdateUser(userData app.UserData) (newUser app.UserData, err error) {
-	return app.UserData{}, nil
+func (t *DB) UpdateUser(login string, userData app.UserUpdate) (newUser app.User, err error) {
+	return app.User{}, nil
 }
 
-func (t *DB) UpdateUserPassword(userData app.UpdatePasswordData) (newUser app.UserData, err error) {
-	return app.UserData{}, nil
+func (t *DB) UpdateUserPassword(login string, userData app.UpdatePasswordData) (newUser app.User, err error) {
+	return app.User{}, nil
 }
 
-func (t *DB) DeleteUser(login string) error {
-	return nil
+func (t *DB) DeleteUser(ctx context.Context, login string) (app.User, error) {
+	return app.User{}, nil
 }
 
 func (t *DB) DelStation(id app.StationID) error {
@@ -476,5 +478,13 @@ func (r *DB) NotSendedStationConfigInts(ctx context.Context) ([]app.StationConfi
 }
 
 func (r *DB) MarkStationConfigIntSended(ctx context.Context, name string, stationID app.StationID) error {
+	return nil
+}
+
+func (r *DB) NotSendedUsers(ctx context.Context) ([]app.User, error) {
+	return nil, nil
+}
+
+func (r *DB) MarkUserSended(ctx context.Context, login string) error {
 	return nil
 }

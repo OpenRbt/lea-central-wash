@@ -395,143 +395,156 @@ func (a *app) LoadMoneyReport(id StationID) (*MoneyReport, error) {
 	return &report, err
 }
 
-func (a *app) IsEnabled(user *UserData) bool {
-	return *user.IsAdmin || *user.IsEngineer || *user.IsOperator
-}
-
-func (a *app) Users(auth *Auth) ([]UserData, error) {
+func (a *app) Users(ctx context.Context, auth *Auth) ([]User, error) {
 	if !auth.IsAdmin {
 		return nil, ErrAccessDenied
 	}
-	return a.repo.Users()
+
+	users, _, err := a.repo.Users(ctx, UserFilter{})
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
 
-func (a *app) User(password string) (*UserData, error) {
-	users, errRepo := a.repo.Users()
+func (a *app) User(ctx context.Context, password string) (User, error) {
+	users, _, errRepo := a.repo.Users(ctx, UserFilter{})
 	if errRepo != nil {
 		log.Info("REPO: ", errRepo)
-		return nil, errRepo
+		return User{}, errRepo
 	}
 	for u := range users {
 		user := users[u]
 		errPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 		if errPassword == nil {
-			log.Info("Authenticated", "login", user.Login, "isAdmin", *user.IsAdmin)
-			return &user, nil
+			log.Info("Authenticated", "login", user.Login, "isAdmin", user.IsAdmin)
+			return user, nil
 		}
 	}
-	return nil, ErrNotFound
+	return User{}, ErrNotFound
 }
 
-func (a *app) isPasswordUnique(password string) bool {
-	_, errExists := a.User(password)
+func (a *app) isPasswordUnique(ctx context.Context, password string) bool {
+	_, errExists := a.User(ctx, password)
 	return errExists == ErrNotFound
 }
 
-func (a *app) CreateUser(userData UserData, auth *Auth) (id int, err error) {
+func (a *app) CreateUser(ctx context.Context, userCreation UserCreation, auth *Auth) (User, error) {
 	if !auth.IsAdmin {
-		return 0, ErrAccessDenied
+		return User{}, ErrAccessDenied
 	}
-	if !a.isPasswordUnique(userData.Password) {
-		return 0, ErrAccessDenied
+	if !a.isPasswordUnique(ctx, userCreation.Password) {
+		return User{}, ErrAccessDenied
 	}
-	password, errPassword := bcrypt.GenerateFromPassword([]byte(userData.Password), bcrypt.DefaultCost)
+
+	userCreation, err := defaultUserSettings(userCreation)
+	if err != nil {
+		return User{}, err
+	}
+
+	newUser, err := a.repo.CreateUser(userCreation)
+	if err != nil {
+		return User{}, err
+	}
+
+	a.sendManagementSyncSignal()
+
+	return newUser, nil
+}
+
+func defaultUserSettings(userCreation UserCreation) (UserCreation, error) {
+	password, errPassword := bcrypt.GenerateFromPassword([]byte(userCreation.Password), bcrypt.DefaultCost)
 	if errPassword != nil {
-		return 0, errPassword
+		return UserCreation{}, errPassword
 	}
-	userData.Password = string(password)
+	userCreation.Password = string(password)
 	defaultName := ""
 	defaultPermission := false
-	if userData.FirstName == nil {
-		userData.FirstName = &defaultName
+	if userCreation.FirstName == nil {
+		userCreation.FirstName = &defaultName
 	}
-	if userData.MiddleName == nil {
-		userData.MiddleName = &defaultName
+	if userCreation.MiddleName == nil {
+		userCreation.MiddleName = &defaultName
 	}
-	if userData.LastName == nil {
-		userData.LastName = &defaultName
+	if userCreation.LastName == nil {
+		userCreation.LastName = &defaultName
 	}
-	if userData.IsAdmin == nil {
-		userData.IsAdmin = &defaultPermission
+	if userCreation.IsAdmin == nil {
+		userCreation.IsAdmin = &defaultPermission
 	}
-	if userData.IsOperator == nil {
-		userData.IsOperator = &defaultPermission
+	if userCreation.IsOperator == nil {
+		userCreation.IsOperator = &defaultPermission
 	}
-	if userData.IsEngineer == nil {
-		userData.IsEngineer = &defaultPermission
+	if userCreation.IsEngineer == nil {
+		userCreation.IsEngineer = &defaultPermission
 	}
-	user, err := a.repo.CreateUser(userData)
-	if err != nil {
-		return 0, err
-	}
-	return user.ID, nil
+	return userCreation, nil
 }
 
-func (a *app) UpdateUser(userData UpdateUserData, auth *Auth) (id int, err error) {
+func (a *app) UpdateUser(login string, userUpdate UserUpdate, auth *Auth) (User, error) {
 	if !auth.IsAdmin {
-		return 0, ErrAccessDenied
+		return User{}, ErrAccessDenied
 	}
-	user, errOldUser := a.repo.User(userData.Login)
-	if errOldUser != nil {
-		return 0, errOldUser
-	}
-	if userData.FirstName != nil {
-		user.FirstName = userData.FirstName
-	}
-	if userData.MiddleName != nil {
-		user.MiddleName = userData.MiddleName
-	}
-	if userData.LastName != nil {
-		user.LastName = userData.LastName
-	}
-	if userData.IsAdmin != nil {
-		user.IsAdmin = userData.IsAdmin
-	}
-	if userData.IsOperator != nil {
-		user.IsOperator = userData.IsOperator
-	}
-	if userData.IsEngineer != nil {
-		user.IsEngineer = userData.IsEngineer
-	}
-	newUser, err := a.repo.UpdateUser(user)
+
+	_, err := a.repo.User(login)
 	if err != nil {
-		return 0, err
+		return User{}, err
 	}
-	return newUser.ID, err
+
+	user, err := a.repo.UpdateUser(login, userUpdate)
+	if err != nil {
+		return User{}, err
+	}
+
+	a.sendManagementSyncSignal()
+
+	return user, err
 }
 
-func (a *app) UpdateUserPassword(userData UpdatePasswordData, auth *Auth) (id int, err error) {
+func (a *app) UpdateUserPassword(ctx context.Context, login string, userData UpdatePasswordData, auth *Auth) (User, error) {
 	if !auth.IsAdmin {
-		return 0, ErrAccessDenied
+		return User{}, ErrAccessDenied
 	}
-	if !a.isPasswordUnique(userData.NewPassword) {
-		return 0, ErrAccessDenied
+	if !a.isPasswordUnique(ctx, userData.NewPassword) {
+		return User{}, ErrPasswordNotUnique
 	}
-	user, errOldUser := a.repo.User(userData.Login)
+	user, errOldUser := a.repo.User(login)
 	if errOldUser != nil {
-		return 0, ErrNotFound
+		return User{}, ErrNotFound
 	}
 	errOldPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userData.OldPassword))
 	if errOldPassword != nil {
-		return 0, ErrNotFound
+		return User{}, ErrNotFound
 	}
 	newPassword, errNewPassword := bcrypt.GenerateFromPassword([]byte(userData.NewPassword), bcrypt.DefaultCost)
 	if errNewPassword != nil {
-		return 0, errNewPassword
+		return User{}, errNewPassword
 	}
-	userData.NewPassword = string(newPassword)
-	newUser, err := a.repo.UpdateUserPassword(userData)
+	newPasswordStr := string(newPassword)
+	newUser, err := a.repo.UpdateUser(login, UserUpdate{NewPassword: &newPasswordStr})
 	if err != nil {
-		return 0, err
+		return User{}, err
 	}
-	return newUser.ID, nil
+
+	a.sendManagementSyncSignal()
+
+	return newUser, nil
 }
 
-func (a *app) DeleteUser(login string, auth *Auth) error {
+func (a *app) DeleteUser(ctx context.Context, login string, auth *Auth) error {
 	if !auth.IsAdmin {
 		return ErrAccessDenied
 	}
-	return a.repo.DeleteUser(login)
+
+	_, err := a.repo.DeleteUser(ctx, login)
+	if err != nil {
+		return err
+	}
+
+	a.sendManagementSyncSignal()
+
+	return nil
 }
 
 func (a *app) RelayReportCurrent(auth *Auth, id *StationID) (StationsStat, error) {

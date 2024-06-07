@@ -87,7 +87,10 @@ var (
 	ErrNotFoundDispenser        = errors.New("not found Dispenser")
 	ErrNotFoundBoard            = errors.New("not found Board")
 	ErrAccessDenied             = errors.New("access denied")
+	ErrPasswordNotUnique        = errors.New("password is already in use")
+	ErrWrongPassword            = errors.New("wrong password")
 	ErrLoginNotUnique           = errors.New("login is already in use")
+	ErrRemovingOnlyAdmin        = errors.New("it is impossible to remove the only admin")
 	ErrMoneyCollectionFkey      = errors.New("violates foreign key constraint on table money_collection")
 	ErrUnknownProgram           = errors.New("unknown program")
 	ErrUnknownStation           = errors.New("unknown station")
@@ -156,14 +159,19 @@ type (
 		SetStationProgram(StationID, []StationProgram) error
 		StationConfig(StationID) (StationConfig, error)
 
-		Users(auth *Auth) (users []UserData, err error)
-		User(password string) (user *UserData, err error)
-		CreateUser(userData UserData, auth *Auth) (id int, err error)
-		UpdateUser(userData UpdateUserData, auth *Auth) (id int, err error)
-		UpdateUserPassword(userData UpdatePasswordData, auth *Auth) (id int, err error)
-		DeleteUser(login string, auth *Auth) error
+		Users(ctx context.Context, auth *Auth) (users []User, err error)
+		User(ctx context.Context, password string) (user User, err error)
+		CreateUser(ctx context.Context, userCreation UserCreation, auth *Auth) (user User, err error)
+		UpdateUser(login string, userUpdate UserUpdate, auth *Auth) (user User, err error)
+		UpdateUserPassword(ctx context.Context, login string, userData UpdatePasswordData, auth *Auth) (user User, err error)
+		DeleteUser(ctx context.Context, login string, auth *Auth) error
+		GetUsersForManagement(ctx context.Context, filter UserFilter) (Page[User], error)
+		GetUserForManagement(ctx context.Context, login string) (User, error)
+		CreateUsersForManagement(ctx context.Context, userCreation UserCreation) (User, error)
+		UpdateUsersForManagement(ctx context.Context, login string, userUpdate UserUpdate) (User, error)
+		DeleteUsersForManagement(ctx context.Context, login string) (User, error)
+		ChangeUserPasswordForManagement(ctx context.Context, login string, password UpdatePasswordData) (User, error)
 
-		IsEnabled(user *UserData) bool
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
 		CardReaderConfig(StationID) (*CardReaderConfig, error)
@@ -291,12 +299,11 @@ type (
 		AddOpenStationLog(StationID) error
 		CurrentMoney(StationID) (MoneyReport, error)
 
-		User(login string) (user UserData, err error)
-		Users() (users []UserData, err error)
-		CreateUser(userData UserData) (newUser UserData, err error)
-		UpdateUser(userData UserData) (newUser UserData, err error)
-		UpdateUserPassword(userData UpdatePasswordData) (newUser UserData, err error)
-		DeleteUser(login string) error
+		User(login string) (user User, err error)
+		Users(ctx context.Context, filter UserFilter) (users []User, count int64, err error)
+		CreateUser(userData UserCreation) (newUser User, err error)
+		UpdateUser(login string, userData UserUpdate) (newUser User, err error)
+		DeleteUser(ctx context.Context, login string) (User, error)
 
 		// for api
 		LoadHash() ([]StationID, []string, error)
@@ -345,6 +352,8 @@ type (
 		MarkStationConfigBoolSended(ctx context.Context, name string, stationID StationID) error
 		NotSendedStationConfigInts(ctx context.Context) ([]StationConfigVar[int64], error)
 		MarkStationConfigIntSended(ctx context.Context, name string, stationID StationID) error
+		NotSendedUsers(ctx context.Context) ([]User, error)
+		MarkUserSended(ctx context.Context, login string) error
 
 		GetCurrentAdvertisingCampaigns(time.Time) ([]AdvertisingCampaign, error)
 
@@ -446,6 +455,7 @@ type (
 		SendStationConfigBool(StationConfigVar[bool]) error
 		SendStationConfigString(StationConfigVar[string]) error
 		SendStationConfigInt(StationConfigVar[int64]) error
+		SendUser(User) error
 	}
 	management struct {
 		syncChannel chan struct{}
@@ -536,6 +546,10 @@ func New(repo Repo, kasseSvc KasseSvc, weatherSvc WeatherSvc, hardware HardwareA
 	go appl.refreshMotorStatsDates()
 	go appl.taskScheduler()
 	return appl
+}
+
+func Ptr[T any](value T) *T {
+	return &value
 }
 
 // Status describes station or kasse status.
