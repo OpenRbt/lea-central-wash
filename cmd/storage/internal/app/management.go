@@ -2,7 +2,10 @@ package app
 
 import (
 	"context"
+	"errors"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type (
@@ -52,6 +55,102 @@ func (app *app) sendManagementSyncSignal() {
 	}
 }
 
+func (app *app) GetUsersForManagement(ctx context.Context, filter UserFilter) (Page[User], error) {
+	users, total, err := app.repo.Users(ctx, filter)
+	if err != nil {
+		return Page[User]{}, err
+	}
+
+	return NewPage(users, filter.Pagination, total), nil
+}
+
+func (app *app) GetUserForManagement(ctx context.Context, login string) (User, error) {
+	user, err := app.repo.User(login)
+	if err != nil {
+		return User{}, err
+	}
+
+	return user, nil
+}
+
+func (app *app) CreateUsersForManagement(ctx context.Context, userCreation UserCreation) (User, error) {
+	if !app.isPasswordUnique(ctx, userCreation.Password) {
+		return User{}, ErrPasswordNotUnique
+	}
+
+	_, err := app.repo.User(userCreation.Login)
+	if err != nil && !errors.Is(err, ErrNotFound) {
+		return User{}, err
+	} else if err == nil {
+		return User{}, ErrLoginNotUnique
+	}
+
+	userCreation, err = defaultUserSettings(userCreation)
+	if err != nil {
+		return User{}, err
+	}
+
+	return app.repo.CreateUser(userCreation)
+}
+
+func (app *app) UpdateUsersForManagement(ctx context.Context, login string, userUpdate UserUpdate) (User, error) {
+	_, err := app.repo.User(login)
+	if err != nil {
+		return User{}, err
+	}
+
+	return app.repo.UpdateUser(login, userUpdate)
+}
+
+func (app *app) ChangeUserPasswordForManagement(ctx context.Context, login string, password UpdatePasswordData) (User, error) {
+	if !app.isPasswordUnique(ctx, password.NewPassword) {
+		return User{}, ErrPasswordNotUnique
+	}
+
+	user, err := app.repo.User(login)
+	if err != nil {
+		return User{}, err
+	}
+
+	errOldPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password.OldPassword))
+	if errOldPassword != nil {
+		return User{}, ErrWrongPassword
+	}
+
+	newPassword, errNewPassword := bcrypt.GenerateFromPassword([]byte(password.NewPassword), bcrypt.DefaultCost)
+	if errNewPassword != nil {
+		return User{}, errNewPassword
+	}
+
+	newPasswordStr := string(newPassword)
+	user, err = app.repo.UpdateUser(login, UserUpdate{NewPassword: &newPasswordStr})
+	if err != nil {
+		return User{}, err
+	}
+
+	return user, nil
+}
+
+func (app *app) DeleteUsersForManagement(ctx context.Context, login string) (User, error) {
+	user, err := app.repo.User(login)
+	if err != nil {
+		return User{}, err
+	}
+
+	if user.IsAdmin {
+		_, total, err := app.repo.Users(ctx, UserFilter{IsAdmin: Ptr(true)})
+		if err != nil {
+			return User{}, err
+		}
+
+		if total <= 1 {
+			return User{}, ErrRemovingOnlyAdmin
+		}
+	}
+
+	return app.repo.DeleteUser(ctx, login)
+}
+
 func (app *app) GetProgramsForManagement(ctx context.Context, filter ProgramFilter) (Page[Program], error) {
 	programs, total, err := app.repo.GetPrograms(ctx, filter)
 	if err != nil {
@@ -71,14 +170,6 @@ func (app *app) NotSendedPrograms(ctx context.Context) ([]Program, error) {
 
 func (app *app) MarkProgramSended(ctx context.Context, id int64) error {
 	return app.repo.MarkProgramSended(ctx, id)
-}
-
-func (app *app) NotSendedOpenwashingLogs(ctx context.Context) ([]OpenwashingLog, error) {
-	return app.repo.NotSendedOpenwashingLogs(ctx)
-}
-
-func (app *app) MarkOpenwashingLogSended(ctx context.Context, id int64) error {
-	return app.repo.MarkOpenwashingLogSended(ctx, id)
 }
 
 func (app *app) GetAdvertisingCampaignByIDForManagement(ctx context.Context, id int64) (AdvertisingCampaign, error) {

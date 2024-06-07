@@ -254,18 +254,18 @@ func (mr *MockAppMockRecorder) CreateTask(createTask any) *gomock.Call {
 }
 
 // CreateUser mocks base method.
-func (m *MockApp) CreateUser(userData UserData, auth *Auth) (int, error) {
+func (m *MockApp) CreateUser(ctx context.Context, userCreation UserCreation, auth *Auth) (User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateUser", userData, auth)
-	ret0, _ := ret[0].(int)
+	ret := m.ctrl.Call(m, "CreateUser", ctx, userCreation, auth)
+	ret0, _ := ret[0].(User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreateUser indicates an expected call of CreateUser.
-func (mr *MockAppMockRecorder) CreateUser(userData, auth any) *gomock.Call {
+func (mr *MockAppMockRecorder) CreateUser(ctx, userCreation, auth any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockApp)(nil).CreateUser), userData, auth)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockApp)(nil).CreateUser), ctx, userCreation, auth)
 }
 
 // DelAdvertisingCampaign mocks base method.
@@ -368,17 +368,17 @@ func (mr *MockAppMockRecorder) DeleteTasks() *gomock.Call {
 }
 
 // DeleteUser mocks base method.
-func (m *MockApp) DeleteUser(login string, auth *Auth) error {
+func (m *MockApp) DeleteUser(ctx context.Context, login string, auth *Auth) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteUser", login, auth)
+	ret := m.ctrl.Call(m, "DeleteUser", ctx, login, auth)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // DeleteUser indicates an expected call of DeleteUser.
-func (mr *MockAppMockRecorder) DeleteUser(login, auth any) *gomock.Call {
+func (mr *MockAppMockRecorder) DeleteUser(ctx, login, auth any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockApp)(nil).DeleteUser), login, auth)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockApp)(nil).DeleteUser), ctx, login, auth)
 }
 
 // DispenserStop mocks base method.
@@ -766,6 +766,21 @@ func (mr *MockAppMockRecorder) GetTask(id any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTask", reflect.TypeOf((*MockApp)(nil).GetTask), id)
 }
 
+// GetUsersForManagement mocks base method.
+func (m *MockApp) GetUsersForManagement(ctx context.Context, filter UserFilter) (Page[User], error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUsersForManagement", ctx, filter)
+	ret0, _ := ret[0].(Page[User])
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUsersForManagement indicates an expected call of GetUsersForManagement.
+func (mr *MockAppMockRecorder) GetUsersForManagement(ctx, filter any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsersForManagement", reflect.TypeOf((*MockApp)(nil).GetUsersForManagement), ctx, filter)
+}
+
 // GetVersionBuffered mocks base method.
 func (m *MockApp) GetVersionBuffered(stationID StationID) (FirmwareVersion, error) {
 	m.ctrl.T.Helper()
@@ -874,20 +889,6 @@ func (m *MockApp) InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error {
 func (mr *MockAppMockRecorder) InitSbpRabbitWorker(config any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitSbpRabbitWorker", reflect.TypeOf((*MockApp)(nil).InitSbpRabbitWorker), config)
-}
-
-// IsEnabled mocks base method.
-func (m *MockApp) IsEnabled(user *UserData) bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IsEnabled", user)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// IsEnabled indicates an expected call of IsEnabled.
-func (mr *MockAppMockRecorder) IsEnabled(user any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsEnabled", reflect.TypeOf((*MockApp)(nil).IsEnabled), user)
 }
 
 // IsSbpAvailableForStation mocks base method.
@@ -1702,33 +1703,33 @@ func (mr *MockAppMockRecorder) StatusReport(arg0 any) *gomock.Call {
 }
 
 // UpdateUser mocks base method.
-func (m *MockApp) UpdateUser(userData UpdateUserData, auth *Auth) (int, error) {
+func (m *MockApp) UpdateUser(login string, userUpdate UserUpdate, auth *Auth) (User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateUser", userData, auth)
-	ret0, _ := ret[0].(int)
+	ret := m.ctrl.Call(m, "UpdateUser", login, userUpdate, auth)
+	ret0, _ := ret[0].(User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // UpdateUser indicates an expected call of UpdateUser.
-func (mr *MockAppMockRecorder) UpdateUser(userData, auth any) *gomock.Call {
+func (mr *MockAppMockRecorder) UpdateUser(login, userUpdate, auth any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockApp)(nil).UpdateUser), userData, auth)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockApp)(nil).UpdateUser), login, userUpdate, auth)
 }
 
 // UpdateUserPassword mocks base method.
-func (m *MockApp) UpdateUserPassword(userData UpdatePasswordData, auth *Auth) (int, error) {
+func (m *MockApp) UpdateUserPassword(ctx context.Context, login string, userData UpdatePasswordData, auth *Auth) (User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateUserPassword", userData, auth)
-	ret0, _ := ret[0].(int)
+	ret := m.ctrl.Call(m, "UpdateUserPassword", ctx, login, userData, auth)
+	ret0, _ := ret[0].(User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // UpdateUserPassword indicates an expected call of UpdateUserPassword.
-func (mr *MockAppMockRecorder) UpdateUserPassword(userData, auth any) *gomock.Call {
+func (mr *MockAppMockRecorder) UpdateUserPassword(ctx, login, userData, auth any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserPassword", reflect.TypeOf((*MockApp)(nil).UpdateUserPassword), userData, auth)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserPassword", reflect.TypeOf((*MockApp)(nil).UpdateUserPassword), ctx, login, userData, auth)
 }
 
 // UpsertAdvertisingCampaignFromManagement mocks base method.
@@ -1747,33 +1748,33 @@ func (mr *MockAppMockRecorder) UpsertAdvertisingCampaignFromManagement(ctx, camp
 }
 
 // User mocks base method.
-func (m *MockApp) User(password string) (*UserData, error) {
+func (m *MockApp) User(ctx context.Context, password string) (User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "User", password)
-	ret0, _ := ret[0].(*UserData)
+	ret := m.ctrl.Call(m, "User", ctx, password)
+	ret0, _ := ret[0].(User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // User indicates an expected call of User.
-func (mr *MockAppMockRecorder) User(password any) *gomock.Call {
+func (mr *MockAppMockRecorder) User(ctx, password any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "User", reflect.TypeOf((*MockApp)(nil).User), password)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "User", reflect.TypeOf((*MockApp)(nil).User), ctx, password)
 }
 
 // Users mocks base method.
-func (m *MockApp) Users(auth *Auth) ([]UserData, error) {
+func (m *MockApp) Users(ctx context.Context, auth *Auth) ([]User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Users", auth)
-	ret0, _ := ret[0].([]UserData)
+	ret := m.ctrl.Call(m, "Users", ctx, auth)
+	ret0, _ := ret[0].([]User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Users indicates an expected call of Users.
-func (mr *MockAppMockRecorder) Users(auth any) *gomock.Call {
+func (mr *MockAppMockRecorder) Users(ctx, auth any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Users", reflect.TypeOf((*MockApp)(nil).Users), auth)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Users", reflect.TypeOf((*MockApp)(nil).Users), ctx, auth)
 }
 
 // MockRepo is a mock of Repo interface.
@@ -1991,10 +1992,10 @@ func (mr *MockRepoMockRecorder) CreateTask(createTask any) *gomock.Call {
 }
 
 // CreateUser mocks base method.
-func (m *MockRepo) CreateUser(userData UserData) (UserData, error) {
+func (m *MockRepo) CreateUser(userData UserCreation) (User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", userData)
-	ret0, _ := ret[0].(UserData)
+	ret0, _ := ret[0].(User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -2106,17 +2107,18 @@ func (mr *MockRepoMockRecorder) DeleteTask(id any) *gomock.Call {
 }
 
 // DeleteUser mocks base method.
-func (m *MockRepo) DeleteUser(login string) error {
+func (m *MockRepo) DeleteUser(ctx context.Context, login string) (User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteUser", login)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "DeleteUser", ctx, login)
+	ret0, _ := ret[0].(User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // DeleteUser indicates an expected call of DeleteUser.
-func (mr *MockRepoMockRecorder) DeleteUser(login any) *gomock.Call {
+func (mr *MockRepoMockRecorder) DeleteUser(ctx, login any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockRepo)(nil).DeleteUser), login)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockRepo)(nil).DeleteUser), ctx, login)
 }
 
 // EditAdvertisingCampaign mocks base method.
@@ -2651,6 +2653,20 @@ func (mr *MockRepoMockRecorder) MarkStationConfigStringSended(ctx, name, station
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkStationConfigStringSended", reflect.TypeOf((*MockRepo)(nil).MarkStationConfigStringSended), ctx, name, stationID)
 }
 
+// MarkUserSended mocks base method.
+func (m *MockRepo) MarkUserSended(ctx context.Context, login string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MarkUserSended", ctx, login)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// MarkUserSended indicates an expected call of MarkUserSended.
+func (mr *MockRepoMockRecorder) MarkUserSended(ctx, login any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkUserSended", reflect.TypeOf((*MockRepo)(nil).MarkUserSended), ctx, login)
+}
+
 // MoneyReport mocks base method.
 func (m *MockRepo) MoneyReport(stationID StationID, startDate, endDate time.Time) (MoneyReport, error) {
 	m.ctrl.T.Helper()
@@ -2828,6 +2844,21 @@ func (m *MockRepo) NotSendedStationConfigStrings(ctx context.Context) ([]Station
 func (mr *MockRepoMockRecorder) NotSendedStationConfigStrings(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotSendedStationConfigStrings", reflect.TypeOf((*MockRepo)(nil).NotSendedStationConfigStrings), ctx)
+}
+
+// NotSendedUsers mocks base method.
+func (m *MockRepo) NotSendedUsers(ctx context.Context) ([]User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NotSendedUsers", ctx)
+	ret0, _ := ret[0].([]User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// NotSendedUsers indicates an expected call of NotSendedUsers.
+func (mr *MockRepoMockRecorder) NotSendedUsers(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotSendedUsers", reflect.TypeOf((*MockRepo)(nil).NotSendedUsers), ctx)
 }
 
 // RefreshMotorStatsCurrent mocks base method.
@@ -3305,33 +3336,18 @@ func (mr *MockRepoMockRecorder) UpdateTask(id, updateTask any) *gomock.Call {
 }
 
 // UpdateUser mocks base method.
-func (m *MockRepo) UpdateUser(userData UserData) (UserData, error) {
+func (m *MockRepo) UpdateUser(login string, userData UserUpdate) (User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateUser", userData)
-	ret0, _ := ret[0].(UserData)
+	ret := m.ctrl.Call(m, "UpdateUser", login, userData)
+	ret0, _ := ret[0].(User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // UpdateUser indicates an expected call of UpdateUser.
-func (mr *MockRepoMockRecorder) UpdateUser(userData any) *gomock.Call {
+func (mr *MockRepoMockRecorder) UpdateUser(login, userData any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockRepo)(nil).UpdateUser), userData)
-}
-
-// UpdateUserPassword mocks base method.
-func (m *MockRepo) UpdateUserPassword(userData UpdatePasswordData) (UserData, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateUserPassword", userData)
-	ret0, _ := ret[0].(UserData)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UpdateUserPassword indicates an expected call of UpdateUserPassword.
-func (mr *MockRepoMockRecorder) UpdateUserPassword(userData any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserPassword", reflect.TypeOf((*MockRepo)(nil).UpdateUserPassword), userData)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockRepo)(nil).UpdateUser), login, userData)
 }
 
 // UpsertAdvertisingCampaignFromManagement mocks base method.
@@ -3350,10 +3366,10 @@ func (mr *MockRepoMockRecorder) UpsertAdvertisingCampaignFromManagement(ctx, adv
 }
 
 // User mocks base method.
-func (m *MockRepo) User(login string) (UserData, error) {
+func (m *MockRepo) User(login string) (User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "User", login)
-	ret0, _ := ret[0].(UserData)
+	ret0, _ := ret[0].(User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -3365,18 +3381,19 @@ func (mr *MockRepoMockRecorder) User(login any) *gomock.Call {
 }
 
 // Users mocks base method.
-func (m *MockRepo) Users() ([]UserData, error) {
+func (m *MockRepo) Users(ctx context.Context, filter UserFilter) ([]User, int64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Users")
-	ret0, _ := ret[0].([]UserData)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret := m.ctrl.Call(m, "Users", ctx, filter)
+	ret0, _ := ret[0].([]User)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // Users indicates an expected call of Users.
-func (mr *MockRepoMockRecorder) Users() *gomock.Call {
+func (mr *MockRepoMockRecorder) Users(ctx, filter any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Users", reflect.TypeOf((*MockRepo)(nil).Users))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Users", reflect.TypeOf((*MockRepo)(nil).Users), ctx, filter)
 }
 
 // MockKasseSvc is a mock of KasseSvc interface.
@@ -3804,6 +3821,20 @@ func (m *MockManagementRabbitWorker) SendStatus(arg0 StatusReport) error {
 func (mr *MockManagementRabbitWorkerMockRecorder) SendStatus(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendStatus", reflect.TypeOf((*MockManagementRabbitWorker)(nil).SendStatus), arg0)
+}
+
+// SendUser mocks base method.
+func (m *MockManagementRabbitWorker) SendUser(arg0 User) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendUser", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendUser indicates an expected call of SendUser.
+func (mr *MockManagementRabbitWorkerMockRecorder) SendUser(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendUser", reflect.TypeOf((*MockManagementRabbitWorker)(nil).SendUser), arg0)
 }
 
 // Status mocks base method.

@@ -1,6 +1,7 @@
 package dal
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -231,4 +232,134 @@ func TestGetCurrentAdvertisingCampaigns(t *testing.T) {
 			}))
 		})
 	}
+}
+
+func TestCreateUser(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+
+	user, err := testRepo.CreateUser(testUserCreation)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, user, testUser)
+
+	_, err = testRepo.CreateUser(testUserCreation)
+	assert.ErrorIs(t, err, app.ErrLoginNotUnique)
+}
+
+func TestGetUser(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+
+	_, err := testRepo.CreateUser(testUserCreation)
+	assert.NilError(t, err)
+
+	user, err := testRepo.User(testUserCreation.Login)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, user, testUser)
+
+	_, err = testRepo.User("non-existent login")
+	assert.ErrorIs(t, err, app.ErrNotFound)
+}
+
+func TestDeleteUser(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+
+	user, err := testRepo.CreateUser(testUserCreation)
+	assert.NilError(t, err)
+
+	user.Deleted = true
+	user.Version++
+
+	deletedUser, err := testRepo.DeleteUser(ctx, user.Login)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, deletedUser, user)
+
+	_, err = testRepo.User(user.Login)
+	assert.ErrorIs(t, err, app.ErrNotFound)
+}
+
+func TestUserList(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+
+	users := []app.User{
+		testUser,
+		testUser,
+		testUser,
+	}
+
+	for i, v := range users {
+		userCreation := testUserCreation
+		v.Login += fmt.Sprintf("%d", i)
+		v.Password += fmt.Sprintf("%d", i)
+		v.ID = i + 1
+		userCreation.Login = v.Login
+		userCreation.Password = v.Password
+		users[i] = v
+
+		_, err := testRepo.CreateUser(userCreation)
+		assert.NilError(t, err)
+	}
+
+	list, _, err := testRepo.Users(ctx, app.UserFilter{})
+	assert.NilError(t, err)
+	assert.DeepEqual(t, list, users, cmpopts.SortSlices(func(i, j app.User) bool {
+		if i.LastName != j.LastName {
+			return i.LastName < j.LastName
+		} else if i.FirstName != j.FirstName {
+			return i.FirstName < j.FirstName
+		} else {
+			return i.MiddleName < j.MiddleName
+		}
+	}))
+
+	_, err = testRepo.UpdateUser(users[2].Login, app.UserUpdate{IsAdmin: pntr(false)})
+	assert.NilError(t, err)
+
+	list, _, err = testRepo.Users(ctx, app.UserFilter{IsAdmin: pntr(true)})
+	assert.NilError(t, err)
+	assert.DeepEqual(t, list, users[:2], cmpopts.SortSlices(func(i, j app.User) bool {
+		if i.LastName != j.LastName {
+			return i.LastName < j.LastName
+		} else if i.FirstName != j.FirstName {
+			return i.FirstName < j.FirstName
+		} else {
+			return i.MiddleName < j.MiddleName
+		}
+	}))
+
+	_, err = testRepo.DeleteUser(ctx, users[2].Login)
+	assert.NilError(t, err)
+
+	list, _, err = testRepo.Users(ctx, app.UserFilter{})
+	assert.NilError(t, err)
+	assert.DeepEqual(t, list, users[:2], cmpopts.SortSlices(func(i, j app.User) bool {
+		if i.LastName != j.LastName {
+			return i.LastName < j.LastName
+		} else if i.FirstName != j.FirstName {
+			return i.FirstName < j.FirstName
+		} else {
+			return i.MiddleName < j.MiddleName
+		}
+	}))
+
+}
+
+func TestUpdateUser(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+
+	user, err := testRepo.CreateUser(testUserCreation)
+	assert.NilError(t, err)
+
+	userUpdate := app.UserUpdate{
+		FirstName:  pntr("new first name"),
+		IsOperator: pntr(false),
+	}
+	user.FirstName = *userUpdate.FirstName
+	user.IsOperator = *userUpdate.IsOperator
+	user.Version++
+
+	updatedUser, err := testRepo.UpdateUser(user.Login, userUpdate)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, user, updatedUser)
+
+	_, err = testRepo.UpdateUser("non-existent login", userUpdate)
+	assert.ErrorIs(t, err, app.ErrNotFound)
 }

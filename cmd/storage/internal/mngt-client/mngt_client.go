@@ -59,6 +59,8 @@ type Service struct {
 	reconnectCount   int64
 }
 
+var _ = app.ManagementRabbitWorker(&Service{})
+
 func NewMngtRabbitClient(cfg RabbitConfig, a app.App) (svc *Service, err error) {
 	v, err := a.GetConfigString(nil, "management_server_id")
 	if err != nil || v.Value == "" {

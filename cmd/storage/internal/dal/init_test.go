@@ -77,6 +77,28 @@ var (
 		PreflightRelays:            []app.Relay{{ID: 7, TimeOff: 8, TimeOn: 9}, {ID: 10, TimeOff: 11, TimeOn: 12}},
 	}
 
+	testUserCreation = app.UserCreation{
+		Login:      "login",
+		Password:   "password",
+		FirstName:  pntr("first name"),
+		LastName:   pntr("last name"),
+		MiddleName: pntr("middle name"),
+		IsAdmin:    pntr(true),
+		IsEngineer: pntr(true),
+		IsOperator: pntr(true),
+	}
+	testUser = app.User{
+		ID:         1,
+		Login:      testUserCreation.Login,
+		Password:   testUserCreation.Password,
+		FirstName:  *testUserCreation.FirstName,
+		LastName:   *testUserCreation.LastName,
+		MiddleName: *testUserCreation.MiddleName,
+		IsAdmin:    *testUserCreation.IsAdmin,
+		IsEngineer: *testUserCreation.IsEngineer,
+		IsOperator: *testUserCreation.IsOperator,
+	}
+
 	testCampaign1 = app.AdvertisingCampaign{
 		Name:             "test",
 		DefaultDiscount:  10,
@@ -160,4 +182,8 @@ func addCampaigns(t *testing.T) []app.AdvertisingCampaign {
 	assert.NilError(t, err)
 
 	return []app.AdvertisingCampaign{addedCampaign1, addedCampaign2, addedCampaign3}
+}
+
+func pntr[T any](value T) *T {
+	return &value
 }

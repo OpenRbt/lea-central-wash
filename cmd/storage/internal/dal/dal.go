@@ -98,8 +98,9 @@ func (r *repo) Close() {
 	log.WarnIfFail(r.db.Close)
 }
 
-func (r *repo) User(login string) (user app.UserData, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+func (r *repo) User(login string) (app.User, error) {
+	var user resUser
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		err := tx.NamedGetContext(ctx, &user, sqlGetUser, argGetUser{
 			Login: login,
 		})
@@ -108,25 +109,46 @@ func (r *repo) User(login string) (user app.UserData, err error) {
 		}
 		return err
 	})
-	return //nolint:nakedret
+
+	if err != nil {
+		return app.User{}, err
+	}
+
+	return appUser(user), nil
 }
 
-func (r *repo) Users() (users []app.UserData, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		var res []resUser
-		err := tx.NamedSelectContext(ctx, &res, sqlGetUsers, argGetUsers{})
+func (r *repo) Users(ctx context.Context, filter app.UserFilter) ([]app.User, int64, error) {
+	var res []resUser
+	var count int64
+
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedSelectContext(ctx, &res, sqlGetUsers.WithPagination(filter.Pagination).String(), argGetUsers{
+			IsAdmin: filter.IsAdmin,
+		})
 		if err != nil {
 			return err
 		}
-		users = appSetUsers(res)
+
+		if len(res) > 0 {
+			count = res[0].TotalCount
+		} else if filter.Offset() > 0 {
+			return tx.NamedGetContext(ctx, &count, sqlGetUsers.Count().String(), argGetUsers{})
+		}
+
 		return nil
 	})
-	return //nolint:nakedret
+
+	if err != nil {
+		return []app.User{}, 0, err
+	}
+
+	return appUsers(res), count, nil
 }
 
-func (r *repo) CreateUser(userData app.UserData) (newUser app.UserData, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		err := tx.NamedGetContext(ctx, &newUser, sqlAddUser, argAddUser{
+func (r *repo) CreateUser(userData app.UserCreation) (app.User, error) {
+	var user resUser
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &user, sqlAddUser, argAddUser{
 			Login:      userData.Login,
 			Password:   userData.Password,
 			FirstName:  *userData.FirstName,
@@ -141,32 +163,25 @@ func (r *repo) CreateUser(userData app.UserData) (newUser app.UserData, err erro
 		}
 		return err
 	})
-	return //nolint:nakedret
+
+	if err != nil {
+		return app.User{}, err
+	}
+
+	return appUser(user), nil
 }
 
-func (r *repo) UpdateUser(userData app.UserData) (newUser app.UserData, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		err := tx.NamedGetContext(ctx, &newUser, sqlUpdateUser, argUpdateUser{
-			Login:      userData.Login,
-			FirstName:  *userData.FirstName,
-			MiddleName: *userData.MiddleName,
-			LastName:   *userData.LastName,
-			IsAdmin:    *userData.IsAdmin,
-			IsEngineer: *userData.IsEngineer,
-			IsOperator: *userData.IsOperator,
-		})
-		if err == sql.ErrNoRows {
-			return app.ErrNotFound
-		}
-		return err
-	})
-	return //nolint:nakedret
-}
-
-func (r *repo) UpdateUserPassword(userData app.UpdatePasswordData) (newUser app.UserData, err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		err := tx.NamedGetContext(ctx, &newUser, sqlUpdateUserPassword, argUpdateUserPassword{
-			Login:       userData.Login,
+func (r *repo) UpdateUser(login string, userData app.UserUpdate) (app.User, error) {
+	var user resUser
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &user, sqlUpdateUser, argUpdateUser{
+			Login:       login,
+			FirstName:   userData.FirstName,
+			MiddleName:  userData.MiddleName,
+			LastName:    userData.LastName,
+			IsAdmin:     userData.IsAdmin,
+			IsEngineer:  userData.IsEngineer,
+			IsOperator:  userData.IsOperator,
 			NewPassword: userData.NewPassword,
 		})
 		if err == sql.ErrNoRows {
@@ -174,12 +189,18 @@ func (r *repo) UpdateUserPassword(userData app.UpdatePasswordData) (newUser app.
 		}
 		return err
 	})
-	return //nolint:nakedret
+
+	if err != nil {
+		return app.User{}, err
+	}
+
+	return appUser(user), nil
 }
 
-func (r *repo) DeleteUser(login string) (err error) {
-	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		_, err := tx.NamedExec(sqlDelUser, argDelUser{
+func (r *repo) DeleteUser(ctx context.Context, login string) (app.User, error) {
+	var user resUser
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		err := tx.NamedGetContext(ctx, &user, sqlDelUser, argDelUser{
 			Login: login,
 		})
 		if pqErrConflictIn(err, constraintMoneyCollection) {
@@ -187,7 +208,7 @@ func (r *repo) DeleteUser(login string) (err error) {
 		}
 		return err
 	})
-	return //nolint:nakedret
+	return appUser(user), err
 }
 
 func (r *repo) Load(stationID app.StationID, key string) (value string, err error) {
