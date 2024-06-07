@@ -464,3 +464,8 @@ func UserFilterToApp(filter UserFilter) app.UserFilter {
 		Pagination: PaginationToApp(filter.Pagination),
 	}
 }
+
+type AddServiceAmount struct {
+	StationID int `json:"stationId"`
+	Amount    int `json:"amount"`
+}

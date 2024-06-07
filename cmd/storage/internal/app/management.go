@@ -55,6 +55,21 @@ func (app *app) sendManagementSyncSignal() {
 	}
 }
 
+func (a *app) AddServiceAmountForManagement(ctx context.Context, id StationID, money int) error {
+	data, err := a.Get(id)
+	if err != nil {
+		return err
+	}
+
+	data.ServiceMoney += money
+
+	err = a.Set(data)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (app *app) GetUsersForManagement(ctx context.Context, filter UserFilter) (Page[User], error) {
 	users, total, err := app.repo.Users(ctx, filter)
 	if err != nil {

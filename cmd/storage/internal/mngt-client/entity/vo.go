@@ -118,4 +118,6 @@ const (
 	LcwUsersUpdateMessageType         app.RabbitMessageType = "lcw/user/update"
 	LcwUsersChangePasswordMessageType app.RabbitMessageType = "lcw/user/change_password"
 	LcwUsersDeleteMessageType         app.RabbitMessageType = "lcw/user/delete"
+
+	LcwAddServiceAmountMessageType app.RabbitMessageType = "lcw/money/add_service_amount"
 )
