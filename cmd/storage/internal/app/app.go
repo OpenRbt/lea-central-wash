@@ -127,6 +127,7 @@ type (
 		Info() string
 
 		AddServiceAmount(stationID StationID, money int) error
+		AddServiceAmountForManagement(ctx context.Context, id StationID, money int) error
 		OpenStation(StationID) error
 
 		Set(station StationData) error

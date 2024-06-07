@@ -59,6 +59,9 @@ func (s *Service) ProcessMngtMessage(d amqp.Delivery) error {
 	case mngt_entity.LcwUsersDeleteMessageType:
 		return s.handleLeaUserDeletion(ctx, d)
 
+	case mngt_entity.LcwAddServiceAmountMessageType:
+		return s.handleLeaAddServiceAmount(ctx, d)
+
 	default:
 		s.log.Warn("Unknown message type:", d.Type)
 		if nackErr := d.Nack(false, false); nackErr != nil {
@@ -294,6 +297,26 @@ func (s *Service) handleLeaAdvertisingCampaignDeletion(ctx context.Context, d am
 	}
 
 	return nil
+}
+
+func (s *Service) handleLeaAddServiceAmount(ctx context.Context, d amqp.Delivery) error {
+	var args mngt_entity.AddServiceAmount
+	if err := json.Unmarshal(d.Body, &args); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	err := s.app.AddServiceAmountForManagement(ctx, app.StationID(args.StationID), args.Amount)
+	rpcResponse := mngt_entity.RPCResponse{}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
 }
 
 func (s *Service) handleLeaUsersGetting(ctx context.Context, d amqp.Delivery) error {
