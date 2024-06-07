@@ -43,6 +43,7 @@ const (
 
 // StatusReport is just a status information
 type StatusReport struct {
+	JustTurnedOn bool
 	WashServerID string
 	KasseInfo    string
 	KasseStatus  Status

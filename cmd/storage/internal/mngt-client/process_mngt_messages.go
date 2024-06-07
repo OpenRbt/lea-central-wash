@@ -481,8 +481,8 @@ func (s *Service) SendCollectionReport(report app.CollectionReport) (err error) 
 	return err
 }
 
-func (s *Service) SendStatus(report app.StatusReport) (err error) {
-	err = s.sendMessage(s.msgStatusReport(report), mngt_entity.WashStatus)
+func (s *Service) SendStatus(report app.StatusReport, justTurnedOn bool) (err error) {
+	err = s.sendMessage(s.msgStatusReport(report, justTurnedOn), mngt_entity.WashStatus)
 	if err != nil {
 		s.setLastErr(err.Error())
 	}
@@ -678,13 +678,14 @@ func (s *Service) sendMessageByCorrelationID(msg interface{}, replyTo string, co
 	return nil
 }
 
-func (s *Service) msgStatusReport(v app.StatusReport) mngt_entity.StatusReport {
+func (s *Service) msgStatusReport(v app.StatusReport, justTurnedOn bool) mngt_entity.StatusReport {
 	var stationStatus []mngt_entity.StationStatus
 	for i := range v.Stations {
 		stationStatus = append(stationStatus, msgStationStatus(v.Stations[i]))
 	}
 
 	return mngt_entity.StatusReport{
+		JustTurnedOn: justTurnedOn,
 		KasseInfo:    v.KasseInfo,
 		KasseStatus:  msgStatus(v.KasseStatus),
 		LCWInfo:      v.LCWInfo,

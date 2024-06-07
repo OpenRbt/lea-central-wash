@@ -446,7 +446,7 @@ type (
 		SendMoneyReport(MngtMoneyReport) error
 		SendCollectionReport(CollectionReport) error
 		Status() ServiceStatus
-		SendStatus(StatusReport) error
+		SendStatus(StatusReport, bool) error
 		SendProgram(Program) error
 		SendOpenwashingLog(OpenwashingLog) error
 		SendAdvertisingCampaign(AdvertisingCampaign) error

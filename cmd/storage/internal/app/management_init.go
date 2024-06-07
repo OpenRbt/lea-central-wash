@@ -137,9 +137,17 @@ func (a *app) sendStatus() {
 	if a.mngtSvc.ManagementRabbitWorker == nil {
 		panic("managementSvc == nil")
 	}
+
+	r := a.StatusReport(true)
+	err := a.mngtSvc.SendStatus(r, true)
+	if err != nil {
+		log.Err("sendStatus", "err", err)
+	}
+	time.Sleep(time.Second * 15)
+
 	for {
 		r := a.StatusReport(true)
-		err := a.mngtSvc.SendStatus(r)
+		err := a.mngtSvc.SendStatus(r, false)
 		if err != nil {
 			log.Err("sendStatus", "err", err)
 		}
