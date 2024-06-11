@@ -293,6 +293,32 @@ func (r *repo) MarkStationConfigIntSended(ctx context.Context, name string, stat
 	})
 }
 
+func (r *repo) NotSendedUsers(ctx context.Context) ([]app.User, error) {
+	var respUsers []resUser
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		return tx.SelectContext(ctx, &respUsers, sqlNotSendedUsers)
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return appUsers(respUsers), nil
+}
+
+func (r *repo) MarkUserSended(ctx context.Context, login string) error {
+	return r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExecContext(ctx, sqlMarkUserSended, argID[string]{
+			ID: login,
+		})
+
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
+		}
+
+		return err
+	})
+}
+
 func (r *repo) UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert app.ManagementAdvertisingCampaign) (app.AdvertisingCampaign, error) {
 	var resAdvert resAdvertisingCampaign
 	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {

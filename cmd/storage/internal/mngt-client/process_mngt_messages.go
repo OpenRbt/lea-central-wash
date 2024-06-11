@@ -41,6 +41,27 @@ func (s *Service) ProcessMngtMessage(d amqp.Delivery) error {
 	case mngt_entity.LcwAdvertisingCampaignDeletionMessageType:
 		return s.handleLeaAdvertisingCampaignDeletion(ctx, d)
 
+	case mngt_entity.LcwUsersGetMessageType:
+		return s.handleLeaUsersGetting(ctx, d)
+
+	case mngt_entity.LcwUsersGetByIDMessageType:
+		return s.handleLeaUserGettingById(ctx, d)
+
+	case mngt_entity.LcwUsersCreationMessageType:
+		return s.handleLeaUserCreation(ctx, d)
+
+	case mngt_entity.LcwUsersUpdateMessageType:
+		return s.handleLeaUserUpdate(ctx, d)
+
+	case mngt_entity.LcwUsersChangePasswordMessageType:
+		return s.handleLeaUserChangePassword(ctx, d)
+
+	case mngt_entity.LcwUsersDeleteMessageType:
+		return s.handleLeaUserDeletion(ctx, d)
+
+	case mngt_entity.LcwAddServiceAmountMessageType:
+		return s.handleLeaAddServiceAmount(ctx, d)
+
 	default:
 		s.log.Warn("Unknown message type:", d.Type)
 		if nackErr := d.Nack(false, false); nackErr != nil {
@@ -67,20 +88,7 @@ func (s *Service) handleLeaProgramsGetting(ctx context.Context, d amqp.Delivery)
 		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
 	}
 
-	err = s.sendMessageByCorrelationID(rpcResponse, d.ReplyTo, d.CorrelationId)
-	if err != nil {
-		s.setLastErr(err.Error())
-		if nackErr := d.Nack(false, false); nackErr != nil {
-			return nackErr
-		}
-		return err
-	}
-
-	if err = d.Ack(false); err != nil {
-		return err
-	}
-
-	return nil
+	return s.sendMessageHandleErrors(rpcResponse, d)
 }
 
 func (s *Service) handleLeaProgramSetting(ctx context.Context, d amqp.Delivery) error {
@@ -142,20 +150,7 @@ func (s *Service) handleLeaAdvertisingCampaignGettingByID(ctx context.Context, d
 		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
 	}
 
-	err = s.sendMessageByCorrelationID(rpcResponse, d.ReplyTo, d.CorrelationId)
-	if err != nil {
-		s.setLastErr(err.Error())
-		if nackErr := d.Nack(false, false); nackErr != nil {
-			return nackErr
-		}
-		return err
-	}
-
-	if err = d.Ack(false); err != nil {
-		return err
-	}
-
-	return nil
+	return s.sendMessageHandleErrors(rpcResponse, d)
 }
 
 func (s *Service) handleLeaAdvertisingCampaignsGetting(ctx context.Context, d amqp.Delivery) error {
@@ -175,20 +170,7 @@ func (s *Service) handleLeaAdvertisingCampaignsGetting(ctx context.Context, d am
 		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
 	}
 
-	err = s.sendMessageByCorrelationID(rpcResponse, d.ReplyTo, d.CorrelationId)
-	if err != nil {
-		s.setLastErr(err.Error())
-		if nackErr := d.Nack(false, false); nackErr != nil {
-			return nackErr
-		}
-		return err
-	}
-
-	if err = d.Ack(false); err != nil {
-		return err
-	}
-
-	return nil
+	return s.sendMessageHandleErrors(rpcResponse, d)
 }
 
 func (s *Service) handleLeaAdvertisingCampaignCreation(ctx context.Context, d amqp.Delivery) error {
@@ -317,6 +299,146 @@ func (s *Service) handleLeaAdvertisingCampaignDeletion(ctx context.Context, d am
 	return nil
 }
 
+func (s *Service) handleLeaAddServiceAmount(ctx context.Context, d amqp.Delivery) error {
+	var args mngt_entity.AddServiceAmount
+	if err := json.Unmarshal(d.Body, &args); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	err := s.app.AddServiceAmountForManagement(ctx, app.StationID(args.StationID), args.Amount)
+	rpcResponse := mngt_entity.RPCResponse{}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
+}
+
+func (s *Service) handleLeaUsersGetting(ctx context.Context, d amqp.Delivery) error {
+	var filter mngt_entity.UserFilter
+	if err := json.Unmarshal(d.Body, &filter); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	users, err := s.app.GetUsersForManagement(ctx, mngt_entity.UserFilterToApp(filter))
+	rpcResponse := mngt_entity.RPCResponse{Data: mngt_entity.UserPageToRabbit(users)}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
+}
+
+func (s *Service) handleLeaUserGettingById(ctx context.Context, d amqp.Delivery) error {
+	var args mngt_entity.ArgID[string]
+	if err := json.Unmarshal(d.Body, &args); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	user, err := s.app.GetUserForManagement(ctx, args.ID)
+	rpcResponse := mngt_entity.RPCResponse{Data: mngt_entity.UserToRabbit(user)}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
+}
+
+func (s *Service) handleLeaUserCreation(ctx context.Context, d amqp.Delivery) error {
+	var args mngt_entity.UserCreation
+	if err := json.Unmarshal(d.Body, &args); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	user, err := s.app.CreateUsersForManagement(ctx, mngt_entity.UserCreationToApp(args))
+	rpcResponse := mngt_entity.RPCResponse{Data: mngt_entity.UserToRabbit(user)}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
+}
+
+func (s *Service) handleLeaUserDeletion(ctx context.Context, d amqp.Delivery) error {
+	var args mngt_entity.ArgID[string]
+	if err := json.Unmarshal(d.Body, &args); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	user, err := s.app.DeleteUsersForManagement(ctx, args.ID)
+	rpcResponse := mngt_entity.RPCResponse{Data: mngt_entity.UserToRabbit(user)}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
+}
+
+func (s *Service) handleLeaUserUpdate(ctx context.Context, d amqp.Delivery) error {
+	var args mngt_entity.UserUpdate
+	if err := json.Unmarshal(d.Body, &args); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	user, err := s.app.UpdateUsersForManagement(ctx, args.Login, mngt_entity.UserUpdateToApp(args))
+	rpcResponse := mngt_entity.RPCResponse{Data: mngt_entity.UserToRabbit(user)}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
+}
+
+func (s *Service) handleLeaUserChangePassword(ctx context.Context, d amqp.Delivery) error {
+	var args mngt_entity.ChangePassword
+	if err := json.Unmarshal(d.Body, &args); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	user, err := s.app.ChangeUserPasswordForManagement(ctx, args.Login, mngt_entity.ChangePasswordToApp(args))
+	rpcResponse := mngt_entity.RPCResponse{Data: mngt_entity.UserToRabbit(user)}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
+}
+
 func (s *Service) SendMoneyReport(report app.MngtMoneyReport) (err error) {
 	err = s.sendMessage(mngt_entity.AddMoneyReport{
 		WashServerID:       s.serverID,
@@ -359,8 +481,8 @@ func (s *Service) SendCollectionReport(report app.CollectionReport) (err error) 
 	return err
 }
 
-func (s *Service) SendStatus(report app.StatusReport) (err error) {
-	err = s.sendMessage(s.msgStatusReport(report), mngt_entity.WashStatus)
+func (s *Service) SendStatus(report app.StatusReport, justTurnedOn bool) (err error) {
+	err = s.sendMessage(s.msgStatusReport(report, justTurnedOn), mngt_entity.WashStatus)
 	if err != nil {
 		s.setLastErr(err.Error())
 	}
@@ -439,6 +561,14 @@ func (s *Service) SendStationConfigString(config app.StationConfigVar[string]) e
 	return err
 }
 
+func (s *Service) SendUser(user app.User) error {
+	err := s.sendMessage(mngt_entity.UserToRabbit(user), mngt_entity.ManagementUserMessageType)
+	if err != nil {
+		s.setLastErr(err.Error())
+	}
+	return err
+}
+
 func (s *Service) sendMessage(msg interface{}, messageType app.RabbitMessageType) (err error) {
 	jsonMsg, ok := msg.([]byte)
 	if !ok {
@@ -477,6 +607,23 @@ func (s *Service) sendMessage(msg interface{}, messageType app.RabbitMessageType
 		}
 
 		fmt.Println("management: delivered deferred confirm to handler")
+	}
+
+	return nil
+}
+
+func (s *Service) sendMessageHandleErrors(msg interface{}, d amqp.Delivery) error {
+	err := s.sendMessageByCorrelationID(msg, d.ReplyTo, d.CorrelationId)
+	if err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	if err = d.Ack(false); err != nil {
+		return err
 	}
 
 	return nil
@@ -531,13 +678,14 @@ func (s *Service) sendMessageByCorrelationID(msg interface{}, replyTo string, co
 	return nil
 }
 
-func (s *Service) msgStatusReport(v app.StatusReport) mngt_entity.StatusReport {
+func (s *Service) msgStatusReport(v app.StatusReport, justTurnedOn bool) mngt_entity.StatusReport {
 	var stationStatus []mngt_entity.StationStatus
 	for i := range v.Stations {
 		stationStatus = append(stationStatus, msgStationStatus(v.Stations[i]))
 	}
 
 	return mngt_entity.StatusReport{
+		JustTurnedOn: justTurnedOn,
 		KasseInfo:    v.KasseInfo,
 		KasseStatus:  msgStatus(v.KasseStatus),
 		LCWInfo:      v.LCWInfo,

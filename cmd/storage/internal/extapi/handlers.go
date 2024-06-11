@@ -803,7 +803,7 @@ func (svc *service) cardReaderConfigByHash(params op.CardReaderConfigByHashParam
 
 func (svc *service) getUsers(params op.GetUsersParams, auth *app.Auth) op.GetUsersResponder {
 	log.Debug("getUsers", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	users, err := svc.app.Users(auth)
+	users, err := svc.app.Users(params.HTTPRequest.Context(), auth)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewGetUsersOK().WithPayload(apiUsersReport(users))
@@ -816,20 +816,20 @@ func (svc *service) getUsers(params op.GetUsersParams, auth *app.Auth) op.GetUse
 
 func (svc *service) getUser(params op.GetUserParams, auth *app.Auth) op.GetUserResponder {
 	log.Debug("getUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	return op.NewGetUserOK().WithPayload(apiUserReport(app.UserData{
+	return op.NewGetUserOK().WithPayload(apiUserReport(app.User{
 		Login:      auth.Login,
-		FirstName:  &auth.FirstName,
-		MiddleName: &auth.MiddleName,
-		LastName:   &auth.LastName,
-		IsAdmin:    &auth.IsAdmin,
-		IsOperator: &auth.IsOperator,
-		IsEngineer: &auth.IsEngineer,
+		FirstName:  auth.FirstName,
+		MiddleName: auth.MiddleName,
+		LastName:   auth.LastName,
+		IsAdmin:    auth.IsAdmin,
+		IsOperator: auth.IsOperator,
+		IsEngineer: auth.IsEngineer,
 	}))
 }
 
 func (svc *service) createUser(params op.CreateUserParams, auth *app.Auth) op.CreateUserResponder {
 	log.Debug("createUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	id, err := svc.app.CreateUser(app.UserData{
+	user, err := svc.app.CreateUser(params.HTTPRequest.Context(), app.UserCreation{
 		Login:      string(*params.Args.Login),
 		Password:   string(*params.Args.Password),
 		FirstName:  (*string)(params.Args.FirstName),
@@ -841,11 +841,11 @@ func (svc *service) createUser(params op.CreateUserParams, auth *app.Auth) op.Cr
 	}, auth)
 	switch errors.Cause(err) {
 	case nil:
-		log.Debug("created user", "id", id)
+		log.Debug("created user", "id", user)
 		return op.NewCreateUserCreated().WithPayload(&op.CreateUserCreatedBody{
-			ID: newInt64(int64(id)),
+			ID: newInt64(int64(user.ID)),
 		})
-	case app.ErrLoginNotUnique:
+	case app.ErrLoginNotUnique, app.ErrPasswordNotUnique:
 		message := err.Error()
 		return op.NewCreateUserConflict().WithPayload(&op.CreateUserConflictBody{
 			Code:    newInt64(int64(op.CreateUserConflictCode)),
@@ -861,8 +861,7 @@ func (svc *service) createUser(params op.CreateUserParams, auth *app.Auth) op.Cr
 
 func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.UpdateUserResponder {
 	log.Debug("updateUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	id, err := svc.app.UpdateUser(app.UpdateUserData{
-		Login:      string(*params.Args.Login),
+	user, err := svc.app.UpdateUser(string(*params.Args.Login), app.UserUpdate{
 		FirstName:  (*string)(params.Args.FirstName),
 		MiddleName: (*string)(params.Args.MiddleName),
 		LastName:   (*string)(params.Args.LastName),
@@ -872,9 +871,9 @@ func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.Up
 	}, auth)
 	switch errors.Cause(err) {
 	case nil:
-		log.Debug("updated user", "id", id)
+		log.Debug("updated user", "id", user)
 		return op.NewUpdateUserCreated().WithPayload(&op.UpdateUserCreatedBody{
-			ID: newInt64(int64(id)),
+			ID: newInt64(int64(user.ID)),
 		})
 	case app.ErrNotFound:
 		return op.NewUpdateUserNotFound()
@@ -887,20 +886,19 @@ func (svc *service) updateUser(params op.UpdateUserParams, auth *app.Auth) op.Up
 
 func (svc *service) updateUserPassword(params op.UpdateUserPasswordParams, auth *app.Auth) op.UpdateUserPasswordResponder {
 	log.Debug("updateUserPassword", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	id, err := svc.app.UpdateUserPassword(app.UpdatePasswordData{
-		Login:       string(*params.Args.Login),
+	user, err := svc.app.UpdateUserPassword(params.HTTPRequest.Context(), string(*params.Args.Login), app.UpdatePasswordData{
 		OldPassword: string(*params.Args.OldPassword),
 		NewPassword: string(*params.Args.NewPassword),
 	}, auth)
 	switch errors.Cause(err) {
 	case nil:
-		log.Debug("updated user", "id", id)
+		log.Debug("updated user", "id", user)
 		return op.NewUpdateUserPasswordCreated().WithPayload(&op.UpdateUserPasswordCreatedBody{
-			ID: newInt64(int64(id)),
+			ID: newInt64(int64(user.ID)),
 		})
 	case app.ErrNotFound:
 		return op.NewUpdateUserPasswordNotFound()
-	case app.ErrAccessDenied:
+	case app.ErrAccessDenied, app.ErrPasswordNotUnique:
 		return op.NewUpdateUserPasswordForbidden()
 	default:
 		return op.NewUpdateUserPasswordInternalServerError()
@@ -909,7 +907,7 @@ func (svc *service) updateUserPassword(params op.UpdateUserPasswordParams, auth 
 
 func (svc *service) deleteUser(params op.DeleteUserParams, auth *app.Auth) op.DeleteUserResponder {
 	log.Debug("deleteUser", "login", auth.Login, "isAdmin", auth.IsAdmin)
-	err := svc.app.DeleteUser(string(*params.Args.Login), auth)
+	err := svc.app.DeleteUser(params.HTTPRequest.Context(), string(*params.Args.Login), auth)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewDeleteUserNoContent()

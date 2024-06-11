@@ -8,20 +8,26 @@ import (
 	"github.com/lib/pq"
 )
 
-func appSetUsers(v []resUser) []app.UserData {
-	var res []app.UserData
-	for i := range v {
-		res = append(res, app.UserData{
-			ID:         v[i].ID,
-			Login:      v[i].Login,
-			Password:   v[i].Password,
-			FirstName:  &v[i].FirstName,
-			MiddleName: &v[i].MiddleName,
-			LastName:   &v[i].LastName,
-			IsAdmin:    &v[i].IsAdmin,
-			IsOperator: &v[i].IsOperator,
-			IsEngineer: &v[i].IsEngineer,
-		})
+func appUser(user resUser) app.User {
+	return app.User{
+		ID:         user.ID,
+		Login:      user.Login,
+		Password:   user.Password,
+		FirstName:  user.FirstName,
+		MiddleName: user.MiddleName,
+		LastName:   user.LastName,
+		IsAdmin:    user.IsAdmin,
+		IsOperator: user.IsOperator,
+		IsEngineer: user.IsEngineer,
+		Deleted:    user.Deleted,
+		Version:    user.Version,
+	}
+}
+
+func appUsers(v []resUser) []app.User {
+	var res []app.User
+	for _, v := range v {
+		res = append(res, appUser(v))
 	}
 	return res
 }

@@ -137,9 +137,17 @@ func (a *app) sendStatus() {
 	if a.mngtSvc.ManagementRabbitWorker == nil {
 		panic("managementSvc == nil")
 	}
+
+	r := a.StatusReport(true)
+	err := a.mngtSvc.SendStatus(r, true)
+	if err != nil {
+		log.Err("sendStatus", "err", err)
+	}
+	time.Sleep(time.Second * 15)
+
 	for {
 		r := a.StatusReport(true)
-		err := a.mngtSvc.SendStatus(r)
+		err := a.mngtSvc.SendStatus(r, false)
 		if err != nil {
 			log.Err("sendStatus", "err", err)
 		}
@@ -162,6 +170,7 @@ func (a *app) syncLeaSettings() {
 	a.syncUnsentAdvertisingCampaigns()
 	a.syncUnsentOpenwashingLogs()
 	a.syncUnsentConfigs()
+	a.syncUnsentUsers()
 }
 
 func (a *app) syncUnsentPrograms() {
@@ -187,7 +196,7 @@ func (a *app) syncUnsentPrograms() {
 }
 
 func (a *app) syncUnsentOpenwashingLogs() {
-	logs, err := a.NotSendedOpenwashingLogs(context.TODO())
+	logs, err := a.repo.NotSendedOpenwashingLogs(context.TODO())
 	if err != nil {
 		log.Err("unable to get unsent logs", "err", err)
 		return
@@ -200,7 +209,7 @@ func (a *app) syncUnsentOpenwashingLogs() {
 			continue
 		}
 
-		err = a.MarkOpenwashingLogSended(context.TODO(), l.ID)
+		err = a.repo.MarkOpenwashingLogSended(context.TODO(), l.ID)
 		if err != nil {
 			log.Err("unable to mark log as sended", "err", err)
 			continue
@@ -225,6 +234,28 @@ func (a *app) syncUnsentAdvertisingCampaigns() {
 		err = a.MarkAdvertisingCampaignSended(context.TODO(), campaign.ID)
 		if err != nil {
 			log.Err("unable to mark advertising campaign as sended", "err", err)
+			continue
+		}
+	}
+}
+
+func (a *app) syncUnsentUsers() {
+	users, err := a.repo.NotSendedUsers(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent users", "err", err)
+		return
+	}
+
+	for _, user := range users {
+		err := a.mngtSvc.SendUser(user)
+		if err != nil {
+			log.Err("unable to send user to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkUserSended(context.TODO(), user.Login)
+		if err != nil {
+			log.Err("unable to mark user as sended", "err", err)
 			continue
 		}
 	}

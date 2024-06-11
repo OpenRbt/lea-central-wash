@@ -28,6 +28,26 @@ func ErrorToRPCError(err error) *RPCError {
 			Code:    404,
 			Message: err.Error(),
 		}
+	case errors.Is(err, app.ErrLoginNotUnique):
+		return &RPCError{
+			Code:    409,
+			Message: err.Error(),
+		}
+	case errors.Is(err, app.ErrPasswordNotUnique):
+		return &RPCError{
+			Code:    410,
+			Message: err.Error(),
+		}
+	case errors.Is(err, app.ErrWrongPassword):
+		return &RPCError{
+			Code:    411,
+			Message: err.Error(),
+		}
+	case errors.Is(err, app.ErrRemovingOnlyAdmin):
+		return &RPCError{
+			Code:    412,
+			Message: err.Error(),
+		}
 	case errors.Is(err, app.ErrSameOrLowerVersion):
 		return &RPCError{
 			Code:    1000,
@@ -44,6 +64,14 @@ func ErrorToRPCError(err error) *RPCError {
 type Pagination struct {
 	Page     int64 `json:"page"`
 	PageSize int64 `json:"pageSize"`
+}
+
+type Page[T any] struct {
+	Items      []T   `json:"items"`
+	Page       int64 `json:"page"`
+	PageSize   int64 `json:"pageSize"`
+	TotalPages int64 `json:"totalPages"`
+	TotalCount int64 `json:"totalCount"`
 }
 
 func PaginationToApp(pagination Pagination) app.Pagination {
@@ -73,6 +101,7 @@ const (
 	ManagementStationConfigStringMessageType app.RabbitMessageType = "management/station_config_string"
 	ManagementStationConfigIntMessageType    app.RabbitMessageType = "management/station_config_int"
 	ManagementStationConfigBoolMessageType   app.RabbitMessageType = "management/station_config_bool"
+	ManagementUserMessageType                app.RabbitMessageType = "management/user"
 
 	LcwProgramSettingMessageType     app.RabbitMessageType = "lcw/program/set"
 	LcwProgramSettingsGetMessageType app.RabbitMessageType = "lcw/program/get"
@@ -82,4 +111,13 @@ const (
 	LcwAdvertisingCampaignCreationMessageType app.RabbitMessageType = "lcw/advertising_campaign/create"
 	LcwAdvertisingCampaignUpdateMessageType   app.RabbitMessageType = "lcw/advertising_campaign/update"
 	LcwAdvertisingCampaignDeletionMessageType app.RabbitMessageType = "lcw/advertising_campaign/delete"
+
+	LcwUsersGetMessageType            app.RabbitMessageType = "lcw/user/get"
+	LcwUsersGetByIDMessageType        app.RabbitMessageType = "lcw/user/get_by_id"
+	LcwUsersCreationMessageType       app.RabbitMessageType = "lcw/user/create"
+	LcwUsersUpdateMessageType         app.RabbitMessageType = "lcw/user/update"
+	LcwUsersChangePasswordMessageType app.RabbitMessageType = "lcw/user/change_password"
+	LcwUsersDeleteMessageType         app.RabbitMessageType = "lcw/user/delete"
+
+	LcwAddServiceAmountMessageType app.RabbitMessageType = "lcw/money/add_service_amount"
 )

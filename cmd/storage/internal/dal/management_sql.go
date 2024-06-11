@@ -215,6 +215,26 @@ const (
 	SET management_sended = true
 	WHERE name = UPPER(:name) and station_id = :station_id
 	`
+	sqlNotSendedUsers = `
+	SELECT 	id,
+			login,
+			first_name,
+			middle_name,
+			last_name,
+			password,
+			is_admin,
+			is_operator,
+			is_engineer,
+			deleted,
+			version
+	FROM users
+	WHERE NOT management_sended
+	`
+	sqlMarkUserSended = `
+	UPDATE users
+	SET management_sended = true
+	WHERE login = lower(:id)
+	`
 	sqlSetProgramFromManagement = `
 		INSERT INTO program (
 			id,

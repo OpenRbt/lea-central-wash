@@ -103,17 +103,23 @@ WHERE id = :id
 SELECT id, name, preflight_sec, relay_board FROM station where deleted = false and id = :id ORDER BY id
 	`
 
-	sqlGetUsers = `
-SELECT 	id, 
+	sqlGetUsers Query = `
+SELECT 	id,
 		login,
-		first_name, 
-		middle_name, 
-		last_name, 
-		password, 
-		is_admin, 
-		is_operator, 
-		is_engineer 
+		first_name,
+		middle_name,
+		last_name,
+		password,
+		is_admin,
+		is_operator,
+		is_engineer,
+		deleted,
+		version,
+		COUNT(*) OVER() AS total_count
 FROM users
+WHERE
+	not deleted and
+	(is_admin = :is_admin OR CAST(:is_admin AS BOOLEAN) IS NULL)
 ORDER BY last_name, first_name, middle_name
 	`
 
@@ -126,9 +132,11 @@ SELECT 	id,
 		password, 
 		is_admin, 
 		is_operator, 
-		is_engineer 
+		is_engineer,
+		deleted,
+		version
 FROM users 
-WHERE login = lower(:login)
+WHERE login = lower(:login) and not deleted
 	`
 
 	sqlAddUser = `
@@ -142,46 +150,50 @@ RETURNING 	id,
 			password, 
 			is_admin, 
 			is_operator, 
-			is_engineer 
+			is_engineer,
+			deleted,
+			version
 	`
 
 	sqlUpdateUser = `
 UPDATE users
-SET first_name = :first_name, 
-	middle_name = :middle_name, 
-	last_name = :last_name, 
-	is_admin = :is_admin, 
-	is_operator = :is_operator, 
-	is_engineer = :is_engineer
-WHERE login = lower(:login)
-RETURNING 	id, 
+SET first_name 	= COALESCE(:first_name, first_name),
+	middle_name = COALESCE(:middle_name, middle_name),
+	last_name  	= COALESCE(:last_name, last_name),
+	is_admin 	= COALESCE(:is_admin, is_admin),
+	password 	= COALESCE(:new_password, password),
+	is_operator = COALESCE(:is_operator, is_operator),
+	is_engineer = COALESCE(:is_engineer, is_engineer),
+	version 	= users.version + 1, 
+	management_sended = false
+WHERE login = lower(:login) and not deleted
+RETURNING 	id,
 			login,
-			first_name, 
-			middle_name, 
-			last_name, 
+			first_name,
+			middle_name,
+			last_name,
 			password,
-			is_admin, 
-			is_operator, 
-			is_engineer
+			is_admin,
+			is_operator,
+			is_engineer,
+			deleted,
+			version
 	`
-
-	sqlUpdateUserPassword = `
-UPDATE users
-SET password = :new_password 
-WHERE login = lower(:login)
-RETURNING 	id, 
-			login,
-			first_name, 
-			middle_name, 
-			last_name, 
-			password,
-			is_admin, 
-			is_operator, 
-			is_engineer
-	`
-
 	sqlDelUser = `
-DELETE FROM users WHERE login = lower(:login)
+UPDATE users
+SET deleted = true, version = users.version + 1, management_sended = false
+WHERE login = lower(:login) and not deleted
+RETURNING 	id,
+			login,
+			first_name,
+			middle_name,
+			last_name,
+			password,
+			is_admin,
+			is_operator,
+			is_engineer,
+			deleted,
+			version
 	`
 
 	sqlLoadHash = `
@@ -958,6 +970,7 @@ type (
 		Login string
 	}
 	argGetUsers struct {
+		IsAdmin *bool
 	}
 	argGetUserRoles struct {
 		ID int
@@ -973,18 +986,15 @@ type (
 		IsOperator bool
 	}
 	argUpdateUser struct {
-		Login      string
-		FirstName  string
-		MiddleName string
-		LastName   string
-		Password   string
-		IsAdmin    bool
-		IsEngineer bool
-		IsOperator bool
-	}
-	argUpdateUserPassword struct {
 		Login       string
-		NewPassword string
+		FirstName   *string
+		MiddleName  *string
+		LastName    *string
+		Password    *string
+		NewPassword *string
+		IsAdmin     *bool
+		IsEngineer  *bool
+		IsOperator  *bool
 	}
 	argDelUser struct {
 		Login string
@@ -999,6 +1009,9 @@ type (
 		IsAdmin    bool
 		IsOperator bool
 		IsEngineer bool
+		Deleted    bool
+		Version    int
+		TotalCount int64
 	}
 	resGetValue struct {
 		Value string

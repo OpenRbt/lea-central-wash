@@ -473,3 +473,55 @@ func TestNotSendedStationConfigStrings(t *testing.T) {
 	assert.NilError(t, err)
 	assert.DeepEqual(t, notSendedConfigs, configs)
 }
+
+func TestNotSendedUsers(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+	tt := check.T(t)
+	addTestData(tt)
+
+	createUsers := []app.UserCreation{
+		{Login: "login1", Password: "password", FirstName: pntr("first name"), MiddleName: pntr("middle name"), LastName: pntr("last name"), IsAdmin: pntr(true), IsEngineer: pntr(true), IsOperator: pntr(true)},
+		{Login: "login2", Password: "password", FirstName: pntr("first name"), MiddleName: pntr("middle name"), LastName: pntr("last name"), IsAdmin: pntr(true), IsEngineer: pntr(true), IsOperator: pntr(true)},
+		{Login: "login3", Password: "password", FirstName: pntr("first name"), MiddleName: pntr("middle name"), LastName: pntr("last name"), IsAdmin: pntr(true), IsEngineer: pntr(true), IsOperator: pntr(true)},
+	}
+	users := []app.User{}
+
+	for _, user := range createUsers {
+		user, err := testRepo.CreateUser(user)
+		assert.NilError(t, err)
+
+		users = append(users, user)
+	}
+
+	err := testRepo.MarkUserSended(ctx, users[2].Login)
+	assert.NilError(t, err)
+
+	notSendedUsers, err := testRepo.NotSendedUsers(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedUsers, users[:2])
+
+	newFirstName := "new first name"
+	_, err = testRepo.UpdateUser(users[2].Login, app.UserUpdate{FirstName: &newFirstName})
+	assert.NilError(t, err)
+
+	cTemp := users[2]
+	cTemp.Version++
+	cTemp.FirstName = newFirstName
+	users[2] = cTemp
+
+	notSendedUsers, err = testRepo.NotSendedUsers(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedUsers, users)
+
+	_, err = testRepo.DeleteUser(ctx, users[2].Login)
+	assert.NilError(t, err)
+
+	cTemp = users[2]
+	cTemp.Version++
+	cTemp.Deleted = true
+	users[2] = cTemp
+
+	notSendedUsers, err = testRepo.NotSendedUsers(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedUsers, users)
+}

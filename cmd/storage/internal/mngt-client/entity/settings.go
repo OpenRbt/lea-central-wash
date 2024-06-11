@@ -38,7 +38,7 @@ type ProgramFilter struct {
 func ProgramFilterToApp(filter ProgramFilter) app.ProgramFilter {
 	return app.ProgramFilter{
 		ID:         filter.ID,
-		Pagination: app.Pagination(filter.Pagination),
+		Pagination: PaginationToApp(filter.Pagination),
 	}
 }
 
@@ -347,4 +347,125 @@ func StationConfigBoolToRabbit(config app.StationConfigVar[bool]) StationConfigB
 		Note:        config.Note,
 		Version:     config.Version,
 	}
+}
+
+type User struct {
+	ID         int    `json:"id"`
+	Login      string `json:"login"`
+	Password   string `json:"password"`
+	FirstName  string `json:"firstName"`
+	MiddleName string `json:"middleName"`
+	LastName   string `json:"lastName"`
+	IsAdmin    bool   `json:"isAdmin"`
+	IsEngineer bool   `json:"isEngineer"`
+	IsOperator bool   `json:"isOperator"`
+	Deleted    bool   `json:"deleted"`
+	Version    int    `json:"version"`
+}
+
+type UserCreation struct {
+	Login      string  `json:"login"`
+	Password   string  `json:"password"`
+	FirstName  *string `json:"firstName,omitempty"`
+	MiddleName *string `json:"middleName,omitempty"`
+	LastName   *string `json:"lastName,omitempty"`
+	IsAdmin    *bool   `json:"isAdmin,omitempty"`
+	IsEngineer *bool   `json:"isEngineer,omitempty"`
+	IsOperator *bool   `json:"isOperator,omitempty"`
+}
+
+type UserUpdate struct {
+	Login      string  `json:"login"`
+	FirstName  *string `json:"firstName,omitempty"`
+	MiddleName *string `json:"middleName,omitempty"`
+	LastName   *string `json:"lastName,omitempty"`
+	IsAdmin    *bool   `json:"isAdmin,omitempty"`
+	IsEngineer *bool   `json:"isEngineer,omitempty"`
+	IsOperator *bool   `json:"isOperator,omitempty"`
+}
+
+type ChangePassword struct {
+	Login       string `json:"login"`
+	OldPassword string `json:"oldPassword"`
+	NewPassword string `json:"newPassword"`
+}
+
+type UserFilter struct {
+	Pagination
+}
+
+func UserToRabbit(user app.User) User {
+	return User{
+		ID:         user.ID,
+		Login:      user.Login,
+		Password:   user.Password,
+		FirstName:  user.FirstName,
+		MiddleName: user.MiddleName,
+		LastName:   user.LastName,
+		IsAdmin:    user.IsAdmin,
+		IsEngineer: user.IsEngineer,
+		IsOperator: user.IsOperator,
+		Deleted:    user.Deleted,
+		Version:    user.Version,
+	}
+}
+
+func UserPageToRabbit(page app.Page[app.User]) Page[User] {
+	return Page[User]{
+		Items:      UsersToRabbit(page.Items),
+		Page:       page.Page,
+		PageSize:   page.PageSize,
+		TotalPages: page.TotalPages,
+		TotalCount: page.TotalCount,
+	}
+}
+
+func UsersToRabbit(users []app.User) []User {
+	l := []User{}
+	for _, v := range users {
+		l = append(l, UserToRabbit(v))
+	}
+	return l
+}
+
+func UserCreationToApp(user UserCreation) app.UserCreation {
+	return app.UserCreation{
+		Login:      user.Login,
+		Password:   user.Password,
+		FirstName:  user.FirstName,
+		MiddleName: user.MiddleName,
+		LastName:   user.LastName,
+		IsAdmin:    user.IsAdmin,
+		IsEngineer: user.IsEngineer,
+		IsOperator: user.IsOperator,
+	}
+}
+
+func UserUpdateToApp(user UserUpdate) app.UserUpdate {
+	return app.UserUpdate{
+		FirstName:  user.FirstName,
+		MiddleName: user.MiddleName,
+		LastName:   user.LastName,
+		IsAdmin:    user.IsAdmin,
+		IsEngineer: user.IsEngineer,
+		IsOperator: user.IsOperator,
+	}
+}
+
+func ChangePasswordToApp(password ChangePassword) app.UpdatePasswordData {
+	return app.UpdatePasswordData{
+		OldPassword: password.OldPassword,
+		NewPassword: password.NewPassword,
+	}
+}
+
+func UserFilterToApp(filter UserFilter) app.UserFilter {
+	return app.UserFilter{
+		Pagination: PaginationToApp(filter.Pagination),
+	}
+}
+
+type AddServiceAmount struct {
+	StationID int `json:"stationId"`
+	Amount    int `json:"amount"`
 }
