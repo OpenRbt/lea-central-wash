@@ -1182,34 +1182,6 @@ func (svc *service) getTask(params op.GetTaskParams, auth *app.Auth) op.GetTaskR
 	}
 }
 
-func (svc *service) deleteTask(params op.DeleteTaskParams, auth *app.Auth) op.DeleteTaskResponder {
-	err := svc.app.DeleteTask(int(params.ID))
-
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewDeleteTaskNoContent()
-	case app.ErrNotFound:
-		return op.NewDeleteTaskNotFound()
-	case app.ErrTaskStarted:
-		return op.NewDeleteTaskBadRequest()
-	default:
-		log.PrintErr(err)
-		return op.NewDeleteTaskInternalServerError()
-	}
-}
-
-func (svc *service) deleteTasks(params op.DeleteTasksParams, auth *app.Auth) op.DeleteTasksResponder {
-	err := svc.app.DeleteTasks()
-
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewDeleteTasksNoContent()
-	default:
-		log.PrintErr(err)
-		return op.NewDeleteTasksInternalServerError()
-	}
-}
-
 func (svc *service) createTask(params op.CreateTaskParams, auth *app.Auth) op.CreateTaskResponder {
 	task, err := svc.app.CreateTask(appCreateTask(*params.Args))
 

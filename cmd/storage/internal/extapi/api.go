@@ -167,8 +167,6 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.GetListTasksHandler = op.GetListTasksHandlerFunc(svc.getListTasks)
 	api.CreateTaskHandler = op.CreateTaskHandlerFunc(svc.createTask)
 	api.CreateTaskByHashHandler = op.CreateTaskByHashHandlerFunc(svc.createTaskByHash)
-	api.DeleteTaskHandler = op.DeleteTaskHandlerFunc(svc.deleteTask)
-	api.DeleteTasksHandler = op.DeleteTasksHandlerFunc(svc.deleteTasks)
 	api.DeleteBuildScriptHandler = op.DeleteBuildScriptHandlerFunc(svc.deleteBuildScript)
 	api.GetBuildScriptHandler = op.GetBuildScriptHandlerFunc(svc.getBuildScript)
 	api.GetListBuildScriptsHandler = op.GetListBuildScriptsHandlerFunc(svc.getListBuildScripts)

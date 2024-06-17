@@ -488,3 +488,11 @@ func (r *DB) NotSendedUsers(ctx context.Context) ([]app.User, error) {
 func (r *DB) MarkUserSended(ctx context.Context, login string) error {
 	return nil
 }
+
+func (r *DB) NotSendedTasks(ctx context.Context) ([]app.Task, error) {
+	return nil, nil
+}
+
+func (r *DB) MarkTaskSended(ctx context.Context, id int) error {
+	return nil
+}

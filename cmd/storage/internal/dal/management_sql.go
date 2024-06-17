@@ -230,6 +230,26 @@ const (
 	FROM users
 	WHERE NOT management_sended
 	`
+	sqlMarkTaskSended = `
+	UPDATE tasks
+	SET management_sended = true
+	WHERE id = :id
+	`
+	sqlNotSendedTasks = `
+	SELECT 	id,
+			station_id,
+			version_id,
+			type,
+			status,
+			retry_count,
+			error,
+			created_at,
+			started_at,
+			stopped_at,
+			version
+	FROM tasks
+	WHERE NOT management_sended
+	`
 	sqlMarkUserSended = `
 	UPDATE users
 	SET management_sended = true
