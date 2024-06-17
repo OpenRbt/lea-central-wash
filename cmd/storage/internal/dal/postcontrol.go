@@ -268,27 +268,3 @@ func (r *repo) UpdateTask(id int, updateTask app.UpdateTask) (app.Task, error) {
 
 	return task, err
 }
-
-func (r *repo) DeleteTask(id int) error {
-	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		res, err := tx.NamedExecContext(ctx, sqlDeleteTask, argGetTask{
-			ID: id,
-		})
-
-		if err != nil {
-			return err
-		}
-
-		rows, err := res.RowsAffected()
-		if err != nil {
-			return err
-		}
-		if rows == 0 {
-			return app.ErrNotFound
-		}
-
-		return nil
-	})
-
-	return err
-}

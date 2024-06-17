@@ -825,7 +825,8 @@ returning id
 		error,
 		created_at,
 		started_at,
-		stopped_at
+		stopped_at,
+		version
     FROM tasks
 	WHERE id = :id
 	`
@@ -842,6 +843,7 @@ returning id
 		created_at,
 		started_at,
 		stopped_at,
+		version,
 		COUNT(id) OVER() AS total_count
     FROM tasks
 	WHERE
@@ -866,7 +868,8 @@ returning id
 		error,
 		created_at,
 		started_at,
-		stopped_at
+		stopped_at,
+		version
 	`
 
 	sqlUpdateTask = `
@@ -876,7 +879,9 @@ returning id
 		retry_count = COALESCE(:retry_count, retry_count),
 		error = COALESCE(:error, error),
 		started_at = COALESCE(:started_at, started_at),
-		stopped_at = COALESCE(:stopped_at, stopped_at)
+		stopped_at = COALESCE(:stopped_at, stopped_at),
+		version = tasks.version + 1, 
+		management_sended = false
 	WHERE id = :id
 	RETURNING
 		id,
@@ -888,14 +893,9 @@ returning id
 		error,
 		created_at,
 		started_at,
-		stopped_at
+		stopped_at,
+		version
 	`
-
-	sqlDeleteTask = `
-	DELETE FROM tasks
-	WHERE id = :id
-	`
-
 	sqlInsertOpenwashingLog = `
 	INSERT INTO openwashing_logs (station_id, text, type, level, created_at)
 	VALUES (:station_id, :text, :type, :level, :created_at)
@@ -1427,6 +1427,7 @@ type (
 		CreatedAt  time.Time
 		StartedAt  *time.Time
 		StoppedAt  *time.Time
+		Version    int
 		TotalCount int64
 	}
 

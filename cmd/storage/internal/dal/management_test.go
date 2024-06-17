@@ -525,3 +525,43 @@ func TestNotSendedUsers(t *testing.T) {
 	assert.NilError(t, err)
 	assert.DeepEqual(t, notSendedUsers, users)
 }
+
+func TestNotSendedTasks(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+	tt := check.T(t)
+	addTestData(tt)
+
+	createTasks := []app.CreateTask{
+		{StationID: 1, Type: app.BuildTaskType},
+		{StationID: 1, Type: app.UpdateTaskType},
+		{StationID: 1, Type: app.PullFirmwareTaskType},
+	}
+	tasks := []app.Task{}
+
+	for _, task := range createTasks {
+		task, err := testRepo.CreateTask(task)
+		assert.NilError(t, err)
+
+		tasks = append(tasks, task)
+	}
+
+	err := testRepo.MarkTaskSended(ctx, tasks[2].ID)
+	assert.NilError(t, err)
+
+	notSendedTasks, err := testRepo.NotSendedTasks(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedTasks, tasks[:2])
+
+	cTemp := tasks[2]
+	cTemp.Version++
+	cTemp.RetryCount = 1
+	tasks[2] = cTemp
+
+	updatedTask, err := testRepo.UpdateTask(tasks[2].ID, app.UpdateTask{RetryCount: &cTemp.RetryCount})
+	assert.NilError(t, err)
+	assert.DeepEqual(t, updatedTask, cTemp)
+
+	notSendedTasks, err = testRepo.NotSendedTasks(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedTasks, tasks)
+}

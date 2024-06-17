@@ -3143,25 +3143,6 @@ func init() {
             "description": "Internal error"
           }
         }
-      },
-      "delete": {
-        "security": [
-          {
-            "pinCode": []
-          }
-        ],
-        "operationId": "deleteTasks",
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "PIN is missing or invalid"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
       }
     },
     "/tasks/create-by-hash": {
@@ -3219,40 +3200,6 @@ func init() {
             "schema": {
               "$ref": "#/definitions/Task"
             }
-          },
-          "401": {
-            "description": "PIN is missing or invalid"
-          },
-          "404": {
-            "description": "Not found"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
-      },
-      "delete": {
-        "security": [
-          {
-            "pinCode": []
-          }
-        ],
-        "operationId": "deleteTask",
-        "parameters": [
-          {
-            "minimum": 1,
-            "type": "integer",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
           },
           "401": {
             "description": "PIN is missing or invalid"
@@ -7913,25 +7860,6 @@ func init() {
             "description": "Internal error"
           }
         }
-      },
-      "delete": {
-        "security": [
-          {
-            "pinCode": []
-          }
-        ],
-        "operationId": "deleteTasks",
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "PIN is missing or invalid"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
       }
     },
     "/tasks/create-by-hash": {
@@ -7989,40 +7917,6 @@ func init() {
             "schema": {
               "$ref": "#/definitions/Task"
             }
-          },
-          "401": {
-            "description": "PIN is missing or invalid"
-          },
-          "404": {
-            "description": "Not found"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
-      },
-      "delete": {
-        "security": [
-          {
-            "pinCode": []
-          }
-        ],
-        "operationId": "deleteTask",
-        "parameters": [
-          {
-            "minimum": 1,
-            "type": "integer",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
           },
           "401": {
             "description": "PIN is missing or invalid"

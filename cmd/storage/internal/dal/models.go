@@ -501,6 +501,7 @@ func appTask(task resTask) app.Task {
 		CreatedAt:  task.CreatedAt,
 		StartedAt:  task.StartedAt,
 		StoppedAt:  task.StoppedAt,
+		Version:    task.Version,
 	}
 }
 

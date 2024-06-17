@@ -171,6 +171,7 @@ func (a *app) syncLeaSettings() {
 	a.syncUnsentOpenwashingLogs()
 	a.syncUnsentConfigs()
 	a.syncUnsentUsers()
+	a.syncUnsentTasks()
 }
 
 func (a *app) syncUnsentPrograms() {
@@ -256,6 +257,28 @@ func (a *app) syncUnsentUsers() {
 		err = a.repo.MarkUserSended(context.TODO(), user.Login)
 		if err != nil {
 			log.Err("unable to mark user as sended", "err", err)
+			continue
+		}
+	}
+}
+
+func (a *app) syncUnsentTasks() {
+	tasks, err := a.repo.NotSendedTasks(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent tasks", "err", err)
+		return
+	}
+
+	for _, task := range tasks {
+		err := a.mngtSvc.SendTask(task)
+		if err != nil {
+			log.Err("unable to send task to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkTaskSended(context.TODO(), task.ID)
+		if err != nil {
+			log.Err("unable to mark task as sended", "err", err)
 			continue
 		}
 	}

@@ -62,6 +62,24 @@ func (s *Service) ProcessMngtMessage(d amqp.Delivery) error {
 	case mngt_entity.LcwAddServiceAmountMessageType:
 		return s.handleLeaAddServiceAmount(ctx, d)
 
+	case mngt_entity.LcwTasksGetMessageType:
+		return s.handleLeaTasksGetting(ctx, d)
+
+	case mngt_entity.LcwTasksGetByIDMessageType:
+		return s.handleLeaTasksGettingByID(ctx, d)
+
+	case mngt_entity.LcwTasksCreationMessageType:
+		return s.handleLeaTasksCreating(ctx, d)
+
+	case mngt_entity.LcwCopyBufferedFirmwareMessageType:
+		return s.handleLeaCopyBufferedFirmware(ctx, d)
+
+	case mngt_entity.LcwGetBufferedFirmwareMessageType:
+		return s.handleLeaBufferedFirmwareGetting(ctx, d)
+
+	case mngt_entity.LcwGetFirmwaresMessageType:
+		return s.handleLeaFirmwaresGetting(ctx, d)
+
 	default:
 		s.log.Warn("Unknown message type:", d.Type)
 		if nackErr := d.Nack(false, false); nackErr != nil {
@@ -69,6 +87,144 @@ func (s *Service) ProcessMngtMessage(d amqp.Delivery) error {
 		}
 		return nil
 	}
+}
+
+func (s *Service) handleLeaTasksGetting(ctx context.Context, d amqp.Delivery) error {
+	var filter mngt_entity.TaskFilter
+	if err := json.Unmarshal(d.Body, &filter); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	appFilter, err := mngt_entity.TaskFilterToApp(filter)
+	if err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	tasks, err := s.app.GetTasksForManagement(ctx, appFilter)
+	rpcResponse := mngt_entity.RPCResponse{Data: mngt_entity.TaskPageToRabbit(tasks)}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
+}
+
+func (s *Service) handleLeaTasksGettingByID(ctx context.Context, d amqp.Delivery) error {
+	var args mngt_entity.ArgID[int]
+	if err := json.Unmarshal(d.Body, &args); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	task, err := s.app.GetTaskByIdForManagement(ctx, args.ID)
+	rpcResponse := mngt_entity.RPCResponse{Data: mngt_entity.TaskToRabbit(task)}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
+}
+
+func (s *Service) handleLeaTasksCreating(ctx context.Context, d amqp.Delivery) error {
+	var args mngt_entity.CreateTask
+	if err := json.Unmarshal(d.Body, &args); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	creaeTask, err := mngt_entity.CreateTaskToApp(args)
+	if err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	task, err := s.app.CreateTaskForManagement(ctx, creaeTask)
+	rpcResponse := mngt_entity.RPCResponse{Data: mngt_entity.TaskToRabbit(task)}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
+}
+
+func (s *Service) handleLeaCopyBufferedFirmware(ctx context.Context, d amqp.Delivery) error {
+	var args mngt_entity.CopyBufferedFirmware
+	if err := json.Unmarshal(d.Body, &args); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	err := s.app.CopyFirmwareForManagement(ctx, app.StationID(args.StationID), app.StationID(args.CopyToStationID))
+	rpcResponse := mngt_entity.RPCResponse{}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
+}
+
+func (s *Service) handleLeaFirmwaresGetting(ctx context.Context, d amqp.Delivery) error {
+	var args mngt_entity.ArgID[int]
+	if err := json.Unmarshal(d.Body, &args); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	tasks, err := s.app.GetVersionsForManagement(ctx, app.StationID(args.ID))
+	rpcResponse := mngt_entity.RPCResponse{Data: mngt_entity.FirmwareVersionsToRabbit(tasks, args.ID)}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
+}
+
+func (s *Service) handleLeaBufferedFirmwareGetting(ctx context.Context, d amqp.Delivery) error {
+	var args mngt_entity.ArgID[int]
+	if err := json.Unmarshal(d.Body, &args); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	tasks, err := s.app.GetVersionBufferedForManagement(ctx, app.StationID(args.ID))
+	rpcResponse := mngt_entity.RPCResponse{Data: mngt_entity.FirmwareVersionToRabbit(tasks, args.ID)}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
 }
 
 func (s *Service) handleLeaProgramsGetting(ctx context.Context, d amqp.Delivery) error {
@@ -563,6 +719,14 @@ func (s *Service) SendStationConfigString(config app.StationConfigVar[string]) e
 
 func (s *Service) SendUser(user app.User) error {
 	err := s.sendMessage(mngt_entity.UserToRabbit(user), mngt_entity.ManagementUserMessageType)
+	if err != nil {
+		s.setLastErr(err.Error())
+	}
+	return err
+}
+
+func (s *Service) SendTask(task app.Task) error {
+	err := s.sendMessage(mngt_entity.TaskToRabbit(task), mngt_entity.ManagementTaskMessageType)
 	if err != nil {
 		s.setLastErr(err.Error())
 	}

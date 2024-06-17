@@ -48,6 +48,21 @@ func ErrorToRPCError(err error) *RPCError {
 			Code:    412,
 			Message: err.Error(),
 		}
+	case errors.Is(err, app.ErrWrongParameter):
+		return &RPCError{
+			Code:    413,
+			Message: err.Error(),
+		}
+	case errors.Is(err, app.ErrTaskStarted):
+		return &RPCError{
+			Code:    414,
+			Message: err.Error(),
+		}
+	case errors.Is(err, app.ErrStationDirectoryNotExist):
+		return &RPCError{
+			Code:    415,
+			Message: err.Error(),
+		}
 	case errors.Is(err, app.ErrSameOrLowerVersion):
 		return &RPCError{
 			Code:    1000,
@@ -102,6 +117,7 @@ const (
 	ManagementStationConfigIntMessageType    app.RabbitMessageType = "management/station_config_int"
 	ManagementStationConfigBoolMessageType   app.RabbitMessageType = "management/station_config_bool"
 	ManagementUserMessageType                app.RabbitMessageType = "management/user"
+	ManagementTaskMessageType                app.RabbitMessageType = "management/task"
 
 	LcwProgramSettingMessageType     app.RabbitMessageType = "lcw/program/set"
 	LcwProgramSettingsGetMessageType app.RabbitMessageType = "lcw/program/get"
@@ -118,6 +134,14 @@ const (
 	LcwUsersUpdateMessageType         app.RabbitMessageType = "lcw/user/update"
 	LcwUsersChangePasswordMessageType app.RabbitMessageType = "lcw/user/change_password"
 	LcwUsersDeleteMessageType         app.RabbitMessageType = "lcw/user/delete"
+
+	LcwTasksGetMessageType      app.RabbitMessageType = "lcw/task/get"
+	LcwTasksGetByIDMessageType  app.RabbitMessageType = "lcw/task/get_by_id"
+	LcwTasksCreationMessageType app.RabbitMessageType = "lcw/task/create"
+
+	LcwCopyBufferedFirmwareMessageType app.RabbitMessageType = "lcw/firmware/copy"
+	LcwGetBufferedFirmwareMessageType  app.RabbitMessageType = "lcw/firmware/buffered"
+	LcwGetFirmwaresMessageType         app.RabbitMessageType = "lcw/firmware/get"
 
 	LcwAddServiceAmountMessageType app.RabbitMessageType = "lcw/money/add_service_amount"
 )

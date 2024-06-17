@@ -264,9 +264,13 @@ type (
 		GetVersions(stationID StationID) ([]FirmwareVersion, error)
 		GetListTasks(filter TaskFilter) (Page[Task], error)
 		GetTask(id int) (Task, error)
-		DeleteTask(id int) error
-		DeleteTasks() error
 		CreateTask(createTask CreateTask) (Task, error)
+		GetTasksForManagement(ctx context.Context, filter TaskFilter) (Page[Task], error)
+		GetTaskByIdForManagement(ctx context.Context, id int) (Task, error)
+		CreateTaskForManagement(ctx context.Context, createTask CreateTask) (Task, error)
+		CopyFirmwareForManagement(ctx context.Context, stationID StationID, copyToID StationID) error
+		GetVersionBufferedForManagement(ctx context.Context, stationID StationID) (FirmwareVersion, error)
+		GetVersionsForManagement(ctx context.Context, stationID StationID) ([]FirmwareVersion, error)
 		GetListBuildScripts() ([]BuildScript, error)
 		GetBuildScript(id StationID) (BuildScript, error)
 		SetBuildScript(setBuildScript SetBuildScript) (BuildScript, error)
@@ -403,7 +407,8 @@ type (
 		GetTask(id int) (Task, error)
 		CreateTask(createTask CreateTask) (Task, error)
 		UpdateTask(id int, updateTask UpdateTask) (Task, error)
-		DeleteTask(id int) error
+		NotSendedTasks(ctx context.Context) ([]Task, error)
+		MarkTaskSended(ctx context.Context, id int) error
 
 		CreateOpenwashingLog(model OpenwashingLogCreate) (OpenwashingLog, error)
 		NotSendedOpenwashingLogs(ctx context.Context) ([]OpenwashingLog, error)
@@ -457,6 +462,7 @@ type (
 		SendStationConfigString(StationConfigVar[string]) error
 		SendStationConfigInt(StationConfigVar[int64]) error
 		SendUser(User) error
+		SendTask(task Task) error
 	}
 	management struct {
 		syncChannel chan struct{}
