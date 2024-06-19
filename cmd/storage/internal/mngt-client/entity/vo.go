@@ -118,6 +118,7 @@ const (
 	ManagementStationConfigBoolMessageType   app.RabbitMessageType = "management/station_config_bool"
 	ManagementUserMessageType                app.RabbitMessageType = "management/user"
 	ManagementTaskMessageType                app.RabbitMessageType = "management/task"
+	ManagementStationMessageType             app.RabbitMessageType = "management/station"
 
 	LcwProgramSettingMessageType     app.RabbitMessageType = "lcw/program/set"
 	LcwProgramSettingsGetMessageType app.RabbitMessageType = "lcw/program/get"
@@ -142,6 +143,9 @@ const (
 	LcwCopyBufferedFirmwareMessageType app.RabbitMessageType = "lcw/firmware/copy"
 	LcwGetBufferedFirmwareMessageType  app.RabbitMessageType = "lcw/firmware/buffered"
 	LcwGetFirmwaresMessageType         app.RabbitMessageType = "lcw/firmware/get"
+
+	LcwStationUpdateMessageType  app.RabbitMessageType = "lcw/station/update"
+	LcwStationGetByIDMessageType app.RabbitMessageType = "lcw/station/get_by_id"
 
 	LcwAddServiceAmountMessageType app.RabbitMessageType = "lcw/money/add_service_amount"
 )

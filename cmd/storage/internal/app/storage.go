@@ -628,7 +628,7 @@ func (a *app) StatusCollection() StatusCollection {
 	return status
 }
 
-func (a *app) SetStation(station SetStation) error {
+func (a *app) SetStation(ctx context.Context, station SetStation) error {
 	err := a.repo.SetStation(station)
 	if err != nil {
 		return err
@@ -639,15 +639,24 @@ func (a *app) SetStation(station SetStation) error {
 	}
 
 	err = a.updateConfig("SetStation")
-	return err
+	if err != nil {
+		return err
+	}
+
+	a.sendManagementSyncSignal()
+
+	return nil
 }
 
-func (a *app) DelStation(id StationID) error {
+func (a *app) DelStation(ctx context.Context, id StationID) error {
 	err := a.repo.DelStation(id)
 	if err != nil {
 		return err
 	}
+
 	a.loadStations()
+	a.sendManagementSyncSignal()
+
 	return nil
 }
 
@@ -703,14 +712,27 @@ func (a *app) SetProgram(program Program) error {
 func (a *app) StationProgram(id StationID) ([]StationProgram, error) {
 	return a.repo.StationProgram(id)
 }
-func (a *app) SetStationProgram(id StationID, button []StationProgram) error {
+
+func (a *app) SetStationProgram(ctx context.Context, id StationID, button []StationProgram) error {
 	err := a.repo.SetStationProgram(id, button)
 	if err != nil {
 		return err
 	}
 	err = a.updateConfig("SetStationProgram")
-	return err
+	if err != nil {
+		return err
+	}
+
+	err = a.repo.StationUpVersion(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	a.sendManagementSyncSignal()
+
+	return nil
 }
+
 func (a *app) StationConfig(id StationID) (StationConfig, error) {
 	res, err := a.repo.StationConfig(id)
 	if err != nil {

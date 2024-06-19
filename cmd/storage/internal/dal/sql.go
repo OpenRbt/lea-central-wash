@@ -91,7 +91,12 @@ VALUES 	(:station_id, :hash)
 	`
 	sqlUpdStation = `
 UPDATE station
-SET name = :name, preflight_sec = :preflight_sec, relay_board = :relay_board
+SET
+	name = :name,
+	preflight_sec = :preflight_sec,
+	relay_board = :relay_board,
+	version = station.version + 1,
+	management_sended = false
 WHERE id = :id
 	`
 	sqlGetStations = `
@@ -102,7 +107,23 @@ WHERE id = :id
 	sqlGetStation = `
 SELECT id, name, preflight_sec, relay_board FROM station where deleted = false and id = :id ORDER BY id
 	`
-
+	sqlStationUpVersion = `
+	UPDATE station
+	SET
+		version = station.version + 1,
+		management_sended = false
+	WHERE id = :id
+	`
+	sqlUpdateStation = `
+	UPDATE station
+	SET
+		name 				= COALESCE(:name, name),
+		preflight_sec 		= COALESCE(:preflight_sec, preflight_sec),
+		relay_board 		= COALESCE(:relay_board, relay_board),
+		version 			= station.version + 1, 
+		management_sended 	= false
+	WHERE id = :id
+	`
 	sqlGetUsers Query = `
 SELECT 	id,
 		login,
@@ -205,7 +226,7 @@ WHERE hash = :hash or station_id = :station_id
 	`
 	sqlDelStation = `
 UPDATE station
-SET deleted = true, hash = null
+SET deleted = true, version = station.version + 1, management_sended = false
 WHERE id = :id
 	`
 	sqlAddMoneyReport = `
@@ -425,6 +446,8 @@ select s.id,
 	s.name,
 	s.preflight_sec,
 	s.relay_board,
+	s.deleted,
+	s.version,
 	b.button_id,
 	b.program_id,
 	p.price,
@@ -1140,6 +1163,13 @@ type (
 		TotalCount                 int64
 	}
 
+	argUpdateStation struct {
+		ID           int
+		Name         *string
+		PreflightSec *int
+		RelayBoard   *string
+	}
+
 	argStationProgram struct {
 		StationID app.StationID
 	}
@@ -1175,6 +1205,8 @@ type (
 		MotorSpeedPercent          int64
 		PreflightMotorSpeedPercent int64
 		RelayBoard                 string
+		Version                    int
+		Deleted                    bool
 	}
 
 	resCollectionReportByDate struct {

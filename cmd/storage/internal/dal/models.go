@@ -146,6 +146,8 @@ func appStationConfig(p []resStationConfig) (res app.StationConfig) {
 	res.Name = p[0].Name
 	res.PreflightSec = p[0].PreflightSec
 	res.RelayBoard = p[0].RelayBoard
+	res.Version = p[0].Version
+	res.Deleted = p[0].Deleted
 
 	for i := range p {
 		res.Programs = append(res.Programs, app.Program{
@@ -162,6 +164,30 @@ func appStationConfig(p []resStationConfig) (res app.StationConfig) {
 		})
 	}
 	return res
+}
+
+func appStationConfigs(p []resStationConfig) []app.StationConfig {
+	if len(p) == 0 {
+		return []app.StationConfig{}
+	}
+
+	configs := map[app.StationID][]resStationConfig{}
+
+	for _, v := range p {
+		if c, ok := configs[v.ID]; ok {
+			c = append(c, v)
+			configs[v.ID] = c
+		} else {
+			configs[v.ID] = []resStationConfig{v}
+		}
+	}
+
+	appConfigs := []app.StationConfig{}
+	for _, v := range configs {
+		appConfigs = append(appConfigs, appStationConfig(v))
+	}
+
+	return appConfigs
 }
 
 func appCollectionReportsByDate(r []resCollectionReportByDate) (res []app.CollectionReportWithUser) {

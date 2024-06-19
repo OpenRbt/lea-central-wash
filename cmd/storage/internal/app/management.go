@@ -70,6 +70,29 @@ func (a *app) AddServiceAmountForManagement(ctx context.Context, id StationID, m
 	return nil
 }
 
+func (app *app) StationUpdateForManagement(ctx context.Context, id StationID, station StationUpdate) (StationConfig, error) {
+	_, err := app.repo.StationConfig(id)
+	if err != nil {
+		return StationConfig{}, err
+	}
+
+	stationConfig, err := app.repo.StationUpdate(ctx, id, station)
+	if err != nil {
+		return StationConfig{}, err
+	}
+
+	err = app.updateConfig("SetStationProgramForManagement")
+	if err != nil {
+		return StationConfig{}, err
+	}
+
+	return stationConfig, nil
+}
+
+func (app *app) StationGetForManagement(ctx context.Context, id StationID) (StationConfig, error) {
+	return app.StationConfig(id)
+}
+
 func (app *app) GetTasksForManagement(ctx context.Context, filter TaskFilter) (Page[Task], error) {
 	return app.GetListTasks(filter)
 }

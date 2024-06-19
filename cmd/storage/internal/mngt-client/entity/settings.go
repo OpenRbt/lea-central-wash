@@ -670,3 +670,77 @@ func FirmwareVersionsToRabbit(versions []app.FirmwareVersion, stationID int) []F
 	}
 	return l
 }
+
+type Button struct {
+	ID        int `json:"id"`
+	ProgramID int `json:"programId"`
+}
+
+type StationUpdate struct {
+	ID           int      `json:"id"`
+	Name         *string  `json:"name,omitempty"`
+	PreflightSec *int     `json:"preflightSec,omitempty"`
+	RelayBoard   *string  `json:"relayBoard,omitempty"`
+	Buttons      []Button `json:"buttons,omitempty"`
+}
+
+type Station struct {
+	ID           int      `json:"id"`
+	Name         string   `json:"name"`
+	PreflightSec int      `json:"preflightSec"`
+	RelayBoard   string   `json:"relayBoard"`
+	Buttons      []Button `json:"buttons"`
+	Version      int      `json:"version"`
+	Deleted      bool     `json:"deleted"`
+}
+
+func StationUpdateToApp(station StationUpdate) app.StationUpdate {
+	return app.StationUpdate{
+		Name:         station.Name,
+		PreflightSec: station.PreflightSec,
+		RelayBoard:   station.RelayBoard,
+		Buttons:      ButtonsToApp(station.Buttons),
+	}
+}
+
+func StationToRabbit(station app.StationConfig) Station {
+	return Station{
+		ID:           int(station.ID),
+		Name:         station.Name,
+		PreflightSec: station.PreflightSec,
+		RelayBoard:   station.RelayBoard,
+		Buttons:      ButtonsToRabbit(station.Programs),
+		Version:      station.Version,
+		Deleted:      station.Deleted,
+	}
+}
+
+func ButtonToRabbit(programs app.Program) Button {
+	return Button{
+		ID:        programs.ButtonID,
+		ProgramID: int(programs.ID),
+	}
+}
+
+func ButtonToApp(button Button) app.StationProgram {
+	return app.StationProgram{
+		ButtonID:  button.ID,
+		ProgramID: button.ProgramID,
+	}
+}
+
+func ButtonsToRabbit(programs []app.Program) []Button {
+	buttons := []Button{}
+	for _, v := range programs {
+		buttons = append(buttons, ButtonToRabbit(v))
+	}
+	return buttons
+}
+
+func ButtonsToApp(programs []Button) []app.StationProgram {
+	buttons := []app.StationProgram{}
+	for _, v := range programs {
+		buttons = append(buttons, ButtonToApp(v))
+	}
+	return buttons
+}

@@ -298,7 +298,7 @@ func (svc *service) setStation(params op.SetStationParams) op.SetStationResponde
 		return op.NewSetStationUnprocessableEntity()
 	}
 	svc.setHash(app.StationID(*params.Args.ID), params.Args.Hash)
-	err := svc.app.SetStation(app.SetStation{
+	err := svc.app.SetStation(params.HTTPRequest.Context(), app.SetStation{
 		ID:           app.StationID(*params.Args.ID),
 		Name:         params.Args.Name,
 		PreflightSec: int(params.Args.PreflightSec),
@@ -320,7 +320,7 @@ func (svc *service) setStation(params op.SetStationParams) op.SetStationResponde
 }
 
 func (svc *service) delStation(params op.DelStationParams) op.DelStationResponder {
-	err := svc.app.DelStation(app.StationID(*params.Args.ID))
+	err := svc.app.DelStation(params.HTTPRequest.Context(), app.StationID(*params.Args.ID))
 
 	switch errors.Cause(err) {
 	case nil:
@@ -491,7 +491,7 @@ func (svc *service) setStationButton(params op.SetStationButtonParams) op.SetSta
 		})
 	}
 
-	err = svc.app.SetStationProgram(app.StationID(*params.Args.StationID), tmp)
+	err = svc.app.SetStationProgram(params.HTTPRequest.Context(), app.StationID(*params.Args.StationID), tmp)
 	switch errors.Cause(err) {
 	case nil:
 		return op.NewSetStationButtonNoContent()

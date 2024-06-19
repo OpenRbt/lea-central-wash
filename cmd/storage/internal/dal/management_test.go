@@ -1,6 +1,7 @@
 package dal
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -564,4 +565,50 @@ func TestNotSendedTasks(t *testing.T) {
 	notSendedTasks, err = testRepo.NotSendedTasks(ctx)
 	assert.NilError(t, err)
 	assert.DeepEqual(t, notSendedTasks, tasks)
+}
+
+func TestNotSendedStations(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+
+	_, err := testRepo.SetProgram(ctx, testProgram1)
+	assert.NilError(t, err)
+
+	_, err = testRepo.SetProgram(ctx, testProgram2)
+	assert.NilError(t, err)
+
+	stations := []app.StationConfig{}
+	for i := 1; i < 4; i++ {
+		err := testRepo.AddStation(fmt.Sprintf("Station%d", i))
+		assert.NilError(t, err)
+
+		testRepo.SetStationProgram(app.StationID(i), []app.StationProgram{{ButtonID: 1, ProgramID: 1}, {ButtonID: 2, ProgramID: 2}})
+
+		s, err := testRepo.StationConfig(app.StationID(i))
+		assert.NilError(t, err)
+		stations = append(stations, s)
+	}
+
+	err = testRepo.MarkStationSended(ctx, stations[2].ID)
+	assert.NilError(t, err)
+
+	notSendedStations, err := testRepo.NotSendedStations(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedStations, stations[:2], cmpopts.SortSlices(func(i, j app.StationConfig) bool {
+		return i.ID > j.ID
+	}))
+
+	cTemp := stations[2]
+	cTemp.Version++
+	cTemp.Name = "new name"
+	stations[2] = cTemp
+
+	updatedTask, err := testRepo.StationUpdate(ctx, stations[2].ID, app.StationUpdate{Name: &cTemp.Name})
+	assert.NilError(t, err)
+	assert.DeepEqual(t, updatedTask, cTemp)
+
+	notSendedStations, err = testRepo.NotSendedStations(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedStations, stations, cmpopts.SortSlices(func(i, j app.StationConfig) bool {
+		return i.ID > j.ID
+	}))
 }

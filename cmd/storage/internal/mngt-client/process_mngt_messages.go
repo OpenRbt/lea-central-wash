@@ -80,6 +80,12 @@ func (s *Service) ProcessMngtMessage(d amqp.Delivery) error {
 	case mngt_entity.LcwGetFirmwaresMessageType:
 		return s.handleLeaFirmwaresGetting(ctx, d)
 
+	case mngt_entity.LcwStationUpdateMessageType:
+		return s.handleLeaStationUpdating(ctx, d)
+
+	case mngt_entity.LcwStationGetByIDMessageType:
+		return s.handleLeaStationGetting(ctx, d)
+
 	default:
 		s.log.Warn("Unknown message type:", d.Type)
 		if nackErr := d.Nack(false, false); nackErr != nil {
@@ -87,6 +93,46 @@ func (s *Service) ProcessMngtMessage(d amqp.Delivery) error {
 		}
 		return nil
 	}
+}
+
+func (s *Service) handleLeaStationUpdating(ctx context.Context, d amqp.Delivery) error {
+	var args mngt_entity.StationUpdate
+	if err := json.Unmarshal(d.Body, &args); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	station, err := s.app.StationUpdateForManagement(ctx, app.StationID(args.ID), mngt_entity.StationUpdateToApp(args))
+	rpcResponse := mngt_entity.RPCResponse{Data: mngt_entity.StationToRabbit(station)}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
+}
+
+func (s *Service) handleLeaStationGetting(ctx context.Context, d amqp.Delivery) error {
+	var args mngt_entity.ArgID[int]
+	if err := json.Unmarshal(d.Body, &args); err != nil {
+		s.setLastErr(err.Error())
+		if nackErr := d.Nack(false, false); nackErr != nil {
+			return nackErr
+		}
+		return err
+	}
+
+	station, err := s.app.StationGetForManagement(ctx, app.StationID(args.ID))
+	rpcResponse := mngt_entity.RPCResponse{Data: mngt_entity.StationToRabbit(station)}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+	}
+
+	return s.sendMessageHandleErrors(rpcResponse, d)
 }
 
 func (s *Service) handleLeaTasksGetting(ctx context.Context, d amqp.Delivery) error {
@@ -727,6 +773,14 @@ func (s *Service) SendUser(user app.User) error {
 
 func (s *Service) SendTask(task app.Task) error {
 	err := s.sendMessage(mngt_entity.TaskToRabbit(task), mngt_entity.ManagementTaskMessageType)
+	if err != nil {
+		s.setLastErr(err.Error())
+	}
+	return err
+}
+
+func (s *Service) SendStation(station app.StationConfig) error {
+	err := s.sendMessage(mngt_entity.StationToRabbit(station), mngt_entity.ManagementStationMessageType)
 	if err != nil {
 		s.setLastErr(err.Error())
 	}
