@@ -719,6 +719,34 @@ func (r *repo) StationProgram(id app.StationID) (button []app.StationProgram, er
 	return
 }
 
+func (r *repo) StationUpdate(ctx context.Context, id app.StationID, stationUpdate app.StationUpdate) (app.StationConfig, error) {
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExecContext(ctx, sqlUpdateStation, argUpdateStation{
+			ID:           int(id),
+			Name:         stationUpdate.Name,
+			PreflightSec: stationUpdate.PreflightSec,
+			RelayBoard:   stationUpdate.RelayBoard,
+		})
+		if err == sql.ErrNoRows {
+			return app.ErrNotFound
+		}
+
+		return nil
+	})
+	if err != nil {
+		return app.StationConfig{}, err
+	}
+
+	if len(stationUpdate.Buttons) > 0 {
+		err := r.SetStationProgram(id, stationUpdate.Buttons)
+		if err != nil {
+			return app.StationConfig{}, err
+		}
+	}
+
+	return r.StationConfig(id)
+}
+
 func (r *repo) SetStationProgram(id app.StationID, button []app.StationProgram) (err error) {
 	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
 		_, err = tx.NamedExec(sqlStationProgramDel, argStationProgramDel{
@@ -760,6 +788,9 @@ func (r *repo) StationConfig(id app.StationID) (cfg app.StationConfig, err error
 		})
 		if err != nil {
 			return err
+		}
+		if len(res) == 0 {
+			return app.ErrNotFound
 		}
 		cfg = appStationConfig(res)
 		return nil

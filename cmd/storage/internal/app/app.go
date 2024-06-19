@@ -140,8 +140,8 @@ type (
 		RelayReportCurrent(auth *Auth, id *StationID) (StationsStat, error)
 
 		StatusReport(bool) StatusReport
-		SetStation(station SetStation) error
-		DelStation(id StationID) error
+		SetStation(ctx context.Context, station SetStation) error
+		DelStation(ctx context.Context, id StationID) error
 		StationReportDates(id StationID, startDate, endDate time.Time) (MoneyReport, RelayReport, error)
 		StationReportCurrentMoney(id StationID) (MoneyReport, RelayReport, error)
 		CollectionReports(id StationID, startDate, endDate *time.Time) (reports []CollectionReportWithUser, err error)
@@ -157,7 +157,7 @@ type (
 		MarkProgramSended(ctx context.Context, id int64) error
 
 		StationProgram(StationID) ([]StationProgram, error)
-		SetStationProgram(StationID, []StationProgram) error
+		SetStationProgram(context.Context, StationID, []StationProgram) error
 		StationConfig(StationID) (StationConfig, error)
 
 		Users(ctx context.Context, auth *Auth) (users []User, err error)
@@ -278,6 +278,9 @@ type (
 		CopyFirmware(stationID StationID, copyToID StationID) error
 		GetVersionBuffered(stationID StationID) (FirmwareVersion, error)
 
+		StationUpdateForManagement(ctx context.Context, id StationID, station StationUpdate) (StationConfig, error)
+		StationGetForManagement(ctx context.Context, id StationID) (StationConfig, error)
+
 		AddOpenwashingLog(log OpenwashingLogCreate) (OpenwashingLog, error)
 	}
 
@@ -325,6 +328,7 @@ type (
 		SetStationProgram(StationID, []StationProgram) error
 		StationConfig(StationID) (StationConfig, error)
 		Station(StationID) (SetStation, error)
+		StationUpdate(context.Context, StationID, StationUpdate) (StationConfig, error)
 
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
@@ -409,6 +413,9 @@ type (
 		UpdateTask(id int, updateTask UpdateTask) (Task, error)
 		NotSendedTasks(ctx context.Context) ([]Task, error)
 		MarkTaskSended(ctx context.Context, id int) error
+		NotSendedStations(ctx context.Context) ([]StationConfig, error)
+		MarkStationSended(ctx context.Context, id StationID) error
+		StationUpVersion(ctx context.Context, id StationID) error
 
 		CreateOpenwashingLog(model OpenwashingLogCreate) (OpenwashingLog, error)
 		NotSendedOpenwashingLogs(ctx context.Context) ([]OpenwashingLog, error)
@@ -462,7 +469,8 @@ type (
 		SendStationConfigString(StationConfigVar[string]) error
 		SendStationConfigInt(StationConfigVar[int64]) error
 		SendUser(User) error
-		SendTask(task Task) error
+		SendTask(Task) error
+		SendStation(StationConfig) error
 	}
 	management struct {
 		syncChannel chan struct{}
@@ -676,6 +684,15 @@ type StationConfig struct {
 	RelayBoard   string
 	LastUpdate   int
 	Programs     []Program
+	Version      int
+	Deleted      bool
+}
+
+type StationUpdate struct {
+	Name         *string
+	PreflightSec *int
+	RelayBoard   *string
+	Buttons      []StationProgram
 }
 
 type SessionsRequest struct {

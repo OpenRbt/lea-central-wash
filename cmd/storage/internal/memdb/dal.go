@@ -496,3 +496,19 @@ func (r *DB) NotSendedTasks(ctx context.Context) ([]app.Task, error) {
 func (r *DB) MarkTaskSended(ctx context.Context, id int) error {
 	return nil
 }
+
+func (r *DB) NotSendedStations(ctx context.Context) ([]app.StationConfig, error) {
+	return nil, nil
+}
+
+func (r *DB) MarkStationSended(ctx context.Context, id app.StationID) error {
+	return nil
+}
+
+func (r *DB) StationUpVersion(ctx context.Context, id app.StationID) error {
+	return nil
+}
+
+func (r *DB) StationUpdate(context.Context, app.StationID, app.StationUpdate) (app.StationConfig, error) {
+	return app.StationConfig{}, nil
+}

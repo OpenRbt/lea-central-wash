@@ -76,7 +76,7 @@ var (
 	KaspiRabbitHost   = strGetEnv("KASPI_RABBIT_HOST", "app.openrbt.com")
 	KaspiRabbitPort   = strGetEnv("KASPI_RABBIT_PORT", "4043")
 	KaspiRabbitSecure = boolGetEnv("KASPI_RABBIT_SECURE", true)
-	
+
 	//postcontrol
 	KeySSHPath      = strGetEnv("STORAGE_KEY_SSH_PATH", "./ssh/id_rsa")
 	UserSSH         = strGetEnv("STORAGE_USER_SSH", "pi")
