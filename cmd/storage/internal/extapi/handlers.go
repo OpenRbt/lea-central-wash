@@ -755,7 +755,7 @@ func (svc *service) setCardReaderConfig(params op.SetCardReaderConfigParams) op.
 	if params.Args.CardReaderType == model.CardReaderConfigCardReaderTypeVENDOTEK && (params.Args.Host == "" || params.Args.Port == "") {
 		return op.NewSetCardReaderConfigUnprocessableEntity().WithPayload("host and port required")
 	}
-	err := svc.app.SetCardReaderConfig(app.CardReaderConfig{
+	err := svc.app.SetCardReaderConfig(params.HTTPRequest.Context(), app.CardReaderConfig{
 		StationID:      app.StationID(*params.Args.StationID),
 		CardReaderType: params.Args.CardReaderType,
 		Host:           strings.TrimSpace(params.Args.Host),

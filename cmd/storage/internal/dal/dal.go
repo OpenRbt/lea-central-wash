@@ -744,6 +744,13 @@ func (r *repo) StationUpdate(ctx context.Context, id app.StationID, stationUpdat
 		}
 	}
 
+	if stationUpdate.CardReader != nil {
+		err := r.SetCardReaderConfig(*stationUpdate.CardReader)
+		if err != nil {
+			return app.StationConfig{}, err
+		}
+	}
+
 	return r.StationConfig(id)
 }
 

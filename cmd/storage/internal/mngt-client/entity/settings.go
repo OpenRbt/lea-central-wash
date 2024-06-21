@@ -2,6 +2,7 @@ package mngt_entity
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
@@ -677,33 +678,55 @@ type Button struct {
 }
 
 type StationUpdate struct {
-	ID           int      `json:"id"`
-	Name         *string  `json:"name,omitempty"`
-	PreflightSec *int     `json:"preflightSec,omitempty"`
-	RelayBoard   *string  `json:"relayBoard,omitempty"`
-	Buttons      []Button `json:"buttons,omitempty"`
+	ID           int         `json:"id"`
+	Name         *string     `json:"name,omitempty"`
+	PreflightSec *int        `json:"preflightSec,omitempty"`
+	RelayBoard   *string     `json:"relayBoard,omitempty"`
+	Buttons      []Button    `json:"buttons,omitempty"`
+	CardReader   *CardReader `json:"cardReader,omitempty"`
 }
 
 type Station struct {
-	ID           int      `json:"id"`
-	Name         string   `json:"name"`
-	PreflightSec int      `json:"preflightSec"`
-	RelayBoard   string   `json:"relayBoard"`
-	Buttons      []Button `json:"buttons"`
-	Version      int      `json:"version"`
-	Deleted      bool     `json:"deleted"`
+	ID           int        `json:"id"`
+	Name         string     `json:"name"`
+	PreflightSec int        `json:"preflightSec"`
+	RelayBoard   string     `json:"relayBoard"`
+	Buttons      []Button   `json:"buttons"`
+	Version      int        `json:"version"`
+	Deleted      bool       `json:"deleted"`
+	CardReader   CardReader `json:"cardReader"`
 }
 
-func StationUpdateToApp(station StationUpdate) app.StationUpdate {
+type CardReader struct {
+	Type string  `json:"type"`
+	Host *string `json:"host,omitempty"`
+	Port *int    `json:"port,omitempty"`
+}
+
+func StationUpdateToApp(station StationUpdate) (app.StationUpdate, error) {
+	var cardReader *app.CardReaderConfig = nil
+	if station.CardReader != nil {
+		cr, err := CardReaderToApp(*station.CardReader, station.ID)
+		if err != nil {
+			return app.StationUpdate{}, err
+		}
+		cardReader = app.Ptr(cr)
+	}
 	return app.StationUpdate{
 		Name:         station.Name,
 		PreflightSec: station.PreflightSec,
 		RelayBoard:   station.RelayBoard,
 		Buttons:      ButtonsToApp(station.Buttons),
-	}
+		CardReader:   cardReader,
+	}, nil
 }
 
-func StationToRabbit(station app.StationConfig) Station {
+func StationToRabbit(station app.StationConfig) (Station, error) {
+	cr, err := CardReaderToRabbit(station.CardReader)
+	if err != nil {
+		return Station{}, nil
+	}
+
 	return Station{
 		ID:           int(station.ID),
 		Name:         station.Name,
@@ -712,7 +735,56 @@ func StationToRabbit(station app.StationConfig) Station {
 		Buttons:      ButtonsToRabbit(station.Programs),
 		Version:      station.Version,
 		Deleted:      station.Deleted,
+		CardReader:   cr,
+	}, nil
+}
+
+func CardReaderToRabbit(cardReader app.CardReaderConfig) (CardReader, error) {
+	var port *int
+	if cardReader.Port != "" {
+		p, err := strconv.Atoi(cardReader.Port)
+		if err != nil {
+			return CardReader{}, err
+		}
+		port = &p
 	}
+	var host *string
+	if cardReader.Host != "" {
+		host = &cardReader.Host
+	}
+
+	t, err := rabbitCardReaderType(cardReader.CardReaderType)
+	if err != nil {
+		return CardReader{}, err
+	}
+
+	return CardReader{
+		Type: t,
+		Host: host,
+		Port: port,
+	}, nil
+}
+
+func CardReaderToApp(cardReader CardReader, stationID int) (app.CardReaderConfig, error) {
+	var host string
+	var port string
+	if cardReader.Host != nil {
+		host = *cardReader.Host
+	}
+	if cardReader.Port != nil {
+		port = fmt.Sprintf("%d", *cardReader.Port)
+	}
+	t, err := appCardReaderType(cardReader.Type)
+	if err != nil {
+		return app.CardReaderConfig{}, err
+	}
+
+	return app.CardReaderConfig{
+		StationID:      app.StationID(stationID),
+		CardReaderType: t,
+		Host:           host,
+		Port:           port,
+	}, err
 }
 
 func ButtonToRabbit(programs app.Program) Button {
@@ -743,4 +815,30 @@ func ButtonsToApp(programs []Button) []app.StationProgram {
 		buttons = append(buttons, ButtonToApp(v))
 	}
 	return buttons
+}
+
+func appCardReaderType(cardReader string) (string, error) {
+	switch cardReader {
+	case "paymentWorld":
+		return "PAYMENT_WORLD", nil
+	case "notUsed":
+		return "NOT_USED", nil
+	case "vendotek":
+		return "VENDOTEK", nil
+	default:
+		return "", fmt.Errorf("%w: unknown card reader: %s", app.ErrWrongParameter, cardReader)
+	}
+}
+
+func rabbitCardReaderType(cardReader string) (string, error) {
+	switch cardReader {
+	case "PAYMENT_WORLD":
+		return "paymentWorld", nil
+	case "NOT_USED":
+		return "notUsed", nil
+	case "VENDOTEK":
+		return "vendotek", nil
+	default:
+		return "", fmt.Errorf("%w: unknown card reader: %s", app.ErrWrongParameter, cardReader)
+	}
 }

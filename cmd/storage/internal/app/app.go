@@ -176,7 +176,7 @@ type (
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
 		CardReaderConfig(StationID) (*CardReaderConfig, error)
-		SetCardReaderConfig(CardReaderConfig) error
+		SetCardReaderConfig(context.Context, CardReaderConfig) error
 
 		RunProgram(id StationID, programID int64, preflight bool) (err error)
 		Run2Program(id StationID, programID int64, programID2 int64, preflight bool) (err error)
@@ -684,6 +684,7 @@ type StationConfig struct {
 	RelayBoard   string
 	LastUpdate   int
 	Programs     []Program
+	CardReader   CardReaderConfig
 	Version      int
 	Deleted      bool
 }
@@ -693,6 +694,7 @@ type StationUpdate struct {
 	PreflightSec *int
 	RelayBoard   *string
 	Buttons      []StationProgram
+	CardReader   *CardReaderConfig
 }
 
 type SessionsRequest struct {

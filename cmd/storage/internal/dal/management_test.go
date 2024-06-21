@@ -581,7 +581,14 @@ func TestNotSendedStations(t *testing.T) {
 		err := testRepo.AddStation(fmt.Sprintf("Station%d", i))
 		assert.NilError(t, err)
 
-		testRepo.SetStationProgram(app.StationID(i), []app.StationProgram{{ButtonID: 1, ProgramID: 1}, {ButtonID: 2, ProgramID: 2}})
+		err = testRepo.SetStationProgram(app.StationID(i), []app.StationProgram{{ButtonID: 1, ProgramID: 1}, {ButtonID: 2, ProgramID: 2}})
+		assert.NilError(t, err)
+
+		err = testRepo.SetCardReaderConfig(app.CardReaderConfig{
+			StationID:      app.StationID(i),
+			CardReaderType: "PAYMENT_WORLD",
+		})
+		assert.NilError(t, err)
 
 		s, err := testRepo.StationConfig(app.StationID(i))
 		assert.NilError(t, err)
