@@ -754,8 +754,20 @@ func (a *app) SetKasse(kasse Kasse) (err error) {
 func (a *app) CardReaderConfig(stationID StationID) (*CardReaderConfig, error) {
 	return a.repo.CardReaderConfig(stationID)
 }
-func (a *app) SetCardReaderConfig(cfg CardReaderConfig) error {
-	return a.repo.SetCardReaderConfig(cfg)
+func (a *app) SetCardReaderConfig(ctx context.Context, cfg CardReaderConfig) error {
+	err := a.repo.SetCardReaderConfig(cfg)
+	if err != nil {
+		return err
+	}
+
+	err = a.repo.StationUpVersion(ctx, cfg.StationID)
+	if err != nil {
+		return err
+	}
+
+	a.sendManagementSyncSignal()
+
+	return nil
 }
 
 func (a *app) Station(id StationID) (SetStation, error) {

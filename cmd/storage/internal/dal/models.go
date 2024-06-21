@@ -148,6 +148,10 @@ func appStationConfig(p []resStationConfig) (res app.StationConfig) {
 	res.RelayBoard = p[0].RelayBoard
 	res.Version = p[0].Version
 	res.Deleted = p[0].Deleted
+	res.CardReader.StationID = p[0].ID
+	res.CardReader.CardReaderType = p[0].CardReaderType
+	res.CardReader.Host = p[0].Host
+	res.CardReader.Port = p[0].Port
 
 	for i := range p {
 		res.Programs = append(res.Programs, app.Program{

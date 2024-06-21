@@ -262,6 +262,9 @@ const (
 			s.relay_board,
 			s.deleted,
 			s.version,
+			cr.card_reader_type,
+			cr.host,
+			cr.port,
 			b.button_id,
 			b.program_id,
 			p.price,
@@ -273,6 +276,7 @@ const (
 			p.preflight_motor_speed_percent,
 			p.is_finishing_program
 	FROM station s
+		join card_reader cr on cr.station_id = s.id
 		join station_program b on s.id=b.station_id
 		join program p on b.program_id=p.id
 	WHERE NOT s.management_sended

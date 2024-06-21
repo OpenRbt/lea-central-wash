@@ -104,9 +104,23 @@ func (s *Service) handleLeaStationUpdating(ctx context.Context, d amqp.Delivery)
 		}
 		return err
 	}
+	rpcResponse := mngt_entity.RPCResponse{}
+	stationUpdate, err := mngt_entity.StationUpdateToApp(args)
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+		return s.sendMessageHandleErrors(rpcResponse, d)
+	}
 
-	station, err := s.app.StationUpdateForManagement(ctx, app.StationID(args.ID), mngt_entity.StationUpdateToApp(args))
-	rpcResponse := mngt_entity.RPCResponse{Data: mngt_entity.StationToRabbit(station)}
+	station, err := s.app.StationUpdateForManagement(ctx, app.StationID(args.ID), stationUpdate)
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+		return s.sendMessageHandleErrors(rpcResponse, d)
+	}
+
+	stationModel, err := mngt_entity.StationToRabbit(station)
+	rpcResponse.Data = stationModel
 	if err != nil {
 		s.setLastErr(err.Error())
 		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
@@ -125,8 +139,16 @@ func (s *Service) handleLeaStationGetting(ctx context.Context, d amqp.Delivery) 
 		return err
 	}
 
+	rpcResponse := mngt_entity.RPCResponse{}
 	station, err := s.app.StationGetForManagement(ctx, app.StationID(args.ID))
-	rpcResponse := mngt_entity.RPCResponse{Data: mngt_entity.StationToRabbit(station)}
+	if err != nil {
+		s.setLastErr(err.Error())
+		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
+		return s.sendMessageHandleErrors(rpcResponse, d)
+	}
+
+	stationModel, err := mngt_entity.StationToRabbit(station)
+	rpcResponse.Data = stationModel
 	if err != nil {
 		s.setLastErr(err.Error())
 		rpcResponse.Error = mngt_entity.ErrorToRPCError(err)
@@ -780,7 +802,12 @@ func (s *Service) SendTask(task app.Task) error {
 }
 
 func (s *Service) SendStation(station app.StationConfig) error {
-	err := s.sendMessage(mngt_entity.StationToRabbit(station), mngt_entity.ManagementStationMessageType)
+	stationModel, err := mngt_entity.StationToRabbit(station)
+	if err != nil {
+		s.setLastErr(err.Error())
+		return err
+	}
+	err = s.sendMessage(stationModel, mngt_entity.ManagementStationMessageType)
 	if err != nil {
 		s.setLastErr(err.Error())
 	}
