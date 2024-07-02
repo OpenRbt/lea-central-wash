@@ -1224,7 +1224,13 @@ func (a *app) runUpdate(task Task) {
 
 	_, err = io.Copy(pwRemoteFile, pwFile)
 	if err != nil {
-		a.handleTaskErr(task, fmt.Sprintf("Error coping file %s to %s: %s", pwRemotePath, pwPath, err.Error()))
+		a.handleTaskErr(task, fmt.Sprintf("Error coping file %s to %s: %s", pwPath, pwRemotePath, err.Error()))
+		return
+	}
+
+	err = sftpClient.Chmod(pwRemotePath, os.ModePerm)
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error when changing file %s permissions: %s", pwRemotePath, err.Error()))
 		return
 	}
 
@@ -1246,7 +1252,7 @@ func (a *app) runUpdate(task Task) {
 
 	_, err = io.Copy(pwcRemoteFile, pwcFile)
 	if err != nil {
-		a.handleTaskErr(task, fmt.Sprintf("Error coping file %s to %s: %s", pwcRemotePath, pwcPath, err.Error()))
+		a.handleTaskErr(task, fmt.Sprintf("Error coping file %s to %s: %s", pwcPath, pwcRemotePath, err.Error()))
 		return
 	}
 
