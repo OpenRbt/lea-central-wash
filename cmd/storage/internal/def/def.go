@@ -81,6 +81,8 @@ var (
 	KeySSHPath      = strGetEnv("STORAGE_KEY_SSH_PATH", "./ssh/id_rsa")
 	UserSSH         = strGetEnv("STORAGE_USER_SSH", "pi")
 	StationsDirPath = strGetEnv("STORAGE_STATIONS_DIR_PATH", "./stations")
+
+	MetricsPort = intGetEnv("METRICS_PORT", 2113)
 )
 
 var initErr error

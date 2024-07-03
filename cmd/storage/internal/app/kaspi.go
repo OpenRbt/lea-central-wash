@@ -110,6 +110,7 @@ func (a *app) kaspiPay(cmd Command) {
 	check := a.kaspiCheck(cmd)
 	if check.Status != LeaStatusOk {
 		a.kaspiSvc.SendAnswer(check)
+		return
 	}
 	err := a.kaspiSvc.SendAnswer(KaspiAnswer{
 		MessageID: cmd.MessageID,

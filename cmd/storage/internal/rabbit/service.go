@@ -112,6 +112,8 @@ func (s *Service) SendMessage(msg interface{}, service rabbit_vo.Service, routin
 		)
 		if err != nil {
 			s.setLastErr(err.Error())
+		} else {
+			Metric.PublicationsTotal.WithLabelValues(string(messageType)).Inc()
 		}
 		return err
 	default:

@@ -60,9 +60,8 @@ func New(db *sqlx.DB, maintenanceDB *sqlx.DB) *repo {
 }
 
 func (r *repo) tx(ctx Ctx, opts *sql.TxOptions, f func(*sqlxx.Tx) error) (err error) {
-	pc, _, _, _ := runtime.Caller(2)
-	names := strings.Split(runtime.FuncForPC(pc).Name(), ".")
-	methodName := names[len(names)-1]
+	methodName, methodDone := methodMetrics(1)
+	defer methodDone(&err)
 	return pqx.Serialize(func() error {
 		tx, err := r.db.BeginTxx(ctx, opts)
 		if err == nil {

@@ -843,6 +843,8 @@ func (s *Service) sendMessage(msg interface{}, messageType app.RabbitMessageType
 		return err
 	}
 
+	Metric.PublicationsTotal.WithLabelValues(messageType.String()).Inc()
+
 	select {
 	case <-time.After(time.Second * 10):
 		return app.ErrSendTimeout
@@ -908,6 +910,8 @@ func (s *Service) sendMessageByCorrelationID(msg interface{}, replyTo string, co
 	if err != nil {
 		return fmt.Errorf("failed to publish message: %w", err)
 	}
+
+	Metric.PublicationsTotal.WithLabelValues("by_correlation_id").Inc()
 
 	select {
 	case <-time.After(5 * time.Second):

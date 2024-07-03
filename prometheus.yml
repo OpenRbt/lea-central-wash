@@ -1,0 +1,7 @@
+scrape_configs:
+  - job_name: 'storage'
+    static_configs:
+      - targets: ['storage:2113']
+  - job_name: 'hal'
+    static_configs:
+      - targets: ['hal:2112']
