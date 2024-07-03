@@ -21,6 +21,8 @@ func init() { testinit.Setup(1, setup) }
 
 func setup() {
 	def.Init()
+	def.InitMetrics("test")
+	InitMetrics("test")
 }
 
 func mustParseTime(t string) time.Time {

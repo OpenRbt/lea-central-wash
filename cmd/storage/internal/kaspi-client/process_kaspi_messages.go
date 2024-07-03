@@ -195,6 +195,8 @@ func (s *Service) sendMessage(msg interface{}, messageType Message, routingKey R
 		return err
 	}
 
+	Metric.PublicationsTotal.WithLabelValues(string(messageType)).Inc()
+
 	select {
 	case <-time.After(time.Second * 5):
 		s.sbpClientPub.Nack(dConfirmation.DeliveryTag, false, false)

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
+	"net/http"
 	"os"
 	"os/user"
 	"path"
@@ -13,6 +14,10 @@ import (
 	"time"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/vo"
+	"github.com/OpenRbt/lea-central-wash/storageapi/restapi"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit"
 
@@ -60,6 +65,7 @@ var (
 	// set by ./build
 	gitVersion    string
 	gitBranch     string
+	gitDate       string
 	gitRevision   string
 	buildDate     string
 	useMemDB      bool
@@ -70,21 +76,22 @@ var (
 	ver = strings.Join(strings.Fields(strings.Join([]string{gitVersion, gitBranch, gitRevision, buildDate}, " ")), " ")
 	log = structlog.New()
 	cfg struct {
-		version     bool
-		logLevel    string
-		db          pqx.Config
-		goose       string
-		gooseDir    string
-		extapi      extapi.Config
-		kasse       svckasse.Config
-		rabbit      rabbit.Config
-		sbp         sbpConfig
-		storage     app.AppConfig
-		hal         hal.Config
-		testBoards  bool
-		mngtConfig  mngt.RabbitConfig
-		kaspiConfig kaspi.RabbitConfig
-		postControl app.PostControlConfig
+		version       bool
+		logLevel      string
+		db            pqx.Config
+		goose         string
+		gooseDir      string
+		extapi        extapi.Config
+		kasse         svckasse.Config
+		rabbit        rabbit.Config
+		sbp           sbpConfig
+		storage       app.AppConfig
+		hal           hal.Config
+		testBoards    bool
+		mngtConfig    mngt.RabbitConfig
+		kaspiConfig   kaspi.RabbitConfig
+		postControl   app.PostControlConfig
+		metricsConfig metricsConfig
 	}
 )
 
@@ -100,6 +107,10 @@ type (
 
 		PaymentExpirationPeriod       time.Duration
 		PaymentConfirmationPingPeriod time.Duration
+	}
+
+	metricsConfig struct {
+		Port int
 	}
 )
 
@@ -154,6 +165,8 @@ func init() { //nolint:gochecknoinits
 	flag.StringVar(&cfg.postControl.StationsDirPath, "postcontrol.stationsDirPath", def.StationsDirPath, "Path to the posts firmware directory")
 	flag.StringVar(&cfg.postControl.UserSSH, "postcontrol.userSSH", def.UserSSH, "Username for connecting via ssh")
 
+	flag.IntVar(&cfg.metricsConfig.Port, "metricsConfig.Port", def.MetricsPort, "Port for metrics server")
+
 	// sbp
 	readSbpConfigFromFlag()
 
@@ -168,6 +181,15 @@ func init() { //nolint:gochecknoinits
 	log.SetDefaultKeyvals(
 		structlog.KeyUnit, "main",
 	)
+
+	initMetrics("storage")
+	def.InitMetrics("storage")
+	extapi.InitMetrics("storage", restapi.FlatSwaggerJSON)
+	dal.InitMetrics("storage")
+	rabbit.InitMetrics("storage")
+	sbpclient.InitMetrics("storage")
+	mngt.InitMetrics("storage")
+	kaspi.InitMetrics("storage")
 }
 
 func main() { //nolint:gocyclo
@@ -248,10 +270,34 @@ func main() { //nolint:gocyclo
 	}
 	errc := make(chan error)
 	go run(db, serviceDB, errc)
+	go serveMetrics(errc)
 	if err := <-errc; err != nil {
 		log.Fatal(err)
 	}
 	log.Info("finished", "version", ver)
+}
+
+func initMetrics(namespace string) {
+	promauto.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Namespace: namespace,
+			Name:      "build_info",
+			Help:      "A metric with a constant '1' value labeled by build-time details.",
+		},
+		[]string{"version", "branch", "revision", "date", "build_date", "goversion"},
+	).With(prometheus.Labels{
+		"version":    gitVersion,
+		"branch":     gitBranch,
+		"revision":   gitRevision,
+		"date":       gitDate,
+		"build_date": buildDate,
+		"goversion":  runtime.Version(),
+	}).Set(1)
+	promauto.NewCounter(prometheus.CounterOpts{
+		Namespace: namespace,
+		Name:      "app_start",
+		Help:      "Stores information about the number of application starts",
+	}).Inc()
 }
 
 func connectDB(ctx context.Context, timeout time.Duration, idleTimeout time.Duration) (*sqlx.DB, error) {
@@ -303,6 +349,16 @@ func applyMigrations(db *sqlx.DB) error {
 
 	return nil
 
+}
+
+func serveMetrics(errc chan<- error) {
+	http.Handle("/metrics", promhttp.Handler())
+	metricSrv := &http.Server{
+		Addr: fmt.Sprintf(":%d", cfg.metricsConfig.Port),
+	}
+	log.Info("serve Prometheus metrics", def.LogHost, def.LogPort, cfg.metricsConfig.Port)
+
+	errc <- metricSrv.ListenAndServe()
 }
 
 func run(db *sqlx.DB, maintenanceDBConn *sqlx.DB, errc chan<- error) {
