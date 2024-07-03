@@ -166,11 +166,13 @@ func (a *app) startManagementSync() {
 }
 
 func (a *app) syncLeaSettings() {
+	a.syncUnsentStations()
 	a.syncUnsentPrograms()
 	a.syncUnsentAdvertisingCampaigns()
 	a.syncUnsentOpenwashingLogs()
 	a.syncUnsentConfigs()
 	a.syncUnsentUsers()
+	a.syncUnsentTasks()
 }
 
 func (a *app) syncUnsentPrograms() {
@@ -256,6 +258,50 @@ func (a *app) syncUnsentUsers() {
 		err = a.repo.MarkUserSended(context.TODO(), user.Login)
 		if err != nil {
 			log.Err("unable to mark user as sended", "err", err)
+			continue
+		}
+	}
+}
+
+func (a *app) syncUnsentTasks() {
+	tasks, err := a.repo.NotSendedTasks(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent tasks", "err", err)
+		return
+	}
+
+	for _, task := range tasks {
+		err := a.mngtSvc.SendTask(task)
+		if err != nil {
+			log.Err("unable to send task to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkTaskSended(context.TODO(), task.ID)
+		if err != nil {
+			log.Err("unable to mark task as sended", "err", err)
+			continue
+		}
+	}
+}
+
+func (a *app) syncUnsentStations() {
+	stations, err := a.repo.NotSendedStations(context.TODO())
+	if err != nil {
+		log.Err("unable to get unsent stations", "err", err)
+		return
+	}
+
+	for _, station := range stations {
+		err := a.mngtSvc.SendStation(station)
+		if err != nil {
+			log.Err("unable to send station to management", "err", err)
+			continue
+		}
+
+		err = a.repo.MarkStationSended(context.TODO(), station.ID)
+		if err != nil {
+			log.Err("unable to mark station as sended", "err", err)
 			continue
 		}
 	}

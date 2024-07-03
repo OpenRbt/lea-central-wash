@@ -336,6 +336,7 @@ type Task struct {
 	CreatedAt  time.Time
 	StartedAt  *time.Time
 	StoppedAt  *time.Time
+	Version    int
 }
 
 type CreateTask struct {

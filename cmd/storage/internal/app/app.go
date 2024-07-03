@@ -140,8 +140,8 @@ type (
 		RelayReportCurrent(auth *Auth, id *StationID) (StationsStat, error)
 
 		StatusReport(bool) StatusReport
-		SetStation(station SetStation) error
-		DelStation(id StationID) error
+		SetStation(ctx context.Context, station SetStation) error
+		DelStation(ctx context.Context, id StationID) error
 		StationReportDates(id StationID, startDate, endDate time.Time) (MoneyReport, RelayReport, error)
 		StationReportCurrentMoney(id StationID) (MoneyReport, RelayReport, error)
 		CollectionReports(id StationID, startDate, endDate *time.Time) (reports []CollectionReportWithUser, err error)
@@ -157,7 +157,7 @@ type (
 		MarkProgramSended(ctx context.Context, id int64) error
 
 		StationProgram(StationID) ([]StationProgram, error)
-		SetStationProgram(StationID, []StationProgram) error
+		SetStationProgram(context.Context, StationID, []StationProgram) error
 		StationConfig(StationID) (StationConfig, error)
 
 		Users(ctx context.Context, auth *Auth) (users []User, err error)
@@ -176,7 +176,7 @@ type (
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
 		CardReaderConfig(StationID) (*CardReaderConfig, error)
-		SetCardReaderConfig(CardReaderConfig) error
+		SetCardReaderConfig(context.Context, CardReaderConfig) error
 
 		RunProgram(id StationID, programID int64, preflight bool) (err error)
 		Run2Program(id StationID, programID int64, programID2 int64, preflight bool) (err error)
@@ -264,15 +264,22 @@ type (
 		GetVersions(stationID StationID) ([]FirmwareVersion, error)
 		GetListTasks(filter TaskFilter) (Page[Task], error)
 		GetTask(id int) (Task, error)
-		DeleteTask(id int) error
-		DeleteTasks() error
 		CreateTask(createTask CreateTask) (Task, error)
+		GetTasksForManagement(ctx context.Context, filter TaskFilter) (Page[Task], error)
+		GetTaskByIdForManagement(ctx context.Context, id int) (Task, error)
+		CreateTaskForManagement(ctx context.Context, createTask CreateTask) (Task, error)
+		CopyFirmwareForManagement(ctx context.Context, stationID StationID, copyToID StationID) error
+		GetVersionBufferedForManagement(ctx context.Context, stationID StationID) (FirmwareVersion, error)
+		GetVersionsForManagement(ctx context.Context, stationID StationID) ([]FirmwareVersion, error)
 		GetListBuildScripts() ([]BuildScript, error)
 		GetBuildScript(id StationID) (BuildScript, error)
 		SetBuildScript(setBuildScript SetBuildScript) (BuildScript, error)
 		DeleteBuildScript(id StationID) error
 		CopyFirmware(stationID StationID, copyToID StationID) error
 		GetVersionBuffered(stationID StationID) (FirmwareVersion, error)
+
+		StationUpdateForManagement(ctx context.Context, id StationID, station StationUpdate) (StationConfig, error)
+		StationGetForManagement(ctx context.Context, id StationID) (StationConfig, error)
 
 		AddOpenwashingLog(log OpenwashingLogCreate) (OpenwashingLog, error)
 	}
@@ -321,6 +328,7 @@ type (
 		SetStationProgram(StationID, []StationProgram) error
 		StationConfig(StationID) (StationConfig, error)
 		Station(StationID) (SetStation, error)
+		StationUpdate(context.Context, StationID, StationUpdate) (StationConfig, error)
 
 		Kasse() (kasse Kasse, err error)
 		SetKasse(kasse Kasse) (err error)
@@ -403,7 +411,11 @@ type (
 		GetTask(id int) (Task, error)
 		CreateTask(createTask CreateTask) (Task, error)
 		UpdateTask(id int, updateTask UpdateTask) (Task, error)
-		DeleteTask(id int) error
+		NotSendedTasks(ctx context.Context) ([]Task, error)
+		MarkTaskSended(ctx context.Context, id int) error
+		NotSendedStations(ctx context.Context) ([]StationConfig, error)
+		MarkStationSended(ctx context.Context, id StationID) error
+		StationUpVersion(ctx context.Context, id StationID) error
 
 		CreateOpenwashingLog(model OpenwashingLogCreate) (OpenwashingLog, error)
 		NotSendedOpenwashingLogs(ctx context.Context) ([]OpenwashingLog, error)
@@ -457,6 +469,8 @@ type (
 		SendStationConfigString(StationConfigVar[string]) error
 		SendStationConfigInt(StationConfigVar[int64]) error
 		SendUser(User) error
+		SendTask(Task) error
+		SendStation(StationConfig) error
 	}
 	management struct {
 		syncChannel chan struct{}
@@ -670,6 +684,17 @@ type StationConfig struct {
 	RelayBoard   string
 	LastUpdate   int
 	Programs     []Program
+	CardReader   CardReaderConfig
+	Version      int
+	Deleted      bool
+}
+
+type StationUpdate struct {
+	Name         *string
+	PreflightSec *int
+	RelayBoard   *string
+	Buttons      []StationProgram
+	CardReader   *CardReaderConfig
 }
 
 type SessionsRequest struct {

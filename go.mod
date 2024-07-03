@@ -13,7 +13,7 @@ require (
 	github.com/go-openapi/validate v0.22.6
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.3
-	github.com/google/go-cmp v0.5.9
+	github.com/google/go-cmp v0.6.0
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lib/pq v1.10.9
@@ -28,7 +28,7 @@ require (
 	github.com/powerman/sqlxx v0.2.0
 	github.com/powerman/structlog v0.7.3
 	github.com/pressly/goose v2.7.0+incompatible
-	github.com/prometheus/client_golang v1.18.0
+	github.com/prometheus/client_golang v1.19.1
 	github.com/rabbitmq/amqp091-go v1.9.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/shopspring/decimal v1.3.1
@@ -38,7 +38,7 @@ require (
 	golang.org/x/crypto v0.18.0
 	golang.org/x/net v0.20.0
 	google.golang.org/grpc v1.60.1
-	google.golang.org/protobuf v1.32.0
+	google.golang.org/protobuf v1.33.0
 )
 
 require (
@@ -77,6 +77,7 @@ require (
 	github.com/ettle/strcase v0.1.1 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/fatih/structtag v1.2.0 // indirect
+	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/fzipp/gocyclo v0.3.1 // indirect
 	github.com/go-critic/go-critic v0.5.6 // indirect
@@ -144,7 +145,6 @@ require (
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/mattn/goveralls v0.0.9 // indirect
-	github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0 // indirect
 	github.com/mbilski/exhaustivestruct v1.2.0 // indirect
 	github.com/mgechev/dots v0.0.0-20190921121421-c36f7dcfbb81 // indirect
 	github.com/mgechev/revive v1.0.6 // indirect
@@ -171,7 +171,7 @@ require (
 	github.com/powerman/goose v2.7.0-rc4.0.20200329145851-5c15923690fa+incompatible // indirect
 	github.com/powerman/tail v0.1.0 // indirect
 	github.com/prometheus/client_model v0.5.0 // indirect
-	github.com/prometheus/common v0.45.0 // indirect
+	github.com/prometheus/common v0.48.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/quasilyte/go-ruleguard v0.3.4 // indirect
 	github.com/quasilyte/regex/syntax v0.0.0-20200407221936-30656e2c4a95 // indirect
@@ -204,10 +204,9 @@ require (
 	github.com/uudashr/gocognit v1.0.1 // indirect
 	github.com/yeya24/promlinter v0.1.0 // indirect
 	go.mongodb.org/mongo-driver v1.13.1 // indirect
-	go.uber.org/mock v0.4.0 // indirect
 	golang.org/x/mod v0.11.0 // indirect
 	golang.org/x/sync v0.4.0 // indirect
-	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/sys v0.17.0 // indirect
 	golang.org/x/term v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/tools v0.9.3 // indirect
@@ -224,4 +223,7 @@ require (
 	mvdan.cc/unparam v0.0.0-20230312165513-e84e2d14e3b8 // indirect
 )
 
-require gotest.tools/v3 v3.5.1
+require (
+	go.uber.org/mock v0.4.0
+	gotest.tools/v3 v3.5.1
+)

@@ -230,6 +230,58 @@ const (
 	FROM users
 	WHERE NOT management_sended
 	`
+	sqlMarkTaskSended = `
+	UPDATE tasks
+	SET management_sended = true
+	WHERE id = :id
+	`
+	sqlNotSendedTasks = `
+	SELECT 	id,
+			station_id,
+			version_id,
+			type,
+			status,
+			retry_count,
+			error,
+			created_at,
+			started_at,
+			stopped_at,
+			version
+	FROM tasks
+	WHERE NOT management_sended
+	`
+	sqlMarkStationSended = `
+	UPDATE station
+	SET management_sended = true
+	WHERE id = :id
+	`
+	sqlNotSendedStations = `
+	select 	s.id,
+			s.name,
+			s.preflight_sec,
+			s.relay_board,
+			s.deleted,
+			s.version,
+			cr.card_reader_type,
+			cr.host,
+			cr.port,
+			b.button_id,
+			b.program_id,
+			p.price,
+			p.name as "program_name",
+			p.preflight_enabled,
+			p.relays,
+			p.preflight_relays,
+			p.motor_speed_percent,
+			p.preflight_motor_speed_percent,
+			p.is_finishing_program
+	FROM station s
+		join card_reader cr on cr.station_id = s.id
+		join station_program b on s.id=b.station_id
+		join program p on b.program_id=p.id
+	WHERE NOT s.management_sended
+	order by s.id, b.button_id
+	`
 	sqlMarkUserSended = `
 	UPDATE users
 	SET management_sended = true

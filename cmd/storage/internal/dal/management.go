@@ -319,6 +319,72 @@ func (r *repo) MarkUserSended(ctx context.Context, login string) error {
 	})
 }
 
+func (r *repo) NotSendedTasks(ctx context.Context) ([]app.Task, error) {
+	var respTasks []resTask
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		return tx.SelectContext(ctx, &respTasks, sqlNotSendedTasks)
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return appTasks(respTasks), nil
+}
+
+func (r *repo) MarkTaskSended(ctx context.Context, id int) error {
+	return r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExecContext(ctx, sqlMarkTaskSended, argID[int]{
+			ID: id,
+		})
+
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
+		}
+
+		return err
+	})
+}
+
+func (r *repo) NotSendedStations(ctx context.Context) ([]app.StationConfig, error) {
+	var respTasks []resStationConfig
+	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		return tx.SelectContext(ctx, &respTasks, sqlNotSendedStations)
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return appStationConfigs(respTasks), nil
+}
+
+func (r *repo) MarkStationSended(ctx context.Context, id app.StationID) error {
+	return r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExecContext(ctx, sqlMarkStationSended, argID[int]{
+			ID: int(id),
+		})
+
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
+		}
+
+		return err
+	})
+}
+
+func (r *repo) StationUpVersion(ctx context.Context, id app.StationID) error {
+	return r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		_, err := tx.NamedExecContext(ctx, sqlStationUpVersion, argID[int]{
+			ID: int(id),
+		})
+
+		if errors.Is(err, sql.ErrNoRows) {
+			err = app.ErrNotFound
+		}
+
+		return err
+	})
+}
+
 func (r *repo) UpsertAdvertisingCampaignFromManagement(ctx context.Context, advert app.ManagementAdvertisingCampaign) (app.AdvertisingCampaign, error) {
 	var resAdvert resAdvertisingCampaign
 	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {

@@ -1,6 +1,8 @@
 package mngt_entity
 
 import (
+	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
@@ -468,4 +470,375 @@ func UserFilterToApp(filter UserFilter) app.UserFilter {
 type AddServiceAmount struct {
 	StationID int `json:"stationId"`
 	Amount    int `json:"amount"`
+}
+
+type Task struct {
+	ID         int        `json:"id"`
+	StationID  int        `json:"stationId"`
+	VersionID  *int       `json:"versionId,omitempty"`
+	Type       string     `json:"type"`
+	Status     string     `json:"status"`
+	RetryCount int        `json:"retryCount"`
+	Error      *string    `json:"error,omitempty"`
+	CreatedAt  time.Time  `json:"createdAt"`
+	StartedAt  *time.Time `json:"startedAt,omitempty"`
+	StoppedAt  *time.Time `json:"stoppedAt,omitempty"`
+	Version    int        `json:"version"`
+}
+
+type CreateTask struct {
+	StationID int    `json:"stationId"`
+	VersionID *int   `json:"versionId,omitempty"`
+	Type      string `json:"type"`
+}
+
+type TaskFilter struct {
+	Pagination
+	StationsID []int    `json:"stationsId,omitempty"`
+	Statuses   []string `json:"statuses,omitempty"`
+	Types      []string `json:"types,omitempty"`
+	Sort       *string  `json:"sort,omitempty"`
+}
+
+type CopyBufferedFirmware struct {
+	StationID       int `json:"stationId"`
+	CopyToStationID int `json:"copyToStationId"`
+}
+
+func CreateTaskToApp(task CreateTask) (app.CreateTask, error) {
+	taskType, err := TaskTypeToApp(task.Type)
+	if err != nil {
+		return app.CreateTask{}, err
+	}
+	return app.CreateTask{
+		StationID: app.StationID(task.StationID),
+		VersionID: task.VersionID,
+		Type:      taskType,
+	}, nil
+}
+
+func TaskFilterToApp(flter TaskFilter) (app.TaskFilter, error) {
+	var taskTypes []app.TaskType = nil
+	for _, v := range flter.Types {
+		t, err := TaskTypeToApp(v)
+		if err != nil {
+			return app.TaskFilter{}, err
+		}
+		taskTypes = append(taskTypes, t)
+	}
+
+	var taskStatuses []app.TaskStatus = nil
+	for _, v := range flter.Statuses {
+		s, err := TaskStatusToApp(v)
+		if err != nil {
+			return app.TaskFilter{}, err
+		}
+		taskStatuses = append(taskStatuses, s)
+	}
+
+	var stationsID []app.StationID = nil
+	for _, v := range flter.StationsID {
+		stationsID = append(stationsID, app.StationID(v))
+	}
+
+	var sort *app.TaskSort = nil
+	if flter.Sort != nil {
+		s, err := TaskSortToApp(*flter.Sort)
+		if err != nil {
+			return app.TaskFilter{}, err
+		}
+		sort = &s
+	}
+
+	return app.TaskFilter{
+		Pagination: PaginationToApp(flter.Pagination),
+		Types:      taskTypes,
+		StationsID: stationsID,
+		Statuses:   taskStatuses,
+		Sort:       sort,
+	}, nil
+}
+
+func TaskToRabbit(task app.Task) Task {
+	return Task{
+		ID:         task.ID,
+		StationID:  int(task.StationID),
+		VersionID:  task.VersionID,
+		Type:       string(task.Type),
+		Status:     string(task.Status),
+		RetryCount: task.RetryCount,
+		Error:      task.Error,
+		CreatedAt:  task.CreatedAt,
+		StartedAt:  task.StartedAt,
+		StoppedAt:  task.StoppedAt,
+		Version:    task.Version,
+	}
+}
+
+func TaskPageToRabbit(page app.Page[app.Task]) Page[Task] {
+	return Page[Task]{
+		Items:      TasksToRabbit(page.Items),
+		Page:       page.Page,
+		PageSize:   page.PageSize,
+		TotalPages: page.TotalPages,
+		TotalCount: page.TotalCount,
+	}
+}
+
+func TasksToRabbit(tasks []app.Task) []Task {
+	l := []Task{}
+	for _, v := range tasks {
+		l = append(l, TaskToRabbit(v))
+	}
+	return l
+}
+
+func TaskTypeToApp(taskType string) (app.TaskType, error) {
+	switch taskType {
+	case string(app.BuildTaskType):
+		return app.BuildTaskType, nil
+	case string(app.GetVersionsTaskType):
+		return app.GetVersionsTaskType, nil
+	case string(app.PullFirmwareTaskType):
+		return app.PullFirmwareTaskType, nil
+	case string(app.RebootTaskType):
+		return app.RebootTaskType, nil
+	case string(app.SetVersionTaskType):
+		return app.SetVersionTaskType, nil
+	case string(app.UpdateTaskType):
+		return app.UpdateTaskType, nil
+	default:
+		return app.TaskType(""), fmt.Errorf("%w: unknown task type: %s", app.ErrWrongParameter, taskType)
+	}
+}
+
+func TaskStatusToApp(status string) (app.TaskStatus, error) {
+	switch status {
+	case string(app.QueueTaskStatus):
+		return app.QueueTaskStatus, nil
+	case string(app.StartedTaskStatus):
+		return app.StartedTaskStatus, nil
+	case string(app.CompletedTaskStatus):
+		return app.CompletedTaskStatus, nil
+	case string(app.ErrorTaskStatus):
+		return app.ErrorTaskStatus, nil
+	case string(app.CanceledTaskStatus):
+		return app.CanceledTaskStatus, nil
+	default:
+		return app.TaskStatus(""), fmt.Errorf("%w: unknown task status: %s", app.ErrWrongParameter, status)
+	}
+}
+
+func TaskSortToApp(sort string) (app.TaskSort, error) {
+	switch sort {
+	case string(app.CreatedAtAscTaskSort):
+		return app.CreatedAtAscTaskSort, nil
+	case string(app.CreatedAtDescTaskSort):
+		return app.CreatedAtDescTaskSort, nil
+	default:
+		return app.TaskSort(""), fmt.Errorf("%w: unknown task sort: %s", app.ErrWrongParameter, sort)
+	}
+}
+
+type FirmwareVersion struct {
+	ID         int       `json:"id"`
+	StationID  int       `json:"stationId"`
+	IsCurrent  bool      `json:"isCurrent"`
+	HashLua    string    `json:"hashLua"`
+	HashEnv    string    `json:"hashEnv"`
+	HashBinar  string    `json:"hashBinar"`
+	BuiltAt    time.Time `json:"builtAt"`
+	CommitedAt time.Time `json:"commitedAt"`
+}
+
+func FirmwareVersionToRabbit(version app.FirmwareVersion, stationID int) FirmwareVersion {
+	return FirmwareVersion{
+		ID:         version.ID,
+		StationID:  stationID,
+		IsCurrent:  version.IsCurrent,
+		HashLua:    version.HashLua,
+		HashEnv:    version.HashEnv,
+		HashBinar:  version.HashBinar,
+		BuiltAt:    version.BuiltAt,
+		CommitedAt: version.CommitedAt,
+	}
+}
+
+func FirmwareVersionsToRabbit(versions []app.FirmwareVersion, stationID int) []FirmwareVersion {
+	l := []FirmwareVersion{}
+	for _, v := range versions {
+		l = append(l, FirmwareVersionToRabbit(v, stationID))
+	}
+	return l
+}
+
+type Button struct {
+	ID        int `json:"id"`
+	ProgramID int `json:"programId"`
+}
+
+type StationUpdate struct {
+	ID           int         `json:"id"`
+	Name         *string     `json:"name,omitempty"`
+	PreflightSec *int        `json:"preflightSec,omitempty"`
+	RelayBoard   *string     `json:"relayBoard,omitempty"`
+	Buttons      []Button    `json:"buttons,omitempty"`
+	CardReader   *CardReader `json:"cardReader,omitempty"`
+}
+
+type Station struct {
+	ID           int        `json:"id"`
+	Name         string     `json:"name"`
+	PreflightSec int        `json:"preflightSec"`
+	RelayBoard   string     `json:"relayBoard"`
+	Buttons      []Button   `json:"buttons"`
+	Version      int        `json:"version"`
+	Deleted      bool       `json:"deleted"`
+	CardReader   CardReader `json:"cardReader"`
+}
+
+type CardReader struct {
+	Type string  `json:"type"`
+	Host *string `json:"host,omitempty"`
+	Port *int    `json:"port,omitempty"`
+}
+
+func StationUpdateToApp(station StationUpdate) (app.StationUpdate, error) {
+	var cardReader *app.CardReaderConfig = nil
+	if station.CardReader != nil {
+		cr, err := CardReaderToApp(*station.CardReader, station.ID)
+		if err != nil {
+			return app.StationUpdate{}, err
+		}
+		cardReader = app.Ptr(cr)
+	}
+	return app.StationUpdate{
+		Name:         station.Name,
+		PreflightSec: station.PreflightSec,
+		RelayBoard:   station.RelayBoard,
+		Buttons:      ButtonsToApp(station.Buttons),
+		CardReader:   cardReader,
+	}, nil
+}
+
+func StationToRabbit(station app.StationConfig) (Station, error) {
+	cr, err := CardReaderToRabbit(station.CardReader)
+	if err != nil {
+		return Station{}, nil
+	}
+
+	return Station{
+		ID:           int(station.ID),
+		Name:         station.Name,
+		PreflightSec: station.PreflightSec,
+		RelayBoard:   station.RelayBoard,
+		Buttons:      ButtonsToRabbit(station.Programs),
+		Version:      station.Version,
+		Deleted:      station.Deleted,
+		CardReader:   cr,
+	}, nil
+}
+
+func CardReaderToRabbit(cardReader app.CardReaderConfig) (CardReader, error) {
+	var port *int
+	if cardReader.Port != "" {
+		p, err := strconv.Atoi(cardReader.Port)
+		if err != nil {
+			return CardReader{}, err
+		}
+		port = &p
+	}
+	var host *string
+	if cardReader.Host != "" {
+		host = &cardReader.Host
+	}
+
+	t, err := rabbitCardReaderType(cardReader.CardReaderType)
+	if err != nil {
+		return CardReader{}, err
+	}
+
+	return CardReader{
+		Type: t,
+		Host: host,
+		Port: port,
+	}, nil
+}
+
+func CardReaderToApp(cardReader CardReader, stationID int) (app.CardReaderConfig, error) {
+	var host string
+	var port string
+	if cardReader.Host != nil {
+		host = *cardReader.Host
+	}
+	if cardReader.Port != nil {
+		port = fmt.Sprintf("%d", *cardReader.Port)
+	}
+	t, err := appCardReaderType(cardReader.Type)
+	if err != nil {
+		return app.CardReaderConfig{}, err
+	}
+
+	return app.CardReaderConfig{
+		StationID:      app.StationID(stationID),
+		CardReaderType: t,
+		Host:           host,
+		Port:           port,
+	}, err
+}
+
+func ButtonToRabbit(programs app.Program) Button {
+	return Button{
+		ID:        programs.ButtonID,
+		ProgramID: int(programs.ID),
+	}
+}
+
+func ButtonToApp(button Button) app.StationProgram {
+	return app.StationProgram{
+		ButtonID:  button.ID,
+		ProgramID: button.ProgramID,
+	}
+}
+
+func ButtonsToRabbit(programs []app.Program) []Button {
+	buttons := []Button{}
+	for _, v := range programs {
+		buttons = append(buttons, ButtonToRabbit(v))
+	}
+	return buttons
+}
+
+func ButtonsToApp(programs []Button) []app.StationProgram {
+	buttons := []app.StationProgram{}
+	for _, v := range programs {
+		buttons = append(buttons, ButtonToApp(v))
+	}
+	return buttons
+}
+
+func appCardReaderType(cardReader string) (string, error) {
+	switch cardReader {
+	case "paymentWorld":
+		return "PAYMENT_WORLD", nil
+	case "notUsed":
+		return "NOT_USED", nil
+	case "vendotek":
+		return "VENDOTEK", nil
+	default:
+		return "", fmt.Errorf("%w: unknown card reader: %s", app.ErrWrongParameter, cardReader)
+	}
+}
+
+func rabbitCardReaderType(cardReader string) (string, error) {
+	switch cardReader {
+	case "PAYMENT_WORLD":
+		return "paymentWorld", nil
+	case "NOT_USED":
+		return "notUsed", nil
+	case "VENDOTEK":
+		return "vendotek", nil
+	default:
+		return "", fmt.Errorf("%w: unknown card reader: %s", app.ErrWrongParameter, cardReader)
+	}
 }

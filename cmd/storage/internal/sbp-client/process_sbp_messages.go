@@ -189,6 +189,9 @@ func (s *Service) sendMessage(msg interface{}, messageType rabbit_vo.MessageType
 	if err != nil {
 		return err
 	}
+
+	Metric.PublicationsTotal.WithLabelValues(string(messageType)).Inc()
+
 	select {
 	case <-time.After(time.Second * 10):
 		return app.ErrSendTimeout

@@ -152,6 +152,7 @@ func (s *Service) setLastErr(err string) {
 	s.dateLastErr = &t
 	s.lastErr = err
 	s.statusMu.Unlock()
+	Metric.ErrsTotal.Inc()
 }
 
 // Close re-conn attempts
@@ -233,6 +234,7 @@ func (s *Service) recon() {
 func (s *Service) addReconnect() {
 	v := atomic.LoadInt64(&s.reconnectCount)
 	atomic.StoreInt64(&s.reconnectCount, v+1)
+	Metric.ReconnectTotal.Inc()
 }
 
 func (s *Service) connect() error {
@@ -324,11 +326,17 @@ func (s *Service) handlerGoroutine(consumer *amqp.Channel, msgs <-chan amqp.Deli
 		if consumer.IsClosed() {
 			break
 		}
+
+		t := time.Now()
+
 		err := handler(msg)
 		if err != nil {
 			s.log.PrintErr("handlerGoroutine", "err", err)
+			Metric.DeliveriesErrsTotal.WithLabelValues(msg.Type).Inc()
 		}
 
+		Metric.DeliveriesDuration.WithLabelValues(msg.Type).Observe(time.Since(t).Seconds())
+		Metric.DeliveriesTotal.WithLabelValues(msg.Type).Inc()
 	}
 	s.log.Info("rabbit consumer goroutine closed")
 }

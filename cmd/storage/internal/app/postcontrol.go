@@ -54,6 +54,14 @@ func (a *app) GetVersionBuffered(stationID StationID) (FirmwareVersion, error) {
 		return FirmwareVersion{}, err
 	}
 
+	_, err = os.Stat(path.Join(a.postControlConfig.StationsDirPath, fmt.Sprint(stationID)))
+	if err != nil && !os.IsNotExist(err) {
+		return FirmwareVersion{}, err
+	}
+	if os.IsNotExist(err) {
+		return FirmwareVersion{}, ErrStationDirectoryNotExist
+	}
+
 	file, err := os.Open(path.Join(a.postControlConfig.StationsDirPath, fmt.Sprint(stationID), versionName))
 	if err != nil && !os.IsNotExist(err) {
 		return FirmwareVersion{}, err
@@ -257,50 +265,6 @@ func (a *app) GetTask(id int) (Task, error) {
 	return task, nil
 }
 
-func (a *app) DeleteTask(id int) error {
-	task, err := a.repo.GetTask(id)
-	if err != nil {
-		return err
-	}
-
-	if task.Status == StartedTaskStatus {
-		return ErrTaskStarted
-	}
-
-	return a.repo.DeleteTask(id)
-}
-
-func (a *app) DeleteTasks() error {
-	page := int64(1)
-	for {
-		tasks, _, err := a.repo.GetListTasks(TaskFilter{
-			Pagination: Pagination{
-				Page:     page,
-				PageSize: 100,
-			},
-			Statuses: []TaskStatus{ErrorTaskStatus, CompletedTaskStatus, CanceledTaskStatus},
-		})
-		if err != nil {
-			return err
-		}
-
-		if len(tasks) == 0 {
-			break
-		}
-
-		for _, v := range tasks {
-			err = a.repo.DeleteTask(v.ID)
-			if err != nil {
-				return err
-			}
-		}
-
-		page++
-	}
-
-	return nil
-}
-
 func (a *app) CreateTask(createTask CreateTask) (Task, error) {
 	a.stationsMutex.RLock()
 	defer a.stationsMutex.RUnlock()
@@ -318,6 +282,8 @@ func (a *app) CreateTask(createTask CreateTask) (Task, error) {
 	if err != nil {
 		return Task{}, err
 	}
+
+	a.sendManagementSyncSignal()
 
 	return task, nil
 }
@@ -655,22 +621,22 @@ func (a *app) runBuild(task Task) {
 	}
 
 	if os.IsNotExist(err) {
-		_, err = runRemoteCommand(client, cloneRepositoryOwCommand)
+		result, err = runRemoteCommand(client, cloneRepositoryOwCommand)
 		if err != nil {
-			a.handleTaskErr(task, fmt.Sprintf("Error cloning repository: %s", err.Error()))
+			a.handleTaskErr(task, fmt.Sprintf("Error cloning repository: %s. Result: %s", err.Error(), string(result)))
 			return
 		}
 	} else {
-		_, err = runRemoteCommand(client, pullRepositoryOwCommand)
+		result, err = runRemoteCommand(client, pullRepositoryOwCommand)
 		if err != nil {
-			a.handleTaskErr(task, fmt.Sprintf("Error pulling repository: %s", err.Error()))
+			a.handleTaskErr(task, fmt.Sprintf("Error pulling repository: %s. Result: %s", err.Error(), string(result)))
 			return
 		}
 	}
 
-	_, err = runRemoteCommand(client, makeBinarOwCommand)
+	result, err = runRemoteCommand(client, makeBinarOwCommand)
 	if err != nil {
-		a.handleTaskErr(task, fmt.Sprintf("Error making: %s", err.Error()))
+		a.handleTaskErr(task, fmt.Sprintf("Error making: %s. Result: %s", err.Error(), string(result)))
 		return
 	}
 
@@ -866,6 +832,7 @@ func (a *app) runGetVersions(task Task) {
 
 	var client *ssh.Client
 
+	retryCount := 0
 	for {
 		client, err = sshClient(a.postControlConfig.KeySSHPath, a.postControlConfig.UserSSH, ip)
 		if err == nil {
@@ -883,7 +850,12 @@ func (a *app) runGetVersions(task Task) {
 			return
 		}
 
-		time.Sleep(time.Second * 5)
+		if retryCount < 10 {
+			retryCount++
+			time.Sleep(time.Second * 10)
+		} else {
+			time.Sleep(time.Second * 60)
+		}
 	}
 
 	defer client.Close()
@@ -1252,7 +1224,13 @@ func (a *app) runUpdate(task Task) {
 
 	_, err = io.Copy(pwRemoteFile, pwFile)
 	if err != nil {
-		a.handleTaskErr(task, fmt.Sprintf("Error coping file %s to %s: %s", pwRemotePath, pwPath, err.Error()))
+		a.handleTaskErr(task, fmt.Sprintf("Error coping file %s to %s: %s", pwPath, pwRemotePath, err.Error()))
+		return
+	}
+
+	err = sftpClient.Chmod(pwRemotePath, os.ModePerm)
+	if err != nil {
+		a.handleTaskErr(task, fmt.Sprintf("Error when changing file %s permissions: %s", pwRemotePath, err.Error()))
 		return
 	}
 
@@ -1274,14 +1252,14 @@ func (a *app) runUpdate(task Task) {
 
 	_, err = io.Copy(pwcRemoteFile, pwcFile)
 	if err != nil {
-		a.handleTaskErr(task, fmt.Sprintf("Error coping file %s to %s: %s", pwcRemotePath, pwcPath, err.Error()))
+		a.handleTaskErr(task, fmt.Sprintf("Error coping file %s to %s: %s", pwcPath, pwcRemotePath, err.Error()))
 		return
 	}
 
 	linkPath := path.Join(homeOwPath, currentWashName)
-	_, err = runRemoteCommand(client, fmt.Sprintf(cleateLink, washDir, linkPath))
+	result, err := runRemoteCommand(client, fmt.Sprintf(cleateLink, washDir, linkPath))
 	if err != nil {
-		a.handleTaskErr(task, fmt.Sprintf("Error creating link: %s", err.Error()))
+		a.handleTaskErr(task, fmt.Sprintf("Error creating link: %s. Result: %s", err.Error(), string(result)))
 		return
 	}
 
@@ -1346,9 +1324,9 @@ func (a *app) runReboot(task Task) {
 	}
 	defer client.Close()
 
-	_, err = runRemoteCommand(client, rebootOwCommand)
+	result, err := runRemoteCommand(client, rebootOwCommand)
 	if err != nil {
-		a.handleTaskErr(task, fmt.Sprintf("Error executing reboot command: %s", err.Error()))
+		a.handleTaskErr(task, fmt.Sprintf("Error executing reboot command: %s. Result: %s", err.Error(), string(result)))
 		return
 	}
 
@@ -1408,9 +1386,9 @@ func (a *app) runSetVersion(task Task) {
 		return
 	}
 
-	_, err = runRemoteCommand(client, fmt.Sprintf(cleateLink, remotePath, path.Join(homeOwPath, currentWashName)))
+	result, err := runRemoteCommand(client, fmt.Sprintf(cleateLink, remotePath, path.Join(homeOwPath, currentWashName)))
 	if err != nil {
-		a.handleTaskErr(task, fmt.Sprintf("Error creating link: %s", err.Error()))
+		a.handleTaskErr(task, fmt.Sprintf("Error creating link: %s. Result: %s", err.Error(), string(result)))
 		return
 	}
 
@@ -1427,6 +1405,8 @@ func (a *app) prepareTask(task Task) (Task, string, error) {
 	if err != nil {
 		return Task{}, "", err
 	}
+
+	a.sendManagementSyncSignal()
 
 	a.stationsMutex.RLock()
 	defer a.stationsMutex.RUnlock()
@@ -1452,6 +1432,8 @@ func (a *app) addRetryTask(task Task, msg string) (Task, error) {
 		return Task{}, err
 	}
 
+	a.sendManagementSyncSignal()
+
 	return task, nil
 }
 
@@ -1465,6 +1447,8 @@ func (a *app) compliteTask(task Task) {
 	if err != nil {
 		log.PrintErr(err)
 	}
+
+	a.sendManagementSyncSignal()
 
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
@@ -1489,6 +1473,8 @@ func (a *app) handleTaskErr(task Task, msg string) {
 	if err != nil {
 		log.PrintErr(err)
 	}
+
+	a.sendManagementSyncSignal()
 
 	page := int64(1)
 	for {
@@ -1521,6 +1507,8 @@ func (a *app) handleTaskErr(task Task, msg string) {
 				log.PrintErr(err)
 			}
 		}
+
+		a.sendManagementSyncSignal()
 
 		page++
 	}

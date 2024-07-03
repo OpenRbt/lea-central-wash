@@ -3009,18 +3009,6 @@ paths:
           description: Not found
         500:
           description: Internal error
-    
-    delete:
-      operationId: "deleteTasks"
-      security:
-        - pinCode: [ ]
-      responses:
-        204:
-          description: OK
-        401:
-          description: PIN is missing or invalid
-        500:
-          description: Internal error
   
   /tasks/create-by-hash:
     post:
@@ -3059,27 +3047,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/Task'
-        401:
-          description: PIN is missing or invalid
-        404:
-          description: Not found
-        500:
-          description: Internal error
-    delete:
-      operationId: "deleteTask"
-      security:
-        - pinCode: [ ]
-      parameters:
-        - name: id
-          required: true
-          in: path
-          type: integer
-          minimum: 1
-      responses:
-        204:
-          description: OK
-        400:
-          description: Bad Request
         401:
           description: PIN is missing or invalid
         404:

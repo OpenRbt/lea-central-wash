@@ -169,30 +169,13 @@ func TestUpdateTask(tt *testing.T) {
 	task.RetryCount = retryCount
 	task.StartedAt = &startedAt
 	task.StoppedAt = &stoppedAt
+	task.Version++
 
 	updatedTask, err := testRepo.UpdateTask(task.ID, updateTask)
 	t.Nil(err)
 	t.DeepEqual(updatedTask, task)
 
 	_, err = testRepo.UpdateTask(100, updateTask)
-	t.Err(err, app.ErrNotFound)
-}
-
-func TestDeleteTask(tt *testing.T) {
-	t := check.T(tt)
-	t.Nil(testRepo.truncate())
-	addTestData(t)
-
-	task, err := testRepo.CreateTask(testCreateTask)
-	t.Nil(err)
-
-	err = testRepo.DeleteTask(task.ID)
-	t.Nil(err)
-
-	err = testRepo.DeleteTask(task.ID)
-	t.Err(err, app.ErrNotFound)
-
-	err = testRepo.DeleteTask(100)
 	t.Err(err, app.ErrNotFound)
 }
 

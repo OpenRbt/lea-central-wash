@@ -130,16 +130,6 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.DeleteBuildScriptNotImplemented()
 		})
 	}
-	if api.DeleteTaskHandler == nil {
-		api.DeleteTaskHandler = op.DeleteTaskHandlerFunc(func(params op.DeleteTaskParams, principal *storageapi.Profile) op.DeleteTaskResponder {
-			return op.DeleteTaskNotImplemented()
-		})
-	}
-	if api.DeleteTasksHandler == nil {
-		api.DeleteTasksHandler = op.DeleteTasksHandlerFunc(func(params op.DeleteTasksParams, principal *storageapi.Profile) op.DeleteTasksResponder {
-			return op.DeleteTasksNotImplemented()
-		})
-	}
 	if api.DeleteUserHandler == nil {
 		api.DeleteUserHandler = op.DeleteUserHandlerFunc(func(params op.DeleteUserParams, principal *storageapi.Profile) op.DeleteUserResponder {
 			return op.DeleteUserNotImplemented()

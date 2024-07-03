@@ -1,6 +1,7 @@
 package extapi
 
 import (
+	"net/http"
 	"sync"
 	"time"
 
@@ -167,8 +168,6 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.GetListTasksHandler = op.GetListTasksHandlerFunc(svc.getListTasks)
 	api.CreateTaskHandler = op.CreateTaskHandlerFunc(svc.createTask)
 	api.CreateTaskByHashHandler = op.CreateTaskByHashHandlerFunc(svc.createTaskByHash)
-	api.DeleteTaskHandler = op.DeleteTaskHandlerFunc(svc.deleteTask)
-	api.DeleteTasksHandler = op.DeleteTasksHandlerFunc(svc.deleteTasks)
 	api.DeleteBuildScriptHandler = op.DeleteBuildScriptHandlerFunc(svc.deleteBuildScript)
 	api.GetBuildScriptHandler = op.GetBuildScriptHandlerFunc(svc.getBuildScript)
 	api.GetListBuildScriptsHandler = op.GetListBuildScriptsHandlerFunc(svc.getListBuildScripts)
@@ -188,6 +187,17 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	server.CleanupTimeout = time.Second * time.Duration(cfg.CleanupTimeout)
 	server.ReadTimeout = time.Second * time.Duration(cfg.ReadTimeout)
 	server.WriteTimeout = time.Second * time.Duration(cfg.WriteTimeout)
+
+	globalMiddlewares := func(handler http.Handler) http.Handler {
+		accesslog := makeAccessLog(cfg.BasePath)
+		return recovery(accesslog(handler))
+	}
+	middlewares := func(handler http.Handler) http.Handler {
+		return handler
+	}
+
+	server.SetHandler(globalMiddlewares(api.Serve(middlewares)))
+
 	svc.unknownHash = map[string]time.Time{}
 	err = svc.loadHash()
 	if err != nil {

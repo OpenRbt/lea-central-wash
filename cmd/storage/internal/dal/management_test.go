@@ -1,6 +1,7 @@
 package dal
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -524,4 +525,97 @@ func TestNotSendedUsers(t *testing.T) {
 	notSendedUsers, err = testRepo.NotSendedUsers(ctx)
 	assert.NilError(t, err)
 	assert.DeepEqual(t, notSendedUsers, users)
+}
+
+func TestNotSendedTasks(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+	tt := check.T(t)
+	addTestData(tt)
+
+	createTasks := []app.CreateTask{
+		{StationID: 1, Type: app.BuildTaskType},
+		{StationID: 1, Type: app.UpdateTaskType},
+		{StationID: 1, Type: app.PullFirmwareTaskType},
+	}
+	tasks := []app.Task{}
+
+	for _, task := range createTasks {
+		task, err := testRepo.CreateTask(task)
+		assert.NilError(t, err)
+
+		tasks = append(tasks, task)
+	}
+
+	err := testRepo.MarkTaskSended(ctx, tasks[2].ID)
+	assert.NilError(t, err)
+
+	notSendedTasks, err := testRepo.NotSendedTasks(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedTasks, tasks[:2])
+
+	cTemp := tasks[2]
+	cTemp.Version++
+	cTemp.RetryCount = 1
+	tasks[2] = cTemp
+
+	updatedTask, err := testRepo.UpdateTask(tasks[2].ID, app.UpdateTask{RetryCount: &cTemp.RetryCount})
+	assert.NilError(t, err)
+	assert.DeepEqual(t, updatedTask, cTemp)
+
+	notSendedTasks, err = testRepo.NotSendedTasks(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedTasks, tasks)
+}
+
+func TestNotSendedStations(t *testing.T) {
+	assert.NilError(t, testRepo.truncate())
+
+	_, err := testRepo.SetProgram(ctx, testProgram1)
+	assert.NilError(t, err)
+
+	_, err = testRepo.SetProgram(ctx, testProgram2)
+	assert.NilError(t, err)
+
+	stations := []app.StationConfig{}
+	for i := 1; i < 4; i++ {
+		err := testRepo.AddStation(fmt.Sprintf("Station%d", i))
+		assert.NilError(t, err)
+
+		err = testRepo.SetStationProgram(app.StationID(i), []app.StationProgram{{ButtonID: 1, ProgramID: 1}, {ButtonID: 2, ProgramID: 2}})
+		assert.NilError(t, err)
+
+		err = testRepo.SetCardReaderConfig(app.CardReaderConfig{
+			StationID:      app.StationID(i),
+			CardReaderType: "PAYMENT_WORLD",
+		})
+		assert.NilError(t, err)
+
+		s, err := testRepo.StationConfig(app.StationID(i))
+		assert.NilError(t, err)
+		stations = append(stations, s)
+	}
+
+	err = testRepo.MarkStationSended(ctx, stations[2].ID)
+	assert.NilError(t, err)
+
+	notSendedStations, err := testRepo.NotSendedStations(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedStations, stations[:2], cmpopts.SortSlices(func(i, j app.StationConfig) bool {
+		return i.ID > j.ID
+	}))
+
+	cTemp := stations[2]
+	cTemp.Version++
+	cTemp.Name = "new name"
+	stations[2] = cTemp
+
+	updatedTask, err := testRepo.StationUpdate(ctx, stations[2].ID, app.StationUpdate{Name: &cTemp.Name})
+	assert.NilError(t, err)
+	assert.DeepEqual(t, updatedTask, cTemp)
+
+	notSendedStations, err = testRepo.NotSendedStations(ctx)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, notSendedStations, stations, cmpopts.SortSlices(func(i, j app.StationConfig) bool {
+		return i.ID > j.ID
+	}))
 }
