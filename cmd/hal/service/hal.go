@@ -850,9 +850,14 @@ func NewHardwareAccessLayer(newMetrics app.HardwareMetrics) (app.HardwareAccessL
 		portRev2Board: make(map[string]*Rev2Board),
 		hwMetrics:     newMetrics,
 	}
-	model := rs485.FreqGenModelESQ500
-	if strings.ToLower(os.Getenv("ESQ_MODEL")) == "ae200h" {
+	var model rs485.FreqGenModel
+	switch strings.ToLower(os.Getenv("ESQ_MODEL")) {
+	case "ae200h":
 		model = rs485.FreqGenModelAE200H
+	case "esq770":
+		model = rs485.FreqGenModelESQ770
+	default:
+		model = rs485.FreqGenModelESQ500
 	}
 	res.motorManager = *rs485.NewMotorManager(context.Background(), newMetrics, res, time.Second*10, model)
 	return res, nil

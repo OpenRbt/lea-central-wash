@@ -1,4 +1,4 @@
-package esq500
+package esq770
 
 import (
 	"errors"
@@ -61,7 +61,7 @@ type Ans struct {
 }
 
 func (f *FrequencyGenerator) MaxSpeed(deviceID uint8) (uint16, error) {
-	addr := uint16(0x010b)
+	addr := uint16(0x0004)
 	return f.Read16bit(deviceID, addr)
 }
 
@@ -111,7 +111,7 @@ func (f *FrequencyGenerator) SetSpeedPercent(deviceID uint8, percent int16) erro
 
 	fmt.Printf("final value %d percent, low %d, high %d\n", percent, LowVal, HighVal)
 	time.Sleep(f.coolTime)
-	err := f.client.WriteRegister(0x1e01, realValue)
+	err := f.client.WriteRegister(0x3000, realValue)
 	if err == modbus.ErrRequestTimedOut {
 		fmt.Printf("%s: id:%d, driver: cant set speed %+v\n", f.portName, deviceID, err)
 		return err
@@ -126,7 +126,7 @@ func (f *FrequencyGenerator) GetSpeedPercent(deviceID uint8) (int16, error) {
 		return 0, fmt.Errorf("can't divide to zero nominal speed %+w", ErrNominalSpeed)
 	}
 	time.Sleep(f.coolTime)
-	res, err := f.Read16bit(deviceID, 0x1e01)
+	res, err := f.Read16bit(deviceID, 0x1101)
 
 	if err != nil {
 		return 0, err
@@ -144,10 +144,10 @@ func (f *FrequencyGenerator) Temperature(device uint8) (float32, error) {
 func (f *FrequencyGenerator) StartMotor(deviceID uint8) error {
 	f.modbusMutex.Lock()
 	defer f.modbusMutex.Unlock()
-	addr := uint16(0x1e00)
+	addr := uint16(0x2000)
 	f.client.SetUnitId(deviceID)
 	time.Sleep(f.coolTime)
-	err := f.client.WriteRegister(addr, 0x5)
+	err := f.client.WriteRegister(addr, 0x1)
 
 	if err == modbus.ErrRequestTimedOut {
 		fmt.Printf("%s: id:%d, driver: cant start %+v\n", f.portName, deviceID, err)
@@ -161,9 +161,9 @@ func (f *FrequencyGenerator) StopMotor(deviceID uint8) error {
 	f.modbusMutex.Lock()
 	defer f.modbusMutex.Unlock()
 	f.client.SetUnitId(deviceID)
-	addr := uint16(0x1e00)
+	addr := uint16(0x2000)
 	time.Sleep(f.coolTime)
-	err := f.client.WriteRegister(addr, 0x6)
+	err := f.client.WriteRegister(addr, 0x5)
 	if err == modbus.ErrRequestTimedOut {
 		fmt.Printf("%s: id:%d, driver: cant stop %+v\n", f.portName, deviceID, err)
 		return err
