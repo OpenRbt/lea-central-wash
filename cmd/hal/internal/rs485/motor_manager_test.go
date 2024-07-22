@@ -8,15 +8,17 @@ import (
 	"testing"
 	"time"
 
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/app"
 	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/rs485/modbusae200h"
 	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/rs485/requester"
+	"github.com/OpenRbt/lea-central-wash/cmd/hal/internal/rs485/rsutil"
 )
 
 func TestMotorManagerWorking(t *testing.T) {
 	motor := requester.NewDummyMotor(5000, 6000)
 	ctx, cancel := context.WithCancel(context.Background())
 	portReporter := &requester.DummyPortReporter{}
-	manager := NewMotorManager(ctx, portReporter, time.Millisecond*300)
+	manager := NewMotorManager(ctx, app.HardwareMetrics{}, portReporter, time.Millisecond*300, FreqGenModelESQ770)
 	sequenceRequester := requester.NewSequenceRequester(ctx, motor)
 	manager.AddSequenceRequester(sequenceRequester)
 	err := manager.Run()
@@ -51,7 +53,7 @@ func TestMotorManagerWorkingWithCancel(t *testing.T) {
 	motor := requester.NewDummyMotor(5000, 6000)
 	ctx, cancel := context.WithCancel(context.Background())
 	portReporter := &requester.DummyPortReporter{}
-	manager := NewMotorManager(ctx, portReporter, time.Millisecond*300)
+	manager := NewMotorManager(ctx, app.HardwareMetrics{}, portReporter, time.Millisecond*300, FreqGenModelESQ770)
 	sequenceRequester := requester.NewSequenceRequester(ctx, motor)
 	manager.AddSequenceRequester(sequenceRequester)
 	err := manager.Run()
@@ -74,14 +76,15 @@ func TestMotorManagerWorkingWithCancel(t *testing.T) {
 }
 
 func TestMotorManagerReal(t *testing.T) {
-	motor, err := modbusae200h.NewFrequencyGenerator("tty.usbserial-10", 9600, 5000)
+	cfg := rsutil.NewRS485Config("tty.usbserial-10", 9600, 5000)
+	motor, err := modbusae200h.NewFrequencyGenerator(cfg)
 	if err != nil {
 		t.Errorf("cant create motor %v", err)
 		return
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	portReporter := &requester.DummyPortReporter{}
-	manager := NewMotorManager(ctx, portReporter, time.Millisecond*300)
+	manager := NewMotorManager(ctx, app.HardwareMetrics{}, portReporter, time.Millisecond*300, FreqGenModelESQ770)
 	sequenceRequester := requester.NewSequenceRequester(ctx, motor)
 	manager.AddSequenceRequester(sequenceRequester)
 	devices := manager.collectInfoIteration()
