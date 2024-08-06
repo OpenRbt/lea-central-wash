@@ -2870,6 +2870,9 @@ func init() {
               "$ref": "#/definitions/FirmwareVersion"
             }
           },
+          "400": {
+            "description": "Bad Request"
+          },
           "401": {
             "description": "PIN is missing or invalid"
           },
@@ -7586,6 +7589,9 @@ func init() {
             "schema": {
               "$ref": "#/definitions/FirmwareVersion"
             }
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "401": {
             "description": "PIN is missing or invalid"
