@@ -1,7 +1,6 @@
 package extapi
 
 import (
-	"fmt"
 	"net"
 	"net/http"
 	"strconv"
@@ -55,16 +54,11 @@ func makeAccessLog(basePath string) middlewareFunc {
 				l[resourceLabel] = "/" + l[resourceLabel]
 			}
 
-			fmt.Println(l[resourceLabel])
-			fmt.Println(l[methodLabel])
-			fmt.Println(l[codeLabel])
 			metric.reqTotal.With(l).Inc()
 			metric.reqDuration.With(l).Observe(m.Duration.Seconds())
 
 			log := structlog.FromContext(r.Context(), nil)
-			if m.Code < 500 {
-				log.Info("handled", def.LogHTTPStatus, m.Code)
-			} else {
+			if m.Code >= 500 {
 				log.PrintErr("failed to handle", def.LogHTTPStatus, m.Code)
 			}
 		})

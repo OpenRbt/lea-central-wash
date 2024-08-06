@@ -1304,6 +1304,8 @@ func (svc *service) getVersionBuffered(params op.GetStationFirmwareVersionBuffer
 		return op.NewGetStationFirmwareVersionBufferedOK().WithPayload(apiFirmwareVersion(&v))
 	case app.ErrNotFound:
 		return op.NewGetStationFirmwareVersionBufferedNotFound()
+	case app.ErrStationDirectoryNotExist:
+		return op.NewGetStationFirmwareVersionBufferedBadRequest()
 	default:
 		log.PrintErr(err)
 		return op.NewGetStationFirmwareVersionBufferedInternalServerError()
