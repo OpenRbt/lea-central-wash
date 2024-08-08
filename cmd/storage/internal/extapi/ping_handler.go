@@ -23,7 +23,12 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		})
 	}
 
-	station, bonusActive := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP)
+	justTurnedOn := false
+	if params.Args.JustTurnedOn != nil {
+		justTurnedOn = *params.Args.JustTurnedOn
+	}
+
+	station, bonusActive := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP, justTurnedOn)
 
 	var lastPayment app.Payment
 

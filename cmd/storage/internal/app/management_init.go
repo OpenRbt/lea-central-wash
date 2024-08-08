@@ -138,7 +138,7 @@ func (a *app) sendStatus() {
 		panic("managementSvc == nil")
 	}
 
-	r := a.StatusReport(true)
+	r := a.StatusReport(true, true)
 	err := a.mngtSvc.SendStatus(r, true)
 	if err != nil {
 		log.Err("sendStatus", "err", err)
@@ -146,7 +146,7 @@ func (a *app) sendStatus() {
 	time.Sleep(time.Second * 15)
 
 	for {
-		r := a.StatusReport(true)
+		r := a.StatusReport(true, true)
 		err := a.mngtSvc.SendStatus(r, false)
 		if err != nil {
 			log.Err("sendStatus", "err", err)

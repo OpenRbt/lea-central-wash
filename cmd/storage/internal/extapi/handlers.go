@@ -240,7 +240,7 @@ func (svc *service) info(params op.InfoParams) op.InfoResponder {
 
 func (svc *service) status(params op.StatusParams) op.StatusResponder {
 	//log.Info("status", "ip", params.HTTPRequest.RemoteAddr)
-	report := svc.app.StatusReport(false)
+	report := svc.app.StatusReport(false, false)
 	return op.NewStatusOK().WithPayload(svc.apiStatusReport(report))
 }
 
