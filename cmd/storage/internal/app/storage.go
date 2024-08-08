@@ -130,7 +130,7 @@ func (a *app) Set(station StationData) error {
 }
 
 // Ping sets the time of the last ping and returns service money.
-func (a *app) Ping(id StationID, balance, program int, stationIP string) (StationData, bool) {
+func (a *app) Ping(id StationID, balance, program int, stationIP string, justTurnedOn bool) (StationData, bool) {
 	a.stationsMutex.RLock()
 	var station StationData
 	if v, ok := a.stations[id]; ok {
@@ -149,6 +149,7 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string) (Statio
 	station.CurrentProgram = program
 	station.ButtonID = 0
 	station.IP = stationIP
+	station.JustTurnedOn = justTurnedOn || oldStation.JustTurnedOn
 	station.RunProgram = oldStation.RunProgram
 	if oldStation.CurrentProgram != station.CurrentProgram {
 		station.RunProgram = time.Now()
@@ -551,7 +552,7 @@ func (a *app) RelayReportCurrent(auth *Auth, id *StationID) (StationsStat, error
 	return a.repo.RelayReportCurrent(id)
 }
 
-func (a *app) StatusReport(onlyActive bool) StatusReport {
+func (a *app) StatusReport(onlyActive bool, offJustTurnedOn bool) StatusReport {
 	report := StatusReport{
 		LCWInfo: a.repo.Info(),
 	}
@@ -582,7 +583,7 @@ func (a *app) StatusReport(onlyActive bool) StatusReport {
 
 	a.stationsMutex.RLock()
 	defer a.stationsMutex.RUnlock()
-	for _, v := range a.stations {
+	for k, v := range a.stations {
 		if onlyActive && !v.IsActive {
 			continue
 		}
@@ -604,7 +605,13 @@ func (a *app) StatusReport(onlyActive bool) StatusReport {
 			ProgramName:    programName,
 			IP:             v.IP,
 			Version:        v.CurrentVersions,
+			JustTurnedOn:   v.JustTurnedOn,
 		})
+
+		if v.JustTurnedOn && offJustTurnedOn {
+			v.JustTurnedOn = false
+			a.stations[k] = v
+		}
 	}
 	return report
 }

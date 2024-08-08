@@ -78,6 +78,9 @@ type PingBody struct {
 	// hash
 	// Required: true
 	Hash *model.Hash `json:"hash"`
+
+	// just turned on
+	JustTurnedOn *bool `json:"justTurnedOn,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
@@ -93,6 +96,9 @@ func (o *PingBody) UnmarshalJSON(data []byte) error {
 		// hash
 		// Required: true
 		Hash *model.Hash `json:"hash"`
+
+		// just turned on
+		JustTurnedOn *bool `json:"justTurnedOn,omitempty"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -104,6 +110,7 @@ func (o *PingBody) UnmarshalJSON(data []byte) error {
 	o.CurrentBalance = props.CurrentBalance
 	o.CurrentProgram = props.CurrentProgram
 	o.Hash = props.Hash
+	o.JustTurnedOn = props.JustTurnedOn
 	return nil
 }
 

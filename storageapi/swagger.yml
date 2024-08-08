@@ -1823,6 +1823,9 @@ paths:
                 type: integer
               currentProgram:
                 type: integer
+              justTurnedOn:
+                type: boolean
+                default: false
       responses:
         200:
           description: OK

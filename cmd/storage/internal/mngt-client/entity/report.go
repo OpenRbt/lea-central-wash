@@ -64,6 +64,7 @@ type StationStatus struct {
 	CurrentProgram int
 	ProgramName    string
 	IP             string
+	JustTurnedOn   bool
 }
 
 type ServiceStatus struct {

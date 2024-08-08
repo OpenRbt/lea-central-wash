@@ -969,6 +969,7 @@ func msgStationStatus(v app.StationStatus) mngt_entity.StationStatus {
 		CurrentProgram: v.CurrentProgram,
 		ProgramName:    v.ProgramName,
 		IP:             v.IP,
+		JustTurnedOn:   v.JustTurnedOn,
 	}
 }
 

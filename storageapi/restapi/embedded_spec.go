@@ -1446,6 +1446,10 @@ func init() {
                 },
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "justTurnedOn": {
+                  "type": "boolean",
+                  "default": false
                 }
               }
             }
@@ -6182,6 +6186,10 @@ func init() {
                 },
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "justTurnedOn": {
+                  "type": "boolean",
+                  "default": false
                 }
               }
             }

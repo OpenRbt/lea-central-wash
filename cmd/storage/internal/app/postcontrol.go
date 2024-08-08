@@ -220,6 +220,7 @@ func (a *app) SetBuildScript(setBuildScript SetBuildScript) (BuildScript, error)
 			return BuildScript{}, err
 		}
 		setBuildScript.Commands = copyFrom.Commands
+		setBuildScript.Name = copyFrom.Name
 	}
 
 	buildScript, err := a.repo.GetBuildScriptByStationID(setBuildScript.StationID)
