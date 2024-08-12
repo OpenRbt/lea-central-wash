@@ -59,7 +59,8 @@ type RelayConfig struct {
 	// NOT MORE THAN 3600 SECONDS!!!
 	TimeoutSec int32
 	// Timings are settings for actual relays
-	Timings []Relay
+	Timings   []Relay
+	StationID int32
 }
 
 // Relay is a config for a relay
@@ -93,6 +94,7 @@ type HardwareMetrics struct {
 	RS485MotorRequestFailCounter CounterMetric
 
 	Rev2BoardReconnectCounter     CounterMetric
+	Rev2BoardRSReconnectCounter   CounterMetric
 	Rev1DispencerReconnectCounter CounterMetric
 }
 

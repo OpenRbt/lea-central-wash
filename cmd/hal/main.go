@@ -61,6 +61,11 @@ var (
 		Help: "Total number of reconnect",
 	},
 		[]string{"post_id"})
+	rev2BoardRSReconnectCounter = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "hal_rev2_board_rs_reconnect",
+		Help: "Total number of reconnect",
+	},
+		[]string{"port"})
 	rev1DispencerReconnectCounter = promauto.NewCounterVec(prometheus.CounterOpts{
 		Name: "hal_rev1_dispencer_reconnect",
 		Help: "Total number of reconnect",
@@ -80,6 +85,7 @@ func main() {
 		RS485MotorRequestCounter:      hwmetrics.NewCounterMetric(rs485MotorRequestCounter),
 		RS485MotorRequestFailCounter:  hwmetrics.NewCounterMetric(rs485MotorRequestFailCounter),
 		Rev2BoardReconnectCounter:     hwmetrics.NewCounterMetric(rev2BoardReconnectCounter),
+		Rev2BoardRSReconnectCounter:   hwmetrics.NewCounterMetric(rev2BoardRSReconnectCounter),
 		Rev1DispencerReconnectCounter: hwmetrics.NewCounterMetric(rev1DispencerReconnectCounter),
 	}
 
