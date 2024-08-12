@@ -1446,6 +1446,10 @@ func init() {
                 },
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "justTurnedOn": {
+                  "type": "boolean",
+                  "default": false
                 }
               }
             }
@@ -2869,6 +2873,9 @@ func init() {
             "schema": {
               "$ref": "#/definitions/FirmwareVersion"
             }
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "401": {
             "description": "PIN is missing or invalid"
@@ -6179,6 +6186,10 @@ func init() {
                 },
                 "hash": {
                   "$ref": "#/definitions/Hash"
+                },
+                "justTurnedOn": {
+                  "type": "boolean",
+                  "default": false
                 }
               }
             }
@@ -7586,6 +7597,9 @@ func init() {
             "schema": {
               "$ref": "#/definitions/FirmwareVersion"
             }
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "401": {
             "description": "PIN is missing or invalid"

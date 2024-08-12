@@ -61,6 +61,33 @@ func (o *GetStationFirmwareVersionBufferedOK) WriteResponse(rw http.ResponseWrit
 
 func (o *GetStationFirmwareVersionBufferedOK) GetStationFirmwareVersionBufferedResponder() {}
 
+// GetStationFirmwareVersionBufferedBadRequestCode is the HTTP code returned for type GetStationFirmwareVersionBufferedBadRequest
+const GetStationFirmwareVersionBufferedBadRequestCode int = 400
+
+/*
+GetStationFirmwareVersionBufferedBadRequest Bad Request
+
+swagger:response getStationFirmwareVersionBufferedBadRequest
+*/
+type GetStationFirmwareVersionBufferedBadRequest struct {
+}
+
+// NewGetStationFirmwareVersionBufferedBadRequest creates GetStationFirmwareVersionBufferedBadRequest with default headers values
+func NewGetStationFirmwareVersionBufferedBadRequest() *GetStationFirmwareVersionBufferedBadRequest {
+
+	return &GetStationFirmwareVersionBufferedBadRequest{}
+}
+
+// WriteResponse to the client
+func (o *GetStationFirmwareVersionBufferedBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(400)
+}
+
+func (o *GetStationFirmwareVersionBufferedBadRequest) GetStationFirmwareVersionBufferedResponder() {}
+
 // GetStationFirmwareVersionBufferedUnauthorizedCode is the HTTP code returned for type GetStationFirmwareVersionBufferedUnauthorized
 const GetStationFirmwareVersionBufferedUnauthorizedCode int = 401
 

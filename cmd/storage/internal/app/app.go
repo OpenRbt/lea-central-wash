@@ -132,14 +132,14 @@ type (
 
 		Set(station StationData) error
 		Get(stationID StationID) (StationData, error)
-		Ping(id StationID, balance, program int, stationIP string) (StationData, bool)
+		Ping(id StationID, balance, program int, stationIP string, justTurnedOn bool) (StationData, bool)
 
 		SaveMoneyReport(report MoneyReport) error
 		SaveRelayReport(report RelayReport) error
 		LoadMoneyReport(StationID) (*MoneyReport, error)
 		RelayReportCurrent(auth *Auth, id *StationID) (StationsStat, error)
 
-		StatusReport(bool) StatusReport
+		StatusReport(onlyActive bool, offJustTurnedOn bool) StatusReport
 		SetStation(ctx context.Context, station SetStation) error
 		DelStation(ctx context.Context, id StationID) error
 		StationReportDates(id StationID, startDate, endDate time.Time) (MoneyReport, RelayReport, error)
@@ -613,6 +613,7 @@ type StationStatus struct {
 	ProgramName    string
 	IP             string
 	Version        *FirmwareVersion
+	JustTurnedOn   bool
 }
 
 type StationPingStatus struct {

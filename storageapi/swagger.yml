@@ -1823,6 +1823,9 @@ paths:
                 type: integer
               currentProgram:
                 type: integer
+              justTurnedOn:
+                type: boolean
+                default: false
       responses:
         200:
           description: OK
@@ -2885,6 +2888,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/FirmwareVersion'
+        400:
+          description: Bad Request
         401:
           description: PIN is missing or invalid
         404:

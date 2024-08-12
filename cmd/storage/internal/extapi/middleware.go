@@ -59,7 +59,7 @@ func makeAccessLog(basePath string) middlewareFunc {
 
 			log := structlog.FromContext(r.Context(), nil)
 			if m.Code >= 500 {
-				log.PrintErr("failed to handle", def.LogHTTPStatus, m.Code)
+        log.PrintErr("failed to handle", "status", m.Code, "method", r.Method, "url", r.URL)
 			}
 		})
 	}
