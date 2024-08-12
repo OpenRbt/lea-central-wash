@@ -14,7 +14,6 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		log.Info("post ping: wrong address", "address", params.HTTPRequest.RemoteAddr)
 		stationIP = ""
 	}
-	//log.Info("post ping", "time", time.Now(), "hash", *params.Args.Hash, "ip", stationIP)
 	stationID, err := svc.getIDAndAddHash(string(*params.Args.Hash))
 	if err != nil {
 		log.Info("post ping: not found", "hash", params.Args.Hash, "ip", stationIP)
