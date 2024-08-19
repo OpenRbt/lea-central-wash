@@ -100,7 +100,7 @@ func (r *Rev2Board) runCommand(cmd app.RelayConfig) error {
 	for _, relayItem := range cmd.Timings {
 		finalRelays[relayItem.ID] = relayItem
 	}
-	cmdBuf.WriteString("RUN P01 A-|")
+	cmdBuf.WriteString("RUN A-|")
 	if cmd.TimeoutSec > 0 {
 		cmdBuf.WriteString("T")
 		cmdBuf.WriteString(strconv.Itoa(int(cmd.TimeoutSec)))
