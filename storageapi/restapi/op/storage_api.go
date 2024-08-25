@@ -170,6 +170,9 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		GetUsersHandler: GetUsersHandlerFunc(func(params GetUsersParams, principal *storageapi.Profile) GetUsersResponder {
 			return GetUsersNotImplemented()
 		}),
+		GetWashIDHandler: GetWashIDHandlerFunc(func(params GetWashIDParams) GetWashIDResponder {
+			return GetWashIDNotImplemented()
+		}),
 		InfoHandler: InfoHandlerFunc(func(params InfoParams) InfoResponder {
 			return InfoNotImplemented()
 		}),
@@ -448,6 +451,8 @@ type StorageAPI struct {
 	GetUserHandler GetUserHandler
 	// GetUsersHandler sets the operation handler for the get users operation
 	GetUsersHandler GetUsersHandler
+	// GetWashIDHandler sets the operation handler for the get wash Id operation
+	GetWashIDHandler GetWashIDHandler
 	// InfoHandler sets the operation handler for the info operation
 	InfoHandler InfoHandler
 	// KasseHandler sets the operation handler for the kasse operation
@@ -750,6 +755,9 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.GetUsersHandler == nil {
 		unregistered = append(unregistered, "GetUsersHandler")
+	}
+	if o.GetWashIDHandler == nil {
+		unregistered = append(unregistered, "GetWashIDHandler")
 	}
 	if o.InfoHandler == nil {
 		unregistered = append(unregistered, "InfoHandler")
@@ -1162,6 +1170,10 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/users"] = NewGetUsers(o.context, o.GetUsersHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/wash-id"] = NewGetWashID(o.context, o.GetWashIDHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

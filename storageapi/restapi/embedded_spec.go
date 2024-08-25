@@ -3617,6 +3617,30 @@ func init() {
           }
         }
       }
+    },
+    "/wash-id": {
+      "get": {
+        "operationId": "getWashId",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -8338,6 +8362,30 @@ func init() {
           },
           "500": {
             "description": "internal error"
+          }
+        }
+      }
+    },
+    "/wash-id": {
+      "get": {
+        "operationId": "getWashId",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }

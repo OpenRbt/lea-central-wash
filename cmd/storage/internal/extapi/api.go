@@ -141,6 +141,8 @@ func NewServer(appl app.App, cfg Config, repo repo, authAccess auth.Check) (*res
 	api.SetConfigVarStringHandler = op.SetConfigVarStringHandlerFunc(svc.setConfigVarString)
 	api.SetConfigVarIntHandler = op.SetConfigVarIntHandlerFunc(svc.setConfigVarInt)
 
+	api.GetWashIDHandler = op.GetWashIDHandlerFunc(svc.getWashID)
+
 	api.GetConfigVarBoolHandler = op.GetConfigVarBoolHandlerFunc(svc.getConfigVarBool)
 	api.GetConfigVarStringHandler = op.GetConfigVarStringHandlerFunc(svc.getConfigVarString)
 	api.GetConfigVarIntHandler = op.GetConfigVarIntHandlerFunc(svc.getConfigVarInt)
