@@ -26,6 +26,7 @@ const (
 type Auth = storageapi.Profile
 
 const ParameterNameVolumeCoef = "VOLUME_COEF"
+const ParameterNameWashID = "WASH_ID"
 
 // Key aliases
 const (
@@ -282,6 +283,8 @@ type (
 		StationGetForManagement(ctx context.Context, id StationID) (StationConfig, error)
 
 		AddOpenwashingLog(log OpenwashingLogCreate) (OpenwashingLog, error)
+
+		GetWashID() (string, error)
 	}
 
 	// Repo is a DAL interface.

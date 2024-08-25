@@ -1,9 +1,11 @@
 package app
 
 import (
+	"errors"
 	"time"
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/def"
+	uuid "github.com/satori/go.uuid"
 )
 
 type (
@@ -41,7 +43,34 @@ func (a *app) setDefaultConfig() error {
 		Description: "time zone",
 		Value:       int64(offset / 60),
 	})
-	return err
+	if err != nil {
+		return err
+	}
+
+	if _, err = a.repo.GetConfigString(ParameterNameWashID); err != nil && !errors.Is(err, ErrNotFound) {
+		return err
+	} else if err != nil {
+		err = a.repo.SetConfigString(ConfigString{
+			Name:        ParameterNameWashID,
+			Description: ParameterNameWashID,
+			Note:        ParameterNameWashID,
+			Value:       uuid.NewV4().String(),
+		})
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (a *app) GetWashID() (string, error) {
+	config, err := a.repo.GetConfigString(ParameterNameWashID)
+	if err != nil {
+		return "", err
+	}
+
+	return config.Value, nil
 }
 
 func (a *app) GetConfigInt(auth *Auth, name string) (ConfigInt, error) {

@@ -3155,3 +3155,19 @@ paths:
           description: Not found
         500:
           description: Internal error
+
+  /wash-id:
+    get:
+      operationId: "getWashId"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+            required:
+              - id
+        500:
+          description: Internal error

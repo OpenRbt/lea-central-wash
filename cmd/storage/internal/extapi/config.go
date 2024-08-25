@@ -6,6 +6,19 @@ import (
 	"github.com/pkg/errors"
 )
 
+func (svc *service) getWashID(params op.GetWashIDParams) op.GetWashIDResponder {
+	res, err := svc.app.GetWashID()
+	switch errors.Cause(err) {
+	case nil:
+		return op.NewGetWashIDOK().WithPayload(&op.GetWashIDOKBody{
+			ID: &res,
+		})
+	default:
+		log.PrintErr(err, "ip", params.HTTPRequest.RemoteAddr)
+		return op.NewGetWashIDInternalServerError()
+	}
+}
+
 func (svc *service) setConfigVarInt(params op.SetConfigVarIntParams, auth *app.Auth) op.SetConfigVarIntResponder {
 	err := svc.app.SetConfigInt(auth, appConfigInt(params.Args))
 	switch errors.Cause(err) {
