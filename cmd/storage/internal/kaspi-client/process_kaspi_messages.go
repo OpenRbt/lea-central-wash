@@ -105,9 +105,6 @@ func appCommand(v command) app.Command {
 
 // ProcessMessage ...
 func (s *Service) ProcessMessage(d amqp.Delivery) error {
-	// debug
-	fmt.Println(d.Type)
-	fmt.Println(string(d.Body))
 	switch Message(d.Type) {
 	case msgCommand:
 		var msg command
@@ -207,7 +204,6 @@ func (s *Service) sendMessage(msg interface{}, messageType Message, routingKey R
 		//s.sbpClientPub.Reject(dConfirmation.DeliveryTag, false)
 		return app.ErrSendTimeout
 	case <-dConfirmation.Done():
-		fmt.Println("kaspi: delivered deferred confirm to handler")
 		break
 	}
 	return err

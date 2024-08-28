@@ -3,7 +3,6 @@ package sbpclient
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"strings"
 	"time"
 
@@ -18,9 +17,6 @@ import (
 
 // ProcessSbpMessage ...
 func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
-	// debug
-	// fmt.Println(d.Type)
-	fmt.Println(string(d.Body))
 	switch rabbit_vo.MessageType(d.Type) {
 
 	// payment response
@@ -196,7 +192,6 @@ func (s *Service) sendMessage(msg interface{}, messageType rabbit_vo.MessageType
 	case <-time.After(time.Second * 10):
 		return app.ErrSendTimeout
 	case <-dConfirmation.Done():
-		fmt.Println("sbp: delivered deferred confirm to handler")
 		break
 	}
 	return err

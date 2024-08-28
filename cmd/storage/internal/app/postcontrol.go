@@ -845,7 +845,7 @@ func (a *app) runGetVersions(task Task) {
 			return
 		}
 
-		task, err = a.addRetryTask(task, fmt.Sprintf("Error creating ssh client: %s", err.Error()))
+		task, err = a.addRetryTask(task, fmt.Sprintf("Error creating ssh client: %s", err.Error()), retryCount == 0)
 		if err != nil {
 			a.handleTaskErr(task, fmt.Sprintf("Error error adding retry: %s", err.Error()))
 			return
@@ -1420,8 +1420,10 @@ func (a *app) prepareTask(task Task) (Task, string, error) {
 	return task, ip, nil
 }
 
-func (a *app) addRetryTask(task Task, msg string) (Task, error) {
-	log.PrintErr(msg)
+func (a *app) addRetryTask(task Task, msg string, print bool) (Task, error) {
+	if print {
+		log.PrintErr(msg)
+	}
 
 	task.RetryCount += 1
 
