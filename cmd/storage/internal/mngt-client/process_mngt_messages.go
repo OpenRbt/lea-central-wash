@@ -13,9 +13,6 @@ import (
 )
 
 func (s *Service) ProcessMngtMessage(d amqp.Delivery) error {
-	s.log.Debug("Management Message Type", "json", d.Type)
-	s.log.Debug("Management Message Body", "json", string(d.Body))
-
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
@@ -852,8 +849,6 @@ func (s *Service) sendMessage(msg interface{}, messageType app.RabbitMessageType
 		if !dConfirmation.Acked() {
 			return app.ErrNotConfirmed
 		}
-
-		fmt.Println("management: delivered deferred confirm to handler")
 	}
 
 	return nil
@@ -920,8 +915,6 @@ func (s *Service) sendMessageByCorrelationID(msg interface{}, replyTo string, co
 		if !dConfirmation.Acked() {
 			return app.ErrNotConfirmed
 		}
-
-		fmt.Println("Management: Delivered deferred confirm to handler")
 	}
 
 	return nil

@@ -13,7 +13,6 @@ import (
 )
 
 func (s *Service) ProcessBonusMessage(d amqp.Delivery) error { // Обработка сообщения на основе типа. В зависимости от типа происходят нужные действия
-	// Debug s.log.Debug("ProcessBonusMessage", "type", d.Type, "body", string(d.Body))
 	switch rabbit_vo.MessageType(d.Type) {
 	case rabbit_vo.SessionCreatedMessageType:
 		var msg session.PostSessions
