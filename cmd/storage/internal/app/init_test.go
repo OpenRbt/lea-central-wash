@@ -65,6 +65,7 @@ func testNew(t *check.C) (*app, func(), *mocks) {
 	m.mockRepo.EXPECT().GetPrograms(gomock.Any(), gomock.Any()).Return(nil, int64(0), nil).AnyTimes()
 	m.mockRepo.EXPECT().AddStation(gomock.Any()).Return(nil).AnyTimes()
 	m.mockRepo.EXPECT().GetStationConfigInt(ParameterNameVolumeCoef, StationID(1)).Return(StationConfigVar[int64]{Value: 1000}, nil).AnyTimes()
+	m.mockRepo.EXPECT().GetConfigString(ParameterNameWashID).Return(ConfigString{Value: "id", Name: ParameterNameWashID}, nil).AnyTimes()
 	m.mockRepo.EXPECT().GetConfigInt(parameterNameTimeZone).Return(ConfigInt{
 		Value: 420,
 	}, nil)

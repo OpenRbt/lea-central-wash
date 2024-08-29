@@ -260,6 +260,11 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.GetUsersNotImplemented()
 		})
 	}
+	if api.GetWashIDHandler == nil {
+		api.GetWashIDHandler = op.GetWashIDHandlerFunc(func(params op.GetWashIDParams) op.GetWashIDResponder {
+			return op.GetWashIDNotImplemented()
+		})
+	}
 	if api.InfoHandler == nil {
 		api.InfoHandler = op.InfoHandlerFunc(func(params op.InfoParams) op.InfoResponder {
 			return op.InfoNotImplemented()

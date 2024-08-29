@@ -26,6 +26,12 @@ services:
       - "/run/udev:/run/udev:ro"
     group_add:
       - dialout
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+        compress: "true"
   
   storage:
     build:
@@ -61,6 +67,12 @@ services:
       - "./ssh:/app/ssh"
     group_add:
       - dialout
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+        compress: "true"
   
   online-kasse:
     image: dev.openrbt.com/lcw-kasse:v0.0.1
@@ -96,7 +108,7 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
-  
+
   prometheus:
     image: dev.openrbt.com/prometheus:v2.45.6
     container_name: prometheus
