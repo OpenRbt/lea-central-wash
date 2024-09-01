@@ -44,7 +44,7 @@ func NewFrequencyGenerator(cfg rsutil.RS485Config) (*FrequencyGenerator, error) 
 	res := &FrequencyGenerator{
 		portName:     cfg.PortName,
 		client:       client,
-		nominalSpeed: cfg.DefaultMotorSpeed,
+		nominalSpeed: cfg.DefaultMotorSpeed / 2,
 		coolTime:     10 * time.Millisecond,
 	}
 
