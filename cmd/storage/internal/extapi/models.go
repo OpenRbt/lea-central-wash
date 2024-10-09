@@ -189,19 +189,13 @@ func (svc *service) apiStatusReport(v app.StatusReport) *model.StatusReport {
 }
 
 func apiServiceStatus(v app.ServiceStatus) *model.ServiceStatus {
-	unpaidStations := []int64{}
-	for key, val := range v.UnpaidStations {
-		if val {
-			unpaidStations = append(unpaidStations, int64(key))
-		}
-	}
-
 	status := &model.ServiceStatus{
 		Available:        v.Available,
-		DisabledOnServer: v.DisabledOnServer,
+		IsPaid:           v.IsPaid,
+		DisabledOnServer: !v.IsEnabled,
 		IsConnected:      v.IsConnected,
 		LastErr:          v.LastErr,
-		UnpaidStations:   unpaidStations,
+		UnpaidStations:   []int64{},
 	}
 	if v.DateLastErr != nil {
 		t := v.DateLastErr.Unix()

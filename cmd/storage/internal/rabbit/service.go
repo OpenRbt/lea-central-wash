@@ -14,6 +14,23 @@ import (
 
 func (s *Service) ProcessBonusMessage(d amqp.Delivery) error { // Обработка сообщения на основе типа. В зависимости от типа происходят нужные действия
 	switch rabbit_vo.MessageType(d.Type) {
+	case rabbit_vo.ServiceStatusMessageType:
+		var msg session.ServiceStatus
+		err := json.Unmarshal(d.Body, &msg)
+		if err != nil {
+			d.Nack(false, false)
+			return err
+		}
+
+		s.statusMu.Lock()
+		s.isPaid = msg.IsPaid
+		s.isEnabled = msg.IsEnabled
+		s.statusMu.Unlock()
+
+		s.log.Info("new bonus status", "is paid", msg.IsPaid, "is enabled", msg.IsEnabled)
+
+		d.Ack(false)
+
 	case rabbit_vo.SessionCreatedMessageType:
 		var msg session.PostSessions
 		err := json.Unmarshal(d.Body, &msg)

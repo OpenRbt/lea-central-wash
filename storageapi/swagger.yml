@@ -646,6 +646,8 @@ definitions:
         type: boolean
       isConnected: 
         type: boolean
+      isPaid:
+        type: boolean
       lastErr: 
         type: string
       dateLastErrUTC: 

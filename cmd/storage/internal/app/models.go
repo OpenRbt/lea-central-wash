@@ -259,13 +259,17 @@ type RabbitConfig struct {
 }
 
 type ServiceStatus struct {
-	Available        bool
-	DisabledOnServer bool
-	IsConnected      bool
-	LastErr          string
-	DateLastErr      *time.Time
-	UnpaidStations   map[int]bool
-	ReconnectCount   int64
+	IsPaid         bool
+	IsEnabled      bool
+	Available      bool
+	IsConnected    bool
+	LastErr        string
+	DateLastErr    *time.Time
+	ReconnectCount int64
+}
+
+func (s *ServiceStatus) IsAvailable() bool {
+	return s.Available && s.IsEnabled && s.IsPaid && s.IsConnected
 }
 
 type BuildScript struct {

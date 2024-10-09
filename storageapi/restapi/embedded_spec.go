@@ -4302,6 +4302,9 @@ func init() {
         "isConnected": {
           "type": "boolean"
         },
+        "isPaid": {
+          "type": "boolean"
+        },
         "lastErr": {
           "type": "string"
         },
@@ -9063,6 +9066,9 @@ func init() {
           "type": "boolean"
         },
         "isConnected": {
+          "type": "boolean"
+        },
+        "isPaid": {
           "type": "boolean"
         },
         "lastErr": {

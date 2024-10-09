@@ -51,12 +51,13 @@ type Service struct {
 	rabbitConf   *amqp.Config
 	connString   string
 
-	statusMu         sync.Mutex
-	disabledOnServer bool
-	lastErr          string
-	dateLastErr      *time.Time
-	unpaidStations   map[int]bool
-	reconnectCount   int64
+	statusMu       sync.Mutex
+	isPaid         bool
+	isEnabled      bool
+	lastErr        string
+	dateLastErr    *time.Time
+	unpaidStations map[int]bool
+	reconnectCount int64
 }
 
 func NewKaspiRabbitClient(cfg RabbitConfig, a app.App) (svc *Service, err error) {
@@ -96,17 +97,18 @@ func NewKaspiRabbitClient(cfg RabbitConfig, a app.App) (svc *Service, err error)
 	}
 
 	svc = &Service{
-		app:              a,
-		log:              structlog.New(),
-		rabbitConf:       &rabbitConf,
-		connString:       connString,
-		serverID:         cfg.ServerID,
-		cfg:              cfg,
-		done:             make(chan struct{}),
-		disabledOnServer: false,
-		lastErr:          "",
-		dateLastErr:      nil,
-		unpaidStations:   map[int]bool{},
+		app:            a,
+		log:            structlog.New(),
+		rabbitConf:     &rabbitConf,
+		connString:     connString,
+		serverID:       cfg.ServerID,
+		cfg:            cfg,
+		done:           make(chan struct{}),
+		isPaid:         true,
+		isEnabled:      true,
+		lastErr:        "",
+		dateLastErr:    nil,
+		unpaidStations: map[int]bool{},
 	}
 
 	err = svc.connect()
@@ -134,13 +136,13 @@ func (s *Service) Status() app.ServiceStatus {
 	}
 	defer s.statusMu.Unlock()
 	return app.ServiceStatus{
-		Available:        true,
-		DisabledOnServer: s.disabledOnServer,
-		LastErr:          s.lastErr,
-		DateLastErr:      s.dateLastErr,
-		UnpaidStations:   s.unpaidStations,
-		IsConnected:      atomic.LoadInt32(&s.isConnected) == connected,
-		ReconnectCount:   atomic.LoadInt64(&s.reconnectCount),
+		Available:      true,
+		IsPaid:         s.isPaid,
+		IsEnabled:      s.isEnabled,
+		LastErr:        s.lastErr,
+		DateLastErr:    s.dateLastErr,
+		IsConnected:    atomic.LoadInt32(&s.isConnected) == connected,
+		ReconnectCount: atomic.LoadInt64(&s.reconnectCount),
 	}
 }
 
