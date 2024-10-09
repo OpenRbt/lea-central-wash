@@ -52,12 +52,12 @@ func (a *app) IsKaspiInit() bool {
 	return a.kaspiSvc != nil
 }
 
-func (a *app) IsKaspiAvailableForStation(stationID StationID) bool {
+func (a *app) IsKaspiAvailable() bool {
 	if a.SbpWorker == nil {
 		return false
 	}
 	status := a.kaspiSvc.Status()
-	return a.isServiceAvailableForStation(stationID, status)
+	return status.IsAvailable()
 }
 
 func (a *app) KaspiCommand(cmd Command) {

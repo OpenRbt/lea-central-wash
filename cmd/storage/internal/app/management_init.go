@@ -53,12 +53,12 @@ func (a *app) IsManagementInit() bool {
 	return a.mngtSvc.ManagementRabbitWorker != nil
 }
 
-func (a *app) IsMngtAvailableForStation(stationID StationID) bool {
+func (a *app) IsMngtAvailable() bool {
 	if a.SbpWorker == nil {
 		return false
 	}
 	status := a.mngtSvc.Status()
-	return a.isServiceAvailableForStation(stationID, status)
+	return status.IsAvailable()
 }
 
 func (a *app) handleCollectionReportSync(report CollectionReport) error {

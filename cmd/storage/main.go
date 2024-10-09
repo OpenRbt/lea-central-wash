@@ -487,7 +487,17 @@ func initRabbitClient(cfg rabbit.Config, appl app.App) {
 
 		log.Info("Serve rabbit client")
 		appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitWorker.SendMessage, rabbitWorker.Status)
-		appl.FetchSessions()
+
+		err = appl.RequestServiceStatus()
+		if err != nil {
+			log.Err("Failed to send service status request", "error", err)
+		}
+
+		err = appl.FetchSessions()
+		if err != nil {
+			log.Err("Failed to send fetch sessions request", "error", err)
+		}
+
 		return
 	}
 }

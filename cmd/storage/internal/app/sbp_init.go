@@ -78,10 +78,10 @@ func (a *app) IsSbpRabbitWorkerInit() bool {
 	return a.SbpWorker != nil
 }
 
-func (a *app) IsSbpAvailableForStation(stationID StationID) bool {
+func (a *app) IsSbpAvailable() bool {
 	if a.SbpWorker == nil {
 		return false
 	}
 	status := a.SbpWorker.sbpBroker.Status()
-	return a.isServiceAvailableForStation(stationID, status)
+	return status.IsAvailable()
 }

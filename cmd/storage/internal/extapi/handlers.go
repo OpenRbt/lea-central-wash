@@ -1068,7 +1068,7 @@ func (svc *service) createSession(params op.CreateSessionParams) op.CreateSessio
 		return op.NewCreateSessionNotFound()
 	}
 
-	sessionID, QR, err := svc.app.CreateSession(def.OpenwashingURL, stationID)
+	sessionID, QR, err := svc.app.StartSession(def.OpenwashingURL, stationID)
 	if err == nil {
 		return op.NewCreateSessionOK().WithPayload(apiCreateSession(sessionID, QR))
 	}

@@ -942,10 +942,10 @@ func (s *Service) msgStatusReport(v app.StatusReport, justTurnedOn bool) mngt_en
 func msgServiceStatus(v app.ServiceStatus) mngt_entity.ServiceStatus {
 	status := mngt_entity.ServiceStatus{
 		Available:        v.Available,
-		DisabledOnServer: v.DisabledOnServer,
+		DisabledOnServer: !v.IsEnabled,
 		IsConnected:      v.IsConnected,
 		LastErr:          v.LastErr,
-		UnpaidStations:   v.UnpaidStations,
+		UnpaidStations:   map[int]bool{},
 		DateLastErr:      v.DateLastErr,
 		ReconnectCount:   v.ReconnectCount,
 	}

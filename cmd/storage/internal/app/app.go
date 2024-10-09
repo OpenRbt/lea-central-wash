@@ -107,6 +107,7 @@ var (
 	ErrNoRabbitWorker          = errors.New("rabbit worker not initialized")
 	ErrSendTimeout             = errors.New("send request failed: timeout")
 	ErrNotConfirmed            = errors.New("send request failed: not confirmed")
+	ErrServiceNotAvailable     = errors.New("service not available")
 
 	ErrWrongPaymentStatus = errors.New("wrong payment status")
 	ErrSameOrLowerVersion = errors.New("entity has the same or lower version")
@@ -133,7 +134,7 @@ type (
 
 		Set(station StationData) error
 		Get(stationID StationID) (StationData, error)
-		Ping(id StationID, balance, program int, stationIP string, justTurnedOn bool) (StationData, bool)
+		Ping(id StationID, balance, program int, stationIP string, justTurnedOn bool) StationData
 
 		SaveMoneyReport(report MoneyReport) error
 		SaveRelayReport(report RelayReport) error
@@ -227,7 +228,7 @@ type (
 		SetStationConfigBool(auth *Auth, config StationConfigVar[bool]) error
 		SetStationConfigString(auth *Auth, config StationConfigVar[string]) error
 
-		CreateSession(url string, stationID StationID) (string, string, error)
+		StartSession(url string, stationID StationID) (string, string, error)
 		EndSession(stationID StationID, sessionID BonusSessionID) error
 		SetBonuses(stationID StationID, bonuses int) error
 
@@ -242,6 +243,9 @@ type (
 
 		InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error, status func() ServiceStatus)
 
+		RequestServiceStatus() error
+		IsBonusAvailable() bool
+
 		// sbp
 		SendPaymentRequest(postID StationID, amount int64) error
 		// set
@@ -253,7 +257,7 @@ type (
 		GetLastPayment(postID StationID) (Payment, error)
 		InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error
 		IsSbpRabbitWorkerInit() bool
-		IsSbpAvailableForStation(stationID StationID) bool
+		IsSbpAvailable() bool
 		GetSbpConfig(envServerSbpID string, envServerSbpPassword string) (cfg SbpRabbitConfig, err error)
 
 		InitManagement(ManagementRabbitWorker)
