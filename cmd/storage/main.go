@@ -488,7 +488,7 @@ func initRabbitClient(cfg rabbit.Config, appl app.App) {
 		log.Info("Serve rabbit client")
 		appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitWorker.SendMessage, rabbitWorker.Status)
 
-		err = appl.RequestServiceStatus()
+		err = appl.RequestBonusServiceStatus()
 		if err != nil {
 			log.Err("Failed to send service status request", "error", err)
 		}
@@ -620,6 +620,11 @@ func initSbpClient(
 			err = appl.InitSbpRabbitWorker(sbpWorkerConfig)
 			if err != nil {
 				log.Err("Failed to init sbp sbp rabbit worker", "error", err)
+			}
+
+			err = appl.RequestSbpServiceStatus()
+			if err != nil {
+				log.Err("Failed to send service status request", "error", err)
 			}
 
 			log.Info("serve sbp rabbit client")

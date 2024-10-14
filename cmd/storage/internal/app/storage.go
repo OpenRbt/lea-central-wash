@@ -1204,7 +1204,7 @@ func (a *app) RequestSessionsFromService(count int, stationID StationID) error {
 	return err
 }
 
-func (a *app) RequestServiceStatus() error {
+func (a *app) RequestBonusServiceStatus() error {
 	err := a.SendMessage(string(rabbitVo.ServiceStatusRequestMessageType), nil)
 	if errors.Is(err, ErrNoRabbitWorker) {
 		log.Err("not found rabbit worker for bonus service", "error", err)
@@ -1212,6 +1212,10 @@ func (a *app) RequestServiceStatus() error {
 	}
 
 	return err
+}
+
+func (a *app) RequestSbpServiceStatus() error {
+	return a.sbpBroker.RequestServiceStatus()
 }
 
 func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) error {
@@ -1455,7 +1459,7 @@ func (a *app) pingBonus(serverID string, status []StationPingStatus) error {
 }
 
 func (a *app) pingSBP(serverID string, status []StationPingStatus) error {
-	if a.SbpWorker == nil {
+	if !a.IsSbpAvailable() {
 		return nil
 	}
 
