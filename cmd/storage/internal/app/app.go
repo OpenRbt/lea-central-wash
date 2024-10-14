@@ -243,7 +243,8 @@ type (
 
 		InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error, status func() ServiceStatus)
 
-		RequestServiceStatus() error
+		RequestSbpServiceStatus() error
+		RequestBonusServiceStatus() error
 		IsBonusAvailable() bool
 
 		// sbp
