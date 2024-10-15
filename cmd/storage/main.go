@@ -525,6 +525,12 @@ func initMngtClient(cfg mngt.RabbitConfig, appl app.App) {
 
 		log.Info("Serve management client")
 		appl.InitManagement(rabbitWorker)
+
+		err = appl.RequestManagementServiceStatus()
+		if err != nil {
+			log.Err("Failed to send service status request", "error", err)
+		}
+
 		return
 	}
 }

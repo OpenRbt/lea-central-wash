@@ -17,6 +17,28 @@ func (s *Service) ProcessMngtMessage(d amqp.Delivery) error {
 	defer cancel()
 
 	switch app.RabbitMessageType(d.Type) {
+	case mngt_entity.ServiceStatusMessageType:
+		var msg mngt_entity.WashServiceStatus
+		err := json.Unmarshal(d.Body, &msg)
+		if err != nil {
+			d.Nack(false, false)
+			return err
+		}
+
+		s.statusMu.Lock()
+		s.isPaid = msg.IsPaid
+		s.isEnabled = msg.IsEnabled
+		s.statusMu.Unlock()
+
+		s.log.Info("new management status", "is paid", msg.IsPaid, "is enabled", msg.IsEnabled)
+
+		if msg.IsPaid && msg.IsEnabled {
+			s.app.SendManagementSyncSignal()
+		}
+
+		d.Ack(false)
+		return nil
+
 	case mngt_entity.LcwProgramSettingsGetMessageType:
 		return s.handleLeaProgramsGetting(ctx, d)
 
@@ -658,6 +680,10 @@ func (s *Service) handleLeaUserChangePassword(ctx context.Context, d amqp.Delive
 	}
 
 	return s.sendMessageHandleErrors(rpcResponse, d)
+}
+
+func (s *Service) RequestServiceStatus() error {
+	return s.sendMessage(nil, mngt_entity.ServiceStatusRequestMessageType)
 }
 
 func (s *Service) SendMoneyReport(report app.MngtMoneyReport) (err error) {

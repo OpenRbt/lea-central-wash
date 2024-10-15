@@ -677,6 +677,11 @@ type Button struct {
 	ProgramID int `json:"programId"`
 }
 
+type WashServiceStatus struct {
+	IsPaid    bool `json:"isPaid"`
+	IsEnabled bool `json:"isEnabled"`
+}
+
 type StationUpdate struct {
 	ID           int         `json:"id"`
 	Name         *string     `json:"name,omitempty"`
