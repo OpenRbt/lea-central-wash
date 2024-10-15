@@ -443,7 +443,7 @@ func (a *app) CreateUser(ctx context.Context, userCreation UserCreation, auth *A
 		return User{}, err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return newUser, nil
 }
@@ -492,7 +492,7 @@ func (a *app) UpdateUser(login string, userUpdate UserUpdate, auth *Auth) (User,
 		return User{}, err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return user, err
 }
@@ -522,7 +522,7 @@ func (a *app) UpdateUserPassword(ctx context.Context, login string, userData Upd
 		return User{}, err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return newUser, nil
 }
@@ -537,7 +537,7 @@ func (a *app) DeleteUser(ctx context.Context, login string, auth *Auth) error {
 		return err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return nil
 }
@@ -645,7 +645,7 @@ func (a *app) SetStation(ctx context.Context, station SetStation) error {
 		return err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return nil
 }
@@ -657,7 +657,7 @@ func (a *app) DelStation(ctx context.Context, id StationID) error {
 	}
 
 	a.loadStations()
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return nil
 }
@@ -708,7 +708,7 @@ func (a *app) SetProgram(program Program) error {
 	a.programsMutex.Unlock()
 	err = a.updateConfig("SetProgram")
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 	return err
 }
 func (a *app) StationProgram(id StationID) ([]StationProgram, error) {
@@ -730,7 +730,7 @@ func (a *app) SetStationProgram(ctx context.Context, id StationID, button []Stat
 		return err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return nil
 }
@@ -767,7 +767,7 @@ func (a *app) SetCardReaderConfig(ctx context.Context, cfg CardReaderConfig) err
 		return err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return nil
 }
@@ -816,7 +816,7 @@ func (a *app) AddAdvertisingCampaign(ctx context.Context, auth *Auth, res Advert
 		return AdvertisingCampaign{}, err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 	return campaign, nil
 }
 
@@ -826,7 +826,7 @@ func (a *app) EditAdvertisingCampaign(auth *Auth, res AdvertisingCampaign) error
 		return err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 	return nil
 }
 
@@ -836,7 +836,7 @@ func (a *app) DelAdvertisingCampaign(auth *Auth, id int64) error {
 		return err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 	return nil
 }
 
@@ -1218,6 +1218,10 @@ func (a *app) RequestSbpServiceStatus() error {
 	return a.sbpBroker.RequestServiceStatus()
 }
 
+func (a *app) RequestManagementServiceStatus() error {
+	return a.mngtSvc.RequestServiceStatus()
+}
+
 func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) error {
 	a.stationSessionPoolMutex.Lock()
 	defer a.stationSessionPoolMutex.Unlock()
@@ -1491,6 +1495,6 @@ func (a *app) AddOpenwashingLog(log OpenwashingLogCreate) (OpenwashingLog, error
 		return OpenwashingLog{}, err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 	return newLog, nil
 }

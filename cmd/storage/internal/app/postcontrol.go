@@ -284,7 +284,7 @@ func (a *app) CreateTask(createTask CreateTask) (Task, error) {
 		return Task{}, err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return task, nil
 }
@@ -1407,7 +1407,7 @@ func (a *app) prepareTask(task Task) (Task, string, error) {
 		return Task{}, "", err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	a.stationsMutex.RLock()
 	defer a.stationsMutex.RUnlock()
@@ -1435,7 +1435,7 @@ func (a *app) addRetryTask(task Task, msg string, print bool) (Task, error) {
 		return Task{}, err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return task, nil
 }
@@ -1451,7 +1451,7 @@ func (a *app) compliteTask(task Task) {
 		log.PrintErr(err)
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
@@ -1477,7 +1477,7 @@ func (a *app) handleTaskErr(task Task, msg string) {
 		log.PrintErr(err)
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	page := int64(1)
 	for {
@@ -1511,7 +1511,7 @@ func (a *app) handleTaskErr(task Task, msg string) {
 			}
 		}
 
-		a.sendManagementSyncSignal()
+		a.SendManagementSyncSignal()
 
 		page++
 	}

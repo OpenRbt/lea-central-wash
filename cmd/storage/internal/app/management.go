@@ -44,7 +44,7 @@ type (
 	}
 )
 
-func (app *app) sendManagementSyncSignal() {
+func (app *app) SendManagementSyncSignal() {
 	if !app.IsManagementInit() {
 		return
 	}

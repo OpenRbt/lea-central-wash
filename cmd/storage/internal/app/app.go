@@ -204,6 +204,9 @@ type (
 		EditAdvertisingCampaignFromManagement(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error)
 		DeleteAdvertisingCampaignFromManagement(ctx context.Context, id int64) (AdvertisingCampaign, error)
 
+		IsMngtAvailable() bool
+		SendManagementSyncSignal()
+
 		UpsertAdvertisingCampaignFromManagement(ctx context.Context, campaign ManagementAdvertisingCampaign) (AdvertisingCampaign, error)
 		NotSendedAdvertisingCampaigns(ctx context.Context) ([]AdvertisingCampaign, error)
 		MarkAdvertisingCampaignSended(ctx context.Context, id int64) error
@@ -245,6 +248,7 @@ type (
 
 		RequestSbpServiceStatus() error
 		RequestBonusServiceStatus() error
+		RequestManagementServiceStatus() error
 		IsBonusAvailable() bool
 
 		// sbp
@@ -463,6 +467,7 @@ type (
 		Timings []Relay
 	}
 	ManagementRabbitWorker interface {
+		RequestServiceStatus() error
 		SendMoneyReport(MngtMoneyReport) error
 		SendCollectionReport(CollectionReport) error
 		Status() ServiceStatus
