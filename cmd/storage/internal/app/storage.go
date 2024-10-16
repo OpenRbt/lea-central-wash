@@ -1222,6 +1222,10 @@ func (a *app) RequestManagementServiceStatus() error {
 	return a.mngtSvc.RequestServiceStatus()
 }
 
+func (a *app) RequestKaspiServiceStatus() error {
+	return a.kaspiSvc.RequestServiceStatus()
+}
+
 func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) error {
 	a.stationSessionPoolMutex.Lock()
 	defer a.stationSessionPoolMutex.Unlock()
@@ -1471,7 +1475,7 @@ func (a *app) pingSBP(serverID string, status []StationPingStatus) error {
 }
 
 func (a *app) pingKaspi(serverID string, status []StationPingStatus) error {
-	if !a.IsKaspiInit() {
+	if !a.IsKaspiAvailable() {
 		return nil
 	}
 

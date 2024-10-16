@@ -249,6 +249,7 @@ type (
 		RequestSbpServiceStatus() error
 		RequestBonusServiceStatus() error
 		RequestManagementServiceStatus() error
+		RequestKaspiServiceStatus() error
 		IsBonusAvailable() bool
 
 		// sbp
@@ -493,6 +494,7 @@ type (
 		Status() ServiceStatus
 		SendAnswer(KaspiAnswer) error
 		Ping(serverID string, status []StationPingStatus) error
+		RequestServiceStatus() error
 	}
 )
 

@@ -559,6 +559,12 @@ func initKaspiClient(cfg kaspi.RabbitConfig, appl app.App) {
 
 		log.Info("Serve kaspi client")
 		appl.InitKaspi(rabbitWorker)
+
+		err = appl.RequestKaspiServiceStatus()
+		if err != nil {
+			log.Err("Failed to send service status request", "error", err)
+		}
+
 		return
 	}
 }
