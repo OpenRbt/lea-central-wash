@@ -53,7 +53,7 @@ func (a *app) IsKaspiInit() bool {
 }
 
 func (a *app) IsKaspiAvailable() bool {
-	if a.SbpWorker == nil {
+	if !a.IsKaspiInit() {
 		return false
 	}
 	status := a.kaspiSvc.Status()
