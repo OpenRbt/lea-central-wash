@@ -56,15 +56,16 @@ type StatusReport struct {
 
 // StationStatus is used to display in the management software
 type StationStatus struct {
-	ID             int
-	Info           string
-	Name           string
-	Status         Status
-	CurrentBalance int
-	CurrentProgram int
-	ProgramName    string
-	IP             string
-	JustTurnedOn   bool
+	ID                int
+	Info              string
+	Name              string
+	Status            Status
+	CurrentBalance    int
+	CurrentProgram    int
+	ProgramName       string
+	IP                string
+	JustTurnedOn      bool
+	FirmwareVersionID *int
 }
 
 type ServiceStatus struct {

@@ -601,7 +601,6 @@ func (a *app) StatusReport(onlyActive bool, offJustTurnedOn bool) StatusReport {
 			Version:        v.CurrentVersions,
 			JustTurnedOn:   v.JustTurnedOn,
 		})
-
 		if v.JustTurnedOn && offJustTurnedOn {
 			v.JustTurnedOn = false
 			a.stations[k] = v

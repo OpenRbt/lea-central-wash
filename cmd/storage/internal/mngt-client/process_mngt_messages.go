@@ -979,16 +979,22 @@ func msgServiceStatus(v app.ServiceStatus) mngt_entity.ServiceStatus {
 }
 
 func msgStationStatus(v app.StationStatus) mngt_entity.StationStatus {
+	var vId *int
+	if v.Version != nil {
+		vId = &v.Version.ID
+	}
+
 	return mngt_entity.StationStatus{
-		ID:             int(v.ID),
-		Info:           v.Info,
-		Name:           v.Name,
-		Status:         msgStatus(v.Status),
-		CurrentBalance: v.CurrentBalance,
-		CurrentProgram: v.CurrentProgram,
-		ProgramName:    v.ProgramName,
-		IP:             v.IP,
-		JustTurnedOn:   v.JustTurnedOn,
+		ID:                int(v.ID),
+		Info:              v.Info,
+		Name:              v.Name,
+		Status:            msgStatus(v.Status),
+		CurrentBalance:    v.CurrentBalance,
+		CurrentProgram:    v.CurrentProgram,
+		ProgramName:       v.ProgramName,
+		IP:                v.IP,
+		JustTurnedOn:      v.JustTurnedOn,
+		FirmwareVersionID: vId,
 	}
 }
 
