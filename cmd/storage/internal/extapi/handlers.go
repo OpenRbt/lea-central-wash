@@ -1264,20 +1264,6 @@ func (svc *service) setBuildScript(params op.SetBuildScriptParams, auth *app.Aut
 	}
 }
 
-func (svc *service) deleteBuildScript(params op.DeleteBuildScriptParams, auth *app.Auth) op.DeleteBuildScriptResponder {
-	err := svc.app.DeleteBuildScript(app.StationID(params.ID))
-
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewDeleteBuildScriptNoContent()
-	case app.ErrNotFound:
-		return op.NewDeleteBuildScriptNotFound()
-	default:
-		log.PrintErr(err)
-		return op.NewDeleteBuildScriptInternalServerError()
-	}
-}
-
 func (svc *service) copyFirmware(params op.FirmwareVersionsCopyParams, auth *app.Auth) op.FirmwareVersionsCopyResponder {
 	err := svc.app.CopyFirmware(app.StationID(params.ID), app.StationID(params.ToID))
 

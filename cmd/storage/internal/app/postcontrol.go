@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
@@ -241,11 +242,14 @@ func (a *app) SetBuildScript(setBuildScript SetBuildScript) (BuildScript, error)
 		return BuildScript{}, err
 	}
 
-	return buildScript, nil
-}
+	err = a.repo.StationUpVersion(context.TODO(), setBuildScript.StationID)
+	if err != nil {
+		return BuildScript{}, nil
+	}
 
-func (a *app) DeleteBuildScript(id StationID) error {
-	return a.repo.DeleteBuildScriptByStationID(id)
+	a.SendManagementSyncSignal()
+
+	return buildScript, nil
 }
 
 func (a *app) GetListTasks(filter TaskFilter) (Page[Task], error) {

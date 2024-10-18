@@ -285,7 +285,6 @@ type (
 		GetListBuildScripts() ([]BuildScript, error)
 		GetBuildScript(id StationID) (BuildScript, error)
 		SetBuildScript(setBuildScript SetBuildScript) (BuildScript, error)
-		DeleteBuildScript(id StationID) error
 		CopyFirmware(stationID StationID, copyToID StationID) error
 		GetVersionBuffered(stationID StationID) (FirmwareVersion, error)
 
@@ -418,8 +417,7 @@ type (
 		GetBuildScriptByStationID(id StationID) (BuildScript, error)
 		CreateBuildScript(createBuildScript SetBuildScript) (BuildScript, error)
 		UpdateBuildScript(id int, updateBuildScript SetBuildScript) (BuildScript, error)
-		DeleteBuildScript(id int) error
-		DeleteBuildScriptByStationID(id StationID) error
+		UpdateBuildScriptByStationID(updateBuildScript SetBuildScript) (BuildScript, error)
 		GetListTasks(filter TaskFilter) ([]Task, int64, error)
 		GetTask(id int) (Task, error)
 		CreateTask(createTask CreateTask) (Task, error)
@@ -701,6 +699,7 @@ type StationConfig struct {
 	LastUpdate   int
 	Programs     []Program
 	CardReader   CardReaderConfig
+	BuildScript  BuildScript
 	Version      int
 	Deleted      bool
 }
@@ -711,6 +710,7 @@ type StationUpdate struct {
 	RelayBoard   *string
 	Buttons      []StationProgram
 	CardReader   *CardReaderConfig
+	BuildScript  *BuildScript
 }
 
 type SessionsRequest struct {

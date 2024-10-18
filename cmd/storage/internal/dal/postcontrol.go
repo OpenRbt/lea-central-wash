@@ -131,41 +131,38 @@ func (r *repo) UpdateBuildScript(id int, updateBuildScript app.SetBuildScript) (
 	return buildScript, err
 }
 
-func (r *repo) DeleteBuildScriptByStationID(id app.StationID) error {
-	return r.deleteBuildScript(int(id), true)
-}
+func (r *repo) UpdateBuildScriptByStationID(updateBuildScript app.SetBuildScript) (app.BuildScript, error) {
+	var buildScript app.BuildScript
 
-func (r *repo) DeleteBuildScript(id int) error {
-	return r.deleteBuildScript(id, false)
-}
-
-func (r *repo) deleteBuildScript(id int, byStationID bool) error {
-	sqlDelete := sqlDeleteBuildScript
-	if byStationID {
-		sqlDelete = sqlDeleteBuildScriptByStationID
+	commands, err := json.Marshal(updateBuildScript.Commands)
+	if err != nil {
+		return app.BuildScript{}, err
 	}
 
-	err := r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
-		res, err := tx.NamedExecContext(ctx, sqlDelete, argGetBuildScript{
-			ID: id,
+	err = r.tx(ctx, nil, func(tx *sqlxx.Tx) error {
+		var res resBuildScript
+		err := tx.NamedGetContext(ctx, &res, sqlUpdateBuildScriptByStationID, argUpdateBuildScript{
+			StationID: int(updateBuildScript.StationID),
+			Name:      updateBuildScript.Name,
+			Commands:  string(commands),
 		})
 
 		if err != nil {
+			if err == sql.ErrNoRows {
+				return app.ErrNotFound
+			}
 			return err
 		}
 
-		rows, err := res.RowsAffected()
+		buildScript, err = appBuildScript(res)
 		if err != nil {
 			return err
-		}
-		if rows == 0 {
-			return app.ErrNotFound
 		}
 
 		return nil
 	})
 
-	return err
+	return buildScript, err
 }
 
 func (r *repo) GetTask(id int) (app.Task, error) {
