@@ -305,7 +305,7 @@ func (a *app) syncUnsentTasks() {
 }
 
 func (a *app) syncUnsentStations() {
-	stations, err := a.repo.NotSendedStations(context.TODO())
+	stations, err := a.repo.NotSendedStations(context.TODO()) //
 	if err != nil {
 		log.Err("unable to get unsent stations", "err", err)
 		return

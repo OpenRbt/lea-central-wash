@@ -89,9 +89,6 @@ func NewStorageAPI(spec *loads.Document) *StorageAPI {
 		DelStationHandler: DelStationHandlerFunc(func(params DelStationParams) DelStationResponder {
 			return DelStationNotImplemented()
 		}),
-		DeleteBuildScriptHandler: DeleteBuildScriptHandlerFunc(func(params DeleteBuildScriptParams, principal *storageapi.Profile) DeleteBuildScriptResponder {
-			return DeleteBuildScriptNotImplemented()
-		}),
 		DeleteUserHandler: DeleteUserHandlerFunc(func(params DeleteUserParams, principal *storageapi.Profile) DeleteUserResponder {
 			return DeleteUserNotImplemented()
 		}),
@@ -397,8 +394,6 @@ type StorageAPI struct {
 	DelAdvertisingCampaignHandler DelAdvertisingCampaignHandler
 	// DelStationHandler sets the operation handler for the del station operation
 	DelStationHandler DelStationHandler
-	// DeleteBuildScriptHandler sets the operation handler for the delete build script operation
-	DeleteBuildScriptHandler DeleteBuildScriptHandler
 	// DeleteUserHandler sets the operation handler for the delete user operation
 	DeleteUserHandler DeleteUserHandler
 	// DispenserStopHandler sets the operation handler for the dispenser stop operation
@@ -674,9 +669,6 @@ func (o *StorageAPI) Validate() error {
 	}
 	if o.DelStationHandler == nil {
 		unregistered = append(unregistered, "DelStationHandler")
-	}
-	if o.DeleteBuildScriptHandler == nil {
-		unregistered = append(unregistered, "DeleteBuildScriptHandler")
 	}
 	if o.DeleteUserHandler == nil {
 		unregistered = append(unregistered, "DeleteUserHandler")
@@ -1062,10 +1054,6 @@ func (o *StorageAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/del-station"] = NewDelStation(o.context, o.DelStationHandler)
-	if o.handlers["DELETE"] == nil {
-		o.handlers["DELETE"] = make(map[string]http.Handler)
-	}
-	o.handlers["DELETE"]["/build-scripts/{id}"] = NewDeleteBuildScript(o.context, o.DeleteBuildScriptHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
