@@ -235,7 +235,7 @@ func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
 	if err != nil {
 		return err
 	}
-
+	time.Sleep(100 * time.Millisecond)
 	_, err = s.Write([]byte("UID;"))
 	if err != nil {
 		return err
