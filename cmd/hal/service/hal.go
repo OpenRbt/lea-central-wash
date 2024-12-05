@@ -331,6 +331,7 @@ func (h *HardwareAccessLayer) workingLoop() ([]app.ControlBoard, error) {
 	}
 }
 
+
 // NewHardwareAccessLayer is just a constructor
 func NewHardwareAccessLayer(newMetrics app.HardwareMetrics) (app.HardwareAccessLayer, error) {
 	res := &HardwareAccessLayer{

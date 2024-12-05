@@ -336,33 +336,39 @@ func (m *MotorManager) CheckAndGetSequenceRequencerPort(port string) (*requester
 	// Let's create a device
 
 	cfg := rsutil.NewRS485Config(port, 9600, 10000)
-	mDriver, err := CreateFrequencyGenerator(m.devicesModel, cfg) // 10000 means 100.00 % for our driver
-	if err != nil {
-		return nil, fmt.Errorf("can't initialize newfrequencygenerator %+w", err)
-	}
 
-	deviceFound := false
-	for i := uint8(1); i < app.MAX_ALLOWED_DEVICES; i++ {
-		maxSpeed, err := mDriver.MaxSpeed(i)
-		if err != nil { //Let's just do 2 attempts
-			maxSpeed, err = mDriver.MaxSpeed(i)
-		}
+	models := ModelList(m.devicesModel)
+	for _, devModel := range models {
+		mDriver, err := CreateFrequencyGenerator(devModel, cfg) // 10000 means 100.00 % for our driver
 		if err != nil {
-			continue
+			return nil, fmt.Errorf("can't initialize newfrequencygenerator %+w", err)
 		}
-		if maxSpeed > 0 {
-			deviceFound = true
+
+		deviceFound := false
+		for i := uint8(1); i < app.MAX_ALLOWED_DEVICES; i++ {
+			maxSpeed, err := mDriver.MaxSpeed(i)
+			if err != nil { //Let's just do 2 attempts
+				maxSpeed, err = mDriver.MaxSpeed(i)
+			}
+			if err != nil {
+				continue
+			}
+			if maxSpeed > 0 {
+				deviceFound = true
+				break
+			}
+		}
+		if !deviceFound {
+			err := mDriver.Destroy()
+			if err != nil {
+				fmt.Printf("cant properly destroy device [%s] on %s\n", devModel, port)
+			}
 			break
 		}
-	}
-	if !deviceFound {
-		err := mDriver.Destroy()
-		if err != nil {
-			fmt.Printf("cant properly destroy device on %s\n", port)
-		}
-		return nil, ErrDeviceNotFound
-	}
 
-	sRequester := requester.NewSequenceRequester(m.ctx, mDriver)
-	return sRequester, nil
+		sRequester := requester.NewSequenceRequester(m.ctx, mDriver)
+		return sRequester, nil
+	}
+	// Nothing found
+	return nil, fmt.Errorf("not a single driver found on port [%s], %w\n", port, ErrDeviceNotFound)
 }
