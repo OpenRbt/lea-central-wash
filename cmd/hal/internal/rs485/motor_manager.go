@@ -338,10 +338,13 @@ func (m *MotorManager) CheckAndGetSequenceRequencerPort(port string) (*requester
 	cfg := rsutil.NewRS485Config(port, 9600, 10000)
 
 	models := ModelList(m.devicesModel)
+	fmt.Printf("models: %v", models)
 	for _, devModel := range models {
+		fmt.Printf("check model: %v \n", devModel)
 		mDriver, err := CreateFrequencyGenerator(devModel, cfg) // 10000 means 100.00 % for our driver
 		if err != nil {
-			return nil, fmt.Errorf("can't initialize newfrequencygenerator %+w", err)
+			fmt.Printf("can't initialize newfrequencygenerator model %s, err %v", devModel, err)
+			continue
 		}
 
 		deviceFound := false
@@ -363,7 +366,7 @@ func (m *MotorManager) CheckAndGetSequenceRequencerPort(port string) (*requester
 			if err != nil {
 				fmt.Printf("cant properly destroy device [%s] on %s\n", devModel, port)
 			}
-			break
+			continue
 		}
 
 		sRequester := requester.NewSequenceRequester(m.ctx, mDriver)
