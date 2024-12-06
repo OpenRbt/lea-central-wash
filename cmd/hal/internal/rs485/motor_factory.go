@@ -50,7 +50,7 @@ func StringToFreqGenModel(model string) (FreqGenModel, error) {
 	case "esq500":
 		return FreqGenModelESQ500, nil
 	default:
-		return -1, fmt.Errorf("model of frequency generator [%s] does not exist, %w", app.ErrModelDoesNotExist)
+		return -1, fmt.Errorf("model of frequency generator [%s] does not exist, %w", model, app.ErrModelDoesNotExist)
 	}
 }
 
