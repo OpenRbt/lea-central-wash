@@ -77,7 +77,6 @@ require (
 	github.com/ettle/strcase v0.1.1 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/fatih/structtag v1.2.0 // indirect
-	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/fzipp/gocyclo v0.3.1 // indirect
 	github.com/go-critic/go-critic v0.5.6 // indirect
@@ -224,6 +223,7 @@ require (
 )
 
 require (
+	github.com/felixge/httpsnoop v1.0.4
 	go.uber.org/mock v0.4.0
 	gotest.tools/v3 v3.5.1
 )
