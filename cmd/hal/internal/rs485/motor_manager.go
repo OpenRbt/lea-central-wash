@@ -3,7 +3,9 @@ package rs485
 import (
 	"context"
 	"fmt"
+	"os"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -33,17 +35,41 @@ type MotorManager struct {
 	requesterToDelete   chan *requester.SequenceRequester
 	hwMetrics           app.HardwareMetrics
 	devicesModel        FreqGenModel
+	stations            []FreqGenModel
 	lastReportedDevices app.DevicesList
 }
 
 func NewMotorManager(ctx context.Context, hwMetrics app.HardwareMetrics,
 	portReporter requester.PortReporter, refreshDelay time.Duration, newModel FreqGenModel) *MotorManager {
+	defaultModelName := strings.ToLower(os.Getenv("ESQ_MODEL"))
+	if defaultModelName == "" {
+		defaultModelName = "esq500"
+	}
+	defaultModel := MustStringToFreqGenModel(defaultModelName)
+
+	stations := make([]FreqGenModel, app.MAX_ALLOWED_DEVICES+1)
+	for i := 1; i <= app.MAX_ALLOWED_DEVICES; i++ {
+		stations[i] = defaultModel
+	}
+	for i := 1; i <= app.MAX_ALLOWED_DEVICES; i++ {
+		modelName := strings.ToLower(os.Getenv(fmt.Sprintf("ESQ_MODEL_STATION%d", i)))
+		if modelName == "" {
+			continue
+		}
+		stations[i] = MustStringToFreqGenModel(modelName)
+	}
+	fmt.Println("config:")
+	for i := 1; i <= app.MAX_ALLOWED_DEVICES; i++ {
+		fmt.Printf("station: %d, model: %s\n", i, stations[i].String())
+	}
+
 	return &MotorManager{
 		ctx:               ctx,
 		refreshDelay:      refreshDelay,
 		portReporter:      portReporter,
 		hwMetrics:         hwMetrics,
 		devicesModel:      newModel,
+		stations:          stations,
 		requesterToDelete: make(chan *requester.SequenceRequester, requestersToDeleteMaxCnt),
 	}
 }
@@ -337,40 +363,27 @@ func (m *MotorManager) CheckAndGetSequenceRequencerPort(port string) (*requester
 
 	cfg := rsutil.NewRS485Config(port, 9600, 10000)
 
-	models := ModelList(m.devicesModel)
-	fmt.Printf("models: %v", models)
-	for _, devModel := range models {
-		fmt.Printf("check model: %v \n", devModel)
-		mDriver, err := CreateFrequencyGenerator(devModel, cfg) // 10000 means 100.00 % for our driver
+	for i := 1; i < app.MAX_ALLOWED_DEVICES; i++ {
+		fmt.Printf("check port: %s, station: %d model: %s \n", port, i, m.stations[i].String())
+		mDriver, err := CreateFrequencyGenerator(m.stations[i], cfg) // 10000 means 100.00 % for our driver
 		if err != nil {
-			fmt.Printf("can't initialize newfrequencygenerator model %s, err %v", devModel, err)
+			fmt.Printf("can't initialize newfrequencygenerator model %s, err %v", m.stations[i], err)
 			continue
 		}
 
-		deviceFound := false
-		for i := uint8(1); i < app.MAX_ALLOWED_DEVICES; i++ {
-			maxSpeed, err := mDriver.MaxSpeed(i)
-			if err != nil { //Let's just do 2 attempts
-				maxSpeed, err = mDriver.MaxSpeed(i)
-			}
-			if err != nil {
-				continue
-			}
-			if maxSpeed > 0 {
-				deviceFound = true
-				break
-			}
+		maxSpeed, err := mDriver.MaxSpeed(uint8(i))
+		if err != nil { //Let's just do 2 attempts
+			maxSpeed, err = mDriver.MaxSpeed(uint8(i))
 		}
-		if !deviceFound {
-			err := mDriver.Destroy()
-			if err != nil {
-				fmt.Printf("cant properly destroy device [%s] on %s\n", devModel, port)
-			}
-			continue
+		if (err == nil) && (maxSpeed > 0) {
+			sRequester := requester.NewSequenceRequester(m.ctx, mDriver)
+			return sRequester, nil
+		}
+		err = mDriver.Destroy()
+		if err != nil {
+			fmt.Printf("cant properly destroy device [%s] on %s\n", m.stations[i].String(), port)
 		}
 
-		sRequester := requester.NewSequenceRequester(m.ctx, mDriver)
-		return sRequester, nil
 	}
 	// Nothing found
 	return nil, fmt.Errorf("not a single driver found on port [%s], %w\n", port, ErrDeviceNotFound)
