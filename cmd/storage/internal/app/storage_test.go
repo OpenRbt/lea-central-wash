@@ -192,6 +192,27 @@ func TestAddAdvertisingCampaign(tt *testing.T) {
 	t.Nil(err)
 	t.DeepEqual(campaign, AdvertisingCampaign{})
 }
+
+func TestGetVolumeDispenser(tt *testing.T) {
+	t := check.T(tt)
+	t.Parallel()
+
+	a, finish, mocks := testNew(t)
+	defer finish()
+	a.volumeCorrection = 840
+
+	for i := int64(100); i < 3000; i++ {
+		mocks.mockHal.EXPECT().Volume().Return(int64(i*int64(840)/1000), "ok", nil)
+		v, _, _ := a.GetVolumeDispenser()
+		t.GreaterOrEqual(v, i)
+	}
+	mocks.mockRepo.EXPECT().AddAdvertisingCampaign(gomock.Any(), gomock.Any()).Return(AdvertisingCampaign{}, nil)
+
+	campaign, err := a.AddAdvertisingCampaign(context.Background(), nil, AdvertisingCampaign{})
+	t.Nil(err)
+	t.DeepEqual(campaign, AdvertisingCampaign{})
+}
+
 func TestEditAdvertisingCampaign(tt *testing.T) {
 	t := check.T(tt)
 	t.Parallel()

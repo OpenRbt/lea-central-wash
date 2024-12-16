@@ -130,7 +130,7 @@ func (a *app) GetVolumeDispenser() (volume int64, status string, err error) {
 	a.stationsMutex.Lock()
 	vCorr := a.volumeCorrection
 	a.stationsMutex.Unlock()
-	volume = int64(float64(getVolume) / float64(vCorr) * 1000)
+	volume = int64(float64(getVolume)/float64(vCorr)*float64(1000)) + 2
 	return volume, status, err
 }
 
