@@ -54,7 +54,7 @@ type Service struct {
 	lastErr        string
 	dateLastErr    *time.Time
 	unpaidStations map[int]bool
-	reconnectCount int64
+	reconnectCount int32
 }
 
 func NewClient(cfg Config, app app.App) (svc *Service, err error) {
@@ -116,7 +116,7 @@ func (s *Service) Status() app.ServiceStatus {
 		LastErr:        s.lastErr,
 		DateLastErr:    s.dateLastErr,
 		IsConnected:    atomic.LoadInt32(&s.isConnected) == connected,
-		ReconnectCount: atomic.LoadInt64(&s.reconnectCount),
+		ReconnectCount: atomic.LoadInt32(&s.reconnectCount),
 	}
 }
 
@@ -226,8 +226,8 @@ func (s *Service) recon() {
 }
 
 func (s *Service) addReconnect() {
-	v := atomic.LoadInt64(&s.reconnectCount)
-	atomic.StoreInt64(&s.reconnectCount, v+1)
+	v := atomic.LoadInt32(&s.reconnectCount)
+	atomic.StoreInt32(&s.reconnectCount, v+1)
 	Metric.ReconnectTotal.Inc()
 }
 
