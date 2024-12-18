@@ -75,5 +75,5 @@ type ServiceStatus struct {
 	LastErr          string
 	DateLastErr      *time.Time
 	UnpaidStations   map[int]bool
-	ReconnectCount   int64
+	ReconnectCount   int32
 }

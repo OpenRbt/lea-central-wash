@@ -56,7 +56,7 @@ type Service struct {
 	isEnabled      bool
 	lastErr        string
 	dateLastErr    *time.Time
-	reconnectCount int64
+	reconnectCount int32
 }
 
 var _ = app.ManagementRabbitWorker(&Service{})
@@ -142,7 +142,7 @@ func (s *Service) Status() app.ServiceStatus {
 		LastErr:        s.lastErr,
 		DateLastErr:    s.dateLastErr,
 		IsConnected:    atomic.LoadInt32(&s.isConnected) == connected,
-		ReconnectCount: atomic.LoadInt64(&s.reconnectCount),
+		ReconnectCount: atomic.LoadInt32(&s.reconnectCount),
 	}
 }
 
@@ -232,8 +232,8 @@ func (s *Service) recon() {
 }
 
 func (s *Service) addReconnect() {
-	v := atomic.LoadInt64(&s.reconnectCount)
-	atomic.StoreInt64(&s.reconnectCount, v+1)
+	v := atomic.LoadInt32(&s.reconnectCount)
+	atomic.StoreInt32(&s.reconnectCount, v+1)
 	Metric.ReconnectTotal.Inc()
 }
 

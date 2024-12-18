@@ -265,7 +265,7 @@ type ServiceStatus struct {
 	IsConnected    bool
 	LastErr        string
 	DateLastErr    *time.Time
-	ReconnectCount int64
+	ReconnectCount int32
 }
 
 func (s *ServiceStatus) IsAvailable() bool {
