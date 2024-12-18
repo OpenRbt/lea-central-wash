@@ -68,25 +68,6 @@ func TestUpdateBuildScript(tt *testing.T) {
 	_, err = testRepo.UpdateBuildScript(100, updateBuildScript)
 	t.Err(err, app.ErrNotFound)
 }
-
-func TestDeleteBuildScript(tt *testing.T) {
-	t := check.T(tt)
-	t.Nil(testRepo.truncate())
-	addTestData(t)
-
-	bs, err := testRepo.CreateBuildScript(testBuildScript)
-	t.Nil(err)
-
-	err = testRepo.DeleteBuildScript(bs.ID)
-	t.Nil(err)
-
-	_, err = testRepo.GetBuildScript(bs.ID)
-	t.Err(err, app.ErrNotFound)
-
-	err = testRepo.DeleteBuildScript(100)
-	t.Err(err, app.ErrNotFound)
-}
-
 func TestGetListBuildScript(tt *testing.T) {
 	t := check.T(tt)
 	t.Nil(testRepo.truncate())

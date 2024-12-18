@@ -451,6 +451,9 @@ select 	s.id,
 		cr.card_reader_type,
 		cr.host,
 		cr.port,
+		bs.id as build_script_id,
+		bs.name as build_script_name,
+		bs.commands as build_script_commands,
 		b.button_id,
 		b.program_id,
 		p.price,
@@ -462,6 +465,7 @@ select 	s.id,
 		p.preflight_motor_speed_percent,
 		p.is_finishing_program
 from station s
+	join build_scripts bs on bs.station_id = s.id
 	join card_reader cr on cr.station_id = s.id
 	join station_program b on s.id=b.station_id
 	join program p on b.program_id=p.id
@@ -831,14 +835,17 @@ returning id
 		commands
 	`
 
-	sqlDeleteBuildScript = `
-	DELETE FROM build_scripts
-	WHERE id = :id
-	`
-
-	sqlDeleteBuildScriptByStationID = `
-	DELETE FROM build_scripts
-	WHERE station_id = :id
+	sqlUpdateBuildScriptByStationID = `
+	UPDATE build_scripts
+	SET
+		name = :name, 
+		commands = :commands
+	WHERE station_id = :station_id
+	RETURNING
+		id,
+		station_id,
+		name,
+		commands
 	`
 
 	sqlGetTask = `
@@ -1214,6 +1221,9 @@ type (
 		CardReaderType             string
 		Host                       string
 		Port                       string
+		BuildScriptID              int
+		BuildScriptName            string
+		BuildScriptCommands        []byte
 	}
 
 	resCollectionReportByDate struct {

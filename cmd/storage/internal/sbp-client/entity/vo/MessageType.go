@@ -12,4 +12,7 @@ const (
 	PaymentConfirmationRequestMessageType MessageType = "sbp_client_service/payment_confirmation_request"
 
 	SBPPingMessageType MessageType = "sbp_client_service/ping"
+
+	ServiceStatusMessageType        MessageType = "sbp_client_service/service_status"
+	ServiceStatusRequestMessageType MessageType = "sbp_client_service/service_status_request"
 )

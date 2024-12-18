@@ -31,7 +31,7 @@ func (svc *service) pay(params op.PayParams) op.PayResponder {
 		log.PrintErr("payment request failed:", err, "stationID", stationID, "pay amount", payAmount)
 
 		switch errors.Cause(err) {
-		case app.ErrUserIsNotAuthorized:
+		case app.ErrUserIsNotAuthorized, app.ErrServiceNotAvailable:
 			return op.NewPayUnauthorized()
 		default:
 			return op.NewPayInternalServerError()

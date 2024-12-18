@@ -134,6 +134,6 @@ func (a *app) signalAfterUpdateConfig(err error) error {
 	if err != nil {
 		return err
 	}
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 	return nil
 }

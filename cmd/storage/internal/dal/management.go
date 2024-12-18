@@ -354,7 +354,7 @@ func (r *repo) NotSendedStations(ctx context.Context) ([]app.StationConfig, erro
 		return nil, err
 	}
 
-	return appStationConfigs(respTasks), nil
+	return appStationConfigs(respTasks)
 }
 
 func (r *repo) MarkStationSended(ctx context.Context, id app.StationID) error {

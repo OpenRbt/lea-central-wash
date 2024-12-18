@@ -36,7 +36,7 @@ type KasseConfig struct {
 	ReceiptItemName string `json:"receiptItemName,omitempty"`
 
 	// tax
-	// Enum: [TAX_VAT110 TAX_VAT0 TAX_NO TAX_VAT120]
+	// Enum: ["TAX_VAT110","TAX_VAT0","TAX_NO","TAX_VAT120"]
 	Tax string `json:"tax,omitempty"`
 }
 
@@ -59,7 +59,7 @@ func (m *KasseConfig) UnmarshalJSON(data []byte) error {
 		ReceiptItemName string `json:"receiptItemName,omitempty"`
 
 		// tax
-		// Enum: [TAX_VAT110 TAX_VAT0 TAX_NO TAX_VAT120]
+		// Enum: ["TAX_VAT110","TAX_VAT0","TAX_NO","TAX_VAT120"]
 		Tax string `json:"tax,omitempty"`
 	}
 

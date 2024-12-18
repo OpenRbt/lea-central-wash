@@ -323,37 +323,6 @@ func init() {
             "description": "Internal error"
           }
         }
-      },
-      "delete": {
-        "security": [
-          {
-            "pinCode": []
-          }
-        ],
-        "operationId": "deleteBuildScript",
-        "parameters": [
-          {
-            "minimum": 1,
-            "type": "integer",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "PIN is missing or invalid"
-          },
-          "404": {
-            "description": "Not found"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
       }
     },
     "/card-reader-config": {
@@ -4302,6 +4271,9 @@ func init() {
         "isConnected": {
           "type": "boolean"
         },
+        "isPaid": {
+          "type": "boolean"
+        },
         "lastErr": {
           "type": "string"
         },
@@ -5076,37 +5048,6 @@ func init() {
             "schema": {
               "$ref": "#/definitions/BuildScript"
             }
-          },
-          "401": {
-            "description": "PIN is missing or invalid"
-          },
-          "404": {
-            "description": "Not found"
-          },
-          "500": {
-            "description": "Internal error"
-          }
-        }
-      },
-      "delete": {
-        "security": [
-          {
-            "pinCode": []
-          }
-        ],
-        "operationId": "deleteBuildScript",
-        "parameters": [
-          {
-            "minimum": 1,
-            "type": "integer",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
           },
           "401": {
             "description": "PIN is missing or invalid"
@@ -9063,6 +9004,9 @@ func init() {
           "type": "boolean"
         },
         "isConnected": {
+          "type": "boolean"
+        },
+        "isPaid": {
           "type": "boolean"
         },
         "lastErr": {

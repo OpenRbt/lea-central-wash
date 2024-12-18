@@ -32,6 +32,11 @@ const (
 	leaStatusAccountNotFound leaStatus = "account_not_found"
 )
 
+type washServiceStatus struct {
+	IsPaid    bool `json:"isPaid"`
+	IsEnabled bool `json:"isEnabled"`
+}
+
 type command struct {
 	MessageID    uuid.UUID
 	WashServerID uuid.UUID
@@ -53,9 +58,11 @@ type Message string
 type RoutingKey string
 
 const (
-	msgCommand           Message = "kaspi_client_service/command"
-	commandAnswer        Message = "kaspi_client_service/command_answer"
-	kaspiPingMessageType Message = "kaspi_client_service/ping"
+	msgCommand                      Message = "kaspi_client_service/command"
+	commandAnswer                   Message = "kaspi_client_service/command_answer"
+	kaspiPingMessageType            Message = "kaspi_client_service/ping"
+	ServiceStatusMessageType        Message = "kaspi_client_service/service_status"
+	ServiceStatusRequestMessageType Message = "kaspi_client_service/service_status_request"
 
 	RoutingKeyKaspiPing   RoutingKey = "kaspi_ping"
 	RoutingKeyKaspiClient RoutingKey = "kaspi_service_client"
@@ -106,6 +113,23 @@ func appCommand(v command) app.Command {
 // ProcessMessage ...
 func (s *Service) ProcessMessage(d amqp.Delivery) error {
 	switch Message(d.Type) {
+	case ServiceStatusMessageType:
+		var msg washServiceStatus
+		err := json.Unmarshal(d.Body, &msg)
+		if err != nil {
+			d.Nack(false, false)
+			return err
+		}
+
+		s.statusMu.Lock()
+		s.isPaid = msg.IsPaid
+		s.isEnabled = msg.IsEnabled
+		s.statusMu.Unlock()
+
+		s.log.Info("new kaspi status", "is paid", msg.IsPaid, "is enabled", msg.IsEnabled)
+
+		d.Ack(false)
+		return nil
 	case msgCommand:
 		var msg command
 		err := json.Unmarshal(d.Body, &msg)
@@ -156,6 +180,10 @@ func (s *Service) Ping(serverID string, status []app.StationPingStatus) error {
 	}
 
 	return s.sendMessage(p, kaspiPingMessageType, RoutingKeyKaspiPing)
+}
+
+func (s *Service) RequestServiceStatus() error {
+	return s.sendMessage(nil, ServiceStatusRequestMessageType, RoutingKeyKaspiClient)
 }
 
 func (s *Service) sendMessage(msg interface{}, messageType Message, routingKey RoutingKey) (err error) {

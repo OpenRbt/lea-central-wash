@@ -27,7 +27,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		justTurnedOn = *params.Args.JustTurnedOn
 	}
 
-	station, bonusActive := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP, justTurnedOn)
+	station := svc.app.Ping(stationID, int(params.Args.CurrentBalance), int(params.Args.CurrentProgram), stationIP, justTurnedOn)
 
 	var lastPayment app.Payment
 
@@ -58,7 +58,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		LastUpdate:          int64(station.LastUpdate),
 		LastDiscountUpdate:  station.LastDiscountUpdate,
 		SessionID:           station.CurrentSessionID,
-		BonusSystemActive:   bonusActive,
+		BonusSystemActive:   svc.app.IsBonusAvailable(),
 		AuthorizedSessionID: station.AuthorizedSessionID,
 		KaspiAmount:         &station.KaspiMoney,
 		// sbp
@@ -66,7 +66,7 @@ func (svc *service) ping(params op.PingParams) op.PingResponder {
 		QrOrderID:       &orderID,
 		QrURL:           &lastPayment.UrlPay,
 		QrFailed:        &lastPayment.Canceled,
-		SbpSystemActive: svc.app.IsSbpAvailableForStation(stationID),
+		SbpSystemActive: svc.app.IsSbpAvailable(),
 	})
 }
 

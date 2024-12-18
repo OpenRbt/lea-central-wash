@@ -22,7 +22,7 @@ import (
 type CardReaderConfig struct {
 
 	// card reader type
-	// Enum: [NOT_USED VENDOTEK PAYMENT_WORLD]
+	// Enum: ["NOT_USED","VENDOTEK","PAYMENT_WORLD"]
 	CardReaderType string `json:"cardReaderType,omitempty"`
 
 	// host
@@ -41,7 +41,7 @@ func (m *CardReaderConfig) UnmarshalJSON(data []byte) error {
 	var props struct {
 
 		// card reader type
-		// Enum: [NOT_USED VENDOTEK PAYMENT_WORLD]
+		// Enum: ["NOT_USED","VENDOTEK","PAYMENT_WORLD"]
 		CardReaderType string `json:"cardReaderType,omitempty"`
 
 		// host

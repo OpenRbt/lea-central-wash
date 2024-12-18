@@ -9,3 +9,4 @@ type StationStatus struct {
 	ID       int  `json:"id"`
 	IsOnline bool `json:"isOnline"`
 }
+

@@ -123,6 +123,9 @@ const (
 	LcwProgramSettingMessageType     app.RabbitMessageType = "lcw/program/set"
 	LcwProgramSettingsGetMessageType app.RabbitMessageType = "lcw/program/get"
 
+	ServiceStatusMessageType        app.RabbitMessageType = "management/service_status"
+	ServiceStatusRequestMessageType app.RabbitMessageType = "management/service_status_request"
+
 	LcwAdvertisingCampaignsGetMessageType     app.RabbitMessageType = "lcw/advertising_campaign/get"
 	LcwAdvertisingCampaignsGetByIDMessageType app.RabbitMessageType = "lcw/advertising_campaign/get_by_id"
 	LcwAdvertisingCampaignCreationMessageType app.RabbitMessageType = "lcw/advertising_campaign/create"

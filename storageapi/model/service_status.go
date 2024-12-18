@@ -31,6 +31,9 @@ type ServiceStatus struct {
 	// is connected
 	IsConnected bool `json:"isConnected,omitempty"`
 
+	// is paid
+	IsPaid bool `json:"isPaid,omitempty"`
+
 	// last err
 	LastErr string `json:"lastErr,omitempty"`
 
@@ -54,6 +57,9 @@ func (m *ServiceStatus) UnmarshalJSON(data []byte) error {
 		// is connected
 		IsConnected bool `json:"isConnected,omitempty"`
 
+		// is paid
+		IsPaid bool `json:"isPaid,omitempty"`
+
 		// last err
 		LastErr string `json:"lastErr,omitempty"`
 
@@ -71,6 +77,7 @@ func (m *ServiceStatus) UnmarshalJSON(data []byte) error {
 	m.DateLastErrUTC = props.DateLastErrUTC
 	m.DisabledOnServer = props.DisabledOnServer
 	m.IsConnected = props.IsConnected
+	m.IsPaid = props.IsPaid
 	m.LastErr = props.LastErr
 	m.UnpaidStations = props.UnpaidStations
 	return nil

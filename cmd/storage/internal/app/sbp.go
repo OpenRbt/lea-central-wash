@@ -46,6 +46,7 @@ type SbpBrokerInterface interface {
 	ConfirmPayment(Payment) error
 	Status() ServiceStatus
 	Ping(serverID string, status []StationPingStatus) error
+	RequestServiceStatus() error
 }
 
 // SbpRepInterface ...
@@ -188,6 +189,11 @@ func (w *SbpWorker) confirmPayment() {
 func (w *SbpWorker) SendPaymentRequest(postID StationID, amount int64) error {
 	if amount <= 0 {
 		return fmt.Errorf("send payment request failed: amount <= 0")
+	}
+
+	status := w.sbpBroker.Status()
+	if !status.IsAvailable() {
+		return ErrServiceNotAvailable
 	}
 
 	orderID := uuid.NewV4()
