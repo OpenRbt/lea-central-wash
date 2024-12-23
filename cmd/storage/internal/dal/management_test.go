@@ -584,6 +584,13 @@ func TestNotSendedStations(t *testing.T) {
 		err = testRepo.SetStationProgram(app.StationID(i), []app.StationProgram{{ButtonID: 1, ProgramID: 1}, {ButtonID: 2, ProgramID: 2}})
 		assert.NilError(t, err)
 
+		_, err = testRepo.CreateBuildScript(app.SetBuildScript{
+			StationID: app.StationID(i),
+			Name:      "1",
+			Commands:  []string{"1", "2", "3"},
+		})
+		assert.NilError(t, err)
+
 		err = testRepo.SetCardReaderConfig(app.CardReaderConfig{
 			StationID:      app.StationID(i),
 			CardReaderType: "PAYMENT_WORLD",
@@ -607,9 +614,14 @@ func TestNotSendedStations(t *testing.T) {
 	cTemp := stations[2]
 	cTemp.Version++
 	cTemp.Name = "new name"
+	cTemp.BuildScript = app.BuildScript{
+		ID:        int(stations[2].ID),
+		StationID: stations[2].ID,
+		Name:      "2",
+		Commands:  []string{"4", "5", "6"}}
 	stations[2] = cTemp
 
-	updatedTask, err := testRepo.StationUpdate(ctx, stations[2].ID, app.StationUpdate{Name: &cTemp.Name})
+	updatedTask, err := testRepo.StationUpdate(ctx, stations[2].ID, app.StationUpdate{Name: &cTemp.Name, BuildScript: &cTemp.BuildScript})
 	assert.NilError(t, err)
 	assert.DeepEqual(t, updatedTask, cTemp)
 

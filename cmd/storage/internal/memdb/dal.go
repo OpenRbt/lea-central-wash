@@ -393,12 +393,8 @@ func (r *DB) UpdateBuildScript(id int, updateBuildScript app.SetBuildScript) (ap
 	return app.BuildScript{}, nil
 }
 
-func (r *DB) DeleteBuildScript(id int) error {
-	return nil
-}
-
-func (r *DB) DeleteBuildScriptByStationID(id app.StationID) error {
-	return nil
+func (r *DB) UpdateBuildScriptByStationID(updateBuildScript app.SetBuildScript) (app.BuildScript, error) {
+	return app.BuildScript{}, nil
 }
 
 func (r *DB) GetTask(id int) (app.Task, error) {

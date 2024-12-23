@@ -26,7 +26,7 @@ type Log struct {
 	Hash *Hash `json:"hash"`
 
 	// level
-	// Enum: [debug info warning error]
+	// Enum: ["debug","info","warning","error"]
 	Level *string `json:"level,omitempty"`
 
 	// text
@@ -46,7 +46,7 @@ func (m *Log) UnmarshalJSON(data []byte) error {
 		Hash *Hash `json:"hash"`
 
 		// level
-		// Enum: [debug info warning error]
+		// Enum: ["debug","info","warning","error"]
 		Level *string `json:"level,omitempty"`
 
 		// text

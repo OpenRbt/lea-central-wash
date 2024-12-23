@@ -130,7 +130,7 @@ func (a *app) Set(station StationData) error {
 }
 
 // Ping sets the time of the last ping and returns service money.
-func (a *app) Ping(id StationID, balance, program int, stationIP string, justTurnedOn bool) (StationData, bool) {
+func (a *app) Ping(id StationID, balance, program int, stationIP string, justTurnedOn bool) StationData {
 	a.stationsMutex.RLock()
 	var station StationData
 	if v, ok := a.stations[id]; ok {
@@ -164,12 +164,6 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string, justTur
 	oldStation.LastUpdate = a.lastUpdate
 	oldStation.LastDiscountUpdate = a.lastDiscountUpdate
 
-	bonusSystemActive := false
-	if a.bonusSystemRabbitWorker != nil {
-		status := a.bonusSystemRabbitWorker.Status()
-		bonusSystemActive = a.isServiceAvailableForStation(id, status)
-	}
-
 	if oldStation.Versions == nil || oldStation.LastPing.Add(durationStationOffline).Before(time.Now()) {
 		tasks, _, err := a.repo.GetListTasks(TaskFilter{
 			StationsID: []StationID{id},
@@ -178,10 +172,10 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string, justTur
 		})
 		if err != nil {
 			log.PrintErr("Error getting list of tasks for station %d: %s", id, err.Error())
-			return oldStation, bonusSystemActive
+			return oldStation
 		}
 		if len(tasks) > 0 {
-			return oldStation, bonusSystemActive
+			return oldStation
 		}
 
 		_, err = a.repo.CreateTask(CreateTask{
@@ -190,11 +184,11 @@ func (a *app) Ping(id StationID, balance, program int, stationIP string, justTur
 		})
 		if err != nil {
 			log.PrintErr("Error when creating a task to get versions from station %d: %s", id, err.Error())
-			return oldStation, bonusSystemActive
+			return oldStation
 		}
 	}
 
-	return oldStation, bonusSystemActive
+	return oldStation
 }
 
 func (a *app) checkStationOnline() {
@@ -449,7 +443,7 @@ func (a *app) CreateUser(ctx context.Context, userCreation UserCreation, auth *A
 		return User{}, err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return newUser, nil
 }
@@ -498,7 +492,7 @@ func (a *app) UpdateUser(login string, userUpdate UserUpdate, auth *Auth) (User,
 		return User{}, err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return user, err
 }
@@ -528,7 +522,7 @@ func (a *app) UpdateUserPassword(ctx context.Context, login string, userData Upd
 		return User{}, err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return newUser, nil
 }
@@ -543,7 +537,7 @@ func (a *app) DeleteUser(ctx context.Context, login string, auth *Auth) error {
 		return err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return nil
 }
@@ -607,7 +601,6 @@ func (a *app) StatusReport(onlyActive bool, offJustTurnedOn bool) StatusReport {
 			Version:        v.CurrentVersions,
 			JustTurnedOn:   v.JustTurnedOn,
 		})
-
 		if v.JustTurnedOn && offJustTurnedOn {
 			v.JustTurnedOn = false
 			a.stations[k] = v
@@ -641,7 +634,8 @@ func (a *app) SetStation(ctx context.Context, station SetStation) error {
 		return err
 	}
 	a.loadStations()
-	if a.bonusSystemRabbitWorker != nil {
+
+	if a.IsBonusAvailable() {
 		a.RequestSessionsFromService(10, station.ID)
 	}
 
@@ -650,7 +644,7 @@ func (a *app) SetStation(ctx context.Context, station SetStation) error {
 		return err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return nil
 }
@@ -662,7 +656,7 @@ func (a *app) DelStation(ctx context.Context, id StationID) error {
 	}
 
 	a.loadStations()
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return nil
 }
@@ -713,7 +707,7 @@ func (a *app) SetProgram(program Program) error {
 	a.programsMutex.Unlock()
 	err = a.updateConfig("SetProgram")
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 	return err
 }
 func (a *app) StationProgram(id StationID) ([]StationProgram, error) {
@@ -735,7 +729,7 @@ func (a *app) SetStationProgram(ctx context.Context, id StationID, button []Stat
 		return err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return nil
 }
@@ -772,7 +766,7 @@ func (a *app) SetCardReaderConfig(ctx context.Context, cfg CardReaderConfig) err
 		return err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return nil
 }
@@ -821,7 +815,7 @@ func (a *app) AddAdvertisingCampaign(ctx context.Context, auth *Auth, res Advert
 		return AdvertisingCampaign{}, err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 	return campaign, nil
 }
 
@@ -831,7 +825,7 @@ func (a *app) EditAdvertisingCampaign(auth *Auth, res AdvertisingCampaign) error
 		return err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 	return nil
 }
 
@@ -841,7 +835,7 @@ func (a *app) DelAdvertisingCampaign(auth *Auth, id int64) error {
 		return err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 	return nil
 }
 
@@ -1010,9 +1004,13 @@ func isValidDayOfWeek(dayOfWeek int, weekDay []string) bool {
 	return false
 }
 
-func (a *app) CreateSession(url string, stationID StationID) (string, string, error) {
+func (a *app) StartSession(url string, stationID StationID) (string, string, error) {
 	if a.bonusSystemRabbitWorker == nil {
 		return "", "", ErrNoRabbitWorker
+	}
+
+	if !a.IsBonusAvailable() {
+		return "", "", ErrServiceNotAvailable
 	}
 
 	err := a.SetNextSession(stationID)
@@ -1141,6 +1139,10 @@ func (a *app) GetRabbitConfig() (cfg RabbitConfig, err error) {
 }
 
 func (a *app) SetNextSession(stationID StationID) (err error) {
+	if !a.IsBonusAvailable() {
+		return ErrServiceNotAvailable
+	}
+
 	a.stationsMutex.Lock()
 
 	if station, ok := a.stations[stationID]; ok {
@@ -1199,6 +1201,28 @@ func (a *app) RequestSessionsFromService(count int, stationID StationID) error {
 	}
 
 	return err
+}
+
+func (a *app) RequestBonusServiceStatus() error {
+	err := a.SendMessage(string(rabbitVo.ServiceStatusRequestMessageType), nil)
+	if errors.Is(err, ErrNoRabbitWorker) {
+		log.Err("not found rabbit worker for bonus service", "error", err)
+		err = nil
+	}
+
+	return err
+}
+
+func (a *app) RequestSbpServiceStatus() error {
+	return a.sbpBroker.RequestServiceStatus()
+}
+
+func (a *app) RequestManagementServiceStatus() error {
+	return a.mngtSvc.RequestServiceStatus()
+}
+
+func (a *app) RequestKaspiServiceStatus() error {
+	return a.kaspiSvc.RequestServiceStatus()
 }
 
 func (a *app) AddSessionsToPool(stationID StationID, sessionsIDs ...string) error {
@@ -1363,10 +1387,6 @@ func (a *app) GetServerInfo() ServerInfo {
 		BonusServiceURL: a.cfg.BonusServiceURL,
 	}
 }
-func (a *app) isServiceAvailableForStation(station StationID, status ServiceStatus) bool {
-	v, ok := status.UnpaidStations[int(station)]
-	return status.Available && status.IsConnected && (!ok || !v) && !status.DisabledOnServer
-}
 
 func (a *app) PingServices() {
 	var bonusServerID string
@@ -1433,7 +1453,7 @@ func (a *app) PingServices() {
 }
 
 func (a *app) pingBonus(serverID string, status []StationPingStatus) error {
-	if a.bonusSystemRabbitWorker == nil {
+	if !a.IsBonusAvailable() {
 		return nil
 	}
 
@@ -1446,7 +1466,7 @@ func (a *app) pingBonus(serverID string, status []StationPingStatus) error {
 }
 
 func (a *app) pingSBP(serverID string, status []StationPingStatus) error {
-	if a.SbpWorker == nil {
+	if !a.IsSbpAvailable() {
 		return nil
 	}
 
@@ -1454,7 +1474,7 @@ func (a *app) pingSBP(serverID string, status []StationPingStatus) error {
 }
 
 func (a *app) pingKaspi(serverID string, status []StationPingStatus) error {
-	if !a.IsKaspiInit() {
+	if !a.IsKaspiAvailable() {
 		return nil
 	}
 
@@ -1478,6 +1498,6 @@ func (a *app) AddOpenwashingLog(log OpenwashingLogCreate) (OpenwashingLog, error
 		return OpenwashingLog{}, err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 	return newLog, nil
 }

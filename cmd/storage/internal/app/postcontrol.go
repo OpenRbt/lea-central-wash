@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
@@ -241,11 +242,14 @@ func (a *app) SetBuildScript(setBuildScript SetBuildScript) (BuildScript, error)
 		return BuildScript{}, err
 	}
 
-	return buildScript, nil
-}
+	err = a.repo.StationUpVersion(context.TODO(), setBuildScript.StationID)
+	if err != nil {
+		return BuildScript{}, nil
+	}
 
-func (a *app) DeleteBuildScript(id StationID) error {
-	return a.repo.DeleteBuildScriptByStationID(id)
+	a.SendManagementSyncSignal()
+
+	return buildScript, nil
 }
 
 func (a *app) GetListTasks(filter TaskFilter) (Page[Task], error) {
@@ -284,7 +288,7 @@ func (a *app) CreateTask(createTask CreateTask) (Task, error) {
 		return Task{}, err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return task, nil
 }
@@ -1407,7 +1411,7 @@ func (a *app) prepareTask(task Task) (Task, string, error) {
 		return Task{}, "", err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	a.stationsMutex.RLock()
 	defer a.stationsMutex.RUnlock()
@@ -1435,7 +1439,7 @@ func (a *app) addRetryTask(task Task, msg string, print bool) (Task, error) {
 		return Task{}, err
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	return task, nil
 }
@@ -1451,7 +1455,7 @@ func (a *app) compliteTask(task Task) {
 		log.PrintErr(err)
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	a.stationsMutex.Lock()
 	defer a.stationsMutex.Unlock()
@@ -1477,7 +1481,7 @@ func (a *app) handleTaskErr(task Task, msg string) {
 		log.PrintErr(err)
 	}
 
-	a.sendManagementSyncSignal()
+	a.SendManagementSyncSignal()
 
 	page := int64(1)
 	for {
@@ -1511,7 +1515,7 @@ func (a *app) handleTaskErr(task Task, msg string) {
 			}
 		}
 
-		a.sendManagementSyncSignal()
+		a.SendManagementSyncSignal()
 
 		page++
 	}

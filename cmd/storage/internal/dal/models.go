@@ -138,7 +138,7 @@ func appStationProgram(p []resStationProgram) (res []app.StationProgram) {
 	return res
 }
 
-func appStationConfig(p []resStationConfig) (res app.StationConfig) {
+func appStationConfig(p []resStationConfig) (res app.StationConfig, err error) {
 	if len(p) == 0 {
 		return
 	}
@@ -152,6 +152,16 @@ func appStationConfig(p []resStationConfig) (res app.StationConfig) {
 	res.CardReader.CardReaderType = p[0].CardReaderType
 	res.CardReader.Host = p[0].Host
 	res.CardReader.Port = p[0].Port
+	res.BuildScript.Name = p[0].BuildScriptName
+	res.BuildScript.ID = p[0].BuildScriptID
+	res.BuildScript.StationID = p[0].ID
+
+	var commands []string
+	err = json.Unmarshal(p[0].BuildScriptCommands, &commands)
+	if err != nil {
+		return app.StationConfig{}, err
+	}
+	res.BuildScript.Commands = commands
 
 	for i := range p {
 		res.Programs = append(res.Programs, app.Program{
@@ -167,12 +177,13 @@ func appStationConfig(p []resStationConfig) (res app.StationConfig) {
 			PreflightRelays:            appProgramRelays(p[i].PreflightRelays),
 		})
 	}
-	return res
+
+	return res, nil
 }
 
-func appStationConfigs(p []resStationConfig) []app.StationConfig {
+func appStationConfigs(p []resStationConfig) ([]app.StationConfig, error) {
 	if len(p) == 0 {
-		return []app.StationConfig{}
+		return []app.StationConfig{}, nil
 	}
 
 	configs := map[app.StationID][]resStationConfig{}
@@ -188,10 +199,14 @@ func appStationConfigs(p []resStationConfig) []app.StationConfig {
 
 	appConfigs := []app.StationConfig{}
 	for _, v := range configs {
-		appConfigs = append(appConfigs, appStationConfig(v))
+		s, err := appStationConfig(v)
+		if err != nil {
+			return nil, err
+		}
+		appConfigs = append(appConfigs, s)
 	}
 
-	return appConfigs
+	return appConfigs, nil
 }
 
 func appCollectionReportsByDate(r []resCollectionReportByDate) (res []app.CollectionReportWithUser) {

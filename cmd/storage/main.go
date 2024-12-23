@@ -487,7 +487,17 @@ func initRabbitClient(cfg rabbit.Config, appl app.App) {
 
 		log.Info("Serve rabbit client")
 		appl.InitBonusRabbitWorker(string(vo.WashBonusService), rabbitWorker.SendMessage, rabbitWorker.Status)
-		appl.FetchSessions()
+
+		err = appl.RequestBonusServiceStatus()
+		if err != nil {
+			log.Err("Failed to send service status request", "error", err)
+		}
+
+		err = appl.FetchSessions()
+		if err != nil {
+			log.Err("Failed to send fetch sessions request", "error", err)
+		}
+
 		return
 	}
 }
@@ -515,6 +525,12 @@ func initMngtClient(cfg mngt.RabbitConfig, appl app.App) {
 
 		log.Info("Serve management client")
 		appl.InitManagement(rabbitWorker)
+
+		err = appl.RequestManagementServiceStatus()
+		if err != nil {
+			log.Err("Failed to send service status request", "error", err)
+		}
+
 		return
 	}
 }
@@ -543,6 +559,12 @@ func initKaspiClient(cfg kaspi.RabbitConfig, appl app.App) {
 
 		log.Info("Serve kaspi client")
 		appl.InitKaspi(rabbitWorker)
+
+		err = appl.RequestKaspiServiceStatus()
+		if err != nil {
+			log.Err("Failed to send service status request", "error", err)
+		}
+
 		return
 	}
 }
@@ -610,6 +632,11 @@ func initSbpClient(
 			err = appl.InitSbpRabbitWorker(sbpWorkerConfig)
 			if err != nil {
 				log.Err("Failed to init sbp sbp rabbit worker", "error", err)
+			}
+
+			err = appl.RequestSbpServiceStatus()
+			if err != nil {
+				log.Err("Failed to send service status request", "error", err)
 			}
 
 			log.Info("serve sbp rabbit client")

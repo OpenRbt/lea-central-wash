@@ -125,6 +125,14 @@ func (r *BonusRabbitWorker) ProcessMessages() {
 	}
 }
 
+func (a *app) IsBonusAvailable() bool {
+	if a.bonusSystemRabbitWorker == nil {
+		return false
+	}
+	status := a.bonusSystemRabbitWorker.Status()
+	return status.IsAvailable()
+}
+
 func (a *app) SendMessage(messageType string, payload interface{}) error {
 	if a.bonusSystemRabbitWorker == nil {
 		return ErrNoRabbitWorker

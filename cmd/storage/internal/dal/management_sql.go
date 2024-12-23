@@ -265,6 +265,9 @@ const (
 			cr.card_reader_type,
 			cr.host,
 			cr.port,
+			bs.id as build_script_id,
+			bs.name as build_script_name,
+			bs.commands as build_script_commands,
 			b.button_id,
 			b.program_id,
 			p.price,
@@ -276,6 +279,7 @@ const (
 			p.preflight_motor_speed_percent,
 			p.is_finishing_program
 	FROM station s
+		join build_scripts bs on bs.station_id = s.id
 		join card_reader cr on cr.station_id = s.id
 		join station_program b on s.id=b.station_id
 		join program p on b.program_id=p.id

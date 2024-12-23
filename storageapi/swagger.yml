@@ -646,6 +646,8 @@ definitions:
         type: boolean
       isConnected: 
         type: boolean
+      isPaid:
+        type: boolean
       lastErr: 
         type: string
       dateLastErrUTC: 
@@ -3113,25 +3115,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/BuildScript'
-        401:
-          description: PIN is missing or invalid
-        404:
-          description: Not found
-        500:
-          description: Internal error
-    delete:
-      operationId: "deleteBuildScript"
-      security:
-        - pinCode: [ ]
-      parameters:
-        - name: id
-          required: true
-          in: path
-          type: integer
-          minimum: 1
-      responses:
-        204:
-          description: OK
         401:
           description: PIN is missing or invalid
         404:
