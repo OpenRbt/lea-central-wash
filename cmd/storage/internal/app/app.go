@@ -107,6 +107,7 @@ var (
 	ErrNoRabbitWorker          = errors.New("rabbit worker not initialized")
 	ErrSendTimeout             = errors.New("send request failed: timeout")
 	ErrNotConfirmed            = errors.New("send request failed: not confirmed")
+	ErrServiceNotAvailable     = errors.New("service not available")
 
 	ErrWrongPaymentStatus = errors.New("wrong payment status")
 	ErrSameOrLowerVersion = errors.New("entity has the same or lower version")
@@ -133,7 +134,7 @@ type (
 
 		Set(station StationData) error
 		Get(stationID StationID) (StationData, error)
-		Ping(id StationID, balance, program int, stationIP string, justTurnedOn bool) (StationData, bool)
+		Ping(id StationID, balance, program int, stationIP string, justTurnedOn bool) StationData
 
 		SaveMoneyReport(report MoneyReport) error
 		SaveRelayReport(report RelayReport) error
@@ -203,6 +204,9 @@ type (
 		EditAdvertisingCampaignFromManagement(ctx context.Context, campaign AdvertisingCampaign) (AdvertisingCampaign, error)
 		DeleteAdvertisingCampaignFromManagement(ctx context.Context, id int64) (AdvertisingCampaign, error)
 
+		IsMngtAvailable() bool
+		SendManagementSyncSignal()
+
 		UpsertAdvertisingCampaignFromManagement(ctx context.Context, campaign ManagementAdvertisingCampaign) (AdvertisingCampaign, error)
 		NotSendedAdvertisingCampaigns(ctx context.Context) ([]AdvertisingCampaign, error)
 		MarkAdvertisingCampaignSended(ctx context.Context, id int64) error
@@ -227,7 +231,7 @@ type (
 		SetStationConfigBool(auth *Auth, config StationConfigVar[bool]) error
 		SetStationConfigString(auth *Auth, config StationConfigVar[string]) error
 
-		CreateSession(url string, stationID StationID) (string, string, error)
+		StartSession(url string, stationID StationID) (string, string, error)
 		EndSession(stationID StationID, sessionID BonusSessionID) error
 		SetBonuses(stationID StationID, bonuses int) error
 
@@ -242,6 +246,12 @@ type (
 
 		InitBonusRabbitWorker(routingKey string, publisherFunc func(msg interface{}, service rabbit_vo.Service, target rabbit_vo.RoutingKey, messageType rabbit_vo.MessageType) error, status func() ServiceStatus)
 
+		RequestSbpServiceStatus() error
+		RequestBonusServiceStatus() error
+		RequestManagementServiceStatus() error
+		RequestKaspiServiceStatus() error
+		IsBonusAvailable() bool
+
 		// sbp
 		SendPaymentRequest(postID StationID, amount int64) error
 		// set
@@ -253,7 +263,7 @@ type (
 		GetLastPayment(postID StationID) (Payment, error)
 		InitSbpRabbitWorker(config SbpRabbitWorkerConfig) error
 		IsSbpRabbitWorkerInit() bool
-		IsSbpAvailableForStation(stationID StationID) bool
+		IsSbpAvailable() bool
 		GetSbpConfig(envServerSbpID string, envServerSbpPassword string) (cfg SbpRabbitConfig, err error)
 
 		InitManagement(ManagementRabbitWorker)
@@ -275,7 +285,6 @@ type (
 		GetListBuildScripts() ([]BuildScript, error)
 		GetBuildScript(id StationID) (BuildScript, error)
 		SetBuildScript(setBuildScript SetBuildScript) (BuildScript, error)
-		DeleteBuildScript(id StationID) error
 		CopyFirmware(stationID StationID, copyToID StationID) error
 		GetVersionBuffered(stationID StationID) (FirmwareVersion, error)
 
@@ -408,8 +417,7 @@ type (
 		GetBuildScriptByStationID(id StationID) (BuildScript, error)
 		CreateBuildScript(createBuildScript SetBuildScript) (BuildScript, error)
 		UpdateBuildScript(id int, updateBuildScript SetBuildScript) (BuildScript, error)
-		DeleteBuildScript(id int) error
-		DeleteBuildScriptByStationID(id StationID) error
+		UpdateBuildScriptByStationID(updateBuildScript SetBuildScript) (BuildScript, error)
 		GetListTasks(filter TaskFilter) ([]Task, int64, error)
 		GetTask(id int) (Task, error)
 		CreateTask(createTask CreateTask) (Task, error)
@@ -458,6 +466,7 @@ type (
 		Timings []Relay
 	}
 	ManagementRabbitWorker interface {
+		RequestServiceStatus() error
 		SendMoneyReport(MngtMoneyReport) error
 		SendCollectionReport(CollectionReport) error
 		Status() ServiceStatus
@@ -483,6 +492,7 @@ type (
 		Status() ServiceStatus
 		SendAnswer(KaspiAnswer) error
 		Ping(serverID string, status []StationPingStatus) error
+		RequestServiceStatus() error
 	}
 )
 
@@ -689,6 +699,7 @@ type StationConfig struct {
 	LastUpdate   int
 	Programs     []Program
 	CardReader   CardReaderConfig
+	BuildScript  BuildScript
 	Version      int
 	Deleted      bool
 }
@@ -699,6 +710,7 @@ type StationUpdate struct {
 	RelayBoard   *string
 	Buttons      []StationProgram
 	CardReader   *CardReaderConfig
+	BuildScript  *BuildScript
 }
 
 type SessionsRequest struct {

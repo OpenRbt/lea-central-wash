@@ -53,12 +53,12 @@ func (a *app) IsManagementInit() bool {
 	return a.mngtSvc.ManagementRabbitWorker != nil
 }
 
-func (a *app) IsMngtAvailableForStation(stationID StationID) bool {
-	if a.SbpWorker == nil {
+func (a *app) IsMngtAvailable() bool {
+	if !a.IsManagementInit() {
 		return false
 	}
 	status := a.mngtSvc.Status()
-	return a.isServiceAvailableForStation(stationID, status)
+	return status.IsAvailable()
 }
 
 func (a *app) handleCollectionReportSync(report CollectionReport) error {
@@ -96,7 +96,16 @@ func (a *app) syncData() {
 		panic("managementSvc == nil")
 	}
 	for {
+		if !a.IsMngtAvailable() {
+			time.Sleep(time.Second * 15)
+			continue
+		}
+
 		for {
+			if !a.IsMngtAvailable() {
+				break
+			}
+
 			c, err := a.repo.Collections()
 			if err != nil {
 				log.Err("collections", "err", err)
@@ -114,6 +123,10 @@ func (a *app) syncData() {
 		}
 
 		for {
+			if !a.IsMngtAvailable() {
+				break
+			}
+
 			c, err := a.repo.MoneyReports()
 			if err != nil {
 				log.Err("moneyReports", "err", err)
@@ -138,18 +151,22 @@ func (a *app) sendStatus() {
 		panic("managementSvc == nil")
 	}
 
-	r := a.StatusReport(true, true)
-	err := a.mngtSvc.SendStatus(r, true)
-	if err != nil {
-		log.Err("sendStatus", "err", err)
-	}
-	time.Sleep(time.Second * 15)
-
-	for {
+	if a.IsMngtAvailable() {
 		r := a.StatusReport(true, true)
-		err := a.mngtSvc.SendStatus(r, false)
+		err := a.mngtSvc.SendStatus(r, true)
 		if err != nil {
 			log.Err("sendStatus", "err", err)
+		}
+		time.Sleep(time.Second * 15)
+	}
+
+	for {
+		if a.IsMngtAvailable() {
+			r := a.StatusReport(true, true)
+			err := a.mngtSvc.SendStatus(r, false)
+			if err != nil {
+				log.Err("sendStatus", "err", err)
+			}
 		}
 		time.Sleep(time.Second * 15)
 	}
@@ -166,13 +183,15 @@ func (a *app) startManagementSync() {
 }
 
 func (a *app) syncLeaSettings() {
-	a.syncUnsentStations()
-	a.syncUnsentPrograms()
-	a.syncUnsentAdvertisingCampaigns()
-	a.syncUnsentOpenwashingLogs()
-	a.syncUnsentConfigs()
-	a.syncUnsentUsers()
-	a.syncUnsentTasks()
+	if a.IsMngtAvailable() {
+		a.syncUnsentStations()
+		a.syncUnsentPrograms()
+		a.syncUnsentAdvertisingCampaigns()
+		a.syncUnsentOpenwashingLogs()
+		a.syncUnsentConfigs()
+		a.syncUnsentUsers()
+		a.syncUnsentTasks()
+	}
 }
 
 func (a *app) syncUnsentPrograms() {
@@ -286,7 +305,7 @@ func (a *app) syncUnsentTasks() {
 }
 
 func (a *app) syncUnsentStations() {
-	stations, err := a.repo.NotSendedStations(context.TODO())
+	stations, err := a.repo.NotSendedStations(context.TODO()) //
 	if err != nil {
 		log.Err("unable to get unsent stations", "err", err)
 		return

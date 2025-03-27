@@ -750,6 +750,17 @@ func (r *repo) StationUpdate(ctx context.Context, id app.StationID, stationUpdat
 		}
 	}
 
+	if stationUpdate.BuildScript != nil {
+		_, err := r.UpdateBuildScriptByStationID(app.SetBuildScript{
+			StationID: id,
+			Name:      stationUpdate.BuildScript.Name,
+			Commands:  stationUpdate.BuildScript.Commands,
+		})
+		if err != nil {
+			return app.StationConfig{}, err
+		}
+	}
+
 	return r.StationConfig(id)
 }
 
@@ -798,7 +809,10 @@ func (r *repo) StationConfig(id app.StationID) (cfg app.StationConfig, err error
 		if len(res) == 0 {
 			return app.ErrNotFound
 		}
-		cfg = appStationConfig(res)
+		cfg, err = appStationConfig(res)
+		if err != nil {
+			return err
+		}
 		return nil
 	})
 

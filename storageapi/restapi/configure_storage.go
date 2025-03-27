@@ -125,11 +125,6 @@ func configureAPI(api *op.StorageAPI) http.Handler {
 			return op.DelStationNotImplemented()
 		})
 	}
-	if api.DeleteBuildScriptHandler == nil {
-		api.DeleteBuildScriptHandler = op.DeleteBuildScriptHandlerFunc(func(params op.DeleteBuildScriptParams, principal *storageapi.Profile) op.DeleteBuildScriptResponder {
-			return op.DeleteBuildScriptNotImplemented()
-		})
-	}
 	if api.DeleteUserHandler == nil {
 		api.DeleteUserHandler = op.DeleteUserHandlerFunc(func(params op.DeleteUserParams, principal *storageapi.Profile) op.DeleteUserResponder {
 			return op.DeleteUserNotImplemented()

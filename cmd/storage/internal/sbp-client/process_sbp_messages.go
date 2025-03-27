@@ -8,6 +8,7 @@ import (
 
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/app"
 	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/ping"
+	"github.com/OpenRbt/lea-central-wash/cmd/storage/internal/rabbit/entity/session"
 	paymentEntities "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client/entity/payment"
 	rabbit_vo "github.com/OpenRbt/lea-central-wash/cmd/storage/internal/sbp-client/entity/vo"
 	uuid "github.com/satori/go.uuid"
@@ -18,6 +19,22 @@ import (
 // ProcessSbpMessage ...
 func (s *Service) ProcessSbpMessage(d amqp.Delivery) error {
 	switch rabbit_vo.MessageType(d.Type) {
+	case rabbit_vo.ServiceStatusMessageType:
+		var msg session.ServiceStatus
+		err := json.Unmarshal(d.Body, &msg)
+		if err != nil {
+			d.Nack(false, false)
+			return err
+		}
+
+		s.statusMu.Lock()
+		s.isPaid = msg.IsPaid
+		s.isEnabled = msg.IsEnabled
+		s.statusMu.Unlock()
+
+		s.log.Info("new sbp status", "is paid", msg.IsPaid, "is enabled", msg.IsEnabled)
+
+		d.Ack(false)
 
 	// payment response
 	case rabbit_vo.MessageTypePaymentResponse:
@@ -150,6 +167,10 @@ func (s *Service) Ping(serverID string, status []app.StationPingStatus) error {
 	}
 
 	return s.sendMessage(p, rabbit_vo.SBPPingMessageType, rabbit_vo.RoutingKeySbpPing)
+}
+
+func (s *Service) RequestServiceStatus() error {
+	return s.sendMessage(nil, rabbit_vo.ServiceStatusRequestMessageType, rabbit_vo.RoutingKeySbpClient)
 }
 
 // sendMessage ...

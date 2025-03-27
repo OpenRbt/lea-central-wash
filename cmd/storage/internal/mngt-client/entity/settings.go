@@ -677,30 +677,42 @@ type Button struct {
 	ProgramID int `json:"programId"`
 }
 
+type WashServiceStatus struct {
+	IsPaid    bool `json:"isPaid"`
+	IsEnabled bool `json:"isEnabled"`
+}
+
 type StationUpdate struct {
-	ID           int         `json:"id"`
-	Name         *string     `json:"name,omitempty"`
-	PreflightSec *int        `json:"preflightSec,omitempty"`
-	RelayBoard   *string     `json:"relayBoard,omitempty"`
-	Buttons      []Button    `json:"buttons,omitempty"`
-	CardReader   *CardReader `json:"cardReader,omitempty"`
+	ID           int          `json:"id"`
+	Name         *string      `json:"name,omitempty"`
+	PreflightSec *int         `json:"preflightSec,omitempty"`
+	RelayBoard   *string      `json:"relayBoard,omitempty"`
+	Buttons      []Button     `json:"buttons,omitempty"`
+	CardReader   *CardReader  `json:"cardReader,omitempty"`
+	BuildScript  *BuildScript `json:"buildScript,omitempty"`
 }
 
 type Station struct {
-	ID           int        `json:"id"`
-	Name         string     `json:"name"`
-	PreflightSec int        `json:"preflightSec"`
-	RelayBoard   string     `json:"relayBoard"`
-	Buttons      []Button   `json:"buttons"`
-	Version      int        `json:"version"`
-	Deleted      bool       `json:"deleted"`
-	CardReader   CardReader `json:"cardReader"`
+	ID           int         `json:"id"`
+	Name         string      `json:"name"`
+	PreflightSec int         `json:"preflightSec"`
+	RelayBoard   string      `json:"relayBoard"`
+	Buttons      []Button    `json:"buttons"`
+	Version      int         `json:"version"`
+	Deleted      bool        `json:"deleted"`
+	CardReader   CardReader  `json:"cardReader"`
+	BuildScript  BuildScript `json:"buildScript"`
 }
 
 type CardReader struct {
 	Type string  `json:"type"`
 	Host *string `json:"host,omitempty"`
 	Port *int    `json:"port,omitempty"`
+}
+
+type BuildScript struct {
+	Name     string   `json:"name"`
+	Commands []string `json:"commands"`
 }
 
 func StationUpdateToApp(station StationUpdate) (app.StationUpdate, error) {
@@ -712,12 +724,17 @@ func StationUpdateToApp(station StationUpdate) (app.StationUpdate, error) {
 		}
 		cardReader = app.Ptr(cr)
 	}
+	var bs *app.BuildScript = nil
+	if station.BuildScript != nil {
+		bs = app.Ptr(BuildScriptToApp(*station.BuildScript, station.ID))
+	}
 	return app.StationUpdate{
 		Name:         station.Name,
 		PreflightSec: station.PreflightSec,
 		RelayBoard:   station.RelayBoard,
 		Buttons:      ButtonsToApp(station.Buttons),
 		CardReader:   cardReader,
+		BuildScript:  bs,
 	}, nil
 }
 
@@ -733,10 +750,26 @@ func StationToRabbit(station app.StationConfig) (Station, error) {
 		PreflightSec: station.PreflightSec,
 		RelayBoard:   station.RelayBoard,
 		Buttons:      ButtonsToRabbit(station.Programs),
+		BuildScript:  BuildScriptToRabbit(station.BuildScript),
 		Version:      station.Version,
 		Deleted:      station.Deleted,
 		CardReader:   cr,
 	}, nil
+}
+
+func BuildScriptToApp(script BuildScript, stationID int) app.BuildScript {
+	return app.BuildScript{
+		StationID: app.StationID(stationID),
+		Name:      script.Name,
+		Commands:  script.Commands,
+	}
+}
+
+func BuildScriptToRabbit(script app.BuildScript) BuildScript {
+	return BuildScript{
+		Name:     script.Name,
+		Commands: script.Commands,
+	}
 }
 
 func CardReaderToRabbit(cardReader app.CardReaderConfig) (CardReader, error) {

@@ -1068,7 +1068,7 @@ func (svc *service) createSession(params op.CreateSessionParams) op.CreateSessio
 		return op.NewCreateSessionNotFound()
 	}
 
-	sessionID, QR, err := svc.app.CreateSession(def.OpenwashingURL, stationID)
+	sessionID, QR, err := svc.app.StartSession(def.OpenwashingURL, stationID)
 	if err == nil {
 		return op.NewCreateSessionOK().WithPayload(apiCreateSession(sessionID, QR))
 	}
@@ -1261,20 +1261,6 @@ func (svc *service) setBuildScript(params op.SetBuildScriptParams, auth *app.Aut
 	default:
 		log.PrintErr(err)
 		return op.NewSetBuildScriptInternalServerError()
-	}
-}
-
-func (svc *service) deleteBuildScript(params op.DeleteBuildScriptParams, auth *app.Auth) op.DeleteBuildScriptResponder {
-	err := svc.app.DeleteBuildScript(app.StationID(params.ID))
-
-	switch errors.Cause(err) {
-	case nil:
-		return op.NewDeleteBuildScriptNoContent()
-	case app.ErrNotFound:
-		return op.NewDeleteBuildScriptNotFound()
-	default:
-		log.PrintErr(err)
-		return op.NewDeleteBuildScriptInternalServerError()
 	}
 }
 
