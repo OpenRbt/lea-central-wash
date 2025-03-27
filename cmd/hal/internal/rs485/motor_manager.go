@@ -360,8 +360,17 @@ func (m *MotorManager) Destroy() {
 
 func (m *MotorManager) CheckAndGetSequenceRequencerPort(port string) (*requester.SequenceRequester, error) {
 	// Let's create a device
+	defaultSpeed := strings.ToLower(os.Getenv("ESQ_SPEED"))
+	if defaultSpeed == "" {
+		defaultSpeed = "9600"
+	}
+	speed, err := strconv.Atoi(defaultSpeed)
+	if err != nil {
+		fmt.Printf("failed to parse ESQ_SPEED =%v as int: %v\n", defaultSpeed, err)
+		speed = 9600
+	}
 
-	cfg := rsutil.NewRS485Config(port, 9600, 10000)
+	cfg := rsutil.NewRS485Config(port, uint(speed), 10000)
 
 	for i := 1; i < app.MAX_ALLOWED_DEVICES; i++ {
 		fmt.Printf("check port: %s, station: %d model: %s \n", port, i, m.stations[i].String())
