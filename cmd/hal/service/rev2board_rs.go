@@ -226,14 +226,17 @@ func readPort(s *serial.Port, buf []byte) (int, error) {
 			return 0, err
 		}
 		for i := 0; i < n; i++ {
-			if string(b[i]) == ";" {
+			if b[i] == ';' {
 				read = false
 				n = i + 1
 				break
 			}
 		}
-		buf = append(buf[:count], b[:n]...)
-		count = count + n
+		if count+n > len(buf) {
+			return 0, fmt.Errorf("buffer overflow: %d + %d > %d", count, n, len(buf))
+		}
+		copy(buf[count:], b[:n])
+		count += n
 	}
 	return count, nil
 }
