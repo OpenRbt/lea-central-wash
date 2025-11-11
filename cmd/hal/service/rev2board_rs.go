@@ -205,6 +205,7 @@ func (r *Rev2BoardRS) SendPing() (map[int]bool, error) {
 
 // RunConfig just runs a config
 func (r *Rev2BoardRS) RunConfig(config app.RelayConfig) {
+	fmt.Printf("RunConfig len Commands, %d \n", len(r.Commands))
 	r.Commands <- config
 }
 

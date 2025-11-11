@@ -492,16 +492,17 @@ func (h *HardwareAccessLayer) runOnRev2BoardRS(cfg app.RelayConfig) error {
 	h.portsMu.Lock()
 	fmt.Printf("runOnRev2BoardRS locked \n")
 
-	defer h.portsMu.Unlock()
 	for i := range h.portRev2BoardRS {
 		_, ok := h.portRev2BoardRS[i].stationNumber[int(cfg.StationID)]
 		if ok {
-			h.portRev2BoardRS[i].RunConfig(cfg)
+			h.portsMu.Unlock()
 			fmt.Printf("runOnRev2BoardRS unlocked \n")
+			h.portRev2BoardRS[i].RunConfig(cfg)
 			return nil
 		}
 
 	}
+	h.portsMu.Unlock()
 	fmt.Printf("runOnRev2BoardRS unlocked \n")
 	return app.ErrNotFoundBoard
 }
