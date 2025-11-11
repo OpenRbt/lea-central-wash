@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"regexp"
@@ -60,8 +59,9 @@ func NewPorts(osPath string, openPort *serial.Port) *ports {
 
 // CollectAvailableSerialPorts reads /dev directory and find all ttyUSB* and ttyACM* devices
 func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
+	fmt.Printf("start CollectAvailableSerialPorts \n")
 	h.uidAnswer, _ = regexp.Compile(uidAnswerRegex)
-	files, err := ioutil.ReadDir("/dev")
+	files, err := os.ReadDir("/dev")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -289,17 +289,23 @@ func (h *HardwareAccessLayer) ControlBoard(wantedPosition int32) (app.ControlBoa
 
 // Start just starts everything
 func (h *HardwareAccessLayer) Start() {
+	fmt.Printf("(h *HardwareAccessLayer) Start() \n")
 	go h.workingLoop()
 	h.motorManager.Run()
 }
 
 func (h *HardwareAccessLayer) workingLoop() ([]app.ControlBoard, error) {
+	fmt.Printf("workingLoop start \n")
 	for {
+		fmt.Printf("workingLoop run CollectAvailableSerialPorts \n")
 		h.CollectAvailableSerialPorts()
 		t := true
+		fmt.Printf("workingLoop lock \n")
 		h.portsMu.Lock()
+		fmt.Printf("workingLoop locked \n")
 		for t {
 			t = false
+			fmt.Printf("workingLoop start clear \n")
 			for key := range h.portRev2Board {
 				if h.portRev2Board[key].toRemove {
 					h.portRev2Board[key].openPort.Close()
@@ -319,6 +325,7 @@ func (h *HardwareAccessLayer) workingLoop() ([]app.ControlBoard, error) {
 				}
 			}
 		}
+		fmt.Printf("workingLoop end clear \n")
 		if h.dispencer != nil {
 			if h.dispencer.toRemove {
 				h.dispencer.openPort.Close()
@@ -326,11 +333,12 @@ func (h *HardwareAccessLayer) workingLoop() ([]app.ControlBoard, error) {
 				h.dispencer = nil
 			}
 		}
+		fmt.Printf("workingLoop unlock \n")
 		h.portsMu.Unlock()
+		fmt.Printf("workingLoop unlocked \n")
 		time.Sleep(time.Second) // Let's do maintenance just once per second
 	}
 }
-
 
 // NewHardwareAccessLayer is just a constructor
 func NewHardwareAccessLayer(newMetrics app.HardwareMetrics) (app.HardwareAccessLayer, error) {
