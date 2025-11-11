@@ -4,7 +4,7 @@ import (
 	"errors"
 )
 
-const MAX_ALLOWED_DEVICES = 6
+const MAX_ALLOWED_DEVICES = 12
 
 var (
 	ErrNotFound            = errors.New("not found")
