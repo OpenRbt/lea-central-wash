@@ -67,9 +67,9 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 	}
 
 	for _, f := range files {
-		fmt.Printf("CollectAvailableSerialPorts port: %s \n", f.Name())
+		//fmt.Printf("CollectAvailableSerialPorts port: %s \n", f.Name())
 		if strings.HasPrefix(f.Name(), "ttyUSB") || strings.HasPrefix(f.Name(), "ttyACM") {
-			fmt.Printf("CollectAvailableSerialPorts port exists?: %s \n", f.Name())
+			//	fmt.Printf("CollectAvailableSerialPorts port exists?: %s \n", f.Name())
 			_, portExists := h.portByKey(f.Name())
 			fmt.Printf("CollectAvailableSerialPorts port exists: %s , %t \n", f.Name(), portExists)
 			if !portExists {
@@ -188,11 +188,11 @@ func (h *HardwareAccessLayer) DispenserStop(cfg app.RelayConfig) error {
 }
 
 func (h *HardwareAccessLayer) portByKey(key string) (*ports, bool) {
-	fmt.Printf("portByKey lock \n")
+	// fmt.Printf("portByKey lock \n")
 	h.portsMu.Lock()
-	fmt.Printf("portByKey locked \n")
+	//fmt.Printf("portByKey locked \n")
 	el, found := h.ports[key]
-	fmt.Printf("portByKey unlocked \n")
+	//fmt.Printf("portByKey unlocked \n")
 	h.portsMu.Unlock()
 	if !found {
 		return nil, false
@@ -201,9 +201,9 @@ func (h *HardwareAccessLayer) portByKey(key string) (*ports, bool) {
 }
 
 func (h *HardwareAccessLayer) deletePort(key string) {
-	fmt.Printf("deletePort lock \n")
+	//fmt.Printf("deletePort lock \n")
 	h.portsMu.Lock()
-	fmt.Printf("deletePort locked \n")
+	//fmt.Printf("deletePort locked \n")
 	delete(h.ports, key)
 	if h.dispencer != nil && h.dispencer.osPath == key {
 		h.dispencer = nil
@@ -211,34 +211,34 @@ func (h *HardwareAccessLayer) deletePort(key string) {
 		delete(h.portRev2Board, key)
 	}
 	h.portsMu.Unlock()
-	fmt.Printf("deletePort unlocked \n")
+	//fmt.Printf("deletePort unlocked \n")
 }
 
 func (h *HardwareAccessLayer) addPort(key string, port *ports) {
-	fmt.Printf("addPort lock \n")
+	//fmt.Printf("addPort lock \n")
 	h.portsMu.Lock()
-	fmt.Printf("addPort locked \n")
+	//fmt.Printf("addPort locked \n")
 	h.ports[key] = port
 	h.portsMu.Unlock()
-	fmt.Printf("addPort unlocked \n")
+	//fmt.Printf("addPort unlocked \n")
 }
 
 func (h *HardwareAccessLayer) addRev2Board(key string, board *Rev2Board) {
-	fmt.Printf("addRev2Board lock \n")
+	//fmt.Printf("addRev2Board lock \n")
 	h.portsMu.Lock()
-	fmt.Printf("addRev2Board locked \n")
+	//fmt.Printf("addRev2Board locked \n")
 	h.portRev2Board[key] = board
 	h.portsMu.Unlock()
-	fmt.Printf("addRev2Board unlocked \n")
+	//fmt.Printf("addRev2Board unlocked \n")
 }
 
 func (h *HardwareAccessLayer) addDispencerBoard(key string, sensor *Rev1DispencerBoard) {
-	fmt.Printf("addDispencerBoard lock \n")
+	//fmt.Printf("addDispencerBoard lock \n")
 	h.portsMu.Lock()
-	fmt.Printf("addDispencerBoard locked \n")
+	//fmt.Printf("addDispencerBoard locked \n")
 	h.dispencer = sensor
 	h.portsMu.Unlock()
-	fmt.Printf("addDispencerBoard unlocked \n")
+	//fmt.Printf("addDispencerBoard unlocked \n")
 }
 
 func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
@@ -297,19 +297,19 @@ func (h *HardwareAccessLayer) checkAndAddPort(key string) error {
 
 // ControlBoard returns required control board by its key
 func (h *HardwareAccessLayer) ControlBoard(wantedPosition int32) (app.ControlBoard, error) {
-	fmt.Printf("ControlBoard lock \n")
+	//fmt.Printf("ControlBoard lock \n")
 	h.portsMu.Lock()
-	fmt.Printf("ControlBoard locked \n")
+	//fmt.Printf("ControlBoard locked \n")
 
 	defer h.portsMu.Unlock()
 	for key := range h.portRev2Board {
 		if h.portRev2Board[key].stationNumber == int(wantedPosition) {
-			fmt.Printf("ControlBoard unlocked \n")
+			//fmt.Printf("ControlBoard unlocked \n")
 
 			return h.portRev2Board[key], nil
 		}
 	}
-	fmt.Printf("ControlBoard unlocked \n")
+	//fmt.Printf("ControlBoard unlocked \n")
 
 	// fmt.Printf("board #%d is not found on dictionary\n", wantedPosition)
 	return nil, app.ErrNotFound
@@ -431,7 +431,7 @@ func (h *HardwareAccessLayer) runOnRev2Board(id int32, cfg app.RelayConfig) erro
 }
 
 func (h *HardwareAccessLayer) checkAndAddPortRS(key string) error {
-	c := &serial.Config{Name: "/dev/" + key, Baud: 9600, ReadTimeout: time.Millisecond * 50}
+	c := &serial.Config{Name: "/dev/" + key, Baud: 9600, ReadTimeout: time.Millisecond * 200}
 	s, err := serial.OpenPort(c)
 	if err != nil {
 		return err
@@ -479,30 +479,30 @@ func (h *HardwareAccessLayer) checkAndAddPortRS(key string) error {
 }
 
 func (h *HardwareAccessLayer) addRev2BoardRS(board *Rev2BoardRS) {
-	fmt.Printf("addRev2BoardRS lock \n")
+	//fmt.Printf("addRev2BoardRS lock \n")
 	h.portsMu.Lock()
-	fmt.Printf("addRev2BoardRS locked \n")
+	//fmt.Printf("addRev2BoardRS locked \n")
 	h.portRev2BoardRS = append(h.portRev2BoardRS, board)
 	h.portsMu.Unlock()
-	fmt.Printf("addRev2BoardRS unlocked \n")
+	//fmt.Printf("addRev2BoardRS unlocked \n")
 }
 
 func (h *HardwareAccessLayer) runOnRev2BoardRS(cfg app.RelayConfig) error {
-	fmt.Printf("runOnRev2BoardRS lock \n")
+	//fmt.Printf("runOnRev2BoardRS lock \n")
 	h.portsMu.Lock()
-	fmt.Printf("runOnRev2BoardRS locked \n")
+	//fmt.Printf("runOnRev2BoardRS locked \n")
 
 	for i := range h.portRev2BoardRS {
 		_, ok := h.portRev2BoardRS[i].stationNumber[int(cfg.StationID)]
 		if ok {
 			h.portsMu.Unlock()
-			fmt.Printf("runOnRev2BoardRS unlocked \n")
+			//fmt.Printf("runOnRev2BoardRS unlocked \n")
 			h.portRev2BoardRS[i].RunConfig(cfg)
 			return nil
 		}
 
 	}
 	h.portsMu.Unlock()
-	fmt.Printf("runOnRev2BoardRS unlocked \n")
+	//fmt.Printf("runOnRev2BoardRS unlocked \n")
 	return app.ErrNotFoundBoard
 }

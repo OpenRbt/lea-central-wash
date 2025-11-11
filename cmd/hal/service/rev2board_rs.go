@@ -84,7 +84,7 @@ func (r *Rev2BoardRS) reconnect() error {
 	r.hwMetrics.Rev2BoardRSReconnectCounter.Inc(r.osPath)
 	r.openPort.Close()
 	time.Sleep(20 * time.Millisecond)
-	c := &serial.Config{Name: "/dev/" + r.osPath, Baud: 9600, ReadTimeout: time.Millisecond * 50}
+	c := &serial.Config{Name: "/dev/" + r.osPath, Baud: 9600, ReadTimeout: time.Millisecond * 200}
 	s, err := serial.OpenPort(c)
 	if err == nil {
 		r.openPort = s
