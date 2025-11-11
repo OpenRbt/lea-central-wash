@@ -67,8 +67,11 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 	}
 
 	for _, f := range files {
+		fmt.Printf("CollectAvailableSerialPorts port: %s \n", f.Name())
 		if strings.HasPrefix(f.Name(), "ttyUSB") || strings.HasPrefix(f.Name(), "ttyACM") {
+			fmt.Printf("CollectAvailableSerialPorts port exists?: %s \n", f.Name())
 			_, portExists := h.portByKey(f.Name())
+			fmt.Printf("CollectAvailableSerialPorts port exists: %s , %t \n", f.Name(), portExists)
 			if !portExists {
 				fmt.Printf("trying to check as RS485 %s \n", f.Name())
 				err = h.motorManager.TryAddDevice(f.Name())
@@ -78,6 +81,7 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 					continue
 				}
 
+				fmt.Printf("trying to check RS board %s \n", f.Name())
 				err = h.checkAndAddPortRS(f.Name())
 				if err == nil {
 					fmt.Printf("New board rs is added [%s]\n", f.Name())
@@ -86,6 +90,7 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 					fmt.Printf("New board rs is not added [%s], err [%+v]\n", f.Name(), err)
 				}
 
+				fmt.Printf("trying to check board %s \n", f.Name())
 				// port is not found in our dictionary
 				err = h.checkAndAddPort(f.Name())
 				if err == nil {
@@ -96,6 +101,7 @@ func (h *HardwareAccessLayer) CollectAvailableSerialPorts() {
 			}
 		}
 	}
+	fmt.Printf("exit CollectAvailableSerialPorts \n")
 }
 
 func (h *HardwareAccessLayer) GetLevel() int {
