@@ -36,8 +36,11 @@ type KasseConfig struct {
 	ReceiptItemName string `json:"receiptItemName,omitempty"`
 
 	// tax
-	// Enum: ["TAX_VAT110","TAX_VAT0","TAX_NO","TAX_VAT120"]
+	// Enum: ["TAX_VAT110","TAX_VAT0","TAX_NO","TAX_VAT120","TAX_VAT105","TAX_VAT107"]
 	Tax string `json:"tax,omitempty"`
+
+	// timezone
+	Timezone int64 `json:"timezone,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
@@ -59,8 +62,11 @@ func (m *KasseConfig) UnmarshalJSON(data []byte) error {
 		ReceiptItemName string `json:"receiptItemName,omitempty"`
 
 		// tax
-		// Enum: ["TAX_VAT110","TAX_VAT0","TAX_NO","TAX_VAT120"]
+		// Enum: ["TAX_VAT110","TAX_VAT0","TAX_NO","TAX_VAT120","TAX_VAT105","TAX_VAT107"]
 		Tax string `json:"tax,omitempty"`
+
+		// timezone
+		Timezone int64 `json:"timezone,omitempty"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -73,6 +79,7 @@ func (m *KasseConfig) UnmarshalJSON(data []byte) error {
 	m.CashierINN = props.CashierINN
 	m.ReceiptItemName = props.ReceiptItemName
 	m.Tax = props.Tax
+	m.Timezone = props.Timezone
 	return nil
 }
 
@@ -150,7 +157,7 @@ var kasseConfigTypeTaxPropEnum []any
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["TAX_VAT110","TAX_VAT0","TAX_NO","TAX_VAT120"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["TAX_VAT110","TAX_VAT0","TAX_NO","TAX_VAT120","TAX_VAT105","TAX_VAT107"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -171,6 +178,12 @@ const (
 
 	// KasseConfigTaxTAXVAT120 captures enum value "TAX_VAT120"
 	KasseConfigTaxTAXVAT120 string = "TAX_VAT120"
+
+	// KasseConfigTaxTAXVAT105 captures enum value "TAX_VAT105"
+	KasseConfigTaxTAXVAT105 string = "TAX_VAT105"
+
+	// KasseConfigTaxTAXVAT107 captures enum value "TAX_VAT107"
+	KasseConfigTaxTAXVAT107 string = "TAX_VAT107"
 )
 
 // prop value enum

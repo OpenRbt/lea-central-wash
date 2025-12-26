@@ -348,6 +348,8 @@ definitions:
           - TAX_VAT0
           - TAX_NO
           - TAX_VAT120
+          - TAX_VAT105
+          - TAX_VAT107
       receiptItemName:
         type: string
         minLength: 1
@@ -359,6 +361,8 @@ definitions:
         minLength: 12
         maxLength: 12
         pattern: '^[0123456789]{12}$'
+      timezone:
+        type: integer
 
   CardReaderConfig:
     type: object
