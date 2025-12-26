@@ -50,7 +50,7 @@ const (
 )
 
 // for schema
-var taskTypeEnum []interface{}
+var taskTypeEnum []any
 
 func init() {
 	var res []TaskType

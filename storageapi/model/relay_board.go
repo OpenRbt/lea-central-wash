@@ -41,7 +41,7 @@ const (
 )
 
 // for schema
-var relayBoardEnum []interface{}
+var relayBoardEnum []any
 
 func init() {
 	var res []RelayBoard

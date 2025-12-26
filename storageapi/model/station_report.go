@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -75,11 +76,15 @@ func (m *StationReport) validateMoneyReport(formats strfmt.Registry) error {
 
 	if m.MoneyReport != nil {
 		if err := m.MoneyReport.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("moneyReport")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("moneyReport")
 			}
+
 			return err
 		}
 	}
@@ -99,11 +104,15 @@ func (m *StationReport) validateRelayStats(formats strfmt.Registry) error {
 
 		if m.RelayStats[i] != nil {
 			if err := m.RelayStats[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("relayStats" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("relayStats" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -140,11 +149,15 @@ func (m *StationReport) contextValidateMoneyReport(ctx context.Context, formats 
 		}
 
 		if err := m.MoneyReport.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("moneyReport")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("moneyReport")
 			}
+
 			return err
 		}
 	}
@@ -163,11 +176,15 @@ func (m *StationReport) contextValidateRelayStats(ctx context.Context, formats s
 			}
 
 			if err := m.RelayStats[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("relayStats" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("relayStats" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

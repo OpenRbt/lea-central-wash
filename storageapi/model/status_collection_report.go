@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -69,11 +70,15 @@ func (m *StatusCollectionReport) validateStations(formats strfmt.Registry) error
 
 		if m.Stations[i] != nil {
 			if err := m.Stations[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("stations" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("stations" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -108,11 +113,15 @@ func (m *StatusCollectionReport) contextValidateStations(ctx context.Context, fo
 			}
 
 			if err := m.Stations[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("stations" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("stations" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

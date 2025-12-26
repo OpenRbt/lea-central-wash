@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -127,11 +128,15 @@ func (m *MoneyReportCreation) validateHash(formats strfmt.Registry) error {
 
 	if m.Hash != nil {
 		if err := m.Hash.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("hash")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("hash")
 			}
+
 			return err
 		}
 	}
@@ -158,11 +163,15 @@ func (m *MoneyReportCreation) contextValidateHash(ctx context.Context, formats s
 	if m.Hash != nil {
 
 		if err := m.Hash.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("hash")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("hash")
 			}
+
 			return err
 		}
 	}

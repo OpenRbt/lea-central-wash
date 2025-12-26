@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -111,11 +112,15 @@ func (m *StatusReport) validateBonusStatus(formats strfmt.Registry) error {
 
 	if m.BonusStatus != nil {
 		if err := m.BonusStatus.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("bonus_status")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("bonus_status")
 			}
+
 			return err
 		}
 	}
@@ -129,11 +134,15 @@ func (m *StatusReport) validateKasseStatus(formats strfmt.Registry) error {
 	}
 
 	if err := m.KasseStatus.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("kasse_status")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("kasse_status")
 		}
+
 		return err
 	}
 
@@ -147,11 +156,15 @@ func (m *StatusReport) validateSbpStatus(formats strfmt.Registry) error {
 
 	if m.SbpStatus != nil {
 		if err := m.SbpStatus.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("sbp_status")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("sbp_status")
 			}
+
 			return err
 		}
 	}
@@ -171,11 +184,15 @@ func (m *StatusReport) validateStations(formats strfmt.Registry) error {
 
 		if m.Stations[i] != nil {
 			if err := m.Stations[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("stations" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("stations" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -220,11 +237,15 @@ func (m *StatusReport) contextValidateBonusStatus(ctx context.Context, formats s
 		}
 
 		if err := m.BonusStatus.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("bonus_status")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("bonus_status")
 			}
+
 			return err
 		}
 	}
@@ -239,11 +260,15 @@ func (m *StatusReport) contextValidateKasseStatus(ctx context.Context, formats s
 	}
 
 	if err := m.KasseStatus.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("kasse_status")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("kasse_status")
 		}
+
 		return err
 	}
 
@@ -259,11 +284,15 @@ func (m *StatusReport) contextValidateSbpStatus(ctx context.Context, formats str
 		}
 
 		if err := m.SbpStatus.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("sbp_status")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("sbp_status")
 			}
+
 			return err
 		}
 	}
@@ -282,11 +311,15 @@ func (m *StatusReport) contextValidateStations(ctx context.Context, formats strf
 			}
 
 			if err := m.Stations[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("stations" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("stations" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

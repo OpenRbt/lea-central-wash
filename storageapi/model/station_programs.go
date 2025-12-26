@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -108,11 +109,15 @@ func (m *StationPrograms) validatePrograms(formats strfmt.Registry) error {
 
 		if m.Programs[i] != nil {
 			if err := m.Programs[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("programs" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("programs" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -128,11 +133,15 @@ func (m *StationPrograms) validateRelayBoard(formats strfmt.Registry) error {
 	}
 
 	if err := m.RelayBoard.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("relayBoard")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("relayBoard")
 		}
+
 		return err
 	}
 
@@ -168,11 +177,15 @@ func (m *StationPrograms) contextValidatePrograms(ctx context.Context, formats s
 			}
 
 			if err := m.Programs[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("programs" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("programs" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -189,11 +202,15 @@ func (m *StationPrograms) contextValidateRelayBoard(ctx context.Context, formats
 	}
 
 	if err := m.RelayBoard.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("relayBoard")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("relayBoard")
 		}
+
 		return err
 	}
 
@@ -273,11 +290,15 @@ func (m *StationProgramsProgramsItems0) validateProgram(formats strfmt.Registry)
 
 	if m.Program != nil {
 		if err := m.Program.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("program")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("program")
 			}
+
 			return err
 		}
 	}
@@ -308,11 +329,15 @@ func (m *StationProgramsProgramsItems0) contextValidateProgram(ctx context.Conte
 		}
 
 		if err := m.Program.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("program")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("program")
 			}
+
 			return err
 		}
 	}

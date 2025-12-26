@@ -86,7 +86,7 @@ func (m *CardReaderConfig) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-var cardReaderConfigTypeCardReaderTypePropEnum []interface{}
+var cardReaderConfigTypeCardReaderTypePropEnum []any
 
 func init() {
 	var res []string

@@ -146,7 +146,7 @@ func (m *KasseConfig) validateReceiptItemName(formats strfmt.Registry) error {
 	return nil
 }
 
-var kasseConfigTypeTaxPropEnum []interface{}
+var kasseConfigTypeTaxPropEnum []any
 
 func init() {
 	var res []string

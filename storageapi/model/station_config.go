@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -106,11 +107,15 @@ func (m *StationConfig) validateRelayBoard(formats strfmt.Registry) error {
 	}
 
 	if err := m.RelayBoard.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("relayBoard")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("relayBoard")
 		}
+
 		return err
 	}
 
@@ -138,11 +143,15 @@ func (m *StationConfig) contextValidateRelayBoard(ctx context.Context, formats s
 	}
 
 	if err := m.RelayBoard.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("relayBoard")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("relayBoard")
 		}
+
 		return err
 	}
 

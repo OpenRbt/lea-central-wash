@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -132,11 +133,15 @@ func (m *UserConfig) validateFirstName(formats strfmt.Registry) error {
 
 	if m.FirstName != nil {
 		if err := m.FirstName.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("firstName")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("firstName")
 			}
+
 			return err
 		}
 	}
@@ -151,11 +156,15 @@ func (m *UserConfig) validateIsAdmin(formats strfmt.Registry) error {
 
 	if m.IsAdmin != nil {
 		if err := m.IsAdmin.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("isAdmin")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("isAdmin")
 			}
+
 			return err
 		}
 	}
@@ -170,11 +179,15 @@ func (m *UserConfig) validateIsEngineer(formats strfmt.Registry) error {
 
 	if m.IsEngineer != nil {
 		if err := m.IsEngineer.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("isEngineer")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("isEngineer")
 			}
+
 			return err
 		}
 	}
@@ -189,11 +202,15 @@ func (m *UserConfig) validateIsOperator(formats strfmt.Registry) error {
 
 	if m.IsOperator != nil {
 		if err := m.IsOperator.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("isOperator")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("isOperator")
 			}
+
 			return err
 		}
 	}
@@ -208,11 +225,15 @@ func (m *UserConfig) validateLastName(formats strfmt.Registry) error {
 
 	if m.LastName != nil {
 		if err := m.LastName.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("lastName")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("lastName")
 			}
+
 			return err
 		}
 	}
@@ -232,11 +253,15 @@ func (m *UserConfig) validateLogin(formats strfmt.Registry) error {
 
 	if m.Login != nil {
 		if err := m.Login.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("login")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("login")
 			}
+
 			return err
 		}
 	}
@@ -251,11 +276,15 @@ func (m *UserConfig) validateMiddleName(formats strfmt.Registry) error {
 
 	if m.MiddleName != nil {
 		if err := m.MiddleName.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("middleName")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("middleName")
 			}
+
 			return err
 		}
 	}
@@ -310,11 +339,15 @@ func (m *UserConfig) contextValidateFirstName(ctx context.Context, formats strfm
 		}
 
 		if err := m.FirstName.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("firstName")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("firstName")
 			}
+
 			return err
 		}
 	}
@@ -331,11 +364,15 @@ func (m *UserConfig) contextValidateIsAdmin(ctx context.Context, formats strfmt.
 		}
 
 		if err := m.IsAdmin.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("isAdmin")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("isAdmin")
 			}
+
 			return err
 		}
 	}
@@ -352,11 +389,15 @@ func (m *UserConfig) contextValidateIsEngineer(ctx context.Context, formats strf
 		}
 
 		if err := m.IsEngineer.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("isEngineer")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("isEngineer")
 			}
+
 			return err
 		}
 	}
@@ -373,11 +414,15 @@ func (m *UserConfig) contextValidateIsOperator(ctx context.Context, formats strf
 		}
 
 		if err := m.IsOperator.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("isOperator")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("isOperator")
 			}
+
 			return err
 		}
 	}
@@ -394,11 +439,15 @@ func (m *UserConfig) contextValidateLastName(ctx context.Context, formats strfmt
 		}
 
 		if err := m.LastName.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("lastName")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("lastName")
 			}
+
 			return err
 		}
 	}
@@ -411,11 +460,15 @@ func (m *UserConfig) contextValidateLogin(ctx context.Context, formats strfmt.Re
 	if m.Login != nil {
 
 		if err := m.Login.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("login")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("login")
 			}
+
 			return err
 		}
 	}
@@ -432,11 +485,15 @@ func (m *UserConfig) contextValidateMiddleName(ctx context.Context, formats strf
 		}
 
 		if err := m.MiddleName.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("middleName")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("middleName")
 			}
+
 			return err
 		}
 	}

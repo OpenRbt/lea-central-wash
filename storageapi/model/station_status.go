@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -133,11 +134,15 @@ func (m *StationStatus) validateHash(formats strfmt.Registry) error {
 	}
 
 	if err := m.Hash.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("hash")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("hash")
 		}
+
 		return err
 	}
 
@@ -150,11 +155,15 @@ func (m *StationStatus) validateStatus(formats strfmt.Registry) error {
 	}
 
 	if err := m.Status.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("status")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("status")
 		}
+
 		return err
 	}
 
@@ -168,11 +177,15 @@ func (m *StationStatus) validateVersion(formats strfmt.Registry) error {
 
 	if m.Version != nil {
 		if err := m.Version.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("version")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("version")
 			}
+
 			return err
 		}
 	}
@@ -209,11 +222,15 @@ func (m *StationStatus) contextValidateHash(ctx context.Context, formats strfmt.
 	}
 
 	if err := m.Hash.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("hash")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("hash")
 		}
+
 		return err
 	}
 
@@ -227,11 +244,15 @@ func (m *StationStatus) contextValidateStatus(ctx context.Context, formats strfm
 	}
 
 	if err := m.Status.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("status")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("status")
 		}
+
 		return err
 	}
 
@@ -247,11 +268,15 @@ func (m *StationStatus) contextValidateVersion(ctx context.Context, formats strf
 		}
 
 		if err := m.Version.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("version")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("version")
 			}
+
 			return err
 		}
 	}

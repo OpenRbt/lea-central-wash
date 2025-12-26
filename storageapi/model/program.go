@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -199,11 +200,15 @@ func (m *Program) validatePreflightRelays(formats strfmt.Registry) error {
 
 		if m.PreflightRelays[i] != nil {
 			if err := m.PreflightRelays[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("preflightRelays" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("preflightRelays" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -225,11 +230,15 @@ func (m *Program) validateRelays(formats strfmt.Registry) error {
 
 		if m.Relays[i] != nil {
 			if err := m.Relays[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("relays" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("relays" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -268,11 +277,15 @@ func (m *Program) contextValidatePreflightRelays(ctx context.Context, formats st
 			}
 
 			if err := m.PreflightRelays[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("preflightRelays" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("preflightRelays" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -293,11 +306,15 @@ func (m *Program) contextValidateRelays(ctx context.Context, formats strfmt.Regi
 			}
 
 			if err := m.Relays[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("relays" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("relays" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
